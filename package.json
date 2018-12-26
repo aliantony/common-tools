@@ -1,0 +1,31 @@
+{
+  "name": "csos-api",
+  "version": "1.0.0",
+  "description": "API 接口",
+  "main": "commitlint.config.js",
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-customizable"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.antiy.org.cn/liuyu/antiy-csos.git"
+  },
+  "author": "liuyu",
+  "license": "ISC",
+  "devDependencies": {
+    "@commitlint/cli": "^7.2.1",
+    "@commitlint/config-conventional": "^7.1.2",
+    "husky": "^1.1.2"
+  },
+  "dependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

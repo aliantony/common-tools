@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetCategoryModelDao">
+
+                <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetCategoryModel">
+                                                <id column="id" property="id"/>
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <result column="name" property="name"/>
+                                                                <result column="type" property="type"/>
+                                                                <result column="asset_type" property="assetType"/>
+                                                                <result column="parent_id" property="parentId"/>
+                                                                <result column="description" property="description"/>
+                                                                <result column="gmt_create" property="gmtCreate"/>
+                                                                <result column="gmt_modified" property="gmtModified"/>
+                                                                <result column="memo" property="memo"/>
+                                                                <result column="create_user" property="createUser"/>
+                                                                <result column="modify_user" property="modifyUser"/>
+                                                                <result column="status" property="status"/>
+                                    </resultMap>
+
+                <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+                        id, name, type, asset_type AS assetType, parent_id AS parentId, description, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
+        </sql>
+    
+    <sql id="Table_Name">
+        asset_category_model
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+                                
+
+                                    <if test=" name != null">
+                    name,
+                </if>
+            
+
+                                    <if test=" type != null">
+                    type,
+                </if>
+            
+
+                                    <if test=" assetType != null">
+                    asset_type,
+                </if>
+            
+
+                                    <if test=" parentId != null">
+                    parent_id,
+                </if>
+            
+
+                                    <if test=" description != null">
+                    description,
+                </if>
+            
+
+                                    <if test=" gmtCreate != null">
+                    gmt_create,
+                </if>
+            
+
+                                    <if test=" gmtModified != null">
+                    gmt_modified,
+                </if>
+            
+
+                                    <if test=" memo != null">
+                    memo,
+                </if>
+            
+
+                                    <if test=" createUser != null">
+                    create_user,
+                </if>
+            
+
+                                    <if test=" modifyUser != null">
+                    modify_user,
+                </if>
+            
+
+                                    <if test=" status != null">
+                    status,
+                </if>
+            
+
+            </sql>
+
+    <sql id="IF_Value_Column_List">
+                                
+                                    <if test=" name != null">
+                    #{name },
+                </if>
+            
+                                    <if test=" type != null">
+                    #{type },
+                </if>
+            
+                                    <if test=" assetType != null">
+                    #{assetType },
+                </if>
+            
+                                    <if test=" parentId != null">
+                    #{parentId },
+                </if>
+            
+                                    <if test=" description != null">
+                    #{description },
+                </if>
+            
+                                    <if test=" gmtCreate != null">
+                    #{gmtCreate },
+                </if>
+            
+                                    <if test=" gmtModified != null">
+                    #{gmtModified },
+                </if>
+            
+                                    <if test=" memo != null">
+                    #{memo },
+                </if>
+            
+                                    <if test=" createUser != null">
+                    #{createUser },
+                </if>
+            
+                                    <if test=" modifyUser != null">
+                    #{modifyUser },
+                </if>
+            
+                                    <if test=" status != null">
+                    #{status },
+                </if>
+            
+            </sql>
+
+    <sql id="Set_Column_List">
+                                
+                                    <if test=" name != null">
+                    name = #{name },
+                </if>
+            
+                                    <if test=" type != null">
+                    type = #{type },
+                </if>
+            
+                                    <if test=" assetType != null">
+                    asset_type = #{assetType },
+                </if>
+            
+                                    <if test=" parentId != null">
+                    parent_id = #{parentId },
+                </if>
+            
+                                    <if test=" description != null">
+                    description = #{description },
+                </if>
+            
+                                    <if test=" gmtCreate != null">
+                    gmt_create = #{gmtCreate },
+                </if>
+            
+                                    <if test=" gmtModified != null">
+                    gmt_modified = #{gmtModified },
+                </if>
+            
+                                    <if test=" memo != null">
+                    memo = #{memo },
+                </if>
+            
+                                    <if test=" createUser != null">
+                    create_user = #{createUser },
+                </if>
+            
+                                    <if test=" modifyUser != null">
+                    modify_user = #{modifyUser },
+                </if>
+            
+                                    <if test=" status != null">
+                    status = #{status },
+                </if>
+            
+            </sql>
+
+    <sql id="Where_Column_List">
+                                
+                                    <if test=" name != null">
+                    and name = #{name }
+                </if>
+            
+                                    <if test=" type != null">
+                    and type = #{type }
+                </if>
+            
+                                    <if test=" assetType != null">
+                    and asset_type = #{assetType }
+                </if>
+            
+                                    <if test=" parentId != null">
+                    and parent_id = #{parentId }
+                </if>
+            
+                                    <if test=" description != null">
+                    and description = #{description }
+                </if>
+            
+                                    <if test=" gmtCreate != null">
+                    and gmt_create = #{gmtCreate }
+                </if>
+            
+                                    <if test=" gmtModified != null">
+                    and gmt_modified = #{gmtModified }
+                </if>
+            
+                                    <if test=" memo != null">
+                    and memo = #{memo }
+                </if>
+            
+                                    <if test=" createUser != null">
+                    and create_user = #{createUser }
+                </if>
+            
+                                    <if test=" modifyUser != null">
+                    and modify_user = #{modifyUser }
+                </if>
+            
+                                    <if test=" status != null">
+                    and status = #{status }
+                </if>
+            
+            </sql>
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetCategoryModel">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.AssetCategoryModel">
+        update
+        <include refid="Table_Name"></include>
+        <set>
+            <trim suffixOverrides=",">
+                <include refid="Set_Column_List"></include>
+            </trim>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
+    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+
+    <select id="getAll" resultMap="BaseResultMap">
+        select *
+        from
+        <include refid="Table_Name"></include>
+    </select>
+
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.asset.base.ObjectQuery">
+        select count(1) count
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.asset.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+
+</mapper>

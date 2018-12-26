@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetSoftwareDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetSoftware">
+        <id column="id" property="id"/>
+        <result column="size" property="size"/>
+        <result column="operation_system" property="operationSystem"/>
+        <result column="category" property="category"/>
+        <result column="model" property="model"/>
+        <result column="name" property="name"/>
+        <result column="upload_software_name" property="uploadSoftwareName"/>
+        <result column="path" property="path"/>
+        <result column="version" property="version"/>
+        <result column="manufacturer" property="manufacturer"/>
+        <result column="description" property="description"/>
+        <result column="software_label" property="softwareLabel"/>
+        <result column="software_status" property="softwareStatus"/>
+        <result column="authorization" property="authorization"/>
+        <result column="report_source" property="reportSource"/>
+        <result column="port" property="port"/>
+        <result column="language" property="language"/>
+        <result column="release_time" property="releaseTime"/>
+        <result column="publisher" property="publisher"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="memo" property="memo"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modify_user" property="modifyUser"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+                        id, size, operation_system AS operationSystem, category, model, name, upload_software_name AS uploadSoftwareName, path, version, manufacturer, description, software_label AS softwareLabel, software_status AS softwareStatus, authorization, report_source AS reportSource, port, language, release_time AS releaseTime, publisher, gmt_create AS gmtCreate, memo, gmt_modified AS gmtModified, create_user AS createUser, modify_user AS modifyUser, status
+        </sql>
+
+    <sql id="Table_Name">
+        asset_software
+    </sql>
+
+    <sql id="Relation_Table_Name">
+        asset_software_relation
+    </sql>
+
+    <sql id="IF_Base_Column_List">
+
+
+        <if test=" size != null">
+            size,
+        </if>
+
+
+        <if test=" operationSystem != null">
+            operation_system,
+        </if>
+
+
+        <if test=" category != null">
+            category,
+        </if>
+
+
+        <if test=" model != null">
+            model,
+        </if>
+
+
+        <if test=" name != null">
+            name,
+        </if>
+
+
+        <if test=" uploadSoftwareName != null">
+            upload_software_name,
+        </if>
+
+
+        <if test=" path != null">
+            path,
+        </if>
+
+
+        <if test=" version != null">
+            version,
+        </if>
+
+
+        <if test=" manufacturer != null">
+            manufacturer,
+        </if>
+
+
+        <if test=" description != null">
+            description,
+        </if>
+
+
+        <if test=" softwareLabel != null">
+            software_label,
+        </if>
+
+
+        <if test=" softwareStatus != null">
+            software_status,
+        </if>
+
+
+        <if test=" authorization != null">
+            authorization,
+        </if>
+
+
+        <if test=" reportSource != null">
+            report_source,
+        </if>
+
+
+        <if test=" port != null">
+            port,
+        </if>
+
+
+        <if test=" language != null">
+            language,
+        </if>
+
+
+        <if test=" releaseTime != null">
+            release_time,
+        </if>
+
+
+        <if test=" publisher != null">
+            publisher,
+        </if>
+
+
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+
+
+        <if test=" memo != null">
+            memo,
+        </if>
+
+
+        <if test=" gmtModified != null">
+            gmt_modified,
+        </if>
+
+
+        <if test=" createUser != null">
+            create_user,
+        </if>
+
+
+        <if test=" modifyUser != null">
+            modify_user,
+        </if>
+
+
+        <if test=" status != null">
+            status,
+        </if>
+
+
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+
+        <if test=" size != null">
+            #{size },
+        </if>
+
+        <if test=" operationSystem != null">
+            #{operationSystem },
+        </if>
+
+        <if test=" category != null">
+            #{category },
+        </if>
+
+        <if test=" model != null">
+            #{model },
+        </if>
+
+        <if test=" name != null">
+            #{name },
+        </if>
+
+        <if test=" uploadSoftwareName != null">
+            #{uploadSoftwareName },
+        </if>
+
+        <if test=" path != null">
+            #{path },
+        </if>
+
+        <if test=" version != null">
+            #{version },
+        </if>
+
+        <if test=" manufacturer != null">
+            #{manufacturer },
+        </if>
+
+        <if test=" description != null">
+            #{description },
+        </if>
+
+        <if test=" softwareLabel != null">
+            #{softwareLabel },
+        </if>
+
+        <if test=" softwareStatus != null">
+            #{softwareStatus },
+        </if>
+
+        <if test=" authorization != null">
+            #{authorization },
+        </if>
+
+        <if test=" reportSource != null">
+            #{reportSource },
+        </if>
+
+        <if test=" port != null">
+            #{port },
+        </if>
+
+        <if test=" language != null">
+            #{language },
+        </if>
+
+        <if test=" releaseTime != null">
+            #{releaseTime },
+        </if>
+
+        <if test=" publisher != null">
+            #{publisher },
+        </if>
+
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+
+        <if test=" memo != null">
+            #{memo },
+        </if>
+
+        <if test=" gmtModified != null">
+            #{gmtModified },
+        </if>
+
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+
+        <if test=" modifyUser != null">
+            #{modifyUser },
+        </if>
+
+        <if test=" status != null">
+            #{status },
+        </if>
+
+    </sql>
+
+    <sql id="Set_Column_List">
+
+        <if test=" size != null">
+            size = #{size },
+        </if>
+
+        <if test=" operationSystem != null">
+            operation_system = #{operationSystem },
+        </if>
+
+        <if test=" category != null">
+            category = #{category },
+        </if>
+
+        <if test=" model != null">
+            model = #{model },
+        </if>
+
+        <if test=" name != null">
+            name = #{name },
+        </if>
+
+        <if test=" uploadSoftwareName != null">
+            upload_software_name = #{uploadSoftwareName },
+        </if>
+
+        <if test=" path != null">
+            path = #{path },
+        </if>
+
+        <if test=" version != null">
+            version = #{version },
+        </if>
+
+        <if test=" manufacturer != null">
+            manufacturer = #{manufacturer },
+        </if>
+
+        <if test=" description != null">
+            description = #{description },
+        </if>
+
+        <if test=" softwareLabel != null">
+            software_label = #{softwareLabel },
+        </if>
+
+        <if test=" softwareStatus != null">
+            software_status = #{softwareStatus },
+        </if>
+
+        <if test=" authorization != null">
+            authorization = #{authorization },
+        </if>
+
+        <if test=" reportSource != null">
+            report_source = #{reportSource },
+        </if>
+
+        <if test=" port != null">
+            port = #{port },
+        </if>
+
+        <if test=" language != null">
+            language = #{language },
+        </if>
+
+        <if test=" releaseTime != null">
+            release_time = #{releaseTime },
+        </if>
+
+        <if test=" publisher != null">
+            publisher = #{publisher },
+        </if>
+
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+
+        <if test=" memo != null">
+            memo = #{memo },
+        </if>
+
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+
+        <if test=" modifyUser != null">
+            modify_user = #{modifyUser },
+        </if>
+
+        <if test=" status != null">
+            status = #{status },
+        </if>
+
+    </sql>
+
+    <sql id="Where_Column_List">
+
+        <if test=" size != null">
+            and size = #{size }
+        </if>
+
+        <if test=" operationSystem != null">
+            and operation_system = #{operationSystem }
+        </if>
+
+        <if test=" category != null">
+            and category = #{category }
+        </if>
+
+        <if test=" model != null">
+            and model = #{model }
+        </if>
+
+        <if test=" name != null">
+            and name = #{name }
+        </if>
+
+        <if test=" uploadSoftwareName != null">
+            and upload_software_name = #{uploadSoftwareName }
+        </if>
+
+        <if test=" path != null">
+            and path = #{path }
+        </if>
+
+        <if test=" version != null">
+            and version = #{version }
+        </if>
+
+        <if test=" manufacturer != null">
+            and manufacturer = #{manufacturer }
+        </if>
+
+        <if test=" description != null">
+            and description = #{description }
+        </if>
+
+        <if test=" softwareLabel != null">
+            and software_label = #{softwareLabel }
+        </if>
+
+        <if test=" softwareStatus != null">
+            and software_status = #{softwareStatus }
+        </if>
+
+        <if test=" authorization != null">
+            and authorization = #{authorization }
+        </if>
+
+        <if test=" reportSource != null">
+            and report_source = #{reportSource }
+        </if>
+
+        <if test=" port != null">
+            and port = #{port }
+        </if>
+
+        <if test=" language != null">
+            and language = #{language }
+        </if>
+
+        <if test=" releaseTime != null">
+            and release_time = #{releaseTime }
+        </if>
+
+        <if test=" publisher != null">
+            and publisher = #{publisher }
+        </if>
+
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+
+        <if test=" memo != null">
+            and memo = #{memo }
+        </if>
+
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+
+        <if test=" modifyUser != null">
+            and modify_user = #{modifyUser }
+        </if>
+
+        <if test=" status != null">
+            and status = #{status }
+        </if>
+
+    </sql>
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetSoftware">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.AssetSoftware">
+        update
+        <include refid="Table_Name"></include>
+        <set>
+            <trim suffixOverrides=",">
+                <include refid="Set_Column_List"></include>
+            </trim>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+    <!-- 根据资产主键查软件 -->
+    <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id in (
+        select
+        id
+        from
+        <include refid="Relation_Table_Name"></include>
+        where asset_id = #{assetId}
+        )
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
+    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+
+    <select id="getAll" resultMap="BaseResultMap">
+        select *
+        from
+        <include refid="Table_Name"></include>
+    </select>
+
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.asset.base.ObjectQuery">
+        select count(1) count
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.asset.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+
+</mapper>
