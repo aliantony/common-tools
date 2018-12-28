@@ -59,6 +59,6 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
 
         @Override
         public PageResult<AssetMainboradResponse> findPageAssetMainborad(AssetMainboradQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetMainborad(query),this.findListAssetMainborad(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetMainborad(query),query.getCurrentPage(), this.findListAssetMainborad(query));
         }
 }

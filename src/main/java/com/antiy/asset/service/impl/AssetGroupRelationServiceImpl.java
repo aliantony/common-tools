@@ -59,6 +59,6 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
 
         @Override
         public PageResult<AssetGroupRelationResponse> findPageAssetGroupRelation(AssetGroupRelationQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetGroupRelation(query),this.findListAssetGroupRelation(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetGroupRelation(query),query.getCurrentPage(), this.findListAssetGroupRelation(query));
         }
 }

@@ -59,6 +59,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         @Override
         public PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception {
-            return new PageResult<>(this.findCountAsset(query),this.findListAsset(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAsset(query),query.getCurrentPage(), this.findListAsset(query));
         }
 }

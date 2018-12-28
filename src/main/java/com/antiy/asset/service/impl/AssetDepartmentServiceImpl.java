@@ -59,6 +59,6 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
 
         @Override
         public PageResult<AssetDepartmentResponse> findPageAssetDepartment(AssetDepartmentQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetDepartment(query),this.findListAssetDepartment(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetDepartment(query),query.getCurrentPage(), this.findListAssetDepartment(query));
         }
 }

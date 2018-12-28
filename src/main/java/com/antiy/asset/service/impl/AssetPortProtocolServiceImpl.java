@@ -59,6 +59,6 @@ public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProto
 
         @Override
         public PageResult<AssetPortProtocolResponse> findPageAssetPortProtocol(AssetPortProtocolQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetPortProtocol(query),this.findListAssetPortProtocol(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetPortProtocol(query),query.getCurrentPage(), this.findListAssetPortProtocol(query));
         }
 }

@@ -59,6 +59,6 @@ public class AssetHardDiskServiceImpl extends BaseServiceImpl<AssetHardDisk> imp
 
         @Override
         public PageResult<AssetHardDiskResponse> findPageAssetHardDisk(AssetHardDiskQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetHardDisk(query),this.findListAssetHardDisk(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetHardDisk(query),query.getCurrentPage(), this.findListAssetHardDisk(query));
         }
 }

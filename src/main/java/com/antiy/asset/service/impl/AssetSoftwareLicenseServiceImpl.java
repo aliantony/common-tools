@@ -59,6 +59,6 @@ public class AssetSoftwareLicenseServiceImpl extends BaseServiceImpl<AssetSoftwa
 
         @Override
         public PageResult<AssetSoftwareLicenseResponse> findPageAssetSoftwareLicense(AssetSoftwareLicenseQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetSoftwareLicense(query),this.findListAssetSoftwareLicense(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetSoftwareLicense(query),query.getCurrentPage(), this.findListAssetSoftwareLicense(query));
         }
 }

@@ -59,6 +59,6 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
 
         @Override
         public PageResult<AssetNetworkEquipmentResponse> findPageAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetNetworkEquipment(query),this.findListAssetNetworkEquipment(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetNetworkEquipment(query),query.getCurrentPage(), this.findListAssetNetworkEquipment(query));
         }
 }
