@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetMemoryDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetMemory">
+		<id column="id" property="id" />
+		<result column="asset_id" property="assetId" />
+		<result column="capacity" property="capacity" />
+		<result column="frequency" property="frequency" />
+		<result column="slot_type" property="slotType" />
+		<result column="is_heatsink" property="isHeatsink" />
+		<result column="stitch" property="stitch" />
+		<result column="buy_date" property="buyDate" />
+		<result column="warranty_date" property="warrantyDate" />
+		<result column="telephone" property="telephone" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modified" property="gmtModified" />
+		<result column="memo" property="memo" />
+		<result column="create_user" property="createUser" />
+		<result column="modify_user" property="modifyUser" />
+		<result column="status" property="status" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, asset_id AS assetId, capacity, frequency, slot_type AS slotType, is_heatsink AS isHeatsink, stitch, buy_date AS buyDate, warranty_date AS warrantyDate, telephone, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
+    </sql>
+
+</mapper>
