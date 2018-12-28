@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetLabelRelationDao">
+
+                <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetLabelRelation">
+                                        <id column="id" property="id"/>
+                                                                                                                                                                                                                                                                                                                                            <result column="asset_id" property="assetId"/>
+                                                        <result column="asset_label_id" property="assetLabelId"/>
+                                                        <result column="gmt_create" property="gmtCreate"/>
+                                                        <result column="gmt_modified" property="gmtModified"/>
+                                                        <result column="memo" property="memo"/>
+                                                        <result column="create_user" property="createUser"/>
+                                                        <result column="modify_user" property="modifyUser"/>
+                                                        <result column="status" property="status"/>
+                                    </resultMap>
+
+                <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+                        id, asset_id AS assetId, asset_label_id AS assetLabelId, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
+        </sql>
+    
+    <sql id="Table_Name">
+        asset_label_relation
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+                                                    <if test=" assetId != null">
+            asset_id,
+        </if>
+                                <if test=" assetLabelId != null">
+            asset_label_id,
+        </if>
+                                <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+                                <if test=" gmtModified != null">
+            gmt_modified,
+        </if>
+                                <if test=" memo != null">
+            memo,
+        </if>
+                                <if test=" createUser != null">
+            create_user,
+        </if>
+                                <if test=" modifyUser != null">
+            modify_user,
+        </if>
+                                <if test=" status != null">
+            status,
+        </if>
+                        </sql>
+
+    <sql id="IF_Value_Column_List">
+                                                            <if test=" assetId != null">
+            #{assetId },
+        </if>
+                                        <if test=" assetLabelId != null">
+            #{assetLabelId },
+        </if>
+                                        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+                                        <if test=" gmtModified != null">
+            #{gmtModified },
+        </if>
+                                        <if test=" memo != null">
+            #{memo },
+        </if>
+                                        <if test=" createUser != null">
+            #{createUser },
+        </if>
+                                        <if test=" modifyUser != null">
+            #{modifyUser },
+        </if>
+                                        <if test=" status != null">
+            #{status },
+        </if>
+                        </sql>
+
+    <sql id="Set_Column_List">
+                                                            <if test=" assetId != null">
+            asset_id = #{assetId },
+        </if>
+                                        <if test=" assetLabelId != null">
+            asset_label_id = #{assetLabelId },
+        </if>
+                                        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+                                        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+                                        <if test=" memo != null">
+            memo = #{memo },
+        </if>
+                                        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+                                        <if test=" modifyUser != null">
+            modify_user = #{modifyUser },
+        </if>
+                                        <if test=" status != null">
+            status = #{status },
+        </if>
+                        </sql>
+
+    <sql id="Where_Column_List">
+                                                            <if test=" assetId != null">
+            and asset_id = #{assetId }
+        </if>
+                                        <if test=" assetLabelId != null">
+            and asset_label_id = #{assetLabelId }
+        </if>
+                                        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+                                        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+                                        <if test=" memo != null">
+            and memo = #{memo }
+        </if>
+                                        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+                                        <if test=" modifyUser != null">
+            and modify_user = #{modifyUser }
+        </if>
+                                        <if test=" status != null">
+            and status = #{status }
+        </if>
+                        </sql>
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetLabelRelation">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.AssetLabelRelation">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
+    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+
+    <select id="getAll" resultMap="BaseResultMap">
+        select *
+        from
+        <include refid="Table_Name"></include>
+    </select>
+
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1) count
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{currentPage}
+        </if>
+    </select>
+
+
+    <select id="findListAssetLabelRelation" resultMap="com.antiy.asset.entity.vo.response.AssetLabelRelationResponse" parameterType="com.antiy.asset.entity.vo.query.AssetLabelRelationQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+        <if test=" id != null">
+                and id = #{id }
+            </if>
+        <if test=" assetId != null">
+                and asset_id = #{assetId }
+            </if>
+        <if test=" assetLabelId != null">
+                and asset_label_id = #{assetLabelId }
+            </if>
+        <if test=" gmtCreate != null">
+                and gmt_create = #{gmtCreate }
+            </if>
+        <if test=" gmtModified != null">
+                and gmt_modified = #{gmtModified }
+            </if>
+        <if test=" memo != null">
+                and memo = #{memo }
+            </if>
+        <if test=" createUser != null">
+                and create_user = #{createUser }
+            </if>
+        <if test=" modifyUser != null">
+                and modify_user = #{modifyUser }
+            </if>
+        <if test=" status != null">
+                and status = #{status }
+            </if>
+                </trim>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{currentPage}
+        </if>
+    </select>
+</mapper>
