@@ -1,10 +1,9 @@
 package com.antiy.asset.aop;
 
-import com.antiy.asset.base.QueryCondition;
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.base.QueryCondition;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
-
-import com.antiy.asset.base.BasicRequest;
 
 /**
  * @Auther: zhangbing
@@ -27,6 +26,7 @@ public abstract class AbstractParamValidateAop {
 
     /**
      * 具体实现校验
+     *
      * @param param
      * @param <T>
      */

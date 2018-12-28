@@ -1,12 +1,12 @@
 package com.antiy.asset.entity;
 
 
-import java.util.Date;
-import com.antiy.asset.base.BaseEntity;
+import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author zhangyajun
@@ -16,77 +16,54 @@ import io.swagger.annotations.ApiModelProperty;
 public class CodeType extends BaseEntity {
 
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-        
 
-               
-        
+    @ApiModelProperty("")
+    private String code;
 
-        
-    
 
-               
-        
+    @ApiModelProperty("")
+    private String value;
 
-                     @ApiModelProperty("")
-         private String code;
 
-    
-    
+    @ApiModelProperty("")
+    private Integer status;
 
-               
-        
 
-                     @ApiModelProperty("")
-         private String value;
+    public String getCode() {
+        return code;
+    }
 
-    
-    
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-               
-        
 
-                     @ApiModelProperty("")
-         private Integer status;
+    public String getValue() {
+        return value;
+    }
 
-    
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-                    
-                                    
-        public String getCode() {
-                return code;
-                }
 
-                        public void setCode(String code) {
-                            this.code = code;
-                            }
-        
-                                    
-        public String getValue() {
-                return value;
-                }
+    public Integer getStatus() {
+        return status;
+    }
 
-                        public void setValue(String value) {
-                            this.value = value;
-                            }
-        
-                                    
-        public Integer getStatus() {
-                return status;
-                }
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
-                        public void setStatus(Integer status) {
-                            this.status = status;
-                            }
-        
-    
-@Override
-public String toString() {
+
+    @Override
+    public String toString() {
         return "CodeType{" +
-                                                                ", code=" + code +
-                                                                ", value=" + value +
-                                                                ", status=" + status +
-                                "}";
-        }
-        }
+                ", code=" + code +
+                ", value=" + value +
+                ", status=" + status +
+                "}";
+    }
+}

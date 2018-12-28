@@ -1,9 +1,10 @@
 package com.antiy.asset.aop;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.List;
-
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.DataEncoder;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.LogUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -17,11 +18,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 
-import com.antiy.asset.base.BasicRequest;
-import com.antiy.asset.encoder.DataEncoder;
-import com.antiy.asset.encoder.Encode;
-import com.antiy.asset.exception.RequestParamValidateException;
-import com.antiy.asset.utils.LogUtils;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * @Auther: zhangbing
@@ -32,7 +31,7 @@ import com.antiy.asset.utils.LogUtils;
 @Aspect
 @Order(99)
 public class DataEncodeAop implements ApplicationContextAware {
-    private ApplicationContext  applicationContext;
+    private ApplicationContext applicationContext;
     private static final Logger logger = LogUtils.get();
 
     @Override
@@ -92,7 +91,7 @@ public class DataEncodeAop implements ApplicationContextAware {
 
     private Object transferString(ProceedingJoinPoint point, int index, Object arg) {
         Annotation[][] parameterAnnotations = ((MethodSignature) point.getSignature()).getMethod()
-            .getParameterAnnotations();
+                .getParameterAnnotations();
         Annotation[] annotations = parameterAnnotations[index];
         for (Annotation annotation : annotations) {
             if (Encode.class.equals(annotation.annotationType())) {

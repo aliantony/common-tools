@@ -1,8 +1,7 @@
 package com.antiy.asset.entity;
 
 
-import java.util.Date;
-import com.antiy.asset.base.BaseEntity;
+import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 /**
  * <p>
