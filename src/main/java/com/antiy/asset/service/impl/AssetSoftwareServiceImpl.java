@@ -59,6 +59,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
         @Override
         public PageResult<AssetSoftwareResponse> findPageAssetSoftware(AssetSoftwareQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetSoftware(query),this.findListAssetSoftware(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetSoftware(query),query.getCurrentPage(), this.findListAssetSoftware(query));
         }
 }

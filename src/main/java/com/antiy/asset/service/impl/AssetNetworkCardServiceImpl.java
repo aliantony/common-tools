@@ -59,6 +59,6 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
 
         @Override
         public PageResult<AssetNetworkCardResponse> findPageAssetNetworkCard(AssetNetworkCardQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetNetworkCard(query),this.findListAssetNetworkCard(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetNetworkCard(query),query.getCurrentPage(), this.findListAssetNetworkCard(query));
         }
 }

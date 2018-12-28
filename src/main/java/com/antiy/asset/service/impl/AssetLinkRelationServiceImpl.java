@@ -59,6 +59,6 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
         @Override
         public PageResult<AssetLinkRelationResponse> findPageAssetLinkRelation(AssetLinkRelationQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetLinkRelation(query),this.findListAssetLinkRelation(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetLinkRelation(query),query.getCurrentPage(), this.findListAssetLinkRelation(query));
         }
 }

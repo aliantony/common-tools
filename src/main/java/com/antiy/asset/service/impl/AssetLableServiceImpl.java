@@ -59,6 +59,6 @@ public class AssetLableServiceImpl extends BaseServiceImpl<AssetLable> implement
 
         @Override
         public PageResult<AssetLableResponse> findPageAssetLable(AssetLableQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetLable(query),this.findListAssetLable(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetLable(query),query.getCurrentPage(), this.findListAssetLable(query));
         }
 }

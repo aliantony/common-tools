@@ -59,6 +59,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
         @Override
         public PageResult<AssetGroupResponse> findPageAssetGroup(AssetGroupQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetGroup(query),this.findListAssetGroup(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetGroup(query),query.getCurrentPage(), this.findListAssetGroup(query));
         }
 }

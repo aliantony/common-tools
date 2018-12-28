@@ -59,6 +59,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 
         @Override
         public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetCategoryModel(query),this.findListAssetCategoryModel(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetCategoryModel(query),query.getCurrentPage(), this.findListAssetCategoryModel(query));
         }
 }

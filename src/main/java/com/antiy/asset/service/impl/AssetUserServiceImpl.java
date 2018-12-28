@@ -59,6 +59,6 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
 
         @Override
         public PageResult<AssetUserResponse> findPageAssetUser(AssetUserQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetUser(query),this.findListAssetUser(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetUser(query),query.getCurrentPage(), this.findListAssetUser(query));
         }
 }

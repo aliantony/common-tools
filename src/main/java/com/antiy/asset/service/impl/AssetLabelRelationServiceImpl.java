@@ -59,6 +59,6 @@ public class AssetLabelRelationServiceImpl extends BaseServiceImpl<AssetLabelRel
 
         @Override
         public PageResult<AssetLabelRelationResponse> findPageAssetLabelRelation(AssetLabelRelationQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetLabelRelation(query),this.findListAssetLabelRelation(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetLabelRelation(query),query.getCurrentPage(), this.findListAssetLabelRelation(query));
         }
 }

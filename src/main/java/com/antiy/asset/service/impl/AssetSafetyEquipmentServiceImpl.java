@@ -59,6 +59,6 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
 
         @Override
         public PageResult<AssetSafetyEquipmentResponse> findPageAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetSafetyEquipment(query),this.findListAssetSafetyEquipment(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetSafetyEquipment(query),query.getCurrentPage(), this.findListAssetSafetyEquipment(query));
         }
 }

@@ -59,6 +59,6 @@ public class AssetCpuServiceImpl extends BaseServiceImpl<AssetCpu> implements IA
 
         @Override
         public PageResult<AssetCpuResponse> findPageAssetCpu(AssetCpuQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetCpu(query),this.findListAssetCpu(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetCpu(query),query.getCurrentPage(), this.findListAssetCpu(query));
         }
 }

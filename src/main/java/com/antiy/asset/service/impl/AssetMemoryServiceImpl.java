@@ -59,6 +59,6 @@ public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> impleme
 
         @Override
         public PageResult<AssetMemoryResponse> findPageAssetMemory(AssetMemoryQuery query) throws Exception {
-            return new PageResult<>(this.findCountAssetMemory(query),this.findListAssetMemory(query));
+            return new PageResult<>(query.getPageSize(), this.findCountAssetMemory(query),query.getCurrentPage(), this.findListAssetMemory(query));
         }
 }
