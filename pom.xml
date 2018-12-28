@@ -13,14 +13,26 @@
     <parent>
         <groupId>com.antiy</groupId>
         <artifactId>csos-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
+
+    <properties>
+        <antiy.common.version>1.0.1</antiy.common.version>
+        <!--swagger自动生成pdf和html的配置 start-->
+        <snippetsDirectory>${project.build.directory}/generated-snippets</snippetsDirectory>
+        <asciidoctor.input.directory>${project.basedir}/docs/asciidoc</asciidoctor.input.directory>
+        <generated.asciidoc.directory>${project.build.directory}/asciidoc</generated.asciidoc.directory>
+        <asciidoctor.html.output.directory>${project.build.directory}/asciidoc/html</asciidoctor.html.output.directory>
+        <asciidoctor.pdf.output.directory>${project.build.directory}/asciidoc/pdf</asciidoctor.pdf.output.directory>
+        <swagger.version>2.6.1</swagger.version>
+        <!--swagger自动生成pdf和html的配置 end-->
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.antiy</groupId>
             <artifactId>csos-common</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${antiy.common.version}</version>
         </dependency>
 
         <dependency>
@@ -210,14 +222,4 @@
                 </plugin>-->
         </plugins>
     </build>
-    <properties>
-        <!--swagger自动生成pdf和html的配置 start-->
-        <snippetsDirectory>${project.build.directory}/generated-snippets</snippetsDirectory>
-        <asciidoctor.input.directory>${project.basedir}/docs/asciidoc</asciidoctor.input.directory>
-        <generated.asciidoc.directory>${project.build.directory}/asciidoc</generated.asciidoc.directory>
-        <asciidoctor.html.output.directory>${project.build.directory}/asciidoc/html</asciidoctor.html.output.directory>
-        <asciidoctor.pdf.output.directory>${project.build.directory}/asciidoc/pdf</asciidoctor.pdf.output.directory>
-        <swagger.version>2.6.1</swagger.version>
-        <!--swagger自动生成pdf和html的配置 end-->
-    </properties>
 </project>
