@@ -36,6 +36,11 @@ public class AssetGenerator {
     private String parent = "com.antiy.asset";
 
     /**
+     * 模块名
+     */
+    private String moduleName = "asset";
+
+    /**
      * <p> 根据MySQL 表生成对象（controller,service,dao,entity,mappper.xml ） </p>
      */
     public static void main(String[] args) {
@@ -106,7 +111,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return projectPath + "/src/main/java/com/antiy/asset/entity/vo/request/" + tableInfo.getEntityName() + "Request" + StringPool.DOT_JAVA;
+                return projectPath + "/src/main/java/com/antiy/"+ moduleName +"/entity/vo/request/" + tableInfo.getEntityName() + "Request" + StringPool.DOT_JAVA;
             }
         });
 
@@ -114,7 +119,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return projectPath + "/src/main/java/com/antiy/asset/entity/vo/response/" + tableInfo.getEntityName() + "Response" + StringPool.DOT_JAVA;
+                return projectPath + "/src/main/java/com/antiy/"+ moduleName + "/entity/vo/response/" + tableInfo.getEntityName() + "Response" + StringPool.DOT_JAVA;
             }
         });
 
@@ -122,7 +127,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return projectPath + "/src/main/java/com/antiy/asset/entity/vo/query/" + tableInfo.getEntityName() + "Query" + StringPool.DOT_JAVA;
+                return projectPath + "/src/main/java/com/antiy/"+ moduleName +"/entity/vo/query/" + tableInfo.getEntityName() + "Query" + StringPool.DOT_JAVA;
             }
         });
 
