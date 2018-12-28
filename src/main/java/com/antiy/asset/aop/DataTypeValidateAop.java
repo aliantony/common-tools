@@ -1,9 +1,11 @@
 package com.antiy.asset.aop;
 
-import java.lang.reflect.Field;
-
-import javax.validation.Valid;
-
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.validation.FieldValidator;
+import com.antiy.common.validation.ObjectValidator;
+import com.antiy.common.validation.Validate;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -11,12 +13,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import com.antiy.asset.exception.BusinessException;
-import com.antiy.asset.exception.RequestParamValidateException;
-import com.antiy.asset.utils.LogUtils;
-import com.antiy.asset.validation.FieldValidator;
-import com.antiy.asset.validation.ObjectValidator;
-import com.antiy.asset.validation.Validate;
+import javax.validation.Valid;
+import java.lang.reflect.Field;
 
 /**
  * @Auther: zhangbing
@@ -27,7 +25,7 @@ import com.antiy.asset.validation.Validate;
 @Aspect
 @Order(11)
 public class DataTypeValidateAop extends AbstractParamValidateAop implements ApplicationContextAware {
-    private ApplicationContext  context;
+    private ApplicationContext context;
     private static final Logger logger = LogUtils.get();
 
     @Override
