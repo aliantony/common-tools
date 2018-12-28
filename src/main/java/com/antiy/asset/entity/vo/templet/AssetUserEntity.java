@@ -1,4 +1,4 @@
-package com.antiy.asset.vo.templet;
+package com.antiy.asset.entity.vo.templet;
 
 import com.antiy.asset.excel.annotation.ExcelField;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.antiy.asset.vo.templet;
+package com.antiy.asset.entity.vo.templet;
 
 import java.util.List;
 
