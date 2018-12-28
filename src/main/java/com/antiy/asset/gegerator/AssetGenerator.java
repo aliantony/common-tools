@@ -1,4 +1,5 @@
 package com.antiy.asset.gegerator;
+
 import com.antiy.asset.utils.MpGenerator;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
@@ -24,7 +25,7 @@ public class AssetGenerator extends MpGenerator {
     /**
      * 代码作者
      */
-    private String author    = "xxxxxxx";
+    private String author    = "zhangyajun";
 
     /**
      * 代码包路径
@@ -39,6 +40,7 @@ public class AssetGenerator extends MpGenerator {
         AssetGenerator ag = new AssetGenerator();
         ag.exceute(ag.outPutDir, ag.author, ag.parent);
     }
+
 
     /**
      *
@@ -56,6 +58,8 @@ public class AssetGenerator extends MpGenerator {
                 "asset_group","asset_group_relation","asset_hard_disk","asset_label_relation","asset_lable",
                 "asset_link_relation","asset_mainborad","asset_memory","asset_network_card","asset_network_equipment",
                 "asset_port_protocol","asset_safety_equipment","asset_software","asset_software_license","asset_software_relation","asset_user"});
+
+//        strategy.setInclude(new String[] {"asset_user"});
         strategy.setEntityColumnConstant(true);
         mpg.setStrategy(strategy);
     }
@@ -92,13 +96,12 @@ public class AssetGenerator extends MpGenerator {
     @Override
     public void setTemplate(AutoGenerator mpg) {
         TemplateConfig tc = new TemplateConfig();
-        //tc.setController("/template/controller.java.vm");
-       // tc.setService("/template/service.java.vm");
-        //tc.setServiceImpl("/template/serviceImpl.java.vm");
+        tc.setController("/template/controller.java.vm");
+        tc.setService("/template/service.java.vm");
+        tc.setServiceImpl("/template/serviceImpl.java.vm");
         tc.setEntity("/template/entity.java.vm");
         tc.setMapper("/template/mapper.java.vm");
         tc.setXml("/template/mapper.xml.vm");
-         //如上任何一个模块如果设置 空 OR Null 将不生成该模块。
         mpg.setTemplate(tc);
     }
 
