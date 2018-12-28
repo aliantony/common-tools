@@ -1,4 +1,4 @@
-package com.antiy.asset.entity.vo.query;
+package ${package.Entity}.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
 import java.util.Date;
