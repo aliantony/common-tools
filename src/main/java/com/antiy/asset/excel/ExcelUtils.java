@@ -1,6 +1,6 @@
 package com.antiy.asset.excel;
 
-import com.antiy.asset.vo.templet.ImportResult;
+import com.antiy.asset.entity.vo.templet.ImportResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.multipart.MultipartFile;
