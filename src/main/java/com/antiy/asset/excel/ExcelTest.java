@@ -1,7 +1,6 @@
 package com.antiy.asset.excel;
 
 
-import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetDepartmentDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetUserDao;
@@ -9,9 +8,6 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetDepartment;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetUser;
-import com.antiy.asset.service.IAssetDepartmentService;
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.templet.AssetDepartmentEntity;
 import com.antiy.asset.vo.templet.AssetEntity;
