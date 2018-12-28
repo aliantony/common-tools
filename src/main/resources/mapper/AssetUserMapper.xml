@@ -241,7 +241,7 @@
     </select>
 
 
-    <select id="findCount" resultType="int" parameterType="com.antiy.asset.base.ObjectQuery">
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1) count
         from
         <include refid="Table_Name"></include>
@@ -252,7 +252,7 @@
         </where>
     </select>
 
-    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.asset.base.ObjectQuery">
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <where>
@@ -270,43 +270,43 @@
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-                    <if test=" id != null">
+        <if test=" id != null">
                 and id = #{id }
             </if>
-                    <if test=" name != null">
+        <if test=" name != null">
                 and name = #{name }
             </if>
-                    <if test=" departmentId != null">
+        <if test=" departmentId != null">
                 and department_id = #{departmentId }
             </if>
-                    <if test=" email != null">
+        <if test=" email != null">
                 and email = #{email }
             </if>
-                    <if test=" qq != null">
+        <if test=" qq != null">
                 and qq = #{qq }
             </if>
-                    <if test=" weixin != null">
+        <if test=" weixin != null">
                 and weixin = #{weixin }
             </if>
-                    <if test=" mobile != null">
+        <if test=" mobile != null">
                 and mobile = #{mobile }
             </if>
-                    <if test=" address != null">
+        <if test=" address != null">
                 and address = #{address }
             </if>
-                    <if test=" createUser != null">
+        <if test=" createUser != null">
                 and create_user = #{createUser }
             </if>
-                    <if test=" modifyUser != null">
+        <if test=" modifyUser != null">
                 and modify_user = #{modifyUser }
             </if>
-                    <if test=" gmtCreate != null">
+        <if test=" gmtCreate != null">
                 and gmt_create = #{gmtCreate }
             </if>
-                    <if test=" gmtModified != null">
+        <if test=" gmtModified != null">
                 and gmt_modified = #{gmtModified }
             </if>
-                    <if test=" status != null">
+        <if test=" status != null">
                 and status = #{status }
             </if>
                 </trim>

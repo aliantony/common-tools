@@ -32,10 +32,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         @Resource
         private AssetUserDao assetUserDao;
 
-        @Resource
         private BaseConverter<AssetUserRequest, AssetUser>  requestConverter;
         
-        @Resource
         private BaseConverter<AssetUser, AssetUserResponse> responseConverter;
 
         @Override
@@ -53,11 +51,11 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         @Override
         public List<AssetUserResponse> findListAssetUser(AssetUserQuery query) throws Exception {
             return assetUserDao.findListAssetUser(query);
-        };
+        }
 
         public Integer findCountAssetUser(AssetUserQuery query) throws Exception {
             return assetUserDao.findCount(query);
-        };
+        }
 
         @Override
         public PageResult<AssetUserResponse> findPageAssetUser(AssetUserQuery query) throws Exception {
