@@ -16,7 +16,7 @@ import com.antiy.asset.entity.AssetGroup;
  * 资产组表 服务类
  * </p>
  *
- * @author yangzihan
+ * @author zhangyajun
  * @since 2018-12-28
  */
 public interface IAssetGroupService extends IBaseService<AssetGroup> {

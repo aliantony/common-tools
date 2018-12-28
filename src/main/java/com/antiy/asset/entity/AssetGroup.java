@@ -1,159 +1,164 @@
 package com.antiy.asset.entity;
 
-import java.io.Serializable;
 
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableName;
-import java.io.Serializable;
-
+import java.util.Date;
+import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 /**
  * <p>
  * 资产组表
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-24
+ * @since 2018-12-28
  */
-@TableName("asset_group")
-public class AssetGroup extends Model<AssetGroup> {
 
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 主键
-     */
-	private Integer id;
-    /**
-     * 资产组名称
-     */
-	private String name;
-    /**
-     * 创建时间
-     */
-	@TableField("gmt_create")
-	private Long gmtCreate;
-    /**
-     * 修改时间
-     */
-	@TableField("gmt_modified")
-	private Long gmtModified;
-    /**
-     * 备注
-     */
-	private String memo;
-    /**
-     * 创建人
-     */
-	@TableField("create_user")
-	private Integer createUser;
-    /**
-     * 修改人
-     */
-	@TableField("modify_user")
-	private Integer modifyUser;
-    /**
-     * 状态,0 未删除,1已删除
-     */
-	private Integer status;
+public class AssetGroup extends BaseEntity {
 
 
-	public Integer getId() {
-		return id;
-	}
+private static final long serialVersionUID = 1L;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+        /**
+    *  用途
+    */
+        @ApiModelProperty("用途")
+    private String use;
+        /**
+    *  重要程度(0-不重要(not_major),1- 一般(general),3-重要(major),)
+    */
+        @ApiModelProperty("重要程度(0-不重要(not_major),1- 一般(general),3-重要(major),)")
+    private Integer importantDegree;
+        /**
+    *  资产组名称
+    */
+        @ApiModelProperty("资产组名称")
+    private String name;
+        /**
+    *  创建时间
+    */
+        @ApiModelProperty("创建时间")
+    private Long gmtCreate;
+        /**
+    *  修改时间
+    */
+        @ApiModelProperty("修改时间")
+    private Long gmtModified;
+        /**
+    *  备注
+    */
+        @ApiModelProperty("备注")
+    private String memo;
+        /**
+    *  创建人
+    */
+        @ApiModelProperty("创建人")
+    private Integer createUser;
+        /**
+    *  修改人
+    */
+        @ApiModelProperty("修改人")
+    private Integer modifyUser;
+        /**
+    *  状态,0 未删除,1已删除
+    */
+        @ApiModelProperty("状态,0 未删除,1已删除")
+    private Integer status;
 
-	public String getName() {
-		return name;
-	}
+                    
+                                    
+    public String getUse() {
+        return use;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setUse(String use) {
+        this.use = use;
+    }
+    
+                                    
+    public Integer getImportantDegree() {
+        return importantDegree;
+    }
 
-	public Long getGmtCreate() {
-		return gmtCreate;
-	}
+    public void setImportantDegree(Integer importantDegree) {
+        this.importantDegree = importantDegree;
+    }
+    
+                                    
+    public String getName() {
+        return name;
+    }
 
-	public void setGmtCreate(Long gmtCreate) {
-		this.gmtCreate = gmtCreate;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+                                    
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
 
-	public Long getGmtModified() {
-		return gmtModified;
-	}
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+    
+                                    
+    public Long getGmtModified() {
+        return gmtModified;
+    }
 
-	public void setGmtModified(Long gmtModified) {
-		this.gmtModified = gmtModified;
-	}
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+    
+                                    
+    public String getMemo() {
+        return memo;
+    }
 
-	public String getMemo() {
-		return memo;
-	}
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+    
+                                    
+    public Integer getCreateUser() {
+        return createUser;
+    }
 
-	public void setMemo(String memo) {
-		this.memo = memo;
-	}
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
+    }
+    
+                                    
+    public Integer getModifyUser() {
+        return modifyUser;
+    }
 
-	public Integer getCreateUser() {
-		return createUser;
-	}
+    public void setModifyUser(Integer modifyUser) {
+        this.modifyUser = modifyUser;
+    }
+    
+                                    
+    public Integer getStatus() {
+        return status;
+    }
 
-	public void setCreateUser(Integer createUser) {
-		this.createUser = createUser;
-	}
-
-	public Integer getModifyUser() {
-		return modifyUser;
-	}
-
-	public void setModifyUser(Integer modifyUser) {
-		this.modifyUser = modifyUser;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-
-	public static final String ID = "id";
-
-	public static final String NAME = "name";
-
-	public static final String GMT_CREATE = "gmt_create";
-
-	public static final String GMT_MODIFIED = "gmt_modified";
-
-	public static final String MEMO = "memo";
-
-	public static final String CREATE_USER = "create_user";
-
-	public static final String MODIFY_USER = "modify_user";
-
-	public static final String STATUS = "status";
-
-	@Override
-	protected Serializable pkVal() {
-		return this.id;
-	}
-
-	@Override
-	public String toString() {
-		return "AssetGroup{" +
-			"id=" + id +
-			", name=" + name +
-			", gmtCreate=" + gmtCreate +
-			", gmtModified=" + gmtModified +
-			", memo=" + memo +
-			", createUser=" + createUser +
-			", modifyUser=" + modifyUser +
-			", status=" + status +
-			"}";
-	}
-}
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+    
+    
+        @Override
+    public String toString() {
+            return "AssetGroup{" +
+                                                                                            ", use=" + use +
+                                                                                        ", importantDegree=" + importantDegree +
+                                                                                        ", name=" + name +
+                                                                                        ", gmtCreate=" + gmtCreate +
+                                                                                        ", gmtModified=" + gmtModified +
+                                                                                        ", memo=" + memo +
+                                                                                        ", createUser=" + createUser +
+                                                                                        ", modifyUser=" + modifyUser +
+                                                                                        ", status=" + status +
+                                                "}";
+    }
+    }

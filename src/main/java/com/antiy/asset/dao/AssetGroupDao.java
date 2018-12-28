@@ -11,7 +11,7 @@ import com.antiy.asset.entity.vo.response.AssetGroupResponse;
  * 资产组表 Mapper 接口
  * </p>
  *
- * @author yangzihan
+ * @author zhangyajun
  * @since 2018-12-28
  */
 public interface AssetGroupDao extends IBaseDao<AssetGroup> {

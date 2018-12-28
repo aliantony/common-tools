@@ -19,7 +19,7 @@ import com.antiy.asset.entity.vo.query.AssetGroupQuery;
 
 /**
  *
- * @author yangzihan
+ * @author zhangyajun
  * @since 2018-12-28
  */
 @Api(value = "AssetGroup", description = "资产组表")

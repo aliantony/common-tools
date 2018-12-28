@@ -16,7 +16,7 @@ import com.antiy.asset.entity.AssetDepartment;
  * 资产部门信息 服务类
  * </p>
  *
- * @author yangzihan
+ * @author zhangyajun
  * @since 2018-12-28
  */
 public interface IAssetDepartmentService extends IBaseService<AssetDepartment> {

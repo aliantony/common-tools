@@ -19,7 +19,7 @@ import com.antiy.asset.entity.vo.query.AssetDepartmentQuery;
 
 /**
  *
- * @author yangzihan
+ * @author zhangyajun
  * @since 2018-12-28
  */
 @Api(value = "AssetDepartment", description = "资产部门信息")

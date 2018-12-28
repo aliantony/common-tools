@@ -11,7 +11,7 @@ import com.antiy.asset.entity.vo.response.AssetDepartmentResponse;
  * 资产部门信息 Mapper 接口
  * </p>
  *
- * @author yangzihan
+ * @author zhangyajun
  * @since 2018-12-28
  */
 public interface AssetDepartmentDao extends IBaseDao<AssetDepartment> {
