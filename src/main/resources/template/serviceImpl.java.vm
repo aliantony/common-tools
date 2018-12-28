@@ -59,6 +59,6 @@ public class ${table.serviceImplName} extends BaseServiceImpl<${entity}> impleme
 
         @Override
         public PageResult<${entity}Response> findPage${entity}(${entity}Query query) throws Exception {
-            return new PageResult<>(this.findCount${entity}(query),this.findList${entity}(query));
+            return new PageResult<>(query.getPageSize(), this.findCount${entity}(query),query.getCurrentPage(), this.findList${entity}(query));
         }
 }
