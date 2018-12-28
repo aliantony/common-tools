@@ -184,11 +184,11 @@ public class AssetGenerator {
 //        strategy.setInclude(new String[] {"asset","asset_category_model","asset_cpu","asset_department",
 //                "asset_group","asset_group_relation","asset_hard_disk","asset_label_relation","asset_lable",
 //                "asset_link_relation","asset_mainborad","asset_memory","asset_network_card","asset_network_equipment",
-//                "asset_port_protocol","asset_safety_equipment","asset_software","asset_software_license","asset_software_relation","asset_user"});
+//                "asset_port_protocol","asset_safety_equipment","asset_software","asset_software_license","asset_software_relation","asset_user","scheme"});
 
-        strategy.setInclude(new String[]{"asset_user"});
+//        strategy.setInclude(new String[]{"asset_user"});
 
-//        strategy.setInclude(new String[] {"asset_user"});
+        strategy.setInclude(new String[] {"scheme"});
         strategy.setEntityColumnConstant(true);
         mpg.setStrategy(strategy);
     }
