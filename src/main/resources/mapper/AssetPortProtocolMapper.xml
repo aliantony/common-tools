@@ -240,7 +240,7 @@
     </select>
 
 
-    <select id="findListAssetPortProtocol" resultMap="com.antiy.asset.entity.vo.response.AssetPortProtocolResponse" parameterType="com.antiy.asset.entity.vo.query.AssetPortProtocolQuery">
+    <select id="findListAssetPortProtocol" resultType="com.antiy.asset.entity.vo.response.AssetPortProtocolResponse" parameterType="com.antiy.asset.entity.vo.query.AssetPortProtocolQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

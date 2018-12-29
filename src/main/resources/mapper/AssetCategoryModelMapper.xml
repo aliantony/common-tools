@@ -253,7 +253,7 @@
     </select>
 
 
-    <select id="findListAssetCategoryModel" resultMap="com.antiy.asset.entity.vo.response.AssetCategoryModelResponse" parameterType="com.antiy.asset.entity.vo.query.AssetCategoryModelQuery">
+    <select id="findListAssetCategoryModel" resultType="com.antiy.asset.entity.vo.response.AssetCategoryModelResponse" parameterType="com.antiy.asset.entity.vo.query.AssetCategoryModelQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

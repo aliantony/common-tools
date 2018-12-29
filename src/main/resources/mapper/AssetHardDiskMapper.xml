@@ -318,7 +318,7 @@
     </select>
 
 
-    <select id="findListAssetHardDisk" resultMap="com.antiy.asset.entity.vo.response.AssetHardDiskResponse" parameterType="com.antiy.asset.entity.vo.query.AssetHardDiskQuery">
+    <select id="findListAssetHardDisk" resultType="com.antiy.asset.entity.vo.response.AssetHardDiskResponse" parameterType="com.antiy.asset.entity.vo.query.AssetHardDiskQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

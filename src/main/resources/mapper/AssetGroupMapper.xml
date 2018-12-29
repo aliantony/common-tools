@@ -227,7 +227,7 @@
     </select>
 
 
-    <select id="findListAssetGroup" resultMap="com.antiy.asset.entity.vo.response.AssetGroupResponse" parameterType="com.antiy.asset.entity.vo.query.AssetGroupQuery">
+    <select id="findListAssetGroup" resultType="com.antiy.asset.entity.vo.response.AssetGroupResponse" parameterType="com.antiy.asset.entity.vo.query.AssetGroupQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

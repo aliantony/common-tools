@@ -240,7 +240,7 @@
     </select>
 
 
-    <select id="findListAssetSoftwareLicense" resultMap="com.antiy.asset.entity.vo.response.AssetSoftwareLicenseResponse" parameterType="com.antiy.asset.entity.vo.query.AssetSoftwareLicenseQuery">
+    <select id="findListAssetSoftwareLicense" resultType="com.antiy.asset.entity.vo.response.AssetSoftwareLicenseResponse" parameterType="com.antiy.asset.entity.vo.query.AssetSoftwareLicenseQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

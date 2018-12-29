@@ -305,7 +305,7 @@
     </select>
 
 
-    <select id="findListAssetMemory" resultMap="com.antiy.asset.entity.vo.response.AssetMemoryResponse" parameterType="com.antiy.asset.entity.vo.query.AssetMemoryQuery">
+    <select id="findListAssetMemory" resultType="com.antiy.asset.entity.vo.response.AssetMemoryResponse" parameterType="com.antiy.asset.entity.vo.query.AssetMemoryQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

@@ -266,7 +266,7 @@
     </select>
 
 
-    <select id="findListAssetUser" resultMap="com.antiy.asset.entity.vo.response.AssetUserResponse" parameterType="com.antiy.asset.entity.vo.query.AssetUserQuery">
+    <select id="findListAssetUser" resultType="com.antiy.asset.entity.vo.response.AssetUserResponse" parameterType="com.antiy.asset.entity.vo.query.AssetUserQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

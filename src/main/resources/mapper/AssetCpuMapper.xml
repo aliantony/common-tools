@@ -279,7 +279,7 @@
     </select>
 
 
-    <select id="findListAssetCpu" resultMap="com.antiy.asset.entity.vo.response.AssetCpuResponse" parameterType="com.antiy.asset.entity.vo.query.AssetCpuQuery">
+    <select id="findListAssetCpu" resultType="com.antiy.asset.entity.vo.response.AssetCpuResponse" parameterType="com.antiy.asset.entity.vo.query.AssetCpuQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

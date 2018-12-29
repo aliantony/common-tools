@@ -279,7 +279,7 @@
     </select>
 
 
-    <select id="findListScheme" resultMap="com.antiy.asset.entity.vo.response.SchemeResponse" parameterType="com.antiy.asset.entity.vo.query.SchemeQuery">
+    <select id="findListScheme" resultType="com.antiy.asset.entity.vo.response.SchemeResponse" parameterType="com.antiy.asset.entity.vo.query.SchemeQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

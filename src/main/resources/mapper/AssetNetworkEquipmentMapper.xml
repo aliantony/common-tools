@@ -344,7 +344,7 @@
     </select>
 
 
-    <select id="findListAssetNetworkEquipment" resultMap="com.antiy.asset.entity.vo.response.AssetNetworkEquipmentResponse" parameterType="com.antiy.asset.entity.vo.query.AssetNetworkEquipmentQuery">
+    <select id="findListAssetNetworkEquipment" resultType="com.antiy.asset.entity.vo.response.AssetNetworkEquipmentResponse" parameterType="com.antiy.asset.entity.vo.query.AssetNetworkEquipmentQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
