@@ -16,7 +16,11 @@ import com.antiy.common.exception.RequestParamValidateException;
 public class AssetUserRequest extends BasicRequest implements ObjectValidator{
 
     private static final long serialVersionUID = 1L;
-
+    /**
+     *  主键
+     */
+    @ApiModelProperty("主键")
+    private Integer id;
     /**
      *  姓名
      */
@@ -132,8 +136,15 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator{
     public void setMobile(String mobile) {
         this.mobile = mobile;
         }
-    
-                
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getAddress() {
     return address;
     }
