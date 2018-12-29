@@ -214,7 +214,7 @@
     </select>
 
 
-    <select id="findListAssetGroupRelation" resultMap="com.antiy.asset.entity.vo.response.AssetGroupRelationResponse" parameterType="com.antiy.asset.entity.vo.query.AssetGroupRelationQuery">
+    <select id="findListAssetGroupRelation" resultType="com.antiy.asset.entity.vo.response.AssetGroupRelationResponse" parameterType="com.antiy.asset.entity.vo.query.AssetGroupRelationQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

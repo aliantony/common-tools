@@ -227,7 +227,7 @@
     </select>
 
 
-    <select id="findListAssetSafetyEquipment" resultMap="com.antiy.asset.entity.vo.response.AssetSafetyEquipmentResponse" parameterType="com.antiy.asset.entity.vo.query.AssetSafetyEquipmentQuery">
+    <select id="findListAssetSafetyEquipment" resultType="com.antiy.asset.entity.vo.response.AssetSafetyEquipmentResponse" parameterType="com.antiy.asset.entity.vo.query.AssetSafetyEquipmentQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

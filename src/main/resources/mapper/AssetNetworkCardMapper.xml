@@ -305,7 +305,7 @@
     </select>
 
 
-    <select id="findListAssetNetworkCard" resultMap="com.antiy.asset.entity.vo.response.AssetNetworkCardResponse" parameterType="com.antiy.asset.entity.vo.query.AssetNetworkCardQuery">
+    <select id="findListAssetNetworkCard" resultType="com.antiy.asset.entity.vo.response.AssetNetworkCardResponse" parameterType="com.antiy.asset.entity.vo.query.AssetNetworkCardQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

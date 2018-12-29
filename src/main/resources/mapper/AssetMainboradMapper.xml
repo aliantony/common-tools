@@ -266,7 +266,7 @@
     </select>
 
 
-    <select id="findListAssetMainborad" resultMap="com.antiy.asset.entity.vo.response.AssetMainboradResponse" parameterType="com.antiy.asset.entity.vo.query.AssetMainboradQuery">
+    <select id="findListAssetMainborad" resultType="com.antiy.asset.entity.vo.response.AssetMainboradResponse" parameterType="com.antiy.asset.entity.vo.query.AssetMainboradQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

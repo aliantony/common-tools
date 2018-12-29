@@ -227,7 +227,7 @@
     </select>
 
 
-    <select id="findListAssetSoftwareRelation" resultMap="com.antiy.asset.entity.vo.response.AssetSoftwareRelationResponse" parameterType="com.antiy.asset.entity.vo.query.AssetSoftwareRelationQuery">
+    <select id="findListAssetSoftwareRelation" resultType="com.antiy.asset.entity.vo.response.AssetSoftwareRelationResponse" parameterType="com.antiy.asset.entity.vo.query.AssetSoftwareRelationQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

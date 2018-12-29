@@ -591,7 +591,7 @@
     </select>
 
 
-    <select id="findListAsset" resultMap="com.antiy.asset.entity.vo.response.AssetResponse" parameterType="com.antiy.asset.entity.vo.query.AssetQuery">
+    <select id="findListAsset" resultType="com.antiy.asset.entity.vo.response.AssetResponse" parameterType="com.antiy.asset.entity.vo.query.AssetQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

@@ -279,7 +279,7 @@
     </select>
 
 
-    <select id="findListAssetLinkRelation" resultMap="com.antiy.asset.entity.vo.response.AssetLinkRelationResponse" parameterType="com.antiy.asset.entity.vo.query.AssetLinkRelationQuery">
+    <select id="findListAssetLinkRelation" resultType="com.antiy.asset.entity.vo.response.AssetLinkRelationResponse" parameterType="com.antiy.asset.entity.vo.query.AssetLinkRelationQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

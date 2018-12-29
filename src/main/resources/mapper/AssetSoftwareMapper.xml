@@ -422,7 +422,7 @@
     </select>
 
 
-    <select id="findListAssetSoftware" resultMap="com.antiy.asset.entity.vo.response.AssetSoftwareResponse" parameterType="com.antiy.asset.entity.vo.query.AssetSoftwareQuery">
+    <select id="findListAssetSoftware" resultType="com.antiy.asset.entity.vo.response.AssetSoftwareResponse" parameterType="com.antiy.asset.entity.vo.query.AssetSoftwareQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">

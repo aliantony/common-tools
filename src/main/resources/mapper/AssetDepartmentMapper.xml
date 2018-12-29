@@ -240,7 +240,7 @@
     </select>
 
 
-    <select id="findListAssetDepartment" resultMap="com.antiy.asset.entity.vo.response.AssetDepartmentResponse" parameterType="com.antiy.asset.entity.vo.query.AssetDepartmentQuery">
+    <select id="findListAssetDepartment" resultType="com.antiy.asset.entity.vo.response.AssetDepartmentResponse" parameterType="com.antiy.asset.entity.vo.query.AssetDepartmentQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
