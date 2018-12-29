@@ -10,8 +10,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetDepartmentService;
-import com.antiy.asset.asset.entity.vo.request.AssetDepartmentRequest;
-import com.antiy.asset.asset.entity.vo.query.AssetDepartmentQuery;
+import com.antiy.asset.entity.vo.request.AssetDepartmentRequest;
+import com.antiy.asset.entity.vo.query.AssetDepartmentQuery;
 
 
 /**

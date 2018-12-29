@@ -10,8 +10,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.ISchemeService;
-import com.antiy.asset.asset.entity.vo.request.SchemeRequest;
-import com.antiy.asset.asset.entity.vo.query.SchemeQuery;
+import com.antiy.asset.entity.vo.request.SchemeRequest;
+import com.antiy.asset.entity.vo.query.SchemeQuery;
 
 
 /**

@@ -10,8 +10,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetLableService;
-import com.antiy.asset.asset.entity.vo.request.AssetLableRequest;
-import com.antiy.asset.asset.entity.vo.query.AssetLableQuery;
+import com.antiy.asset.entity.vo.request.AssetLableRequest;
+import com.antiy.asset.entity.vo.query.AssetLableQuery;
 
 
 /**

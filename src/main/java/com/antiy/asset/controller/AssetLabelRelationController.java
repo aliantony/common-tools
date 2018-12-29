@@ -10,8 +10,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetLabelRelationService;
-import com.antiy.asset.asset.entity.vo.request.AssetLabelRelationRequest;
-import com.antiy.asset.asset.entity.vo.query.AssetLabelRelationQuery;
+import com.antiy.asset.entity.vo.request.AssetLabelRelationRequest;
+import com.antiy.asset.entity.vo.query.AssetLabelRelationQuery;
 
 
 /**
