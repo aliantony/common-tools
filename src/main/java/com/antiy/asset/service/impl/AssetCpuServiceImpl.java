@@ -31,9 +31,9 @@ public class AssetCpuServiceImpl extends BaseServiceImpl<AssetCpu> implements IA
         @Resource
         private AssetCpuDao assetCpuDao;
 
-        private BaseConverter<AssetCpuRequest, AssetCpu>  requestConverter;
+        private BaseConverter<AssetCpuRequest, AssetCpu>  requestConverter = new BaseConverter<>();;
         
-        private BaseConverter<AssetCpu, AssetCpuResponse> responseConverter;
+        private BaseConverter<AssetCpu, AssetCpuResponse> responseConverter = new BaseConverter<>();;
 
         @Override
         public Integer saveAssetCpu(AssetCpuRequest request) throws Exception {

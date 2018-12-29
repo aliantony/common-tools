@@ -16,7 +16,11 @@ import com.antiy.common.exception.RequestParamValidateException;
 public class AssetMainboradRequest extends BasicRequest implements ObjectValidator{
 
     private static final long serialVersionUID = 1L;
-
+    /**
+     * 主键
+     */
+    @ApiModelProperty("主键")
+    private int id;
     /**
      *  资产主键
      */
@@ -78,8 +82,14 @@ public class AssetMainboradRequest extends BasicRequest implements ObjectValidat
     @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer status;
 
-                
-                
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public Integer getAssetId() {
     return assetId;
     }

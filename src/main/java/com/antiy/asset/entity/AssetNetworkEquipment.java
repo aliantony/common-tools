@@ -97,7 +97,7 @@ private static final long serialVersionUID = 1L;
     *  备注
     */
         @ApiModelProperty("备注")
-    private byte[] memo;
+    private String memo;
         /**
     *  更新时间
     */
@@ -246,11 +246,11 @@ private static final long serialVersionUID = 1L;
     }
     
                                     
-    public byte[] getMemo() {
+    public String getMemo() {
         return memo;
     }
 
-    public void setMemo(byte[] memo) {
+    public void setMemo(String memo) {
         this.memo = memo;
     }
     

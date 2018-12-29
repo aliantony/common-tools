@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.BaseConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.entity.AssetNetworkEquipment;
@@ -31,9 +32,9 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
         @Resource
         private AssetNetworkEquipmentDao assetNetworkEquipmentDao;
 
-        private BaseConverter<AssetNetworkEquipmentRequest, AssetNetworkEquipment>  requestConverter;
-        
-        private BaseConverter<AssetNetworkEquipment, AssetNetworkEquipmentResponse> responseConverter;
+    private BaseConverter<AssetNetworkEquipmentRequest, AssetNetworkEquipment>  requestConverter = new BaseConverter<>();
+    private BaseConverter<AssetNetworkEquipment, AssetNetworkEquipmentResponse> responseConverter = new BaseConverter<>();
+    ;
 
         @Override
         public Integer saveAssetNetworkEquipment(AssetNetworkEquipmentRequest request) throws Exception {
