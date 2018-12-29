@@ -209,4 +209,24 @@
         ORDER BY `date` asc
     </select>
 
+    <select id="myTest" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
+            resultMap="AssetGroupResultMap">
+        SELECT
+        agr.asset_group_id,
+        ag.name as assetGroupName,
+        count( agr.asset_group_id ) AS countNum,
+        FROM_UNIXTIME( agr.gmt_create / 1000, '%w' ) AS date
+        FROM
+        asset_group_relation agr
+        LEFT JOIN asset_group ag ON agr.asset_group_id = ag.id
+        LEFT JOIN asset ON agr.asset_id = asset.id
+        WHERE
+        asset.asset_status != '9'
+        AND FROM_UNIXTIME( agr.gmt_create / 1000, '%Y-%m-%d' ) &lt; last_day( curdate( ) ) AND FROM_UNIXTIME( agr.gmt_create / 1000, '%Y-%m-%d' ) &gt; date_sub(curdate(),INTERVAL WEEKDAY(curdate()) + 1 DAY)
+        GROUP BY
+        agr.asset_group_id,
+        date
+        ORDER BY countNum desc
+    </select>
+
 </mapper>
