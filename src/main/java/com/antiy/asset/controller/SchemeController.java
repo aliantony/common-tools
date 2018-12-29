@@ -22,7 +22,7 @@ import com.antiy.asset.entity.vo.query.SchemeQuery;
  * @author zhangyajun
  * @since 2018-12-29
  */
-@Api(value = "Scheme", description = "")
+@Api(value = "Scheme", description = "方案表")
 @RestController
 @RequestMapping("/v1/scheme")
 @Slf4j

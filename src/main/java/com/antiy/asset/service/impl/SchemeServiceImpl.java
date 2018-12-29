@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 import java.util.List;
 /**
  * <p>
- *  服务实现类
+ * 方案表 服务实现类
  * </p>
  *
  * @author zhangyajun
