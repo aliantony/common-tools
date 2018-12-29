@@ -77,32 +77,30 @@ public class AssetUserController {
 
     /**
      * 通过ID查询
-     * @param query 主键封装对象
+     * @param id
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetUser") QueryCondition query)throws Exception{
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetUserService.getById(query.getPrimaryKey()));
+    @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
+    public ActionResponse queryById(@PathVariable("id") @RequestBody @ApiParam(value = "assetUser") Long id)throws Exception{
+        return ActionResponse.success(iAssetUserService.getById(id));
     }
 
     /**
      * 通过ID删除
-     * @param query 主键封装对象
+     * @param id
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query)throws Exception{
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetUserService.deleteById(query.getPrimaryKey()));
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    public ActionResponse deleteById(@PathVariable("id") @RequestBody @ApiParam(value = "id") Long id)throws Exception{
+        return ActionResponse.success(iAssetUserService.deleteById(id));
     }
 }
 
