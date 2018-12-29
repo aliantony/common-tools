@@ -5,6 +5,7 @@ import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.entity.vo.query.SchemeQuery;
 import com.antiy.asset.entity.vo.response.SchemeResponse;
+import org.springframework.stereotype.Component;
 
 /**
  * <p>
