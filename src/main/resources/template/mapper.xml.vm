@@ -30,7 +30,7 @@
     <sql id="Base_Column_List">
 #foreach($field in ${table.commonFields})
 #if(${field.name} == 'id') #else
-#if(${field.name} == ${field.propertyName})${field.name}#else${field.name} AS ${field.propertyName}#end,
+#if(${field.name} == ${field.propertyName})${field.name}#else${field.name} #end,
 #end
 #end
         ${table.fieldNames}
@@ -107,7 +107,7 @@
     </update>
 
     <!-- 根据主键查询 -->
-    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
         from
@@ -116,7 +116,7 @@
     </select>
 
 
-    <delete id="deleteById" parameterType="java.lang.Long">
+    <delete id="deleteById" parameterType="java.lang.Integer">
         delete from
         <include refid="Table_Name"></include>
         where id = #{id}
