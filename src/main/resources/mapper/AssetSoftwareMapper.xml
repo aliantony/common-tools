@@ -29,11 +29,11 @@
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
-</resultMap>
+    </resultMap>
 <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, size, operation_system AS operationSystem, category, model, name, upload_software_name AS uploadSoftwareName, path, version, manufacturer, description, software_label AS softwareLabel, software_status AS softwareStatus, authorization, report_source AS reportSource, port, language, release_time AS releaseTime, publisher, gmt_create AS gmtCreate, memo, gmt_modified AS gmtModified, create_user AS createUser, modify_user AS modifyUser, status
-</sql>
+    </sql>
 
     <sql id="Table_Name">
         asset_software
@@ -41,79 +41,79 @@
 
 
     <sql id="IF_Base_Column_List">
-            <if test=" size != null">
+        <if test=" size != null">
             size,
         </if>
-            <if test=" operationSystem != null">
+        <if test=" operationSystem != null">
             operation_system,
         </if>
-            <if test=" category != null">
+        <if test=" category != null">
             category,
         </if>
-            <if test=" model != null">
+        <if test=" model != null">
             model,
         </if>
-            <if test=" name != null">
+        <if test=" name != null">
             name,
         </if>
-            <if test=" uploadSoftwareName != null">
+        <if test=" uploadSoftwareName != null">
             upload_software_name,
         </if>
-            <if test=" path != null">
+        <if test=" path != null">
             path,
         </if>
-            <if test=" version != null">
+        <if test=" version != null">
             version,
         </if>
-            <if test=" manufacturer != null">
+        <if test=" manufacturer != null">
             manufacturer,
         </if>
-            <if test=" description != null">
+        <if test=" description != null">
             description,
         </if>
-            <if test=" softwareLabel != null">
+        <if test=" softwareLabel != null">
             software_label,
         </if>
-            <if test=" softwareStatus != null">
+        <if test=" softwareStatus != null">
             software_status,
         </if>
-            <if test=" authorization != null">
+        <if test=" authorization != null">
             authorization,
         </if>
-            <if test=" reportSource != null">
+        <if test=" reportSource != null">
             report_source,
         </if>
-            <if test=" port != null">
+        <if test=" port != null">
             port,
         </if>
-            <if test=" language != null">
+        <if test=" language != null">
             language,
         </if>
-            <if test=" releaseTime != null">
+        <if test=" releaseTime != null">
             release_time,
         </if>
-            <if test=" publisher != null">
+        <if test=" publisher != null">
             publisher,
         </if>
-            <if test=" gmtCreate != null">
+        <if test=" gmtCreate != null">
             gmt_create,
         </if>
-            <if test=" memo != null">
+        <if test=" memo != null">
             memo,
         </if>
-            <if test=" gmtModified != null">
+        <if test=" gmtModified != null">
             gmt_modified,
         </if>
-            <if test=" createUser != null">
+        <if test=" createUser != null">
             create_user,
         </if>
-            <if test=" modifyUser != null">
+        <if test=" modifyUser != null">
             modify_user,
         </if>
-            <if test=" status != null">
+        <if test=" status != null">
             status,
         </if>
-        </sql>
+    </sql>
 
     <sql id="IF_Value_Column_List">
         <if test=" size != null">

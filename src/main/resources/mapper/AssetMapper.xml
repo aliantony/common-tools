@@ -42,11 +42,11 @@
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="is_delete" property="isDelete"/>
-</resultMap>
+    </resultMap>
 <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, number, type, name, serial, category, model, manufacturer, asset_status AS assetStatus, operation_system AS operationSystem, system_bit AS systemBit, location, latitude, longitude, firmware_version AS firmwareVersion, uuid, responsible_user_id AS responsibleUserId, contact_tel AS contactTel, email, hard_disk AS hardDisk, memory, asset_source AS assetSource, importance_degree AS importanceDegree, describle, cpu, network_card AS networkCard, parent_id AS parentId, tags, is_innet AS isInnet, service_life AS serviceLife, buy_date AS buyDate, warranty, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, is_delete AS isDelete
-</sql>
+    </sql>
 
     <sql id="Table_Name">
         asset
@@ -54,118 +54,118 @@
 
 
     <sql id="IF_Base_Column_List">
-            <if test=" number != null">
+        <if test=" number != null">
             number,
         </if>
-            <if test=" type != null">
+        <if test=" type != null">
             type,
         </if>
-            <if test=" name != null">
+        <if test=" name != null">
             name,
         </if>
-            <if test=" serial != null">
+        <if test=" serial != null">
             serial,
         </if>
-            <if test=" category != null">
+        <if test=" category != null">
             category,
         </if>
-            <if test=" model != null">
+        <if test=" model != null">
             model,
         </if>
-            <if test=" manufacturer != null">
+        <if test=" manufacturer != null">
             manufacturer,
         </if>
-            <if test=" assetStatus != null">
+        <if test=" assetStatus != null">
             asset_status,
         </if>
-            <if test=" operationSystem != null">
+        <if test=" operationSystem != null">
             operation_system,
         </if>
-            <if test=" systemBit != null">
+        <if test=" systemBit != null">
             system_bit,
         </if>
-            <if test=" location != null">
+        <if test=" location != null">
             location,
         </if>
-            <if test=" latitude != null">
+        <if test=" latitude != null">
             latitude,
         </if>
-            <if test=" longitude != null">
+        <if test=" longitude != null">
             longitude,
         </if>
-            <if test=" firmwareVersion != null">
+        <if test=" firmwareVersion != null">
             firmware_version,
         </if>
-            <if test=" uuid != null">
+        <if test=" uuid != null">
             uuid,
         </if>
-            <if test=" responsibleUserId != null">
+        <if test=" responsibleUserId != null">
             responsible_user_id,
         </if>
-            <if test=" contactTel != null">
+        <if test=" contactTel != null">
             contact_tel,
         </if>
-            <if test=" email != null">
+        <if test=" email != null">
             email,
         </if>
-            <if test=" hardDisk != null">
+        <if test=" hardDisk != null">
             hard_disk,
         </if>
-            <if test=" memory != null">
+        <if test=" memory != null">
             memory,
         </if>
-            <if test=" assetSource != null">
+        <if test=" assetSource != null">
             asset_source,
         </if>
-            <if test=" importanceDegree != null">
+        <if test=" importanceDegree != null">
             importance_degree,
         </if>
-            <if test=" describle != null">
+        <if test=" describle != null">
             describle,
         </if>
-            <if test=" cpu != null">
+        <if test=" cpu != null">
             cpu,
         </if>
-            <if test=" networkCard != null">
+        <if test=" networkCard != null">
             network_card,
         </if>
-            <if test=" parentId != null">
+        <if test=" parentId != null">
             parent_id,
         </if>
-            <if test=" tags != null">
+        <if test=" tags != null">
             tags,
         </if>
-            <if test=" isInnet != null">
+        <if test=" isInnet != null">
             is_innet,
         </if>
-            <if test=" serviceLife != null">
+        <if test=" serviceLife != null">
             service_life,
         </if>
-            <if test=" buyDate != null">
+        <if test=" buyDate != null">
             buy_date,
         </if>
-            <if test=" warranty != null">
+        <if test=" warranty != null">
             warranty,
         </if>
-            <if test=" gmtCreate != null">
+        <if test=" gmtCreate != null">
             gmt_create,
         </if>
-            <if test=" gmtModified != null">
+        <if test=" gmtModified != null">
             gmt_modified,
         </if>
-            <if test=" memo != null">
+        <if test=" memo != null">
             memo,
         </if>
-            <if test=" createUser != null">
+        <if test=" createUser != null">
             create_user,
         </if>
-            <if test=" modifyUser != null">
+        <if test=" modifyUser != null">
             modify_user,
         </if>
-            <if test=" isDelete != null">
+        <if test=" isDelete != null">
             is_delete,
         </if>
-        </sql>
+    </sql>
 
     <sql id="IF_Value_Column_List">
         <if test=" number != null">
