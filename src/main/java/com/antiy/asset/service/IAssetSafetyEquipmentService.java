@@ -5,9 +5,9 @@ import com.antiy.common.base.PageResult;
 
 import java.util.List;
 
-import com.antiy.asset.asset.entity.vo.query.AssetSafetyEquipmentQuery;
-import com.antiy.asset.asset.entity.vo.request.AssetSafetyEquipmentRequest;
-import com.antiy.asset.asset.entity.vo.response.AssetSafetyEquipmentResponse;
+import com.antiy.asset.entity.vo.query.AssetSafetyEquipmentQuery;
+import com.antiy.asset.entity.vo.request.AssetSafetyEquipmentRequest;
+import com.antiy.asset.entity.vo.response.AssetSafetyEquipmentResponse;
 import com.antiy.asset.entity.AssetSafetyEquipment;
 
 

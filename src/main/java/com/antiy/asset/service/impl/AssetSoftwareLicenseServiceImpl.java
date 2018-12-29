@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.entity.AssetSoftwareLicense;
 import com.antiy.asset.dao.AssetSoftwareLicenseDao;
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
-import com.antiy.asset.asset.entity.vo.request.AssetSoftwareLicenseRequest;
-import com.antiy.asset.asset.entity.vo.response.AssetSoftwareLicenseResponse;
-import com.antiy.asset.asset.entity.vo.query.AssetSoftwareLicenseQuery;
+import com.antiy.asset.entity.vo.request.AssetSoftwareLicenseRequest;
+import com.antiy.asset.entity.vo.response.AssetSoftwareLicenseResponse;
+import com.antiy.asset.entity.vo.query.AssetSoftwareLicenseQuery;
 
 import javax.annotation.Resource;
 import java.util.List;

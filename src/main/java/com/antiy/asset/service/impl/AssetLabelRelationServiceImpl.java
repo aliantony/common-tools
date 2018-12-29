@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.entity.AssetLabelRelation;
 import com.antiy.asset.dao.AssetLabelRelationDao;
 import com.antiy.asset.service.IAssetLabelRelationService;
-import com.antiy.asset.asset.entity.vo.request.AssetLabelRelationRequest;
-import com.antiy.asset.asset.entity.vo.response.AssetLabelRelationResponse;
-import com.antiy.asset.asset.entity.vo.query.AssetLabelRelationQuery;
+import com.antiy.asset.entity.vo.request.AssetLabelRelationRequest;
+import com.antiy.asset.entity.vo.response.AssetLabelRelationResponse;
+import com.antiy.asset.entity.vo.query.AssetLabelRelationQuery;
 
 import javax.annotation.Resource;
 import java.util.List;

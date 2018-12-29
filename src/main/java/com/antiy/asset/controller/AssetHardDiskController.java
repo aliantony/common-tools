@@ -10,8 +10,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetHardDiskService;
-import com.antiy.asset.asset.entity.vo.request.AssetHardDiskRequest;
-import com.antiy.asset.asset.entity.vo.query.AssetHardDiskQuery;
+import com.antiy.asset.entity.vo.request.AssetHardDiskRequest;
+import com.antiy.asset.entity.vo.query.AssetHardDiskQuery;
 
 
 /**

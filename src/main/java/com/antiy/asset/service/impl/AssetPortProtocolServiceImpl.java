@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.entity.AssetPortProtocol;
 import com.antiy.asset.dao.AssetPortProtocolDao;
 import com.antiy.asset.service.IAssetPortProtocolService;
-import com.antiy.asset.asset.entity.vo.request.AssetPortProtocolRequest;
-import com.antiy.asset.asset.entity.vo.response.AssetPortProtocolResponse;
-import com.antiy.asset.asset.entity.vo.query.AssetPortProtocolQuery;
+import com.antiy.asset.entity.vo.request.AssetPortProtocolRequest;
+import com.antiy.asset.entity.vo.response.AssetPortProtocolResponse;
+import com.antiy.asset.entity.vo.query.AssetPortProtocolQuery;
 
 import javax.annotation.Resource;
 import java.util.List;

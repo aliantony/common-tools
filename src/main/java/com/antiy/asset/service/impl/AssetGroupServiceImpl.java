@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.service.IAssetGroupService;
-import com.antiy.asset.asset.entity.vo.request.AssetGroupRequest;
-import com.antiy.asset.asset.entity.vo.response.AssetGroupResponse;
-import com.antiy.asset.asset.entity.vo.query.AssetGroupQuery;
+import com.antiy.asset.entity.vo.request.AssetGroupRequest;
+import com.antiy.asset.entity.vo.response.AssetGroupResponse;
+import com.antiy.asset.entity.vo.query.AssetGroupQuery;
 
 import javax.annotation.Resource;
 import java.util.List;

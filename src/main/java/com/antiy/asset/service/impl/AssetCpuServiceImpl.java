@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.entity.AssetCpu;
 import com.antiy.asset.dao.AssetCpuDao;
 import com.antiy.asset.service.IAssetCpuService;
-import com.antiy.asset.asset.entity.vo.request.AssetCpuRequest;
-import com.antiy.asset.asset.entity.vo.response.AssetCpuResponse;
-import com.antiy.asset.asset.entity.vo.query.AssetCpuQuery;
+import com.antiy.asset.entity.vo.request.AssetCpuRequest;
+import com.antiy.asset.entity.vo.response.AssetCpuResponse;
+import com.antiy.asset.entity.vo.query.AssetCpuQuery;
 
 import javax.annotation.Resource;
 import java.util.List;

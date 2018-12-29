@@ -10,8 +10,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
-import com.antiy.asset.asset.entity.vo.request.AssetSoftwareLicenseRequest;
-import com.antiy.asset.asset.entity.vo.query.AssetSoftwareLicenseQuery;
+import com.antiy.asset.entity.vo.request.AssetSoftwareLicenseRequest;
+import com.antiy.asset.entity.vo.query.AssetSoftwareLicenseQuery;
 
 
 /**

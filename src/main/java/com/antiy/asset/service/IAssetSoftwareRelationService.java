@@ -5,9 +5,9 @@ import com.antiy.common.base.PageResult;
 
 import java.util.List;
 
-import com.antiy.asset.asset.entity.vo.query.AssetSoftwareRelationQuery;
-import com.antiy.asset.asset.entity.vo.request.AssetSoftwareRelationRequest;
-import com.antiy.asset.asset.entity.vo.response.AssetSoftwareRelationResponse;
+import com.antiy.asset.entity.vo.query.AssetSoftwareRelationQuery;
+import com.antiy.asset.entity.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.entity.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 
 

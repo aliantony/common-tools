@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.entity.AssetMainborad;
 import com.antiy.asset.dao.AssetMainboradDao;
 import com.antiy.asset.service.IAssetMainboradService;
-import com.antiy.asset.asset.entity.vo.request.AssetMainboradRequest;
-import com.antiy.asset.asset.entity.vo.response.AssetMainboradResponse;
-import com.antiy.asset.asset.entity.vo.query.AssetMainboradQuery;
+import com.antiy.asset.entity.vo.request.AssetMainboradRequest;
+import com.antiy.asset.entity.vo.response.AssetMainboradResponse;
+import com.antiy.asset.entity.vo.query.AssetMainboradQuery;
 
 import javax.annotation.Resource;
 import java.util.List;

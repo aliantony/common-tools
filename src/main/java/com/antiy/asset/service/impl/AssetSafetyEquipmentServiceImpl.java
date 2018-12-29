@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.entity.AssetSafetyEquipment;
 import com.antiy.asset.dao.AssetSafetyEquipmentDao;
 import com.antiy.asset.service.IAssetSafetyEquipmentService;
-import com.antiy.asset.asset.entity.vo.request.AssetSafetyEquipmentRequest;
-import com.antiy.asset.asset.entity.vo.response.AssetSafetyEquipmentResponse;
-import com.antiy.asset.asset.entity.vo.query.AssetSafetyEquipmentQuery;
+import com.antiy.asset.entity.vo.request.AssetSafetyEquipmentRequest;
+import com.antiy.asset.entity.vo.response.AssetSafetyEquipmentResponse;
+import com.antiy.asset.entity.vo.query.AssetSafetyEquipmentQuery;
 
 import javax.annotation.Resource;
 import java.util.List;
