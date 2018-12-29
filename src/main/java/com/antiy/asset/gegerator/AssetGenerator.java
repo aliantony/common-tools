@@ -23,7 +23,7 @@ public class AssetGenerator {
     /**
      * 代码输出路径
      */
-    private String outPutDir = "F:\\antiy\\newproject\\antiy-asset\\src\\main\\java";
+    private String outPutDir = "输出路径 比如F:\\Ya";
 
     /**
      * 代码作者
@@ -33,12 +33,12 @@ public class AssetGenerator {
     /**
      * 代码包路径
      */
-    private String parent = "com.antiy.asset";
+    private String parent = "com.antiy";
 
     /**
      * 模块名
      */
-    private String moduleName = "asset";
+    private String moduleName = "模块名";
 
     /**
      * <p> 根据MySQL 表生成对象（controller,service,dao,entity,mappper.xml ） </p>
@@ -53,6 +53,7 @@ public class AssetGenerator {
             System.out.println("作者不能为空！！！");
             return;
         }
+
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
@@ -82,6 +83,7 @@ public class AssetGenerator {
         pc.setController("controller");
         pc.setEntity("entity");
         pc.setMapper("dao");
+        pc.setModuleName(moduleName);
         mpg.setPackageInfo(pc);
 
 
@@ -89,7 +91,8 @@ public class AssetGenerator {
 
         //-----------指定mapper.xml输出路径start-----------
         // 自定义输出配置
-        String projectPath = System.getProperty("user.dir");
+//        String projectPath = System.getProperty("user.dir");
+        String projectPath = outPutDir;
         InjectionConfig cfg = new InjectionConfig() {
             @Override
             public void initMap() {
@@ -195,7 +198,7 @@ public class AssetGenerator {
 //                "asset_link_relation","asset_mainborad","asset_memory","asset_network_card","asset_network_equipment",
 //                "asset_port_protocol","asset_safety_equipment","asset_software","asset_software_license","asset_software_relation","asset_user","scheme"});
 
-//        strategy.setInclude(new String[]{"asset_user"});
+        strategy.setInclude(new String[]{"asset_user"});
 
 //        strategy.setInclude(new String[] {"scheme"});
         strategy.setEntityColumnConstant(true);
