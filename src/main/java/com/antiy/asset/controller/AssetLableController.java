@@ -20,7 +20,7 @@ import com.antiy.asset.entity.vo.query.AssetLableQuery;
 /**
  *
  * @author zhangyajun
- * @since 2018-12-28
+ * @since 2018-12-29
  */
 @Api(value = "AssetLable", description = "标签信息表")
 @RestController

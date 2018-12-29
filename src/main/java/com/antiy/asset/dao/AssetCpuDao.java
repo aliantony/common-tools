@@ -12,7 +12,7 @@ import com.antiy.asset.entity.vo.response.AssetCpuResponse;
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-28
+ * @since 2018-12-29
  */
 public interface AssetCpuDao extends IBaseDao<AssetCpu> {
 

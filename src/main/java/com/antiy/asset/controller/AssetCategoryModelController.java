@@ -20,7 +20,7 @@ import com.antiy.asset.entity.vo.query.AssetCategoryModelQuery;
 /**
  *
  * @author zhangyajun
- * @since 2018-12-28
+ * @since 2018-12-29
  */
 @Api(value = "AssetCategoryModel", description = "品类型号表")
 @RestController

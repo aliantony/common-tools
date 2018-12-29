@@ -20,7 +20,7 @@ import com.antiy.asset.entity.vo.query.AssetUserQuery;
 /**
  *
  * @author zhangyajun
- * @since 2018-12-28
+ * @since 2018-12-29
  */
 @Api(value = "AssetUser", description = "资产用户信息")
 @RestController

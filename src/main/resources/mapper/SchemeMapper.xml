@@ -30,46 +30,46 @@
 
 
     <sql id="IF_Base_Column_List">
-        <if test=" type != null">
+            <if test=" type != null">
             type,
         </if>
-        <if test=" result != null">
+            <if test=" result != null">
             result,
         </if>
-        <if test=" putintoUserId != null">
+            <if test=" putintoUserId != null">
             putinto_user_id,
         </if>
-        <if test=" putintoTime != null">
+            <if test=" putintoTime != null">
             putinto_time,
         </if>
-        <if test=" putintoUser != null">
+            <if test=" putintoUser != null">
             putinto_user,
         </if>
-        <if test=" remark != null">
+            <if test=" remark != null">
             remark,
         </if>
-        <if test=" filepath != null">
+            <if test=" filepath != null">
             filepath,
         </if>
-        <if test=" gmtCreate != null">
+            <if test=" gmtCreate != null">
             gmt_create,
         </if>
-        <if test=" gmtModified != null">
+            <if test=" gmtModified != null">
             gmt_modified,
         </if>
-        <if test=" memo != null">
+            <if test=" memo != null">
             memo,
         </if>
-        <if test=" createUser != null">
+            <if test=" createUser != null">
             create_user,
         </if>
-        <if test=" modifyUser != null">
+            <if test=" modifyUser != null">
             modify_user,
         </if>
-        <if test=" isDelete != null">
+            <if test=" isDelete != null">
             is_delete,
         </if>
-    </sql>
+        </sql>
 
     <sql id="IF_Value_Column_List">
         <if test=" type != null">

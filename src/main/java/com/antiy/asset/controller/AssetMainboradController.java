@@ -20,7 +20,7 @@ import com.antiy.asset.entity.vo.query.AssetMainboradQuery;
 /**
  *
  * @author zhangyajun
- * @since 2018-12-28
+ * @since 2018-12-29
  */
 @Api(value = "AssetMainborad", description = "主板表")
 @RestController

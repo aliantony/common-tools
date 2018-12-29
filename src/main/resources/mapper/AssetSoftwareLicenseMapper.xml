@@ -27,37 +27,37 @@
 
 
     <sql id="IF_Base_Column_List">
-        <if test=" softwareId != null">
+            <if test=" softwareId != null">
             software_id,
         </if>
-        <if test=" busyDate != null">
+            <if test=" busyDate != null">
             busy_date,
         </if>
-        <if test=" expiryDate != null">
+            <if test=" expiryDate != null">
             expiry_date,
         </if>
-        <if test=" licenseSecretKey != null">
+            <if test=" licenseSecretKey != null">
             license_secret_key,
         </if>
-        <if test=" gmtCreate != null">
+            <if test=" gmtCreate != null">
             gmt_create,
         </if>
-        <if test=" gmtModified != null">
+            <if test=" gmtModified != null">
             gmt_modified,
         </if>
-        <if test=" memo != null">
+            <if test=" memo != null">
             memo,
         </if>
-        <if test=" createUser != null">
+            <if test=" createUser != null">
             create_user,
         </if>
-        <if test=" modifyUser != null">
+            <if test=" modifyUser != null">
             modify_user,
         </if>
-        <if test=" status != null">
+            <if test=" status != null">
             status,
         </if>
-    </sql>
+        </sql>
 
     <sql id="IF_Value_Column_List">
         <if test=" softwareId != null">

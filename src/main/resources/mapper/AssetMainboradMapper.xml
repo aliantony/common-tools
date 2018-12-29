@@ -29,43 +29,43 @@
 
 
     <sql id="IF_Base_Column_List">
-        <if test=" assetId != null">
+            <if test=" assetId != null">
             asset_id,
         </if>
-        <if test=" brand != null">
+            <if test=" brand != null">
             brand,
         </if>
-        <if test=" model != null">
+            <if test=" model != null">
             model,
         </if>
-        <if test=" serial != null">
+            <if test=" serial != null">
             serial,
         </if>
-        <if test=" biosVersion != null">
+            <if test=" biosVersion != null">
             bios_version,
         </if>
-        <if test=" biosDate != null">
+            <if test=" biosDate != null">
             bios_date,
         </if>
-        <if test=" gmtCreate != null">
+            <if test=" gmtCreate != null">
             gmt_create,
         </if>
-        <if test=" gmtModified != null">
+            <if test=" gmtModified != null">
             gmt_modified,
         </if>
-        <if test=" memo != null">
+            <if test=" memo != null">
             memo,
         </if>
-        <if test=" createUser != null">
+            <if test=" createUser != null">
             create_user,
         </if>
-        <if test=" modifyUser != null">
+            <if test=" modifyUser != null">
             modify_user,
         </if>
-        <if test=" status != null">
+            <if test=" status != null">
             status,
         </if>
-    </sql>
+        </sql>
 
     <sql id="IF_Value_Column_List">
         <if test=" assetId != null">

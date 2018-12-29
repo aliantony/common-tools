@@ -20,7 +20,7 @@ import com.antiy.asset.entity.vo.query.AssetSoftwareRelationQuery;
 /**
  *
  * @author zhangyajun
- * @since 2018-12-28
+ * @since 2018-12-29
  */
 @Api(value = "AssetSoftwareRelation", description = "资产软件关系信息")
 @RestController

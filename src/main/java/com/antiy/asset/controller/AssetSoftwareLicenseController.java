@@ -20,7 +20,7 @@ import com.antiy.asset.entity.vo.query.AssetSoftwareLicenseQuery;
 /**
  *
  * @author zhangyajun
- * @since 2018-12-28
+ * @since 2018-12-29
  */
 @Api(value = "AssetSoftwareLicense", description = "软件许可表")
 @RestController
