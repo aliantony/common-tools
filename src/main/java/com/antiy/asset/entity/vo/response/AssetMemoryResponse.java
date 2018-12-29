@@ -1,4 +1,4 @@
-package com.antiy.asset.asset.entity.vo.response;
+package com.antiy.asset.entity.vo.response;
 
 /**
  * <p>
