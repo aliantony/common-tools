@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import ${package.Entity}.dto.${entity}DO;
+import ${package.Entity}.dto.${entity}DTO;
 import ${package.Entity}.vo.query.${entity}Query;
 import ${package.Entity}.vo.request.${entity}Request;
 import ${package.Entity}.vo.response.${entity}Response;
@@ -41,8 +41,7 @@ public interface ${table.serviceName} extends IBaseService<${entity}> {
          * @param query
          * @return
          */
-        @Override
-        public List<${entity}Response> findList${entity}(${entity}Query query) throws Exception;
+        List<${entity}Response> findList${entity}(${entity}Query query) throws Exception;
 
         /**
          * 批量查询
