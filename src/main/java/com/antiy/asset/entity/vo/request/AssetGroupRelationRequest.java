@@ -1,4 +1,4 @@
-package com.antiy.asset.entity.vo.request;
+package com.antiy.asset.asset.entity.vo.request;
 
 import com.antiy.common.base.BasicRequest;
 import io.swagger.annotations.ApiModelProperty;
