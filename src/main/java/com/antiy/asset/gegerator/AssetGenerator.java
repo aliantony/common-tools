@@ -28,7 +28,7 @@ public class AssetGenerator {
     /**
      * 代码作者
      */
-    private String author = "zhangyajun";
+    private String author = "xxxxxxxxx";
 
     /**
      * 代码包路径
@@ -49,6 +49,10 @@ public class AssetGenerator {
     }
 
     public void exceute(String outPutDir, String author, String parent) {
+        if (author == null || author.equals("")){
+            System.out.println("作者不能为空！！！");
+            return;
+        }
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
@@ -186,10 +190,10 @@ public class AssetGenerator {
         // 表名生成策略
         strategy.setNaming(NamingStrategy.underline_to_camel);
         // 需要生成的表
-        strategy.setInclude(new String[] {"asset","asset_category_model","asset_cpu","asset_department",
-                "asset_group","asset_group_relation","asset_hard_disk","asset_label_relation","asset_lable",
-                "asset_link_relation","asset_mainborad","asset_memory","asset_network_card","asset_network_equipment",
-                "asset_port_protocol","asset_safety_equipment","asset_software","asset_software_license","asset_software_relation","asset_user","scheme"});
+//        strategy.setInclude(new String[] {"asset","asset_category_model","asset_cpu","asset_department",
+//                "asset_group","asset_group_relation","asset_hard_disk","asset_label_relation","asset_lable",
+//                "asset_link_relation","asset_mainborad","asset_memory","asset_network_card","asset_network_equipment",
+//                "asset_port_protocol","asset_safety_equipment","asset_software","asset_software_license","asset_software_relation","asset_user","scheme"});
 
 //        strategy.setInclude(new String[]{"asset_user"});
 

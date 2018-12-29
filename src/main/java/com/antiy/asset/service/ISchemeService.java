@@ -13,7 +13,7 @@ import com.antiy.asset.entity.Scheme;
 
 /**
  * <p>
- *  服务类
+ * 方案表 服务类
  * </p>
  *
  * @author zhangyajun
