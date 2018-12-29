@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetPortProtocol;
+import com.antiy.asset.entity.dto.AssetPortProtocolDTO;
 import com.antiy.asset.entity.vo.query.AssetPortProtocolQuery;
-import com.antiy.asset.entity.vo.response.AssetPortProtocolResponse;
 
 /**
  * <p>
@@ -16,5 +16,5 @@ import com.antiy.asset.entity.vo.response.AssetPortProtocolResponse;
  */
 public interface AssetPortProtocolDao extends IBaseDao<AssetPortProtocol> {
 
-    List<AssetPortProtocolResponse> findListAssetPortProtocol(AssetPortProtocolQuery query) throws Exception;
+    List<AssetPortProtocolDTO> findListAssetPortProtocol(AssetPortProtocolQuery query) throws Exception;
 }

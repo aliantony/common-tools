@@ -2,9 +2,10 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
+import java.io.Serializable;
 import java.util.List;
 
+import com.antiy.asset.entity.dto.AssetLableDO;
 import com.antiy.asset.entity.vo.query.AssetLableQuery;
 import com.antiy.asset.entity.vo.request.AssetLableRequest;
 import com.antiy.asset.entity.vo.response.AssetLableResponse;
@@ -23,30 +24,31 @@ public interface IAssetLableService extends IBaseService<AssetLable> {
 
         /**
          * 保存
-         * @param assetLableRequest
+         * @param request
          * @return
          */
-        Integer saveAssetLable(AssetLableRequest assetLableRequest) throws Exception;
+        Integer saveAssetLable(AssetLableRequest request) throws Exception;
 
         /**
          * 修改
-         * @param assetLableRequest
+         * @param request
          * @return
          */
-        Integer updateAssetLable(AssetLableRequest assetLableRequest) throws Exception;
+        Integer updateAssetLable(AssetLableRequest request) throws Exception;
 
         /**
          * 查询对象集合
-         * @param assetLableQuery
+         * @param query
          * @return
          */
-        List<AssetLableResponse> findListAssetLable(AssetLableQuery assetLableQuery) throws Exception;
+        @Override
+        public List<AssetLableResponse> findListAssetLable(AssetLableQuery query) throws Exception;
 
         /**
          * 批量查询
-         * @param assetLableQuery
+         * @param query
          * @return
          */
-        PageResult<AssetLableResponse> findPageAssetLable(AssetLableQuery assetLableQuery) throws Exception;
+        PageResult<AssetLableResponse> findPageAssetLable(AssetLableQuery query) throws Exception;
 
 }

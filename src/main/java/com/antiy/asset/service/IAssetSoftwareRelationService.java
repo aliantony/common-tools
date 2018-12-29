@@ -2,9 +2,10 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
+import java.io.Serializable;
 import java.util.List;
 
+import com.antiy.asset.entity.dto.AssetSoftwareRelationDO;
 import com.antiy.asset.entity.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.entity.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.entity.vo.response.AssetSoftwareRelationResponse;
@@ -23,30 +24,31 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
 
         /**
          * 保存
-         * @param assetSoftwareRelationRequest
+         * @param request
          * @return
          */
-        Integer saveAssetSoftwareRelation(AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception;
+        Integer saveAssetSoftwareRelation(AssetSoftwareRelationRequest request) throws Exception;
 
         /**
          * 修改
-         * @param assetSoftwareRelationRequest
+         * @param request
          * @return
          */
-        Integer updateAssetSoftwareRelation(AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception;
+        Integer updateAssetSoftwareRelation(AssetSoftwareRelationRequest request) throws Exception;
 
         /**
          * 查询对象集合
-         * @param assetSoftwareRelationQuery
+         * @param query
          * @return
          */
-        List<AssetSoftwareRelationResponse> findListAssetSoftwareRelation(AssetSoftwareRelationQuery assetSoftwareRelationQuery) throws Exception;
+        @Override
+        public List<AssetSoftwareRelationResponse> findListAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception;
 
         /**
          * 批量查询
-         * @param assetSoftwareRelationQuery
+         * @param query
          * @return
          */
-        PageResult<AssetSoftwareRelationResponse> findPageAssetSoftwareRelation(AssetSoftwareRelationQuery assetSoftwareRelationQuery) throws Exception;
+        PageResult<AssetSoftwareRelationResponse> findPageAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception;
 
 }

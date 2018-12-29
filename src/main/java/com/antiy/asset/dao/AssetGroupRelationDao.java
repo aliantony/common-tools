@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetGroupRelation;
+import com.antiy.asset.entity.dto.AssetGroupRelationDTO;
 import com.antiy.asset.entity.vo.query.AssetGroupRelationQuery;
-import com.antiy.asset.entity.vo.response.AssetGroupRelationResponse;
 
 /**
  * <p>
@@ -16,5 +16,5 @@ import com.antiy.asset.entity.vo.response.AssetGroupRelationResponse;
  */
 public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
 
-    List<AssetGroupRelationResponse> findListAssetGroupRelation(AssetGroupRelationQuery query) throws Exception;
+    List<AssetGroupRelationDTO> findListAssetGroupRelation(AssetGroupRelationQuery query) throws Exception;
 }

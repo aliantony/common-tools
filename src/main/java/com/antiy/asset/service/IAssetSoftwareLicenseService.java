@@ -2,9 +2,10 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
+import java.io.Serializable;
 import java.util.List;
 
+import com.antiy.asset.entity.dto.AssetSoftwareLicenseDO;
 import com.antiy.asset.entity.vo.query.AssetSoftwareLicenseQuery;
 import com.antiy.asset.entity.vo.request.AssetSoftwareLicenseRequest;
 import com.antiy.asset.entity.vo.response.AssetSoftwareLicenseResponse;
@@ -23,30 +24,31 @@ public interface IAssetSoftwareLicenseService extends IBaseService<AssetSoftware
 
         /**
          * 保存
-         * @param assetSoftwareLicenseRequest
+         * @param request
          * @return
          */
-        Integer saveAssetSoftwareLicense(AssetSoftwareLicenseRequest assetSoftwareLicenseRequest) throws Exception;
+        Integer saveAssetSoftwareLicense(AssetSoftwareLicenseRequest request) throws Exception;
 
         /**
          * 修改
-         * @param assetSoftwareLicenseRequest
+         * @param request
          * @return
          */
-        Integer updateAssetSoftwareLicense(AssetSoftwareLicenseRequest assetSoftwareLicenseRequest) throws Exception;
+        Integer updateAssetSoftwareLicense(AssetSoftwareLicenseRequest request) throws Exception;
 
         /**
          * 查询对象集合
-         * @param assetSoftwareLicenseQuery
+         * @param query
          * @return
          */
-        List<AssetSoftwareLicenseResponse> findListAssetSoftwareLicense(AssetSoftwareLicenseQuery assetSoftwareLicenseQuery) throws Exception;
+        @Override
+        public List<AssetSoftwareLicenseResponse> findListAssetSoftwareLicense(AssetSoftwareLicenseQuery query) throws Exception;
 
         /**
          * 批量查询
-         * @param assetSoftwareLicenseQuery
+         * @param query
          * @return
          */
-        PageResult<AssetSoftwareLicenseResponse> findPageAssetSoftwareLicense(AssetSoftwareLicenseQuery assetSoftwareLicenseQuery) throws Exception;
+        PageResult<AssetSoftwareLicenseResponse> findPageAssetSoftwareLicense(AssetSoftwareLicenseQuery query) throws Exception;
 
 }

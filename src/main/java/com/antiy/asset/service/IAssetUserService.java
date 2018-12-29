@@ -2,9 +2,10 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
+import java.io.Serializable;
 import java.util.List;
 
+import com.antiy.asset.entity.dto.AssetUserDO;
 import com.antiy.asset.entity.vo.query.AssetUserQuery;
 import com.antiy.asset.entity.vo.request.AssetUserRequest;
 import com.antiy.asset.entity.vo.response.AssetUserResponse;
@@ -23,30 +24,31 @@ public interface IAssetUserService extends IBaseService<AssetUser> {
 
         /**
          * 保存
-         * @param assetUserRequest
+         * @param request
          * @return
          */
-        Integer saveAssetUser(AssetUserRequest assetUserRequest) throws Exception;
+        Integer saveAssetUser(AssetUserRequest request) throws Exception;
 
         /**
          * 修改
-         * @param assetUserRequest
+         * @param request
          * @return
          */
-        Integer updateAssetUser(AssetUserRequest assetUserRequest) throws Exception;
+        Integer updateAssetUser(AssetUserRequest request) throws Exception;
 
         /**
          * 查询对象集合
-         * @param assetUserQuery
+         * @param query
          * @return
          */
-        List<AssetUserResponse> findListAssetUser(AssetUserQuery assetUserQuery) throws Exception;
+        @Override
+        public List<AssetUserResponse> findListAssetUser(AssetUserQuery query) throws Exception;
 
         /**
          * 批量查询
-         * @param assetUserQuery
+         * @param query
          * @return
          */
-        PageResult<AssetUserResponse> findPageAssetUser(AssetUserQuery assetUserQuery) throws Exception;
+        PageResult<AssetUserResponse> findPageAssetUser(AssetUserQuery query) throws Exception;
 
 }

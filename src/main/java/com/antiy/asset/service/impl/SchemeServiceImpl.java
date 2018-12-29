@@ -1,17 +1,22 @@
 package com.antiy.asset.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import java.util.List;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.BaseConverter;
+import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.service.ISchemeService;
+import com.antiy.asset.entity.dto.SchemeDTO;
 import com.antiy.asset.entity.vo.request.SchemeRequest;
 import com.antiy.asset.entity.vo.response.SchemeResponse;
 import com.antiy.asset.entity.vo.query.SchemeQuery;
+
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,9 +35,9 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
 
         @Resource
         private SchemeDao schemeDao;
-
+        @Resource
         private BaseConverter<SchemeRequest, Scheme>  requestConverter;
-        
+        @Resource
         private BaseConverter<Scheme, SchemeResponse> responseConverter;
 
         @Override
@@ -49,7 +54,11 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
 
         @Override
         public List<SchemeResponse> findListScheme(SchemeQuery query) throws Exception {
-            return schemeDao.findListScheme(query);
+            List<SchemeDTO> schemeDTO = schemeDao.findListScheme(query);
+            //TODO
+            //需要将schemeDTO转达成SchemeResponse
+            List<SchemeResponse> schemeResponse = new ArrayList<SchemeResponse>();
+            return schemeResponse;
         }
 
         public Integer findCountScheme(SchemeQuery query) throws Exception {

@@ -1,18 +1,22 @@
 package com.antiy.asset.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import java.util.List;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.BaseConverter;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.entity.AssetNetworkEquipment;
 import com.antiy.asset.dao.AssetNetworkEquipmentDao;
 import com.antiy.asset.service.IAssetNetworkEquipmentService;
+import com.antiy.asset.entity.dto.AssetNetworkEquipmentDTO;
 import com.antiy.asset.entity.vo.request.AssetNetworkEquipmentRequest;
 import com.antiy.asset.entity.vo.response.AssetNetworkEquipmentResponse;
 import com.antiy.asset.entity.vo.query.AssetNetworkEquipmentQuery;
+
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -31,10 +35,10 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
 
         @Resource
         private AssetNetworkEquipmentDao assetNetworkEquipmentDao;
-
-    private BaseConverter<AssetNetworkEquipmentRequest, AssetNetworkEquipment>  requestConverter = new BaseConverter<>();
-    private BaseConverter<AssetNetworkEquipment, AssetNetworkEquipmentResponse> responseConverter = new BaseConverter<>();
-    ;
+        @Resource
+        private BaseConverter<AssetNetworkEquipmentRequest, AssetNetworkEquipment>  requestConverter;
+        @Resource
+        private BaseConverter<AssetNetworkEquipment, AssetNetworkEquipmentResponse> responseConverter;
 
         @Override
         public Integer saveAssetNetworkEquipment(AssetNetworkEquipmentRequest request) throws Exception {
@@ -50,7 +54,11 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
 
         @Override
         public List<AssetNetworkEquipmentResponse> findListAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception {
-            return assetNetworkEquipmentDao.findListAssetNetworkEquipment(query);
+            List<AssetNetworkEquipmentDTO> assetNetworkEquipmentDTO = assetNetworkEquipmentDao.findListAssetNetworkEquipment(query);
+            //TODO
+            //需要将assetNetworkEquipmentDTO转达成AssetNetworkEquipmentResponse
+            List<AssetNetworkEquipmentResponse> assetNetworkEquipmentResponse = new ArrayList<AssetNetworkEquipmentResponse>();
+            return assetNetworkEquipmentResponse;
         }
 
         public Integer findCountAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception {

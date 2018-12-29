@@ -1,17 +1,22 @@
 package com.antiy.asset.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import java.util.List;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.BaseConverter;
+import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.entity.AssetLinkRelation;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.service.IAssetLinkRelationService;
+import com.antiy.asset.entity.dto.AssetLinkRelationDTO;
 import com.antiy.asset.entity.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.entity.vo.response.AssetLinkRelationResponse;
 import com.antiy.asset.entity.vo.query.AssetLinkRelationQuery;
+
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,9 +35,9 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
         @Resource
         private AssetLinkRelationDao assetLinkRelationDao;
-
+        @Resource
         private BaseConverter<AssetLinkRelationRequest, AssetLinkRelation>  requestConverter;
-        
+        @Resource
         private BaseConverter<AssetLinkRelation, AssetLinkRelationResponse> responseConverter;
 
         @Override
@@ -49,7 +54,11 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
         @Override
         public List<AssetLinkRelationResponse> findListAssetLinkRelation(AssetLinkRelationQuery query) throws Exception {
-            return assetLinkRelationDao.findListAssetLinkRelation(query);
+            List<AssetLinkRelationDTO> assetLinkRelationDTO = assetLinkRelationDao.findListAssetLinkRelation(query);
+            //TODO
+            //需要将assetLinkRelationDTO转达成AssetLinkRelationResponse
+            List<AssetLinkRelationResponse> assetLinkRelationResponse = new ArrayList<AssetLinkRelationResponse>();
+            return assetLinkRelationResponse;
         }
 
         public Integer findCountAssetLinkRelation(AssetLinkRelationQuery query) throws Exception {

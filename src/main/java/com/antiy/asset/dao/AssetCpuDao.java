@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetCpu;
+import com.antiy.asset.entity.dto.AssetCpuDTO;
 import com.antiy.asset.entity.vo.query.AssetCpuQuery;
-import com.antiy.asset.entity.vo.response.AssetCpuResponse;
 
 /**
  * <p>
@@ -16,5 +16,5 @@ import com.antiy.asset.entity.vo.response.AssetCpuResponse;
  */
 public interface AssetCpuDao extends IBaseDao<AssetCpu> {
 
-    List<AssetCpuResponse> findListAssetCpu(AssetCpuQuery query) throws Exception;
+    List<AssetCpuDTO> findListAssetCpu(AssetCpuQuery query) throws Exception;
 }

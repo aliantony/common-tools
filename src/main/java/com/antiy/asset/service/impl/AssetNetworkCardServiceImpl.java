@@ -1,17 +1,22 @@
 package com.antiy.asset.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import java.util.List;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.BaseConverter;
+import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.entity.AssetNetworkCard;
 import com.antiy.asset.dao.AssetNetworkCardDao;
 import com.antiy.asset.service.IAssetNetworkCardService;
+import com.antiy.asset.entity.dto.AssetNetworkCardDTO;
 import com.antiy.asset.entity.vo.request.AssetNetworkCardRequest;
 import com.antiy.asset.entity.vo.response.AssetNetworkCardResponse;
 import com.antiy.asset.entity.vo.query.AssetNetworkCardQuery;
+
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,10 +35,10 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
 
         @Resource
         private AssetNetworkCardDao assetNetworkCardDao;
-
-        private BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>  requestConverter = new BaseConverter<>();
-        
-        private BaseConverter<AssetNetworkCard, AssetNetworkCardResponse> responseConverter = new BaseConverter<>();
+        @Resource
+        private BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>  requestConverter;
+        @Resource
+        private BaseConverter<AssetNetworkCard, AssetNetworkCardResponse> responseConverter;
 
         @Override
         public Integer saveAssetNetworkCard(AssetNetworkCardRequest request) throws Exception {
@@ -49,7 +54,11 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
 
         @Override
         public List<AssetNetworkCardResponse> findListAssetNetworkCard(AssetNetworkCardQuery query) throws Exception {
-            return assetNetworkCardDao.findListAssetNetworkCard(query);
+            List<AssetNetworkCardDTO> assetNetworkCardDTO = assetNetworkCardDao.findListAssetNetworkCard(query);
+            //TODO
+            //需要将assetNetworkCardDTO转达成AssetNetworkCardResponse
+            List<AssetNetworkCardResponse> assetNetworkCardResponse = new ArrayList<AssetNetworkCardResponse>();
+            return assetNetworkCardResponse;
         }
 
         public Integer findCountAssetNetworkCard(AssetNetworkCardQuery query) throws Exception {

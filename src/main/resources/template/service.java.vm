@@ -5,6 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
+import ${package.Entity}.dto.${entity}DO;
 import ${package.Entity}.vo.query.${entity}Query;
 import ${package.Entity}.vo.request.${entity}Request;
 import ${package.Entity}.vo.response.${entity}Response;
@@ -23,30 +24,31 @@ public interface ${table.serviceName} extends IBaseService<${entity}> {
 
         /**
          * 保存
-         * @param ${table.entityPath}Request
+         * @param request
          * @return
          */
-        Integer save${entity}(${entity}Request ${table.entityPath}Request) throws Exception;
+        Integer save${entity}(${entity}Request request) throws Exception;
 
         /**
          * 修改
-         * @param ${table.entityPath}Request
+         * @param request
          * @return
          */
-        Integer update${entity}(${entity}Request ${table.entityPath}Request) throws Exception;
+        Integer update${entity}(${entity}Request request) throws Exception;
 
         /**
          * 查询对象集合
-         * @param ${table.entityPath}Query
+         * @param query
          * @return
          */
-        List<${entity}Response> findList${entity}(${entity}Query ${table.entityPath}Query) throws Exception;
+        @Override
+        public List<${entity}Response> findList${entity}(${entity}Query query) throws Exception;
 
         /**
          * 批量查询
-         * @param ${table.entityPath}Query
+         * @param query
          * @return
          */
-        PageResult<${entity}Response> findPage${entity}(${entity}Query ${table.entityPath}Query) throws Exception;
+        PageResult<${entity}Response> findPage${entity}(${entity}Query query) throws Exception;
 
 }

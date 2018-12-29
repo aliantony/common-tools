@@ -1,17 +1,22 @@
 package com.antiy.asset.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import java.util.List;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.BaseConverter;
+import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.entity.AssetPortProtocol;
 import com.antiy.asset.dao.AssetPortProtocolDao;
 import com.antiy.asset.service.IAssetPortProtocolService;
+import com.antiy.asset.entity.dto.AssetPortProtocolDTO;
 import com.antiy.asset.entity.vo.request.AssetPortProtocolRequest;
 import com.antiy.asset.entity.vo.response.AssetPortProtocolResponse;
 import com.antiy.asset.entity.vo.query.AssetPortProtocolQuery;
+
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,9 +35,9 @@ public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProto
 
         @Resource
         private AssetPortProtocolDao assetPortProtocolDao;
-
+        @Resource
         private BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>  requestConverter;
-        
+        @Resource
         private BaseConverter<AssetPortProtocol, AssetPortProtocolResponse> responseConverter;
 
         @Override
@@ -49,7 +54,11 @@ public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProto
 
         @Override
         public List<AssetPortProtocolResponse> findListAssetPortProtocol(AssetPortProtocolQuery query) throws Exception {
-            return assetPortProtocolDao.findListAssetPortProtocol(query);
+            List<AssetPortProtocolDTO> assetPortProtocolDTO = assetPortProtocolDao.findListAssetPortProtocol(query);
+            //TODO
+            //需要将assetPortProtocolDTO转达成AssetPortProtocolResponse
+            List<AssetPortProtocolResponse> assetPortProtocolResponse = new ArrayList<AssetPortProtocolResponse>();
+            return assetPortProtocolResponse;
         }
 
         public Integer findCountAssetPortProtocol(AssetPortProtocolQuery query) throws Exception {

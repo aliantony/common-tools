@@ -2,9 +2,10 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
+import java.io.Serializable;
 import java.util.List;
 
+import com.antiy.asset.entity.dto.AssetLabelRelationDO;
 import com.antiy.asset.entity.vo.query.AssetLabelRelationQuery;
 import com.antiy.asset.entity.vo.request.AssetLabelRelationRequest;
 import com.antiy.asset.entity.vo.response.AssetLabelRelationResponse;
@@ -23,30 +24,31 @@ public interface IAssetLabelRelationService extends IBaseService<AssetLabelRelat
 
         /**
          * 保存
-         * @param assetLabelRelationRequest
+         * @param request
          * @return
          */
-        Integer saveAssetLabelRelation(AssetLabelRelationRequest assetLabelRelationRequest) throws Exception;
+        Integer saveAssetLabelRelation(AssetLabelRelationRequest request) throws Exception;
 
         /**
          * 修改
-         * @param assetLabelRelationRequest
+         * @param request
          * @return
          */
-        Integer updateAssetLabelRelation(AssetLabelRelationRequest assetLabelRelationRequest) throws Exception;
+        Integer updateAssetLabelRelation(AssetLabelRelationRequest request) throws Exception;
 
         /**
          * 查询对象集合
-         * @param assetLabelRelationQuery
+         * @param query
          * @return
          */
-        List<AssetLabelRelationResponse> findListAssetLabelRelation(AssetLabelRelationQuery assetLabelRelationQuery) throws Exception;
+        @Override
+        public List<AssetLabelRelationResponse> findListAssetLabelRelation(AssetLabelRelationQuery query) throws Exception;
 
         /**
          * 批量查询
-         * @param assetLabelRelationQuery
+         * @param query
          * @return
          */
-        PageResult<AssetLabelRelationResponse> findPageAssetLabelRelation(AssetLabelRelationQuery assetLabelRelationQuery) throws Exception;
+        PageResult<AssetLabelRelationResponse> findPageAssetLabelRelation(AssetLabelRelationQuery query) throws Exception;
 
 }

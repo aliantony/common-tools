@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetNetworkCard;
+import com.antiy.asset.entity.dto.AssetNetworkCardDTO;
 import com.antiy.asset.entity.vo.query.AssetNetworkCardQuery;
-import com.antiy.asset.entity.vo.response.AssetNetworkCardResponse;
 
 /**
  * <p>
@@ -16,5 +16,5 @@ import com.antiy.asset.entity.vo.response.AssetNetworkCardResponse;
  */
 public interface AssetNetworkCardDao extends IBaseDao<AssetNetworkCard> {
 
-    List<AssetNetworkCardResponse> findListAssetNetworkCard(AssetNetworkCardQuery query) throws Exception;
+    List<AssetNetworkCardDTO> findListAssetNetworkCard(AssetNetworkCardQuery query) throws Exception;
 }

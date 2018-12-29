@@ -2,17 +2,21 @@ package ${package.ServiceImpl};
 
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
+import java.util.List;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.BaseConverter;
+import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 
 import ${package.Entity}.${entity};
 import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${table.serviceName};
+import ${package.Entity}.dto.${entity}DTO;
 import ${package.Entity}.vo.request.${entity}Request;
 import ${package.Entity}.vo.response.${entity}Response;
 import ${package.Entity}.vo.query.${entity}Query;
+
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -31,10 +35,10 @@ public class ${table.serviceImplName} extends BaseServiceImpl<${entity}> impleme
 
         @Resource
         private ${table.mapperName} ${table.entityPath}Dao;
-
-        private BaseConverter<${entity}Request, ${entity}>  requestConverter = new BaseConverter<${entity}, ${entity}Response>();
-
-        private BaseConverter<${entity}, ${entity}Response> responseConverter = new BaseConverter<${entity}, ${entity}Response>();
+        @Resource
+        private BaseConverter<${entity}Request, ${entity}>  requestConverter;
+        @Resource
+        private BaseConverter<${entity}, ${entity}Response> responseConverter;
 
         @Override
         public Integer save${entity}(${entity}Request request) throws Exception {
@@ -50,7 +54,11 @@ public class ${table.serviceImplName} extends BaseServiceImpl<${entity}> impleme
 
         @Override
         public List<${entity}Response> findList${entity}(${entity}Query query) throws Exception {
-            return ${table.entityPath}Dao.findList${entity}(query);
+            List<${entity}DTO> ${table.entityPath}DTO = ${table.entityPath}Dao.findList${entity}(query);
+            //TODO
+            //需要将${table.entityPath}DTO转达成${entity}Response
+            List<${entity}Response> ${table.entityPath}Response = new ArrayList<${entity}Response>();
+            return ${table.entityPath}Response;
         }
 
         public Integer findCount${entity}(${entity}Query query) throws Exception {

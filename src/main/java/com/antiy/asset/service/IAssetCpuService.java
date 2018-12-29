@@ -2,9 +2,10 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
+import java.io.Serializable;
 import java.util.List;
 
+import com.antiy.asset.entity.dto.AssetCpuDO;
 import com.antiy.asset.entity.vo.query.AssetCpuQuery;
 import com.antiy.asset.entity.vo.request.AssetCpuRequest;
 import com.antiy.asset.entity.vo.response.AssetCpuResponse;
@@ -23,30 +24,31 @@ public interface IAssetCpuService extends IBaseService<AssetCpu> {
 
         /**
          * 保存
-         * @param assetCpuRequest
+         * @param request
          * @return
          */
-        Integer saveAssetCpu(AssetCpuRequest assetCpuRequest) throws Exception;
+        Integer saveAssetCpu(AssetCpuRequest request) throws Exception;
 
         /**
          * 修改
-         * @param assetCpuRequest
+         * @param request
          * @return
          */
-        Integer updateAssetCpu(AssetCpuRequest assetCpuRequest) throws Exception;
+        Integer updateAssetCpu(AssetCpuRequest request) throws Exception;
 
         /**
          * 查询对象集合
-         * @param assetCpuQuery
+         * @param query
          * @return
          */
-        List<AssetCpuResponse> findListAssetCpu(AssetCpuQuery assetCpuQuery) throws Exception;
+        @Override
+        public List<AssetCpuResponse> findListAssetCpu(AssetCpuQuery query) throws Exception;
 
         /**
          * 批量查询
-         * @param assetCpuQuery
+         * @param query
          * @return
          */
-        PageResult<AssetCpuResponse> findPageAssetCpu(AssetCpuQuery assetCpuQuery) throws Exception;
+        PageResult<AssetCpuResponse> findPageAssetCpu(AssetCpuQuery query) throws Exception;
 
 }

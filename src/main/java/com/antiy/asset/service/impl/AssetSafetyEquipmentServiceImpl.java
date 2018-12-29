@@ -1,17 +1,22 @@
 package com.antiy.asset.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import java.util.List;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.BaseConverter;
+import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.entity.AssetSafetyEquipment;
 import com.antiy.asset.dao.AssetSafetyEquipmentDao;
 import com.antiy.asset.service.IAssetSafetyEquipmentService;
+import com.antiy.asset.entity.dto.AssetSafetyEquipmentDTO;
 import com.antiy.asset.entity.vo.request.AssetSafetyEquipmentRequest;
 import com.antiy.asset.entity.vo.response.AssetSafetyEquipmentResponse;
 import com.antiy.asset.entity.vo.query.AssetSafetyEquipmentQuery;
+
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,9 +35,9 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
 
         @Resource
         private AssetSafetyEquipmentDao assetSafetyEquipmentDao;
-
+        @Resource
         private BaseConverter<AssetSafetyEquipmentRequest, AssetSafetyEquipment>  requestConverter;
-        
+        @Resource
         private BaseConverter<AssetSafetyEquipment, AssetSafetyEquipmentResponse> responseConverter;
 
         @Override
@@ -49,7 +54,11 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
 
         @Override
         public List<AssetSafetyEquipmentResponse> findListAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception {
-            return assetSafetyEquipmentDao.findListAssetSafetyEquipment(query);
+            List<AssetSafetyEquipmentDTO> assetSafetyEquipmentDTO = assetSafetyEquipmentDao.findListAssetSafetyEquipment(query);
+            //TODO
+            //需要将assetSafetyEquipmentDTO转达成AssetSafetyEquipmentResponse
+            List<AssetSafetyEquipmentResponse> assetSafetyEquipmentResponse = new ArrayList<AssetSafetyEquipmentResponse>();
+            return assetSafetyEquipmentResponse;
         }
 
         public Integer findCountAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception {

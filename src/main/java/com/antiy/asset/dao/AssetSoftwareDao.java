@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.entity.dto.AssetSoftwareDTO;
 import com.antiy.asset.entity.vo.query.AssetSoftwareQuery;
-import com.antiy.asset.entity.vo.response.AssetSoftwareResponse;
 
 /**
  * <p>
@@ -16,5 +16,5 @@ import com.antiy.asset.entity.vo.response.AssetSoftwareResponse;
  */
 public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
 
-    List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query) throws Exception;
+    List<AssetSoftwareDTO> findListAssetSoftware(AssetSoftwareQuery query) throws Exception;
 }

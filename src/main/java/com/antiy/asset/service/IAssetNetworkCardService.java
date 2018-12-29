@@ -2,9 +2,10 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
+import java.io.Serializable;
 import java.util.List;
 
+import com.antiy.asset.entity.dto.AssetNetworkCardDO;
 import com.antiy.asset.entity.vo.query.AssetNetworkCardQuery;
 import com.antiy.asset.entity.vo.request.AssetNetworkCardRequest;
 import com.antiy.asset.entity.vo.response.AssetNetworkCardResponse;
@@ -23,30 +24,31 @@ public interface IAssetNetworkCardService extends IBaseService<AssetNetworkCard>
 
         /**
          * 保存
-         * @param assetNetworkCardRequest
+         * @param request
          * @return
          */
-        Integer saveAssetNetworkCard(AssetNetworkCardRequest assetNetworkCardRequest) throws Exception;
+        Integer saveAssetNetworkCard(AssetNetworkCardRequest request) throws Exception;
 
         /**
          * 修改
-         * @param assetNetworkCardRequest
+         * @param request
          * @return
          */
-        Integer updateAssetNetworkCard(AssetNetworkCardRequest assetNetworkCardRequest) throws Exception;
+        Integer updateAssetNetworkCard(AssetNetworkCardRequest request) throws Exception;
 
         /**
          * 查询对象集合
-         * @param assetNetworkCardQuery
+         * @param query
          * @return
          */
-        List<AssetNetworkCardResponse> findListAssetNetworkCard(AssetNetworkCardQuery assetNetworkCardQuery) throws Exception;
+        @Override
+        public List<AssetNetworkCardResponse> findListAssetNetworkCard(AssetNetworkCardQuery query) throws Exception;
 
         /**
          * 批量查询
-         * @param assetNetworkCardQuery
+         * @param query
          * @return
          */
-        PageResult<AssetNetworkCardResponse> findPageAssetNetworkCard(AssetNetworkCardQuery assetNetworkCardQuery) throws Exception;
+        PageResult<AssetNetworkCardResponse> findPageAssetNetworkCard(AssetNetworkCardQuery query) throws Exception;
 
 }

@@ -2,9 +2,10 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
+import java.io.Serializable;
 import java.util.List;
 
+import com.antiy.asset.entity.dto.SchemeDO;
 import com.antiy.asset.entity.vo.query.SchemeQuery;
 import com.antiy.asset.entity.vo.request.SchemeRequest;
 import com.antiy.asset.entity.vo.response.SchemeResponse;
@@ -23,30 +24,31 @@ public interface ISchemeService extends IBaseService<Scheme> {
 
         /**
          * 保存
-         * @param schemeRequest
+         * @param request
          * @return
          */
-        Integer saveScheme(SchemeRequest schemeRequest) throws Exception;
+        Integer saveScheme(SchemeRequest request) throws Exception;
 
         /**
          * 修改
-         * @param schemeRequest
+         * @param request
          * @return
          */
-        Integer updateScheme(SchemeRequest schemeRequest) throws Exception;
+        Integer updateScheme(SchemeRequest request) throws Exception;
 
         /**
          * 查询对象集合
-         * @param schemeQuery
+         * @param query
          * @return
          */
-        List<SchemeResponse> findListScheme(SchemeQuery schemeQuery) throws Exception;
+        @Override
+        public List<SchemeResponse> findListScheme(SchemeQuery query) throws Exception;
 
         /**
          * 批量查询
-         * @param schemeQuery
+         * @param query
          * @return
          */
-        PageResult<SchemeResponse> findPageScheme(SchemeQuery schemeQuery) throws Exception;
+        PageResult<SchemeResponse> findPageScheme(SchemeQuery query) throws Exception;
 
 }

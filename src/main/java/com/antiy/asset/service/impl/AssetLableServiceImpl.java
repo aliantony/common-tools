@@ -1,17 +1,22 @@
 package com.antiy.asset.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import java.util.List;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.BaseConverter;
+import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.entity.AssetLable;
 import com.antiy.asset.dao.AssetLableDao;
 import com.antiy.asset.service.IAssetLableService;
+import com.antiy.asset.entity.dto.AssetLableDTO;
 import com.antiy.asset.entity.vo.request.AssetLableRequest;
 import com.antiy.asset.entity.vo.response.AssetLableResponse;
 import com.antiy.asset.entity.vo.query.AssetLableQuery;
+
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,9 +35,9 @@ public class AssetLableServiceImpl extends BaseServiceImpl<AssetLable> implement
 
         @Resource
         private AssetLableDao assetLableDao;
-
+        @Resource
         private BaseConverter<AssetLableRequest, AssetLable>  requestConverter;
-        
+        @Resource
         private BaseConverter<AssetLable, AssetLableResponse> responseConverter;
 
         @Override
@@ -49,7 +54,11 @@ public class AssetLableServiceImpl extends BaseServiceImpl<AssetLable> implement
 
         @Override
         public List<AssetLableResponse> findListAssetLable(AssetLableQuery query) throws Exception {
-            return assetLableDao.findListAssetLable(query);
+            List<AssetLableDTO> assetLableDTO = assetLableDao.findListAssetLable(query);
+            //TODO
+            //需要将assetLableDTO转达成AssetLableResponse
+            List<AssetLableResponse> assetLableResponse = new ArrayList<AssetLableResponse>();
+            return assetLableResponse;
         }
 
         public Integer findCountAssetLable(AssetLableQuery query) throws Exception {

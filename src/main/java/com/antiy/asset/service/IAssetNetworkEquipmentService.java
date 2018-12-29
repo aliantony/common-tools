@@ -2,9 +2,10 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
+import java.io.Serializable;
 import java.util.List;
 
+import com.antiy.asset.entity.dto.AssetNetworkEquipmentDO;
 import com.antiy.asset.entity.vo.query.AssetNetworkEquipmentQuery;
 import com.antiy.asset.entity.vo.request.AssetNetworkEquipmentRequest;
 import com.antiy.asset.entity.vo.response.AssetNetworkEquipmentResponse;
@@ -23,30 +24,31 @@ public interface IAssetNetworkEquipmentService extends IBaseService<AssetNetwork
 
         /**
          * 保存
-         * @param assetNetworkEquipmentRequest
+         * @param request
          * @return
          */
-        Integer saveAssetNetworkEquipment(AssetNetworkEquipmentRequest assetNetworkEquipmentRequest) throws Exception;
+        Integer saveAssetNetworkEquipment(AssetNetworkEquipmentRequest request) throws Exception;
 
         /**
          * 修改
-         * @param assetNetworkEquipmentRequest
+         * @param request
          * @return
          */
-        Integer updateAssetNetworkEquipment(AssetNetworkEquipmentRequest assetNetworkEquipmentRequest) throws Exception;
+        Integer updateAssetNetworkEquipment(AssetNetworkEquipmentRequest request) throws Exception;
 
         /**
          * 查询对象集合
-         * @param assetNetworkEquipmentQuery
+         * @param query
          * @return
          */
-        List<AssetNetworkEquipmentResponse> findListAssetNetworkEquipment(AssetNetworkEquipmentQuery assetNetworkEquipmentQuery) throws Exception;
+        @Override
+        public List<AssetNetworkEquipmentResponse> findListAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception;
 
         /**
          * 批量查询
-         * @param assetNetworkEquipmentQuery
+         * @param query
          * @return
          */
-        PageResult<AssetNetworkEquipmentResponse> findPageAssetNetworkEquipment(AssetNetworkEquipmentQuery assetNetworkEquipmentQuery) throws Exception;
+        PageResult<AssetNetworkEquipmentResponse> findPageAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception;
 
 }

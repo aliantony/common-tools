@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetHardDisk;
+import com.antiy.asset.entity.dto.AssetHardDiskDTO;
 import com.antiy.asset.entity.vo.query.AssetHardDiskQuery;
-import com.antiy.asset.entity.vo.response.AssetHardDiskResponse;
 
 /**
  * <p>
@@ -16,5 +16,5 @@ import com.antiy.asset.entity.vo.response.AssetHardDiskResponse;
  */
 public interface AssetHardDiskDao extends IBaseDao<AssetHardDisk> {
 
-    List<AssetHardDiskResponse> findListAssetHardDisk(AssetHardDiskQuery query) throws Exception;
+    List<AssetHardDiskDTO> findListAssetHardDisk(AssetHardDiskQuery query) throws Exception;
 }

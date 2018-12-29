@@ -128,6 +128,7 @@ public class AssetGenerator {
         String requestPath = "/template/request.java.vm";
         String responsePath = "/template/response.java.vm";
         String queryPath = "/template/query.java.vm";
+        String dto = "/template/dto.java.vm";
         List<FileOutConfig> focList = new ArrayList<>();
 //         自定义配置会被优先输出
         focList.add(new FileOutConfig(templatePath) {
@@ -142,7 +143,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return entityPath +"/vo/request/" + tableInfo.getEntityName() + "Request" + StringPool.DOT_JAVA;
+                return entityPath +"/entity/vo/request/" + tableInfo.getEntityName() + "Request" + StringPool.DOT_JAVA;
             }
         });
 
@@ -150,7 +151,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return entityPath + "/vo/response/" + tableInfo.getEntityName() + "Response" + StringPool.DOT_JAVA;
+                return entityPath + "/entity/vo/response/" + tableInfo.getEntityName() + "Response" + StringPool.DOT_JAVA;
             }
         });
 
@@ -158,7 +159,15 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return entityPath + "/vo/response/" + tableInfo.getEntityName() + "Query" + StringPool.DOT_JAVA;
+                return entityPath + "/entity/vo/query/" + tableInfo.getEntityName() + "Query" + StringPool.DOT_JAVA;
+            }
+        });
+
+        focList.add(new FileOutConfig(dto) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义输出文件名
+                return entityPath + "/entity/dto/" + tableInfo.getEntityName() + "DTO" + StringPool.DOT_JAVA;
             }
         });
 

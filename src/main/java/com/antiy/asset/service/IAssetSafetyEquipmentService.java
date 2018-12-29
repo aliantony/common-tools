@@ -2,9 +2,10 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
+import java.io.Serializable;
 import java.util.List;
 
+import com.antiy.asset.entity.dto.AssetSafetyEquipmentDO;
 import com.antiy.asset.entity.vo.query.AssetSafetyEquipmentQuery;
 import com.antiy.asset.entity.vo.request.AssetSafetyEquipmentRequest;
 import com.antiy.asset.entity.vo.response.AssetSafetyEquipmentResponse;
@@ -23,30 +24,31 @@ public interface IAssetSafetyEquipmentService extends IBaseService<AssetSafetyEq
 
         /**
          * 保存
-         * @param assetSafetyEquipmentRequest
+         * @param request
          * @return
          */
-        Integer saveAssetSafetyEquipment(AssetSafetyEquipmentRequest assetSafetyEquipmentRequest) throws Exception;
+        Integer saveAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception;
 
         /**
          * 修改
-         * @param assetSafetyEquipmentRequest
+         * @param request
          * @return
          */
-        Integer updateAssetSafetyEquipment(AssetSafetyEquipmentRequest assetSafetyEquipmentRequest) throws Exception;
+        Integer updateAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception;
 
         /**
          * 查询对象集合
-         * @param assetSafetyEquipmentQuery
+         * @param query
          * @return
          */
-        List<AssetSafetyEquipmentResponse> findListAssetSafetyEquipment(AssetSafetyEquipmentQuery assetSafetyEquipmentQuery) throws Exception;
+        @Override
+        public List<AssetSafetyEquipmentResponse> findListAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception;
 
         /**
          * 批量查询
-         * @param assetSafetyEquipmentQuery
+         * @param query
          * @return
          */
-        PageResult<AssetSafetyEquipmentResponse> findPageAssetSafetyEquipment(AssetSafetyEquipmentQuery assetSafetyEquipmentQuery) throws Exception;
+        PageResult<AssetSafetyEquipmentResponse> findPageAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception;
 
 }

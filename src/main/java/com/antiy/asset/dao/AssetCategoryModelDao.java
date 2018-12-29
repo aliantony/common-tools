@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.entity.dto.AssetCategoryModelDTO;
 import com.antiy.asset.entity.vo.query.AssetCategoryModelQuery;
-import com.antiy.asset.entity.vo.response.AssetCategoryModelResponse;
 
 /**
  * <p>
@@ -16,5 +16,5 @@ import com.antiy.asset.entity.vo.response.AssetCategoryModelResponse;
  */
 public interface AssetCategoryModelDao extends IBaseDao<AssetCategoryModel> {
 
-    List<AssetCategoryModelResponse> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
+    List<AssetCategoryModelDTO> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
 }

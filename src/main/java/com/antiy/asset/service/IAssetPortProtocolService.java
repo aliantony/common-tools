@@ -2,9 +2,10 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
+import java.io.Serializable;
 import java.util.List;
 
+import com.antiy.asset.entity.dto.AssetPortProtocolDO;
 import com.antiy.asset.entity.vo.query.AssetPortProtocolQuery;
 import com.antiy.asset.entity.vo.request.AssetPortProtocolRequest;
 import com.antiy.asset.entity.vo.response.AssetPortProtocolResponse;
@@ -23,30 +24,31 @@ public interface IAssetPortProtocolService extends IBaseService<AssetPortProtoco
 
         /**
          * 保存
-         * @param assetPortProtocolRequest
+         * @param request
          * @return
          */
-        Integer saveAssetPortProtocol(AssetPortProtocolRequest assetPortProtocolRequest) throws Exception;
+        Integer saveAssetPortProtocol(AssetPortProtocolRequest request) throws Exception;
 
         /**
          * 修改
-         * @param assetPortProtocolRequest
+         * @param request
          * @return
          */
-        Integer updateAssetPortProtocol(AssetPortProtocolRequest assetPortProtocolRequest) throws Exception;
+        Integer updateAssetPortProtocol(AssetPortProtocolRequest request) throws Exception;
 
         /**
          * 查询对象集合
-         * @param assetPortProtocolQuery
+         * @param query
          * @return
          */
-        List<AssetPortProtocolResponse> findListAssetPortProtocol(AssetPortProtocolQuery assetPortProtocolQuery) throws Exception;
+        @Override
+        public List<AssetPortProtocolResponse> findListAssetPortProtocol(AssetPortProtocolQuery query) throws Exception;
 
         /**
          * 批量查询
-         * @param assetPortProtocolQuery
+         * @param query
          * @return
          */
-        PageResult<AssetPortProtocolResponse> findPageAssetPortProtocol(AssetPortProtocolQuery assetPortProtocolQuery) throws Exception;
+        PageResult<AssetPortProtocolResponse> findPageAssetPortProtocol(AssetPortProtocolQuery query) throws Exception;
 
 }

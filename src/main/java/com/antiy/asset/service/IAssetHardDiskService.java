@@ -2,9 +2,10 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
+import java.io.Serializable;
 import java.util.List;
 
+import com.antiy.asset.entity.dto.AssetHardDiskDO;
 import com.antiy.asset.entity.vo.query.AssetHardDiskQuery;
 import com.antiy.asset.entity.vo.request.AssetHardDiskRequest;
 import com.antiy.asset.entity.vo.response.AssetHardDiskResponse;
@@ -23,30 +24,31 @@ public interface IAssetHardDiskService extends IBaseService<AssetHardDisk> {
 
         /**
          * 保存
-         * @param assetHardDiskRequest
+         * @param request
          * @return
          */
-        Integer saveAssetHardDisk(AssetHardDiskRequest assetHardDiskRequest) throws Exception;
+        Integer saveAssetHardDisk(AssetHardDiskRequest request) throws Exception;
 
         /**
          * 修改
-         * @param assetHardDiskRequest
+         * @param request
          * @return
          */
-        Integer updateAssetHardDisk(AssetHardDiskRequest assetHardDiskRequest) throws Exception;
+        Integer updateAssetHardDisk(AssetHardDiskRequest request) throws Exception;
 
         /**
          * 查询对象集合
-         * @param assetHardDiskQuery
+         * @param query
          * @return
          */
-        List<AssetHardDiskResponse> findListAssetHardDisk(AssetHardDiskQuery assetHardDiskQuery) throws Exception;
+        @Override
+        public List<AssetHardDiskResponse> findListAssetHardDisk(AssetHardDiskQuery query) throws Exception;
 
         /**
          * 批量查询
-         * @param assetHardDiskQuery
+         * @param query
          * @return
          */
-        PageResult<AssetHardDiskResponse> findPageAssetHardDisk(AssetHardDiskQuery assetHardDiskQuery) throws Exception;
+        PageResult<AssetHardDiskResponse> findPageAssetHardDisk(AssetHardDiskQuery query) throws Exception;
 
 }

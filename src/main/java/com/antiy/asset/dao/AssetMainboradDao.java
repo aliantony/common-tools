@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetMainborad;
+import com.antiy.asset.entity.dto.AssetMainboradDTO;
 import com.antiy.asset.entity.vo.query.AssetMainboradQuery;
-import com.antiy.asset.entity.vo.response.AssetMainboradResponse;
 
 /**
  * <p>
@@ -16,5 +16,5 @@ import com.antiy.asset.entity.vo.response.AssetMainboradResponse;
  */
 public interface AssetMainboradDao extends IBaseDao<AssetMainborad> {
 
-    List<AssetMainboradResponse> findListAssetMainborad(AssetMainboradQuery query) throws Exception;
+    List<AssetMainboradDTO> findListAssetMainborad(AssetMainboradQuery query) throws Exception;
 }

@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetSafetyEquipment;
+import com.antiy.asset.entity.dto.AssetSafetyEquipmentDTO;
 import com.antiy.asset.entity.vo.query.AssetSafetyEquipmentQuery;
-import com.antiy.asset.entity.vo.response.AssetSafetyEquipmentResponse;
 
 /**
  * <p>
@@ -16,5 +16,5 @@ import com.antiy.asset.entity.vo.response.AssetSafetyEquipmentResponse;
  */
 public interface AssetSafetyEquipmentDao extends IBaseDao<AssetSafetyEquipment> {
 
-    List<AssetSafetyEquipmentResponse> findListAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception;
+    List<AssetSafetyEquipmentDTO> findListAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception;
 }
