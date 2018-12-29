@@ -1,24 +1,20 @@
 package com.antiy.asset.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import java.util.List;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.BaseConverter;
-import java.util.ArrayList;
-import org.springframework.stereotype.Service;
-
-import com.antiy.asset.entity.AssetMemory;
 import com.antiy.asset.dao.AssetMemoryDao;
-import com.antiy.asset.service.IAssetMemoryService;
+import com.antiy.asset.entity.AssetMemory;
 import com.antiy.asset.entity.dto.AssetMemoryDTO;
+import com.antiy.asset.entity.vo.query.AssetMemoryQuery;
 import com.antiy.asset.entity.vo.request.AssetMemoryRequest;
 import com.antiy.asset.entity.vo.response.AssetMemoryResponse;
-import com.antiy.asset.entity.vo.query.AssetMemoryQuery;
-
+import com.antiy.asset.service.IAssetMemoryService;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.PageResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * <p>
@@ -55,7 +51,7 @@ public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> impleme
         @Override
         public List<AssetMemoryResponse> findListAssetMemory(AssetMemoryQuery query) throws Exception {
             List<AssetMemoryDTO> assetMemoryDTO = assetMemoryDao.findListAssetMemory(query);
-            //TODO
+            //TODTO;
             //需要将assetMemoryDTO转达成AssetMemoryResponse
             List<AssetMemoryResponse> assetMemoryResponse = new ArrayList<AssetMemoryResponse>();
             return assetMemoryResponse;

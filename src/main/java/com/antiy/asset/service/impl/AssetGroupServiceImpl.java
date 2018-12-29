@@ -1,22 +1,20 @@
 package com.antiy.asset.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.BaseConverter;
-import java.util.ArrayList;
-import org.springframework.stereotype.Service;
-
-import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.dao.AssetGroupDao;
-import com.antiy.asset.service.IAssetGroupService;
+import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.dto.AssetGroupDTO;
+import com.antiy.asset.entity.vo.query.AssetGroupQuery;
 import com.antiy.asset.entity.vo.request.AssetGroupRequest;
 import com.antiy.asset.entity.vo.response.AssetGroupResponse;
-import com.antiy.asset.entity.vo.query.AssetGroupQuery;
-
+import com.antiy.asset.service.IAssetGroupService;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.PageResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * <p>
@@ -53,7 +51,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         @Override
         public List<AssetGroupResponse> findListAssetGroup(AssetGroupQuery query) throws Exception {
             List<AssetGroupDTO> assetGroupDTO = assetGroupDao.findListAssetGroup(query);
-            //TODO
+            //TODTO;
             //需要将assetGroupDTO转达成AssetGroupResponse
             List<AssetGroupResponse> assetGroupResponse = new ArrayList<AssetGroupResponse>();
             return assetGroupResponse;

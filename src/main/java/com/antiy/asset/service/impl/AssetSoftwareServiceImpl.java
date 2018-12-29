@@ -1,24 +1,20 @@
 package com.antiy.asset.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import java.util.List;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.BaseConverter;
-import java.util.ArrayList;
-import org.springframework.stereotype.Service;
-
-import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.dao.AssetSoftwareDao;
-import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.dto.AssetSoftwareDTO;
+import com.antiy.asset.entity.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.entity.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.entity.vo.response.AssetSoftwareResponse;
-import com.antiy.asset.entity.vo.query.AssetSoftwareQuery;
-
+import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.PageResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * <p>
@@ -55,7 +51,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         @Override
         public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query) throws Exception {
             List<AssetSoftwareDTO> assetSoftwareDTO = assetSoftwareDao.findListAssetSoftware(query);
-            //TODO
+            //TODTO;
             //需要将assetSoftwareDTO转达成AssetSoftwareResponse
             List<AssetSoftwareResponse> assetSoftwareResponse = new ArrayList<AssetSoftwareResponse>();
             return assetSoftwareResponse;

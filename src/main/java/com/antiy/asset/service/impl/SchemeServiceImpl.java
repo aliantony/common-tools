@@ -1,24 +1,20 @@
 package com.antiy.asset.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import java.util.List;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.BaseConverter;
-import java.util.ArrayList;
-import org.springframework.stereotype.Service;
-
-import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.dao.SchemeDao;
-import com.antiy.asset.service.ISchemeService;
+import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.entity.dto.SchemeDTO;
+import com.antiy.asset.entity.vo.query.SchemeQuery;
 import com.antiy.asset.entity.vo.request.SchemeRequest;
 import com.antiy.asset.entity.vo.response.SchemeResponse;
-import com.antiy.asset.entity.vo.query.SchemeQuery;
-
+import com.antiy.asset.service.ISchemeService;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.PageResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * <p>
@@ -55,7 +51,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         @Override
         public List<SchemeResponse> findListScheme(SchemeQuery query) throws Exception {
             List<SchemeDTO> schemeDTO = schemeDao.findListScheme(query);
-            //TODO
+            //TODTO;
             //需要将schemeDTO转达成SchemeResponse
             List<SchemeResponse> schemeResponse = new ArrayList<SchemeResponse>();
             return schemeResponse;

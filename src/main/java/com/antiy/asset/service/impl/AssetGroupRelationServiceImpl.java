@@ -1,24 +1,20 @@
 package com.antiy.asset.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import java.util.List;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.BaseConverter;
-import java.util.ArrayList;
-import org.springframework.stereotype.Service;
-
-import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.dao.AssetGroupRelationDao;
-import com.antiy.asset.service.IAssetGroupRelationService;
+import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.entity.dto.AssetGroupRelationDTO;
+import com.antiy.asset.entity.vo.query.AssetGroupRelationQuery;
 import com.antiy.asset.entity.vo.request.AssetGroupRelationRequest;
 import com.antiy.asset.entity.vo.response.AssetGroupRelationResponse;
-import com.antiy.asset.entity.vo.query.AssetGroupRelationQuery;
-
+import com.antiy.asset.service.IAssetGroupRelationService;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.PageResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * <p>
@@ -55,7 +51,7 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
         @Override
         public List<AssetGroupRelationResponse> findListAssetGroupRelation(AssetGroupRelationQuery query) throws Exception {
             List<AssetGroupRelationDTO> assetGroupRelationDTO = assetGroupRelationDao.findListAssetGroupRelation(query);
-            //TODO
+            //TODTO;
             //需要将assetGroupRelationDTO转达成AssetGroupRelationResponse
             List<AssetGroupRelationResponse> assetGroupRelationResponse = new ArrayList<AssetGroupRelationResponse>();
             return assetGroupRelationResponse;

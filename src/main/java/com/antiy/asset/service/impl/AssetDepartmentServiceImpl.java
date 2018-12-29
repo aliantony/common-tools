@@ -1,24 +1,20 @@
 package com.antiy.asset.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import java.util.List;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.BaseConverter;
-import java.util.ArrayList;
-import org.springframework.stereotype.Service;
-
-import com.antiy.asset.entity.AssetDepartment;
 import com.antiy.asset.dao.AssetDepartmentDao;
-import com.antiy.asset.service.IAssetDepartmentService;
+import com.antiy.asset.entity.AssetDepartment;
 import com.antiy.asset.entity.dto.AssetDepartmentDTO;
+import com.antiy.asset.entity.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.entity.vo.request.AssetDepartmentRequest;
 import com.antiy.asset.entity.vo.response.AssetDepartmentResponse;
-import com.antiy.asset.entity.vo.query.AssetDepartmentQuery;
-
+import com.antiy.asset.service.IAssetDepartmentService;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.PageResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * <p>
@@ -55,7 +51,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         @Override
         public List<AssetDepartmentResponse> findListAssetDepartment(AssetDepartmentQuery query) throws Exception {
             List<AssetDepartmentDTO> assetDepartmentDTO = assetDepartmentDao.findListAssetDepartment(query);
-            //TODO
+            //TODTO;
             //需要将assetDepartmentDTO转达成AssetDepartmentResponse
             List<AssetDepartmentResponse> assetDepartmentResponse = new ArrayList<AssetDepartmentResponse>();
             return assetDepartmentResponse;

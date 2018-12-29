@@ -1,24 +1,20 @@
 package com.antiy.asset.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import java.util.List;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.BaseConverter;
-import java.util.ArrayList;
-import org.springframework.stereotype.Service;
-
-import com.antiy.asset.entity.AssetLabelRelation;
 import com.antiy.asset.dao.AssetLabelRelationDao;
-import com.antiy.asset.service.IAssetLabelRelationService;
+import com.antiy.asset.entity.AssetLabelRelation;
 import com.antiy.asset.entity.dto.AssetLabelRelationDTO;
+import com.antiy.asset.entity.vo.query.AssetLabelRelationQuery;
 import com.antiy.asset.entity.vo.request.AssetLabelRelationRequest;
 import com.antiy.asset.entity.vo.response.AssetLabelRelationResponse;
-import com.antiy.asset.entity.vo.query.AssetLabelRelationQuery;
-
+import com.antiy.asset.service.IAssetLabelRelationService;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.PageResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * <p>
@@ -55,7 +51,7 @@ public class AssetLabelRelationServiceImpl extends BaseServiceImpl<AssetLabelRel
         @Override
         public List<AssetLabelRelationResponse> findListAssetLabelRelation(AssetLabelRelationQuery query) throws Exception {
             List<AssetLabelRelationDTO> assetLabelRelationDTO = assetLabelRelationDao.findListAssetLabelRelation(query);
-            //TODO
+            //TODTO;
             //需要将assetLabelRelationDTO转达成AssetLabelRelationResponse
             List<AssetLabelRelationResponse> assetLabelRelationResponse = new ArrayList<AssetLabelRelationResponse>();
             return assetLabelRelationResponse;

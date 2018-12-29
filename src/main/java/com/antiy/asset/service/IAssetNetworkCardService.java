@@ -1,15 +1,15 @@
 package com.antiy.asset.service;
 
-import com.antiy.common.base.IBaseService;
-import com.antiy.common.base.PageResult;
-import java.io.Serializable;
-import java.util.List;
-
-import com.antiy.asset.entity.dto.AssetNetworkCardDTO;;
+import com.antiy.asset.entity.AssetNetworkCard;
 import com.antiy.asset.entity.vo.query.AssetNetworkCardQuery;
 import com.antiy.asset.entity.vo.request.AssetNetworkCardRequest;
 import com.antiy.asset.entity.vo.response.AssetNetworkCardResponse;
-import com.antiy.asset.entity.AssetNetworkCard;
+import com.antiy.common.base.IBaseService;
+import com.antiy.common.base.PageResult;
+
+import java.util.List;
+
+;
 
 
 /**

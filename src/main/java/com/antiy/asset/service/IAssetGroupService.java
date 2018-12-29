@@ -1,15 +1,15 @@
 package com.antiy.asset.service;
 
-import com.antiy.common.base.IBaseService;
-import com.antiy.common.base.PageResult;
-import java.io.Serializable;
-import java.util.List;
-
-import com.antiy.asset.entity.dto.AssetGroupDTO;;
+import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.vo.query.AssetGroupQuery;
 import com.antiy.asset.entity.vo.request.AssetGroupRequest;
 import com.antiy.asset.entity.vo.response.AssetGroupResponse;
-import com.antiy.asset.entity.AssetGroup;
+import com.antiy.common.base.IBaseService;
+import com.antiy.common.base.PageResult;
+
+import java.util.List;
+
+;
 
 
 /**
