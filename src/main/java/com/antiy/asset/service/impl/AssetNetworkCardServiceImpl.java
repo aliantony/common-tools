@@ -31,9 +31,9 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
         @Resource
         private AssetNetworkCardDao assetNetworkCardDao;
 
-        private BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>  requestConverter;
+        private BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>  requestConverter = new BaseConverter<>();
         
-        private BaseConverter<AssetNetworkCard, AssetNetworkCardResponse> responseConverter;
+        private BaseConverter<AssetNetworkCard, AssetNetworkCardResponse> responseConverter = new BaseConverter<>();
 
         @Override
         public Integer saveAssetNetworkCard(AssetNetworkCardRequest request) throws Exception {

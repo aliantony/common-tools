@@ -31,9 +31,9 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
         @Resource
         private AssetMainboradDao assetMainboradDao;
 
-        private BaseConverter<AssetMainboradRequest, AssetMainborad>  requestConverter;
+        private BaseConverter<AssetMainboradRequest, AssetMainborad>  requestConverter = new BaseConverter<>();;
         
-        private BaseConverter<AssetMainborad, AssetMainboradResponse> responseConverter;
+        private BaseConverter<AssetMainborad, AssetMainboradResponse> responseConverter = new BaseConverter<>();;
 
         @Override
         public Integer saveAssetMainborad(AssetMainboradRequest request) throws Exception {

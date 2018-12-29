@@ -18,6 +18,12 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
     private static final long serialVersionUID = 1L;
 
     /**
+     * 主键
+     */
+    @ApiModelProperty("主键")
+    private int id;
+
+    /**
      *  资产主键
      */
     @ApiModelProperty("资产主键")
@@ -96,7 +102,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      *  备注
      */
     @ApiModelProperty("备注")
-    private byte[] memo;
+    private String memo;
     /**
      *  更新时间
      */
@@ -108,13 +114,19 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
     @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer status;
 
-                
-                
-    public Integer getAssetId() {
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public int getAssetId() {
     return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(int assetId) {
         this.assetId = assetId;
         }
     
@@ -245,11 +257,11 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
         }
     
                 
-    public byte[] getMemo() {
+    public String getMemo() {
     return memo;
     }
 
-    public void setMemo(byte[] memo) {
+    public void setMemo(String memo) {
         this.memo = memo;
         }
     

@@ -18,6 +18,12 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
     private static final long serialVersionUID = 1L;
 
     /**
+     * 主键
+     */
+    @ApiModelProperty("主键")
+    private int id;
+
+    /**
      *  资产主键
      */
     @ApiModelProperty("资产主键")
@@ -93,8 +99,14 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
     @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer status;
 
-                
-                
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public Integer getAssetId() {
     return assetId;
     }

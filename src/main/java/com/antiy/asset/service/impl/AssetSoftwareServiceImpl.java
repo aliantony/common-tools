@@ -31,9 +31,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         @Resource
         private AssetSoftwareDao assetSoftwareDao;
 
-        private BaseConverter<AssetSoftwareRequest, AssetSoftware>  requestConverter;
+        private BaseConverter<AssetSoftwareRequest, AssetSoftware>  requestConverter = new BaseConverter<>();;
         
-        private BaseConverter<AssetSoftware, AssetSoftwareResponse> responseConverter;
+        private BaseConverter<AssetSoftware, AssetSoftwareResponse> responseConverter = new BaseConverter<>();;
 
         @Override
         public Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception {

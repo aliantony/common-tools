@@ -153,7 +153,7 @@
     </update>
 
     <!-- 根据主键查询 -->
-    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    <select id="getById" resultType="com.antiy.asset.entity.AssetLabelRelation" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
         from
@@ -162,13 +162,13 @@
     </select>
 
 
-    <delete id="deleteById" parameterType="java.lang.Long">
+    <delete id="deleteById" parameterType="java.lang.Integer">
         delete from
         <include refid="Table_Name"></include>
         where id = #{id}
     </delete>
 
-    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
+    <select id="getByWhere" resultType="com.antiy.asset.entity.AssetLabelRelation" parameterType="java.util.Map">
         select
         <include refid="Base_Column_List"/>
         from
@@ -181,7 +181,7 @@
     </select>
 
 
-    <select id="getAll" resultMap="BaseResultMap">
+    <select id="getAll" resultType="com.antiy.asset.entity.AssetLabelRelation">
         select *
         from
         <include refid="Table_Name"></include>
@@ -199,7 +199,7 @@
         </where>
     </select>
 
-    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetLabelRelation" parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <where>

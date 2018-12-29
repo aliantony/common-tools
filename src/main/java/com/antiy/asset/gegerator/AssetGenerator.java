@@ -23,22 +23,28 @@ public class AssetGenerator {
     /**
      * 代码输出路径
      */
-    private String outPutDir = "F:\\antiy\\newproject\\antiy-asset\\src\\main\\java";
+    private String outPutDir = "F:\\Ya";
 
     /**
      * 代码作者
      */
-    private String author = "xxxxxxxxx";
+    private String author = "zhangyajun";
 
     /**
      * 代码包路径
      */
-    private String parent = "com.antiy.asset";
+    private String parent = "com.antiy";
 
     /**
      * 模块名
      */
     private String moduleName = "asset";
+
+    /**
+     * mapper.xml路径
+     */
+    private String mapperXmlPath = outPutDir;
+    private String entityPath = outPutDir ;
 
     /**
      * <p> 根据MySQL 表生成对象（controller,service,dao,entity,mappper.xml ） </p>
@@ -53,6 +59,7 @@ public class AssetGenerator {
             System.out.println("作者不能为空！！！");
             return;
         }
+
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
@@ -73,8 +80,26 @@ public class AssetGenerator {
         // gc.setControllerName("%sAction");
         mpg.setGlobalConfig(gc);
         setDbConfig(mpg);
-        setStrategy(mpg);
 
+
+// ------------策略配置start-----------
+//        配置需要生成代码的表
+        StrategyConfig strategy = new StrategyConfig();
+        // 表名生成策略
+        strategy.setNaming(NamingStrategy.underline_to_camel);
+        // 需要生成的表
+        strategy.setInclude(new String[] {"asset","asset_category_model","asset_cpu","asset_department",
+                "asset_group","asset_group_relation","asset_hard_disk","asset_label_relation","asset_lable",
+                "asset_link_relation","asset_mainborad","asset_memory","asset_network_card","asset_network_equipment",
+                "asset_port_protocol","asset_safety_equipment","asset_software","asset_software_license","asset_software_relation","asset_user","scheme"});
+
+//        strategy.setInclude(new String[]{"asset_user"});
+
+//        strategy.setInclude(new String[] {"scheme"});
+        strategy.setEntityColumnConstant(true);
+        mpg.setStrategy(strategy);
+
+        // ------------策略配置end-----------
 
         // 包配置
         PackageConfig pc = new PackageConfig();
@@ -82,6 +107,7 @@ public class AssetGenerator {
         pc.setController("controller");
         pc.setEntity("entity");
         pc.setMapper("dao");
+        pc.setModuleName(moduleName);
         mpg.setPackageInfo(pc);
 
 
@@ -89,7 +115,8 @@ public class AssetGenerator {
 
         //-----------指定mapper.xml输出路径start-----------
         // 自定义输出配置
-        String projectPath = System.getProperty("user.dir");
+//        String projectPath = System.getProperty("user.dir");
+        String projectPath = outPutDir;
         InjectionConfig cfg = new InjectionConfig() {
             @Override
             public void initMap() {
@@ -107,7 +134,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return projectPath + "/src/main/resources/mapper/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+                return mapperXmlPath + "/mapper/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
             }
         });
 
@@ -115,7 +142,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return projectPath + "/src/main/java/com/antiy/"+ moduleName +"/entity/vo/request/" + tableInfo.getEntityName() + "Request" + StringPool.DOT_JAVA;
+                return entityPath +"/vo/request/" + tableInfo.getEntityName() + "Request" + StringPool.DOT_JAVA;
             }
         });
 
@@ -123,7 +150,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return projectPath + "/src/main/java/com/antiy/"+ moduleName + "/entity/vo/response/" + tableInfo.getEntityName() + "Response" + StringPool.DOT_JAVA;
+                return entityPath + "/vo/response/" + tableInfo.getEntityName() + "Response" + StringPool.DOT_JAVA;
             }
         });
 
@@ -131,7 +158,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return projectPath + "/src/main/java/com/antiy/"+ moduleName +"/entity/vo/query/" + tableInfo.getEntityName() + "Query" + StringPool.DOT_JAVA;
+                return entityPath + "/vo/response/" + tableInfo.getEntityName() + "Query" + StringPool.DOT_JAVA;
             }
         });
 
@@ -142,6 +169,7 @@ public class AssetGenerator {
         // 执行生成
         mpg.execute();
     }
+
 
     public DbColumnType pTypeConvert(String fieldType) {
         String t = fieldType.toLowerCase();
@@ -179,28 +207,7 @@ public class AssetGenerator {
     }
 
 
-    /**
-     * 配置需要生成代码的表
-     *
-     * @param mpg
-     */
-    public void setStrategy(AutoGenerator mpg) {
-        // 策略配置
-        StrategyConfig strategy = new StrategyConfig();
-        // 表名生成策略
-        strategy.setNaming(NamingStrategy.underline_to_camel);
-        // 需要生成的表
-//        strategy.setInclude(new String[] {"asset","asset_category_model","asset_cpu","asset_department",
-//                "asset_group","asset_group_relation","asset_hard_disk","asset_label_relation","asset_lable",
-//                "asset_link_relation","asset_mainborad","asset_memory","asset_network_card","asset_network_equipment",
-//                "asset_port_protocol","asset_safety_equipment","asset_software","asset_software_license","asset_software_relation","asset_user","scheme"});
 
-//        strategy.setInclude(new String[]{"asset_user"});
-
-//        strategy.setInclude(new String[] {"scheme"});
-        strategy.setEntityColumnConstant(true);
-        mpg.setStrategy(strategy);
-    }
 
     /**
      * 数据源配置
