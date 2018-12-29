@@ -170,7 +170,7 @@
     </select>
 
 
-    <select id="findList${entity}" resultMap="com.antiy.asset.entity.vo.response.${entity}Response" parameterType="com.antiy.asset.entity.vo.query.${entity}Query">
+    <select id="findList${entity}" resultType="com.antiy.asset.entity.vo.response.${entity}Response" parameterType="com.antiy.asset.entity.vo.query.${entity}Query">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
