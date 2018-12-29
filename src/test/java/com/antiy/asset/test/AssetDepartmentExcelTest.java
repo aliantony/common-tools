@@ -1,11 +1,10 @@
 package com.antiy.asset.test;
 
-import com.antiy.asset.dao.AssetDepartmentDao;
 import com.antiy.asset.entity.AssetDepartment;
+import com.antiy.asset.entity.vo.templet.AssetDepartmentEntity;
+import com.antiy.asset.entity.vo.templet.AssetEntity;
 import com.antiy.asset.excel.ExcelUtils;
 import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.vo.templet.AssetDepartmentEntity;
-import com.antiy.asset.vo.templet.AssetEntity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

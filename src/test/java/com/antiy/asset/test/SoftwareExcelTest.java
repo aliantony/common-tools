@@ -2,9 +2,9 @@ package com.antiy.asset.test;
 
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.entity.vo.templet.AssetSoftwareEntity;
 import com.antiy.asset.excel.ExcelUtils;
 import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.vo.templet.AssetSoftwareEntity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
