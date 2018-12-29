@@ -17,7 +17,7 @@ import com.antiy.asset.entity.AssetNetworkCard;
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-28
+ * @since 2018-12-29
  */
 public interface IAssetNetworkCardService extends IBaseService<AssetNetworkCard> {
 

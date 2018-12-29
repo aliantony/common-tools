@@ -20,7 +20,7 @@ import com.antiy.asset.entity.vo.query.AssetNetworkEquipmentQuery;
 /**
  *
  * @author zhangyajun
- * @since 2018-12-28
+ * @since 2018-12-29
  */
 @Api(value = "AssetNetworkEquipment", description = "网络设备详情表")
 @RestController

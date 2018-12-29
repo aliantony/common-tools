@@ -18,11 +18,11 @@
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
-</resultMap>
+    </resultMap>
 <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, asset_id AS assetId, serial, brand, model, main_frequency AS mainFrequency, thread_size AS threadSize, core_size AS coreSize, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
-</sql>
+    </sql>
 
     <sql id="Table_Name">
         asset_cpu

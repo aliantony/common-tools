@@ -21,7 +21,7 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator{
      *  用途
      */
     @ApiModelProperty("用途")
-    private String use;
+    private String purpose;
     /**
      *  重要程度(0-不重要(not_major),1- 一般(general),3-重要(major),)
      */
@@ -65,12 +65,12 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator{
 
                 
                 
-    public String getUse() {
-    return use;
+    public String getPurpose() {
+    return purpose;
     }
 
-    public void setUse(String use) {
-        this.use = use;
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
         }
     
                 

@@ -20,7 +20,7 @@ import com.antiy.asset.entity.vo.query.AssetPortProtocolQuery;
 /**
  *
  * @author zhangyajun
- * @since 2018-12-28
+ * @since 2018-12-29
  */
 @Api(value = "AssetPortProtocol", description = "端口协议")
 @RestController

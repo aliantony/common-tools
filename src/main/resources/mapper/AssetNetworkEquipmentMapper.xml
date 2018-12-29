@@ -23,11 +23,11 @@
         <result column="memo" property="memo"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="status" property="status"/>
-</resultMap>
+    </resultMap>
 <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, asset_id AS assetId, interface_size AS interfaceSize, is_wireless AS isWireless, inner_ip AS innerIp, outer_ip AS outerIp, mac_address AS macAddress, subnet_mask AS subnetMask, expect_bandwidth AS expectBandwidth, register, dram_size AS dramSize, flash_size AS flashSize, ncrm_size AS ncrmSize, create_user AS createUser, modify_user AS modifyUser, gmt_create AS gmtCreate, memo, gmt_modified AS gmtModified, status
-</sql>
+    </sql>
 
     <sql id="Table_Name">
         asset_network_equipment

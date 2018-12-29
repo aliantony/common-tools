@@ -20,7 +20,7 @@ import com.antiy.asset.entity.vo.query.AssetNetworkCardQuery;
 /**
  *
  * @author zhangyajun
- * @since 2018-12-28
+ * @since 2018-12-29
  */
 @Api(value = "AssetNetworkCard", description = "网卡信息表")
 @RestController

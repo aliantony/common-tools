@@ -20,7 +20,7 @@ import com.antiy.asset.entity.vo.query.AssetSafetyEquipmentQuery;
 /**
  *
  * @author zhangyajun
- * @since 2018-12-28
+ * @since 2018-12-29
  */
 @Api(value = "AssetSafetyEquipment", description = "安全设备详情表")
 @RestController

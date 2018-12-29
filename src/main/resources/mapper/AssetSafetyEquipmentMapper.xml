@@ -14,11 +14,11 @@
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="status" property="status"/>
-</resultMap>
+    </resultMap>
 <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, asset_id AS assetId, feature_library AS featureLibrary, strategy, memo, create_user AS createUser, modify_user AS modifyUser, gmt_create AS gmtCreate, gmt_modified AS gmtModified, status
-</sql>
+    </sql>
 
     <sql id="Table_Name">
         asset_safety_equipment

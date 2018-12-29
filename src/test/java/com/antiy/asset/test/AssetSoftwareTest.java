@@ -22,7 +22,8 @@ public class AssetSoftwareTest {
         HashMap<String, Object> map = new HashMap();
         List<AssetSoftware> list = null;
         try {
-            list = assetSoftwareDao.getByAssetId(2);
+            // TODO 此处需要新增接口
+            //list = assetSoftwareDao.getByAssetId(2);
             System.out.println(list.size());
             System.out.println(list);
         } catch (Exception e) {

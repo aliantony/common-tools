@@ -20,7 +20,7 @@ import com.antiy.asset.entity.vo.query.AssetMemoryQuery;
 /**
  *
  * @author zhangyajun
- * @since 2018-12-28
+ * @since 2018-12-29
  */
 @Api(value = "AssetMemory", description = "内存表")
 @RestController
