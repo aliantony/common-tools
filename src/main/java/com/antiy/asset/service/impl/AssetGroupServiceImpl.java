@@ -31,9 +31,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         @Resource
         private AssetGroupDao assetGroupDao;
 
-        private BaseConverter<AssetGroupRequest, AssetGroup>  requestConverter;
-        
-        private BaseConverter<AssetGroup, AssetGroupResponse> responseConverter;
+        private BaseConverter<AssetGroupRequest, AssetGroup>  requestConverter=new BaseConverter<>();
+
+        private BaseConverter<AssetGroup, AssetGroupResponse> responseConverter=new BaseConverter<>();
 
         @Override
         public Integer saveAssetGroup(AssetGroupRequest request) throws Exception {

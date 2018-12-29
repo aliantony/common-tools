@@ -9,14 +9,14 @@ import com.antiy.common.base.ActionResponse;
 
 import javax.annotation.Resource;
 
+
 import com.antiy.asset.service.IAssetDepartmentService;
 import com.antiy.asset.entity.vo.request.AssetDepartmentRequest;
 import com.antiy.asset.entity.vo.query.AssetDepartmentQuery;
 
-;
+
 
 /**
- *
  * @author zhangyajun
  * @since 2018-12-29
  */
@@ -60,9 +60,12 @@ public class AssetDepartmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetDepartment")AssetDepartmentRequest assetDepartment)throws Exception{
-        iAssetDepartmentService.updateAssetDepartment(assetDepartment);
-        return ActionResponse.success();
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentRequest assetDepartment) throws Exception {
+        Boolean success = iAssetDepartmentService.updateAssetDepartment(assetDepartment)>0;
+        if (success) {
+            return ActionResponse.success();
+        }
+        return ActionResponse.fail(RespBasicCode.ERROR, "更新数据失败");
     }
 
     /**
@@ -86,7 +89,7 @@ public class AssetDepartmentController {
      * @param id 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
+    @ApiOperation(value = "批量查询接口", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
@@ -113,5 +116,7 @@ public class AssetDepartmentController {
         }
         return ActionResponse.fail(RespBasicCode.ERROR, "删除数据失败");
     }
+
+
 }
 
