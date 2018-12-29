@@ -32,9 +32,9 @@ public class ${table.serviceImplName} extends BaseServiceImpl<${entity}> impleme
         @Resource
         private ${table.mapperName} ${table.entityPath}Dao;
 
-        private BaseConverter<${entity}Request, ${entity}>  requestConverter;
-        
-        private BaseConverter<${entity}, ${entity}Response> responseConverter;
+        private BaseConverter<${entity}Request, ${entity}>  requestConverter = new BaseConverter<${entity}, ${entity}Response>();
+
+        private BaseConverter<${entity}, ${entity}Response> responseConverter = new BaseConverter<${entity}, ${entity}Response>();
 
         @Override
         public Integer save${entity}(${entity}Request request) throws Exception {

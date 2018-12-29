@@ -3,8 +3,6 @@ package ${package.Entity}.vo.query;
 import com.antiy.common.base.ObjectQuery;
 import java.util.Date;
 import io.swagger.annotations.ApiModelProperty;
-import com.antiy.common.validation.ObjectValidator;
-import com.antiy.common.exception.RequestParamValidateException;
 /**
  * <p>
  * ${entity} 查询条件
@@ -14,10 +12,6 @@ import com.antiy.common.exception.RequestParamValidateException;
  * @since 2018-12-27
  */
 
-public class ${entity}Query extends ObjectQuery implements ObjectValidator{
+public class ${entity}Query extends ObjectQuery {
 
-    @Override
-    public void validate() throws RequestParamValidateException {
-
-    }
 }

@@ -16,8 +16,10 @@ import ${package.Entity}.vo.response.${entity}Response;
 import ${package.Entity}.vo.query.${entity}Query;
 
 #macro(getTableCamelName $entityName)
-    #set($simpleEntity = ${entityName.substring(${package.ModuleName.length()})})
-$simpleEntity.toLowerCase()##
+#if(${package.ModuleName})
+    #set($simpleEntity = $entityName.substring(${package.ModuleName.length()}).toLowerCase())
+#else#set($simpleEntity = ${entity})#end
+${simpleEntity.toLowerCase()}##
 #end
 
 /**
