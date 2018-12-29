@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetMainboradDO;
+import com.antiy.asset.entity.dto.AssetMainboradDTO;;
 import com.antiy.asset.entity.vo.query.AssetMainboradQuery;
 import com.antiy.asset.entity.vo.request.AssetMainboradRequest;
 import com.antiy.asset.entity.vo.response.AssetMainboradResponse;
@@ -41,8 +41,7 @@ public interface IAssetMainboradService extends IBaseService<AssetMainborad> {
          * @param query
          * @return
          */
-        @Override
-        public List<AssetMainboradResponse> findListAssetMainborad(AssetMainboradQuery query) throws Exception;
+        List<AssetMainboradResponse> findListAssetMainborad(AssetMainboradQuery query) throws Exception;
 
         /**
          * 批量查询

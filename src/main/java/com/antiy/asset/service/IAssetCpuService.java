@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetCpuDO;
+import com.antiy.asset.entity.dto.AssetCpuDTO;;
 import com.antiy.asset.entity.vo.query.AssetCpuQuery;
 import com.antiy.asset.entity.vo.request.AssetCpuRequest;
 import com.antiy.asset.entity.vo.response.AssetCpuResponse;
@@ -41,8 +41,7 @@ public interface IAssetCpuService extends IBaseService<AssetCpu> {
          * @param query
          * @return
          */
-        @Override
-        public List<AssetCpuResponse> findListAssetCpu(AssetCpuQuery query) throws Exception;
+        List<AssetCpuResponse> findListAssetCpu(AssetCpuQuery query) throws Exception;
 
         /**
          * 批量查询

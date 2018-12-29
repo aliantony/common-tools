@@ -4,7 +4,7 @@
  *
  * @Title: IEventService.java
  * @Package com.changhong.zbcloud.system.service
- * @Description: TODO
+ * @Description: TODTO;
  * @author: chenxinchong
  * @date: 2018年1月17日 上午10:35:33
  * @version V1.0
@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * @ClassName IEventService
- * @Description TODO
+ * @Description TODTO;
  * @author chenxinchong
  * @Date 2018年1月17日 上午10:35:33
  * @version 1.0.0

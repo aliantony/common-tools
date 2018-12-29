@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetLinkRelationDO;
+import com.antiy.asset.entity.dto.AssetLinkRelationDTO;;
 import com.antiy.asset.entity.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.entity.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.entity.vo.response.AssetLinkRelationResponse;
@@ -41,8 +41,7 @@ public interface IAssetLinkRelationService extends IBaseService<AssetLinkRelatio
          * @param query
          * @return
          */
-        @Override
-        public List<AssetLinkRelationResponse> findListAssetLinkRelation(AssetLinkRelationQuery query) throws Exception;
+        List<AssetLinkRelationResponse> findListAssetLinkRelation(AssetLinkRelationQuery query) throws Exception;
 
         /**
          * 批量查询

@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetNetworkEquipmentDO;
+import com.antiy.asset.entity.dto.AssetNetworkEquipmentDTO;;
 import com.antiy.asset.entity.vo.query.AssetNetworkEquipmentQuery;
 import com.antiy.asset.entity.vo.request.AssetNetworkEquipmentRequest;
 import com.antiy.asset.entity.vo.response.AssetNetworkEquipmentResponse;
@@ -41,8 +41,7 @@ public interface IAssetNetworkEquipmentService extends IBaseService<AssetNetwork
          * @param query
          * @return
          */
-        @Override
-        public List<AssetNetworkEquipmentResponse> findListAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception;
+        List<AssetNetworkEquipmentResponse> findListAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception;
 
         /**
          * 批量查询

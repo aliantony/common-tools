@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetLableDO;
+import com.antiy.asset.entity.dto.AssetLableDTO;;
 import com.antiy.asset.entity.vo.query.AssetLableQuery;
 import com.antiy.asset.entity.vo.request.AssetLableRequest;
 import com.antiy.asset.entity.vo.response.AssetLableResponse;
@@ -41,8 +41,7 @@ public interface IAssetLableService extends IBaseService<AssetLable> {
          * @param query
          * @return
          */
-        @Override
-        public List<AssetLableResponse> findListAssetLable(AssetLableQuery query) throws Exception;
+        List<AssetLableResponse> findListAssetLable(AssetLableQuery query) throws Exception;
 
         /**
          * 批量查询

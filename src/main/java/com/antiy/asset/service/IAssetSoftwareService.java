@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetSoftwareDO;
+import com.antiy.asset.entity.dto.AssetSoftwareDTO;;
 import com.antiy.asset.entity.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.entity.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.entity.vo.response.AssetSoftwareResponse;
@@ -41,8 +41,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
          * @param query
          * @return
          */
-        @Override
-        public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query) throws Exception;
+        List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query) throws Exception;
 
         /**
          * 批量查询

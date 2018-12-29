@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.SchemeDO;
+import com.antiy.asset.entity.dto.SchemeDTO;;
 import com.antiy.asset.entity.vo.query.SchemeQuery;
 import com.antiy.asset.entity.vo.request.SchemeRequest;
 import com.antiy.asset.entity.vo.response.SchemeResponse;
@@ -41,8 +41,7 @@ public interface ISchemeService extends IBaseService<Scheme> {
          * @param query
          * @return
          */
-        @Override
-        public List<SchemeResponse> findListScheme(SchemeQuery query) throws Exception;
+        List<SchemeResponse> findListScheme(SchemeQuery query) throws Exception;
 
         /**
          * 批量查询

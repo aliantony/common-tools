@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetHardDiskDO;
+import com.antiy.asset.entity.dto.AssetHardDiskDTO;;
 import com.antiy.asset.entity.vo.query.AssetHardDiskQuery;
 import com.antiy.asset.entity.vo.request.AssetHardDiskRequest;
 import com.antiy.asset.entity.vo.response.AssetHardDiskResponse;
@@ -41,8 +41,7 @@ public interface IAssetHardDiskService extends IBaseService<AssetHardDisk> {
          * @param query
          * @return
          */
-        @Override
-        public List<AssetHardDiskResponse> findListAssetHardDisk(AssetHardDiskQuery query) throws Exception;
+        List<AssetHardDiskResponse> findListAssetHardDisk(AssetHardDiskQuery query) throws Exception;
 
         /**
          * 批量查询

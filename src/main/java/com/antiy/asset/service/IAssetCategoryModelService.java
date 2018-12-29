@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetCategoryModelDO;
+import com.antiy.asset.entity.dto.AssetCategoryModelDTO;
 import com.antiy.asset.entity.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.entity.vo.request.AssetCategoryModelRequest;
 import com.antiy.asset.entity.vo.response.AssetCategoryModelResponse;
@@ -41,8 +41,7 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
          * @param query
          * @return
          */
-        @Override
-        public List<AssetCategoryModelResponse> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
+        List<AssetCategoryModelResponse> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
 
         /**
          * 批量查询

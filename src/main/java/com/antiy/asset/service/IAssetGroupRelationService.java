@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetGroupRelationDO;
+import com.antiy.asset.entity.dto.AssetGroupRelationDTO;;
 import com.antiy.asset.entity.vo.query.AssetGroupRelationQuery;
 import com.antiy.asset.entity.vo.request.AssetGroupRelationRequest;
 import com.antiy.asset.entity.vo.response.AssetGroupRelationResponse;
@@ -41,8 +41,7 @@ public interface IAssetGroupRelationService extends IBaseService<AssetGroupRelat
          * @param query
          * @return
          */
-        @Override
-        public List<AssetGroupRelationResponse> findListAssetGroupRelation(AssetGroupRelationQuery query) throws Exception;
+        List<AssetGroupRelationResponse> findListAssetGroupRelation(AssetGroupRelationQuery query) throws Exception;
 
         /**
          * 批量查询

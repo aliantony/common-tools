@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetNetworkCardDO;
+import com.antiy.asset.entity.dto.AssetNetworkCardDTO;;
 import com.antiy.asset.entity.vo.query.AssetNetworkCardQuery;
 import com.antiy.asset.entity.vo.request.AssetNetworkCardRequest;
 import com.antiy.asset.entity.vo.response.AssetNetworkCardResponse;
@@ -41,8 +41,7 @@ public interface IAssetNetworkCardService extends IBaseService<AssetNetworkCard>
          * @param query
          * @return
          */
-        @Override
-        public List<AssetNetworkCardResponse> findListAssetNetworkCard(AssetNetworkCardQuery query) throws Exception;
+        List<AssetNetworkCardResponse> findListAssetNetworkCard(AssetNetworkCardQuery query) throws Exception;
 
         /**
          * 批量查询

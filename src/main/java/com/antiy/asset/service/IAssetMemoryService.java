@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetMemoryDO;
+import com.antiy.asset.entity.dto.AssetMemoryDTO;;
 import com.antiy.asset.entity.vo.query.AssetMemoryQuery;
 import com.antiy.asset.entity.vo.request.AssetMemoryRequest;
 import com.antiy.asset.entity.vo.response.AssetMemoryResponse;
@@ -41,8 +41,7 @@ public interface IAssetMemoryService extends IBaseService<AssetMemory> {
          * @param query
          * @return
          */
-        @Override
-        public List<AssetMemoryResponse> findListAssetMemory(AssetMemoryQuery query) throws Exception;
+        List<AssetMemoryResponse> findListAssetMemory(AssetMemoryQuery query) throws Exception;
 
         /**
          * 批量查询

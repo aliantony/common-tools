@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetSafetyEquipmentDO;
+import com.antiy.asset.entity.dto.AssetSafetyEquipmentDTO;;
 import com.antiy.asset.entity.vo.query.AssetSafetyEquipmentQuery;
 import com.antiy.asset.entity.vo.request.AssetSafetyEquipmentRequest;
 import com.antiy.asset.entity.vo.response.AssetSafetyEquipmentResponse;
@@ -41,8 +41,7 @@ public interface IAssetSafetyEquipmentService extends IBaseService<AssetSafetyEq
          * @param query
          * @return
          */
-        @Override
-        public List<AssetSafetyEquipmentResponse> findListAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception;
+        List<AssetSafetyEquipmentResponse> findListAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception;
 
         /**
          * 批量查询

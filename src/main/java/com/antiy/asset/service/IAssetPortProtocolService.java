@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetPortProtocolDO;
+import com.antiy.asset.entity.dto.AssetPortProtocolDTO;;
 import com.antiy.asset.entity.vo.query.AssetPortProtocolQuery;
 import com.antiy.asset.entity.vo.request.AssetPortProtocolRequest;
 import com.antiy.asset.entity.vo.response.AssetPortProtocolResponse;
@@ -41,8 +41,7 @@ public interface IAssetPortProtocolService extends IBaseService<AssetPortProtoco
          * @param query
          * @return
          */
-        @Override
-        public List<AssetPortProtocolResponse> findListAssetPortProtocol(AssetPortProtocolQuery query) throws Exception;
+        List<AssetPortProtocolResponse> findListAssetPortProtocol(AssetPortProtocolQuery query) throws Exception;
 
         /**
          * 批量查询

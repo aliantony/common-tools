@@ -5,7 +5,7 @@ import com.antiy.common.base.PageResult;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antiy.asset.entity.dto.AssetSoftwareLicenseDO;
+import com.antiy.asset.entity.dto.AssetSoftwareLicenseDTO;;
 import com.antiy.asset.entity.vo.query.AssetSoftwareLicenseQuery;
 import com.antiy.asset.entity.vo.request.AssetSoftwareLicenseRequest;
 import com.antiy.asset.entity.vo.response.AssetSoftwareLicenseResponse;
@@ -41,8 +41,7 @@ public interface IAssetSoftwareLicenseService extends IBaseService<AssetSoftware
          * @param query
          * @return
          */
-        @Override
-        public List<AssetSoftwareLicenseResponse> findListAssetSoftwareLicense(AssetSoftwareLicenseQuery query) throws Exception;
+        List<AssetSoftwareLicenseResponse> findListAssetSoftwareLicense(AssetSoftwareLicenseQuery query) throws Exception;
 
         /**
          * 批量查询
