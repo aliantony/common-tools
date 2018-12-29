@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.Scheme;
-import com.antiy.asset.asset.entity.vo.query.SchemeQuery;
-import com.antiy.asset.asset.entity.vo.response.SchemeResponse;
+import com.antiy.asset.entity.vo.query.SchemeQuery;
+import com.antiy.asset.entity.vo.response.SchemeResponse;
 
 /**
  * <p>

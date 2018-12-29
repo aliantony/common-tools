@@ -5,9 +5,9 @@ import com.antiy.common.base.PageResult;
 
 import java.util.List;
 
-import com.antiy.asset.asset.entity.vo.query.SchemeQuery;
-import com.antiy.asset.asset.entity.vo.request.SchemeRequest;
-import com.antiy.asset.asset.entity.vo.response.SchemeResponse;
+import com.antiy.asset.entity.vo.query.SchemeQuery;
+import com.antiy.asset.entity.vo.request.SchemeRequest;
+import com.antiy.asset.entity.vo.response.SchemeResponse;
 import com.antiy.asset.entity.Scheme;
 
 

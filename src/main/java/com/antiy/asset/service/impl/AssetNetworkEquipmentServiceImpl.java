@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.entity.AssetNetworkEquipment;
 import com.antiy.asset.dao.AssetNetworkEquipmentDao;
 import com.antiy.asset.service.IAssetNetworkEquipmentService;
-import com.antiy.asset.asset.entity.vo.request.AssetNetworkEquipmentRequest;
-import com.antiy.asset.asset.entity.vo.response.AssetNetworkEquipmentResponse;
-import com.antiy.asset.asset.entity.vo.query.AssetNetworkEquipmentQuery;
+import com.antiy.asset.entity.vo.request.AssetNetworkEquipmentRequest;
+import com.antiy.asset.entity.vo.response.AssetNetworkEquipmentResponse;
+import com.antiy.asset.entity.vo.query.AssetNetworkEquipmentQuery;
 
 import javax.annotation.Resource;
 import java.util.List;

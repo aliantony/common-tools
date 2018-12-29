@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.service.ISchemeService;
-import com.antiy.asset.asset.entity.vo.request.SchemeRequest;
-import com.antiy.asset.asset.entity.vo.response.SchemeResponse;
-import com.antiy.asset.asset.entity.vo.query.SchemeQuery;
+import com.antiy.asset.entity.vo.request.SchemeRequest;
+import com.antiy.asset.entity.vo.response.SchemeResponse;
+import com.antiy.asset.entity.vo.query.SchemeQuery;
 
 import javax.annotation.Resource;
 import java.util.List;

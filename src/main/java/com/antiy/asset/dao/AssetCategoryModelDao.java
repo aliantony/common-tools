@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.asset.entity.vo.query.AssetCategoryModelQuery;
-import com.antiy.asset.asset.entity.vo.response.AssetCategoryModelResponse;
+import com.antiy.asset.entity.vo.query.AssetCategoryModelQuery;
+import com.antiy.asset.entity.vo.response.AssetCategoryModelResponse;
 
 /**
  * <p>

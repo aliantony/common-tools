@@ -5,9 +5,9 @@ import com.antiy.common.base.PageResult;
 
 import java.util.List;
 
-import com.antiy.asset.asset.entity.vo.query.AssetHardDiskQuery;
-import com.antiy.asset.asset.entity.vo.request.AssetHardDiskRequest;
-import com.antiy.asset.asset.entity.vo.response.AssetHardDiskResponse;
+import com.antiy.asset.entity.vo.query.AssetHardDiskQuery;
+import com.antiy.asset.entity.vo.request.AssetHardDiskRequest;
+import com.antiy.asset.entity.vo.response.AssetHardDiskResponse;
 import com.antiy.asset.entity.AssetHardDisk;
 
 

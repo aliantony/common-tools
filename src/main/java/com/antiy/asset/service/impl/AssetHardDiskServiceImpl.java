@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.entity.AssetHardDisk;
 import com.antiy.asset.dao.AssetHardDiskDao;
 import com.antiy.asset.service.IAssetHardDiskService;
-import com.antiy.asset.asset.entity.vo.request.AssetHardDiskRequest;
-import com.antiy.asset.asset.entity.vo.response.AssetHardDiskResponse;
-import com.antiy.asset.asset.entity.vo.query.AssetHardDiskQuery;
+import com.antiy.asset.entity.vo.request.AssetHardDiskRequest;
+import com.antiy.asset.entity.vo.response.AssetHardDiskResponse;
+import com.antiy.asset.entity.vo.query.AssetHardDiskQuery;
 
 import javax.annotation.Resource;
 import java.util.List;
