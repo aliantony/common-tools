@@ -13,11 +13,11 @@
     <parent>
         <groupId>com.antiy</groupId>
         <artifactId>csos-parent</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
     </parent>
 
     <properties>
-        <antiy.common.version>1.0.1</antiy.common.version>
+        <antiy.common.version>1.0.2</antiy.common.version>
         <!--swagger自动生成pdf和html的配置 start-->
         <snippetsDirectory>${project.build.directory}/generated-snippets</snippetsDirectory>
         <asciidoctor.input.directory>${project.basedir}/docs/asciidoc</asciidoctor.input.directory>
@@ -141,6 +141,16 @@
             <version>1.2.39</version>
         </dependency>
         <!--swagger自动生成pdf和html end-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
