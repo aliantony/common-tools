@@ -166,7 +166,7 @@
     </update>
 
     <!-- 根据主键查询 -->
-    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    <select id="getById" resultMap="com.antiy.asset.entity.AssetLable" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
         from
@@ -181,7 +181,7 @@
         where id = #{id}
     </delete>
 
-    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
+    <select id="getByWhere" resultMap="com.antiy.asset.entity.AssetLable" parameterType="java.util.Map">
         select
         <include refid="Base_Column_List"/>
         from
@@ -194,7 +194,7 @@
     </select>
 
 
-    <select id="getAll" resultMap="BaseResultMap">
+    <select id="getAll" resultMap="com.antiy.asset.entity.AssetLable">
         select *
         from
         <include refid="Table_Name"></include>
@@ -212,7 +212,7 @@
         </where>
     </select>
 
-    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findQuery" resultMap="com.antiy.asset.entity.AssetLable" parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <where>
