@@ -2,18 +2,18 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-import java.io.Serializable;
+
 import java.util.List;
 
-import com.antiy.asset.entity.vo.query.SchemeQuery;
-import com.antiy.asset.entity.vo.request.SchemeRequest;
-import com.antiy.asset.entity.vo.response.SchemeResponse;
+import com.antiy.asset.asset.entity.vo.query.SchemeQuery;
+import com.antiy.asset.asset.entity.vo.request.SchemeRequest;
+import com.antiy.asset.asset.entity.vo.response.SchemeResponse;
 import com.antiy.asset.entity.Scheme;
 
 
 /**
  * <p>
- *  服务类
+ * 方案表 服务类
  * </p>
  *
  * @author zhangyajun

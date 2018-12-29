@@ -10,11 +10,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetCategoryModelService;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.entity.vo.request.AssetCategoryModelRequest;
-import com.antiy.asset.entity.vo.response.AssetCategoryModelResponse;
-import com.antiy.asset.entity.vo.query.AssetCategoryModelQuery;
-
+import com.antiy.asset.asset.entity.vo.request.AssetCategoryModelRequest;
+import com.antiy.asset.asset.entity.vo.query.AssetCategoryModelQuery;
 
 
 /**
@@ -24,7 +21,7 @@ import com.antiy.asset.entity.vo.query.AssetCategoryModelQuery;
  */
 @Api(value = "AssetCategoryModel", description = "品类型号表")
 @RestController
-@RequestMapping("/v1/assetCategoryModel")
+@RequestMapping("/v1/asset/categorymodel")
 @Slf4j
 public class AssetCategoryModelController {
 
@@ -80,7 +77,7 @@ public class AssetCategoryModelController {
      * @param query 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "批量查询接口", notes = "主键封装对象")
+    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })

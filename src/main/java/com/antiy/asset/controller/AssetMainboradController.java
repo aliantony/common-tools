@@ -10,11 +10,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetMainboradService;
-import com.antiy.asset.entity.AssetMainborad;
-import com.antiy.asset.entity.vo.request.AssetMainboradRequest;
-import com.antiy.asset.entity.vo.response.AssetMainboradResponse;
-import com.antiy.asset.entity.vo.query.AssetMainboradQuery;
-
+import com.antiy.asset.asset.entity.vo.request.AssetMainboradRequest;
+import com.antiy.asset.asset.entity.vo.query.AssetMainboradQuery;
 
 
 /**
@@ -24,7 +21,7 @@ import com.antiy.asset.entity.vo.query.AssetMainboradQuery;
  */
 @Api(value = "AssetMainborad", description = "主板表")
 @RestController
-@RequestMapping("/v1/assetMainborad")
+@RequestMapping("/v1/asset/mainborad")
 @Slf4j
 public class AssetMainboradController {
 
@@ -80,7 +77,7 @@ public class AssetMainboradController {
      * @param query 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "批量查询接口", notes = "主键封装对象")
+    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })

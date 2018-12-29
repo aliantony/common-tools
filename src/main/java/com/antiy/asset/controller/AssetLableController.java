@@ -10,11 +10,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetLableService;
-import com.antiy.asset.entity.AssetLable;
-import com.antiy.asset.entity.vo.request.AssetLableRequest;
-import com.antiy.asset.entity.vo.response.AssetLableResponse;
-import com.antiy.asset.entity.vo.query.AssetLableQuery;
-
+import com.antiy.asset.asset.entity.vo.request.AssetLableRequest;
+import com.antiy.asset.asset.entity.vo.query.AssetLableQuery;
 
 
 /**
@@ -24,7 +21,7 @@ import com.antiy.asset.entity.vo.query.AssetLableQuery;
  */
 @Api(value = "AssetLable", description = "标签信息表")
 @RestController
-@RequestMapping("/v1/assetLable")
+@RequestMapping("/v1/asset/lable")
 @Slf4j
 public class AssetLableController {
 
@@ -80,7 +77,7 @@ public class AssetLableController {
      * @param query 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "批量查询接口", notes = "主键封装对象")
+    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })

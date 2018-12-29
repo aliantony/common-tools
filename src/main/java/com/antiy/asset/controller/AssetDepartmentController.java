@@ -1,7 +1,6 @@
 package com.antiy.asset.controller;
 
 import com.antiy.common.base.RespBasicCode;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -10,26 +9,20 @@ import com.antiy.common.base.ActionResponse;
 
 import javax.annotation.Resource;
 
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.utils.ParamterExceptionUtils;
-
 import com.antiy.asset.service.IAssetDepartmentService;
-import com.antiy.asset.entity.AssetDepartment;
 import com.antiy.asset.entity.vo.request.AssetDepartmentRequest;
-import com.antiy.asset.entity.vo.response.AssetDepartmentResponse;
 import com.antiy.asset.entity.vo.query.AssetDepartmentQuery;
 
-import java.util.Optional;
-import java.util.function.Predicate;
-
+;
 
 /**
+ *
  * @author zhangyajun
  * @since 2018-12-29
  */
 @Api(value = "AssetDepartment", description = "资产部门信息")
 @RestController
-@RequestMapping("/v1/assetDepartment")
+@RequestMapping("/v1/asset/department")
 @Slf4j
 public class AssetDepartmentController {
 
@@ -67,12 +60,9 @@ public class AssetDepartmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentRequest assetDepartment) throws Exception {
-        Boolean success = iAssetDepartmentService.updateAssetDepartment(assetDepartment)>0;
-        if (success) {
-            return ActionResponse.success();
-        }
-        return ActionResponse.fail(RespBasicCode.ERROR, "更新数据失败");
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetDepartment")AssetDepartmentRequest assetDepartment)throws Exception{
+        iAssetDepartmentService.updateAssetDepartment(assetDepartment);
+        return ActionResponse.success();
     }
 
     /**
@@ -96,7 +86,7 @@ public class AssetDepartmentController {
      * @param id 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "批量查询接口", notes = "主键封装对象")
+    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
@@ -123,7 +113,5 @@ public class AssetDepartmentController {
         }
         return ActionResponse.fail(RespBasicCode.ERROR, "删除数据失败");
     }
-
-
 }
 

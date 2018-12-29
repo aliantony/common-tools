@@ -10,11 +10,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.vo.request.AssetRequest;
-import com.antiy.asset.entity.vo.response.AssetResponse;
-import com.antiy.asset.entity.vo.query.AssetQuery;
-
+import com.antiy.asset.asset.entity.vo.request.AssetRequest;
+import com.antiy.asset.asset.entity.vo.query.AssetQuery;
 
 
 /**
@@ -80,7 +77,7 @@ public class AssetController {
      * @param query 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "批量查询接口", notes = "主键封装对象")
+    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })

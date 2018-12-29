@@ -10,11 +10,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.ISchemeService;
-import com.antiy.asset.entity.Scheme;
-import com.antiy.asset.entity.vo.request.SchemeRequest;
-import com.antiy.asset.entity.vo.response.SchemeResponse;
-import com.antiy.asset.entity.vo.query.SchemeQuery;
-
+import com.antiy.asset.asset.entity.vo.request.SchemeRequest;
+import com.antiy.asset.asset.entity.vo.query.SchemeQuery;
 
 
 /**
@@ -22,9 +19,9 @@ import com.antiy.asset.entity.vo.query.SchemeQuery;
  * @author zhangyajun
  * @since 2018-12-29
  */
-@Api(value = "Scheme", description = "")
+@Api(value = "Scheme", description = "方案表")
 @RestController
-@RequestMapping("/v1/scheme")
+@RequestMapping("/v1/asset/e")
 @Slf4j
 public class SchemeController {
 
@@ -80,7 +77,7 @@ public class SchemeController {
      * @param query 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "批量查询接口", notes = "主键封装对象")
+    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })

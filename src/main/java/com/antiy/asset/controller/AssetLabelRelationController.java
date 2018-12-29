@@ -10,11 +10,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetLabelRelationService;
-import com.antiy.asset.entity.AssetLabelRelation;
-import com.antiy.asset.entity.vo.request.AssetLabelRelationRequest;
-import com.antiy.asset.entity.vo.response.AssetLabelRelationResponse;
-import com.antiy.asset.entity.vo.query.AssetLabelRelationQuery;
-
+import com.antiy.asset.asset.entity.vo.request.AssetLabelRelationRequest;
+import com.antiy.asset.asset.entity.vo.query.AssetLabelRelationQuery;
 
 
 /**
@@ -24,7 +21,7 @@ import com.antiy.asset.entity.vo.query.AssetLabelRelationQuery;
  */
 @Api(value = "AssetLabelRelation", description = "资产标签关系表")
 @RestController
-@RequestMapping("/v1/assetLabelRelation")
+@RequestMapping("/v1/asset/labelrelation")
 @Slf4j
 public class AssetLabelRelationController {
 
@@ -80,7 +77,7 @@ public class AssetLabelRelationController {
      * @param query 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "批量查询接口", notes = "主键封装对象")
+    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })

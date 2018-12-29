@@ -6,7 +6,7 @@ import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 /**
  * <p>
- * 
+ * 方案表
  * </p>
  *
  * @author zhangyajun

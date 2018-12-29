@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.BaseConverter;
@@ -10,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.entity.AssetNetworkCard;
 import com.antiy.asset.dao.AssetNetworkCardDao;
 import com.antiy.asset.service.IAssetNetworkCardService;
-import com.antiy.asset.entity.vo.request.AssetNetworkCardRequest;
-import com.antiy.asset.entity.vo.response.AssetNetworkCardResponse;
-import com.antiy.asset.entity.vo.query.AssetNetworkCardQuery;
+import com.antiy.asset.asset.entity.vo.request.AssetNetworkCardRequest;
+import com.antiy.asset.asset.entity.vo.response.AssetNetworkCardResponse;
+import com.antiy.asset.asset.entity.vo.query.AssetNetworkCardQuery;
 
 import javax.annotation.Resource;
 import java.util.List;

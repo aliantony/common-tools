@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.BaseConverter;
@@ -10,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.entity.AssetMainborad;
 import com.antiy.asset.dao.AssetMainboradDao;
 import com.antiy.asset.service.IAssetMainboradService;
-import com.antiy.asset.entity.vo.request.AssetMainboradRequest;
-import com.antiy.asset.entity.vo.response.AssetMainboradResponse;
-import com.antiy.asset.entity.vo.query.AssetMainboradQuery;
+import com.antiy.asset.asset.entity.vo.request.AssetMainboradRequest;
+import com.antiy.asset.asset.entity.vo.response.AssetMainboradResponse;
+import com.antiy.asset.asset.entity.vo.query.AssetMainboradQuery;
 
 import javax.annotation.Resource;
 import java.util.List;

@@ -3,13 +3,12 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.Scheme;
-import com.antiy.asset.entity.vo.query.SchemeQuery;
-import com.antiy.asset.entity.vo.response.SchemeResponse;
-import org.springframework.stereotype.Component;
+import com.antiy.asset.asset.entity.vo.query.SchemeQuery;
+import com.antiy.asset.asset.entity.vo.response.SchemeResponse;
 
 /**
  * <p>
- *  Mapper 接口
+ * 方案表 Mapper 接口
  * </p>
  *
  * @author zhangyajun

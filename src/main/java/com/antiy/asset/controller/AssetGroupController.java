@@ -8,19 +8,23 @@ import io.swagger.annotations.*;
 import com.antiy.common.base.ActionResponse;
 
 import javax.annotation.Resource;
+import com.antiy.common.base.QueryCondition;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.entity.vo.request.AssetGroupRequest;
 import com.antiy.asset.entity.vo.query.AssetGroupQuery;
 
 
+
 /**
+ *
  * @author zhangyajun
  * @since 2018-12-29
  */
 @Api(value = "AssetGroup", description = "资产组表")
 @RestController
-@RequestMapping("/v1/assetGroup")
+@RequestMapping("/v1/asset/group")
 @Slf4j
 public class AssetGroupController {
 
@@ -38,8 +42,8 @@ public class AssetGroupController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetGroup") AssetGroupRequest assetGroup) throws Exception {
-         iAssetGroupService.saveAssetGroup(assetGroup);
+    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetGroup")AssetGroupRequest assetGroup)throws Exception{
+        iAssetGroupService.saveAssetGroup(assetGroup);
         return ActionResponse.success();
     }
 
@@ -61,7 +65,6 @@ public class AssetGroupController {
 
     /**
      * 批量查询
-     *
      * @param assetGroup
      * @return actionResponse
      */
@@ -80,7 +83,7 @@ public class AssetGroupController {
      * @param id
      * @return actionResponse
      */
-    @ApiOperation(value = "批量查询接口", notes = "主键封装对象")
+    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })

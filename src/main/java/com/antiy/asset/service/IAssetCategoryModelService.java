@@ -2,12 +2,12 @@ package com.antiy.asset.service;
 
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-import java.io.Serializable;
+
 import java.util.List;
 
-import com.antiy.asset.entity.vo.query.AssetCategoryModelQuery;
-import com.antiy.asset.entity.vo.request.AssetCategoryModelRequest;
-import com.antiy.asset.entity.vo.response.AssetCategoryModelResponse;
+import com.antiy.asset.asset.entity.vo.query.AssetCategoryModelQuery;
+import com.antiy.asset.asset.entity.vo.request.AssetCategoryModelRequest;
+import com.antiy.asset.asset.entity.vo.response.AssetCategoryModelResponse;
 import com.antiy.asset.entity.AssetCategoryModel;
 
 
