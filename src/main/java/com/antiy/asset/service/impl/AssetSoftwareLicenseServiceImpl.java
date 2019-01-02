@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,19 +48,14 @@ public class AssetSoftwareLicenseServiceImpl extends BaseServiceImpl<AssetSoftwa
     }
 
     @Override
-    public List<AssetSoftwareLicenseResponse> findListAssetSoftwareLicense(AssetSoftwareLicenseQuery query) throws Exception {
-        List<AssetSoftwareLicense> assetSoftwareLicense = assetSoftwareLicenseDao.findListAssetSoftwareLicense(query);
-        //TODO
-        List<AssetSoftwareLicenseResponse> assetSoftwareLicenseResponse = new ArrayList<AssetSoftwareLicenseResponse>();
+    public List<AssetSoftwareLicenseResponse> findListAssetSoftwareLicense(AssetSoftwareLicenseQuery assetSoftwareLicenseQuery) throws Exception {
+        List<AssetSoftwareLicense> assetSoftwareLicenseList = assetSoftwareLicenseDao.findQuery(assetSoftwareLicenseQuery);
+        List<AssetSoftwareLicenseResponse> assetSoftwareLicenseResponse = responseConverter.convert(assetSoftwareLicenseList, AssetSoftwareLicenseResponse.class);
         return assetSoftwareLicenseResponse;
-    }
-
-    public Integer findCountAssetSoftwareLicense(AssetSoftwareLicenseQuery query) throws Exception {
-        return assetSoftwareLicenseDao.findCount(query);
     }
 
     @Override
     public PageResult<AssetSoftwareLicenseResponse> findPageAssetSoftwareLicense(AssetSoftwareLicenseQuery query) throws Exception {
-        return new PageResult<>(query.getPageSize(), this.findCountAssetSoftwareLicense(query), query.getCurrentPage(), this.findListAssetSoftwareLicense(query));
+        return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(), this.findListAssetSoftwareLicense(query));
     }
 }

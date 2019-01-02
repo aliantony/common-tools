@@ -16,5 +16,4 @@ import ${package.Entity}.vo.query.${entity}Query;
  */
 public interface ${table.mapperName} extends IBaseDao<${entity}> {
 
-    List<${entity}> findList${entity}(${entity}Query query) throws Exception;
 }

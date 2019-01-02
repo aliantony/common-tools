@@ -3,6 +3,7 @@ package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * <p>
@@ -10,14 +11,24 @@ import io.swagger.annotations.ApiModelProperty;
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-29
+ * @since 2019-01-02
  */
-
+@Data
 public class AssetSoftwareLicense extends BaseEntity {
 
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 许可名称
+     */
+    @ApiModelProperty("许可名称")
+    private String name;
+    /**
+     * 厂商名称
+     */
+    @ApiModelProperty("厂商名称")
+    private String manufacturer;
     /**
      * 软件主键
      */
@@ -69,110 +80,10 @@ public class AssetSoftwareLicense extends BaseEntity {
     @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer status;
 
-
-    public Integer getSoftwareId() {
-        return softwareId;
-    }
-
-    public void setSoftwareId(Integer softwareId) {
-        this.softwareId = softwareId;
-    }
-
-
-    public Long getBusyDate() {
-        return busyDate;
-    }
-
-    public void setBusyDate(Long busyDate) {
-        this.busyDate = busyDate;
-    }
-
-
-    public Long getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(Long expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
-
-    public String getLicenseSecretKey() {
-        return licenseSecretKey;
-    }
-
-    public void setLicenseSecretKey(String licenseSecretKey) {
-        this.licenseSecretKey = licenseSecretKey;
-    }
-
-
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-
-    public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
-
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
-
-
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-
-    @Override
-    public String toString() {
-        return "AssetSoftwareLicense{" +
-                ", softwareId=" + softwareId +
-                ", busyDate=" + busyDate +
-                ", expiryDate=" + expiryDate +
-                ", licenseSecretKey=" + licenseSecretKey +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", memo=" + memo +
-                ", createUser=" + createUser +
-                ", modifyUser=" + modifyUser +
-                ", status=" + status +
-                "}";
-    }
+    //软件信息
+    /**
+     * 软件名称
+     */
+    @ApiModelProperty("软件名称")
+    private String softwareName;
 }

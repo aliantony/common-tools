@@ -1,10 +1,7 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetSafetyEquipment;
-import com.antiy.asset.vo.query.AssetSafetyEquipmentQuery;
 import com.antiy.common.base.IBaseDao;
-
-import java.util.List;
 
 /**
  * <p>
@@ -16,5 +13,4 @@ import java.util.List;
  */
 public interface AssetSafetyEquipmentDao extends IBaseDao<AssetSafetyEquipment> {
 
-    List<AssetSafetyEquipment> findListAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception;
 }

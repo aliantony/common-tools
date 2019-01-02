@@ -20,36 +20,32 @@ import java.util.List;
  */
 public interface IAssetSafetyEquipmentService extends IBaseService<AssetSafetyEquipment> {
 
-    /**
-     * 保存
-     *
-     * @param request
-     * @return
-     */
-    Integer saveAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception;
+        /**
+         * 保存
+         * @param request
+         * @return
+         */
+        Integer saveAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception;
 
-    /**
-     * 修改
-     *
-     * @param request
-     * @return
-     */
-    Integer updateAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception;
+        /**
+         * 修改
+         * @param request
+         * @return
+         */
+        Integer updateAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception;
 
-    /**
-     * 查询对象集合
-     *
-     * @param query
-     * @return
-     */
-    List<AssetSafetyEquipmentResponse> findListAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception;
+        /**
+         * 查询对象集合
+         * @param query
+         * @return
+         */
+        List<AssetSafetyEquipmentResponse> findListAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception;
 
-    /**
-     * 批量查询
-     *
-     * @param query
-     * @return
-     */
-    PageResult<AssetSafetyEquipmentResponse> findPageAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception;
+        /**
+         * 批量查询
+         * @param query
+         * @return
+         */
+        PageResult<AssetSafetyEquipmentResponse> findPageAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception;
 
 }

@@ -254,7 +254,7 @@
 
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-        select count(1) count
+        select count(1)
         from
         <include refid="Table_Name"></include>
         <where>
@@ -273,60 +273,7 @@
             </trim>
         </where>
         <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
-        </if>
-    </select>
-
-
-    <select id="findListScheme" resultType="com.antiy.asset.entity.Scheme" parameterType="com.antiy.asset.vo.query.SchemeQuery">
-        select * from
-        <include refid="Table_Name"></include>
-        <trim prefix="WHERE" prefixOverrides="AND|OR">
-        <if test=" id != null">
-                and id = #{id }
-            </if>
-        <if test=" type != null">
-                and type = #{type }
-            </if>
-        <if test=" result != null">
-                and result = #{result }
-            </if>
-        <if test=" putintoUserId != null">
-                and putinto_user_id = #{putintoUserId }
-            </if>
-        <if test=" putintoTime != null">
-                and putinto_time = #{putintoTime }
-            </if>
-        <if test=" putintoUser != null">
-                and putinto_user = #{putintoUser }
-            </if>
-        <if test=" remark != null">
-                and remark = #{remark }
-            </if>
-        <if test=" filepath != null">
-                and filepath = #{filepath }
-            </if>
-        <if test=" gmtCreate != null">
-                and gmt_create = #{gmtCreate }
-            </if>
-        <if test=" gmtModified != null">
-                and gmt_modified = #{gmtModified }
-            </if>
-        <if test=" memo != null">
-                and memo = #{memo }
-            </if>
-        <if test=" createUser != null">
-                and create_user = #{createUser }
-            </if>
-        <if test=" modifyUser != null">
-                and modify_user = #{modifyUser }
-            </if>
-        <if test=" isDelete != null">
-                and is_delete = #{isDelete }
-            </if>
-                </trim>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
+            LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
 </mapper>

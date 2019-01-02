@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,9 +30,9 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
 
     @Resource
     private SchemeDao schemeDao;
-    //@Resource
+    @Resource
     private BaseConverter<SchemeRequest, Scheme> requestConverter;
-   // @Resource
+    @Resource
     private BaseConverter<Scheme, SchemeResponse> responseConverter;
 
     @Override
@@ -50,18 +49,14 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
 
     @Override
     public List<SchemeResponse> findListScheme(SchemeQuery query) throws Exception {
-        List<Scheme> scheme = schemeDao.findListScheme(query);
+        List<Scheme> schemeList = schemeDao.findQuery(query);
         //TODO
-        List<SchemeResponse> schemeResponse = new ArrayList<SchemeResponse>();
+        List<SchemeResponse> schemeResponse = responseConverter.convert(schemeList, SchemeResponse.class);
         return schemeResponse;
-    }
-
-    public Integer findCountScheme(SchemeQuery query) throws Exception {
-        return schemeDao.findCount(query);
     }
 
     @Override
     public PageResult<SchemeResponse> findPageScheme(SchemeQuery query) throws Exception {
-        return new PageResult<>(query.getPageSize(), this.findCountScheme(query), query.getCurrentPage(), this.findListScheme(query));
+        return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(), this.findListScheme(query));
     }
 }

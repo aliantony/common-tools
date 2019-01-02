@@ -143,7 +143,7 @@
 
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-        select count(1) count
+        select count(1)
         from
         <include refid="Table_Name"></include>
         <where>
@@ -162,23 +162,7 @@
             </trim>
         </where>
         <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
-        </if>
-    </select>
-
-
-    <select id="findList${entity}" resultType="${package.Entity}.${entity}" parameterType="com.antiy.asset.vo.query.${entity}Query">
-        select * from
-        <include refid="Table_Name"></include>
-        <trim prefix="WHERE" prefixOverrides="AND|OR">
-        #foreach($field in ${table.fields})
-<if test=" ${field.propertyName} != null">
-                and ${field.name} = #{${field.propertyName}}
-            </if>
-        #end
-        </trim>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
+            LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
 </mapper>

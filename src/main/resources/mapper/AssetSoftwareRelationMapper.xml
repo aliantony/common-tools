@@ -202,7 +202,7 @@
 
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-        select count(1) count
+        select count(1)
         from
         <include refid="Table_Name"></include>
         <where>
@@ -221,48 +221,7 @@
             </trim>
         </where>
         <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
-        </if>
-    </select>
-
-
-    <select id="findListAssetSoftwareRelation" resultType="com.antiy.asset.entity.AssetSoftwareRelation" parameterType="com.antiy.asset.vo.query.AssetSoftwareRelationQuery">
-        select * from
-        <include refid="Table_Name"></include>
-        <trim prefix="WHERE" prefixOverrides="AND|OR">
-        <if test=" id != null">
-                and id = #{id }
-            </if>
-        <if test=" assetId != null">
-                and asset_id = #{assetId }
-            </if>
-        <if test=" softwareId != null">
-                and software_id = #{softwareId }
-            </if>
-        <if test=" softwareStatus != null">
-                and software_status = #{softwareStatus }
-            </if>
-        <if test=" gmtCreate != null">
-                and gmt_create = #{gmtCreate }
-            </if>
-        <if test=" gmtModified != null">
-                and gmt_modified = #{gmtModified }
-            </if>
-        <if test=" memo != null">
-                and memo = #{memo }
-            </if>
-        <if test=" createUser != null">
-                and create_user = #{createUser }
-            </if>
-        <if test=" modifyUser != null">
-                and modify_user = #{modifyUser }
-            </if>
-        <if test=" status != null">
-                and status = #{status }
-            </if>
-                </trim>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
+            LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
 </mapper>

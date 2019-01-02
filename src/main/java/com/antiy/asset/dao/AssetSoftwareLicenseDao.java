@@ -1,10 +1,7 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetSoftwareLicense;
-import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
 import com.antiy.common.base.IBaseDao;
-
-import java.util.List;
 
 /**
  * <p>
@@ -16,5 +13,4 @@ import java.util.List;
  */
 public interface AssetSoftwareLicenseDao extends IBaseDao<AssetSoftwareLicense> {
 
-    List<AssetSoftwareLicense> findListAssetSoftwareLicense(AssetSoftwareLicenseQuery query) throws Exception;
 }
