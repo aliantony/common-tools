@@ -3,6 +3,7 @@ package com.antiy.asset;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -13,7 +14,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @SpringBootApplication
 @EnableTransactionManagement
-@MapperScan({"com.antiy.asset.dao","com.antiy.common.base"})
+@MapperScan({"com.antiy.asset.dao"})
+@ComponentScan(basePackages = {"com.antiy.common.base","com.antiy.asset"})
 public class AssetApplication {
 
     public static void main(String[] args) {
