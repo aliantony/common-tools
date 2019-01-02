@@ -52,7 +52,7 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
     public List<AssetMainboradResponse> findListAssetMainborad(AssetMainboradQuery query) throws Exception {
         List<AssetMainborad> assetMainborad = assetMainboradDao.findListAssetMainborad(query);
         //TODO
-        List<AssetMainboradResponse> assetMainboradResponse = new ArrayList<AssetMainboradResponse>();
+        List<AssetMainboradResponse> assetMainboradResponse = responseConverter.convert(assetMainborad, AssetMainboradResponse.class);
         return assetMainboradResponse;
     }
 

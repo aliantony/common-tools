@@ -3,7 +3,9 @@ package com.antiy.asset.controller;
 import com.antiy.asset.service.IAssetNetworkCardService;
 import com.antiy.asset.vo.query.AssetNetworkCardQuery;
 import com.antiy.asset.vo.request.AssetNetworkCardRequest;
+import com.antiy.asset.vo.response.AssetNetworkCardResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
@@ -72,7 +74,8 @@ public class AssetNetworkCardController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetNetworkCard") AssetNetworkCardQuery assetNetworkCard) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetNetworkCard") AssetNetworkCardQuery assetNetworkCard) throws Exception {
+        PageResult<AssetNetworkCardResponse> pageResult = iAssetNetworkCardService.findPageAssetNetworkCard(assetNetworkCard);
         return ActionResponse.success(iAssetNetworkCardService.findPageAssetNetworkCard(assetNetworkCard));
     }
 
@@ -87,9 +90,9 @@ public class AssetNetworkCardController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetNetworkCard") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetNetworkCard") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetNetworkCardService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetNetworkCardService.getById(Integer.parseInt(query.getPrimaryKey())));
     }
 
     /**
@@ -105,7 +108,7 @@ public class AssetNetworkCardController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetNetworkCardService.deleteById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetNetworkCardService.deleteById(Integer.parseInt(query.getPrimaryKey())));
     }
 }
 

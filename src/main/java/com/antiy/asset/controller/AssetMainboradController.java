@@ -72,7 +72,7 @@ public class AssetMainboradController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetMainborad") AssetMainboradQuery assetMainborad) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetMainborad") AssetMainboradQuery assetMainborad) throws Exception {
         return ActionResponse.success(iAssetMainboradService.findPageAssetMainborad(assetMainborad));
     }
 
@@ -87,9 +87,9 @@ public class AssetMainboradController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetMainborad") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetMainborad") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetMainboradService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetMainboradService.getById(Integer.parseInt(query.getPrimaryKey())));
     }
 
     /**
@@ -105,7 +105,7 @@ public class AssetMainboradController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetMainboradService.deleteById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetMainboradService.deleteById(Integer.parseInt(query.getPrimaryKey())));
     }
 }
 

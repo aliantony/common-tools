@@ -51,6 +51,9 @@ public class AssetNetworkEquipmentQuery extends ObjectQuery implements ObjectVal
     @ApiModelProperty("子网掩码")
     private String subnetMask;
 
+    @ApiModelProperty("状态,0 未删除,1已删除")
+    private Integer status;
+
     public Integer getAssetId() {
         return assetId;
     }
@@ -105,6 +108,14 @@ public class AssetNetworkEquipmentQuery extends ObjectQuery implements ObjectVal
 
     public void setSubnetMask(String subnetMask) {
         this.subnetMask = subnetMask;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Override
