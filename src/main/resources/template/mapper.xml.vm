@@ -167,13 +167,13 @@
     </select>
 
 
-    <select id="findList${entity}" resultType="com.antiy.asset.entity.dto.${entity}DTO" parameterType="com.antiy.asset.entity.vo.query.${entity}Query">
+    <select id="findList${entity}" resultType="${package.Entity}.${entity}" parameterType="com.antiy.asset.vo.query.${entity}Query">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
         #foreach($field in ${table.fields})
 <if test=" ${field.propertyName} != null">
-                and ${field.name} = #{${field.propertyName} }
+                and ${field.name} = #{${field.propertyName}
             </if>
         #end
         </trim>
