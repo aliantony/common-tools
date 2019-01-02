@@ -167,7 +167,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return entityPath + "/dto." + tableInfo.getEntityName() + "DTO" + StringPool.DOT_JAVA;
+                return entityPath + "/dto/" + tableInfo.getEntityName() + "DTO" + StringPool.DOT_JAVA;
             }
         });
 
