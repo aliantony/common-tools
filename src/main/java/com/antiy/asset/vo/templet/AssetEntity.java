@@ -79,7 +79,6 @@ public class AssetEntity {
     private String location;
 
 
-
     /**
      * 固件版本
      */
@@ -274,8 +273,6 @@ public class AssetEntity {
     }
 
 
-
-
     public String getHardDisk() {
         return hardDisk;
     }
@@ -444,6 +441,7 @@ public class AssetEntity {
         this.warranty = warranty;
     }
 
-    public AssetEntity(){}
+    public AssetEntity() {
+    }
 
 }

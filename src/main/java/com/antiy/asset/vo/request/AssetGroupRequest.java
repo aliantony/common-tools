@@ -1,9 +1,9 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
-import io.swagger.annotations.ApiModelProperty;
-import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p>

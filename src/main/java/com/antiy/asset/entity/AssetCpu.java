@@ -1,9 +1,9 @@
 package com.antiy.asset.entity;
 
 
-import java.util.Date;
 import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p>
  * 处理器表
@@ -16,76 +16,75 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetCpu extends BaseEntity {
 
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-        /**
-    *  资产主键
-    */
-        @ApiModelProperty("资产主键")
+    /**
+     * 资产主键
+     */
+    @ApiModelProperty("资产主键")
     private Integer assetId;
-        /**
-    *  序列号
-    */
-        @ApiModelProperty("序列号")
+    /**
+     * 序列号
+     */
+    @ApiModelProperty("序列号")
     private String serial;
-        /**
-    *  品牌
-    */
-        @ApiModelProperty("品牌")
+    /**
+     * 品牌
+     */
+    @ApiModelProperty("品牌")
     private String brand;
-        /**
-    *  型号
-    */
-        @ApiModelProperty("型号")
+    /**
+     * 型号
+     */
+    @ApiModelProperty("型号")
     private String model;
-        /**
-    *  CPU主频
-    */
-        @ApiModelProperty("CPU主频")
+    /**
+     * CPU主频
+     */
+    @ApiModelProperty("CPU主频")
     private Float mainFrequency;
-        /**
-    *  线程数
-    */
-        @ApiModelProperty("线程数")
+    /**
+     * 线程数
+     */
+    @ApiModelProperty("线程数")
     private Integer threadSize;
-        /**
-    *  核心数
-    */
-        @ApiModelProperty("核心数")
+    /**
+     * 核心数
+     */
+    @ApiModelProperty("核心数")
     private Integer coreSize;
-        /**
-    *  创建时间
-    */
-        @ApiModelProperty("创建时间")
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("创建时间")
     private Long gmtCreate;
-        /**
-    *  更新时间
-    */
-        @ApiModelProperty("更新时间")
+    /**
+     * 更新时间
+     */
+    @ApiModelProperty("更新时间")
     private Long gmtModified;
-        /**
-    *  备注
-    */
-        @ApiModelProperty("备注")
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
     private String memo;
-        /**
-    *  创建人
-    */
-        @ApiModelProperty("创建人")
+    /**
+     * 创建人
+     */
+    @ApiModelProperty("创建人")
     private Integer createUser;
-        /**
-    *  修改人
-    */
-        @ApiModelProperty("修改人")
+    /**
+     * 修改人
+     */
+    @ApiModelProperty("修改人")
     private Integer modifyUser;
-        /**
-    *  状态,0 未删除,1已删除
-    */
-        @ApiModelProperty("状态,0 未删除,1已删除")
+    /**
+     * 状态,0 未删除,1已删除
+     */
+    @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer status;
 
-                    
-                                    
+
     public Integer getAssetId() {
         return assetId;
     }
@@ -93,8 +92,8 @@ private static final long serialVersionUID = 1L;
     public void setAssetId(Integer assetId) {
         this.assetId = assetId;
     }
-    
-                                    
+
+
     public String getSerial() {
         return serial;
     }
@@ -102,8 +101,8 @@ private static final long serialVersionUID = 1L;
     public void setSerial(String serial) {
         this.serial = serial;
     }
-    
-                                    
+
+
     public String getBrand() {
         return brand;
     }
@@ -111,8 +110,8 @@ private static final long serialVersionUID = 1L;
     public void setBrand(String brand) {
         this.brand = brand;
     }
-    
-                                    
+
+
     public String getModel() {
         return model;
     }
@@ -120,8 +119,8 @@ private static final long serialVersionUID = 1L;
     public void setModel(String model) {
         this.model = model;
     }
-    
-                                    
+
+
     public Float getMainFrequency() {
         return mainFrequency;
     }
@@ -129,8 +128,8 @@ private static final long serialVersionUID = 1L;
     public void setMainFrequency(Float mainFrequency) {
         this.mainFrequency = mainFrequency;
     }
-    
-                                    
+
+
     public Integer getThreadSize() {
         return threadSize;
     }
@@ -138,8 +137,8 @@ private static final long serialVersionUID = 1L;
     public void setThreadSize(Integer threadSize) {
         this.threadSize = threadSize;
     }
-    
-                                    
+
+
     public Integer getCoreSize() {
         return coreSize;
     }
@@ -147,8 +146,8 @@ private static final long serialVersionUID = 1L;
     public void setCoreSize(Integer coreSize) {
         this.coreSize = coreSize;
     }
-    
-                                    
+
+
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -156,8 +155,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
-    
-                                    
+
+
     public Long getGmtModified() {
         return gmtModified;
     }
@@ -165,8 +164,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
     }
-    
-                                    
+
+
     public String getMemo() {
         return memo;
     }
@@ -174,8 +173,8 @@ private static final long serialVersionUID = 1L;
     public void setMemo(String memo) {
         this.memo = memo;
     }
-    
-                                    
+
+
     public Integer getCreateUser() {
         return createUser;
     }
@@ -183,8 +182,8 @@ private static final long serialVersionUID = 1L;
     public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
     }
-    
-                                    
+
+
     public Integer getModifyUser() {
         return modifyUser;
     }
@@ -192,8 +191,8 @@ private static final long serialVersionUID = 1L;
     public void setModifyUser(Integer modifyUser) {
         this.modifyUser = modifyUser;
     }
-    
-                                    
+
+
     public Integer getStatus() {
         return status;
     }
@@ -201,24 +200,24 @@ private static final long serialVersionUID = 1L;
     public void setStatus(Integer status) {
         this.status = status;
     }
-    
-    
-        @Override
+
+
+    @Override
     public String toString() {
-            return "AssetCpu{" +
-                                                                                            ", assetId=" + assetId +
-                                                                                        ", serial=" + serial +
-                                                                                        ", brand=" + brand +
-                                                                                        ", model=" + model +
-                                                                                        ", mainFrequency=" + mainFrequency +
-                                                                                        ", threadSize=" + threadSize +
-                                                                                        ", coreSize=" + coreSize +
-                                                                                        ", gmtCreate=" + gmtCreate +
-                                                                                        ", gmtModified=" + gmtModified +
-                                                                                        ", memo=" + memo +
-                                                                                        ", createUser=" + createUser +
-                                                                                        ", modifyUser=" + modifyUser +
-                                                                                        ", status=" + status +
-                                                "}";
+        return "AssetCpu{" +
+                ", assetId=" + assetId +
+                ", serial=" + serial +
+                ", brand=" + brand +
+                ", model=" + model +
+                ", mainFrequency=" + mainFrequency +
+                ", threadSize=" + threadSize +
+                ", coreSize=" + coreSize +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo=" + memo +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                "}";
     }
-    }
+}

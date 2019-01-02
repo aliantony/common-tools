@@ -20,11 +20,11 @@ import java.util.List;
 
 
 /**
+ * @author chenxinchong
+ * @version 1.0.0
  * @ClassName IEventService
  * @Description TODTO;
- * @author chenxinchong
  * @Date 2018年1月17日 上午10:35:33
- * @version 1.0.0
  */
 public interface IEventService extends IBaseService<Event> {
 

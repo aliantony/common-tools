@@ -8,12 +8,12 @@ import org.apache.commons.lang.StringUtils;
  * @Description:
  */
 public enum SoftwareTypeEnum {
-    UN_IDENTIFIED(0,"未识别"),
-    EXCLUDED(1,"排除"),
-    FREE_WARE(2,"免费"),
-    MANAGED(3,"管理级"),
-    PROHIBITED(4,"禁止"),
-    SHARE_WARE(5,"共享") ;
+    UN_IDENTIFIED(0, "未识别"),
+    EXCLUDED(1, "排除"),
+    FREE_WARE(2, "免费"),
+    MANAGED(3, "管理级"),
+    PROHIBITED(4, "禁止"),
+    SHARE_WARE(5, "共享");
 
     SoftwareTypeEnum(Integer code, String msg) {
         this.code = code;
@@ -28,6 +28,7 @@ public enum SoftwareTypeEnum {
 
     /**
      * 通过code获取枚举
+     *
      * @param name name
      * @return
      */

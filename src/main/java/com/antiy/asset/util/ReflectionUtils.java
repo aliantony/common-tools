@@ -30,6 +30,7 @@ public class ReflectionUtils {
         }
         return target;
     }
+
     /**
      * 反射调用get方法(去掉is)
      *
@@ -303,6 +304,7 @@ public class ReflectionUtils {
 
     /**
      * 获取泛型类型
+     *
      * @param clazz
      * @param index
      * @return

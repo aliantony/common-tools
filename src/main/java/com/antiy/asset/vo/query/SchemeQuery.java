@@ -1,8 +1,9 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
-import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+
 /**
  * <p>
  * Scheme 查询条件
@@ -12,7 +13,7 @@ import com.antiy.common.exception.RequestParamValidateException;
  * @since 2018-12-27
  */
 
-public class SchemeQuery extends ObjectQuery implements ObjectValidator{
+public class SchemeQuery extends ObjectQuery implements ObjectValidator {
 
     @Override
     public void validate() throws RequestParamValidateException {

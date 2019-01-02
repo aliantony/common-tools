@@ -1,9 +1,9 @@
 package com.antiy.asset.entity;
 
 
-import java.util.Date;
 import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p>
  * 网卡信息表
@@ -16,86 +16,85 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetNetworkCard extends BaseEntity {
 
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-        /**
-    *  资产主键
-    */
-        @ApiModelProperty("资产主键")
+    /**
+     * 资产主键
+     */
+    @ApiModelProperty("资产主键")
     private Integer assetId;
-        /**
-    *  品牌
-    */
-        @ApiModelProperty("品牌")
+    /**
+     * 品牌
+     */
+    @ApiModelProperty("品牌")
     private String brand;
-        /**
-    *  型号
-    */
-        @ApiModelProperty("型号")
+    /**
+     * 型号
+     */
+    @ApiModelProperty("型号")
     private String model;
-        /**
-    *  序列号
-    */
-        @ApiModelProperty("序列号")
+    /**
+     * 序列号
+     */
+    @ApiModelProperty("序列号")
     private String serial;
-        /**
-    *  IP地址
-    */
-        @ApiModelProperty("IP地址")
+    /**
+     * IP地址
+     */
+    @ApiModelProperty("IP地址")
     private String ipAddress;
-        /**
-    *  MAC地址
-    */
-        @ApiModelProperty("MAC地址")
+    /**
+     * MAC地址
+     */
+    @ApiModelProperty("MAC地址")
     private String macAddress;
-        /**
-    *  默认网关
-    */
-        @ApiModelProperty("默认网关")
+    /**
+     * 默认网关
+     */
+    @ApiModelProperty("默认网关")
     private String defaultGateway;
-        /**
-    *  网络地址
-    */
-        @ApiModelProperty("网络地址")
+    /**
+     * 网络地址
+     */
+    @ApiModelProperty("网络地址")
     private String networdAddress;
-        /**
-    *  子网掩码
-    */
-        @ApiModelProperty("子网掩码")
+    /**
+     * 子网掩码
+     */
+    @ApiModelProperty("子网掩码")
     private String subnetMask;
-        /**
-    *  创建时间
-    */
-        @ApiModelProperty("创建时间")
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("创建时间")
     private Long gmtCreate;
-        /**
-    *  更新时间
-    */
-        @ApiModelProperty("更新时间")
+    /**
+     * 更新时间
+     */
+    @ApiModelProperty("更新时间")
     private Long gmtModified;
-        /**
-    *  备注
-    */
-        @ApiModelProperty("备注")
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
     private String memo;
-        /**
-    *  创建人
-    */
-        @ApiModelProperty("创建人")
+    /**
+     * 创建人
+     */
+    @ApiModelProperty("创建人")
     private Integer createUser;
-        /**
-    *  修改人
-    */
-        @ApiModelProperty("修改人")
+    /**
+     * 修改人
+     */
+    @ApiModelProperty("修改人")
     private Integer modifyUser;
-        /**
-    *  状态,0 未删除,1已删除
-    */
-        @ApiModelProperty("状态,0 未删除,1已删除")
+    /**
+     * 状态,0 未删除,1已删除
+     */
+    @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer status;
 
-                    
-                                    
+
     public Integer getAssetId() {
         return assetId;
     }
@@ -103,8 +102,8 @@ private static final long serialVersionUID = 1L;
     public void setAssetId(Integer assetId) {
         this.assetId = assetId;
     }
-    
-                                    
+
+
     public String getBrand() {
         return brand;
     }
@@ -112,8 +111,8 @@ private static final long serialVersionUID = 1L;
     public void setBrand(String brand) {
         this.brand = brand;
     }
-    
-                                    
+
+
     public String getModel() {
         return model;
     }
@@ -121,8 +120,8 @@ private static final long serialVersionUID = 1L;
     public void setModel(String model) {
         this.model = model;
     }
-    
-                                    
+
+
     public String getSerial() {
         return serial;
     }
@@ -130,8 +129,8 @@ private static final long serialVersionUID = 1L;
     public void setSerial(String serial) {
         this.serial = serial;
     }
-    
-                                    
+
+
     public String getIpAddress() {
         return ipAddress;
     }
@@ -139,8 +138,8 @@ private static final long serialVersionUID = 1L;
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
-    
-                                    
+
+
     public String getMacAddress() {
         return macAddress;
     }
@@ -148,8 +147,8 @@ private static final long serialVersionUID = 1L;
     public void setMacAddress(String macAddress) {
         this.macAddress = macAddress;
     }
-    
-                                    
+
+
     public String getDefaultGateway() {
         return defaultGateway;
     }
@@ -157,8 +156,8 @@ private static final long serialVersionUID = 1L;
     public void setDefaultGateway(String defaultGateway) {
         this.defaultGateway = defaultGateway;
     }
-    
-                                    
+
+
     public String getNetwordAddress() {
         return networdAddress;
     }
@@ -166,8 +165,8 @@ private static final long serialVersionUID = 1L;
     public void setNetwordAddress(String networdAddress) {
         this.networdAddress = networdAddress;
     }
-    
-                                    
+
+
     public String getSubnetMask() {
         return subnetMask;
     }
@@ -175,8 +174,8 @@ private static final long serialVersionUID = 1L;
     public void setSubnetMask(String subnetMask) {
         this.subnetMask = subnetMask;
     }
-    
-                                    
+
+
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -184,8 +183,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
-    
-                                    
+
+
     public Long getGmtModified() {
         return gmtModified;
     }
@@ -193,8 +192,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
     }
-    
-                                    
+
+
     public String getMemo() {
         return memo;
     }
@@ -202,8 +201,8 @@ private static final long serialVersionUID = 1L;
     public void setMemo(String memo) {
         this.memo = memo;
     }
-    
-                                    
+
+
     public Integer getCreateUser() {
         return createUser;
     }
@@ -211,8 +210,8 @@ private static final long serialVersionUID = 1L;
     public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
     }
-    
-                                    
+
+
     public Integer getModifyUser() {
         return modifyUser;
     }
@@ -220,8 +219,8 @@ private static final long serialVersionUID = 1L;
     public void setModifyUser(Integer modifyUser) {
         this.modifyUser = modifyUser;
     }
-    
-                                    
+
+
     public Integer getStatus() {
         return status;
     }
@@ -229,26 +228,26 @@ private static final long serialVersionUID = 1L;
     public void setStatus(Integer status) {
         this.status = status;
     }
-    
-    
-        @Override
+
+
+    @Override
     public String toString() {
-            return "AssetNetworkCard{" +
-                                                                                            ", assetId=" + assetId +
-                                                                                        ", brand=" + brand +
-                                                                                        ", model=" + model +
-                                                                                        ", serial=" + serial +
-                                                                                        ", ipAddress=" + ipAddress +
-                                                                                        ", macAddress=" + macAddress +
-                                                                                        ", defaultGateway=" + defaultGateway +
-                                                                                        ", networdAddress=" + networdAddress +
-                                                                                        ", subnetMask=" + subnetMask +
-                                                                                        ", gmtCreate=" + gmtCreate +
-                                                                                        ", gmtModified=" + gmtModified +
-                                                                                        ", memo=" + memo +
-                                                                                        ", createUser=" + createUser +
-                                                                                        ", modifyUser=" + modifyUser +
-                                                                                        ", status=" + status +
-                                                "}";
+        return "AssetNetworkCard{" +
+                ", assetId=" + assetId +
+                ", brand=" + brand +
+                ", model=" + model +
+                ", serial=" + serial +
+                ", ipAddress=" + ipAddress +
+                ", macAddress=" + macAddress +
+                ", defaultGateway=" + defaultGateway +
+                ", networdAddress=" + networdAddress +
+                ", subnetMask=" + subnetMask +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo=" + memo +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                "}";
     }
-    }
+}

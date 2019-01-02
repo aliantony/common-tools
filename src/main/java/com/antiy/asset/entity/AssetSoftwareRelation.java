@@ -1,9 +1,9 @@
 package com.antiy.asset.entity;
 
 
-import java.util.Date;
 import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p>
  * 资产软件关系信息
@@ -16,56 +16,55 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetSoftwareRelation extends BaseEntity {
 
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-        /**
-    *  资产主键
-    */
-        @ApiModelProperty("资产主键")
+    /**
+     * 资产主键
+     */
+    @ApiModelProperty("资产主键")
     private Integer assetId;
-        /**
-    *  软件主键
-    */
-        @ApiModelProperty("软件主键")
+    /**
+     * 软件主键
+     */
+    @ApiModelProperty("软件主键")
     private Integer softwareId;
-        /**
-    *  软件资产状态：1待登记，2不予登记，3待配置，4待验证，5待入网，6已入网，7待退役，8已退役
-    */
-        @ApiModelProperty("软件资产状态：1待登记，2不予登记，3待配置，4待验证，5待入网，6已入网，7待退役，8已退役")
+    /**
+     * 软件资产状态：1待登记，2不予登记，3待配置，4待验证，5待入网，6已入网，7待退役，8已退役
+     */
+    @ApiModelProperty("软件资产状态：1待登记，2不予登记，3待配置，4待验证，5待入网，6已入网，7待退役，8已退役")
     private Integer softwareStatus;
-        /**
-    *  创建时间
-    */
-        @ApiModelProperty("创建时间")
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("创建时间")
     private Long gmtCreate;
-        /**
-    *  更新时间
-    */
-        @ApiModelProperty("更新时间")
+    /**
+     * 更新时间
+     */
+    @ApiModelProperty("更新时间")
     private Long gmtModified;
-        /**
-    *  备注
-    */
-        @ApiModelProperty("备注")
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
     private String memo;
-        /**
-    *  创建人
-    */
-        @ApiModelProperty("创建人")
+    /**
+     * 创建人
+     */
+    @ApiModelProperty("创建人")
     private Integer createUser;
-        /**
-    *  修改人
-    */
-        @ApiModelProperty("修改人")
+    /**
+     * 修改人
+     */
+    @ApiModelProperty("修改人")
     private Integer modifyUser;
-        /**
-    *  状态,0 未删除,1已删除
-    */
-        @ApiModelProperty("状态,0 未删除,1已删除")
+    /**
+     * 状态,0 未删除,1已删除
+     */
+    @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer status;
 
-                    
-                                    
+
     public Integer getAssetId() {
         return assetId;
     }
@@ -73,8 +72,8 @@ private static final long serialVersionUID = 1L;
     public void setAssetId(Integer assetId) {
         this.assetId = assetId;
     }
-    
-                                    
+
+
     public Integer getSoftwareId() {
         return softwareId;
     }
@@ -82,8 +81,8 @@ private static final long serialVersionUID = 1L;
     public void setSoftwareId(Integer softwareId) {
         this.softwareId = softwareId;
     }
-    
-                                    
+
+
     public Integer getSoftwareStatus() {
         return softwareStatus;
     }
@@ -91,8 +90,8 @@ private static final long serialVersionUID = 1L;
     public void setSoftwareStatus(Integer softwareStatus) {
         this.softwareStatus = softwareStatus;
     }
-    
-                                    
+
+
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -100,8 +99,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
-    
-                                    
+
+
     public Long getGmtModified() {
         return gmtModified;
     }
@@ -109,8 +108,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
     }
-    
-                                    
+
+
     public String getMemo() {
         return memo;
     }
@@ -118,8 +117,8 @@ private static final long serialVersionUID = 1L;
     public void setMemo(String memo) {
         this.memo = memo;
     }
-    
-                                    
+
+
     public Integer getCreateUser() {
         return createUser;
     }
@@ -127,8 +126,8 @@ private static final long serialVersionUID = 1L;
     public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
     }
-    
-                                    
+
+
     public Integer getModifyUser() {
         return modifyUser;
     }
@@ -136,8 +135,8 @@ private static final long serialVersionUID = 1L;
     public void setModifyUser(Integer modifyUser) {
         this.modifyUser = modifyUser;
     }
-    
-                                    
+
+
     public Integer getStatus() {
         return status;
     }
@@ -145,20 +144,20 @@ private static final long serialVersionUID = 1L;
     public void setStatus(Integer status) {
         this.status = status;
     }
-    
-    
-        @Override
+
+
+    @Override
     public String toString() {
-            return "AssetSoftwareRelation{" +
-                                                                                            ", assetId=" + assetId +
-                                                                                        ", softwareId=" + softwareId +
-                                                                                        ", softwareStatus=" + softwareStatus +
-                                                                                        ", gmtCreate=" + gmtCreate +
-                                                                                        ", gmtModified=" + gmtModified +
-                                                                                        ", memo=" + memo +
-                                                                                        ", createUser=" + createUser +
-                                                                                        ", modifyUser=" + modifyUser +
-                                                                                        ", status=" + status +
-                                                "}";
+        return "AssetSoftwareRelation{" +
+                ", assetId=" + assetId +
+                ", softwareId=" + softwareId +
+                ", softwareStatus=" + softwareStatus +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo=" + memo +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                "}";
     }
-    }
+}

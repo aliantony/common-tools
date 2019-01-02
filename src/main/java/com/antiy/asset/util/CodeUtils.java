@@ -15,6 +15,7 @@ public class CodeUtils {
     static {
         init();
     }
+
     public static void init() {
 
         code.put(1, "待登记");
@@ -84,12 +85,13 @@ public class CodeUtils {
 
     /**
      * 获取code码
+     *
      * @param codeType
      * @param codeName
      * @return
      */
     public static Integer getCodeValue(String codeType, String codeName) {
-        if (StringUtils.isEmpty(codeType) ||  StringUtils.isEmpty(codeName)) {
+        if (StringUtils.isEmpty(codeType) || StringUtils.isEmpty(codeName)) {
             return null;
         }
         Map<Integer, String> map = codeMap.get(codeType);
@@ -103,12 +105,13 @@ public class CodeUtils {
 
     /**
      * 获取code名称
+     *
      * @param codeType
      * @param codeValue
      * @return
      */
     public static String getCodeName(String codeType, Integer codeValue) {
-        if (StringUtils.isEmpty(codeType) ||  codeValue == null) {
+        if (StringUtils.isEmpty(codeType) || codeValue == null) {
             return "";
         }
         Map<Integer, String> map = codeMap.get(codeType);
@@ -118,6 +121,7 @@ public class CodeUtils {
 
     /**
      * 获取code码
+     *
      * @param codeType
      * @return
      */
@@ -128,13 +132,14 @@ public class CodeUtils {
         List<String> list = Lists.newArrayList();
         Map<Integer, String> map = codeMap.get(codeType);
         for (Map.Entry entry : map.entrySet()) {
-           list.add(entry.getValue().toString());
+            list.add(entry.getValue().toString());
         }
         return list;
     }
 
     /**
      * 获取code码
+     *
      * @param codeType
      * @return
      */

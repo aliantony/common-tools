@@ -34,8 +34,6 @@ public class AssetDepartmentEntity {
     private Integer parentId;
 
 
-
-
     public String getName() {
         return name;
     }
@@ -68,7 +66,6 @@ public class AssetDepartmentEntity {
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
     }
-
 
 
 }

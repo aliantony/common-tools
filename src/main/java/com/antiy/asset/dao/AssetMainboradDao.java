@@ -1,10 +1,11 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-import com.antiy.common.base.IBaseDao;
-import com.antiy.asset.entity.AssetMainborad;
 import com.antiy.asset.dto.AssetMainboradDTO;
+import com.antiy.asset.entity.AssetMainborad;
 import com.antiy.asset.vo.query.AssetMainboradQuery;
+import com.antiy.common.base.IBaseDao;
+
+import java.util.List;
 
 /**
  * <p>

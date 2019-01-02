@@ -1,9 +1,9 @@
 package com.antiy.asset.entity;
 
 
-import java.util.Date;
 import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p>
  * 方案表
@@ -16,76 +16,75 @@ import io.swagger.annotations.ApiModelProperty;
 public class Scheme extends BaseEntity {
 
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-        /**
-    *  类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）
-    */
-        @ApiModelProperty("类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）")
+    /**
+     * 类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）
+     */
+    @ApiModelProperty("类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）")
     private Integer type;
-        /**
-    *  结果
-    */
-        @ApiModelProperty("结果")
+    /**
+     * 结果
+     */
+    @ApiModelProperty("结果")
     private Integer result;
-        /**
-    *  实施用户主键
-    */
-        @ApiModelProperty("实施用户主键")
+    /**
+     * 实施用户主键
+     */
+    @ApiModelProperty("实施用户主键")
     private Integer putintoUserId;
-        /**
-    *  实施时间
-    */
-        @ApiModelProperty("实施时间")
+    /**
+     * 实施时间
+     */
+    @ApiModelProperty("实施时间")
     private Long putintoTime;
-        /**
-    *  实施人
-    */
-        @ApiModelProperty("实施人")
+    /**
+     * 实施人
+     */
+    @ApiModelProperty("实施人")
     private String putintoUser;
-        /**
-    *  备注
-    */
-        @ApiModelProperty("备注")
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
     private String remark;
-        /**
-    *  附件路径
-    */
-        @ApiModelProperty("附件路径")
+    /**
+     * 附件路径
+     */
+    @ApiModelProperty("附件路径")
     private String filepath;
-        /**
-    *  创建时间
-    */
-        @ApiModelProperty("创建时间")
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("创建时间")
     private Long gmtCreate;
-        /**
-    *  更新时间
-    */
-        @ApiModelProperty("更新时间")
+    /**
+     * 更新时间
+     */
+    @ApiModelProperty("更新时间")
     private Long gmtModified;
-        /**
-    *  备注
-    */
-        @ApiModelProperty("备注")
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
     private String memo;
-        /**
-    *  创建人
-    */
-        @ApiModelProperty("创建人")
+    /**
+     * 创建人
+     */
+    @ApiModelProperty("创建人")
     private Integer createUser;
-        /**
-    *  修改人
-    */
-        @ApiModelProperty("修改人")
+    /**
+     * 修改人
+     */
+    @ApiModelProperty("修改人")
     private Integer modifyUser;
-        /**
-    *  状态,0 未删除,1已删除
-    */
-        @ApiModelProperty("状态,0 未删除,1已删除")
+    /**
+     * 状态,0 未删除,1已删除
+     */
+    @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer isDelete;
 
-                    
-                                    
+
     public Integer getType() {
         return type;
     }
@@ -93,8 +92,8 @@ private static final long serialVersionUID = 1L;
     public void setType(Integer type) {
         this.type = type;
     }
-    
-                                    
+
+
     public Integer getResult() {
         return result;
     }
@@ -102,8 +101,8 @@ private static final long serialVersionUID = 1L;
     public void setResult(Integer result) {
         this.result = result;
     }
-    
-                                    
+
+
     public Integer getPutintoUserId() {
         return putintoUserId;
     }
@@ -111,8 +110,8 @@ private static final long serialVersionUID = 1L;
     public void setPutintoUserId(Integer putintoUserId) {
         this.putintoUserId = putintoUserId;
     }
-    
-                                    
+
+
     public Long getPutintoTime() {
         return putintoTime;
     }
@@ -120,8 +119,8 @@ private static final long serialVersionUID = 1L;
     public void setPutintoTime(Long putintoTime) {
         this.putintoTime = putintoTime;
     }
-    
-                                    
+
+
     public String getPutintoUser() {
         return putintoUser;
     }
@@ -129,8 +128,8 @@ private static final long serialVersionUID = 1L;
     public void setPutintoUser(String putintoUser) {
         this.putintoUser = putintoUser;
     }
-    
-                                    
+
+
     public String getRemark() {
         return remark;
     }
@@ -138,8 +137,8 @@ private static final long serialVersionUID = 1L;
     public void setRemark(String remark) {
         this.remark = remark;
     }
-    
-                                    
+
+
     public String getFilepath() {
         return filepath;
     }
@@ -147,8 +146,8 @@ private static final long serialVersionUID = 1L;
     public void setFilepath(String filepath) {
         this.filepath = filepath;
     }
-    
-                                    
+
+
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -156,8 +155,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
-    
-                                    
+
+
     public Long getGmtModified() {
         return gmtModified;
     }
@@ -165,8 +164,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
     }
-    
-                                    
+
+
     public String getMemo() {
         return memo;
     }
@@ -174,8 +173,8 @@ private static final long serialVersionUID = 1L;
     public void setMemo(String memo) {
         this.memo = memo;
     }
-    
-                                    
+
+
     public Integer getCreateUser() {
         return createUser;
     }
@@ -183,8 +182,8 @@ private static final long serialVersionUID = 1L;
     public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
     }
-    
-                                    
+
+
     public Integer getModifyUser() {
         return modifyUser;
     }
@@ -192,8 +191,8 @@ private static final long serialVersionUID = 1L;
     public void setModifyUser(Integer modifyUser) {
         this.modifyUser = modifyUser;
     }
-    
-                                    
+
+
     public Integer getIsDelete() {
         return isDelete;
     }
@@ -201,24 +200,24 @@ private static final long serialVersionUID = 1L;
     public void setIsDelete(Integer isDelete) {
         this.isDelete = isDelete;
     }
-    
-    
-        @Override
+
+
+    @Override
     public String toString() {
-            return "Scheme{" +
-                                                                                            ", type=" + type +
-                                                                                        ", result=" + result +
-                                                                                        ", putintoUserId=" + putintoUserId +
-                                                                                        ", putintoTime=" + putintoTime +
-                                                                                        ", putintoUser=" + putintoUser +
-                                                                                        ", remark=" + remark +
-                                                                                        ", filepath=" + filepath +
-                                                                                        ", gmtCreate=" + gmtCreate +
-                                                                                        ", gmtModified=" + gmtModified +
-                                                                                        ", memo=" + memo +
-                                                                                        ", createUser=" + createUser +
-                                                                                        ", modifyUser=" + modifyUser +
-                                                                                        ", isDelete=" + isDelete +
-                                                "}";
+        return "Scheme{" +
+                ", type=" + type +
+                ", result=" + result +
+                ", putintoUserId=" + putintoUserId +
+                ", putintoTime=" + putintoTime +
+                ", putintoUser=" + putintoUser +
+                ", remark=" + remark +
+                ", filepath=" + filepath +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo=" + memo +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", isDelete=" + isDelete +
+                "}";
     }
-    }
+}

@@ -1,15 +1,13 @@
 package com.antiy.asset.service;
 
 import com.antiy.asset.entity.AssetMainborad;
-import com.antiy.asset.entity.vo.query.AssetMainboradQuery;
-import com.antiy.asset.entity.vo.request.AssetMainboradRequest;
-import com.antiy.asset.entity.vo.response.AssetMainboradResponse;
+import com.antiy.asset.vo.query.AssetMainboradQuery;
+import com.antiy.asset.vo.request.AssetMainboradRequest;
+import com.antiy.asset.vo.response.AssetMainboradResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
 import java.util.List;
-
-;
 
 
 /**
@@ -18,36 +16,40 @@ import java.util.List;
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-29
+ * @since 2019-01-02
  */
 public interface IAssetMainboradService extends IBaseService<AssetMainborad> {
 
-        /**
-         * 保存
-         * @param request
-         * @return
-         */
-        Integer saveAssetMainborad(AssetMainboradRequest request) throws Exception;
+    /**
+     * 保存
+     *
+     * @param request
+     * @return
+     */
+    Integer saveAssetMainborad(AssetMainboradRequest request) throws Exception;
 
-        /**
-         * 修改
-         * @param request
-         * @return
-         */
-        Integer updateAssetMainborad(AssetMainboradRequest request) throws Exception;
+    /**
+     * 修改
+     *
+     * @param request
+     * @return
+     */
+    Integer updateAssetMainborad(AssetMainboradRequest request) throws Exception;
 
-        /**
-         * 查询对象集合
-         * @param query
-         * @return
-         */
-        List<AssetMainboradResponse> findListAssetMainborad(AssetMainboradQuery query) throws Exception;
+    /**
+     * 查询对象集合
+     *
+     * @param query
+     * @return
+     */
+    List<AssetMainboradResponse> findListAssetMainborad(AssetMainboradQuery query) throws Exception;
 
-        /**
-         * 批量查询
-         * @param query
-         * @return
-         */
-        PageResult<AssetMainboradResponse> findPageAssetMainborad(AssetMainboradQuery query) throws Exception;
+    /**
+     * 批量查询
+     *
+     * @param query
+     * @return
+     */
+    PageResult<AssetMainboradResponse> findPageAssetMainborad(AssetMainboradQuery query) throws Exception;
 
 }

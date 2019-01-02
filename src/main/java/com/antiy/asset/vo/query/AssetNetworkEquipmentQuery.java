@@ -1,9 +1,10 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
-import io.swagger.annotations.ApiModelProperty;
-import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p>
  * AssetNetworkEquipment 查询条件
@@ -13,39 +14,39 @@ import com.antiy.common.exception.RequestParamValidateException;
  * @since 2018-12-27
  */
 
-public class AssetNetworkEquipmentQuery extends ObjectQuery implements ObjectValidator{
+public class AssetNetworkEquipmentQuery extends ObjectQuery implements ObjectValidator {
     /**
-     *  资产主键
+     * 资产主键
      */
     @ApiModelProperty("资产主键")
     private Integer assetId;
     /**
-     *  接口数目
+     * 接口数目
      */
     @ApiModelProperty("接口数目")
     private Integer interfaceSize;
     /**
-     *  是否无线:0-否,1-是
+     * 是否无线:0-否,1-是
      */
     @ApiModelProperty("是否无线:0-否,1-是")
     private Boolean isWireless;
     /**
-     *  内网IP
+     * 内网IP
      */
     @ApiModelProperty("内网IP")
     private String innerIp;
     /**
-     *  外网IP
+     * 外网IP
      */
     @ApiModelProperty("外网IP")
     private String outerIp;
     /**
-     *  MAC地址
+     * MAC地址
      */
     @ApiModelProperty("MAC地址")
     private String macAddress;
     /**
-     *  子网掩码
+     * 子网掩码
      */
     @ApiModelProperty("子网掩码")
     private String subnetMask;

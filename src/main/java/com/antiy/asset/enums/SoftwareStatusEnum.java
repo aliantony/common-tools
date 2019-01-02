@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
  * @Description: 软件状态枚举
  */
 public enum SoftwareStatusEnum {
-                                IN_ACTIVE("0", "失效"), ACTIVE("1", "生效");
+    IN_ACTIVE("0", "失效"), ACTIVE("1", "生效");
 
     SoftwareStatusEnum(String code, String msg) {
         this.code = code;
@@ -23,6 +23,7 @@ public enum SoftwareStatusEnum {
 
     /**
      * 通过code获取枚举
+     *
      * @param code code
      * @return
      */

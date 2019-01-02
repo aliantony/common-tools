@@ -1,9 +1,9 @@
 package com.antiy.asset.entity;
 
 
-import java.util.Date;
 import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p>
  * 通联关系表
@@ -16,76 +16,75 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetLinkRelation extends BaseEntity {
 
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-        /**
-    *  通联名称
-    */
-        @ApiModelProperty("通联名称")
+    /**
+     * 通联名称
+     */
+    @ApiModelProperty("通联名称")
     private String name;
-        /**
-    *  通联类型:1光纤，2双绞线
-    */
-        @ApiModelProperty("通联类型:1光纤，2双绞线")
+    /**
+     * 通联类型:1光纤，2双绞线
+     */
+    @ApiModelProperty("通联类型:1光纤，2双绞线")
     private Integer linkType;
-        /**
-    *  头节点资产
-    */
-        @ApiModelProperty("头节点资产")
+    /**
+     * 头节点资产
+     */
+    @ApiModelProperty("头节点资产")
     private Integer headAsset;
-        /**
-    *  尾节点资产
-    */
-        @ApiModelProperty("尾节点资产")
+    /**
+     * 尾节点资产
+     */
+    @ApiModelProperty("尾节点资产")
     private Integer tailAsse;
-        /**
-    *  头节点类型
-    */
-        @ApiModelProperty("头节点类型")
+    /**
+     * 头节点类型
+     */
+    @ApiModelProperty("头节点类型")
     private Integer headType;
-        /**
-    *  尾节点类型
-    */
-        @ApiModelProperty("尾节点类型")
+    /**
+     * 尾节点类型
+     */
+    @ApiModelProperty("尾节点类型")
     private Integer tailType;
-        /**
-    *  状态
-    */
-        @ApiModelProperty("状态")
+    /**
+     * 状态
+     */
+    @ApiModelProperty("状态")
     private Integer linkStatus;
-        /**
-    *  创建时间
-    */
-        @ApiModelProperty("创建时间")
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("创建时间")
     private Long gmtCreate;
-        /**
-    *  修改时间
-    */
-        @ApiModelProperty("修改时间")
+    /**
+     * 修改时间
+     */
+    @ApiModelProperty("修改时间")
     private Long gmtModified;
-        /**
-    *  备注
-    */
-        @ApiModelProperty("备注")
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
     private String memo;
-        /**
-    *  创建人
-    */
-        @ApiModelProperty("创建人")
+    /**
+     * 创建人
+     */
+    @ApiModelProperty("创建人")
     private Integer createUser;
-        /**
-    *  修改人
-    */
-        @ApiModelProperty("修改人")
+    /**
+     * 修改人
+     */
+    @ApiModelProperty("修改人")
     private Integer modifyUser;
-        /**
-    *  状态,0 未删除,1已删除
-    */
-        @ApiModelProperty("状态,0 未删除,1已删除")
+    /**
+     * 状态,0 未删除,1已删除
+     */
+    @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer status;
 
-                    
-                                    
+
     public String getName() {
         return name;
     }
@@ -93,8 +92,8 @@ private static final long serialVersionUID = 1L;
     public void setName(String name) {
         this.name = name;
     }
-    
-                                    
+
+
     public Integer getLinkType() {
         return linkType;
     }
@@ -102,8 +101,8 @@ private static final long serialVersionUID = 1L;
     public void setLinkType(Integer linkType) {
         this.linkType = linkType;
     }
-    
-                                    
+
+
     public Integer getHeadAsset() {
         return headAsset;
     }
@@ -111,8 +110,8 @@ private static final long serialVersionUID = 1L;
     public void setHeadAsset(Integer headAsset) {
         this.headAsset = headAsset;
     }
-    
-                                    
+
+
     public Integer getTailAsse() {
         return tailAsse;
     }
@@ -120,8 +119,8 @@ private static final long serialVersionUID = 1L;
     public void setTailAsse(Integer tailAsse) {
         this.tailAsse = tailAsse;
     }
-    
-                                    
+
+
     public Integer getHeadType() {
         return headType;
     }
@@ -129,8 +128,8 @@ private static final long serialVersionUID = 1L;
     public void setHeadType(Integer headType) {
         this.headType = headType;
     }
-    
-                                    
+
+
     public Integer getTailType() {
         return tailType;
     }
@@ -138,8 +137,8 @@ private static final long serialVersionUID = 1L;
     public void setTailType(Integer tailType) {
         this.tailType = tailType;
     }
-    
-                                    
+
+
     public Integer getLinkStatus() {
         return linkStatus;
     }
@@ -147,8 +146,8 @@ private static final long serialVersionUID = 1L;
     public void setLinkStatus(Integer linkStatus) {
         this.linkStatus = linkStatus;
     }
-    
-                                    
+
+
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -156,8 +155,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
-    
-                                    
+
+
     public Long getGmtModified() {
         return gmtModified;
     }
@@ -165,8 +164,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
     }
-    
-                                    
+
+
     public String getMemo() {
         return memo;
     }
@@ -174,8 +173,8 @@ private static final long serialVersionUID = 1L;
     public void setMemo(String memo) {
         this.memo = memo;
     }
-    
-                                    
+
+
     public Integer getCreateUser() {
         return createUser;
     }
@@ -183,8 +182,8 @@ private static final long serialVersionUID = 1L;
     public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
     }
-    
-                                    
+
+
     public Integer getModifyUser() {
         return modifyUser;
     }
@@ -192,8 +191,8 @@ private static final long serialVersionUID = 1L;
     public void setModifyUser(Integer modifyUser) {
         this.modifyUser = modifyUser;
     }
-    
-                                    
+
+
     public Integer getStatus() {
         return status;
     }
@@ -201,24 +200,24 @@ private static final long serialVersionUID = 1L;
     public void setStatus(Integer status) {
         this.status = status;
     }
-    
-    
-        @Override
+
+
+    @Override
     public String toString() {
-            return "AssetLinkRelation{" +
-                                                                                            ", name=" + name +
-                                                                                        ", linkType=" + linkType +
-                                                                                        ", headAsset=" + headAsset +
-                                                                                        ", tailAsse=" + tailAsse +
-                                                                                        ", headType=" + headType +
-                                                                                        ", tailType=" + tailType +
-                                                                                        ", linkStatus=" + linkStatus +
-                                                                                        ", gmtCreate=" + gmtCreate +
-                                                                                        ", gmtModified=" + gmtModified +
-                                                                                        ", memo=" + memo +
-                                                                                        ", createUser=" + createUser +
-                                                                                        ", modifyUser=" + modifyUser +
-                                                                                        ", status=" + status +
-                                                "}";
+        return "AssetLinkRelation{" +
+                ", name=" + name +
+                ", linkType=" + linkType +
+                ", headAsset=" + headAsset +
+                ", tailAsse=" + tailAsse +
+                ", headType=" + headType +
+                ", tailType=" + tailType +
+                ", linkStatus=" + linkStatus +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo=" + memo +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                "}";
     }
-    }
+}

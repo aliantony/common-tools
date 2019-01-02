@@ -27,7 +27,7 @@ import java.util.Date;
 @EnableSwagger2
 public class Swagger2Config {
 
-    private static final String BASE_PACKAGE = "com.antiy.asset" ;
+    private static final String BASE_PACKAGE = "com.antiy.asset";
 
     @Value("${swagger.enable}")
     private boolean enableSwagger;
@@ -50,7 +50,7 @@ public class Swagger2Config {
                 .title("Swagger RESTful APIs")
                 .description("Swagger API 服务")
                 .termsOfServiceUrl("http://swagger.io/")
-                .contact(new Contact("Swagger" , "127.0.0.1" , "liuyu@antiy.com"))
+                .contact(new Contact("Swagger", "127.0.0.1", "liuyu@antiy.com"))
                 .version("1.0.0")
                 .build();
     }
