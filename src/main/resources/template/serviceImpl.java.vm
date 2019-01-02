@@ -54,7 +54,7 @@ public class ${table.serviceImplName} extends BaseServiceImpl<${entity}> impleme
 
         @Override
         public List<${entity}Response> findList${entity}(${entity}Query query) throws Exception {
-            List<${entity}> ${table.entityPath}List = ${table.entityPath}Dao.findQuery${entity}(query);
+            List<${entity}> ${table.entityPath}List = ${table.entityPath}Dao.findQuery(query);
             //TODO
             List<${entity}Response> ${table.entityPath}Response = responseConverter.convert(${table.entityPath}List,${entity}Response.class );
             return ${table.entityPath}Response;
