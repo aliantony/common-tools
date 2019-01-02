@@ -1,8 +1,8 @@
-package com.antiy.asset.controller.swagger;
+package com.antiy.asset.controller;
 
-import com.antiy.asset.service.IAssetSafetyEquipmentService;
-import com.antiy.asset.vo.query.AssetSafetyEquipmentQuery;
-import com.antiy.asset.vo.request.AssetSafetyEquipmentRequest;
+import com.antiy.asset.service.IAssetSoftwareLicenseService;
+import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
+import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -20,19 +20,19 @@ import javax.annotation.Resource;
  * @author zhangyajun
  * @since 2019-01-02
  */
-@Api(value = "AssetSafetyEquipment", description = "安全设备详情表")
+@Api(value = "AssetSoftwareLicense", description = "软件许可表")
 @RestController
-@RequestMapping("/v1/asset/assetsafetyequipment")
+@RequestMapping("/v1/asset/assetsoftwarelicense")
 @Slf4j
-public class AssetSafetyEquipmentController {
+public class AssetSoftwareLicenseController {
 
     @Resource
-    public IAssetSafetyEquipmentService iAssetSafetyEquipmentService;
+    public IAssetSoftwareLicenseService iAssetSoftwareLicenseService;
 
     /**
      * 保存
      *
-     * @param assetSafetyEquipment
+     * @param assetSoftwareLicense
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
@@ -40,15 +40,15 @@ public class AssetSafetyEquipmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetSafetyEquipment") AssetSafetyEquipmentRequest assetSafetyEquipment) throws Exception {
-        iAssetSafetyEquipmentService.saveAssetSafetyEquipment(assetSafetyEquipment);
+    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetSoftwareLicense") AssetSoftwareLicenseRequest assetSoftwareLicense) throws Exception {
+        iAssetSoftwareLicenseService.saveAssetSoftwareLicense(assetSoftwareLicense);
         return ActionResponse.success();
     }
 
     /**
      * 修改
      *
-     * @param assetSafetyEquipment
+     * @param assetSoftwareLicense
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
@@ -56,15 +56,15 @@ public class AssetSafetyEquipmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetSafetyEquipment") AssetSafetyEquipmentRequest assetSafetyEquipment) throws Exception {
-        iAssetSafetyEquipmentService.updateAssetSafetyEquipment(assetSafetyEquipment);
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetSoftwareLicense") AssetSoftwareLicenseRequest assetSoftwareLicense) throws Exception {
+        iAssetSoftwareLicenseService.updateAssetSoftwareLicense(assetSoftwareLicense);
         return ActionResponse.success();
     }
 
     /**
      * 批量查询
      *
-     * @param assetSafetyEquipment
+     * @param assetSoftwareLicense
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
@@ -72,8 +72,8 @@ public class AssetSafetyEquipmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetSafetyEquipment") AssetSafetyEquipmentQuery assetSafetyEquipment) throws Exception {
-        return ActionResponse.success(iAssetSafetyEquipmentService.findPageAssetSafetyEquipment(assetSafetyEquipment));
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetSoftwareLicense") AssetSoftwareLicenseQuery assetSoftwareLicense) throws Exception {
+        return ActionResponse.success(iAssetSoftwareLicenseService.findPageAssetSoftwareLicense(assetSoftwareLicense));
     }
 
     /**
@@ -87,9 +87,9 @@ public class AssetSafetyEquipmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetSafetyEquipment") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetSoftwareLicense") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetSafetyEquipmentService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetSoftwareLicenseService.getById(query.getPrimaryKey()));
     }
 
     /**
@@ -105,7 +105,7 @@ public class AssetSafetyEquipmentController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetSafetyEquipmentService.deleteById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetSoftwareLicenseService.deleteById(query.getPrimaryKey()));
     }
 }
 
