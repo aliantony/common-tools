@@ -79,10 +79,10 @@ public class Scheme extends BaseEntity {
     @ApiModelProperty("修改人")
     private Integer modifyUser;
     /**
-     * 状态,0 未删除,1已删除
+     * 状态,1未删除,0已删除
      */
-    @ApiModelProperty("状态,0 未删除,1已删除")
-    private Integer isDelete;
+    @ApiModelProperty("状态,1未删除,0已删除")
+    private Integer status;
 
 
     public Integer getType() {
@@ -193,14 +193,13 @@ public class Scheme extends BaseEntity {
     }
 
 
-    public Integer getIsDelete() {
-        return isDelete;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setIsDelete(Integer isDelete) {
-        this.isDelete = isDelete;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
-
 
     @Override
     public String toString() {
@@ -217,7 +216,7 @@ public class Scheme extends BaseEntity {
                 ", memo=" + memo +
                 ", createUser=" + createUser +
                 ", modifyUser=" + modifyUser +
-                ", isDelete=" + isDelete +
+                ", status=" + status +
                 "}";
     }
 }

@@ -196,9 +196,9 @@ public class Asset extends BaseEntity {
     @ApiModelProperty("修改人")
     private Integer           modifyUser;
     /**
-     * 状态,0 未删除,1已删除
+     * 状态,1未删除,0已删除
      */
-    @ApiModelProperty("状态,0 未删除,1已删除")
+    @ApiModelProperty("状态,1未删除,0已删除")
     private Integer           isDelete;
 
     public String getNumber() {

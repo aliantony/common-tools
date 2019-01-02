@@ -74,9 +74,9 @@ public class AssetUserDTO extends BaseEntity {
     @ApiModelProperty("更新时间")
     private Long gmtModified;
     /**
-     * 状态,0 未删除,1已删除
+     * 状态,1未删除,0已删除
      */
-    @ApiModelProperty("状态,0 未删除,1已删除")
+    @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
 
 

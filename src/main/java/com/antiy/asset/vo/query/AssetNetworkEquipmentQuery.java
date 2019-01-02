@@ -51,7 +51,7 @@ public class AssetNetworkEquipmentQuery extends ObjectQuery implements ObjectVal
     @ApiModelProperty("子网掩码")
     private String subnetMask;
 
-    @ApiModelProperty("状态,0 未删除,1已删除")
+    @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
 
     public Integer getAssetId() {

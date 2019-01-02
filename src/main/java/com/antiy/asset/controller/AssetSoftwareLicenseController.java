@@ -72,7 +72,7 @@ public class AssetSoftwareLicenseController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetSoftwareLicense") AssetSoftwareLicenseQuery assetSoftwareLicense) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetSoftwareLicense") AssetSoftwareLicenseQuery assetSoftwareLicense) throws Exception {
         return ActionResponse.success(iAssetSoftwareLicenseService.findPageAssetSoftwareLicense(assetSoftwareLicense));
     }
 
@@ -87,9 +87,9 @@ public class AssetSoftwareLicenseController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetSoftwareLicense") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetSoftwareLicense") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareLicenseService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetSoftwareLicenseService.getById(Integer.valueOf(query.getPrimaryKey())));
     }
 
     /**
@@ -105,7 +105,7 @@ public class AssetSoftwareLicenseController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareLicenseService.deleteById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetSoftwareLicenseService.deleteById(Integer.valueOf(query.getPrimaryKey())));
     }
 }
 

@@ -95,9 +95,9 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
     @ApiModelProperty("修改人")
     private Integer modifyUser;
     /**
-     * 状态,0 未删除,1已删除
+     * 状态,1未删除,0已删除
      */
-    @ApiModelProperty("状态,0 未删除,1已删除")
+    @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
 
     public int getId() {
