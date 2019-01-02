@@ -3,6 +3,7 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.dao.AssetDepartmentDao;
 import com.antiy.asset.entity.AssetDepartment;
 import com.antiy.asset.service.IAssetDepartmentService;
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
@@ -51,9 +52,26 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Override
     public List<AssetDepartmentResponse> findListAssetDepartment(AssetDepartmentQuery query) throws Exception {
         List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
-        //TODO
-        List<AssetDepartmentResponse> assetDepartmentResponse = new ArrayList<AssetDepartmentResponse>();
-        return assetDepartmentResponse;
+        return convert(assetDepartment);
+    }
+
+    private List<AssetDepartmentResponse> convert(List<AssetDepartment> assetDepartments) {
+        if (assetDepartments.size() > 0) {
+            List assetDepartmentResponse = BeanConvert.convert(assetDepartments, AssetDepartmentResponse.class);
+            setListID(assetDepartments, assetDepartmentResponse);
+            return assetDepartmentResponse;
+        } else
+            return new ArrayList<>();
+    }
+
+    private void setListID(List<AssetDepartment> assetDepartments, List<AssetDepartmentResponse> assetDepartmentResponses) {
+        for (int i = 0; i < assetDepartmentResponses.size(); i++) {
+            setID(assetDepartments.get(i), assetDepartmentResponses.get(i));
+        }
+    }
+
+    private void setID(AssetDepartment assetDepartment, AssetDepartmentResponse assetDepartmentResponse) {
+        assetDepartmentResponse.setId(assetDepartment.getId());
     }
 
     public Integer findCountAssetDepartment(AssetDepartmentQuery query) throws Exception {

@@ -17,10 +17,12 @@
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="status" property="status"/>
+        <result column="memo" property="memo"/>
+
     </resultMap>
-<!-- 通用查询结果列 -->
+    <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, department_id AS departmentId, email, qq, weixin, mobile, address, create_user AS createUser, modify_user AS modifyUser, gmt_create AS gmtCreate, gmt_modified AS gmtModified, status
+        id, name, department_id AS departmentId, email, qq, weixin, mobile, address, create_user AS createUser, modify_user AS modifyUser, gmt_create AS gmtCreate, gmt_modified AS gmtModified, status,memo
     </sql>
 
     <sql id="Table_Name">
@@ -65,6 +67,9 @@
         <if test=" status != null">
             status,
         </if>
+        <if test=" memo != null">
+            memo,
+        </if>
     </sql>
 
     <sql id="IF_Value_Column_List">
@@ -103,6 +108,9 @@
         </if>
         <if test=" status != null">
             #{status },
+        </if>
+        <if test=" memo != null">
+            #{memo },
         </if>
     </sql>
 
@@ -143,6 +151,9 @@
         <if test=" status != null">
             status = #{status },
         </if>
+        <if test=" memo != null">
+            memo = #{memo },
+        </if>
     </sql>
 
     <sql id="Where_Column_List">
@@ -167,23 +178,13 @@
         <if test=" address != null">
             and address = #{address }
         </if>
-        <if test=" createUser != null">
-            and create_user = #{createUser }
-        </if>
-        <if test=" modifyUser != null">
-            and modify_user = #{modifyUser }
-        </if>
-        <if test=" gmtCreate != null">
-            and gmt_create = #{gmtCreate }
-        </if>
-        <if test=" gmtModified != null">
-            and gmt_modified = #{gmtModified }
-        </if>
-        <if test=" status != null">
-            and status = #{status }
+
+    </sql>
+    <sql id="Page_List">
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{currentPage}
         </if>
     </sql>
-
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetUser">
         insert into
         <include refid="Table_Name"></include>
@@ -234,7 +235,8 @@
 
 
     <select id="getAll" resultType="com.antiy.asset.entity.AssetUser">
-        select *
+        select
+        <include refid="Base_Column_List"></include>
         from
         <include refid="Table_Name"></include>
     </select>
@@ -251,66 +253,32 @@
         </where>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetUser" parameterType="com.antiy.common.base.ObjectQuery">
-        select * from
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetUser"
+            parameterType="com.antiy.common.base.ObjectQuery">
+        select
+        <include refid="Base_Column_List"></include>
+        from
         <include refid="Table_Name"></include>
         <where>
             <trim prefixOverrides="and">
                 <include refid="Where_Column_List"></include>
             </trim>
         </where>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
-        </if>
+        <include refid="Page_List"></include>
+
     </select>
 
 
-    <select id="findListAssetUser" resultType="com.antiy.asset.entity.AssetUser" parameterType="com.antiy.asset.vo.query.AssetUserQuery">
-        select * from
+    <select id="findListAssetUser" resultType="com.antiy.asset.entity.AssetUser"
+            parameterType="com.antiy.asset.vo.query.AssetUserQuery">
+        select
+        <include refid="Base_Column_List"></include>
+        from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-        <if test=" id != null">
-                and id = #{id }
-            </if>
-        <if test=" name != null">
-                and name = #{name }
-            </if>
-        <if test=" departmentId != null">
-                and department_id = #{departmentId }
-            </if>
-        <if test=" email != null">
-                and email = #{email }
-            </if>
-        <if test=" qq != null">
-                and qq = #{qq }
-            </if>
-        <if test=" weixin != null">
-                and weixin = #{weixin }
-            </if>
-        <if test=" mobile != null">
-                and mobile = #{mobile }
-            </if>
-        <if test=" address != null">
-                and address = #{address }
-            </if>
-        <if test=" createUser != null">
-                and create_user = #{createUser }
-            </if>
-        <if test=" modifyUser != null">
-                and modify_user = #{modifyUser }
-            </if>
-        <if test=" gmtCreate != null">
-                and gmt_create = #{gmtCreate }
-            </if>
-        <if test=" gmtModified != null">
-                and gmt_modified = #{gmtModified }
-            </if>
-        <if test=" status != null">
-                and status = #{status }
-            </if>
-                </trim>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
-        </if>
+            <include refid="Where_Column_List"></include>
+            and status = 0
+        </trim>
+        <include refid="Page_List"></include>
     </select>
 </mapper>

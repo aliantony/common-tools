@@ -15,9 +15,9 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
     </resultMap>
-<!-- 通用查询结果列 -->
+    <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, purpose, important_degree AS importantDegree, name, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
+        id, name,purpose,important_degree, memo
     </sql>
 
     <sql id="Table_Name">
@@ -27,31 +27,31 @@
 
     <sql id="IF_Base_Column_List">
         <if test=" purpose != null">
-            purpose,
+            purpose ,
         </if>
         <if test=" importantDegree != null">
-            important_degree,
+            important_degree ,
         </if>
         <if test=" name != null">
-            name,
+            name ,
         </if>
         <if test=" gmtCreate != null">
-            gmt_create,
+            gmtCreate ,
         </if>
         <if test=" gmtModified != null">
-            gmt_modified,
+            gmtModified ,
         </if>
         <if test=" memo != null">
             memo,
         </if>
         <if test=" createUser != null">
-            create_user,
+            createUser ,
         </if>
         <if test=" modifyUser != null">
-            modify_user,
+            modifyUser ,
         </if>
         <if test=" status != null">
-            status,
+            status ,
         </if>
     </sql>
 
@@ -113,6 +113,7 @@
         <if test=" status != null">
             status = #{status },
         </if>
+
     </sql>
 
     <sql id="Where_Column_List">
@@ -125,26 +126,13 @@
         <if test=" name != null">
             and name = #{name }
         </if>
-        <if test=" gmtCreate != null">
-            and gmt_create = #{gmtCreate }
-        </if>
-        <if test=" gmtModified != null">
-            and gmt_modified = #{gmtModified }
-        </if>
-        <if test=" memo != null">
-            and memo = #{memo }
-        </if>
-        <if test=" createUser != null">
-            and create_user = #{createUser }
-        </if>
-        <if test=" modifyUser != null">
-            and modify_user = #{modifyUser }
-        </if>
-        <if test=" status != null">
-            and status = #{status }
+
+    </sql>
+    <sql id="Page_List">
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{currentPage}
         </if>
     </sql>
-
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetGroup">
         insert into
         <include refid="Table_Name"></include>
@@ -195,7 +183,8 @@
 
 
     <select id="getAll" resultType="com.antiy.asset.entity.AssetGroup">
-        select *
+        select
+        <include refid="Base_Column_List"/>
         from
         <include refid="Table_Name"></include>
     </select>
@@ -212,57 +201,32 @@
         </where>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetGroup" parameterType="com.antiy.common.base.ObjectQuery">
-        select * from
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetGroup"
+            parameterType="com.antiy.common.base.ObjectQuery">
+        select
+        <include refid="Base_Column_List"/>
+        from
         <include refid="Table_Name"></include>
         <where>
             <trim prefixOverrides="and">
                 <include refid="Where_Column_List"></include>
             </trim>
         </where>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
-        </if>
+        <include refid="Page_List"></include>
+
     </select>
 
 
-    <select id="findListAssetGroup" resultType="com.antiy.asset.entity.AssetGroup" parameterType="com.antiy.asset.vo.query.AssetGroupQuery">
-        select * from
+    <select id="findListAssetGroup" resultType="com.antiy.asset.entity.AssetGroup"
+            parameterType="com.antiy.asset.vo.query.AssetGroupQuery">
+        select
+        <include refid="Base_Column_List"/>
+        from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-        <if test=" id != null">
-                and id = #{id }
-            </if>
-        <if test=" purpose != null">
-                and purpose = #{purpose }
-            </if>
-        <if test=" importantDegree != null">
-                and important_degree = #{importantDegree }
-            </if>
-        <if test=" name != null">
-                and name = #{name }
-            </if>
-        <if test=" gmtCreate != null">
-                and gmt_create = #{gmtCreate }
-            </if>
-        <if test=" gmtModified != null">
-                and gmt_modified = #{gmtModified }
-            </if>
-        <if test=" memo != null">
-                and memo = #{memo }
-            </if>
-        <if test=" createUser != null">
-                and create_user = #{createUser }
-            </if>
-        <if test=" modifyUser != null">
-                and modify_user = #{modifyUser }
-            </if>
-        <if test=" status != null">
-                and status = #{status }
-            </if>
-                </trim>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
-        </if>
+            <include refid="Where_Column_List"></include>
+            and status = 0
+        </trim>
+       <include refid="Page_List"></include>
     </select>
 </mapper>

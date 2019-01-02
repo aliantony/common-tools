@@ -24,6 +24,11 @@ public class AssetUser extends BaseEntity {
     @ApiModelProperty("姓名")
     private String name;
     /**
+     * 姓名
+     */
+    @ApiModelProperty("备注")
+    private String memo;
+    /**
      * 部门主键
      */
     @ApiModelProperty("部门主键")
@@ -187,6 +192,13 @@ public class AssetUser extends BaseEntity {
         this.status = status;
     }
 
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
     @Override
     public String toString() {

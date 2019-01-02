@@ -3,6 +3,7 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.IAssetUserService;
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
 import com.antiy.asset.vo.response.AssetUserResponse;
@@ -51,13 +52,30 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Override
     public List<AssetUserResponse> findListAssetUser(AssetUserQuery query) throws Exception {
         List<AssetUser> assetUser = assetUserDao.findListAssetUser(query);
-        //TODO
-        List<AssetUserResponse> assetUserResponse = new ArrayList<AssetUserResponse>();
-        return assetUserResponse;
+        return convert(assetUser);
     }
 
     public Integer findCountAssetUser(AssetUserQuery query) throws Exception {
         return assetUserDao.findCount(query);
+    }
+
+    private List<AssetUserResponse> convert(List<AssetUser> assetUsers) {
+        if (assetUsers.size() > 0) {
+            List assetUserResponses = BeanConvert.convert(assetUsers, AssetUserResponse.class);
+            setListID(assetUsers, assetUserResponses);
+            return assetUserResponses;
+        }
+        return new ArrayList<>();
+    }
+
+    private void setListID(List<AssetUser> assetUsers, List<AssetUserResponse> assetUserResponses) {
+        for (int i = 0; i < assetUserResponses.size(); i++) {
+            setID(assetUsers.get(i), assetUserResponses.get(i));
+        }
+    }
+
+    private void setID(AssetUser assetUser, AssetUserResponse assetUserResponse) {
+        assetUserResponse.setId(assetUser.getId());
     }
 
     @Override

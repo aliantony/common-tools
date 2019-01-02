@@ -1,10 +1,13 @@
 package com.antiy.asset.controller;
 
 import com.antiy.asset.service.IAssetGroupService;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
+import com.antiy.asset.vo.request.AssetGroupUpdateRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +44,12 @@ public class AssetGroupController {
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetGroup") AssetGroupRequest assetGroup) throws Exception {
-        iAssetGroupService.saveAssetGroup(assetGroup);
-        return ActionResponse.success();
+        Boolean success = iAssetGroupService.saveAssetGroup(assetGroup) > 0;
+        if (success) {
+            return ActionResponse.success();
+        } else {
+            return ActionResponse.fail(RespBasicCode.ERROR, "保存失败");
+        }
     }
 
     /**
@@ -56,9 +63,13 @@ public class AssetGroupController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetGroup") AssetGroupRequest assetGroup) throws Exception {
-        iAssetGroupService.updateAssetGroup(assetGroup);
-        return ActionResponse.success();
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetGroup") AssetGroupUpdateRequest assetGroup) throws Exception {
+        Boolean success = iAssetGroupService.updateAssetGroup(assetGroup) > 0;
+        if (success) {
+            return ActionResponse.success();
+        } else {
+            return ActionResponse.fail(RespBasicCode.ERROR, "修改失败");
+        }
     }
 
     /**
@@ -72,7 +83,7 @@ public class AssetGroupController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetGroup") AssetGroupQuery assetGroup) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetGroup") AssetGroupQuery assetGroup) throws Exception {
         return ActionResponse.success(iAssetGroupService.findPageAssetGroup(assetGroup));
     }
 
@@ -87,9 +98,9 @@ public class AssetGroupController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetGroup") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetGroup") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetGroupService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetGroupService.getById(DataTypeUtils.stringToInteger(query.getPrimaryKey())));
     }
 
     /**
@@ -105,7 +116,12 @@ public class AssetGroupController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetGroupService.deleteById(query.getPrimaryKey()));
+        Boolean success=iAssetGroupService.deleteById(DataTypeUtils.stringToInteger(query.getPrimaryKey()))>0;
+        if (success) {
+            return ActionResponse.success();
+        } else {
+            return ActionResponse.fail(RespBasicCode.ERROR, "删除失败");
+        }
     }
 }
 

@@ -17,11 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetUserRequest extends BasicRequest implements ObjectValidator {
 
     private static final long serialVersionUID = 1L;
-    /**
-     * 主键
-     */
-    @ApiModelProperty("主键")
-    private Integer id;
+
     /**
      * 姓名
      */
@@ -57,32 +53,20 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("住址")
     private String address;
-    /**
-     * 创建人
-     */
-    @ApiModelProperty("创建人")
-    private Integer createUser;
-    /**
-     * 修改人
-     */
-    @ApiModelProperty("修改人")
-    private Integer modifyUser;
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty("创建时间")
-    private Long gmtCreate;
-    /**
-     * 更新时间
-     */
-    @ApiModelProperty("更新时间")
-    private Long gmtModified;
-    /**
-     * 状态,0 未删除,1已删除
-     */
-    @ApiModelProperty("状态,0 未删除,1已删除")
-    private Integer status;
 
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
+    private String memo;
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
     public String getName() {
         return name;
@@ -137,13 +121,6 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
         this.mobile = mobile;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getAddress() {
         return address;
@@ -151,51 +128,6 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
-
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-
-    public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
 
