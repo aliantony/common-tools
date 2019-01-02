@@ -1,4 +1,4 @@
-package com.antiy.asset.controller;
+package com.antiy.asset.controller.swagger;
 
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 
 /**
  * @author zhangyajun
- * @since 2018-12-29
+ * @since 2019-01-02
  */
 @Api(value = "AssetCategoryModel", description = "品类型号表")
 @RestController
