@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetPortProtocol;
-import com.antiy.asset.entity.dto.AssetPortProtocolDTO;
-import com.antiy.asset.entity.vo.query.AssetPortProtocolQuery;
+import com.antiy.asset.dto.AssetPortProtocolDTO;
+import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 
 /**
  * <p>

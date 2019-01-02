@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetSoftwareRelation;
-import com.antiy.asset.entity.dto.AssetSoftwareRelationDTO;
-import com.antiy.asset.entity.vo.query.AssetSoftwareRelationQuery;
+import com.antiy.asset.dto.AssetSoftwareRelationDTO;
+import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 
 /**
  * <p>

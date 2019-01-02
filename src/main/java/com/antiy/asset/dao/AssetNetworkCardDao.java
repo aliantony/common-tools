@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetNetworkCard;
-import com.antiy.asset.entity.dto.AssetNetworkCardDTO;
-import com.antiy.asset.entity.vo.query.AssetNetworkCardQuery;
+import com.antiy.asset.dto.AssetNetworkCardDTO;
+import com.antiy.asset.vo.query.AssetNetworkCardQuery;
 
 /**
  * <p>
