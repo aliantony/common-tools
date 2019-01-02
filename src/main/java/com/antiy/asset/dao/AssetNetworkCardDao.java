@@ -1,6 +1,5 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.dto.AssetNetworkCardDTO;
 import com.antiy.asset.entity.AssetNetworkCard;
 import com.antiy.asset.vo.query.AssetNetworkCardQuery;
 import com.antiy.common.base.IBaseDao;
@@ -13,9 +12,9 @@ import java.util.List;
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-29
+ * @since 2019-01-02
  */
 public interface AssetNetworkCardDao extends IBaseDao<AssetNetworkCard> {
 
-    List<AssetNetworkCardDTO> findListAssetNetworkCard(AssetNetworkCardQuery query) throws Exception;
+    List<AssetNetworkCard> findListAssetNetworkCard(AssetNetworkCardQuery query) throws Exception;
 }

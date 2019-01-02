@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetCpuDao;
-import com.antiy.asset.dto.AssetCpuDTO;
 import com.antiy.asset.entity.AssetCpu;
 import com.antiy.asset.service.IAssetCpuService;
 import com.antiy.asset.vo.query.AssetCpuQuery;
@@ -51,9 +50,8 @@ public class AssetCpuServiceImpl extends BaseServiceImpl<AssetCpu> implements IA
 
     @Override
     public List<AssetCpuResponse> findListAssetCpu(AssetCpuQuery query) throws Exception {
-        List<AssetCpuDTO> assetCpuDTO = assetCpuDao.findListAssetCpu(query);
+        List<AssetCpu> assetCpu = assetCpuDao.findListAssetCpu(query);
         //TODO
-        //需要将assetCpuDTO转达成AssetCpuResponse
         List<AssetCpuResponse> assetCpuResponse = new ArrayList<AssetCpuResponse>();
         return assetCpuResponse;
     }

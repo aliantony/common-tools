@@ -1,6 +1,5 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.dto.AssetGroupDTO;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.common.base.IBaseDao;
@@ -13,9 +12,9 @@ import java.util.List;
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-29
+ * @since 2019-01-02
  */
 public interface AssetGroupDao extends IBaseDao<AssetGroup> {
 
-    List<AssetGroupDTO> findListAssetGroup(AssetGroupQuery query) throws Exception;
+    List<AssetGroup> findListAssetGroup(AssetGroupQuery query) throws Exception;
 }

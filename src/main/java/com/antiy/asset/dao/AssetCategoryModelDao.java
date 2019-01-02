@@ -1,6 +1,5 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.dto.AssetCategoryModelDTO;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.common.base.IBaseDao;
@@ -13,9 +12,9 @@ import java.util.List;
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-29
+ * @since 2019-01-02
  */
 public interface AssetCategoryModelDao extends IBaseDao<AssetCategoryModel> {
 
-    List<AssetCategoryModelDTO> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
+    List<AssetCategoryModel> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
 }

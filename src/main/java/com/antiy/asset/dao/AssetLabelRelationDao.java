@@ -1,6 +1,5 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.dto.AssetLabelRelationDTO;
 import com.antiy.asset.entity.AssetLabelRelation;
 import com.antiy.asset.vo.query.AssetLabelRelationQuery;
 import com.antiy.common.base.IBaseDao;
@@ -13,9 +12,9 @@ import java.util.List;
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-29
+ * @since 2019-01-02
  */
 public interface AssetLabelRelationDao extends IBaseDao<AssetLabelRelation> {
 
-    List<AssetLabelRelationDTO> findListAssetLabelRelation(AssetLabelRelationQuery query) throws Exception;
+    List<AssetLabelRelation> findListAssetLabelRelation(AssetLabelRelationQuery query) throws Exception;
 }

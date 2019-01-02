@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetGroupDao;
-import com.antiy.asset.dto.AssetGroupDTO;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.vo.query.AssetGroupQuery;
@@ -51,9 +50,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public List<AssetGroupResponse> findListAssetGroup(AssetGroupQuery query) throws Exception {
-        List<AssetGroupDTO> assetGroupDTO = assetGroupDao.findListAssetGroup(query);
+        List<AssetGroup> assetGroup = assetGroupDao.findListAssetGroup(query);
         //TODO
-        //需要将assetGroupDTO转达成AssetGroupResponse
         List<AssetGroupResponse> assetGroupResponse = new ArrayList<AssetGroupResponse>();
         return assetGroupResponse;
     }

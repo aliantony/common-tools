@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetDepartmentDao;
-import com.antiy.asset.dto.AssetDepartmentDTO;
 import com.antiy.asset.entity.AssetDepartment;
 import com.antiy.asset.service.IAssetDepartmentService;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
@@ -51,9 +50,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
 
     @Override
     public List<AssetDepartmentResponse> findListAssetDepartment(AssetDepartmentQuery query) throws Exception {
-        List<AssetDepartmentDTO> assetDepartmentDTO = assetDepartmentDao.findListAssetDepartment(query);
+        List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
         //TODO
-        //需要将assetDepartmentDTO转达成AssetDepartmentResponse
         List<AssetDepartmentResponse> assetDepartmentResponse = new ArrayList<AssetDepartmentResponse>();
         return assetDepartmentResponse;
     }

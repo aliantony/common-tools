@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetSafetyEquipmentDao;
-import com.antiy.asset.dto.AssetSafetyEquipmentDTO;
 import com.antiy.asset.entity.AssetSafetyEquipment;
 import com.antiy.asset.service.IAssetSafetyEquipmentService;
 import com.antiy.asset.vo.query.AssetSafetyEquipmentQuery;
@@ -51,9 +50,8 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
 
     @Override
     public List<AssetSafetyEquipmentResponse> findListAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception {
-        List<AssetSafetyEquipmentDTO> assetSafetyEquipmentDTO = assetSafetyEquipmentDao.findListAssetSafetyEquipment(query);
+        List<AssetSafetyEquipment> assetSafetyEquipment = assetSafetyEquipmentDao.findListAssetSafetyEquipment(query);
         //TODO
-        //需要将assetSafetyEquipmentDTO转达成AssetSafetyEquipmentResponse
         List<AssetSafetyEquipmentResponse> assetSafetyEquipmentResponse = new ArrayList<AssetSafetyEquipmentResponse>();
         return assetSafetyEquipmentResponse;
     }

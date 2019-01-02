@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.SchemeDao;
-import com.antiy.asset.dto.SchemeDTO;
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.service.ISchemeService;
 import com.antiy.asset.vo.query.SchemeQuery;
@@ -51,9 +50,8 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
 
     @Override
     public List<SchemeResponse> findListScheme(SchemeQuery query) throws Exception {
-        List<SchemeDTO> schemeDTO = schemeDao.findListScheme(query);
+        List<Scheme> scheme = schemeDao.findListScheme(query);
         //TODO
-        //需要将schemeDTO转达成SchemeResponse
         List<SchemeResponse> schemeResponse = new ArrayList<SchemeResponse>();
         return schemeResponse;
     }

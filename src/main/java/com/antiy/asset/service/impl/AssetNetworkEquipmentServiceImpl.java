@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetNetworkEquipmentDao;
-import com.antiy.asset.dto.AssetNetworkEquipmentDTO;
 import com.antiy.asset.entity.AssetNetworkEquipment;
 import com.antiy.asset.service.IAssetNetworkEquipmentService;
 import com.antiy.asset.vo.query.AssetNetworkEquipmentQuery;
@@ -51,9 +50,8 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
 
     @Override
     public List<AssetNetworkEquipmentResponse> findListAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception {
-        List<AssetNetworkEquipmentDTO> assetNetworkEquipmentDTO = assetNetworkEquipmentDao.findListAssetNetworkEquipment(query);
+        List<AssetNetworkEquipment> assetNetworkEquipment = assetNetworkEquipmentDao.findListAssetNetworkEquipment(query);
         //TODO
-        //需要将assetNetworkEquipmentDTO转达成AssetNetworkEquipmentResponse
         List<AssetNetworkEquipmentResponse> assetNetworkEquipmentResponse = new ArrayList<AssetNetworkEquipmentResponse>();
         return assetNetworkEquipmentResponse;
     }

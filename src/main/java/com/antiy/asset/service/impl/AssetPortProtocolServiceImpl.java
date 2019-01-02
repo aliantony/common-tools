@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetPortProtocolDao;
-import com.antiy.asset.dto.AssetPortProtocolDTO;
 import com.antiy.asset.entity.AssetPortProtocol;
 import com.antiy.asset.service.IAssetPortProtocolService;
 import com.antiy.asset.vo.query.AssetPortProtocolQuery;
@@ -51,9 +50,8 @@ public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProto
 
     @Override
     public List<AssetPortProtocolResponse> findListAssetPortProtocol(AssetPortProtocolQuery query) throws Exception {
-        List<AssetPortProtocolDTO> assetPortProtocolDTO = assetPortProtocolDao.findListAssetPortProtocol(query);
+        List<AssetPortProtocol> assetPortProtocol = assetPortProtocolDao.findListAssetPortProtocol(query);
         //TODO
-        //需要将assetPortProtocolDTO转达成AssetPortProtocolResponse
         List<AssetPortProtocolResponse> assetPortProtocolResponse = new ArrayList<AssetPortProtocolResponse>();
         return assetPortProtocolResponse;
     }

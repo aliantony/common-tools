@@ -1,6 +1,5 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.dto.AssetNetworkEquipmentDTO;
 import com.antiy.asset.entity.AssetNetworkEquipment;
 import com.antiy.asset.vo.query.AssetNetworkEquipmentQuery;
 import com.antiy.common.base.IBaseDao;
@@ -13,9 +12,9 @@ import java.util.List;
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-29
+ * @since 2019-01-02
  */
 public interface AssetNetworkEquipmentDao extends IBaseDao<AssetNetworkEquipment> {
 
-    List<AssetNetworkEquipmentDTO> findListAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception;
+    List<AssetNetworkEquipment> findListAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception;
 }

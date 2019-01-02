@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetCategoryModelDao;
-import com.antiy.asset.dto.AssetCategoryModelDTO;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
@@ -51,9 +50,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 
     @Override
     public List<AssetCategoryModelResponse> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
-        List<AssetCategoryModelDTO> assetCategoryModelDTO = assetCategoryModelDao.findListAssetCategoryModel(query);
+        List<AssetCategoryModel> assetCategoryModel = assetCategoryModelDao.findListAssetCategoryModel(query);
         //TODO
-        //需要将assetCategoryModelDTO转达成AssetCategoryModelResponse
         List<AssetCategoryModelResponse> assetCategoryModelResponse = new ArrayList<AssetCategoryModelResponse>();
         return assetCategoryModelResponse;
     }
