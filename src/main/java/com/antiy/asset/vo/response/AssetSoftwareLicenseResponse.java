@@ -40,6 +40,7 @@ public class AssetSoftwareLicenseResponse {
     /**
      * 有效期限
      */
+    @JsonSerialize(using = ToStringSerializer.class)
     @ApiModelProperty("有效期限")
     private Long expiryDate;
     /**
@@ -54,9 +55,16 @@ public class AssetSoftwareLicenseResponse {
     @ApiModelProperty("备注")
     private String memo;
 
+    //软件信息
     /**
-     * 状态,0 未删除,1已删除
+     * 软件名称
      */
-    @ApiModelProperty("状态,0 未删除,1已删除")
-    private Integer status;
+    @ApiModelProperty("软件名称")
+    private String softwareName;
+
+    /**
+     * 许可有效期还剩多少天
+     */
+    @ApiModelProperty("许可有效期还剩多少天")
+    private Integer remainDay;
 }
