@@ -308,7 +308,7 @@
         <if test=" publisher != null">
             and publisher = #{publisher }
         </if>
-        and status = 0
+        and status = 1
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetSoftware">
@@ -441,7 +441,7 @@
                 and publisher = #{publisher }
             </if>
 
-            and status = 0
+            and status = 1
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}

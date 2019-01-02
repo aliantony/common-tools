@@ -224,7 +224,7 @@
         <if test=" subnetMask != null">
             and subnet_mask = #{subnetMask }
         </if>
-        and status = 0
+        and status = 1
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetNetworkEquipment">
@@ -335,7 +335,7 @@
             <if test=" subnetMask != null">
                 and subnet_mask = #{subnetMask }
             </if>
-            and status = 0
+            and status = 1
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
