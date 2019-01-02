@@ -265,7 +265,7 @@
             <if test=" licenseSecretKey != null">
                 and license_secret_key = #{licenseSecretKey}
             </if>
-            and status = 0
+            and softlic.status = 0
         </trim>
     </select>
 
@@ -295,7 +295,7 @@
             <if test=" licenseSecretKey != null">
                 and license_secret_key = #{licenseSecretKey}
             </if>
-            and status = 0
+            and softlic.status = 0
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
