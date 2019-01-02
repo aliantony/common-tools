@@ -54,18 +54,14 @@ public class ${table.serviceImplName} extends BaseServiceImpl<${entity}> impleme
 
         @Override
         public List<${entity}Response> findList${entity}(${entity}Query query) throws Exception {
-            List<${entity}> ${table.entityPath} = ${table.entityPath}Dao.findList${entity}(query);
+            List<${entity}> ${table.entityPath}List = ${table.entityPath}Dao.findQuery${entity}(query);
             //TODO
-            List<${entity}Response> ${table.entityPath}Response = new ArrayList<${entity}Response>();
+            List<${entity}Response> ${table.entityPath}Response = responseConverter.convert(${table.entityPath}List,${entity}Response.class );
             return ${table.entityPath}Response;
-        }
-
-        public Integer findCount${entity}(${entity}Query query) throws Exception {
-            return ${table.entityPath}Dao.findCount(query);
         }
 
         @Override
         public PageResult<${entity}Response> findPage${entity}(${entity}Query query) throws Exception {
-            return new PageResult<>(query.getPageSize(), this.findCount${entity}(query),query.getCurrentPage(), this.findList${entity}(query));
+            return new PageResult<>(query.getPageSize(), this.findCount(query),query.getCurrentPage(), this.findList${entity}(query));
         }
 }
