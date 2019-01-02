@@ -84,7 +84,7 @@
             #{expiryDate },
         </if>
         <if test=" licenseSecretKey != null">
-            #{licenseSecretKey} },
+            #{licenseSecretKey},
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
@@ -123,7 +123,7 @@
             expiry_date = #{expiryDate },
         </if>
         <if test=" licenseSecretKey != null">
-            license_secret_key = #{licenseSecretKey} },
+            license_secret_key = #{licenseSecretKey},
         </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
@@ -162,7 +162,7 @@
             and expiry_date = #{expiryDate }
         </if>
         <if test=" licenseSecretKey != null">
-            and license_secret_key = #{licenseSecretKey} }
+            and license_secret_key = #{licenseSecretKey}
         </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }
