@@ -177,7 +177,7 @@
         <if test=" coreSize != null">
             and core_size = #{coreSize }
         </if>
-            and status = 0
+            and status = 1
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetCpu">
@@ -288,7 +288,7 @@
             <if test=" coreSize != null">
                 and core_size = #{coreSize }
             </if>
-                and status = 0
+                and status = 1
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}

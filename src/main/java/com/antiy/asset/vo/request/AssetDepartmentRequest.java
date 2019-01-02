@@ -17,11 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetDepartmentRequest extends BasicRequest implements ObjectValidator {
 
     private static final long serialVersionUID = 1L;
-    /**
-     * 部门名
-     */
-    @ApiModelProperty("主键")
-    private Integer id;
+
 
     /**
      * 部门名
@@ -43,44 +39,14 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
      */
     @ApiModelProperty("上级部门")
     private Integer parentId;
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty("创建时间")
-    private Long gmtCreate;
-    /**
-     * 修改时间
-     */
-    @ApiModelProperty("修改时间")
-    private Long gmtModified;
+
     /**
      * 备注
      */
     @ApiModelProperty("备注")
     private String memo;
-    /**
-     * 创建人
-     */
-    @ApiModelProperty("创建人")
-    private Integer createUser;
-    /**
-     * 修改人
-     */
-    @ApiModelProperty("修改人")
-    private Integer modifyUser;
-    /**
-     * 状态,1未删除,0已删除
-     */
-    @ApiModelProperty("状态,1未删除,0已删除")
-    private Integer status;
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -118,57 +84,12 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
     }
 
 
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-
-    public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
-
     public String getMemo() {
         return memo;
     }
 
     public void setMemo(String memo) {
         this.memo = memo;
-    }
-
-
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
 

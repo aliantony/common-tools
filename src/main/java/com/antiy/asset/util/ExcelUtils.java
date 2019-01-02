@@ -1,7 +1,10 @@
 package com.antiy.asset.util;
 
 import com.antiy.asset.vo.templet.ImportResult;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +31,8 @@ public class ExcelUtils {
      * @throws IOException
      */
     public static void exportToClient(Class<?> clazz, String fileName, String title, List<?> dataList) {
-        HttpServletResponse response = ((ServletWebRequest) RequestContextHolder.getRequestAttributes()).getResponse();
+        ParamterExceptionUtils.isBlank(fileName, "文件名不能为空");
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         try {
             new ExportExcel(title, clazz).exportToClient(response, fileName, dataList);
         } catch (IOException e) {
@@ -48,7 +52,8 @@ public class ExcelUtils {
      * @throws IOException
      */
     public static void exportToClient(List<String> headerList, String fileName, String title, List<?> dataList) {
-        HttpServletResponse response = ((ServletWebRequest) RequestContextHolder.getRequestAttributes()).getResponse();
+        ParamterExceptionUtils.isBlank(fileName, "文件名不能为空");
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         try {
             new ExportExcel(title, headerList).exportToClient(response, fileName, dataList);
         } catch (IOException e) {
@@ -141,7 +146,8 @@ public class ExcelUtils {
      * @param title    文件标题
      */
     public static void exportTemplet(Class<?> clazz, String filename, String title) {
-        HttpServletResponse response = ((ServletWebRequest) RequestContextHolder.getRequestAttributes()).getResponse();
+        ParamterExceptionUtils.isBlank(filename, "文件名不能为空");
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         try {
             new ExportExcel(title, clazz).exportTempleteToClient(response, filename);
         } catch (IOException e) {
@@ -157,6 +163,7 @@ public class ExcelUtils {
      * @param title    文件标题
      */
     public static void exportTemplet(Class<?> clazz, String filename, String title, String filepath) {
+        ParamterExceptionUtils.isBlank(filename, "文件名不能为空");
         try {
             new ExportExcel(title, clazz, 2).exportTempleteToFile(filepath + filename);
         } catch (IOException e) {

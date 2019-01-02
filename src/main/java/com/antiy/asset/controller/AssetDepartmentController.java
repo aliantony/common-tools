@@ -1,10 +1,13 @@
 package com.antiy.asset.controller;
 
 import com.antiy.asset.service.IAssetDepartmentService;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
+import com.antiy.asset.vo.request.AssetDepartmentUpdateRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +44,12 @@ public class AssetDepartmentController {
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentRequest assetDepartment) throws Exception {
-        iAssetDepartmentService.saveAssetDepartment(assetDepartment);
-        return ActionResponse.success();
+        Boolean success = iAssetDepartmentService.saveAssetDepartment(assetDepartment) > 0;
+        if (success) {
+            return ActionResponse.success();
+        } else {
+            return ActionResponse.fail(RespBasicCode.ERROR, "保存失败");
+        }
     }
 
     /**
@@ -56,9 +63,13 @@ public class AssetDepartmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentRequest assetDepartment) throws Exception {
-        iAssetDepartmentService.updateAssetDepartment(assetDepartment);
-        return ActionResponse.success();
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentUpdateRequest assetDepartment) throws Exception {
+        Boolean success = iAssetDepartmentService.updateAssetDepartment(assetDepartment)>0;
+        if (success) {
+            return ActionResponse.success();
+        } else {
+            return ActionResponse.fail(RespBasicCode.ERROR, "修改失败");
+        }
     }
 
     /**
@@ -72,7 +83,7 @@ public class AssetDepartmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentQuery assetDepartment) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetDepartment") AssetDepartmentQuery assetDepartment) throws Exception {
         return ActionResponse.success(iAssetDepartmentService.findPageAssetDepartment(assetDepartment));
     }
 
@@ -87,9 +98,10 @@ public class AssetDepartmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetDepartment") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetDepartment") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetDepartmentService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetDepartmentService.getById(DataTypeUtils.stringToInteger(query.getPrimaryKey())));
+
     }
 
     /**
@@ -105,7 +117,12 @@ public class AssetDepartmentController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetDepartmentService.deleteById(query.getPrimaryKey()));
+        Boolean success=iAssetDepartmentService.deleteById(DataTypeUtils.stringToInteger(query.getPrimaryKey()))>0;
+        if (success) {
+            return ActionResponse.success();
+        } else {
+            return ActionResponse.fail(RespBasicCode.ERROR, "删除失败");
+        }
     }
 }
 

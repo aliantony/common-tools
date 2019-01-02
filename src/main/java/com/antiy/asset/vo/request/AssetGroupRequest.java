@@ -21,11 +21,6 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
     /**
      * 用途
      */
-    @ApiModelProperty("主键")
-    private Integer id;
-    /**
-     * 用途
-     */
     @ApiModelProperty("用途")
     private String purpose;
     /**
@@ -38,36 +33,12 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("资产组名称")
     private String name;
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty("创建时间")
-    private Long gmtCreate;
-    /**
-     * 修改时间
-     */
-    @ApiModelProperty("修改时间")
-    private Long gmtModified;
+
     /**
      * 备注
      */
     @ApiModelProperty("备注")
     private String memo;
-    /**
-     * 创建人
-     */
-    @ApiModelProperty("创建人")
-    private Integer createUser;
-    /**
-     * 修改人
-     */
-    @ApiModelProperty("修改人")
-    private Integer modifyUser;
-    /**
-     * 状态,1未删除,0已删除
-     */
-    @ApiModelProperty("状态,1未删除,0已删除")
-    private Integer status;
 
 
     public String getPurpose() {
@@ -78,7 +49,6 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
         this.purpose = purpose;
     }
 
-
     public Integer getImportantDegree() {
         return importantDegree;
     }
@@ -87,7 +57,6 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
         this.importantDegree = importantDegree;
     }
 
-
     public String getName() {
         return name;
     }
@@ -95,25 +64,6 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
     public void setName(String name) {
         this.name = name;
     }
-
-
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-
-    public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
 
     public String getMemo() {
         return memo;
@@ -124,57 +74,9 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
     }
 
 
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-
     @Override
     public void validate() throws RequestParamValidateException {
 
     }
 
-    @Override
-    public String toString() {
-        return "AssetGroupRequest{" +
-                "purpose='" + purpose + '\'' +
-                ", importantDegree=" + importantDegree +
-                ", name='" + name + '\'' +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", memo='" + memo + '\'' +
-                ", createUser=" + createUser +
-                ", modifyUser=" + modifyUser +
-                ", status=" + status +
-                '}';
-    }
 }

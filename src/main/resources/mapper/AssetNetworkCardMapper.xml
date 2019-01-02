@@ -203,7 +203,7 @@
         <if test=" subnetMask != null">
             and subnet_mask = #{subnetMask }
         </if>
-        and status = 0
+        and status = 1
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetNetworkCard">
@@ -320,13 +320,10 @@
             <if test=" subnetMask != null">
                 and subnet_mask = #{subnetMask }
             </if>
-
-            <if test=" status != null">
-                and status = #{status }
-            </if>
+            and status = 1
         </trim>
         <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
+            LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
 </mapper>

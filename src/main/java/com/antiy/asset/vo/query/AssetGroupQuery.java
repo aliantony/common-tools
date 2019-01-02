@@ -15,6 +15,47 @@ import com.antiy.common.validation.ObjectValidator;
 
 public class AssetGroupQuery extends ObjectQuery implements ObjectValidator {
 
+    /**
+     * 用途
+     */
+    private String purpose;
+    /**
+     * 重要程度(0-不重要(not_major),1- 一般(general),3-重要(major),)
+     */
+    private Integer importantDegree;
+    /**
+     * 资产组名称
+     */
+    private String name;
+
+
+    public String getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
+    }
+
+    public Integer getImportantDegree() {
+        return importantDegree;
+    }
+
+    public void setImportantDegree(Integer importantDegree) {
+        this.importantDegree = importantDegree;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+
+
     @Override
     public void validate() throws RequestParamValidateException {
 

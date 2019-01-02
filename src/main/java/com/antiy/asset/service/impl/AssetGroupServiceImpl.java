@@ -3,6 +3,7 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.service.IAssetGroupService;
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
@@ -51,13 +52,30 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public List<AssetGroupResponse> findListAssetGroup(AssetGroupQuery query) throws Exception {
         List<AssetGroup> assetGroup = assetGroupDao.findListAssetGroup(query);
-        //TODO
-        List<AssetGroupResponse> assetGroupResponse = new ArrayList<AssetGroupResponse>();
-        return assetGroupResponse;
+        return convert(assetGroup);
     }
 
     public Integer findCountAssetGroup(AssetGroupQuery query) throws Exception {
         return assetGroupDao.findCount(query);
+    }
+
+    private List<AssetGroupResponse> convert(List<AssetGroup> assetGroups) {
+        if (assetGroups.size() > 0) {
+            List assetGroupResponses = BeanConvert.convert(assetGroups, AssetGroupResponse.class);
+            setListID(assetGroups, assetGroupResponses);
+            return assetGroupResponses;
+        } else
+            return new ArrayList<>();
+    }
+
+    private void setListID(List<AssetGroup> assetGroups, List<AssetGroupResponse> assetGroupResponses) {
+        for (int i = 0; i < assetGroupResponses.size(); i++) {
+            setID(assetGroups.get(i), assetGroupResponses.get(i));
+        }
+    }
+
+    private void setID(AssetGroup assetGroup, AssetGroupResponse assetGroupResponse) {
+        assetGroupResponse.setId(assetGroup.getId());
     }
 
     @Override
