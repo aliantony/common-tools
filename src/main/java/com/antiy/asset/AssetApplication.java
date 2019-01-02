@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @SpringBootApplication
 @EnableTransactionManagement
-@MapperScan("com.antiy.asset.dao")
+@MapperScan({"com.antiy.asset.dao","com.antiy.common.base"})
 public class AssetApplication {
 
     public static void main(String[] args) {
