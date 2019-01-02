@@ -19,7 +19,7 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
     </resultMap>
-<!-- 通用查询结果列 -->
+    <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, asset_id AS assetId, serial, brand, model, main_frequency AS mainFrequency, thread_size AS threadSize, core_size AS coreSize, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
@@ -177,24 +177,7 @@
         <if test=" coreSize != null">
             and core_size = #{coreSize }
         </if>
-        <if test=" gmtCreate != null">
-            and gmt_create = #{gmtCreate }
-        </if>
-        <if test=" gmtModified != null">
-            and gmt_modified = #{gmtModified }
-        </if>
-        <if test=" memo != null">
-            and memo = #{memo }
-        </if>
-        <if test=" createUser != null">
-            and create_user = #{createUser }
-        </if>
-        <if test=" modifyUser != null">
-            and modify_user = #{modifyUser }
-        </if>
-        <if test=" status != null">
-            and status = #{status }
-        </if>
+            and status = 0
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetCpu">
@@ -264,7 +247,8 @@
         </where>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetCpu" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetCpu"
+            parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <where>
@@ -273,60 +257,41 @@
             </trim>
         </where>
         <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
+            LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
 
 
-    <select id="findListAssetCpu" resultType="com.antiy.asset.entity.AssetCpu" parameterType="com.antiy.asset.vo.query.AssetCpuQuery">
+    <select id="findListAssetCpu" resultMap="BaseResultMap"
+            parameterType="com.antiy.asset.vo.query.AssetCpuQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-        <if test=" id != null">
-                and id = #{id }
-            </if>
-        <if test=" assetId != null">
+            <if test=" assetId != null">
                 and asset_id = #{assetId }
             </if>
-        <if test=" serial != null">
+            <if test=" serial != null">
                 and serial = #{serial }
             </if>
-        <if test=" brand != null">
+            <if test=" brand != null">
                 and brand = #{brand }
             </if>
-        <if test=" model != null">
+            <if test=" model != null">
                 and model = #{model }
             </if>
-        <if test=" mainFrequency != null">
+            <if test=" mainFrequency != null">
                 and main_frequency = #{mainFrequency }
             </if>
-        <if test=" threadSize != null">
+            <if test=" threadSize != null">
                 and thread_size = #{threadSize }
             </if>
-        <if test=" coreSize != null">
+            <if test=" coreSize != null">
                 and core_size = #{coreSize }
             </if>
-        <if test=" gmtCreate != null">
-                and gmt_create = #{gmtCreate }
-            </if>
-        <if test=" gmtModified != null">
-                and gmt_modified = #{gmtModified }
-            </if>
-        <if test=" memo != null">
-                and memo = #{memo }
-            </if>
-        <if test=" createUser != null">
-                and create_user = #{createUser }
-            </if>
-        <if test=" modifyUser != null">
-                and modify_user = #{modifyUser }
-            </if>
-        <if test=" status != null">
-                and status = #{status }
-            </if>
-                </trim>
+                and status = 0
+        </trim>
         <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
+            LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
 </mapper>

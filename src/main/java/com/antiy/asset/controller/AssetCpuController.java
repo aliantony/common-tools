@@ -72,7 +72,7 @@ public class AssetCpuController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetCpu") AssetCpuQuery assetCpu) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetCpu") AssetCpuQuery assetCpu) throws Exception {
         return ActionResponse.success(iAssetCpuService.findPageAssetCpu(assetCpu));
     }
 
@@ -87,9 +87,9 @@ public class AssetCpuController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetCpu") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetCpu") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetCpuService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetCpuService.getById(Integer.parseInt(query.getPrimaryKey())));
     }
 
     /**
@@ -105,7 +105,7 @@ public class AssetCpuController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetCpuService.deleteById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetCpuService.deleteById(Integer.parseInt(query.getPrimaryKey())));
     }
 }
 

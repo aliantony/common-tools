@@ -52,7 +52,7 @@ public class AssetCpuServiceImpl extends BaseServiceImpl<AssetCpu> implements IA
     public List<AssetCpuResponse> findListAssetCpu(AssetCpuQuery query) throws Exception {
         List<AssetCpu> assetCpu = assetCpuDao.findListAssetCpu(query);
         //TODO
-        List<AssetCpuResponse> assetCpuResponse = new ArrayList<AssetCpuResponse>();
+        List<AssetCpuResponse> assetCpuResponse = responseConverter.convert(assetCpu, AssetCpuResponse.class);
         return assetCpuResponse;
     }
 

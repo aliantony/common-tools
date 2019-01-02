@@ -52,7 +52,7 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
     public List<AssetNetworkCardResponse> findListAssetNetworkCard(AssetNetworkCardQuery query) throws Exception {
         List<AssetNetworkCard> assetNetworkCard = assetNetworkCardDao.findListAssetNetworkCard(query);
         //TODO
-        List<AssetNetworkCardResponse> assetNetworkCardResponse = new ArrayList<AssetNetworkCardResponse>();
+        List<AssetNetworkCardResponse> assetNetworkCardResponse = responseConverter.convert(assetNetworkCard, AssetNetworkCardResponse.class);
         return assetNetworkCardResponse;
     }
 

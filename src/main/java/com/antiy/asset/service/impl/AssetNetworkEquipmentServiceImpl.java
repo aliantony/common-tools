@@ -52,8 +52,8 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
     public List<AssetNetworkEquipmentResponse> findListAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception {
         List<AssetNetworkEquipment> assetNetworkEquipment = assetNetworkEquipmentDao.findListAssetNetworkEquipment(query);
         //TODO
-        List<AssetNetworkEquipmentResponse> assetNetworkEquipmentResponse = new ArrayList<AssetNetworkEquipmentResponse>();
-        return assetNetworkEquipmentResponse;
+        List<AssetNetworkEquipmentResponse> assetNetworkCardResponse = responseConverter.convert(assetNetworkEquipment, AssetNetworkEquipmentResponse.class);
+        return assetNetworkCardResponse;
     }
 
     public Integer findCountAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception {
