@@ -45,9 +45,9 @@ public class AssetEntity {
 
 
     /**
-     * 制造商
+     * 厂商
      */
-    @ExcelField(value = "manufacturer", align = 1, title = "制造商", type = 0)
+    @ExcelField(value = "manufacturer", align = 1, title = "厂商", type = 0)
     private String manufacturer;
 
 

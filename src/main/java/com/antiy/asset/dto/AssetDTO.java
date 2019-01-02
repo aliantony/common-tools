@@ -49,9 +49,9 @@ public class AssetDTO extends BaseEntity {
     @ApiModelProperty("资产型号")
     private Integer model;
     /**
-     * 制造商
+     * 厂商
      */
-    @ApiModelProperty("制造商")
+    @ApiModelProperty("厂商")
     private String manufacturer;
     /**
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
