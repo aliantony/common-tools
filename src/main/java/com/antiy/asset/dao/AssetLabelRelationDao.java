@@ -1,10 +1,11 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-import com.antiy.common.base.IBaseDao;
+import com.antiy.asset.dto.AssetLabelRelationDTO;
 import com.antiy.asset.entity.AssetLabelRelation;
-import com.antiy.asset.entity.dto.AssetLabelRelationDTO;
-import com.antiy.asset.entity.vo.query.AssetLabelRelationQuery;
+import com.antiy.asset.vo.query.AssetLabelRelationQuery;
+import com.antiy.common.base.IBaseDao;
+
+import java.util.List;
 
 /**
  * <p>

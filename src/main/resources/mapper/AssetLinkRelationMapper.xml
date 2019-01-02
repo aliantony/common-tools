@@ -4,25 +4,329 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetLinkRelation">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="link_type" property="linkType" />
-        <result column="head_asset" property="headAsset" />
-        <result column="tail_asse" property="tailAsse" />
-        <result column="head_type" property="headType" />
-        <result column="tail_type" property="tailType" />
-        <result column="link_status" property="linkStatus" />
-        <result column="gmt_create" property="gmtCreate" />
-        <result column="gmt_modified" property="gmtModified" />
-        <result column="memo" property="memo" />
-        <result column="create_user" property="createUser" />
-        <result column="modify_user" property="modifyUser" />
-        <result column="status" property="status" />
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="link_type" property="linkType"/>
+        <result column="head_asset" property="headAsset"/>
+        <result column="tail_asse" property="tailAsse"/>
+        <result column="head_type" property="headType"/>
+        <result column="tail_type" property="tailType"/>
+        <result column="link_status" property="linkStatus"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="memo" property="memo"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modify_user" property="modifyUser"/>
+        <result column="status" property="status"/>
     </resultMap>
-
-    <!-- 通用查询结果列 -->
+<!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, name, link_type AS linkType, head_asset AS headAsset, tail_asse AS tailAsse, head_type AS headType, tail_type AS tailType, link_status AS linkStatus, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
 
+    <sql id="Table_Name">
+        asset_link_relation
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+        <if test=" name != null">
+            name,
+        </if>
+        <if test=" linkType != null">
+            link_type,
+        </if>
+        <if test=" headAsset != null">
+            head_asset,
+        </if>
+        <if test=" tailAsse != null">
+            tail_asse,
+        </if>
+        <if test=" headType != null">
+            head_type,
+        </if>
+        <if test=" tailType != null">
+            tail_type,
+        </if>
+        <if test=" linkStatus != null">
+            link_status,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified,
+        </if>
+        <if test=" memo != null">
+            memo,
+        </if>
+        <if test=" createUser != null">
+            create_user,
+        </if>
+        <if test=" modifyUser != null">
+            modify_user,
+        </if>
+        <if test=" status != null">
+            status,
+        </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+        <if test=" name != null">
+            #{name },
+        </if>
+        <if test=" linkType != null">
+            #{linkType },
+        </if>
+        <if test=" headAsset != null">
+            #{headAsset },
+        </if>
+        <if test=" tailAsse != null">
+            #{tailAsse },
+        </if>
+        <if test=" headType != null">
+            #{headType },
+        </if>
+        <if test=" tailType != null">
+            #{tailType },
+        </if>
+        <if test=" linkStatus != null">
+            #{linkStatus },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            #{gmtModified },
+        </if>
+        <if test=" memo != null">
+            #{memo },
+        </if>
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            #{modifyUser },
+        </if>
+        <if test=" status != null">
+            #{status },
+        </if>
+    </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" name != null">
+            name = #{name },
+        </if>
+        <if test=" linkType != null">
+            link_type = #{linkType },
+        </if>
+        <if test=" headAsset != null">
+            head_asset = #{headAsset },
+        </if>
+        <if test=" tailAsse != null">
+            tail_asse = #{tailAsse },
+        </if>
+        <if test=" headType != null">
+            head_type = #{headType },
+        </if>
+        <if test=" tailType != null">
+            tail_type = #{tailType },
+        </if>
+        <if test=" linkStatus != null">
+            link_status = #{linkStatus },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+        <if test=" memo != null">
+            memo = #{memo },
+        </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            modify_user = #{modifyUser },
+        </if>
+        <if test=" status != null">
+            status = #{status },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+        <if test=" name != null">
+            and name = #{name }
+        </if>
+        <if test=" linkType != null">
+            and link_type = #{linkType }
+        </if>
+        <if test=" headAsset != null">
+            and head_asset = #{headAsset }
+        </if>
+        <if test=" tailAsse != null">
+            and tail_asse = #{tailAsse }
+        </if>
+        <if test=" headType != null">
+            and head_type = #{headType }
+        </if>
+        <if test=" tailType != null">
+            and tail_type = #{tailType }
+        </if>
+        <if test=" linkStatus != null">
+            and link_status = #{linkStatus }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+        <if test=" memo != null">
+            and memo = #{memo }
+        </if>
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+        <if test=" modifyUser != null">
+            and modify_user = #{modifyUser }
+        </if>
+        <if test=" status != null">
+            and status = #{status }
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetLinkRelation">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.AssetLinkRelation">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultType="com.antiy.asset.entity.AssetLinkRelation" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
+    <select id="getByWhere" resultType="com.antiy.asset.entity.AssetLinkRelation" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+
+    <select id="getAll" resultType="com.antiy.asset.entity.AssetLinkRelation">
+        select *
+        from
+        <include refid="Table_Name"></include>
+    </select>
+
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1) count
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetLinkRelation" parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{currentPage}
+        </if>
+    </select>
+
+
+    <select id="findListAssetLinkRelation" resultType="com.antiy.asset.entity.AssetLinkRelation" parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+        <if test=" id != null">
+                and id = #{id }
+            </if>
+        <if test=" name != null">
+                and name = #{name }
+            </if>
+        <if test=" linkType != null">
+                and link_type = #{linkType }
+            </if>
+        <if test=" headAsset != null">
+                and head_asset = #{headAsset }
+            </if>
+        <if test=" tailAsse != null">
+                and tail_asse = #{tailAsse }
+            </if>
+        <if test=" headType != null">
+                and head_type = #{headType }
+            </if>
+        <if test=" tailType != null">
+                and tail_type = #{tailType }
+            </if>
+        <if test=" linkStatus != null">
+                and link_status = #{linkStatus }
+            </if>
+        <if test=" gmtCreate != null">
+                and gmt_create = #{gmtCreate }
+            </if>
+        <if test=" gmtModified != null">
+                and gmt_modified = #{gmtModified }
+            </if>
+        <if test=" memo != null">
+                and memo = #{memo }
+            </if>
+        <if test=" createUser != null">
+                and create_user = #{createUser }
+            </if>
+        <if test=" modifyUser != null">
+                and modify_user = #{modifyUser }
+            </if>
+        <if test=" status != null">
+                and status = #{status }
+            </if>
+                </trim>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{currentPage}
+        </if>
+    </select>
 </mapper>

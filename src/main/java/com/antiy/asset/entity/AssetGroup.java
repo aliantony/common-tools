@@ -1,9 +1,9 @@
 package com.antiy.asset.entity;
 
 
-import java.util.Date;
 import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p>
  * 资产组表
@@ -16,56 +16,55 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetGroup extends BaseEntity {
 
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-        /**
-    *  用途
-    */
-        @ApiModelProperty("用途")
+    /**
+     * 用途
+     */
+    @ApiModelProperty("用途")
     private String purpose;
-        /**
-    *  重要程度(0-不重要(not_major),1- 一般(general),3-重要(major),)
-    */
-        @ApiModelProperty("重要程度(0-不重要(not_major),1- 一般(general),3-重要(major),)")
+    /**
+     * 重要程度(0-不重要(not_major),1- 一般(general),3-重要(major),)
+     */
+    @ApiModelProperty("重要程度(0-不重要(not_major),1- 一般(general),3-重要(major),)")
     private Integer importantDegree;
-        /**
-    *  资产组名称
-    */
-        @ApiModelProperty("资产组名称")
+    /**
+     * 资产组名称
+     */
+    @ApiModelProperty("资产组名称")
     private String name;
-        /**
-    *  创建时间
-    */
-        @ApiModelProperty("创建时间")
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("创建时间")
     private Long gmtCreate;
-        /**
-    *  修改时间
-    */
-        @ApiModelProperty("修改时间")
+    /**
+     * 修改时间
+     */
+    @ApiModelProperty("修改时间")
     private Long gmtModified;
-        /**
-    *  备注
-    */
-        @ApiModelProperty("备注")
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
     private String memo;
-        /**
-    *  创建人
-    */
-        @ApiModelProperty("创建人")
+    /**
+     * 创建人
+     */
+    @ApiModelProperty("创建人")
     private Integer createUser;
-        /**
-    *  修改人
-    */
-        @ApiModelProperty("修改人")
+    /**
+     * 修改人
+     */
+    @ApiModelProperty("修改人")
     private Integer modifyUser;
-        /**
-    *  状态,0 未删除,1已删除
-    */
-        @ApiModelProperty("状态,0 未删除,1已删除")
+    /**
+     * 状态,0 未删除,1已删除
+     */
+    @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer status;
 
-                    
-                                    
+
     public String getPurpose() {
         return purpose;
     }
@@ -73,8 +72,8 @@ private static final long serialVersionUID = 1L;
     public void setPurpose(String purpose) {
         this.purpose = purpose;
     }
-    
-                                    
+
+
     public Integer getImportantDegree() {
         return importantDegree;
     }
@@ -82,8 +81,8 @@ private static final long serialVersionUID = 1L;
     public void setImportantDegree(Integer importantDegree) {
         this.importantDegree = importantDegree;
     }
-    
-                                    
+
+
     public String getName() {
         return name;
     }
@@ -91,8 +90,8 @@ private static final long serialVersionUID = 1L;
     public void setName(String name) {
         this.name = name;
     }
-    
-                                    
+
+
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -100,8 +99,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
-    
-                                    
+
+
     public Long getGmtModified() {
         return gmtModified;
     }
@@ -109,8 +108,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
     }
-    
-                                    
+
+
     public String getMemo() {
         return memo;
     }
@@ -118,8 +117,8 @@ private static final long serialVersionUID = 1L;
     public void setMemo(String memo) {
         this.memo = memo;
     }
-    
-                                    
+
+
     public Integer getCreateUser() {
         return createUser;
     }
@@ -127,8 +126,8 @@ private static final long serialVersionUID = 1L;
     public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
     }
-    
-                                    
+
+
     public Integer getModifyUser() {
         return modifyUser;
     }
@@ -136,8 +135,8 @@ private static final long serialVersionUID = 1L;
     public void setModifyUser(Integer modifyUser) {
         this.modifyUser = modifyUser;
     }
-    
-                                    
+
+
     public Integer getStatus() {
         return status;
     }
@@ -145,20 +144,20 @@ private static final long serialVersionUID = 1L;
     public void setStatus(Integer status) {
         this.status = status;
     }
-    
-    
-        @Override
+
+
+    @Override
     public String toString() {
-            return "AssetGroup{" +
-                                                                                            ", purpose=" + purpose +
-                                                                                        ", importantDegree=" + importantDegree +
-                                                                                        ", name=" + name +
-                                                                                        ", gmtCreate=" + gmtCreate +
-                                                                                        ", gmtModified=" + gmtModified +
-                                                                                        ", memo=" + memo +
-                                                                                        ", createUser=" + createUser +
-                                                                                        ", modifyUser=" + modifyUser +
-                                                                                        ", status=" + status +
-                                                "}";
+        return "AssetGroup{" +
+                ", purpose=" + purpose +
+                ", importantDegree=" + importantDegree +
+                ", name=" + name +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo=" + memo +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                "}";
     }
-    }
+}

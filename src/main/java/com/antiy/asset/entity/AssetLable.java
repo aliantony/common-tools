@@ -1,9 +1,9 @@
 package com.antiy.asset.entity;
 
 
-import java.util.Date;
 import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p>
  * 标签信息表
@@ -16,56 +16,55 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetLable extends BaseEntity {
 
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-        /**
-    *  名称
-    */
-        @ApiModelProperty("名称")
+    /**
+     * 名称
+     */
+    @ApiModelProperty("名称")
     private String name;
-        /**
-    *  标签类型:1东区２西区
-    */
-        @ApiModelProperty("标签类型:1东区２西区")
+    /**
+     * 标签类型:1东区２西区
+     */
+    @ApiModelProperty("标签类型:1东区２西区")
     private Integer labelType;
-        /**
-    *  描述
-    */
-        @ApiModelProperty("描述")
+    /**
+     * 描述
+     */
+    @ApiModelProperty("描述")
     private String description;
-        /**
-    *  创建时间
-    */
-        @ApiModelProperty("创建时间")
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("创建时间")
     private Long gmtCreate;
-        /**
-    *  更新时间
-    */
-        @ApiModelProperty("更新时间")
+    /**
+     * 更新时间
+     */
+    @ApiModelProperty("更新时间")
     private Long gmtModified;
-        /**
-    *  备注
-    */
-        @ApiModelProperty("备注")
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
     private String memo;
-        /**
-    *  创建人
-    */
-        @ApiModelProperty("创建人")
+    /**
+     * 创建人
+     */
+    @ApiModelProperty("创建人")
     private Integer createUser;
-        /**
-    *  修改人
-    */
-        @ApiModelProperty("修改人")
+    /**
+     * 修改人
+     */
+    @ApiModelProperty("修改人")
     private Integer modifyUser;
-        /**
-    *  状态,0 未删除,1已删除
-    */
-        @ApiModelProperty("状态,0 未删除,1已删除")
+    /**
+     * 状态,0 未删除,1已删除
+     */
+    @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer status;
 
-                    
-                                    
+
     public String getName() {
         return name;
     }
@@ -73,8 +72,8 @@ private static final long serialVersionUID = 1L;
     public void setName(String name) {
         this.name = name;
     }
-    
-                                    
+
+
     public Integer getLabelType() {
         return labelType;
     }
@@ -82,8 +81,8 @@ private static final long serialVersionUID = 1L;
     public void setLabelType(Integer labelType) {
         this.labelType = labelType;
     }
-    
-                                    
+
+
     public String getDescription() {
         return description;
     }
@@ -91,8 +90,8 @@ private static final long serialVersionUID = 1L;
     public void setDescription(String description) {
         this.description = description;
     }
-    
-                                    
+
+
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -100,8 +99,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
-    
-                                    
+
+
     public Long getGmtModified() {
         return gmtModified;
     }
@@ -109,8 +108,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
     }
-    
-                                    
+
+
     public String getMemo() {
         return memo;
     }
@@ -118,8 +117,8 @@ private static final long serialVersionUID = 1L;
     public void setMemo(String memo) {
         this.memo = memo;
     }
-    
-                                    
+
+
     public Integer getCreateUser() {
         return createUser;
     }
@@ -127,8 +126,8 @@ private static final long serialVersionUID = 1L;
     public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
     }
-    
-                                    
+
+
     public Integer getModifyUser() {
         return modifyUser;
     }
@@ -136,8 +135,8 @@ private static final long serialVersionUID = 1L;
     public void setModifyUser(Integer modifyUser) {
         this.modifyUser = modifyUser;
     }
-    
-                                    
+
+
     public Integer getStatus() {
         return status;
     }
@@ -145,20 +144,20 @@ private static final long serialVersionUID = 1L;
     public void setStatus(Integer status) {
         this.status = status;
     }
-    
-    
-        @Override
+
+
+    @Override
     public String toString() {
-            return "AssetLable{" +
-                                                                                            ", name=" + name +
-                                                                                        ", labelType=" + labelType +
-                                                                                        ", description=" + description +
-                                                                                        ", gmtCreate=" + gmtCreate +
-                                                                                        ", gmtModified=" + gmtModified +
-                                                                                        ", memo=" + memo +
-                                                                                        ", createUser=" + createUser +
-                                                                                        ", modifyUser=" + modifyUser +
-                                                                                        ", status=" + status +
-                                                "}";
+        return "AssetLable{" +
+                ", name=" + name +
+                ", labelType=" + labelType +
+                ", description=" + description +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo=" + memo +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                "}";
     }
-    }
+}

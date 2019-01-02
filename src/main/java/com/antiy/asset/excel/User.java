@@ -22,7 +22,8 @@ public class User {
         this.birth = birth;
     }
 
-    public User() {}
+    public User() {
+    }
 
     public User(String name, int age, String addr, Date birth) {
         this.name = name;

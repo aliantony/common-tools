@@ -1,9 +1,9 @@
 package com.antiy.asset.entity;
 
 
-import java.util.Date;
 import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p>
  * 内存表
@@ -16,86 +16,85 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetMemory extends BaseEntity {
 
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-        /**
-    *  资产主键
-    */
-        @ApiModelProperty("资产主键")
+    /**
+     * 资产主键
+     */
+    @ApiModelProperty("资产主键")
     private Integer assetId;
-        /**
-    *  内存容量
-    */
-        @ApiModelProperty("内存容量")
+    /**
+     * 内存容量
+     */
+    @ApiModelProperty("内存容量")
     private Integer capacity;
-        /**
-    *  内存主频(MHz)
-    */
-        @ApiModelProperty("内存主频(MHz)")
+    /**
+     * 内存主频(MHz)
+     */
+    @ApiModelProperty("内存主频(MHz)")
     private Integer frequency;
-        /**
-    *  插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM
-    */
-        @ApiModelProperty("插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM")
+    /**
+     * 插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM
+     */
+    @ApiModelProperty("插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM")
     private Integer slotType;
-        /**
-    *  是否带散热片:0-不带，1-带
-    */
-        @ApiModelProperty("是否带散热片:0-不带，1-带")
+    /**
+     * 是否带散热片:0-不带，1-带
+     */
+    @ApiModelProperty("是否带散热片:0-不带，1-带")
     private Boolean isHeatsink;
-        /**
-    *  针脚数
-    */
-        @ApiModelProperty("针脚数")
+    /**
+     * 针脚数
+     */
+    @ApiModelProperty("针脚数")
     private Integer stitch;
-        /**
-    *  购买日期
-    */
-        @ApiModelProperty("购买日期")
+    /**
+     * 购买日期
+     */
+    @ApiModelProperty("购买日期")
     private Long buyDate;
-        /**
-    *  保修期
-    */
-        @ApiModelProperty("保修期")
+    /**
+     * 保修期
+     */
+    @ApiModelProperty("保修期")
     private Long warrantyDate;
-        /**
-    *  联系电话
-    */
-        @ApiModelProperty("联系电话")
+    /**
+     * 联系电话
+     */
+    @ApiModelProperty("联系电话")
     private String telephone;
-        /**
-    *  创建时间
-    */
-        @ApiModelProperty("创建时间")
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("创建时间")
     private Long gmtCreate;
-        /**
-    *  修改时间
-    */
-        @ApiModelProperty("修改时间")
+    /**
+     * 修改时间
+     */
+    @ApiModelProperty("修改时间")
     private Long gmtModified;
-        /**
-    *  备注
-    */
-        @ApiModelProperty("备注")
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
     private String memo;
-        /**
-    *  创建人
-    */
-        @ApiModelProperty("创建人")
+    /**
+     * 创建人
+     */
+    @ApiModelProperty("创建人")
     private Integer createUser;
-        /**
-    *  修改人
-    */
-        @ApiModelProperty("修改人")
+    /**
+     * 修改人
+     */
+    @ApiModelProperty("修改人")
     private Integer modifyUser;
-        /**
-    *  状态,0 未删除,1已删除
-    */
-        @ApiModelProperty("状态,0 未删除,1已删除")
+    /**
+     * 状态,0 未删除,1已删除
+     */
+    @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer status;
 
-                    
-                                    
+
     public Integer getAssetId() {
         return assetId;
     }
@@ -103,8 +102,8 @@ private static final long serialVersionUID = 1L;
     public void setAssetId(Integer assetId) {
         this.assetId = assetId;
     }
-    
-                                    
+
+
     public Integer getCapacity() {
         return capacity;
     }
@@ -112,8 +111,8 @@ private static final long serialVersionUID = 1L;
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
-    
-                                    
+
+
     public Integer getFrequency() {
         return frequency;
     }
@@ -121,8 +120,8 @@ private static final long serialVersionUID = 1L;
     public void setFrequency(Integer frequency) {
         this.frequency = frequency;
     }
-    
-                                    
+
+
     public Integer getSlotType() {
         return slotType;
     }
@@ -130,8 +129,8 @@ private static final long serialVersionUID = 1L;
     public void setSlotType(Integer slotType) {
         this.slotType = slotType;
     }
-    
-                                    
+
+
     public Boolean getHeatsink() {
         return isHeatsink;
     }
@@ -139,8 +138,8 @@ private static final long serialVersionUID = 1L;
     public void setHeatsink(Boolean isHeatsink) {
         this.isHeatsink = isHeatsink;
     }
-    
-                                    
+
+
     public Integer getStitch() {
         return stitch;
     }
@@ -148,8 +147,8 @@ private static final long serialVersionUID = 1L;
     public void setStitch(Integer stitch) {
         this.stitch = stitch;
     }
-    
-                                    
+
+
     public Long getBuyDate() {
         return buyDate;
     }
@@ -157,8 +156,8 @@ private static final long serialVersionUID = 1L;
     public void setBuyDate(Long buyDate) {
         this.buyDate = buyDate;
     }
-    
-                                    
+
+
     public Long getWarrantyDate() {
         return warrantyDate;
     }
@@ -166,8 +165,8 @@ private static final long serialVersionUID = 1L;
     public void setWarrantyDate(Long warrantyDate) {
         this.warrantyDate = warrantyDate;
     }
-    
-                                    
+
+
     public String getTelephone() {
         return telephone;
     }
@@ -175,8 +174,8 @@ private static final long serialVersionUID = 1L;
     public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
-    
-                                    
+
+
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -184,8 +183,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
-    
-                                    
+
+
     public Long getGmtModified() {
         return gmtModified;
     }
@@ -193,8 +192,8 @@ private static final long serialVersionUID = 1L;
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
     }
-    
-                                    
+
+
     public String getMemo() {
         return memo;
     }
@@ -202,8 +201,8 @@ private static final long serialVersionUID = 1L;
     public void setMemo(String memo) {
         this.memo = memo;
     }
-    
-                                    
+
+
     public Integer getCreateUser() {
         return createUser;
     }
@@ -211,8 +210,8 @@ private static final long serialVersionUID = 1L;
     public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
     }
-    
-                                    
+
+
     public Integer getModifyUser() {
         return modifyUser;
     }
@@ -220,8 +219,8 @@ private static final long serialVersionUID = 1L;
     public void setModifyUser(Integer modifyUser) {
         this.modifyUser = modifyUser;
     }
-    
-                                    
+
+
     public Integer getStatus() {
         return status;
     }
@@ -229,26 +228,26 @@ private static final long serialVersionUID = 1L;
     public void setStatus(Integer status) {
         this.status = status;
     }
-    
-    
-        @Override
+
+
+    @Override
     public String toString() {
-            return "AssetMemory{" +
-                                                                                            ", assetId=" + assetId +
-                                                                                        ", capacity=" + capacity +
-                                                                                        ", frequency=" + frequency +
-                                                                                        ", slotType=" + slotType +
-                                                                                        ", isHeatsink=" + isHeatsink +
-                                                                                        ", stitch=" + stitch +
-                                                                                        ", buyDate=" + buyDate +
-                                                                                        ", warrantyDate=" + warrantyDate +
-                                                                                        ", telephone=" + telephone +
-                                                                                        ", gmtCreate=" + gmtCreate +
-                                                                                        ", gmtModified=" + gmtModified +
-                                                                                        ", memo=" + memo +
-                                                                                        ", createUser=" + createUser +
-                                                                                        ", modifyUser=" + modifyUser +
-                                                                                        ", status=" + status +
-                                                "}";
+        return "AssetMemory{" +
+                ", assetId=" + assetId +
+                ", capacity=" + capacity +
+                ", frequency=" + frequency +
+                ", slotType=" + slotType +
+                ", isHeatsink=" + isHeatsink +
+                ", stitch=" + stitch +
+                ", buyDate=" + buyDate +
+                ", warrantyDate=" + warrantyDate +
+                ", telephone=" + telephone +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo=" + memo +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                "}";
     }
-    }
+}

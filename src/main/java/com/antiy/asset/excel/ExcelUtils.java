@@ -1,6 +1,6 @@
 package com.antiy.asset.excel;
 
-import com.antiy.asset.entity.vo.templet.ImportResult;
+import com.antiy.asset.vo.templet.ImportResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,7 +87,7 @@ public class ExcelUtils {
         ImportExcel ie;
         ImportResult ir = new ImportResult();
         try {
-            ie =  new ImportExcel(multipartFile, 1, 0);
+            ie = new ImportExcel(multipartFile, 1, 0);
             ir.setDataList(ie.getDataList(clazz));
             ir.setMsg(ie.getResultMsg());
         } catch (IllegalAccessException e) {

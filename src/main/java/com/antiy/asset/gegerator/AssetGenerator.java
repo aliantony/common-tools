@@ -44,7 +44,7 @@ public class AssetGenerator {
      * mapper.xml路径
      */
     private String mapperXmlPath = outPutDir;
-    private String entityPath = outPutDir ;
+    private String entityPath = outPutDir;
 
     /**
      * <p> 根据MySQL 表生成对象（controller,service,dao,entity,mappper.xml ） </p>
@@ -55,7 +55,7 @@ public class AssetGenerator {
     }
 
     public void exceute(String outPutDir, String author, String parent) {
-        if (author == null || author.equals("")){
+        if (author == null || author.equals("")) {
             System.out.println("作者不能为空！！！");
             return;
         }
@@ -88,10 +88,10 @@ public class AssetGenerator {
         // 表名生成策略
         strategy.setNaming(NamingStrategy.underline_to_camel);
         // 需要生成的表
-        strategy.setInclude(new String[] {"asset","asset_category_model","asset_cpu","asset_department",
-                "asset_group","asset_group_relation","asset_hard_disk","asset_label_relation","asset_lable",
-                "asset_link_relation","asset_mainborad","asset_memory","asset_network_card","asset_network_equipment",
-                "asset_port_protocol","asset_safety_equipment","asset_software","asset_software_license","asset_software_relation","asset_user","scheme"});
+        strategy.setInclude(new String[]{"asset", "asset_category_model", "asset_cpu", "asset_department",
+                "asset_group", "asset_group_relation", "asset_hard_disk", "asset_label_relation", "asset_lable",
+                "asset_link_relation", "asset_mainborad", "asset_memory", "asset_network_card", "asset_network_equipment",
+                "asset_port_protocol", "asset_safety_equipment", "asset_software", "asset_software_license", "asset_software_relation", "asset_user", "scheme"});
 
 //        strategy.setInclude(new String[]{"asset_user"});
 
@@ -120,7 +120,7 @@ public class AssetGenerator {
         InjectionConfig cfg = new InjectionConfig() {
             @Override
             public void initMap() {
-                // to do nothing
+                // to DTO nothing
             }
         };
 
@@ -143,7 +143,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return entityPath +"/entity/vo/request/" + tableInfo.getEntityName() + "Request" + StringPool.DOT_JAVA;
+                return entityPath + "/vo/request/" + tableInfo.getEntityName() + "Request" + StringPool.DOT_JAVA;
             }
         });
 
@@ -151,7 +151,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return entityPath + "/entity/vo/response/" + tableInfo.getEntityName() + "Response" + StringPool.DOT_JAVA;
+                return entityPath + "/vo/response/" + tableInfo.getEntityName() + "Response" + StringPool.DOT_JAVA;
             }
         });
 
@@ -159,7 +159,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return entityPath + "/entity/vo/query/" + tableInfo.getEntityName() + "Query" + StringPool.DOT_JAVA;
+                return entityPath + "/vo/query/" + tableInfo.getEntityName() + "Query" + StringPool.DOT_JAVA;
             }
         });
 
@@ -167,7 +167,7 @@ public class AssetGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return entityPath + "/entity/dto/" + tableInfo.getEntityName() + "DTO" + StringPool.DOT_JAVA;
+                return entityPath + "/dto." + tableInfo.getEntityName() + "DTO" + StringPool.DOT_JAVA;
             }
         });
 
@@ -202,7 +202,7 @@ public class AssetGenerator {
                     return DbColumnType.BYTE_ARRAY;
                 } else if (t.contains("float")) {
                     return DbColumnType.FLOAT;
-                } else if (t.contains("double")) {
+                } else if (t.contains("DTOuble")) {
                     return DbColumnType.DOUBLE;
                 } else {
                     return !t.contains("json") && !t.contains("enum") ? DbColumnType.STRING : DbColumnType.STRING;
@@ -214,8 +214,6 @@ public class AssetGenerator {
             return DbColumnType.STRING;
         }
     }
-
-
 
 
     /**
