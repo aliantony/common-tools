@@ -251,7 +251,7 @@
                 and softlic.name like #{name}"%"
             </if>
             <if test=" manufacturer != null and manufacturer != '' ">
-                and manufacturer like #{manufacturer}"%"
+                and softlic.manufacturer like #{manufacturer}"%"
             </if>
             <if test=" softwareId != null">
                 and software_id = #{softwareId}
@@ -265,6 +265,7 @@
             <if test=" licenseSecretKey != null">
                 and license_secret_key = #{licenseSecretKey}
             </if>
+            and softlic.status = 0
         </trim>
     </select>
 
@@ -280,7 +281,7 @@
                 and softlic.name like #{name}"%"
             </if>
             <if test=" manufacturer != null and manufacturer != '' ">
-                and manufacturer like #{manufacturer}"%"
+                and softlic.manufacturer like #{manufacturer}"%"
             </if>
             <if test=" softwareId != null">
                 and software_id = #{softwareId}
@@ -294,6 +295,7 @@
             <if test=" licenseSecretKey != null">
                 and license_secret_key = #{licenseSecretKey}
             </if>
+            and softlic.status = 0
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
