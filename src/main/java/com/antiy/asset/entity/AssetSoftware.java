@@ -59,9 +59,9 @@ public class AssetSoftware extends BaseEntity {
     @ApiModelProperty("版本")
     private String version;
     /**
-     * 制造商
+     * 厂商
      */
-    @ApiModelProperty("制造商")
+    @ApiModelProperty("厂商")
     private String manufacturer;
     /**
      * 软件描述

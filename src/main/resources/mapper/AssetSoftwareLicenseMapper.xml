@@ -5,6 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetSoftwareLicense">
         <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="manufacturer" property="manufacturer"/>
         <result column="software_id" property="softwareId"/>
         <result column="busy_date" property="busyDate"/>
         <result column="expiry_date" property="expiryDate"/>
@@ -16,9 +18,9 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
     </resultMap>
-<!-- 通用查询结果列 -->
+    <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, software_id AS softwareId, busy_date AS busyDate, expiry_date AS expiryDate, license_secret_key AS licenseSecretKey, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
+        id, name, manufacturer, software_id AS softwareId, busy_date AS busyDate, expiry_date AS expiryDate, license_secret_key AS licenseSecretKey, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
 
     <sql id="Table_Name">
@@ -27,6 +29,12 @@
 
 
     <sql id="IF_Base_Column_List">
+        <if test=" name != null">
+            name,
+        </if>
+        <if test=" manufacturer != null">
+            manufacturer,
+        </if>
         <if test=" softwareId != null">
             software_id,
         </if>
@@ -60,6 +68,12 @@
     </sql>
 
     <sql id="IF_Value_Column_List">
+        <if test=" name != null">
+            #{name },
+        </if>
+        <if test=" manufacturer != null">
+            #{manufacturer },
+        </if>
         <if test=" softwareId != null">
             #{softwareId },
         </if>
@@ -70,7 +84,7 @@
             #{expiryDate },
         </if>
         <if test=" licenseSecretKey != null">
-            #{licenseSecretKey },
+            #{licenseSecretKey},
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
@@ -93,6 +107,12 @@
     </sql>
 
     <sql id="Set_Column_List">
+        <if test=" name != null">
+            name = #{name },
+        </if>
+        <if test=" manufacturer != null">
+            manufacturer = #{manufacturer },
+        </if>
         <if test=" softwareId != null">
             software_id = #{softwareId },
         </if>
@@ -103,7 +123,7 @@
             expiry_date = #{expiryDate },
         </if>
         <if test=" licenseSecretKey != null">
-            license_secret_key = #{licenseSecretKey },
+            license_secret_key = #{licenseSecretKey},
         </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
@@ -126,6 +146,12 @@
     </sql>
 
     <sql id="Where_Column_List">
+        <if test=" name != null">
+            and name = #{name }
+        </if>
+        <if test=" manufacturer != null">
+            and manufacturer = #{manufacturer }
+        </if>
         <if test=" softwareId != null">
             and software_id = #{softwareId }
         </if>
@@ -136,7 +162,7 @@
             and expiry_date = #{expiryDate }
         </if>
         <if test=" licenseSecretKey != null">
-            and license_secret_key = #{licenseSecretKey }
+            and license_secret_key = #{licenseSecretKey}
         </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }
@@ -225,7 +251,8 @@
         </where>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetSoftwareLicense" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetSoftwareLicense"
+            parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <where>
@@ -239,44 +266,33 @@
     </select>
 
 
-    <select id="findListAssetSoftwareLicense" resultType="com.antiy.asset.entity.AssetSoftwareLicense" parameterType="com.antiy.asset.vo.query.AssetSoftwareLicenseQuery">
+    <select id="findListAssetSoftwareLicense" resultType="com.antiy.asset.entity.AssetSoftwareLicense"
+            parameterType="com.antiy.asset.vo.query.AssetSoftwareLicenseQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-        <if test=" id != null">
-                and id = #{id }
+            <if test=" id != null">
+                and id = #{id
             </if>
-        <if test=" softwareId != null">
-                and software_id = #{softwareId }
+            <if test=" name != null">
+                and name = #{name
             </if>
-        <if test=" busyDate != null">
-                and busy_date = #{busyDate }
+            <if test=" manufacturer != null">
+                and manufacturer = #{manufacturer
             </if>
-        <if test=" expiryDate != null">
-                and expiry_date = #{expiryDate }
+            <if test=" softwareId != null">
+                and software_id = #{softwareId
             </if>
-        <if test=" licenseSecretKey != null">
-                and license_secret_key = #{licenseSecretKey }
+            <if test=" busyDate != null">
+                and busy_date = #{busyDate
             </if>
-        <if test=" gmtCreate != null">
-                and gmt_create = #{gmtCreate }
+            <if test=" expiryDate != null">
+                and expiry_date = #{expiryDate
             </if>
-        <if test=" gmtModified != null">
-                and gmt_modified = #{gmtModified }
+            <if test=" licenseSecretKey != null">
+                and license_secret_key = #{licenseSecretKey}
             </if>
-        <if test=" memo != null">
-                and memo = #{memo }
-            </if>
-        <if test=" createUser != null">
-                and create_user = #{createUser }
-            </if>
-        <if test=" modifyUser != null">
-                and modify_user = #{modifyUser }
-            </if>
-        <if test=" status != null">
-                and status = #{status }
-            </if>
-                </trim>
+        </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{currentPage}
         </if>

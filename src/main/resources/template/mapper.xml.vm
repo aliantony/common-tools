@@ -173,7 +173,7 @@
         <trim prefix="WHERE" prefixOverrides="AND|OR">
         #foreach($field in ${table.fields})
 <if test=" ${field.propertyName} != null">
-                and ${field.name} = #{${field.propertyName}
+                and ${field.name} = #{${field.propertyName}}
             </if>
         #end
         </trim>
