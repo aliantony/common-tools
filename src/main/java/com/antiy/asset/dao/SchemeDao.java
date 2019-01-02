@@ -1,10 +1,7 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.Scheme;
-import com.antiy.asset.vo.query.SchemeQuery;
 import com.antiy.common.base.IBaseDao;
-
-import java.util.List;
 
 /**
  * <p>
@@ -16,5 +13,4 @@ import java.util.List;
  */
 public interface SchemeDao extends IBaseDao<Scheme> {
 
-    List<Scheme> findListScheme(SchemeQuery query) throws Exception;
 }

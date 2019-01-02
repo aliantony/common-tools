@@ -17,6 +17,7 @@
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
+        <result property="softwareName" column="software_name" />
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -241,60 +242,61 @@
 
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-        select count(1) count
-        from
-        <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
-            </trim>
-        </where>
-    </select>
-
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetSoftwareLicense"
-            parameterType="com.antiy.common.base.ObjectQuery">
-        select * from
-        <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
-            </trim>
-        </where>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
-        </if>
-    </select>
-
-
-    <select id="findListAssetSoftwareLicense" resultType="com.antiy.asset.entity.AssetSoftwareLicense"
-            parameterType="com.antiy.asset.vo.query.AssetSoftwareLicenseQuery">
-        select * from
-        <include refid="Table_Name"></include>
+        select count(1)
+        FROM
+        asset_software_license softlic
+        LEFT JOIN asset_software software ON softlic.software_id = software.id
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-            <if test=" id != null">
-                and id = #{id
+            <if test=" name != null and name != '' ">
+                and softlic.name like #{name}"%"
             </if>
-            <if test=" name != null">
-                and name = #{name
-            </if>
-            <if test=" manufacturer != null">
-                and manufacturer = #{manufacturer
+            <if test=" manufacturer != null and manufacturer != '' ">
+                and manufacturer like #{manufacturer}"%"
             </if>
             <if test=" softwareId != null">
-                and software_id = #{softwareId
+                and software_id = #{softwareId}
             </if>
             <if test=" busyDate != null">
-                and busy_date = #{busyDate
+                and busy_date = #{busyDate}
             </if>
             <if test=" expiryDate != null">
-                and expiry_date = #{expiryDate
+                and expiry_date = #{expiryDate}
+            </if>
+            <if test=" licenseSecretKey != null">
+                and license_secret_key = #{licenseSecretKey}
+            </if>
+        </trim>
+    </select>
+
+    <select id="findQuery" resultMap="BaseResultMap"
+            parameterType="com.antiy.common.base.ObjectQuery">
+        SELECT
+        software.name as software_name, softlic.name, softlic.license_secret_key,softlic.expiry_date
+        FROM
+        asset_software_license softlic
+        LEFT JOIN asset_software software ON softlic.software_id = software.id
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" name != null and name != '' ">
+                and softlic.name like #{name}"%"
+            </if>
+            <if test=" manufacturer != null and manufacturer != '' ">
+                and manufacturer like #{manufacturer}"%"
+            </if>
+            <if test=" softwareId != null">
+                and software_id = #{softwareId}
+            </if>
+            <if test=" busyDate != null">
+                and busy_date = #{busyDate}
+            </if>
+            <if test=" expiryDate != null">
+                and expiry_date = #{expiryDate}
             </if>
             <if test=" licenseSecretKey != null">
                 and license_secret_key = #{licenseSecretKey}
             </if>
         </trim>
         <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
+            LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
 </mapper>

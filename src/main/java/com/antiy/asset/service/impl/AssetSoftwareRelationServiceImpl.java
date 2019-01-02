@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,18 +49,14 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     @Override
     public List<AssetSoftwareRelationResponse> findListAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception {
-        List<AssetSoftwareRelation> assetSoftwareRelation = assetSoftwareRelationDao.findListAssetSoftwareRelation(query);
+        List<AssetSoftwareRelation> assetSoftwareRelationList = assetSoftwareRelationDao.findQuery(query);
         //TODO
-        List<AssetSoftwareRelationResponse> assetSoftwareRelationResponse = new ArrayList<AssetSoftwareRelationResponse>();
+        List<AssetSoftwareRelationResponse> assetSoftwareRelationResponse = responseConverter.convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class);
         return assetSoftwareRelationResponse;
-    }
-
-    public Integer findCountAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception {
-        return assetSoftwareRelationDao.findCount(query);
     }
 
     @Override
     public PageResult<AssetSoftwareRelationResponse> findPageAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception {
-        return new PageResult<>(query.getPageSize(), this.findCountAssetSoftwareRelation(query), query.getCurrentPage(), this.findListAssetSoftwareRelation(query));
+        return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(), this.findListAssetSoftwareRelation(query));
     }
 }
