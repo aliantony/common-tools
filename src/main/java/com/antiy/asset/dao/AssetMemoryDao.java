@@ -1,6 +1,5 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.dto.AssetMemoryDTO;
 import com.antiy.asset.entity.AssetMemory;
 import com.antiy.asset.vo.query.AssetMemoryQuery;
 import com.antiy.common.base.IBaseDao;
@@ -13,9 +12,9 @@ import java.util.List;
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-29
+ * @since 2019-01-02
  */
 public interface AssetMemoryDao extends IBaseDao<AssetMemory> {
 
-    List<AssetMemoryDTO> findListAssetMemory(AssetMemoryQuery query) throws Exception;
+    List<AssetMemory> findListAssetMemory(AssetMemoryQuery query) throws Exception;
 }

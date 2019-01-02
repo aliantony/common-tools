@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetMemoryDao;
-import com.antiy.asset.dto.AssetMemoryDTO;
 import com.antiy.asset.entity.AssetMemory;
 import com.antiy.asset.service.IAssetMemoryService;
 import com.antiy.asset.vo.query.AssetMemoryQuery;
@@ -51,9 +50,8 @@ public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> impleme
 
     @Override
     public List<AssetMemoryResponse> findListAssetMemory(AssetMemoryQuery query) throws Exception {
-        List<AssetMemoryDTO> assetMemoryDTO = assetMemoryDao.findListAssetMemory(query);
+        List<AssetMemory> assetMemory = assetMemoryDao.findListAssetMemory(query);
         //TODO
-        //需要将assetMemoryDTO转达成AssetMemoryResponse
         List<AssetMemoryResponse> assetMemoryResponse = new ArrayList<AssetMemoryResponse>();
         return assetMemoryResponse;
     }

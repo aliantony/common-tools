@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
-import com.antiy.asset.dto.AssetSoftwareRelationDTO;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
@@ -51,9 +50,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     @Override
     public List<AssetSoftwareRelationResponse> findListAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception {
-        List<AssetSoftwareRelationDTO> assetSoftwareRelationDTO = assetSoftwareRelationDao.findListAssetSoftwareRelation(query);
+        List<AssetSoftwareRelation> assetSoftwareRelation = assetSoftwareRelationDao.findListAssetSoftwareRelation(query);
         //TODO
-        //需要将assetSoftwareRelationDTO转达成AssetSoftwareRelationResponse
         List<AssetSoftwareRelationResponse> assetSoftwareRelationResponse = new ArrayList<AssetSoftwareRelationResponse>();
         return assetSoftwareRelationResponse;
     }

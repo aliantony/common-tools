@@ -1,8 +1,8 @@
-package com.antiy.asset.controller.swagger;
+package com.antiy.asset.controller;
 
-import com.antiy.asset.service.IAssetNetworkCardService;
-import com.antiy.asset.vo.query.AssetNetworkCardQuery;
-import com.antiy.asset.vo.request.AssetNetworkCardRequest;
+import com.antiy.asset.service.IAssetNetworkEquipmentService;
+import com.antiy.asset.vo.query.AssetNetworkEquipmentQuery;
+import com.antiy.asset.vo.request.AssetNetworkEquipmentRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -20,19 +20,19 @@ import javax.annotation.Resource;
  * @author zhangyajun
  * @since 2019-01-02
  */
-@Api(value = "AssetNetworkCard", description = "网卡信息表")
+@Api(value = "AssetNetworkEquipment", description = "网络设备详情表")
 @RestController
-@RequestMapping("/v1/asset/assetnetworkcard")
+@RequestMapping("/v1/asset/assetnetworkequipment")
 @Slf4j
-public class AssetNetworkCardController {
+public class AssetNetworkEquipmentController {
 
     @Resource
-    public IAssetNetworkCardService iAssetNetworkCardService;
+    public IAssetNetworkEquipmentService iAssetNetworkEquipmentService;
 
     /**
      * 保存
      *
-     * @param assetNetworkCard
+     * @param assetNetworkEquipment
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
@@ -40,15 +40,15 @@ public class AssetNetworkCardController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetNetworkCard") AssetNetworkCardRequest assetNetworkCard) throws Exception {
-        iAssetNetworkCardService.saveAssetNetworkCard(assetNetworkCard);
+    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetNetworkEquipment") AssetNetworkEquipmentRequest assetNetworkEquipment) throws Exception {
+        iAssetNetworkEquipmentService.saveAssetNetworkEquipment(assetNetworkEquipment);
         return ActionResponse.success();
     }
 
     /**
      * 修改
      *
-     * @param assetNetworkCard
+     * @param assetNetworkEquipment
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
@@ -56,15 +56,15 @@ public class AssetNetworkCardController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetNetworkCard") AssetNetworkCardRequest assetNetworkCard) throws Exception {
-        iAssetNetworkCardService.updateAssetNetworkCard(assetNetworkCard);
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetNetworkEquipment") AssetNetworkEquipmentRequest assetNetworkEquipment) throws Exception {
+        iAssetNetworkEquipmentService.updateAssetNetworkEquipment(assetNetworkEquipment);
         return ActionResponse.success();
     }
 
     /**
      * 批量查询
      *
-     * @param assetNetworkCard
+     * @param assetNetworkEquipment
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
@@ -72,8 +72,8 @@ public class AssetNetworkCardController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetNetworkCard") AssetNetworkCardQuery assetNetworkCard) throws Exception {
-        return ActionResponse.success(iAssetNetworkCardService.findPageAssetNetworkCard(assetNetworkCard));
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetNetworkEquipment") AssetNetworkEquipmentQuery assetNetworkEquipment) throws Exception {
+        return ActionResponse.success(iAssetNetworkEquipmentService.findPageAssetNetworkEquipment(assetNetworkEquipment));
     }
 
     /**
@@ -87,9 +87,9 @@ public class AssetNetworkCardController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetNetworkCard") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetNetworkEquipment") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetNetworkCardService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetNetworkEquipmentService.getById(query.getPrimaryKey()));
     }
 
     /**
@@ -105,7 +105,7 @@ public class AssetNetworkCardController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetNetworkCardService.deleteById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetNetworkEquipmentService.deleteById(query.getPrimaryKey()));
     }
 }
 

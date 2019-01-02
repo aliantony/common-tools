@@ -1,8 +1,8 @@
-package com.antiy.asset.controller.swagger;
+package com.antiy.asset.controller;
 
-import com.antiy.asset.service.IAssetUserService;
-import com.antiy.asset.vo.query.AssetUserQuery;
-import com.antiy.asset.vo.request.AssetUserRequest;
+import com.antiy.asset.service.IAssetPortProtocolService;
+import com.antiy.asset.vo.query.AssetPortProtocolQuery;
+import com.antiy.asset.vo.request.AssetPortProtocolRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -20,19 +20,19 @@ import javax.annotation.Resource;
  * @author zhangyajun
  * @since 2019-01-02
  */
-@Api(value = "AssetUser", description = "资产用户信息")
+@Api(value = "AssetPortProtocol", description = "端口协议")
 @RestController
-@RequestMapping("/v1/asset/assetuser")
+@RequestMapping("/v1/asset/assetportprotocol")
 @Slf4j
-public class AssetUserController {
+public class AssetPortProtocolController {
 
     @Resource
-    public IAssetUserService iAssetUserService;
+    public IAssetPortProtocolService iAssetPortProtocolService;
 
     /**
      * 保存
      *
-     * @param assetUser
+     * @param assetPortProtocol
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
@@ -40,15 +40,15 @@ public class AssetUserController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetUser") AssetUserRequest assetUser) throws Exception {
-        iAssetUserService.saveAssetUser(assetUser);
+    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetPortProtocol") AssetPortProtocolRequest assetPortProtocol) throws Exception {
+        iAssetPortProtocolService.saveAssetPortProtocol(assetPortProtocol);
         return ActionResponse.success();
     }
 
     /**
      * 修改
      *
-     * @param assetUser
+     * @param assetPortProtocol
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
@@ -56,15 +56,15 @@ public class AssetUserController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetUser") AssetUserRequest assetUser) throws Exception {
-        iAssetUserService.updateAssetUser(assetUser);
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetPortProtocol") AssetPortProtocolRequest assetPortProtocol) throws Exception {
+        iAssetPortProtocolService.updateAssetPortProtocol(assetPortProtocol);
         return ActionResponse.success();
     }
 
     /**
      * 批量查询
      *
-     * @param assetUser
+     * @param assetPortProtocol
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
@@ -72,8 +72,8 @@ public class AssetUserController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetUser") AssetUserQuery assetUser) throws Exception {
-        return ActionResponse.success(iAssetUserService.findPageAssetUser(assetUser));
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetPortProtocol") AssetPortProtocolQuery assetPortProtocol) throws Exception {
+        return ActionResponse.success(iAssetPortProtocolService.findPageAssetPortProtocol(assetPortProtocol));
     }
 
     /**
@@ -87,9 +87,9 @@ public class AssetUserController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetUser") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetPortProtocol") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetUserService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetPortProtocolService.getById(query.getPrimaryKey()));
     }
 
     /**
@@ -105,7 +105,7 @@ public class AssetUserController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetUserService.deleteById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetPortProtocolService.deleteById(query.getPrimaryKey()));
     }
 }
 

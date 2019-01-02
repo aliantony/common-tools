@@ -1,6 +1,5 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.dto.AssetPortProtocolDTO;
 import com.antiy.asset.entity.AssetPortProtocol;
 import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 import com.antiy.common.base.IBaseDao;
@@ -13,9 +12,9 @@ import java.util.List;
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-29
+ * @since 2019-01-02
  */
 public interface AssetPortProtocolDao extends IBaseDao<AssetPortProtocol> {
 
-    List<AssetPortProtocolDTO> findListAssetPortProtocol(AssetPortProtocolQuery query) throws Exception;
+    List<AssetPortProtocol> findListAssetPortProtocol(AssetPortProtocolQuery query) throws Exception;
 }

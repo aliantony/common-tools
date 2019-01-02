@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetSoftwareLicenseDao;
-import com.antiy.asset.dto.AssetSoftwareLicenseDTO;
 import com.antiy.asset.entity.AssetSoftwareLicense;
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
 import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
@@ -51,9 +50,8 @@ public class AssetSoftwareLicenseServiceImpl extends BaseServiceImpl<AssetSoftwa
 
     @Override
     public List<AssetSoftwareLicenseResponse> findListAssetSoftwareLicense(AssetSoftwareLicenseQuery query) throws Exception {
-        List<AssetSoftwareLicenseDTO> assetSoftwareLicenseDTO = assetSoftwareLicenseDao.findListAssetSoftwareLicense(query);
+        List<AssetSoftwareLicense> assetSoftwareLicense = assetSoftwareLicenseDao.findListAssetSoftwareLicense(query);
         //TODO
-        //需要将assetSoftwareLicenseDTO转达成AssetSoftwareLicenseResponse
         List<AssetSoftwareLicenseResponse> assetSoftwareLicenseResponse = new ArrayList<AssetSoftwareLicenseResponse>();
         return assetSoftwareLicenseResponse;
     }

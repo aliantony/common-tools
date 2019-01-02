@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetMainboradDao;
-import com.antiy.asset.dto.AssetMainboradDTO;
 import com.antiy.asset.entity.AssetMainborad;
 import com.antiy.asset.service.IAssetMainboradService;
 import com.antiy.asset.vo.query.AssetMainboradQuery;
@@ -51,9 +50,8 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
 
     @Override
     public List<AssetMainboradResponse> findListAssetMainborad(AssetMainboradQuery query) throws Exception {
-        List<AssetMainboradDTO> assetMainboradDTO = assetMainboradDao.findListAssetMainborad(query);
+        List<AssetMainborad> assetMainborad = assetMainboradDao.findListAssetMainborad(query);
         //TODO
-        //需要将assetMainboradDTO转达成AssetMainboradResponse
         List<AssetMainboradResponse> assetMainboradResponse = new ArrayList<AssetMainboradResponse>();
         return assetMainboradResponse;
     }

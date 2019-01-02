@@ -1,8 +1,8 @@
-package com.antiy.asset.controller.swagger;
+package com.antiy.asset.controller;
 
-import com.antiy.asset.service.IAssetGroupRelationService;
-import com.antiy.asset.vo.query.AssetGroupRelationQuery;
-import com.antiy.asset.vo.request.AssetGroupRelationRequest;
+import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -20,19 +20,19 @@ import javax.annotation.Resource;
  * @author zhangyajun
  * @since 2019-01-02
  */
-@Api(value = "AssetGroupRelation", description = "资产与资产组关系表")
+@Api(value = "AssetSoftware", description = "软件信息表")
 @RestController
-@RequestMapping("/v1/asset/assetgrouprelation")
+@RequestMapping("/v1/asset/assetsoftware")
 @Slf4j
-public class AssetGroupRelationController {
+public class AssetSoftwareController {
 
     @Resource
-    public IAssetGroupRelationService iAssetGroupRelationService;
+    public IAssetSoftwareService iAssetSoftwareService;
 
     /**
      * 保存
      *
-     * @param assetGroupRelation
+     * @param assetSoftware
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
@@ -40,15 +40,15 @@ public class AssetGroupRelationController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetGroupRelation") AssetGroupRelationRequest assetGroupRelation) throws Exception {
-        iAssetGroupRelationService.saveAssetGroupRelation(assetGroupRelation);
+    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware) throws Exception {
+        iAssetSoftwareService.saveAssetSoftware(assetSoftware);
         return ActionResponse.success();
     }
 
     /**
      * 修改
      *
-     * @param assetGroupRelation
+     * @param assetSoftware
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
@@ -56,15 +56,15 @@ public class AssetGroupRelationController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetGroupRelation") AssetGroupRelationRequest assetGroupRelation) throws Exception {
-        iAssetGroupRelationService.updateAssetGroupRelation(assetGroupRelation);
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware) throws Exception {
+        iAssetSoftwareService.updateAssetSoftware(assetSoftware);
         return ActionResponse.success();
     }
 
     /**
      * 批量查询
      *
-     * @param assetGroupRelation
+     * @param assetSoftware
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
@@ -72,8 +72,8 @@ public class AssetGroupRelationController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetGroupRelation") AssetGroupRelationQuery assetGroupRelation) throws Exception {
-        return ActionResponse.success(iAssetGroupRelationService.findPageAssetGroupRelation(assetGroupRelation));
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetSoftware") AssetSoftwareQuery assetSoftware) throws Exception {
+        return ActionResponse.success(iAssetSoftwareService.findPageAssetSoftware(assetSoftware));
     }
 
     /**
@@ -87,9 +87,9 @@ public class AssetGroupRelationController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetGroupRelation") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetSoftware") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetGroupRelationService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetSoftwareService.getById(query.getPrimaryKey()));
     }
 
     /**
@@ -105,7 +105,7 @@ public class AssetGroupRelationController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetGroupRelationService.deleteById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetSoftwareService.deleteById(query.getPrimaryKey()));
     }
 }
 

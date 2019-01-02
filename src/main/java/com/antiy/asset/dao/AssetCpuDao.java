@@ -1,6 +1,5 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.dto.AssetCpuDTO;
 import com.antiy.asset.entity.AssetCpu;
 import com.antiy.asset.vo.query.AssetCpuQuery;
 import com.antiy.common.base.IBaseDao;
@@ -13,9 +12,9 @@ import java.util.List;
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-29
+ * @since 2019-01-02
  */
 public interface AssetCpuDao extends IBaseDao<AssetCpu> {
 
-    List<AssetCpuDTO> findListAssetCpu(AssetCpuQuery query) throws Exception;
+    List<AssetCpu> findListAssetCpu(AssetCpuQuery query) throws Exception;
 }

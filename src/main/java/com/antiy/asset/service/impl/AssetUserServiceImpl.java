@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetUserDao;
-import com.antiy.asset.dto.AssetUserDTO;
 import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.IAssetUserService;
 import com.antiy.asset.vo.query.AssetUserQuery;
@@ -51,9 +50,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
 
     @Override
     public List<AssetUserResponse> findListAssetUser(AssetUserQuery query) throws Exception {
-        List<AssetUserDTO> assetUserDTO = assetUserDao.findListAssetUser(query);
+        List<AssetUser> assetUser = assetUserDao.findListAssetUser(query);
         //TODO
-        //需要将assetUserDTO转达成AssetUserResponse
         List<AssetUserResponse> assetUserResponse = new ArrayList<AssetUserResponse>();
         return assetUserResponse;
     }

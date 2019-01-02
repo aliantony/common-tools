@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetLinkRelationDao;
-import com.antiy.asset.dto.AssetLinkRelationDTO;
 import com.antiy.asset.entity.AssetLinkRelation;
 import com.antiy.asset.service.IAssetLinkRelationService;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
@@ -51,9 +50,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     @Override
     public List<AssetLinkRelationResponse> findListAssetLinkRelation(AssetLinkRelationQuery query) throws Exception {
-        List<AssetLinkRelationDTO> assetLinkRelationDTO = assetLinkRelationDao.findListAssetLinkRelation(query);
+        List<AssetLinkRelation> assetLinkRelation = assetLinkRelationDao.findListAssetLinkRelation(query);
         //TODO
-        //需要将assetLinkRelationDTO转达成AssetLinkRelationResponse
         List<AssetLinkRelationResponse> assetLinkRelationResponse = new ArrayList<AssetLinkRelationResponse>();
         return assetLinkRelationResponse;
     }

@@ -1,6 +1,5 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.dto.AssetDTO;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.common.base.IBaseDao;
@@ -13,9 +12,9 @@ import java.util.List;
  * </p>
  *
  * @author zhangyajun
- * @since 2018-12-29
+ * @since 2019-01-02
  */
 public interface AssetDao extends IBaseDao<Asset> {
 
-    List<AssetDTO> findListAsset(AssetQuery query) throws Exception;
+    List<Asset> findListAsset(AssetQuery query) throws Exception;
 }

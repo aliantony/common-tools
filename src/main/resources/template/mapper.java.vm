@@ -3,7 +3,7 @@ package ${package.Mapper};
 import java.util.List;
 import com.antiy.common.base.IBaseDao;
 import ${package.Entity}.${entity};
-import ${package.Entity}.dto.${entity}DTO;
+import ${package.Entity}.dto.${entity};
 import ${package.Entity}.vo.query.${entity}Query;
 
 /**
@@ -16,5 +16,5 @@ import ${package.Entity}.vo.query.${entity}Query;
  */
 public interface ${table.mapperName} extends IBaseDao<${entity}> {
 
-    List<${entity}DTO> findList${entity}(${entity}Query query) throws Exception;
+    List<${entity}> findList${entity}(${entity}Query query) throws Exception;
 }

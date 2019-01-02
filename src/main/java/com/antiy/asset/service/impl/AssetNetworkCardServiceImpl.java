@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetNetworkCardDao;
-import com.antiy.asset.dto.AssetNetworkCardDTO;
 import com.antiy.asset.entity.AssetNetworkCard;
 import com.antiy.asset.service.IAssetNetworkCardService;
 import com.antiy.asset.vo.query.AssetNetworkCardQuery;
@@ -51,9 +50,8 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
 
     @Override
     public List<AssetNetworkCardResponse> findListAssetNetworkCard(AssetNetworkCardQuery query) throws Exception {
-        List<AssetNetworkCardDTO> assetNetworkCardDTO = assetNetworkCardDao.findListAssetNetworkCard(query);
+        List<AssetNetworkCard> assetNetworkCard = assetNetworkCardDao.findListAssetNetworkCard(query);
         //TODO
-        //需要将assetNetworkCardDTO转达成AssetNetworkCardResponse
         List<AssetNetworkCardResponse> assetNetworkCardResponse = new ArrayList<AssetNetworkCardResponse>();
         return assetNetworkCardResponse;
     }

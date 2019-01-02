@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetLableDao;
-import com.antiy.asset.dto.AssetLableDTO;
 import com.antiy.asset.entity.AssetLable;
 import com.antiy.asset.service.IAssetLableService;
 import com.antiy.asset.vo.query.AssetLableQuery;
@@ -51,9 +50,8 @@ public class AssetLableServiceImpl extends BaseServiceImpl<AssetLable> implement
 
     @Override
     public List<AssetLableResponse> findListAssetLable(AssetLableQuery query) throws Exception {
-        List<AssetLableDTO> assetLableDTO = assetLableDao.findListAssetLable(query);
+        List<AssetLable> assetLable = assetLableDao.findListAssetLable(query);
         //TODO
-        //需要将assetLableDTO转达成AssetLableResponse
         List<AssetLableResponse> assetLableResponse = new ArrayList<AssetLableResponse>();
         return assetLableResponse;
     }

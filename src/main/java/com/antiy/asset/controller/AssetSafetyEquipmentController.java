@@ -1,8 +1,8 @@
-package com.antiy.asset.controller.swagger;
+package com.antiy.asset.controller;
 
-import com.antiy.asset.service.IAssetLinkRelationService;
-import com.antiy.asset.vo.query.AssetLinkRelationQuery;
-import com.antiy.asset.vo.request.AssetLinkRelationRequest;
+import com.antiy.asset.service.IAssetSafetyEquipmentService;
+import com.antiy.asset.vo.query.AssetSafetyEquipmentQuery;
+import com.antiy.asset.vo.request.AssetSafetyEquipmentRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -20,19 +20,19 @@ import javax.annotation.Resource;
  * @author zhangyajun
  * @since 2019-01-02
  */
-@Api(value = "AssetLinkRelation", description = "通联关系表")
+@Api(value = "AssetSafetyEquipment", description = "安全设备详情表")
 @RestController
-@RequestMapping("/v1/asset/assetlinkrelation")
+@RequestMapping("/v1/asset/assetsafetyequipment")
 @Slf4j
-public class AssetLinkRelationController {
+public class AssetSafetyEquipmentController {
 
     @Resource
-    public IAssetLinkRelationService iAssetLinkRelationService;
+    public IAssetSafetyEquipmentService iAssetSafetyEquipmentService;
 
     /**
      * 保存
      *
-     * @param assetLinkRelation
+     * @param assetSafetyEquipment
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
@@ -40,15 +40,15 @@ public class AssetLinkRelationController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetLinkRelation") AssetLinkRelationRequest assetLinkRelation) throws Exception {
-        iAssetLinkRelationService.saveAssetLinkRelation(assetLinkRelation);
+    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetSafetyEquipment") AssetSafetyEquipmentRequest assetSafetyEquipment) throws Exception {
+        iAssetSafetyEquipmentService.saveAssetSafetyEquipment(assetSafetyEquipment);
         return ActionResponse.success();
     }
 
     /**
      * 修改
      *
-     * @param assetLinkRelation
+     * @param assetSafetyEquipment
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
@@ -56,15 +56,15 @@ public class AssetLinkRelationController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetLinkRelation") AssetLinkRelationRequest assetLinkRelation) throws Exception {
-        iAssetLinkRelationService.updateAssetLinkRelation(assetLinkRelation);
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetSafetyEquipment") AssetSafetyEquipmentRequest assetSafetyEquipment) throws Exception {
+        iAssetSafetyEquipmentService.updateAssetSafetyEquipment(assetSafetyEquipment);
         return ActionResponse.success();
     }
 
     /**
      * 批量查询
      *
-     * @param assetLinkRelation
+     * @param assetSafetyEquipment
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
@@ -72,8 +72,8 @@ public class AssetLinkRelationController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetLinkRelation") AssetLinkRelationQuery assetLinkRelation) throws Exception {
-        return ActionResponse.success(iAssetLinkRelationService.findPageAssetLinkRelation(assetLinkRelation));
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetSafetyEquipment") AssetSafetyEquipmentQuery assetSafetyEquipment) throws Exception {
+        return ActionResponse.success(iAssetSafetyEquipmentService.findPageAssetSafetyEquipment(assetSafetyEquipment));
     }
 
     /**
@@ -87,9 +87,9 @@ public class AssetLinkRelationController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetLinkRelation") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetSafetyEquipment") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetLinkRelationService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetSafetyEquipmentService.getById(query.getPrimaryKey()));
     }
 
     /**
@@ -105,7 +105,7 @@ public class AssetLinkRelationController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetLinkRelationService.deleteById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetSafetyEquipmentService.deleteById(query.getPrimaryKey()));
     }
 }
 
