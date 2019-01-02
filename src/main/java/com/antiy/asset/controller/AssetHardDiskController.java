@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetHardDiskService;
+import com.antiy.asset.entity.AssetHardDisk;
 import com.antiy.asset.entity.vo.request.AssetHardDiskRequest;
+import com.antiy.asset.entity.vo.response.AssetHardDiskResponse;
 import com.antiy.asset.entity.vo.query.AssetHardDiskQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetHardDiskQuery;
  */
 @Api(value = "AssetHardDisk", description = "硬盘表")
 @RestController
-@RequestMapping("/v1/asset/harddisk")
+@RequestMapping("/v1/asset/assetharddisk")
 @Slf4j
 public class AssetHardDiskController {
 

@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetGroupRelationService;
+import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.entity.vo.request.AssetGroupRelationRequest;
+import com.antiy.asset.entity.vo.response.AssetGroupRelationResponse;
 import com.antiy.asset.entity.vo.query.AssetGroupRelationQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetGroupRelationQuery;
  */
 @Api(value = "AssetGroupRelation", description = "资产与资产组关系表")
 @RestController
-@RequestMapping("/v1/asset/grouprelation")
+@RequestMapping("/v1/asset/assetgrouprelation")
 @Slf4j
 public class AssetGroupRelationController {
 

@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetMainboradService;
+import com.antiy.asset.entity.AssetMainborad;
 import com.antiy.asset.entity.vo.request.AssetMainboradRequest;
+import com.antiy.asset.entity.vo.response.AssetMainboradResponse;
 import com.antiy.asset.entity.vo.query.AssetMainboradQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetMainboradQuery;
  */
 @Api(value = "AssetMainborad", description = "主板表")
 @RestController
-@RequestMapping("/v1/asset/mainborad")
+@RequestMapping("/v1/asset/assetmainborad")
 @Slf4j
 public class AssetMainboradController {
 

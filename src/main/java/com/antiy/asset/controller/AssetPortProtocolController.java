@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetPortProtocolService;
+import com.antiy.asset.entity.AssetPortProtocol;
 import com.antiy.asset.entity.vo.request.AssetPortProtocolRequest;
+import com.antiy.asset.entity.vo.response.AssetPortProtocolResponse;
 import com.antiy.asset.entity.vo.query.AssetPortProtocolQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetPortProtocolQuery;
  */
 @Api(value = "AssetPortProtocol", description = "端口协议")
 @RestController
-@RequestMapping("/v1/asset/portprotocol")
+@RequestMapping("/v1/asset/assetportprotocol")
 @Slf4j
 public class AssetPortProtocolController {
 

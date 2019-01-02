@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.vo.request.AssetCategoryModelRequest;
+import com.antiy.asset.entity.vo.response.AssetCategoryModelResponse;
 import com.antiy.asset.entity.vo.query.AssetCategoryModelQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetCategoryModelQuery;
  */
 @Api(value = "AssetCategoryModel", description = "品类型号表")
 @RestController
-@RequestMapping("/v1/asset/categorymodel")
+@RequestMapping("/v1/asset/assetcategorymodel")
 @Slf4j
 public class AssetCategoryModelController {
 

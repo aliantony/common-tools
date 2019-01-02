@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.ISchemeService;
+import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.entity.vo.request.SchemeRequest;
+import com.antiy.asset.entity.vo.response.SchemeResponse;
 import com.antiy.asset.entity.vo.query.SchemeQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.SchemeQuery;
  */
 @Api(value = "Scheme", description = "方案表")
 @RestController
-@RequestMapping("/v1/asset/e")
+@RequestMapping("/v1/asset/scheme")
 @Slf4j
 public class SchemeController {
 

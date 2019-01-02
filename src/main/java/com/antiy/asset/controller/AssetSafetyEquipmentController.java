@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetSafetyEquipmentService;
+import com.antiy.asset.entity.AssetSafetyEquipment;
 import com.antiy.asset.entity.vo.request.AssetSafetyEquipmentRequest;
+import com.antiy.asset.entity.vo.response.AssetSafetyEquipmentResponse;
 import com.antiy.asset.entity.vo.query.AssetSafetyEquipmentQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetSafetyEquipmentQuery;
  */
 @Api(value = "AssetSafetyEquipment", description = "安全设备详情表")
 @RestController
-@RequestMapping("/v1/asset/safetyequipment")
+@RequestMapping("/v1/asset/assetsafetyequipment")
 @Slf4j
 public class AssetSafetyEquipmentController {
 

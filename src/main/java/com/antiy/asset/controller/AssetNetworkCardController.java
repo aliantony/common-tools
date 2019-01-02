@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetNetworkCardService;
+import com.antiy.asset.entity.AssetNetworkCard;
 import com.antiy.asset.entity.vo.request.AssetNetworkCardRequest;
+import com.antiy.asset.entity.vo.response.AssetNetworkCardResponse;
 import com.antiy.asset.entity.vo.query.AssetNetworkCardQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetNetworkCardQuery;
  */
 @Api(value = "AssetNetworkCard", description = "网卡信息表")
 @RestController
-@RequestMapping("/v1/asset/networkcard")
+@RequestMapping("/v1/asset/assetnetworkcard")
 @Slf4j
 public class AssetNetworkCardController {
 

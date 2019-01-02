@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetSoftwareRelationService;
+import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.entity.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.entity.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.entity.vo.query.AssetSoftwareRelationQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetSoftwareRelationQuery;
  */
 @Api(value = "AssetSoftwareRelation", description = "资产软件关系信息")
 @RestController
-@RequestMapping("/v1/asset/softwarerelation")
+@RequestMapping("/v1/asset/assetsoftwarerelation")
 @Slf4j
 public class AssetSoftwareRelationController {
 

@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetMemoryService;
+import com.antiy.asset.entity.AssetMemory;
 import com.antiy.asset.entity.vo.request.AssetMemoryRequest;
+import com.antiy.asset.entity.vo.response.AssetMemoryResponse;
 import com.antiy.asset.entity.vo.query.AssetMemoryQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetMemoryQuery;
  */
 @Api(value = "AssetMemory", description = "内存表")
 @RestController
-@RequestMapping("/v1/asset/memory")
+@RequestMapping("/v1/asset/assetmemory")
 @Slf4j
 public class AssetMemoryController {
 

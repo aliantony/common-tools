@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetCpuService;
+import com.antiy.asset.entity.AssetCpu;
 import com.antiy.asset.entity.vo.request.AssetCpuRequest;
+import com.antiy.asset.entity.vo.response.AssetCpuResponse;
 import com.antiy.asset.entity.vo.query.AssetCpuQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetCpuQuery;
  */
 @Api(value = "AssetCpu", description = "处理器表")
 @RestController
-@RequestMapping("/v1/asset/cpu")
+@RequestMapping("/v1/asset/assetcpu")
 @Slf4j
 public class AssetCpuController {
 

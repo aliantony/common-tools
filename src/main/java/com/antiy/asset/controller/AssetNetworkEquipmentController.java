@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetNetworkEquipmentService;
+import com.antiy.asset.entity.AssetNetworkEquipment;
 import com.antiy.asset.entity.vo.request.AssetNetworkEquipmentRequest;
+import com.antiy.asset.entity.vo.response.AssetNetworkEquipmentResponse;
 import com.antiy.asset.entity.vo.query.AssetNetworkEquipmentQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetNetworkEquipmentQuery;
  */
 @Api(value = "AssetNetworkEquipment", description = "网络设备详情表")
 @RestController
-@RequestMapping("/v1/asset/networkequipment")
+@RequestMapping("/v1/asset/assetnetworkequipment")
 @Slf4j
 public class AssetNetworkEquipmentController {
 

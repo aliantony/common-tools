@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetLableService;
+import com.antiy.asset.entity.AssetLable;
 import com.antiy.asset.entity.vo.request.AssetLableRequest;
+import com.antiy.asset.entity.vo.response.AssetLableResponse;
 import com.antiy.asset.entity.vo.query.AssetLableQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetLableQuery;
  */
 @Api(value = "AssetLable", description = "标签信息表")
 @RestController
-@RequestMapping("/v1/asset/lable")
+@RequestMapping("/v1/asset/assetlable")
 @Slf4j
 public class AssetLableController {
 

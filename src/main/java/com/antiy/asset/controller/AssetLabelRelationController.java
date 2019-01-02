@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetLabelRelationService;
+import com.antiy.asset.entity.AssetLabelRelation;
 import com.antiy.asset.entity.vo.request.AssetLabelRelationRequest;
+import com.antiy.asset.entity.vo.response.AssetLabelRelationResponse;
 import com.antiy.asset.entity.vo.query.AssetLabelRelationQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetLabelRelationQuery;
  */
 @Api(value = "AssetLabelRelation", description = "资产标签关系表")
 @RestController
-@RequestMapping("/v1/asset/labelrelation")
+@RequestMapping("/v1/asset/assetlabelrelation")
 @Slf4j
 public class AssetLabelRelationController {
 

@@ -10,7 +10,9 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
+import com.antiy.asset.entity.AssetSoftwareLicense;
 import com.antiy.asset.entity.vo.request.AssetSoftwareLicenseRequest;
+import com.antiy.asset.entity.vo.response.AssetSoftwareLicenseResponse;
 import com.antiy.asset.entity.vo.query.AssetSoftwareLicenseQuery;
 
 
@@ -21,7 +23,7 @@ import com.antiy.asset.entity.vo.query.AssetSoftwareLicenseQuery;
  */
 @Api(value = "AssetSoftwareLicense", description = "软件许可表")
 @RestController
-@RequestMapping("/v1/asset/softwarelicense")
+@RequestMapping("/v1/asset/assetsoftwarelicense")
 @Slf4j
 public class AssetSoftwareLicenseController {
 
