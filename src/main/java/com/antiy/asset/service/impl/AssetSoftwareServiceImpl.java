@@ -52,7 +52,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query) throws Exception {
         List<AssetSoftware> assetSoftware = assetSoftwareDao.findListAssetSoftware(query);
         //TODO
-        List<AssetSoftwareResponse> assetSoftwareResponse = new ArrayList<AssetSoftwareResponse>();
+        List<AssetSoftwareResponse> assetSoftwareResponse = responseConverter.convert(assetSoftware, AssetSoftwareResponse.class);
         return assetSoftwareResponse;
     }
 

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -455,10 +456,9 @@ public class ExportExcel {
      * @return
      * @throws IOException
      */
-    public ExportExcel write(OutputStream outputStream) throws IOException {
+    public void write(OutputStream outputStream) throws IOException {
         this.wb.write(outputStream);
         this.wb.close();
-        return this;
     }
 
     /**
@@ -484,9 +484,13 @@ public class ExportExcel {
      * @throws ClassNotFoundException
      */
     public void exportTempleteToClient(HttpServletResponse response, String fileName) throws IOException {
+        if (!fileName.endsWith(XLS) && !fileName.endsWith(XLSX)) {
+            fileName = fileName + XLSX;
+        }
         response.reset();
-        response.setContentType("application/octet-stream; charset=utf-8");
-        response.setHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("gbk"), "UTF-8"));
+        response.setHeader("content-Type", "application/vnd.ms-excel");
+        // 下载文件的默认名称
+        response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, "utf-8"));
         write(response.getOutputStream());
     }
 }

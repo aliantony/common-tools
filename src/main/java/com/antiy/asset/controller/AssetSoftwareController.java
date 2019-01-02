@@ -1,8 +1,10 @@
 package com.antiy.asset.controller;
 
 import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
+import com.antiy.asset.vo.templet.AssetEntity;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -72,7 +76,7 @@ public class AssetSoftwareController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetSoftware") AssetSoftwareQuery assetSoftware) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetSoftware") AssetSoftwareQuery assetSoftware) throws Exception {
         return ActionResponse.success(iAssetSoftwareService.findPageAssetSoftware(assetSoftware));
     }
 
@@ -87,9 +91,9 @@ public class AssetSoftwareController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetSoftware") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetSoftware") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetSoftwareService.getById(Integer.parseInt(query.getPrimaryKey())));
     }
 
     /**
@@ -105,7 +109,20 @@ public class AssetSoftwareController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareService.deleteById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetSoftwareService.deleteById(Integer.parseInt(query.getPrimaryKey())));
+    }
+
+    /**
+     * 导出模板文件
+     *
+     * @param query 主键封装对象
+     * @return actionResponse
+     */
+    @ApiOperation(value = "导出模板文件", notes = "主键封装对象")
+    @RequestMapping(value = "/export", method = RequestMethod.GET)
+    public void export(@ApiParam(value = "query") QueryCondition query) throws Exception {
+        ExcelUtils.exportTemplet(AssetEntity.class, "资产信息表", "资产信息");
+        ExcelUtils.exportTemplet(AssetEntity.class, "资产信息表", "资产信息","d:");
     }
 }
 
