@@ -182,7 +182,7 @@
     </sql>
     <sql id="Page_List">
         <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
+            LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </sql>
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetUser">

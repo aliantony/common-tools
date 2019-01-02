@@ -299,7 +299,7 @@
             </trim>
         </where>
         <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
+            LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
 
@@ -358,7 +358,7 @@
             </if>
                 </trim>
         <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{currentPage}
+            LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
 </mapper>
