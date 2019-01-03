@@ -215,8 +215,12 @@
 
 
     <delete id="deleteById" parameterType="java.lang.Integer">
-        delete from
+        <!--delete from-->
+        <!--<include refid="Table_Name"></include>-->
+        <!--where id = #{id}-->
+        update
         <include refid="Table_Name"></include>
+        set status = 0
         where id = #{id}
     </delete>
 
