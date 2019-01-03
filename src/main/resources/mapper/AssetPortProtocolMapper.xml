@@ -157,6 +157,27 @@
             and status = #{status }
         </if>
     </sql>
+    <sql id="Where_Column">
+        <if test=" assetSoftId != null">
+            and asset_soft_id = #{assetSoftId }
+        </if>
+        <if test=" port != null">
+            and port = #{port }
+        </if>
+        <if test=" protocol != null">
+            and protocol = #{protocol }
+        </if>
+
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+
+            and status = 0
+
+    </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetPortProtocol">
         insert into
@@ -188,11 +209,11 @@
     </select>
 
 
-    <delete id="deleteById" parameterType="java.lang.Integer">
-        delete from
+    <update id="deleteById" parameterType="java.lang.Integer">
+        update
         <include refid="Table_Name"></include>
-        where id = #{id}
-    </delete>
+        set status=1 where id = #{id}
+    </update>
 
     <select id="getByWhere" resultType="com.antiy.asset.entity.AssetPortProtocol" parameterType="java.util.Map">
         select
@@ -220,7 +241,7 @@
         <include refid="Table_Name"></include>
         <where>
             <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
+                <include refid="Where_Column"></include>
             </trim>
         </where>
     </select>
@@ -239,13 +260,11 @@
     </select>
 
 
-    <select id="findListAssetPortProtocol" resultType="com.antiy.asset.entity.AssetPortProtocol" parameterType="com.antiy.asset.vo.query.AssetPortProtocolQuery">
+    <select id="findListAssetPortProtocol" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.AssetPortProtocolQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-        <if test=" id != null">
-                and id = #{id }
-            </if>
+
         <if test=" assetSoftId != null">
                 and asset_soft_id = #{assetSoftId }
             </if>
@@ -255,27 +274,17 @@
         <if test=" protocol != null">
                 and protocol = #{protocol }
             </if>
-        <if test=" description != null">
-                and description = #{description }
-            </if>
+
         <if test=" gmtCreate != null">
                 and gmt_create = #{gmtCreate }
             </if>
         <if test=" gmtModified != null">
                 and gmt_modified = #{gmtModified }
             </if>
-        <if test=" memo != null">
-                and memo = #{memo }
-            </if>
-        <if test=" createUser != null">
-                and create_user = #{createUser }
-            </if>
-        <if test=" modifyUser != null">
-                and modify_user = #{modifyUser }
-            </if>
-        <if test=" status != null">
-                and status = #{status }
-            </if>
+
+
+                and status = 0
+
                 </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}

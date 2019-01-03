@@ -202,9 +202,9 @@
 
 
     <delete id="deleteById" parameterType="java.lang.Integer">
-        delete from
+        update
         <include refid="Table_Name"></include>
-        where id = #{id}
+        set status=1  where id = #{id}
     </delete>
 
     <select id="getByWhere" resultType="com.antiy.asset.entity.AssetCategoryModel" parameterType="java.util.Map">
@@ -253,7 +253,9 @@
 
 
     <select id="findListAssetCategoryModel" resultType="com.antiy.asset.entity.AssetCategoryModel" parameterType="com.antiy.asset.vo.query.AssetCategoryModelQuery">
-        select * from
+        select
+        <include refid="Base_Column_List"></include>
+        from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
         <if test=" id != null">
@@ -289,9 +291,9 @@
         <if test=" modifyUser != null">
                 and modify_user = #{modifyUser }
             </if>
-        <if test=" status != null">
-                and status = #{status }
-            </if>
+
+                and status =0
+
                 </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}

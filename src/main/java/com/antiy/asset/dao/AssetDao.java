@@ -17,4 +17,5 @@ import java.util.List;
 public interface AssetDao extends IBaseDao<Asset> {
 
     List<Asset> findListAsset(AssetQuery query) throws Exception;
+
 }

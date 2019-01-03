@@ -11,6 +11,7 @@ import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -43,6 +44,16 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional
+    public Integer batchSave(List<AssetSoftware> assetSoftwareList) throws Exception {
+        int i = 0;
+        for (; i < assetSoftwareList.size(); i++) {
+            assetSoftwareDao.insert(assetSoftwareList.get(i));
+        }
+        return i + 1;
+    }
+
+    @Override
     public Integer updateAssetSoftware(AssetSoftwareRequest request) throws Exception {
         AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
         return assetSoftwareDao.update(assetSoftware);
@@ -51,7 +62,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query) throws Exception {
         List<AssetSoftware> assetSoftware = assetSoftwareDao.findListAssetSoftware(query);
-        //TODO
         List<AssetSoftwareResponse> assetSoftwareResponse = responseConverter.convert(assetSoftware, AssetSoftwareResponse.class);
         return assetSoftwareResponse;
     }

@@ -440,8 +440,7 @@
             <if test=" publisher != null">
                 and publisher = #{publisher }
             </if>
-
-            and status = 1
+            and status = 0
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}

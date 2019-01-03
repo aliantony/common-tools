@@ -18,6 +18,20 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
 
     private static final long serialVersionUID = 1L;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    /**
+     * id
+     */
+    @ApiModelProperty("id")
+    private Integer id;
+
     /**
      * 名称
      */

@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,7 +51,7 @@ public class AssetLableServiceImpl extends BaseServiceImpl<AssetLable> implement
     public List<AssetLableResponse> findListAssetLable(AssetLableQuery query) throws Exception {
         List<AssetLable> assetLable = assetLableDao.findListAssetLable(query);
         //TODO
-        List<AssetLableResponse> assetLableResponse = new ArrayList<AssetLableResponse>();
+        List<AssetLableResponse> assetLableResponse = responseConverter.convert (assetLable, AssetLableResponse.class);
         return assetLableResponse;
     }
 

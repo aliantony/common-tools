@@ -17,7 +17,11 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetLableRequest extends BasicRequest implements ObjectValidator {
 
     private static final long serialVersionUID = 1L;
-
+    /**
+     * id
+     */
+    @ApiModelProperty("id")
+    private Integer id;
     /**
      * 名称
      */
@@ -151,4 +155,12 @@ public class AssetLableRequest extends BasicRequest implements ObjectValidator {
 
     }
 
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }
