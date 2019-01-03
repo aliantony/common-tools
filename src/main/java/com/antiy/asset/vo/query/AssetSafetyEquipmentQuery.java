@@ -3,6 +3,7 @@ package com.antiy.asset.vo.query;
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p>
@@ -14,6 +15,16 @@ import com.antiy.common.validation.ObjectValidator;
  */
 
 public class AssetSafetyEquipmentQuery extends ObjectQuery implements ObjectValidator {
+    /**
+     * 特征库配置
+     */
+    @ApiModelProperty("特征库配置")
+    private String featureLibrary;
+    /**
+     * 策略配置
+     */
+    @ApiModelProperty("策略配置")
+    private String strategy;
 
     @Override
     public void validate() throws RequestParamValidateException {

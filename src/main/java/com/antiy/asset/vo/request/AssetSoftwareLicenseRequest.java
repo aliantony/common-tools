@@ -17,7 +17,7 @@ import lombok.Data;
 @Data
 public class AssetSoftwareLicenseRequest extends BasicRequest implements ObjectValidator {
 
-    private static final long serialVersionUID = 1L;
+    private Integer id;
 
     /**
      * 软件主键

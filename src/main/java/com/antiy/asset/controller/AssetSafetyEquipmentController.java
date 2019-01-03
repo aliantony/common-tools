@@ -72,7 +72,7 @@ public class AssetSafetyEquipmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetSafetyEquipment") AssetSafetyEquipmentQuery assetSafetyEquipment) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetSafetyEquipment") AssetSafetyEquipmentQuery assetSafetyEquipment) throws Exception {
         return ActionResponse.success(iAssetSafetyEquipmentService.findPageAssetSafetyEquipment(assetSafetyEquipment));
     }
 
@@ -87,7 +87,7 @@ public class AssetSafetyEquipmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetSafetyEquipment") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetSafetyEquipment") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetSafetyEquipmentService.getById(query.getPrimaryKey()));
     }
@@ -103,7 +103,7 @@ public class AssetSafetyEquipmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
+    public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetSafetyEquipmentService.deleteById(query.getPrimaryKey()));
     }

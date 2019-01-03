@@ -17,6 +17,7 @@ import lombok.Data;
 @Data
 public class AssetSoftwareRelationRequest extends BasicRequest implements ObjectValidator {
 
+    private Integer id;
     /**
      * 资产主键
      */
