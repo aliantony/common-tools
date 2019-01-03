@@ -37,10 +37,10 @@ public class AssetSoftwareLicenseServiceImpl extends BaseServiceImpl<AssetSoftwa
 
     @Override
     public Integer saveAssetSoftwareLicense(AssetSoftwareLicenseRequest request) throws Exception {
-//        ParamterExceptionUtils.isNull(request.getExpiryDate(), "有效期限不能为空");
-//        ParamterExceptionUtils.isNull(request.getBusyDate(),"购买日期不能为空");
-//        ParamterExceptionUtils.isBlank(request.getLicenseSecretKey(), "许可密钥不能为空");
+//
         AssetSoftwareLicense assetSoftwareLicense = requestConverter.convert(request, AssetSoftwareLicense.class);
+        //TODO 添加创建人信息
+        assetSoftwareLicense.setGmtCreate(System.currentTimeMillis());
         return assetSoftwareLicenseDao.insert(assetSoftwareLicense);
     }
 
