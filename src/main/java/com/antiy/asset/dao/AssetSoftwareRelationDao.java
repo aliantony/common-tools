@@ -1,7 +1,10 @@
 package com.antiy.asset.dao;
 
+import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.common.base.IBaseDao;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,11 @@ import com.antiy.common.base.IBaseDao;
  */
 public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation> {
 
+    /**
+     * 通过资产ID查询关联软件信息
+     *
+     * @param assetId
+     * @return
+     */
+    List<AssetSoftware> getSoftByAssetId(Integer assetId);
 }

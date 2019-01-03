@@ -18,6 +18,12 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
 
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * id
+     */
+    @ApiModelProperty("id")
+    private Integer id;
     /**
      * 资产编号
      */
@@ -73,16 +79,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("物理位置")
     private String location;
-    /**
-     * 纬度
-     */
-    @ApiModelProperty("纬度")
-    private String latitude;
-    /**
-     * 经度
-     */
-    @ApiModelProperty("经度")
-    private String longitude;
+
     /**
      * 固件版本
      */
@@ -98,26 +95,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("责任人主键")
     private Integer responsibleUserId;
-    /**
-     * 联系电话
-     */
-    @ApiModelProperty("联系电话")
-    private String contactTel;
-    /**
-     * 邮箱
-     */
-    @ApiModelProperty("邮箱")
-    private String email;
-    /**
-     * 硬盘
-     */
-    @ApiModelProperty("硬盘")
-    private String hardDisk;
-    /**
-     * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
-     */
-    @ApiModelProperty("内存JSON数据{ID:1,name:Kingston,rom:8GB}")
-    private String memory;
+
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
@@ -128,21 +106,8 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("0-不重要(not_major),1- 一般(general),3-重要(major),")
     private Integer importanceDegree;
-    /**
-     * 描述
-     */
-    @ApiModelProperty("描述")
-    private String describle;
-    /**
-     * CPUJSON数据{ID:1,name:intel,coresize:8}
-     */
-    @ApiModelProperty("CPUJSON数据{ID:1,name:intel,coresize:8}")
-    private String cpu;
-    /**
-     * 网卡JSON数据{ID:1,name:intel,speed:1900M}
-     */
-    @ApiModelProperty("网卡JSON数据{ID:1,name:intel,speed:1900M}")
-    private String networkCard;
+
+
     /**
      * 父类资源Id
      */
@@ -183,26 +148,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("更新时间")
     private Long gmtModified;
-    /**
-     * 备注
-     */
-    @ApiModelProperty("备注")
-    private String memo;
-    /**
-     * 创建人
-     */
-    @ApiModelProperty("创建人")
-    private Integer createUser;
-    /**
-     * 修改人
-     */
-    @ApiModelProperty("修改人")
-    private Integer modifyUser;
-    /**
-     * 状态,1未删除,0已删除
-     */
-    @ApiModelProperty("状态,1未删除,0已删除")
-    private Integer isDelete;
 
 
     public String getNumber() {
@@ -213,7 +158,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.number = number;
     }
 
-
     public Integer getType() {
         return type;
     }
@@ -221,7 +165,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     public void setType(Integer type) {
         this.type = type;
     }
-
 
     public String getName() {
         return name;
@@ -231,7 +174,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.name = name;
     }
 
-
     public String getSerial() {
         return serial;
     }
@@ -239,7 +181,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     public void setSerial(String serial) {
         this.serial = serial;
     }
-
 
     public Integer getCategory() {
         return category;
@@ -249,7 +190,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.category = category;
     }
 
-
     public Integer getModel() {
         return model;
     }
@@ -257,7 +197,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     public void setModel(Integer model) {
         this.model = model;
     }
-
 
     public String getManufacturer() {
         return manufacturer;
@@ -267,7 +206,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.manufacturer = manufacturer;
     }
 
-
     public Integer getAssetStatus() {
         return assetStatus;
     }
@@ -275,7 +213,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     public void setAssetStatus(Integer assetStatus) {
         this.assetStatus = assetStatus;
     }
-
 
     public String getOperationSystem() {
         return operationSystem;
@@ -285,7 +222,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.operationSystem = operationSystem;
     }
 
-
     public Integer getSystemBit() {
         return systemBit;
     }
@@ -293,7 +229,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     public void setSystemBit(Integer systemBit) {
         this.systemBit = systemBit;
     }
-
 
     public String getLocation() {
         return location;
@@ -303,25 +238,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.location = location;
     }
 
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-
     public String getFirmwareVersion() {
         return firmwareVersion;
     }
@@ -329,7 +245,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     public void setFirmwareVersion(String firmwareVersion) {
         this.firmwareVersion = firmwareVersion;
     }
-
 
     public String getUuid() {
         return uuid;
@@ -339,7 +254,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.uuid = uuid;
     }
 
-
     public Integer getResponsibleUserId() {
         return responsibleUserId;
     }
@@ -347,43 +261,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     public void setResponsibleUserId(Integer responsibleUserId) {
         this.responsibleUserId = responsibleUserId;
     }
-
-
-    public String getContactTel() {
-        return contactTel;
-    }
-
-    public void setContactTel(String contactTel) {
-        this.contactTel = contactTel;
-    }
-
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-
-    public String getHardDisk() {
-        return hardDisk;
-    }
-
-    public void setHardDisk(String hardDisk) {
-        this.hardDisk = hardDisk;
-    }
-
-
-    public String getMemory() {
-        return memory;
-    }
-
-    public void setMemory(String memory) {
-        this.memory = memory;
-    }
-
 
     public Integer getAssetSource() {
         return assetSource;
@@ -393,7 +270,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.assetSource = assetSource;
     }
 
-
     public Integer getImportanceDegree() {
         return importanceDegree;
     }
@@ -401,34 +277,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     public void setImportanceDegree(Integer importanceDegree) {
         this.importanceDegree = importanceDegree;
     }
-
-
-    public String getDescrible() {
-        return describle;
-    }
-
-    public void setDescrible(String describle) {
-        this.describle = describle;
-    }
-
-
-    public String getCpu() {
-        return cpu;
-    }
-
-    public void setCpu(String cpu) {
-        this.cpu = cpu;
-    }
-
-
-    public String getNetworkCard() {
-        return networkCard;
-    }
-
-    public void setNetworkCard(String networkCard) {
-        this.networkCard = networkCard;
-    }
-
 
     public Integer getParentId() {
         return parentId;
@@ -438,7 +286,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.parentId = parentId;
     }
 
-
     public String getTags() {
         return tags;
     }
@@ -447,15 +294,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.tags = tags;
     }
 
-
     public Boolean getInnet() {
         return isInnet;
     }
 
-    public void setInnet(Boolean isInnet) {
-        this.isInnet = isInnet;
+    public void setInnet(Boolean innet) {
+        isInnet = innet;
     }
-
 
     public Long getServiceLife() {
         return serviceLife;
@@ -465,7 +310,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.serviceLife = serviceLife;
     }
 
-
     public Long getBuyDate() {
         return buyDate;
     }
@@ -473,7 +317,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     public void setBuyDate(Long buyDate) {
         this.buyDate = buyDate;
     }
-
 
     public Long getWarranty() {
         return warranty;
@@ -483,7 +326,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.warranty = warranty;
     }
 
-
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -491,7 +333,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
-
 
     public Long getGmtModified() {
         return gmtModified;
@@ -501,46 +342,16 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.gmtModified = gmtModified;
     }
 
-
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
-
-
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
-
-    public Integer getIsDelete() {
-        return isDelete;
-    }
-
-    public void setIsDelete(Integer isDelete) {
-        this.isDelete = isDelete;
-    }
-
-
     @Override
     public void validate() throws RequestParamValidateException {
 
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

@@ -72,7 +72,7 @@ public class AssetLableController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetLable") AssetLableQuery assetLable) throws Exception {
+    public ActionResponse queryList( @ApiParam(value = "assetLable") AssetLableQuery assetLable) throws Exception {
         return ActionResponse.success(iAssetLableService.findPageAssetLable(assetLable));
     }
 
@@ -87,9 +87,9 @@ public class AssetLableController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetLable") QueryCondition query) throws Exception {
+    public ActionResponse queryById( @ApiParam(value = "assetLable") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetLableService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetLableService.getById(Integer.parseInt (query.getPrimaryKey())));
     }
 
     /**
@@ -103,9 +103,9 @@ public class AssetLableController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
+    public ActionResponse deleteById( @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetLableService.deleteById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetLableService.deleteById(Integer.parseInt (query.getPrimaryKey())));
     }
 }
 

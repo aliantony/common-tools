@@ -16,8 +16,6 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetSoftwareRelation extends BaseEntity {
 
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 资产主键
      */

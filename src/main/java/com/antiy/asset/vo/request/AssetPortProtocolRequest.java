@@ -24,6 +24,11 @@ public class AssetPortProtocolRequest extends BasicRequest implements ObjectVali
     @ApiModelProperty("资产软件关系表主键")
     private Integer assetSoftId;
     /**
+     * id
+     */
+    @ApiModelProperty("id")
+    private Integer id;
+    /**
      * 端口
      */
     @ApiModelProperty("端口")
@@ -165,4 +170,11 @@ public class AssetPortProtocolRequest extends BasicRequest implements ObjectVali
 
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

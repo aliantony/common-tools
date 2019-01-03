@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
  * @Date: 2019/1/3 13:27
  * @Description:
  */
-public enum SoftwareStatusEnum {
+public enum AssetStatusEnum {
     WATI_REGSIST(1, "待登记"),
     NOT_REGSIST(2, "不予登记"),
     WAIT_SETTING(3, "待配置"),
@@ -17,7 +17,7 @@ public enum SoftwareStatusEnum {
     WAIT_RETIRE(7, "待退役"),
     RETIRE(8, "已退役");
 
-    SoftwareStatusEnum(Integer code, String msg) {
+    AssetStatusEnum(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
     }
@@ -34,9 +34,9 @@ public enum SoftwareStatusEnum {
      * @param name name
      * @return
      */
-    public static SoftwareStatusEnum getAssetByName(String name) {
+    public static AssetStatusEnum getAssetByName(String name) {
         if (StringUtils.isNotBlank(name)) {
-            for (SoftwareStatusEnum softwareType : SoftwareStatusEnum.values()) {
+            for (AssetStatusEnum softwareType : AssetStatusEnum.values()) {
                 if (softwareType.name().equals(name)) {
                     return softwareType;
                 }

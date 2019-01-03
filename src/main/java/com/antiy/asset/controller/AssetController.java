@@ -86,7 +86,7 @@ public class AssetController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "asset") AssetQuery asset) throws Exception {
+    public ActionResponse queryList( @ApiParam(value = "asset") AssetQuery asset) throws Exception {
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
 
@@ -101,9 +101,9 @@ public class AssetController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "asset") QueryCondition query) throws Exception {
+    public ActionResponse queryById( @ApiParam(value = "asset") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetService.getById(Integer.parseInt (query.getPrimaryKey())));
     }
 
     /**
@@ -117,9 +117,9 @@ public class AssetController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
+    public ActionResponse deleteById( @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetService.deleteById(query.getPrimaryKey()));
+        return ActionResponse.success(iAssetService.deleteById(Integer.parseInt (query.getPrimaryKey())));
     }
 
     /**

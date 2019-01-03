@@ -37,12 +37,15 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
         @Override
         public Integer saveAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception {
             AssetSafetyEquipment assetSafetyEquipment = requestConverter.convert(request, AssetSafetyEquipment.class);
+            //TODO 添加创建人信息
+            assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
             return assetSafetyEquipmentDao.insert(assetSafetyEquipment);
         }
 
         @Override
         public Integer updateAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception {
             AssetSafetyEquipment assetSafetyEquipment = requestConverter.convert(request, AssetSafetyEquipment.class);
+            //TODO 添加修改人信息
             return assetSafetyEquipmentDao.update(assetSafetyEquipment);
         }
 

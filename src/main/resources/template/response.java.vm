@@ -11,6 +11,4 @@ package ${package.Entity}.vo.response;
 
 public class ${entity}Response {
 
-    private static final long serialVersionUID = 1L;
-
 }

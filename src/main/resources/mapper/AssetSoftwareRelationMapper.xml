@@ -176,8 +176,12 @@
 
 
     <delete id="deleteById" parameterType="java.lang.Integer">
-        delete from
+        <!--delete from-->
+        <!--<include refid="Table_Name"></include>-->
+        <!--where id = #{id}-->
+        update
         <include refid="Table_Name"></include>
+        set status = 0
         where id = #{id}
     </delete>
 
@@ -200,28 +204,75 @@
         <include refid="Table_Name"></include>
     </select>
 
-
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1)
         from
         <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
-            </trim>
-        </where>
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" assetId != null ">
+                and asset_id = #{assetId}"%"
+            </if>
+            <if test=" softwareId != null ">
+                and software_id = #{softwareId}"%"
+            </if>
+            <if test=" softwareStatus != null ">
+                and software_status = #{softwareStatus}"%"
+            </if>
+            and status = 1
+        </trim>
     </select>
 
     <select id="findQuery" resultType="com.antiy.asset.entity.AssetSoftwareRelation" parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
-            </trim>
-        </where>
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" assetId != null ">
+                and asset_id = #{assetId}"%"
+            </if>
+            <if test=" softwareId != null ">
+                and software_id = #{softwareId}"%"
+            </if>
+            <if test=" softwareStatus != null ">
+                and software_status = #{softwareStatus}"%"
+            </if>
+            and status = 1
+        </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+    </select>
+
+    <!-- 根据资产主键查询软件信息 -->
+    <select id="getSoftByAssetId" resultType="com.antiy.asset.entity.AssetSoftware" parameterType="java.lang.Integer">
+        SELECT
+            asoft.id,
+            asoft.size,
+            asoft.operation_system AS operationSystem,
+            asoft.category,
+            asoft.model,
+            asoft.NAME,
+            asoft.upload_software_name AS uploadSoftwareName,
+            asoft.path,
+            asoft.version,
+            asoft.manufacturer,
+            asoft.description,
+            asoft.software_label AS softwareLabel,
+            asoft.software_status AS softwareStatus,
+            asoft.authorization,
+            asoft.report_source AS reportSource,
+            asoft.PORT,
+            asoft.LANGUAGE,
+            asoft.release_time AS releaseTime,
+            asoft.publisher,
+            asoft.gmt_create AS gmtCreate,
+            asoft.memo,
+            asoft.gmt_modified AS gmtModified,
+            asoft.STATUS
+        FROM
+            asset_software_relation asoftrel
+            LEFT JOIN asset_software asoft ON asoftrel.software_id = asoft.id
+        WHERE
+            asset_id = #{assetId}
+            AND asoftrel.software_status = 1
     </select>
 </mapper>

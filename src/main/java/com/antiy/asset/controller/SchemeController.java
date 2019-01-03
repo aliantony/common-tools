@@ -56,7 +56,7 @@ public class SchemeController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "scheme") SchemeRequest scheme) throws Exception {
+    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "scheme") SchemeRequest scheme) throws Exception {
         iSchemeService.updateScheme(scheme);
         return ActionResponse.success();
     }
@@ -72,7 +72,7 @@ public class SchemeController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "scheme") SchemeQuery scheme) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "scheme") SchemeQuery scheme) throws Exception {
         return ActionResponse.success(iSchemeService.findPageScheme(scheme));
     }
 
@@ -87,9 +87,9 @@ public class SchemeController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "scheme") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "scheme") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iSchemeService.getById(query.getPrimaryKey()));
+        return ActionResponse.success(iSchemeService.getById(Integer.valueOf(query.getPrimaryKey())));
     }
 
     /**
@@ -103,9 +103,9 @@ public class SchemeController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
+    public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iSchemeService.deleteById(query.getPrimaryKey()));
+        return ActionResponse.success(iSchemeService.deleteById(Integer.valueOf(query.getPrimaryKey())));
     }
 }
 

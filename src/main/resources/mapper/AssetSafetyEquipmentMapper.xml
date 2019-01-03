@@ -202,12 +202,11 @@
 
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-        select count(1) count
+        select count(1)
         from
         <include refid="Table_Name"></include>
         <where>
             <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
             </trim>
         </where>
     </select>
@@ -217,50 +216,8 @@
         <include refid="Table_Name"></include>
         <where>
             <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
             </trim>
         </where>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
-    </select>
-
-
-    <select id="findListAssetSafetyEquipment" resultType="com.antiy.asset.entity.AssetSafetyEquipment" parameterType="com.antiy.asset.vo.query.AssetSafetyEquipmentQuery">
-        select * from
-        <include refid="Table_Name"></include>
-        <trim prefix="WHERE" prefixOverrides="AND|OR">
-        <if test=" id != null">
-                and id = #{id }
-            </if>
-        <if test=" assetId != null">
-                and asset_id = #{assetId }
-            </if>
-        <if test=" featureLibrary != null">
-                and feature_library = #{featureLibrary }
-            </if>
-        <if test=" strategy != null">
-                and strategy = #{strategy }
-            </if>
-        <if test=" memo != null">
-                and memo = #{memo }
-            </if>
-        <if test=" createUser != null">
-                and create_user = #{createUser }
-            </if>
-        <if test=" modifyUser != null">
-                and modify_user = #{modifyUser }
-            </if>
-        <if test=" gmtCreate != null">
-                and gmt_create = #{gmtCreate }
-            </if>
-        <if test=" gmtModified != null">
-                and gmt_modified = #{gmtModified }
-            </if>
-        <if test=" status != null">
-                and status = #{status }
-            </if>
-                </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>

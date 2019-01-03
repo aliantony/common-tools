@@ -32,7 +32,7 @@ public class AssetSoftwareLicenseController {
     /**
      * 保存
      *
-     * @param assetSoftwareLicense
+     * @param assetSoftwareLicenseRequest
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
@@ -40,15 +40,15 @@ public class AssetSoftwareLicenseController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetSoftwareLicense") AssetSoftwareLicenseRequest assetSoftwareLicense) throws Exception {
-        iAssetSoftwareLicenseService.saveAssetSoftwareLicense(assetSoftwareLicense);
+    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetSoftwareLicense") AssetSoftwareLicenseRequest assetSoftwareLicenseRequest) throws Exception {
+        iAssetSoftwareLicenseService.saveAssetSoftwareLicense(assetSoftwareLicenseRequest);
         return ActionResponse.success();
     }
 
     /**
      * 修改
      *
-     * @param assetSoftwareLicense
+     * @param assetSoftwareLicenseRequest
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
@@ -56,15 +56,15 @@ public class AssetSoftwareLicenseController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetSoftwareLicense") AssetSoftwareLicenseRequest assetSoftwareLicense) throws Exception {
-        iAssetSoftwareLicenseService.updateAssetSoftwareLicense(assetSoftwareLicense);
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetSoftwareLicense") AssetSoftwareLicenseRequest assetSoftwareLicenseRequest) throws Exception {
+        iAssetSoftwareLicenseService.updateAssetSoftwareLicense(assetSoftwareLicenseRequest);
         return ActionResponse.success();
     }
 
     /**
      * 批量查询
      *
-     * @param assetSoftwareLicense
+     * @param assetSoftwareLicenseQuery
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
@@ -72,8 +72,8 @@ public class AssetSoftwareLicenseController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@ApiParam(value = "assetSoftwareLicense") AssetSoftwareLicenseQuery assetSoftwareLicense) throws Exception {
-        return ActionResponse.success(iAssetSoftwareLicenseService.findPageAssetSoftwareLicense(assetSoftwareLicense));
+    public ActionResponse queryList(@ApiParam(value = "assetSoftwareLicense") AssetSoftwareLicenseQuery assetSoftwareLicenseQuery) throws Exception {
+        return ActionResponse.success(iAssetSoftwareLicenseService.findPageAssetSoftwareLicense(assetSoftwareLicenseQuery));
     }
 
     /**
@@ -103,7 +103,7 @@ public class AssetSoftwareLicenseController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
+    public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetSoftwareLicenseService.deleteById(Integer.valueOf(query.getPrimaryKey())));
     }

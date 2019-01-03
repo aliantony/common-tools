@@ -101,7 +101,6 @@ public class AssetCategoryModel extends BaseEntity {
         this.assetType = assetType;
     }
 
-
     public Integer getParentId() {
         return parentId;
     }
