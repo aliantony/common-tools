@@ -1,11 +1,11 @@
 package ${package.Controller};
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMethod;
 import io.swagger.annotations.*;
 import com.antiy.common.base.ActionResponse;
 import javax.annotation.Resource;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
@@ -30,12 +30,12 @@ ${simpleEntity.toLowerCase()}##
 @Api(value = "${entity}", description = "${table.comment}")
 @RestController
 @RequestMapping("/v1#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else#getTableCamelName(${entity})#end")
-@Slf4j
 #if(${superControllerClass})
 public class ${table.controllerName} extends ${superControllerClass} {
 #else
 public class ${table.controllerName} {
 #end
+    private static final Logger logger = LogUtils.get();
 
     @Resource
     public ${table.serviceName} i${entity}Service;

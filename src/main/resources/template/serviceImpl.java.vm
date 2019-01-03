@@ -1,12 +1,12 @@
 package ${package.ServiceImpl};
 
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import java.util.List;
+import java.util.ArrayList;
 import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.BaseConverter;
-import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 
 import ${package.Entity}.${entity};
@@ -29,9 +29,9 @@ import java.util.List;
  * @since ${date}
  */
 @Service
-@Slf4j
 public class ${table.serviceImplName} extends BaseServiceImpl<${entity}> implements ${table.serviceName}{
 
+        private static final Logger logger = LogUtils.get();
 
         @Resource
         private ${table.mapperName} ${table.entityPath}Dao;
