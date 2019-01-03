@@ -44,11 +44,6 @@ public class Scheme extends BaseEntity {
     @ApiModelProperty("实施人")
     private String putintoUser;
     /**
-     * 备注
-     */
-    @ApiModelProperty("备注")
-    private String remark;
-    /**
      * 附件路径
      */
     @ApiModelProperty("附件路径")
@@ -130,15 +125,6 @@ public class Scheme extends BaseEntity {
     }
 
 
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-
     public String getFilepath() {
         return filepath;
     }
@@ -209,7 +195,6 @@ public class Scheme extends BaseEntity {
                 ", putintoUserId=" + putintoUserId +
                 ", putintoTime=" + putintoTime +
                 ", putintoUser=" + putintoUser +
-                ", remark=" + remark +
                 ", filepath=" + filepath +
                 ", gmtCreate=" + gmtCreate +
                 ", gmtModified=" + gmtModified +

@@ -10,7 +10,6 @@
         <result column="putinto_user_id" property="putintoUserId"/>
         <result column="putinto_time" property="putintoTime"/>
         <result column="putinto_user" property="putintoUser"/>
-        <result column="remark" property="remark"/>
         <result column="filepath" property="filepath"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
@@ -21,7 +20,7 @@
     </resultMap>
 <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, type, result, putinto_user_id AS putintoUserId, putinto_time AS putintoTime, putinto_user AS putintoUser, remark, filepath, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status AS status
+        id, type, result, putinto_user_id AS putintoUserId, putinto_time AS putintoTime, putinto_user AS putintoUser,  filepath, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status AS status
     </sql>
 
     <sql id="Table_Name">
@@ -44,9 +43,6 @@
         </if>
         <if test=" putintoUser != null">
             putinto_user,
-        </if>
-        <if test=" remark != null">
-            remark,
         </if>
         <if test=" filepath != null">
             filepath,
@@ -87,9 +83,6 @@
         <if test=" putintoUser != null">
             #{putintoUser },
         </if>
-        <if test=" remark != null">
-            #{remark },
-        </if>
         <if test=" filepath != null">
             #{filepath },
         </if>
@@ -129,9 +122,6 @@
         <if test=" putintoUser != null">
             putinto_user = #{putintoUser },
         </if>
-        <if test=" remark != null">
-            remark = #{remark },
-        </if>
         <if test=" filepath != null">
             filepath = #{filepath },
         </if>
@@ -170,9 +160,6 @@
         </if>
         <if test=" putintoUser != null">
             and putinto_user = #{putintoUser }
-        </if>
-        <if test=" remark != null">
-            and remark = #{remark }
         </if>
         <if test=" filepath != null">
             and filepath = #{filepath }
@@ -257,27 +244,26 @@
         select count(1)
         from
         <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <if test=" type != null">
-                    and type = #{type}
-                </if>
-                and status = 1
-            </trim>
-        </where>
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" putintoUser != null">
+                and putinto_user like #{putintoUser}"%"
+            </if>
+            and status = 1
+        </trim>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
     </select>
 
     <select id="findQuery" resultType="com.antiy.asset.entity.Scheme" parameterType="com.antiy.common.base.ObjectQuery">
-        select * from
+        select type, result, putinto_user_id, putinto_user, filepath,memo from
         <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <if test=" type != null">
-                    and type = #{type}
-                </if>
-                and status = 1
-            </trim>
-        </where>
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" putintoUser != null">
+                and putinto_user like #{putintoUser}"%"
+            </if>
+            and status = 1
+        </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>

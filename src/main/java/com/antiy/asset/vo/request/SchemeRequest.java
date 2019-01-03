@@ -44,46 +44,16 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty("实施人")
     private String putintoUser;
     /**
-     * 备注
-     */
-    @ApiModelProperty("备注")
-    private String remark;
-    /**
      * 附件路径
      */
     @ApiModelProperty("附件路径")
     private String filepath;
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty("创建时间")
-    private Long gmtCreate;
-    /**
-     * 更新时间
-     */
-    @ApiModelProperty("更新时间")
-    private Long gmtModified;
+
     /**
      * 备注
      */
     @ApiModelProperty("备注")
     private String memo;
-    /**
-     * 创建人
-     */
-    @ApiModelProperty("创建人")
-    private Integer createUser;
-    /**
-     * 修改人
-     */
-    @ApiModelProperty("修改人")
-    private Integer modifyUser;
-    /**
-     * 状态,1未删除,0已删除
-     */
-    @ApiModelProperty("状态,1未删除,0已删除")
-    private Integer isDelete;
-
 
     public Integer getType() {
         return type;
@@ -129,16 +99,6 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
         this.putintoUser = putintoUser;
     }
 
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-
     public String getFilepath() {
         return filepath;
     }
@@ -148,57 +108,12 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     }
 
 
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-
-    public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
-
     public String getMemo() {
         return memo;
     }
 
     public void setMemo(String memo) {
         this.memo = memo;
-    }
-
-
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
-
-    public Integer getIsDelete() {
-        return isDelete;
-    }
-
-    public void setIsDelete(Integer isDelete) {
-        this.isDelete = isDelete;
     }
 
 

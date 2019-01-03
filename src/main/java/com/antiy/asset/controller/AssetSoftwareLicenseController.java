@@ -103,7 +103,7 @@ public class AssetSoftwareLicenseController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
+    public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetSoftwareLicenseService.deleteById(Integer.valueOf(query.getPrimaryKey())));
     }
