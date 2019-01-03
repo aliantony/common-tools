@@ -42,13 +42,14 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     public Integer saveAssetSoftwareRelation(AssetSoftwareRelationRequest request) throws Exception {
         AssetSoftwareRelation assetSoftwareRelation = requestConverter.convert(request, AssetSoftwareRelation.class);
+        //TODO 添加创建人信息
         return assetSoftwareRelationDao.insert(assetSoftwareRelation);
     }
 
     @Override
     public Integer updateAssetSoftwareRelation(AssetSoftwareRelationRequest request) throws Exception {
         AssetSoftwareRelation assetSoftwareRelation = requestConverter.convert(request, AssetSoftwareRelation.class);
-        //TODO 添加创建人信息
+        //TODO 添加修改人信息
         assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
         return assetSoftwareRelationDao.update(assetSoftwareRelation);
     }

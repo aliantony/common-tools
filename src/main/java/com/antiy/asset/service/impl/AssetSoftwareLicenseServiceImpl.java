@@ -47,6 +47,7 @@ public class AssetSoftwareLicenseServiceImpl extends BaseServiceImpl<AssetSoftwa
     @Override
     public Integer updateAssetSoftwareLicense(AssetSoftwareLicenseRequest request) throws Exception {
         AssetSoftwareLicense assetSoftwareLicense = requestConverter.convert(request, AssetSoftwareLicense.class);
+        //TODO 添加修改人信息
         return assetSoftwareLicenseDao.update(assetSoftwareLicense);
     }
 
