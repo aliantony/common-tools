@@ -89,7 +89,7 @@ public class AssetEntity {
     /**
      * 责任人主键
      */
-    @ExcelField(value = "responsible_user_id", align = 1, title = "责任人编号", type = 0)
+    @ExcelField(value = "responsibleUserId", align = 1, title = "责任人编号", type = 0)
     private Integer responsibleUserId;
 
 

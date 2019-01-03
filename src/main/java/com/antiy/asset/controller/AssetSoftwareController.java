@@ -1,23 +1,41 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.ImportExcel;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
+import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.asset.vo.templet.AssetEntity;
+import com.antiy.asset.vo.templet.AssetSoftwareEntity;
+import com.antiy.asset.vo.templet.ImportResult;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -119,10 +137,50 @@ public class AssetSoftwareController {
      * @return actionResponse
      */
     @ApiOperation(value = "导出模板文件", notes = "主键封装对象")
-    @RequestMapping(value = "/export", method = RequestMethod.GET)
-    public void export(@ApiParam(value = "query") QueryCondition query) throws Exception {
-        ExcelUtils.exportTemplet(AssetEntity.class, "资产信息表", "资产信息");
-        ExcelUtils.exportTemplet(AssetEntity.class, "资产信息表", "资产信息","d:");
+    @RequestMapping(value = "/export/template", method = RequestMethod.GET)
+    public void export(@ApiParam(value = "query") QueryCondition query,HttpServletRequest request) throws Exception {
+        ExcelUtils.exportToClient(AssetSoftwareEntity.class, "软件信息模板.xlsx", "软件信息", null);
+    }
+
+    /**
+     * 导出模板文件
+     *
+     * @param assetSoftwareQuery 主键封装对象
+     * @return actionResponse
+     */
+    @ApiOperation(value = "导出模板文件", notes = "主键封装对象")
+    @RequestMapping(value = "/export/file", method = RequestMethod.GET)
+    public void exportFile(@ApiParam(value = "assetSoftwareQuery") AssetSoftwareQuery assetSoftwareQuery) throws Exception {
+        List<AssetSoftwareResponse> assetSoftwareResponses = iAssetSoftwareService.findListAssetSoftware(assetSoftwareQuery);
+        List list = BeanConvert.convert(assetSoftwareResponses, AssetSoftwareEntity.class);
+        ExcelUtils.exportToClient(AssetSoftwareEntity.class, "软件信息表.xlsx", "软件信息", list);
+    }
+
+    /**
+     * 导入文件
+     *
+     * @param multipartFile 主键封装对象
+     * @return actionResponse
+     */
+    @ApiOperation(value = "导入文件", notes = "主键封装对象")
+    @RequestMapping(value = "/import/file", method = RequestMethod.POST)
+    public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws Exception {
+        ImportResult importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class, multipartFile, 1, 0);
+        List<?> list = importResult.getDataList();
+        List<Object> assetSoftwares = BeanConvert.convert(list, AssetSoftware.class);
+        Integer successNum = iAssetSoftwareService.batchSave(transferList(assetSoftwares));
+        Boolean success = successNum == assetSoftwares.size();
+        if (success) {
+            return ActionResponse.success();
+        } else {
+            return ActionResponse.fail(RespBasicCode.ERROR, "失败了" + (assetSoftwares.size() - successNum) + "条数据");
+        }
+    }
+
+    private List<AssetSoftware> transferList(List<Object> objects) {
+        List<AssetSoftware> assetSoftwares = new ArrayList<>();
+        objects.forEach(x -> assetSoftwares.add((AssetSoftware) x));
+        return assetSoftwares;
     }
 }
 

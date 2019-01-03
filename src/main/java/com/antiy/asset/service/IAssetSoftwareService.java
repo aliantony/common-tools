@@ -29,6 +29,14 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
     Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception;
 
     /**
+     * 批量保存
+     *
+     * @param assetSoftwareList
+     * @return
+     */
+    Integer batchSave(List<AssetSoftware> assetSoftwareList) throws Exception;
+
+    /**
      * 修改
      *
      * @param request
