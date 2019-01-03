@@ -111,7 +111,7 @@ public class ${table.controllerName} {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query)throws Exception{
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(i${entity}Service.deleteById(Integer.valueOf(query.getPrimaryKey()))));
+        return ActionResponse.success(i${entity}Service.deleteById(Integer.valueOf(query.getPrimaryKey())));
     }
 }
 
