@@ -50,7 +50,7 @@ public class ${table.controllerName} {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "${table.entityPath}")${entity}Request ${table.entityPath})throws Exception{
+    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "${table.entityPath}")${entity}Request ${table.entityPath})throws Exception{
         i${entity}Service.save${entity}(${table.entityPath});
         return ActionResponse.success();
     }
@@ -65,7 +65,7 @@ public class ${table.controllerName} {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "${table.entityPath}")${entity}Request ${table.entityPath})throws Exception{
+    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "${table.entityPath}")${entity}Request ${table.entityPath})throws Exception{
         i${entity}Service.update${entity}(${table.entityPath});
         return ActionResponse.success();
     }
@@ -80,7 +80,7 @@ public class ${table.controllerName} {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "${table.entityPath}") ${entity}Query ${table.entityPath})throws Exception{
+    public ActionResponse queryList(@RequestBody(required = false) @ApiParam(value = "${table.entityPath}") ${entity}Query ${table.entityPath})throws Exception{
         return ActionResponse.success(i${entity}Service.findPage${entity}(${table.entityPath}));
     }
 
@@ -94,7 +94,7 @@ public class ${table.controllerName} {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@RequestBody(false) @ApiParam(value = "${table.entityPath}") QueryCondition query)throws Exception{
+    public ActionResponse queryById(@RequestBody(required = false) @ApiParam(value = "${table.entityPath}") QueryCondition query)throws Exception{
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(i${entity}Service.getById(query.getPrimaryKey()));
     }
@@ -109,7 +109,7 @@ public class ${table.controllerName} {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
-    public ActionResponse deleteById(@RequestBody(false) @ApiParam(value = "query") QueryCondition query)throws Exception{
+    public ActionResponse deleteById(@RequestBody(required = false) @ApiParam(value = "query") QueryCondition query)throws Exception{
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(i${entity}Service.deleteById(query.getPrimaryKey()));
     }
