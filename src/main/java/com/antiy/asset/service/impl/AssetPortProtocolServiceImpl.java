@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,7 +51,7 @@ public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProto
     public List<AssetPortProtocolResponse> findListAssetPortProtocol(AssetPortProtocolQuery query) throws Exception {
         List<AssetPortProtocol> assetPortProtocol = assetPortProtocolDao.findListAssetPortProtocol(query);
         //TODO
-        List<AssetPortProtocolResponse> assetPortProtocolResponse = new ArrayList<AssetPortProtocolResponse>();
+        List<AssetPortProtocolResponse> assetPortProtocolResponse = responseConverter.convert (assetPortProtocol, AssetPortProtocolResponse.class);
         return assetPortProtocolResponse;
     }
 

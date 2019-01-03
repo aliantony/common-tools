@@ -18,6 +18,8 @@ public class AssetLable extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+
+
     /**
      * 名称
      */
@@ -160,4 +162,7 @@ public class AssetLable extends BaseEntity {
                 ", status=" + status +
                 "}";
     }
+
+
+
 }

@@ -509,6 +509,88 @@
         </if>
     </sql>
 
+    <sql id="Where_Column">
+        <if test=" number != null">
+            and number = #{number }
+        </if>
+        <if test=" type != null">
+            and type = #{type }
+        </if>
+        <if test=" name != null">
+            and name  LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test=" serial != null">
+            and serial = #{serial }
+        </if>
+        <if test=" category != null">
+            and category = #{category }
+        </if>
+        <if test=" model != null">
+            and model = #{model }
+        </if>
+        <if test=" manufacturer != null">
+            and manufacturer = #{manufacturer }
+        </if>
+        <if test=" assetStatus != null">
+            and asset_status = #{assetStatus }
+        </if>
+        <if test=" operationSystem != null">
+            and operation_system = #{operationSystem }
+        </if>
+        <if test=" systemBit != null">
+            and system_bit = #{systemBit }
+        </if>
+        <if test=" location != null">
+            and location = #{location }
+        </if>
+
+        <if test=" firmwareVersion != null">
+            and firmware_version = #{firmwareVersion }
+        </if>
+        <if test=" uuid != null">
+            and uuid = #{uuid }
+        </if>
+        <if test=" responsibleUserId != null">
+            and responsible_user_id = #{responsibleUserId }
+        </if>
+
+        <if test=" assetSource != null">
+            and asset_source = #{assetSource }
+        </if>
+        <if test=" importanceDegree != null">
+            and importance_degree = #{importanceDegree }
+        </if>
+
+        <if test=" parentId != null">
+            and parent_id = #{parentId }
+        </if>
+        <if test=" tags != null">
+            and tags = #{tags }
+        </if>
+        <if test=" isInnet != null">
+            and is_innet = #{isInnet }
+        </if>
+        <if test=" serviceLife != null">
+            and service_life = #{serviceLife }
+        </if>
+        <if test=" buyDate != null">
+            and buy_date = #{buyDate }
+        </if>
+        <if test=" warranty != null">
+            and warranty = #{warranty }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+
+
+            and is_delete =0
+
+    </sql>
+
     <insert id="insert" parameterType="com.antiy.asset.entity.Asset">
         insert into
         <include refid="Table_Name"></include>
@@ -539,11 +621,11 @@
     </select>
 
 
-    <delete id="deleteById" parameterType="java.lang.Integer">
-        delete from
+    <update id="deleteById" parameterType="java.lang.Integer">
+        update
         <include refid="Table_Name"></include>
-        where id = #{id}
-    </delete>
+     set is_delete =1   where id = #{id}
+    </update>
 
     <select id="getByWhere" resultType="com.antiy.asset.entity.Asset" parameterType="java.util.Map">
         select
@@ -571,7 +653,7 @@
         <include refid="Table_Name"></include>
         <where>
             <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
+                <include refid="Where_Column"></include>
             </trim>
         </where>
     </select>
@@ -590,127 +672,17 @@
     </select>
 
 
-    <select id="findListAsset" resultType="com.antiy.asset.entity.Asset" parameterType="com.antiy.asset.vo.query.AssetQuery">
+    <select id="findListAsset" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
         select * from
         <include refid="Table_Name"></include>
-        <trim prefix="WHERE" prefixOverrides="AND|OR">
-        <if test=" id != null">
-                and id = #{id }
-            </if>
-        <if test=" number != null">
-                and number = #{number }
-            </if>
-        <if test=" type != null">
-                and type = #{type }
-            </if>
-        <if test=" name != null">
-                and name = #{name }
-            </if>
-        <if test=" serial != null">
-                and serial = #{serial }
-            </if>
-        <if test=" category != null">
-                and category = #{category }
-            </if>
-        <if test=" model != null">
-                and model = #{model }
-            </if>
-        <if test=" manufacturer != null">
-                and manufacturer = #{manufacturer }
-            </if>
-        <if test=" assetStatus != null">
-                and asset_status = #{assetStatus }
-            </if>
-        <if test=" operationSystem != null">
-                and operation_system = #{operationSystem }
-            </if>
-        <if test=" systemBit != null">
-                and system_bit = #{systemBit }
-            </if>
-        <if test=" location != null">
-                and location = #{location }
-            </if>
-        <if test=" latitude != null">
-                and latitude = #{latitude }
-            </if>
-        <if test=" longitude != null">
-                and longitude = #{longitude }
-            </if>
-        <if test=" firmwareVersion != null">
-                and firmware_version = #{firmwareVersion }
-            </if>
-        <if test=" uuid != null">
-                and uuid = #{uuid }
-            </if>
-        <if test=" responsibleUserId != null">
-                and responsible_user_id = #{responsibleUserId }
-            </if>
-        <if test=" contactTel != null">
-                and contact_tel = #{contactTel }
-            </if>
-        <if test=" email != null">
-                and email = #{email }
-            </if>
-        <if test=" hardDisk != null">
-                and hard_disk = #{hardDisk }
-            </if>
-        <if test=" memory != null">
-                and memory = #{memory }
-            </if>
-        <if test=" assetSource != null">
-                and asset_source = #{assetSource }
-            </if>
-        <if test=" importanceDegree != null">
-                and importance_degree = #{importanceDegree }
-            </if>
-        <if test=" describle != null">
-                and describle = #{describle }
-            </if>
-        <if test=" cpu != null">
-                and cpu = #{cpu }
-            </if>
-        <if test=" networkCard != null">
-                and network_card = #{networkCard }
-            </if>
-        <if test=" parentId != null">
-                and parent_id = #{parentId }
-            </if>
-        <if test=" tags != null">
-                and tags = #{tags }
-            </if>
-        <if test=" isInnet != null">
-                and is_innet = #{isInnet }
-            </if>
-        <if test=" serviceLife != null">
-                and service_life = #{serviceLife }
-            </if>
-        <if test=" buyDate != null">
-                and buy_date = #{buyDate }
-            </if>
-        <if test=" warranty != null">
-                and warranty = #{warranty }
-            </if>
-        <if test=" gmtCreate != null">
-                and gmt_create = #{gmtCreate }
-            </if>
-        <if test=" gmtModified != null">
-                and gmt_modified = #{gmtModified }
-            </if>
-        <if test=" memo != null">
-                and memo = #{memo }
-            </if>
-        <if test=" createUser != null">
-                and create_user = #{createUser }
-            </if>
-        <if test=" modifyUser != null">
-                and modify_user = #{modifyUser }
-            </if>
-        <if test=" isDelete != null">
-                and is_delete = #{isDelete }
-            </if>
-                </trim>
+        <where>
+            <trim prefixOverrides="and">
+            <include refid="Where_Column"></include>
+            </trim>
+        </where>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+
     </select>
 </mapper>

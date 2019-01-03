@@ -3,7 +3,6 @@ package com.antiy.asset.service;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
-import com.antiy.asset.vo.response.AssetCategoryModelResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -42,7 +41,7 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @param query
      * @return
      */
-    List<AssetCategoryModelResponse> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
+    List<AssetCategoryModel> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
 
     /**
      * 批量查询
@@ -50,6 +49,6 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @param query
      * @return
      */
-    PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
+    PageResult<AssetCategoryModel> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
 
 }

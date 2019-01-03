@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,11 +48,12 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public List<AssetCategoryModelResponse> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public List<AssetCategoryModel> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
         List<AssetCategoryModel> assetCategoryModel = assetCategoryModelDao.findListAssetCategoryModel(query);
         //TODO
-        List<AssetCategoryModelResponse> assetCategoryModelResponse = new ArrayList<AssetCategoryModelResponse>();
-        return assetCategoryModelResponse;
+
+
+        return assetCategoryModel;
     }
 
     public Integer findCountAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
@@ -61,7 +61,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public PageResult<AssetCategoryModel> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetCategoryModel(query), query.getCurrentPage(), this.findListAssetCategoryModel(query));
     }
 }

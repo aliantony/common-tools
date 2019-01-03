@@ -175,11 +175,11 @@
     </select>
 
 
-    <delete id="deleteById" parameterType="java.lang.Integer">
-        delete from
+    <update id="deleteById" parameterType="java.lang.Integer">
+        update
         <include refid="Table_Name"></include>
-        where id = #{id}
-    </delete>
+       SET status=1  where id = #{id}
+    </update>
 
     <select id="getByWhere" resultType="com.antiy.asset.entity.AssetLable" parameterType="java.util.Map">
         select
@@ -201,13 +201,33 @@
     </select>
 
 
+    <sql id="Where_Column">
+        <if test=" name != null">
+            and name  LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test=" labelType != null">
+            and label_type = #{labelType }
+        </if>
+
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+
+
+            and status = 0
+
+    </sql>
+
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1) count
         from
         <include refid="Table_Name"></include>
         <where>
             <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
+                <include refid="Where_Column"></include>
             </trim>
         </where>
     </select>
@@ -226,40 +246,27 @@
     </select>
 
 
-    <select id="findListAssetLable" resultType="com.antiy.asset.entity.AssetLable" parameterType="com.antiy.asset.vo.query.AssetLableQuery">
+    <select id="findListAssetLable" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.AssetLableQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-        <if test=" id != null">
-                and id = #{id }
-            </if>
+
         <if test=" name != null">
-                and name = #{name }
+                and name LIKE CONCAT('%',#{name},'%')
             </if>
         <if test=" labelType != null">
                 and label_type = #{labelType }
             </if>
-        <if test=" description != null">
-                and description = #{description }
-            </if>
+
         <if test=" gmtCreate != null">
                 and gmt_create = #{gmtCreate }
             </if>
         <if test=" gmtModified != null">
                 and gmt_modified = #{gmtModified }
             </if>
-        <if test=" memo != null">
-                and memo = #{memo }
-            </if>
-        <if test=" createUser != null">
-                and create_user = #{createUser }
-            </if>
-        <if test=" modifyUser != null">
-                and modify_user = #{modifyUser }
-            </if>
-        <if test=" status != null">
-                and status = #{status }
-            </if>
+
+                and status =0
+
                 </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
