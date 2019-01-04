@@ -1,6 +1,7 @@
 package com.antiy.asset.controller;
 
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.enums.AssetStatusEnum;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.ExcelUtils;
@@ -14,10 +15,7 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -148,6 +146,8 @@ public class AssetController {
         ExcelUtils.exportToClient(AssetEntity.class, "硬件信息表.xls", "硬件信息", null);
     }
 
+
+
     /**
      * 导入文件
      *
@@ -173,6 +173,67 @@ public class AssetController {
         List<Asset> assets = new ArrayList<>();
         objects.forEach(x -> assets.add((Asset) x));
         return assets;
+    }
+
+    /**
+     * 批量修改资产状态
+     *
+     * @param ids
+     * @param targetStatus
+     * @return actionResponse
+     */
+    @ApiOperation(value = "批量修改资产状态接口", notes = "传入资产状态和资产ID数组")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
+    })
+    @RequestMapping(value = "/update/changeStatus", method = RequestMethod.POST)
+    public ActionResponse changeStatus(@ApiParam(value = "资产ID数组") @RequestParam Integer[] ids, @ApiParam(value = "资产新状态") @RequestParam("targetStatus")Integer targetStatus) throws Exception {
+        //资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
+        boolean isChange = false;
+        if (ids != null && ids.length > 0){
+            for (Integer id : ids){
+                Asset asset = iAssetService.getById(id);
+                Integer currStatus = asset.getAssetStatus();
+                if (currStatus < AssetStatusEnum.WAIT_SETTING.getCode() && targetStatus.equals(AssetStatusEnum.WAIT_SETTING.getCode())){
+                    return ActionResponse.fail (RespBasicCode.BUSSINESS_EXCETION,"请先完成资产登记！");
+                }else if (currStatus < AssetStatusEnum.WAIT_VALIDATE.getCode() && targetStatus.equals(AssetStatusEnum.WAIT_VALIDATE.getCode())){
+                    //TODO 配置验证是否通过
+                    return ActionResponse.fail (RespBasicCode.BUSSINESS_EXCETION,"请先完成资产配置！");
+                }else if (currStatus < AssetStatusEnum.WAIT_NET.getCode() && targetStatus.equals(AssetStatusEnum.WAIT_NET.getCode())){
+                    //TODO 资产验证是否通过
+                    return ActionResponse.fail (RespBasicCode.BUSSINESS_EXCETION,"请先完成资产验证！");
+                }else if (currStatus < AssetStatusEnum.NET_IN.getCode() && targetStatus.equals(AssetStatusEnum.NET_IN.getCode())){
+                    if (currStatus.equals(AssetStatusEnum.WAIT_NET.getCode())){
+                        return ActionResponse.fail (RespBasicCode.BUSSINESS_EXCETION,"当前资产状态不是待入网，禁止入网！");
+                    }
+                }else if (currStatus < AssetStatusEnum.WAIT_RETIRE.getCode() && targetStatus.equals(AssetStatusEnum.WAIT_RETIRE.getCode())){
+                    //TODO 资产是否登记
+                    if (currStatus < AssetStatusEnum.WAIT_SETTING.getCode()){
+                        return ActionResponse.fail (RespBasicCode.BUSSINESS_EXCETION,"资产未登记，不能退役！");
+                    }
+                    //TODO 是否有关联资产
+
+                }else if (currStatus < AssetStatusEnum.RETIRE.getCode() && targetStatus.equals(AssetStatusEnum.RETIRE.getCode())){
+                    //TODO 资产是否待退役
+                    if (currStatus.equals(AssetStatusEnum.WAIT_RETIRE.getCode())){
+                        return ActionResponse.fail (RespBasicCode.BUSSINESS_EXCETION,"只有待退役得资产才能执行退役操作！");
+                    }
+                }else if (targetStatus.equals(currStatus)){
+                    //
+                }else if (targetStatus < currStatus){
+                    isChange = true;
+                }
+//                if (currStatus.equals(AssetStatusEnum.RETIRE) && targetStatus < currStatus){
+//                    throw new Exception("退役资产禁止修改状态！");
+//                }
+            }
+        }
+        if (isChange){
+            iAssetService.changeStatus(ids,targetStatus);
+            return ActionResponse.success();
+        }else {
+            return ActionResponse.fail (RespBasicCode.BUSSINESS_EXCETION,"非法的资产状态变更操作！");
+        }
     }
 }
 
