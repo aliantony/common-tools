@@ -70,7 +70,7 @@ public class AssetNetworkEquipmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@ApiParam(value = "assetNetworkEquipment") AssetNetworkEquipmentQuery assetNetworkEquipment) throws Exception {
+    public ActionResponse queryList(@RequestBody(required = false) @ApiParam(value = "assetNetworkEquipment") AssetNetworkEquipmentQuery assetNetworkEquipment) throws Exception {
         return ActionResponse.success(iAssetNetworkEquipmentService.findPageAssetNetworkEquipment(assetNetworkEquipment));
     }
 
@@ -85,7 +85,7 @@ public class AssetNetworkEquipmentController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "assetNetworkEquipment") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@RequestBody(required = false) @ApiParam(value = "assetNetworkEquipment") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetNetworkEquipmentService.getById(Integer.parseInt(query.getPrimaryKey())));
     }

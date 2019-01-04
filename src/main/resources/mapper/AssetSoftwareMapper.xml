@@ -446,4 +446,12 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <select id="checkRepeatSoftware" resultType="int" parameterType="com.antiy.asset.entity.AssetSoftware">
+        select count(1) count
+        from
+        <include refid="Table_Name"/>
+        where name = #{name} and version = #{version}
+        and status = 1
+    </select>
+
 </mapper>

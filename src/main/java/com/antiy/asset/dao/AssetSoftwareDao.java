@@ -17,4 +17,6 @@ import java.util.List;
 public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
 
     List<AssetSoftware> findListAssetSoftware(AssetSoftwareQuery query) throws Exception;
+
+    int checkRepeatSoftware(AssetSoftware software);
 }

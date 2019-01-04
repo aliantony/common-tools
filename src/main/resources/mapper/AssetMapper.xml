@@ -601,11 +601,6 @@
         </if>
     </select>
 
-    <select id="findTopologyList" resultMap="topologyResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select id,type,name,parent_id from
-        <include refid="Table_Name"></include>
-        <include refid="Where_Column_List"/>
-    </select>
 
     <select id="findListAsset" resultType="com.antiy.asset.entity.Asset"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
@@ -634,4 +629,22 @@
             #{id}
         </foreach>
     </update>
+
+    <select id="checkRepeatAsset" resultType="com.antiy.asset.entity.Asset" parameterType="java.util.List">
+        SELECT
+            b.id,
+            b.uuid
+        FROM
+            asset_network_card a
+            LEFT JOIN asset b ON a.asset_id = b.id
+        WHERE
+            ( a.ip_address, a.mac_address ) IN
+            <foreach collection="list" open="(" close=")" index="index" item="item" separator=",">
+                <foreach collection="item" open="(" close=")" item="a" separator=",">
+                    #{a}
+                </foreach>
+            </foreach>
+        AND a.status = 1
+        AND b.status = 1
+    </select>
 </mapper>
