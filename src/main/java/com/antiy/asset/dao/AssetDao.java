@@ -20,6 +20,8 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     List<Asset> findListAsset(AssetQuery query) throws Exception;
 
+    List<Asset> checkRepeatAsset(List<String[]> ipMac);
+
     /**
      * 批量修改
      *

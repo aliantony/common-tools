@@ -29,14 +29,6 @@ public interface IAssetService extends IBaseService<Asset> {
     Integer saveAsset(AssetRequest request) throws Exception;
 
     /**
-     * 批量保存
-     *
-     * @param assets
-     * @return
-     */
-    Integer batchSave(List<Asset> assets) throws Exception;
-
-    /**
      * 修改
      *
      * @param request
@@ -60,6 +52,20 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception;
 
+    /**
+     * 保存上报数据
+     * @param assetOuterRequestList
+     * @throws Exception
+     */
+    void saveReportAsset(List<AssetOuterRequest> assetOuterRequestList) throws Exception;
+
+    /**
+     * 判断资产是否重复
+     * @param uuid
+     * @param ipMac
+     * @return
+     */
+    boolean checkRepeatAsset(String uuid, List<String[]> ipMac);
     /**
      * 批量修改
      *
