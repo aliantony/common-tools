@@ -1,6 +1,7 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.Topology;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.common.base.IBaseDao;
 
@@ -26,5 +27,14 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer changeStatus(Map<String, Integer[]> map) throws Exception;
+
+
+    /**
+     * 网络拓扑查询
+     * @param query
+     * @return
+     * @throws Exception
+     */
+    List<Topology> findTopologyList(AssetQuery query);
 
 }
