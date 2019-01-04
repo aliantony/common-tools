@@ -647,4 +647,10 @@
         AND a.status = 1
         AND b.status = 1
     </select>
+
+    <select id="findTopologyList" resultMap="topologyResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select id,type,name,parent_id from
+        <include refid="Table_Name"></include>
+        <include refid="Where_Column_List"/>
+    </select>
 </mapper>
