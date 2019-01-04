@@ -14,7 +14,7 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
     </resultMap>
-<!-- 通用查询结果列 -->
+    <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, asset_id AS assetId, asset_label_id AS assetLabelId, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
@@ -199,7 +199,8 @@
         </where>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetLabelRelation" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetLabelRelation"
+            parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <where>
@@ -213,38 +214,39 @@
     </select>
 
 
-    <select id="findListAssetLabelRelation" resultType="com.antiy.asset.entity.AssetLabelRelation" parameterType="com.antiy.asset.vo.query.AssetLabelRelationQuery">
+    <select id="findListAssetLabelRelation" resultType="com.antiy.asset.entity.AssetLabelRelation"
+            parameterType="com.antiy.asset.vo.query.AssetLabelRelationQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-        <if test=" id != null">
+            <if test=" id != null">
                 and id = #{id }
             </if>
-        <if test=" assetId != null">
+            <if test=" assetId != null">
                 and asset_id = #{assetId }
             </if>
-        <if test=" assetLabelId != null">
+            <if test=" assetLabelId != null">
                 and asset_label_id = #{assetLabelId }
             </if>
-        <if test=" gmtCreate != null">
+            <if test=" gmtCreate != null">
                 and gmt_create = #{gmtCreate }
             </if>
-        <if test=" gmtModified != null">
+            <if test=" gmtModified != null">
                 and gmt_modified = #{gmtModified }
             </if>
-        <if test=" memo != null">
+            <if test=" memo != null">
                 and memo = #{memo }
             </if>
-        <if test=" createUser != null">
+            <if test=" createUser != null">
                 and create_user = #{createUser }
             </if>
-        <if test=" modifyUser != null">
+            <if test=" modifyUser != null">
                 and modify_user = #{modifyUser }
             </if>
-        <if test=" status != null">
+            <if test=" status != null">
                 and status = #{status }
             </if>
-                </trim>
+        </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>

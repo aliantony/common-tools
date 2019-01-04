@@ -16,7 +16,7 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
     </resultMap>
-<!-- 通用查询结果列 -->
+    <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, asset_soft_id AS assetSoftId, port, protocol, description, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
@@ -175,7 +175,7 @@
             and gmt_modified = #{gmtModified }
         </if>
 
-            and status = 0
+        and status = 0
 
     </sql>
 
@@ -212,7 +212,8 @@
     <update id="deleteById" parameterType="java.lang.Integer">
         update
         <include refid="Table_Name"></include>
-        set status=1 where id = #{id}
+        set status= 0
+        where id = #{id}
     </update>
 
     <select id="getByWhere" resultType="com.antiy.asset.entity.AssetPortProtocol" parameterType="java.util.Map">
@@ -246,7 +247,8 @@
         </where>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetPortProtocol" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetPortProtocol"
+            parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <where>
@@ -260,32 +262,33 @@
     </select>
 
 
-    <select id="findListAssetPortProtocol" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.AssetPortProtocolQuery">
+    <select id="findListAssetPortProtocol" resultMap="BaseResultMap"
+            parameterType="com.antiy.asset.vo.query.AssetPortProtocolQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
 
-        <if test=" assetSoftId != null">
+            <if test=" assetSoftId != null">
                 and asset_soft_id = #{assetSoftId }
             </if>
-        <if test=" port != null">
+            <if test=" port != null">
                 and port = #{port }
             </if>
-        <if test=" protocol != null">
+            <if test=" protocol != null">
                 and protocol = #{protocol }
             </if>
 
-        <if test=" gmtCreate != null">
+            <if test=" gmtCreate != null">
                 and gmt_create = #{gmtCreate }
             </if>
-        <if test=" gmtModified != null">
+            <if test=" gmtModified != null">
                 and gmt_modified = #{gmtModified }
             </if>
 
 
-                and status = 0
+            and status = 0
 
-                </trim>
+        </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>

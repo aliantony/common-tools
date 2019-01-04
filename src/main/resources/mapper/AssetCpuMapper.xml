@@ -177,7 +177,7 @@
         <if test=" coreSize != null">
             and core_size = #{coreSize }
         </if>
-            and status = 1
+        and status = 1
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetCpu">
@@ -211,8 +211,9 @@
 
 
     <delete id="deleteById" parameterType="java.lang.Integer">
-        delete from
+        update
         <include refid="Table_Name"></include>
+        set status = 0
         where id = #{id}
     </delete>
 
@@ -288,7 +289,7 @@
             <if test=" coreSize != null">
                 and core_size = #{coreSize }
             </if>
-                and status = 1
+            and status = 1
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}

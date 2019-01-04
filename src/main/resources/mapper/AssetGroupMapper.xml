@@ -164,8 +164,9 @@
 
 
     <delete id="deleteById" parameterType="java.lang.Integer">
-        delete from
+        update
         <include refid="Table_Name"></include>
+        set status = 0
         where id = #{id}
     </delete>
 
@@ -227,6 +228,6 @@
             <include refid="Where_Column_List"></include>
             and status = 0
         </trim>
-       <include refid="Page_List"></include>
+        <include refid="Page_List"></include>
     </select>
 </mapper>

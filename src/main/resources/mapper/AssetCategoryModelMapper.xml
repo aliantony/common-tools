@@ -17,7 +17,7 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
     </resultMap>
-<!-- 通用查询结果列 -->
+    <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, name, type, asset_type AS assetType, parent_id AS parentId, description, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
@@ -204,7 +204,8 @@
     <delete id="deleteById" parameterType="java.lang.Integer">
         update
         <include refid="Table_Name"></include>
-        set status=1  where id = #{id}
+        set status = 0
+        where id = #{id}
     </delete>
 
     <select id="getByWhere" resultType="com.antiy.asset.entity.AssetCategoryModel" parameterType="java.util.Map">
@@ -238,7 +239,8 @@
         </where>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetCategoryModel" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetCategoryModel"
+            parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <where>
@@ -252,49 +254,50 @@
     </select>
 
 
-    <select id="findListAssetCategoryModel" resultType="com.antiy.asset.entity.AssetCategoryModel" parameterType="com.antiy.asset.vo.query.AssetCategoryModelQuery">
+    <select id="findListAssetCategoryModel" resultType="com.antiy.asset.entity.AssetCategoryModel"
+            parameterType="com.antiy.asset.vo.query.AssetCategoryModelQuery">
         select
         <include refid="Base_Column_List"></include>
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-        <if test=" id != null">
+            <if test=" id != null">
                 and id = #{id }
             </if>
-        <if test=" name != null">
+            <if test=" name != null">
                 and name = #{name }
             </if>
-        <if test=" type != null">
+            <if test=" type != null">
                 and type = #{type }
             </if>
-        <if test=" assetType != null">
+            <if test=" assetType != null">
                 and asset_type = #{assetType }
             </if>
-        <if test=" parentId != null">
+            <if test=" parentId != null">
                 and parent_id = #{parentId }
             </if>
-        <if test=" description != null">
+            <if test=" description != null">
                 and description = #{description }
             </if>
-        <if test=" gmtCreate != null">
+            <if test=" gmtCreate != null">
                 and gmt_create = #{gmtCreate }
             </if>
-        <if test=" gmtModified != null">
+            <if test=" gmtModified != null">
                 and gmt_modified = #{gmtModified }
             </if>
-        <if test=" memo != null">
+            <if test=" memo != null">
                 and memo = #{memo }
             </if>
-        <if test=" createUser != null">
+            <if test=" createUser != null">
                 and create_user = #{createUser }
             </if>
-        <if test=" modifyUser != null">
+            <if test=" modifyUser != null">
                 and modify_user = #{modifyUser }
             </if>
 
-                and status =0
+            and status =0
 
-                </trim>
+        </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
