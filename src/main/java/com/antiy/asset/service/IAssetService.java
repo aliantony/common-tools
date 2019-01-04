@@ -2,6 +2,7 @@ package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.IBaseService;
@@ -74,5 +75,13 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     Integer changeStatus(Integer[] idArrays, Integer assetStatus) throws Exception;
+
+    /**
+     * 批量保存
+     *
+     * @param assets
+     * @return
+     */
+    Integer batchSave(List<Asset> assets) throws Exception;
 
 }
