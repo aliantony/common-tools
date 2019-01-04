@@ -1,6 +1,7 @@
 package
 
-import com.antiy.common.base.BaseEntity;${package.Entity}.vo.response;
+import com.antiy.common.base.BaseEntity;
+import ${package.Entity}.vo.response;
 
 /**
  * <p>
