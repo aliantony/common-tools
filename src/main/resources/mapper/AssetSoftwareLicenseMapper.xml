@@ -17,7 +17,7 @@
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
-        <result property="softwareName" column="software_name" />
+        <result property="softwareName" column="software_name"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -216,10 +216,6 @@
 
 
     <delete id="deleteById" parameterType="java.lang.Integer">
-        <!--delete from-->
-        <!--<include refid="Table_Name"></include>-->
-        <!--where id = #{id}-->
-
         update
         <include refid="Table_Name"></include>
         set status = 0

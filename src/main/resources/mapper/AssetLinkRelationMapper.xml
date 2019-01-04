@@ -19,7 +19,7 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
     </resultMap>
-<!-- 通用查询结果列 -->
+    <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, name, link_type AS linkType, head_asset AS headAsset, tail_asse AS tailAsse, head_type AS headType, tail_type AS tailType, link_status AS linkStatus, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
@@ -228,8 +228,9 @@
 
 
     <delete id="deleteById" parameterType="java.lang.Integer">
-        delete from
+        update
         <include refid="Table_Name"></include>
+        set status = 0
         where id = #{id}
     </delete>
 
@@ -264,7 +265,8 @@
         </where>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetLinkRelation" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetLinkRelation"
+            parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <where>
@@ -278,53 +280,54 @@
     </select>
 
 
-    <select id="findListAssetLinkRelation" resultType="com.antiy.asset.entity.AssetLinkRelation" parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
+    <select id="findListAssetLinkRelation" resultType="com.antiy.asset.entity.AssetLinkRelation"
+            parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-        <if test=" id != null">
+            <if test=" id != null">
                 and id = #{id }
             </if>
-        <if test=" name != null">
+            <if test=" name != null">
                 and name = #{name }
             </if>
-        <if test=" linkType != null">
+            <if test=" linkType != null">
                 and link_type = #{linkType }
             </if>
-        <if test=" headAsset != null">
+            <if test=" headAsset != null">
                 and head_asset = #{headAsset }
             </if>
-        <if test=" tailAsse != null">
+            <if test=" tailAsse != null">
                 and tail_asse = #{tailAsse }
             </if>
-        <if test=" headType != null">
+            <if test=" headType != null">
                 and head_type = #{headType }
             </if>
-        <if test=" tailType != null">
+            <if test=" tailType != null">
                 and tail_type = #{tailType }
             </if>
-        <if test=" linkStatus != null">
+            <if test=" linkStatus != null">
                 and link_status = #{linkStatus }
             </if>
-        <if test=" gmtCreate != null">
+            <if test=" gmtCreate != null">
                 and gmt_create = #{gmtCreate }
             </if>
-        <if test=" gmtModified != null">
+            <if test=" gmtModified != null">
                 and gmt_modified = #{gmtModified }
             </if>
-        <if test=" memo != null">
+            <if test=" memo != null">
                 and memo = #{memo }
             </if>
-        <if test=" createUser != null">
+            <if test=" createUser != null">
                 and create_user = #{createUser }
             </if>
-        <if test=" modifyUser != null">
+            <if test=" modifyUser != null">
                 and modify_user = #{modifyUser }
             </if>
-        <if test=" status != null">
+            <if test=" status != null">
                 and status = #{status }
             </if>
-                </trim>
+        </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>

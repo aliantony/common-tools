@@ -552,8 +552,9 @@
 
 
     <delete id="deleteById" parameterType="java.lang.Integer">
-        delete from
+        update
         <include refid="Table_Name"></include>
+        set status = 0
         where id = #{id}
     </delete>
 
@@ -605,8 +606,8 @@
     <select id="findListAsset" resultType="com.antiy.asset.entity.Asset"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
         select
-         <include refid="Base_Column_List"></include>
-          from
+        <include refid="Base_Column_List"></include>
+        from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <include refid="Where_Column_List"></include>
@@ -632,18 +633,18 @@
 
     <select id="checkRepeatAsset" resultType="com.antiy.asset.entity.Asset" parameterType="java.util.List">
         SELECT
-            b.id,
-            b.uuid
+        b.id,
+        b.uuid
         FROM
-            asset_network_card a
-            LEFT JOIN asset b ON a.asset_id = b.id
+        asset_network_card a
+        LEFT JOIN asset b ON a.asset_id = b.id
         WHERE
-            ( a.ip_address, a.mac_address ) IN
-            <foreach collection="list" open="(" close=")" index="index" item="item" separator=",">
-                <foreach collection="item" open="(" close=")" item="a" separator=",">
-                    #{a}
-                </foreach>
+        ( a.ip_address, a.mac_address ) IN
+        <foreach collection="list" open="(" close=")" index="index" item="item" separator=",">
+            <foreach collection="item" open="(" close=")" item="a" separator=",">
+                #{a}
             </foreach>
+        </foreach>
         AND a.status = 1
         AND b.status = 1
     </select>

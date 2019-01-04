@@ -15,7 +15,7 @@
         <result column="gmt_modified" property="gmtModified"/>
         <result column="status" property="status"/>
     </resultMap>
-<!-- 通用查询结果列 -->
+    <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, asset_id AS assetId, feature_library AS featureLibrary, strategy, memo, create_user AS createUser, modify_user AS modifyUser, gmt_create AS gmtCreate, gmt_modified AS gmtModified, status
     </sql>
@@ -176,8 +176,9 @@
 
 
     <delete id="deleteById" parameterType="java.lang.Integer">
-        delete from
+        update
         <include refid="Table_Name"></include>
+        set status = 0
         where id = #{id}
     </delete>
 
@@ -211,7 +212,8 @@
         </where>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetSafetyEquipment" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetSafetyEquipment"
+            parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <where>
