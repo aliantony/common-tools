@@ -7,14 +7,12 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-
 
 /**
  * @author zhangyajun
@@ -23,7 +21,6 @@ import javax.annotation.Resource;
 @Api(value = "AssetCategoryModel", description = "品类型号表")
 @RestController
 @RequestMapping("/v1/asset/assetcategorymodel")
-@Slf4j
 public class AssetCategoryModelController {
 
     @Resource
@@ -72,7 +69,7 @@ public class AssetCategoryModelController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList( @ApiParam(value = "assetCategoryModel") AssetCategoryModelQuery assetCategoryModel) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetCategoryModel") AssetCategoryModelQuery assetCategoryModel) throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.findPageAssetCategoryModel(assetCategoryModel));
     }
 
@@ -89,7 +86,7 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
     public ActionResponse queryById(@ApiParam(value = "assetCategoryModel") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetCategoryModelService.getById(Integer.parseInt (query.getPrimaryKey())));
+        return ActionResponse.success(iAssetCategoryModelService.getById(Integer.parseInt(query.getPrimaryKey())));
     }
 
     /**
@@ -105,7 +102,7 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetCategoryModelService.deleteById(Integer.parseInt (query.getPrimaryKey())));
+        return ActionResponse.success(iAssetCategoryModelService.deleteById(Integer.parseInt(query.getPrimaryKey())));
     }
 }
 
