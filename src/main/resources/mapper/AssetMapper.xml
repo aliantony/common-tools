@@ -568,4 +568,16 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+
+    <!--变更资产状态-->
+    <update id="changeStatus" parameterType="java.util.Map">
+        update
+        <include refid="Table_Name"></include>
+        set
+        asset_status = #{assetStatus[0]}
+        where `id` in
+        <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

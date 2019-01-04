@@ -1,7 +1,6 @@
 package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -60,5 +59,14 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception;
+
+    /**
+     * 批量修改
+     *
+     * @param idArrays
+     * @param assetStatus
+     * @return
+     */
+    Integer changeStatus(Integer[] idArrays, Integer assetStatus) throws Exception;
 
 }

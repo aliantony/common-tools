@@ -10,13 +10,14 @@ import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -27,7 +28,6 @@ import java.util.List;
  * @since 2019-01-02
  */
 @Service
-@Slf4j
 public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetService {
 
 
@@ -76,5 +76,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAsset(query), query.getCurrentPage(), this.findListAsset(query));
+    }
+
+    @Override
+    public Integer changeStatus(Integer[] idArrays, Integer assetStatus) throws Exception {
+        int row;
+        Map<String, Integer[]> map = new HashMap<>();
+        map.put("ids", idArrays);
+        map.put("assetStatus", new Integer[]{assetStatus});
+        row = assetDao.changeStatus(map);
+        return row;
     }
 }

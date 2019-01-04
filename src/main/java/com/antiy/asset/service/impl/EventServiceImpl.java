@@ -19,7 +19,6 @@ import com.antiy.asset.entity.Event;
 import com.antiy.asset.service.IEventService;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.utils.LogUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,7 @@ import java.util.List;
  * @Description 事件定义.
  * @Date 2018年1月17日 上午10:40:08
  */
-@Slf4j
+
 @Service
 public class EventServiceImpl extends BaseServiceImpl<Event> implements IEventService {
 

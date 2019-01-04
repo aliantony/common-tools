@@ -14,18 +14,21 @@ public interface ITopologyService {
 
     /**
      * 初始化网络拓扑
+     *
      * @return
      */
     List<TopologyResponse> queryTopologyInit();
 
     /**
      * 查询网络拓扑
+     *
      * @return
      */
     String queryTopology();
 
     /**
      * 保存网络拓扑
+     *
      * @return
      */
     int saveTopology(TopologyRequest topologyRequest);

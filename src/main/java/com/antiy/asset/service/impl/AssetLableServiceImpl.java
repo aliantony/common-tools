@@ -9,7 +9,6 @@ import com.antiy.asset.vo.response.AssetLableResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -24,7 +23,6 @@ import java.util.List;
  * @since 2019-01-02
  */
 @Service
-@Slf4j
 public class AssetLableServiceImpl extends BaseServiceImpl<AssetLable> implements IAssetLableService {
 
 
@@ -51,7 +49,7 @@ public class AssetLableServiceImpl extends BaseServiceImpl<AssetLable> implement
     public List<AssetLableResponse> findListAssetLable(AssetLableQuery query) throws Exception {
         List<AssetLable> assetLable = assetLableDao.findListAssetLable(query);
         //TODO
-        List<AssetLableResponse> assetLableResponse = responseConverter.convert (assetLable, AssetLableResponse.class);
+        List<AssetLableResponse> assetLableResponse = responseConverter.convert(assetLable, AssetLableResponse.class);
         return assetLableResponse;
     }
 

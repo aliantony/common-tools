@@ -9,7 +9,6 @@ import com.antiy.asset.vo.response.AssetPortProtocolResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -24,7 +23,6 @@ import java.util.List;
  * @since 2019-01-02
  */
 @Service
-@Slf4j
 public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProtocol> implements IAssetPortProtocolService {
 
 
@@ -51,7 +49,7 @@ public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProto
     public List<AssetPortProtocolResponse> findListAssetPortProtocol(AssetPortProtocolQuery query) throws Exception {
         List<AssetPortProtocol> assetPortProtocol = assetPortProtocolDao.findListAssetPortProtocol(query);
         //TODO
-        List<AssetPortProtocolResponse> assetPortProtocolResponse = responseConverter.convert (assetPortProtocol, AssetPortProtocolResponse.class);
+        List<AssetPortProtocolResponse> assetPortProtocolResponse = responseConverter.convert(assetPortProtocol, AssetPortProtocolResponse.class);
         return assetPortProtocolResponse;
     }
 

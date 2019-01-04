@@ -1,20 +1,18 @@
 package com.antiy.asset.service.impl;
 
-import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
+import com.antiy.asset.service.ITopologyService;
+import com.antiy.asset.vo.request.TopologyRequest;
+import com.antiy.asset.vo.response.TopologyResponse;
+import com.antiy.common.utils.LogUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.antiy.asset.service.ITopologyService;
-import com.antiy.asset.vo.request.TopologyRequest;
-import com.antiy.asset.vo.response.TopologyResponse;
-import com.antiy.common.utils.LogUtils;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Auther: zhangbing
@@ -22,10 +20,9 @@ import lombok.extern.slf4j.Slf4j;
  * @Description: 网络拓扑
  */
 @Service
-@Slf4j
 public class TopologyServiceImpl implements ITopologyService {
-    static Lock                 reenLock = new ReentrantLock();
-    private static final Logger logger   = LogUtils.get();
+    static Lock reenLock = new ReentrantLock();
+    private static final Logger logger = LogUtils.get();
 
     @Override
     public List<TopologyResponse> queryTopologyInit() {

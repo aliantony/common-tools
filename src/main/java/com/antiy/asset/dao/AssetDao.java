@@ -5,6 +5,7 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.common.base.IBaseDao;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -17,5 +18,13 @@ import java.util.List;
 public interface AssetDao extends IBaseDao<Asset> {
 
     List<Asset> findListAsset(AssetQuery query) throws Exception;
+
+    /**
+     * 批量修改
+     *
+     * @param map
+     * @return
+     */
+    Integer changeStatus(Map<String, Integer[]> map) throws Exception;
 
 }
