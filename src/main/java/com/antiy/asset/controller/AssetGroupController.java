@@ -39,12 +39,7 @@ public class AssetGroupController {
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetGroup") AssetGroupRequest assetGroup) throws Exception {
-        Boolean success = iAssetGroupService.saveAssetGroup(assetGroup) > 0;
-        if (success) {
-            return ActionResponse.success();
-        } else {
-            return ActionResponse.fail(RespBasicCode.ERROR, "保存失败");
-        }
+        return ActionResponse.success(iAssetGroupService.saveAssetGroup(assetGroup));
     }
 
     /**
@@ -59,12 +54,7 @@ public class AssetGroupController {
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetGroup") AssetGroupUpdateRequest assetGroup) throws Exception {
-        Boolean success = iAssetGroupService.updateAssetGroup(assetGroup) > 0;
-        if (success) {
-            return ActionResponse.success();
-        } else {
-            return ActionResponse.fail(RespBasicCode.ERROR, "修改失败");
-        }
+        return ActionResponse.success(iAssetGroupService.updateAssetGroup(assetGroup));
     }
 
     /**
@@ -85,7 +75,7 @@ public class AssetGroupController {
     /**
      * 通过ID查询
      *
-     * @param id 主键封装对象
+     * @param id 主键
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
@@ -93,14 +83,14 @@ public class AssetGroupController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
-    public ActionResponse queryById(@PathVariable  @ApiParam(value = "assetGroup") Integer id) throws Exception {
+    public ActionResponse queryById(@PathVariable @ApiParam(value = "assetGroup") Integer id) throws Exception {
         return ActionResponse.success(iAssetGroupService.getById(id));
     }
 
     /**
      * 通过ID删除
      *
-     * @param id 主键封装对象
+     * @param id 主键
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
@@ -109,12 +99,7 @@ public class AssetGroupController {
     })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@PathVariable @RequestBody @ApiParam(value = "id") Integer id) throws Exception {
-        Boolean success = iAssetGroupService.deleteById(id) > 0;
-        if (success) {
-            return ActionResponse.success();
-        } else {
-            return ActionResponse.fail(RespBasicCode.ERROR, "删除失败");
-        }
+        return ActionResponse.success(iAssetGroupService.deleteById(id));
     }
 }
 

@@ -39,12 +39,7 @@ public class AssetUserController {
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetUser") AssetUserRequest assetUser) throws Exception {
-        Boolean success = iAssetUserService.saveAssetUser(assetUser) > 0;
-        if (success) {
-            return ActionResponse.success();
-        } else {
-            return ActionResponse.fail(RespBasicCode.ERROR, "保存失败");
-        }
+        return ActionResponse.success(iAssetUserService.saveAssetUser(assetUser));
     }
 
     /**
@@ -59,12 +54,7 @@ public class AssetUserController {
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetUser") AssetUserUpdateRequest assetUser) throws Exception {
-        Boolean success = iAssetUserService.updateAssetUser(assetUser) > 0;
-        if (success) {
-            return ActionResponse.success();
-        } else {
-            return ActionResponse.fail(RespBasicCode.ERROR, "修改失败");
-        }
+        return ActionResponse.success(iAssetUserService.updateAssetUser(assetUser));
     }
 
     /**
@@ -109,12 +99,7 @@ public class AssetUserController {
     })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@PathVariable @RequestBody @ApiParam(value = "id") Integer id) throws Exception {
-        Boolean success = iAssetUserService.deleteById(id) > 0;
-        if (success) {
-            return ActionResponse.success();
-        } else {
-            return ActionResponse.fail(RespBasicCode.ERROR, "删除失败");
-        }
+        return ActionResponse.success(iAssetUserService.deleteById(id));
     }
 }
 

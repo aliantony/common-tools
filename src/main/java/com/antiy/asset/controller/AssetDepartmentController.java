@@ -39,12 +39,7 @@ public class AssetDepartmentController {
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentRequest assetDepartment) throws Exception {
-        Boolean success = iAssetDepartmentService.saveAssetDepartment(assetDepartment) > 0;
-        if (success) {
-            return ActionResponse.success();
-        } else {
-            return ActionResponse.fail(RespBasicCode.ERROR, "保存失败");
-        }
+        return ActionResponse.success(iAssetDepartmentService.saveAssetDepartment(assetDepartment));
     }
 
     /**
@@ -110,12 +105,7 @@ public class AssetDepartmentController {
     })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@PathVariable @ApiParam(value = "id") Integer id) throws Exception {
-        Boolean success = iAssetDepartmentService.deleteById(id) > 0;
-        if (success) {
-            return ActionResponse.success();
-        } else {
-            return ActionResponse.fail(RespBasicCode.ERROR, "删除失败");
-        }
+        return ActionResponse.success(iAssetDepartmentService.getById(iAssetDepartmentService.deleteById(id)));
     }
 }
 
