@@ -1,18 +1,23 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.service.ITopologyService;
-import com.antiy.asset.vo.request.TopologyRequest;
-import com.antiy.asset.vo.response.TopologyResponse;
-import com.antiy.common.utils.LogUtils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
+import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.service.ITopologyService;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.TopologyRequest;
+import com.antiy.asset.vo.response.TopologyResponse;
+import com.antiy.common.utils.LogUtils;
 
 /**
  * @Auther: zhangbing
@@ -21,11 +26,19 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @Service
 public class TopologyServiceImpl implements ITopologyService {
-    static Lock reenLock = new ReentrantLock();
-    private static final Logger logger = LogUtils.get();
+    @Resource
+    private AssetDao            assetDao;
+    static Lock                 reenLock = new ReentrantLock();
+    private static final Logger logger   = LogUtils.get();
 
     @Override
     public List<TopologyResponse> queryTopologyInit() {
+        AssetQuery assetQuery = new AssetQuery();
+        List<String> assetStartsList = new ArrayList<>();
+        assetStartsList.add("6");
+        assetStartsList.add("7");
+        assetQuery.setAssetStatusList(assetStartsList);
+        assetDao.findTopologyList(assetQuery);
         return null;
     }
 
