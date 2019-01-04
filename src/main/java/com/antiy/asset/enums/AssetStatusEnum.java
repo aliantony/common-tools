@@ -29,6 +29,22 @@ public enum AssetStatusEnum {
     private String msg;
 
     /**
+     * 通过code获取资产
+     * @param code
+     * @return
+     */
+    public static AssetStatusEnum getAssetByCode(Integer code){
+        if(code != null){
+            for (AssetStatusEnum softwareType : AssetStatusEnum.values()){
+                if(softwareType.getCode().equals(code)){
+                    return softwareType;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * 通过code获取枚举
      *
      * @param name name

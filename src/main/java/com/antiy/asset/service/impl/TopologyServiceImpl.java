@@ -1,18 +1,23 @@
 package com.antiy.asset.service.impl;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.enums.AssetStatusEnum;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.entity.Topology;
 import com.antiy.asset.service.ITopologyService;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.TopologyRequest;
@@ -34,11 +39,42 @@ public class TopologyServiceImpl implements ITopologyService {
     @Override
     public List<TopologyResponse> queryTopologyInit() {
         AssetQuery assetQuery = new AssetQuery();
-        List<String> assetStartsList = new ArrayList<>();
-        assetStartsList.add("6");
-        assetStartsList.add("7");
+        List<Integer> assetStartsList = new ArrayList<>();
+        assetStartsList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
+        assetStartsList.add(AssetStatusEnum.NET_IN.getCode());
         assetQuery.setAssetStatusList(assetStartsList);
-        assetDao.findTopologyList(assetQuery);
+        return hanldTopology(assetDao.findTopologyList(assetQuery));
+    }
+
+    /**
+     * 处理网络拓扑数据
+     * @param topologies
+     * @return
+     */
+    private List<TopologyResponse> hanldTopology(List<Topology> topologies) {
+        if (CollectionUtils.isNotEmpty(topologies)) {
+            Map<Integer, TopologyResponse> rootTopology = new LinkedHashMap<Integer, TopologyResponse>();
+            topologies.forEach(topology -> {
+                TopologyResponse topologyResponse = new TopologyResponse();
+                topologyResponse.setRoot(topology.getParentId() == 0 ? "0" : "1");
+                topologyResponse.setValue(topology.getId() + "");
+                topologyResponse.setType(topology.getType() + "");
+                List<String> ids = new ArrayList<>();
+                ids.add(topology.getParentId() + "");
+                topologyResponse.setJoin_node(ids);
+                rootTopology.put(topology.getId(), topologyResponse);
+            });
+            topologies.forEach(topology -> {
+                if (topology.getParentId() != 0 && rootTopology.containsKey(topology.getParentId())) {
+                    TopologyResponse topologyResponse = rootTopology.get(topology.getParentId());
+                    List<String> ids = rootTopology.get(topology.getParentId()).getJoin_node();
+                    ids.add(topology.getId() + "");
+                    topologyResponse.setJoin_node(ids);
+                    rootTopology.put(topology.getParentId(), topologyResponse);
+                }
+            });
+            return new ArrayList<TopologyResponse>(rootTopology.values());
+        }
         return null;
     }
 
