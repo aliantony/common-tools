@@ -8,6 +8,7 @@ import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -76,6 +77,12 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     Integer changeStatus(Integer[] idArrays, Integer assetStatus) throws Exception;
 
+    /**
+     * 保存全部信息
+     * @param map
+     * @return
+     */
+    Integer saveAllAsset(HashMap<String, Object> map) throws Exception;
     /**
      * 批量保存
      *

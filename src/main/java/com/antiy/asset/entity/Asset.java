@@ -15,6 +15,7 @@ public class Asset extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+
     /**
      * 资产编号
      */
@@ -511,4 +512,6 @@ public class Asset extends BaseEntity {
                + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser=" + createUser
                + ", modifyUser=" + modifyUser + ", isDelete=" + isDelete + "}";
     }
+
+
 }
