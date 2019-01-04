@@ -1,4 +1,6 @@
-package ${package.Entity}.vo.response;
+package
+
+import com.antiy.common.base.BaseEntity;${package.Entity}.vo.response;
 
 /**
  * <p>
@@ -9,6 +11,6 @@ package ${package.Entity}.vo.response;
  * @since 2018-12-27
  */
 
-public class ${entity}Response {
+public class ${entity}Response extends BaseEntity {
 
 }
