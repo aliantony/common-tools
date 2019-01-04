@@ -79,11 +79,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public Integer changeStatus(Integer[] idArrays, Integer assetStatus) throws Exception {
+    public Integer changeStatus(Integer[] ids, Integer targetStatus) throws Exception {
         int row;
         Map<String, Integer[]> map = new HashMap<>();
-        map.put("ids", idArrays);
-        map.put("assetStatus", new Integer[]{assetStatus});
+        map.put("ids", ids);
+        map.put("assetStatus", new Integer[]{targetStatus});
         row = assetDao.changeStatus(map);
         return row;
     }
