@@ -7,7 +7,6 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,7 +22,6 @@ import javax.annotation.Resource;
 @Api(value = "AssetMainborad", description = "主板表")
 @RestController
 @RequestMapping("/v1/asset/assetmainborad")
-@Slf4j
 public class AssetMainboradController {
 
     @Resource
@@ -55,7 +53,7 @@ public class AssetMainboradController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetMainborad") AssetMainboradRequest assetMainborad) throws Exception {
         iAssetMainboradService.updateAssetMainborad(assetMainborad);
         return ActionResponse.success();
@@ -102,7 +100,7 @@ public class AssetMainboradController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetMainboradService.deleteById(Integer.parseInt(query.getPrimaryKey())));

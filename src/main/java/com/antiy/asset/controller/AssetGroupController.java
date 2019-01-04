@@ -10,7 +10,6 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +25,6 @@ import javax.annotation.Resource;
 @Api(value = "AssetGroup", description = "资产组表")
 @RestController
 @RequestMapping("/v1/asset/assetgroup")
-@Slf4j
 public class AssetGroupController {
 
     @Resource
@@ -62,7 +60,7 @@ public class AssetGroupController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetGroup") AssetGroupUpdateRequest assetGroup) throws Exception {
         Boolean success = iAssetGroupService.updateAssetGroup(assetGroup) > 0;
         if (success) {
@@ -113,10 +111,10 @@ public class AssetGroupController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        Boolean success=iAssetGroupService.deleteById(DataTypeUtils.stringToInteger(query.getPrimaryKey()))>0;
+        Boolean success = iAssetGroupService.deleteById(DataTypeUtils.stringToInteger(query.getPrimaryKey())) > 0;
         if (success) {
             return ActionResponse.success();
         } else {

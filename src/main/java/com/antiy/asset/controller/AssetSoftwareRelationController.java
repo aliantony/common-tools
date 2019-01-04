@@ -7,7 +7,6 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -20,7 +19,6 @@ import javax.annotation.Resource;
 @Api(value = "AssetSoftwareRelation", description = "资产软件关系信息")
 @RestController
 @RequestMapping("/v1/asset/assetsoftwarerelation")
-@Slf4j
 public class AssetSoftwareRelationController {
 
     @Resource
@@ -52,7 +50,7 @@ public class AssetSoftwareRelationController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetSoftwareRelationRequest") AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
         iAssetSoftwareRelationService.updateAssetSoftwareRelation(assetSoftwareRelationRequest);
         return ActionResponse.success();
@@ -99,7 +97,7 @@ public class AssetSoftwareRelationController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetSoftwareRelationService.deleteById(Integer.valueOf(query.getPrimaryKey())));

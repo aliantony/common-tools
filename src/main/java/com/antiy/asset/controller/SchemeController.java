@@ -7,7 +7,6 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,7 +22,6 @@ import javax.annotation.Resource;
 @Api(value = "Scheme", description = "方案表")
 @RestController
 @RequestMapping("/v1/asset/scheme")
-@Slf4j
 public class SchemeController {
 
     @Resource
@@ -55,7 +53,7 @@ public class SchemeController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "scheme") SchemeRequest scheme) throws Exception {
         iSchemeService.updateScheme(scheme);
         return ActionResponse.success();
@@ -102,7 +100,7 @@ public class SchemeController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iSchemeService.deleteById(Integer.valueOf(query.getPrimaryKey())));

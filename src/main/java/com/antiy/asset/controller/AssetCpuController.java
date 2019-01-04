@@ -7,14 +7,12 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-
 
 /**
  * @author zhangyajun
@@ -23,7 +21,6 @@ import javax.annotation.Resource;
 @Api(value = "AssetCpu", description = "处理器表")
 @RestController
 @RequestMapping("/v1/asset/assetcpu")
-@Slf4j
 public class AssetCpuController {
 
     @Resource
@@ -55,7 +52,7 @@ public class AssetCpuController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetCpu") AssetCpuRequest assetCpu) throws Exception {
         iAssetCpuService.updateAssetCpu(assetCpu);
         return ActionResponse.success();
@@ -102,7 +99,7 @@ public class AssetCpuController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetCpuService.deleteById(Integer.parseInt(query.getPrimaryKey())));
