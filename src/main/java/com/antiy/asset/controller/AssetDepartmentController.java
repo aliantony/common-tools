@@ -10,10 +10,7 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -88,34 +85,32 @@ public class AssetDepartmentController {
     /**
      * 通过ID查询
      *
-     * @param query 主键封装对象
+     * @param id 主键
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "assetDepartment") QueryCondition query) throws Exception {
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetDepartmentService.getById(DataTypeUtils.stringToInteger(query.getPrimaryKey())));
+    @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
+    public ActionResponse queryById(@PathVariable @ApiParam(value = "assetDepartment") Integer id) throws Exception {
+        return ActionResponse.success(iAssetDepartmentService.getById(id));
 
     }
 
     /**
      * 通过ID删除
      *
-     * @param query 主键封装对象
+     * @param id 主键
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        Boolean success = iAssetDepartmentService.deleteById(DataTypeUtils.stringToInteger(query.getPrimaryKey())) > 0;
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public ActionResponse deleteById(@PathVariable @ApiParam(value = "id") Integer id) throws Exception {
+        Boolean success = iAssetDepartmentService.deleteById(id) > 0;
         if (success) {
             return ActionResponse.success();
         } else {
