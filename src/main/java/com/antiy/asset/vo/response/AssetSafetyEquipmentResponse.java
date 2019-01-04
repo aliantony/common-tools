@@ -1,7 +1,6 @@
 package com.antiy.asset.vo.response;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 /**
  * <p>
@@ -11,7 +10,6 @@ import lombok.Data;
  * @author zhangyajun
  * @since 2018-12-27
  */
-@Data
 public class AssetSafetyEquipmentResponse {
 
     /**
@@ -55,4 +53,67 @@ public class AssetSafetyEquipmentResponse {
     @ApiModelProperty("更新时间")
     private Long gmtModified;
 
+    public Integer getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(Integer assetId) {
+        this.assetId = assetId;
+    }
+
+    public String getFeatureLibrary() {
+        return featureLibrary;
+    }
+
+    public void setFeatureLibrary(String featureLibrary) {
+        this.featureLibrary = featureLibrary;
+    }
+
+    public String getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(String strategy) {
+        this.strategy = strategy;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
+    }
+
+    public Integer getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(Integer modifyUser) {
+        this.modifyUser = modifyUser;
+    }
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
 }

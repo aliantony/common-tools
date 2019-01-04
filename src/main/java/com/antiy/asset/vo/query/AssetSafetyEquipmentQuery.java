@@ -26,6 +26,22 @@ public class AssetSafetyEquipmentQuery extends ObjectQuery implements ObjectVali
     @ApiModelProperty("策略配置")
     private String strategy;
 
+    public String getFeatureLibrary() {
+        return featureLibrary;
+    }
+
+    public void setFeatureLibrary(String featureLibrary) {
+        this.featureLibrary = featureLibrary;
+    }
+
+    public String getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(String strategy) {
+        this.strategy = strategy;
+    }
+
     @Override
     public void validate() throws RequestParamValidateException {
 

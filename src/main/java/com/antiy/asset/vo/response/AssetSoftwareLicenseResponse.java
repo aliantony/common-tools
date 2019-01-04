@@ -3,7 +3,6 @@ package com.antiy.asset.vo.response;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 /**
  * <p>
@@ -13,7 +12,6 @@ import lombok.Data;
  * @author zhangyajun
  * @since 2018-12-27
  */
-@Data
 public class AssetSoftwareLicenseResponse {
 
     /**
@@ -67,4 +65,76 @@ public class AssetSoftwareLicenseResponse {
      */
     @ApiModelProperty("许可有效期还剩多少天")
     private Integer remainDay;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public Integer getSoftwareId() {
+        return softwareId;
+    }
+
+    public void setSoftwareId(Integer softwareId) {
+        this.softwareId = softwareId;
+    }
+
+    public Long getBusyDate() {
+        return busyDate;
+    }
+
+    public void setBusyDate(Long busyDate) {
+        this.busyDate = busyDate;
+    }
+
+    public Long getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(Long expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public String getLicenseSecretKey() {
+        return licenseSecretKey;
+    }
+
+    public void setLicenseSecretKey(String licenseSecretKey) {
+        this.licenseSecretKey = licenseSecretKey;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getSoftwareName() {
+        return softwareName;
+    }
+
+    public void setSoftwareName(String softwareName) {
+        this.softwareName = softwareName;
+    }
+
+    public Integer getRemainDay() {
+        return remainDay;
+    }
+
+    public void setRemainDay(Integer remainDay) {
+        this.remainDay = remainDay;
+    }
 }

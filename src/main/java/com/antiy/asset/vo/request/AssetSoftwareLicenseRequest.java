@@ -4,7 +4,6 @@ import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 /**
  * <p>
@@ -14,7 +13,6 @@ import lombok.Data;
  * @author zhangyajun
  * @since 2018-12-27
  */
-@Data
 public class AssetSoftwareLicenseRequest extends BasicRequest implements ObjectValidator {
 
     private Integer id;
@@ -44,6 +42,50 @@ public class AssetSoftwareLicenseRequest extends BasicRequest implements ObjectV
      */
     @ApiModelProperty("备注")
     private String memo;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getSoftwareId() {
+        return softwareId;
+    }
+
+    public void setSoftwareId(Integer softwareId) {
+        this.softwareId = softwareId;
+    }
+
+    public Long getBusyDate() {
+        return busyDate;
+    }
+
+    public void setBusyDate(Long busyDate) {
+        this.busyDate = busyDate;
+    }
+
+    public Long getExpiryDate() {
+        return expiryDate;
+    }
+
+    public String getLicenseSecretKey() {
+        return licenseSecretKey;
+    }
+
+    public void setLicenseSecretKey(String licenseSecretKey) {
+        this.licenseSecretKey = licenseSecretKey;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
     @Override
     public void validate() throws RequestParamValidateException {

@@ -1,7 +1,6 @@
 package com.antiy.asset.vo.response;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 /**
  * <p>
@@ -11,7 +10,6 @@ import lombok.Data;
  * @author zhangyajun
  * @since 2018-12-27
  */
-@Data
 public class AssetSoftwareRelationResponse {
 
     /**
@@ -35,5 +33,35 @@ public class AssetSoftwareRelationResponse {
     @ApiModelProperty("备注")
     private String memo;
 
+    public Integer getAssetId() {
+        return assetId;
+    }
 
+    public void setAssetId(Integer assetId) {
+        this.assetId = assetId;
+    }
+
+    public Integer getSoftwareId() {
+        return softwareId;
+    }
+
+    public void setSoftwareId(Integer softwareId) {
+        this.softwareId = softwareId;
+    }
+
+    public Integer getSoftwareStatus() {
+        return softwareStatus;
+    }
+
+    public void setSoftwareStatus(Integer softwareStatus) {
+        this.softwareStatus = softwareStatus;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 }

@@ -3,7 +3,6 @@ package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 /**
  * <p>
@@ -13,7 +12,6 @@ import lombok.Data;
  * @author zhangyajun
  * @since 2019-01-02
  */
-@Data
 public class AssetSoftwareLicense extends BaseEntity {
 
 
@@ -86,4 +84,108 @@ public class AssetSoftwareLicense extends BaseEntity {
      */
     @ApiModelProperty("软件名称")
     private String softwareName;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public Integer getSoftwareId() {
+        return softwareId;
+    }
+
+    public void setSoftwareId(Integer softwareId) {
+        this.softwareId = softwareId;
+    }
+
+    public Long getBusyDate() {
+        return busyDate;
+    }
+
+    public void setBusyDate(Long busyDate) {
+        this.busyDate = busyDate;
+    }
+
+    public Long getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(Long expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public String getLicenseSecretKey() {
+        return licenseSecretKey;
+    }
+
+    public void setLicenseSecretKey(String licenseSecretKey) {
+        this.licenseSecretKey = licenseSecretKey;
+    }
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
+    }
+
+    public Integer getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(Integer modifyUser) {
+        this.modifyUser = modifyUser;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getSoftwareName() {
+        return softwareName;
+    }
+
+    public void setSoftwareName(String softwareName) {
+        this.softwareName = softwareName;
+    }
 }

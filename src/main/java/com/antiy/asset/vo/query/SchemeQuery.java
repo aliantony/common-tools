@@ -4,7 +4,6 @@ import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 /**
  * <p>
@@ -14,7 +13,6 @@ import lombok.Data;
  * @author zhangyajun
  * @since 2018-12-27
  */
-@Data
 public class SchemeQuery extends ObjectQuery implements ObjectValidator {
 
     /**
@@ -32,6 +30,14 @@ public class SchemeQuery extends ObjectQuery implements ObjectValidator {
     @Override
     public void validate() throws RequestParamValidateException {
 
+    }
+
+    public String getPutintoUser() {
+        return putintoUser;
+    }
+
+    public void setPutintoUser(String putintoUser) {
+        this.putintoUser = putintoUser;
     }
 
     public Integer getType() {
