@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 public class AssetSoftwareLicenseResponse {
+    private int id;
 
     /**
      * 许可名称
@@ -65,6 +66,14 @@ public class AssetSoftwareLicenseResponse {
      */
     @ApiModelProperty("许可有效期还剩多少天")
     private Integer remainDay;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
