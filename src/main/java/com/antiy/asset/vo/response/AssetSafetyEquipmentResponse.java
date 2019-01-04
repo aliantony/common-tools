@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 public class AssetSafetyEquipmentResponse {
+    private int id;
 
     /**
      * 资产主键
@@ -52,6 +53,14 @@ public class AssetSafetyEquipmentResponse {
      */
     @ApiModelProperty("更新时间")
     private Long gmtModified;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Integer getAssetId() {
         return assetId;
