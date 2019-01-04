@@ -116,6 +116,13 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
         this.memo = memo;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     @Override
     public void validate() throws RequestParamValidateException {
