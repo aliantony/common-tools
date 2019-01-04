@@ -9,7 +9,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.enums.AssetStatusEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -18,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.Topology;
+import com.antiy.asset.enums.AssetStatusEnum;
 import com.antiy.asset.service.ITopologyService;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.TopologyRequest;
@@ -59,9 +59,13 @@ public class TopologyServiceImpl implements ITopologyService {
                 topologyResponse.setRoot(topology.getParentId() == 0 ? "0" : "1");
                 topologyResponse.setValue(topology.getId() + "");
                 topologyResponse.setType(topology.getType() + "");
+
                 List<String> ids = new ArrayList<>();
-                ids.add(topology.getParentId() + "");
+                if (topology.getParentId() != 0) {
+                    ids.add(topology.getParentId() + "");
+                }
                 topologyResponse.setJoin_node(ids);
+
                 rootTopology.put(topology.getId(), topologyResponse);
             });
             topologies.forEach(topology -> {

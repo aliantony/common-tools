@@ -22,7 +22,7 @@ public class AssetQuery extends ObjectQuery {
     /**
      * 资产类型:1台式办公机,2便携式办公机,3服务器虚拟终,4移动设备,4ATM机,5工控上位机,6路由器,7交换机,8防火墙,9IDS,10IPS,
      */
-    @ApiModelProperty("资产类型:1台式办公机,2便携式办公机,3服务器虚拟终,4移动设备,4ATM机,5工控上位机,6路由器,7交换机,8防火墙,9IDS,10IPS")
+    @ApiModelProperty("资产类型:1台式办公机,2便携式办公机,3服务器虚拟终,4移动设备,4ATM机,5工控上位机,6路由器,7交换机,8防火墙,9IDS,10IPS,")
     private Integer       type;
     /**
      * 资产名称
@@ -64,7 +64,21 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("系统位数")
     private Integer       systemBit;
-
+    /**
+     * 物理位置
+     */
+    @ApiModelProperty("物理位置")
+    private String        location;
+    /**
+     * 纬度
+     */
+    @ApiModelProperty("纬度")
+    private String        latitude;
+    /**
+     * 经度
+     */
+    @ApiModelProperty("经度")
+    private String        longitude;
     /**
      * 固件版本
      */
@@ -81,16 +95,25 @@ public class AssetQuery extends ObjectQuery {
     @ApiModelProperty("责任人主键")
     private Integer       responsibleUserId;
     /**
-     * 创建人
+     * 联系电话
      */
-    @ApiModelProperty("创建人")
-    private Integer       createUser;
+    @ApiModelProperty("联系电话")
+    private String        contactTel;
     /**
-     * 修改人
+     * 邮箱
      */
-    @ApiModelProperty("修改人")
-    private Integer       modifyUser;
-
+    @ApiModelProperty("邮箱")
+    private String        email;
+    /**
+     * 硬盘
+     */
+    @ApiModelProperty("硬盘")
+    private String        hardDisk;
+    /**
+     * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
+     */
+    @ApiModelProperty("内存JSON数据{ID:1,name:Kingston,rom:8GB}")
+    private String        memory;
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
@@ -101,7 +124,21 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("0-不重要(not_major),1- 一般(general),3-重要(major),")
     private Integer       importanceDegree;
-
+    /**
+     * 描述
+     */
+    @ApiModelProperty("描述")
+    private String        describle;
+    /**
+     * CPUJSON数据{ID:1,name:intel,coresize:8}
+     */
+    @ApiModelProperty("CPUJSON数据{ID:1,name:intel,coresize:8}")
+    private String        cpu;
+    /**
+     * 网卡JSON数据{ID:1,name:intel,speed:1900M}
+     */
+    @ApiModelProperty("网卡JSON数据{ID:1,name:intel,speed:1900M}")
+    private String        networkCard;
     /**
      * 父类资源Id
      */
@@ -132,7 +169,6 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("保修期")
     private Long          warranty;
-
     /**
      * 创建时间
      */
@@ -143,11 +179,34 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("更新时间")
     private Long          gmtModified;
-
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
+    private String        memo;
+    /**
+     * 创建人
+     */
+    @ApiModelProperty("创建人")
+    private Integer       createUser;
+    /**
+     * 修改人
+     */
+    @ApiModelProperty("修改人")
+    private Integer       modifyUser;
     /**
      * 资产状态
      */
     private List<Integer> assetStatusList;
+    private Integer       status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public String getNumber() {
         return number;
@@ -229,6 +288,30 @@ public class AssetQuery extends ObjectQuery {
         this.systemBit = systemBit;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
     public String getFirmwareVersion() {
         return firmwareVersion;
     }
@@ -253,20 +336,36 @@ public class AssetQuery extends ObjectQuery {
         this.responsibleUserId = responsibleUserId;
     }
 
-    public Integer getCreateUser() {
-        return createUser;
+    public String getContactTel() {
+        return contactTel;
     }
 
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
+    public void setContactTel(String contactTel) {
+        this.contactTel = contactTel;
     }
 
-    public Integer getModifyUser() {
-        return modifyUser;
+    public String getEmail() {
+        return email;
     }
 
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getHardDisk() {
+        return hardDisk;
+    }
+
+    public void setHardDisk(String hardDisk) {
+        this.hardDisk = hardDisk;
+    }
+
+    public String getMemory() {
+        return memory;
+    }
+
+    public void setMemory(String memory) {
+        this.memory = memory;
     }
 
     public Integer getAssetSource() {
@@ -283,6 +382,30 @@ public class AssetQuery extends ObjectQuery {
 
     public void setImportanceDegree(Integer importanceDegree) {
         this.importanceDegree = importanceDegree;
+    }
+
+    public String getDescrible() {
+        return describle;
+    }
+
+    public void setDescrible(String describle) {
+        this.describle = describle;
+    }
+
+    public String getCpu() {
+        return cpu;
+    }
+
+    public void setCpu(String cpu) {
+        this.cpu = cpu;
+    }
+
+    public String getNetworkCard() {
+        return networkCard;
+    }
+
+    public void setNetworkCard(String networkCard) {
+        this.networkCard = networkCard;
     }
 
     public Integer getParentId() {
@@ -347,6 +470,30 @@ public class AssetQuery extends ObjectQuery {
 
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
+    }
+
+    public Integer getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(Integer modifyUser) {
+        this.modifyUser = modifyUser;
     }
 
     public List<Integer> getAssetStatusList() {
