@@ -86,7 +86,7 @@ public class ${table.controllerName} {
 
     /**
      * 通过ID查询
-     * @param query 主键封装对象
+     * @param id
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
@@ -95,13 +95,13 @@ public class ${table.controllerName} {
     })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     public ActionResponse queryById(@ApiParam(value = "${table.entityPath}") @PathVariable("id") Integer id)throws Exception{
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(i${entity}Service.getById(id);
+        ParamterExceptionUtils.isNull(id, "ID不能为空");
+        return ActionResponse.success(i${entity}Service.getById(id));
     }
 
     /**
      * 通过ID删除
-     * @param query 主键封装对象
+     * @param id
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
@@ -110,8 +110,8 @@ public class ${table.controllerName} {
     })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") Integer id)throws Exception{
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(i${entity}Service.deleteById(id);
+        ParamterExceptionUtils.isNull(id, "ID不能为空");
+        return ActionResponse.success(i${entity}Service.deleteById(id));
     }
 }
 
