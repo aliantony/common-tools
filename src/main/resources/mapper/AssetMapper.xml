@@ -38,6 +38,7 @@
         <result column="parent_id" property="parentId"/>
         <result column="tags" property="tags"/>
         <result column="is_innet" property="isInnet"/>
+        <result column="first_enter_nett" property="firstEnterNett"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
         <result column="warranty" property="warranty"/>
@@ -50,7 +51,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, number, type, name, serial, category, model, manufacturer, asset_status AS assetStatus, operation_system AS operationSystem, system_bit AS systemBit, location, latitude, longitude, firmware_version AS firmwareVersion, uuid, responsible_user_id AS responsibleUserId, contact_tel AS contactTel, email, hard_disk AS hardDisk, memory, asset_source AS assetSource, importance_degree AS importanceDegree, describle, cpu, network_card AS networkCard, parent_id AS parentId, tags, is_innet AS isInnet, service_life AS serviceLife, buy_date AS buyDate, warranty, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser
+        id, number, type, name, serial, category, model, manufacturer, asset_status AS assetStatus, operation_system AS operationSystem, system_bit AS systemBit, location, latitude, longitude, firmware_version AS firmwareVersion, uuid, responsible_user_id AS responsibleUserId, contact_tel AS contactTel, email, hard_disk AS hardDisk, memory, asset_source AS assetSource, importance_degree AS importanceDegree, describle, cpu, network_card AS networkCard, parent_id AS parentId, tags, is_innet AS isInnet, first_enter_nett AS firstEnterNett, service_life AS serviceLife, buy_date AS buyDate, warranty, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser
     </sql>
 
     <sql id="Table_Name">
@@ -142,6 +143,9 @@
         </if>
         <if test=" isInnet != null">
             is_innet,
+        </if>
+        <if test=" firstEnterNett != null">
+            first_enter_nett,
         </if>
         <if test=" serviceLife != null">
             service_life,
@@ -257,6 +261,9 @@
         <if test=" isInnet != null">
             #{isInnet },
         </if>
+        <if test=" firstEnterNett != null">
+            #{first_enter_nett },
+        </if>
         <if test=" serviceLife != null">
             #{serviceLife },
         </if>
@@ -370,6 +377,9 @@
         </if>
         <if test=" isInnet != null">
             is_innet = #{isInnet },
+        </if>
+        <if test=" firstEnterNett != null">
+            first_enter_nett = #{firstEnterNett },
         </if>
         <if test=" serviceLife != null">
             service_life = #{serviceLife },
@@ -486,6 +496,9 @@
             <if test=" isInnet != null">
                 and is_innet = #{isInnet }
             </if>
+            <if test=" firstEnterNett != null">
+                and first_enter_nett = #{firstEnterNett }
+            </if>
             <if test=" serviceLife != null">
                 and service_life = #{serviceLife }
             </if>
@@ -583,6 +596,9 @@
         </if>
         <if test=" isInnet != null">
             and is_innet = #{isInnet }
+        </if>
+        <if test=" firstEnterNett != null">
+            and first_enter_nett = #{firstEnterNett }
         </if>
         <if test=" serviceLife != null">
             and service_life = #{serviceLife }
