@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.ServletResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -34,6 +35,21 @@ public class AssetController {
     @Resource
     public IAssetService iAssetService;
 
+    /**
+     * 保存全部数据总接口
+     *
+     * @param map
+     * @return actionResponse
+     */
+    @ApiOperation(value = "保存全部数据总接口", notes = "传入Map对象信息")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
+    })
+    @RequestMapping(value = "/save/all", method = RequestMethod.POST)
+    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "map") HashMap<String,Object> map) throws Exception {
+        iAssetService.saveAllAsset(map);
+        return ActionResponse.success();
+    }
     /**
      * 保存
      *
@@ -60,7 +76,7 @@ public class AssetController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "asset") AssetRequest asset) throws Exception {
         iAssetService.updateAsset(asset);
         return ActionResponse.success();
@@ -107,7 +123,7 @@ public class AssetController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetService.deleteById(Integer.parseInt(query.getPrimaryKey())));

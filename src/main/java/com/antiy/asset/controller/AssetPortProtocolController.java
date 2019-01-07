@@ -53,7 +53,7 @@ public class AssetPortProtocolController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetPortProtocol") AssetPortProtocolRequest assetPortProtocol) throws Exception {
         iAssetPortProtocolService.updateAssetPortProtocol(assetPortProtocol);
         return ActionResponse.success();
@@ -100,7 +100,7 @@ public class AssetPortProtocolController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetPortProtocolService.deleteById(Integer.parseInt(query.getPrimaryKey())));
