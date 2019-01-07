@@ -17,4 +17,11 @@ import java.util.List;
 public interface AssetGroupDao extends IBaseDao<AssetGroup> {
 
     List<AssetGroup> findListAssetGroup(AssetGroupQuery query) throws Exception;
+
+    /**
+     * 查询资产组名称
+     *
+     * @return
+     */
+    List<AssetGroup> findGroupValue() throws Exception;
 }
