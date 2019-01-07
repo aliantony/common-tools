@@ -17,7 +17,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name,purpose,important_degree, memo
+        id, name,purpose,important_degree AS importantDegree,name,gmt_create AS gmtCreate,gmt_modified AS gmtModified, memo,create_user AS createUser ,modify_user AS modifyUser,status
     </sql>
 
     <sql id="Table_Name">
@@ -36,19 +36,19 @@
             name ,
         </if>
         <if test=" gmtCreate != null">
-            gmtCreate ,
+            gmt_create ,
         </if>
         <if test=" gmtModified != null">
-            gmtModified ,
+            gmt_modified ,
         </if>
         <if test=" memo != null">
             memo,
         </if>
         <if test=" createUser != null">
-            createUser ,
+            create_user ,
         </if>
         <if test=" modifyUser != null">
-            modifyUser ,
+            modify_user ,
         </if>
         <if test=" status != null">
             status ,
@@ -118,31 +118,34 @@
 
     <sql id="Where_Column_List">
         <if test=" purpose != null">
-            AND purpose = #{purpose },
+        AND    purpose = #{purpose }
         </if>
         <if test=" importantDegree != null">
-            AND important_degree = #{importantDegree },
+            AND   important_degree = #{importantDegree }
         </if>
         <if test=" name != null">
-            AND name = #{name },
+            AND   name = #{name }
         </if>
         <if test=" gmtCreate != null">
-            AND gmt_create = #{gmtCreate },
+            AND   gmt_create = #{gmtCreate }
         </if>
         <if test=" gmtModified != null">
-            AND gmt_modified = #{gmtModified },
+            AND    gmt_modified = #{gmtModified }
         </if>
         <if test=" memo != null">
-            AND memo = #{memo },
+            AND   memo = #{memo },
         </if>
         <if test=" createUser != null">
-            AND create_user = #{createUser },
+            AND   create_user = #{createUser }
         </if>
         <if test=" modifyUser != null">
-            AND modify_user = #{modifyUser },
+            AND    modify_user = #{modifyUser }
         </if>
         <if test=" status != null">
-            AND status = #{status },
+            AND    status = #{status }
+        </if>
+        <if test=" status == null">
+            AND    status = 0
         </if>
 
     </sql>
@@ -244,7 +247,6 @@
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <include refid="Where_Column_List"></include>
-            and status = 0
         </trim>
         <include refid="Page_List"></include>
     </select>
