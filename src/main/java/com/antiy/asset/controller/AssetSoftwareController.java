@@ -154,12 +154,8 @@ public class AssetSoftwareController {
         List<?> list = importResult.getDataList();
         List<Object> assetSoftwares = BeanConvert.convert(list, AssetSoftware.class);
         Integer successNum = iAssetSoftwareService.batchSave(transferList(assetSoftwares));
-        Boolean success = successNum == assetSoftwares.size();
-        if (success) {
-            return ActionResponse.success();
-        } else {
-            return ActionResponse.fail(RespBasicCode.ERROR, "失败了" + (assetSoftwares.size() - successNum) + "条数据");
-        }
+        return ActionResponse.success(successNum);
+
     }
 
     private List<AssetSoftware> transferList(List<Object> objects) {

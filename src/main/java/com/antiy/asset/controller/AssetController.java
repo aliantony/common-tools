@@ -131,7 +131,7 @@ public class AssetController {
     public void export(@ApiParam(value = "query") AssetQuery assetQuery, ServletResponse response) throws Exception {
         List<AssetResponse> list = iAssetService.findListAsset(assetQuery);
         List entities = BeanConvert.convert(list, AssetEntity.class);
-        ExcelUtils.exportToClient(AssetEntity.class, "硬件信息表.xls", "硬件信息", entities);
+        ExcelUtils.exportToClient(AssetEntity.class, "硬件信息表.xlsx", "硬件信息", entities);
     }
 
     /**
@@ -145,7 +145,7 @@ public class AssetController {
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
     public void exportTemplate(@ApiParam(value = "query") AssetQuery assetQuery,
                                ServletResponse response) throws Exception {
-        ExcelUtils.exportToClient(AssetEntity.class, "硬件信息表.xls", "硬件信息", null);
+        ExcelUtils.exportToClient(AssetEntity.class, "硬件信息表.xlsx", "硬件信息", null);
     }
 
     /**
@@ -161,12 +161,7 @@ public class AssetController {
         List<?> list = importResult.getDataList();
         List<Object> asset = BeanConvert.convert(list, Asset.class);
         Integer successNum = iAssetService.batchSave(transferList(asset));
-        Boolean success = successNum == asset.size();
-        if (success) {
-            return ActionResponse.success();
-        } else {
-            return ActionResponse.fail(RespBasicCode.ERROR, "失败了" + (asset.size() - successNum) + "条数据");
-        }
+        return ActionResponse.success(successNum);
     }
 
     private List<Asset> transferList(List<Object> objects) {
