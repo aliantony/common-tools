@@ -455,4 +455,9 @@
         and status = 1
     </select>
 
+    <select id="findOS" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select distinct operation_system from
+        <include refid="Table_Name"></include>
+    </select>
+
 </mapper>
