@@ -118,13 +118,31 @@
 
     <sql id="Where_Column_List">
         <if test=" purpose != null">
-            and purpose = #{purpose }
+            AND purpose = #{purpose },
         </if>
         <if test=" importantDegree != null">
-            and important_degree = #{importantDegree }
+            AND important_degree = #{importantDegree },
         </if>
         <if test=" name != null">
-            and name = #{name }
+            AND name = #{name },
+        </if>
+        <if test=" gmtCreate != null">
+            AND gmt_create = #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            AND gmt_modified = #{gmtModified },
+        </if>
+        <if test=" memo != null">
+            AND memo = #{memo },
+        </if>
+        <if test=" createUser != null">
+            AND create_user = #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            AND modify_user = #{modifyUser },
+        </if>
+        <if test=" status != null">
+            AND status = #{status },
         </if>
 
     </sql>

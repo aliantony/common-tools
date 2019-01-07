@@ -54,12 +54,7 @@ public class AssetDepartmentController {
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentUpdateRequest assetDepartment) throws Exception {
-        Boolean success = iAssetDepartmentService.updateAssetDepartment(assetDepartment) > 0;
-        if (success) {
-            return ActionResponse.success();
-        } else {
-            return ActionResponse.fail(RespBasicCode.ERROR, "修改失败");
-        }
+        return ActionResponse.success(iAssetDepartmentService.updateAssetDepartment(assetDepartment));
     }
 
     /**

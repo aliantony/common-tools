@@ -21,6 +21,11 @@ public class AssetGroupRelationRequest extends BasicRequest implements ObjectVal
     /**
      * 资产组主键
      */
+    @ApiModelProperty("主键")
+    private Integer id;
+    /**
+     * 资产组主键
+     */
     @ApiModelProperty("资产组主键")
     private Integer assetGroupId;
     /**
@@ -131,6 +136,13 @@ public class AssetGroupRelationRequest extends BasicRequest implements ObjectVal
         this.status = status;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     @Override
     public void validate() throws RequestParamValidateException {
