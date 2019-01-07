@@ -249,6 +249,9 @@
             <if test=" putintoUser != null">
                 and putinto_user like #{putintoUser}"%"
             </if>
+            <if test=" type != null">
+                and type = #{type}
+            </if>
             and status = 1
         </trim>
         <if test="pageSize !=-1">
@@ -262,6 +265,9 @@
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" putintoUser != null">
                 and putinto_user like #{putintoUser}"%"
+            </if>
+            <if test=" type != null">
+                and type = #{type}
             </if>
             and status = 1
         </trim>
