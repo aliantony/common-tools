@@ -194,7 +194,7 @@ public class AssetController {
     /**
      * 查询厂商信息
      *
-     * @return actionResponse
+     * @return 厂商名称集合
      */
     @ApiOperation(value = "查询厂商接口", notes = "无查询条件")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
