@@ -7,6 +7,7 @@ import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.asset.vo.response.OsResponse;
 import com.antiy.asset.vo.templet.AssetSoftwareEntity;
 import com.antiy.asset.vo.templet.ImportResult;
 import com.antiy.common.base.ActionResponse;
@@ -153,18 +154,26 @@ public class AssetSoftwareController {
         List<?> list = importResult.getDataList();
         List<Object> assetSoftwares = BeanConvert.convert(list, AssetSoftware.class);
         Integer successNum = iAssetSoftwareService.batchSave(transferList(assetSoftwares));
-        Boolean success = successNum == assetSoftwares.size();
-        if (success) {
-            return ActionResponse.success();
-        } else {
-            return ActionResponse.fail(RespBasicCode.ERROR, "失败了" + (assetSoftwares.size() - successNum) + "条数据");
-        }
+        return ActionResponse.success(successNum);
+
     }
 
     private List<AssetSoftware> transferList(List<Object> objects) {
         List<AssetSoftware> assetSoftwares = new ArrayList<>();
         objects.forEach(x -> assetSoftwares.add((AssetSoftware) x));
         return assetSoftwares;
+    }
+
+    /**
+     * 查询操作系统信息
+     *
+     * @return 操作系统名称集合
+     */
+    @ApiOperation(value = "查询操作系统接口", notes = "无查询条件")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @RequestMapping(value = "/query/os", method = RequestMethod.GET)
+    public List<OsResponse> queryOS() throws Exception {
+        return iAssetSoftwareService.findOS();
     }
 }
 

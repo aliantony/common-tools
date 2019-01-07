@@ -5,6 +5,7 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.ManufacturerResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -90,5 +91,11 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     Integer batchSave(List<Asset> assets) throws Exception;
+    /**
+     * 查询厂商
+     *
+     * @return
+     */
+    List<ManufacturerResponse> findManufacturer() throws Exception;
 
 }

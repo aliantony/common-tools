@@ -158,43 +158,46 @@
 
     <sql id="Where_Column_List">
         <if test=" name != null">
-            AND name = #{name },
+            AND name = #{name }
         </if>
         <if test=" departmentId != null">
-            AND department_id = #{departmentId },
+            AND department_id = #{departmentId }
         </if>
         <if test=" email != null">
-            AND email = #{email },
+            AND email = #{email }
         </if>
         <if test=" qq != null">
-            AND qq = #{qq },
+            AND qq = #{qq }
         </if>
         <if test=" weixin != null">
-            AND weixin = #{weixin },
+            AND weixin = #{weixin }
         </if>
         <if test=" mobile != null">
-            AND mobile = #{mobile },
+            AND mobile = #{mobile }
         </if>
         <if test=" address != null">
-            AND address = #{address },
+            AND address = #{address }
         </if>
         <if test=" createUser != null">
-            AND create_user = #{createUser },
+            AND create_user = #{createUser }
         </if>
         <if test=" modifyUser != null">
-            AND modify_user = #{modifyUser },
+            AND modify_user = #{modifyUser }
         </if>
         <if test=" gmtCreate != null">
-            AND gmt_create = #{gmtCreate },
+            AND gmt_create = #{gmtCreate }
         </if>
         <if test=" gmtModified != null">
-            AND gmt_modified = #{gmtModified },
+            AND gmt_modified = #{gmtModified }
         </if>
         <if test=" status != null">
-            AND status = #{status },
+            AND    status = #{status }
+        </if>
+        <if test=" status == null">
+            AND    status = 0
         </if>
         <if test=" memo != null">
-            AND memo = #{memo },
+            AND memo = #{memo }
         </if>
 
     </sql>
@@ -299,5 +302,10 @@
             and status = 0
         </trim>
         <include refid="Page_List"></include>
+    </select>
+
+    <select id="findUserName" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select name from
+        <include refid="Table_Name"></include>
     </select>
 </mapper>

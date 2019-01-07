@@ -4,6 +4,7 @@ import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
+import com.antiy.asset.vo.response.GroupValueResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -51,5 +52,11 @@ public interface IAssetGroupService extends IBaseService<AssetGroup> {
      * @return
      */
     PageResult<AssetGroupResponse> findPageAssetGroup(AssetGroupQuery query) throws Exception;
+    /**
+     * 查询资产组名称
+     *
+     * @return
+     */
+    List<GroupValueResponse> findGroupValue() throws Exception;
 
 }

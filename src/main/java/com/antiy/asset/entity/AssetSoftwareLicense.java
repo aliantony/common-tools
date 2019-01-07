@@ -36,7 +36,7 @@ public class AssetSoftwareLicense extends BaseEntity {
      * 购买日期
      */
     @ApiModelProperty("购买日期")
-    private Long busyDate;
+    private Long buyDate;
     /**
      * 有效期限
      */
@@ -109,12 +109,12 @@ public class AssetSoftwareLicense extends BaseEntity {
         this.softwareId = softwareId;
     }
 
-    public Long getBusyDate() {
-        return busyDate;
+    public Long getBuyDate() {
+        return buyDate;
     }
 
-    public void setBusyDate(Long busyDate) {
-        this.busyDate = busyDate;
+    public void setBuyDate(Long buyDate) {
+        this.buyDate = buyDate;
     }
 
     public Long getExpiryDate() {

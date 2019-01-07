@@ -13,5 +13,3 @@ target/
 /package-lock.json
 
 # template
-*.vm
-

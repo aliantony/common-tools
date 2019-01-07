@@ -8,6 +8,7 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.ManufacturerResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -61,7 +62,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private BaseConverter<AssetRequest, Asset> requestConverter;
     @Resource
-    private BaseConverter<Asset, AssetResponse> responseConverter;
+    private BaseConverter<Asset, ManufacturerResponse> manufacturerResponseConverter;
 
     @Override
     public Integer saveAsset(AssetRequest request) throws Exception {
@@ -204,6 +205,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         return i + 1;
     }
+
+    @Override
+    public List<ManufacturerResponse> findManufacturer() throws Exception {
+        List<ManufacturerResponse> manufacturerResponseList = manufacturerResponseConverter.convert(assetDao.findManufacturer(),ManufacturerResponse.class);
+        return manufacturerResponseList;
+    }
+
     @Override
     public boolean checkRepeatAsset(String uuid, List<String[]> ipMac) {
         ParamterExceptionUtils.isBlank(uuid, "上报设备资产UUID不能为空");

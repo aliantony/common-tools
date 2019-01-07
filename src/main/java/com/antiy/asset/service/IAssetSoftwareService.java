@@ -4,6 +4,7 @@ import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.asset.vo.response.OsResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -59,5 +60,12 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @return
      */
     PageResult<AssetSoftwareResponse> findPageAssetSoftware(AssetSoftwareQuery query) throws Exception;
+
+    /**
+     * 查询操作系统
+     *
+     * @return
+     */
+    List<OsResponse> findOS() throws Exception;
 
 }
