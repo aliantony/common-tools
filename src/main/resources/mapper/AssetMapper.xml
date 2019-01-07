@@ -757,7 +757,7 @@
     </select>
 
     <select id="findManufacturer" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
-        select manufacturer from
+        select distinct manufacturer from
         <include refid="Table_Name"></include>
     </select>
 </mapper>
