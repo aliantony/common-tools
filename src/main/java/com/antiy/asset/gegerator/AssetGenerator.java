@@ -88,14 +88,16 @@ public class AssetGenerator {
         // 表名生成策略
         strategy.setNaming(NamingStrategy.underline_to_camel);
         // 需要生成的表
-        strategy.setInclude(new String[]{"asset", "asset_category_model", "asset_cpu", "asset_department",
-                "asset_group", "asset_group_relation", "asset_hard_disk", "asset_label_relation", "asset_lable",
-                "asset_link_relation", "asset_mainborad", "asset_memory", "asset_network_card", "asset_network_equipment",
-                "asset_port_protocol", "asset_safety_equipment", "asset_software", "asset_software_license", "asset_software_relation", "asset_user", "scheme"});
+//        strategy.setInclude(new String[]{"asset", "asset_category_model", "asset_cpu", "asset_department",
+//                "asset_group", "asset_group_relation", "asset_hard_disk", "asset_label_relation", "asset_lable",
+//                "asset_link_relation", "asset_mainborad", "asset_memory", "asset_network_card", "asset_network_equipment",
+//                "asset_port_protocol", "asset_safety_equipment", "asset_software", "asset_software_license", "asset_software_relation", "asset_user", "scheme"});
+//
+//        strategy.setInclude(new String[]{"baseline_assert_info", "baseline_basic_item", "baseline_configuration_value", "baseline_expression",
+//                "baseline_info", "baseline_policy_info", "common_baseline", "common_baseline_detail", "deployment_baseline",
+//                "deployment_baseline_policy", "deployment_hard_soft_baseline", "deployment_hard_soft_baseline_policy", "softerware_os_baseline_detail"});
 
-//        strategy.setInclude(new String[]{"asset_user"});
-
-//        strategy.setInclude(new String[] {"scheme"});
+        strategy.setInclude(new String[] {"asset_topology","asset_operation_record"});
         strategy.setEntityColumnConstant(true);
         mpg.setStrategy(strategy);
 
@@ -233,9 +235,9 @@ public class AssetGenerator {
             }
         });
         dsc.setDriverName("com.mysql.jdbc.Driver");
-        dsc.setUsername("root");
-        dsc.setPassword("1234");
-        dsc.setUrl("jdbc:mysql://10.240.17.29:3306/asset?characterEncoding=utf8");
+        dsc.setUsername("dev_data");
+        dsc.setPassword("2q2xn$$34COix#Kp");
+        dsc.setUrl("jdbc:mysql://10.240.50.103:3306/csom?characterEncoding=utf8");
         mpg.setDataSource(dsc);
     }
 

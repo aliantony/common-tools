@@ -19,4 +19,12 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
     List<AssetSoftware> findListAssetSoftware(AssetSoftwareQuery query) throws Exception;
 
     int checkRepeatSoftware(AssetSoftware software);
+
+    /**
+     * 查询操作系统
+     *
+     * @return
+     */
+    List<AssetSoftware> findOS() throws Exception;
+
 }

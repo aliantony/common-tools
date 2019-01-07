@@ -7,6 +7,7 @@ import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
+import com.antiy.asset.vo.response.GroupValueResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -33,7 +34,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Resource
     private BaseConverter<AssetGroupRequest, AssetGroup> requestConverter;
     @Resource
-    private BaseConverter<AssetGroup, AssetGroupResponse> responseConverter;
+    private BaseConverter<AssetGroup, GroupValueResponse> groupValueResponseConverter;
 
     @Override
     public Integer saveAssetGroup(AssetGroupRequest request) throws Exception {
@@ -79,5 +80,10 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public PageResult<AssetGroupResponse> findPageAssetGroup(AssetGroupQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetGroup(query), query.getCurrentPage(), this.findListAssetGroup(query));
+    }
+
+    @Override
+    public List<GroupValueResponse> findGroupValue() throws Exception {
+        return groupValueResponseConverter.convert(assetGroupDao.findGroupValue(),GroupValueResponse.class);
     }
 }

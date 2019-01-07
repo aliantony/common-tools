@@ -6,6 +6,7 @@ import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.asset.vo.response.OsResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -33,6 +34,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private BaseConverter<AssetSoftwareRequest, AssetSoftware> requestConverter;
     @Resource
     private BaseConverter<AssetSoftware, AssetSoftwareResponse> responseConverter;
+    @Resource
+    private BaseConverter<AssetSoftware, OsResponse> osResponseConverter;
 
     @Override
     public Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -70,5 +73,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public PageResult<AssetSoftwareResponse> findPageAssetSoftware(AssetSoftwareQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetSoftware(query), query.getCurrentPage(), this.findListAssetSoftware(query));
+    }
+
+    @Override
+    public List<OsResponse> findOS() throws Exception {
+        List<OsResponse> osResponseList = osResponseConverter.convert(assetSoftwareDao.findOS(), OsResponse.class);
+        return osResponseList;
     }
 }

@@ -250,4 +250,9 @@
         </trim>
         <include refid="Page_List"></include>
     </select>
+
+    <select id="findGroupValue" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select distinct name from
+        <include refid="Table_Name"></include>
+    </select>
 </mapper>

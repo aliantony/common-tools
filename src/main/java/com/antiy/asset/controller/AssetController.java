@@ -1,15 +1,5 @@
 package com.antiy.asset.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletResponse;
-
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.BeanConvert;
@@ -17,14 +7,22 @@ import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.ManufacturerResponse;
 import com.antiy.asset.vo.templet.AssetEntity;
 import com.antiy.asset.vo.templet.ImportResult;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author zhangyajun
@@ -186,5 +184,17 @@ public class AssetController {
                                        @ApiParam(value = "资产新状态") @RequestParam("targetStatus") Integer targetStatus) throws Exception {
         iAssetService.changeStatus(ids, targetStatus);
         return ActionResponse.success();
+    }
+
+    /**
+     * 查询厂商信息
+     *
+     * @return 厂商名称集合
+     */
+    @ApiOperation(value = "查询厂商接口", notes = "无查询条件")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @RequestMapping(value = "/query/manufacturer", method = RequestMethod.GET)
+    public List<ManufacturerResponse> queryManufacturer() throws Exception {
+        return iAssetService.findManufacturer();
     }
 }
