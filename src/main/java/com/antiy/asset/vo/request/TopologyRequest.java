@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.antiy.common.base.BasicRequest;
 
@@ -16,7 +17,22 @@ import io.swagger.annotations.ApiModelProperty;
 public class TopologyRequest extends BasicRequest {
     @ApiModelProperty(value = "保存内容,JSON数据格式")
     @NotBlank(message = "网络拓扑保存不能为空")
-    private String dataJson;
+    private String  dataJson;
+
+    /**
+     * 拓扑类型
+     */
+    @ApiModelProperty("拓扑类型")
+    @NotNull(message = "拓扑类型不能为空")
+    private Integer topologyType;
+
+    public Integer getTopologyType() {
+        return topologyType;
+    }
+
+    public void setTopologyType(Integer topologyType) {
+        this.topologyType = topologyType;
+    }
 
     public String getDataJson() {
         return dataJson;

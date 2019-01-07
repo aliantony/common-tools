@@ -1,9 +1,6 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -16,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.dao.AssetTopologyDao;
+import com.antiy.asset.entity.AssetTopology;
 import com.antiy.asset.entity.Topology;
 import com.antiy.asset.enums.AssetStatusEnum;
 import com.antiy.asset.service.ITopologyService;
@@ -33,11 +32,14 @@ import com.antiy.common.utils.LogUtils;
 public class TopologyServiceImpl implements ITopologyService {
     @Resource
     private AssetDao            assetDao;
+    @Resource
+    private AssetTopologyDao    assetTopologyDao;
+
     static Lock                 reenLock = new ReentrantLock();
     private static final Logger logger   = LogUtils.get();
 
     @Override
-    public List<TopologyResponse> queryTopologyInit() {
+    public List<TopologyResponse> queryTopologyInit() throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         List<Integer> assetStartsList = new ArrayList<>();
         assetStartsList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
@@ -83,7 +85,7 @@ public class TopologyServiceImpl implements ITopologyService {
     }
 
     @Override
-    public String queryTopology() {
+    public String queryTopology(Integer topologyType) throws Exception {
         String result = getTopologyCache();
 
         // step1 判断缓存是否存在
@@ -91,7 +93,7 @@ public class TopologyServiceImpl implements ITopologyService {
             if (reenLock.tryLock()) { // 如果获取锁则从cache获取网络拓扑数据
                 try {
                     // step2 从数据库获取数据
-                    result = getTopologyDB();
+                    result = getTopologyDB(topologyType);
 
                     // TODO step3 数据缓存起来
                 } finally {
@@ -110,16 +112,33 @@ public class TopologyServiceImpl implements ITopologyService {
 
     @Override
     @Transactional
-    public int saveTopology(TopologyRequest topologyRequest) {
-
-        return 0;
+    public int saveTopology(TopologyRequest topologyRequest) throws Exception {
+        AssetTopology assetTopology = new AssetTopology();
+        assetTopology.setGmtCreate(System.currentTimeMillis());
+        assetTopology.setRelation(topologyRequest.getDataJson());
+        assetTopology.setTopologyType(topologyRequest.getTopologyType());
+        int resultCount = assetTopologyDao.insert(assetTopology);
+        // TODO 保存到缓存中
+        return resultCount;
     }
 
+    /**
+     * 获取缓存的网络拓扑数据
+     * @return
+     */
     private String getTopologyCache() {
         return null;
     }
 
-    private String getTopologyDB() {
-        return null;
+    /**
+     * 通过类型获取网络拓扑信息
+     * @param topologyType
+     * @return
+     */
+    private String getTopologyDB(Integer topologyType) throws Exception {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("topologyType", topologyType);
+        List<AssetTopology> topologyList = assetTopologyDao.getByWhere(params);
+        return CollectionUtils.isNotEmpty(topologyList) ? topologyList.get(0).getRelation() : null;
     }
 }
