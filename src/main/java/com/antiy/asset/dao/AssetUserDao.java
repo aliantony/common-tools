@@ -17,4 +17,11 @@ import java.util.List;
 public interface AssetUserDao extends IBaseDao<AssetUser> {
 
     List<AssetUser> findListAssetUser(AssetUserQuery query) throws Exception;
+    /**
+     * 查询用户名称
+     *
+     * @return
+     */
+    List<AssetUser> findUserName() throws Exception;
+
 }

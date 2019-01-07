@@ -7,6 +7,7 @@ import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
 import com.antiy.asset.vo.response.AssetUserResponse;
+import com.antiy.asset.vo.response.UserNameResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -33,7 +34,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Resource
     private BaseConverter<AssetUserRequest, AssetUser> requestConverter;
     @Resource
-    private BaseConverter<AssetUser, AssetUserResponse> responseConverter;
+    private BaseConverter<AssetUser, UserNameResponse> userNameResponseConverter;
 
     @Override
     public Integer saveAssetUser(AssetUserRequest request) throws Exception {
@@ -79,5 +80,10 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Override
     public PageResult<AssetUserResponse> findPageAssetUser(AssetUserQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetUser(query), query.getCurrentPage(), this.findListAssetUser(query));
+    }
+
+    @Override
+    public List<UserNameResponse> findUserName() throws Exception {
+        return userNameResponseConverter.convert(assetUserDao.findUserName(), UserNameResponse.class);
     }
 }

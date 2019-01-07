@@ -303,4 +303,9 @@
         </trim>
         <include refid="Page_List"></include>
     </select>
+
+    <select id="findUserName" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select name from
+        <include refid="Table_Name"></include>
+    </select>
 </mapper>
