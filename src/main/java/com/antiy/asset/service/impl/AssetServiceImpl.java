@@ -8,6 +8,7 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.AssetSoftwareLicenseResponse;
 import com.antiy.asset.vo.response.ManufacturerResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
@@ -61,6 +62,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetSoftwareRelationDao assetSoftwareRelationDao;
     @Resource
     private BaseConverter<AssetRequest, Asset> requestConverter;
+    @Resource
+    private BaseConverter<Asset, AssetResponse> responseConverter;
     @Resource
     private BaseConverter<Asset, ManufacturerResponse> manufacturerResponseConverter;
 
