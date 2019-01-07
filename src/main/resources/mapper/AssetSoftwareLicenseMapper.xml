@@ -8,7 +8,7 @@
         <result column="name" property="name"/>
         <result column="manufacturer" property="manufacturer"/>
         <result column="software_id" property="softwareId"/>
-        <result column="busy_date" property="busyDate"/>
+        <result column="buy_date" property="buyDate"/>
         <result column="expiry_date" property="expiryDate"/>
         <result column="license_secret_key" property="licenseSecretKey"/>
         <result column="gmt_create" property="gmtCreate"/>
@@ -21,7 +21,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, manufacturer, software_id AS softwareId, busy_date AS busyDate, expiry_date AS expiryDate, license_secret_key AS licenseSecretKey, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
+        id, name, manufacturer, software_id AS softwareId, buy_date AS buyDate, expiry_date AS expiryDate, license_secret_key AS licenseSecretKey, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
 
     <sql id="Table_Name">
@@ -39,8 +39,8 @@
         <if test=" softwareId != null">
             software_id,
         </if>
-        <if test=" busyDate != null">
-            busy_date,
+        <if test=" buyDate != null">
+            buy_date,
         </if>
         <if test=" expiryDate != null">
             expiry_date,
@@ -78,8 +78,8 @@
         <if test=" softwareId != null">
             #{softwareId },
         </if>
-        <if test=" busyDate != null">
-            #{busyDate },
+        <if test=" buyDate != null">
+            #{buyDate },
         </if>
         <if test=" expiryDate != null">
             #{expiryDate },
@@ -117,8 +117,8 @@
         <if test=" softwareId != null">
             software_id = #{softwareId },
         </if>
-        <if test=" busyDate != null">
-            busy_date = #{busyDate },
+        <if test=" buyDate != null">
+            buy_date = #{buyDate },
         </if>
         <if test=" expiryDate != null">
             expiry_date = #{expiryDate },
@@ -156,8 +156,8 @@
         <if test=" softwareId != null">
             and software_id = #{softwareId }
         </if>
-        <if test=" busyDate != null">
-            and busy_date = #{busyDate }
+        <if test=" buyDate != null">
+            and buy_date = #{buyDate }
         </if>
         <if test=" expiryDate != null">
             and expiry_date = #{expiryDate }
@@ -257,8 +257,8 @@
             <if test=" softwareId != null">
                 and software_id = #{softwareId}
             </if>
-            <if test=" busyDate != null">
-                and busy_date = #{busyDate}
+            <if test=" buyDate != null">
+                and buy_date = #{buyDate}
             </if>
             <if test=" expiryDate != null">
                 and expiry_date = #{expiryDate}
@@ -287,8 +287,8 @@
             <if test=" softwareId != null">
                 and software_id = #{softwareId}
             </if>
-            <if test=" busyDate != null">
-                and busy_date = #{busyDate}
+            <if test=" buyDate != null">
+                and buy_date = #{buyDate}
             </if>
             <if test=" expiryDate != null">
                 and expiry_date = #{expiryDate}

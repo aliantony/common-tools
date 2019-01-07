@@ -26,7 +26,7 @@ public class AssetSoftwareLicenseRequest extends BasicRequest implements ObjectV
      * 购买日期
      */
     @ApiModelProperty("购买日期")
-    private Long busyDate;
+    private Long buyDate;
     /**
      * 有效期限
      */
@@ -59,12 +59,12 @@ public class AssetSoftwareLicenseRequest extends BasicRequest implements ObjectV
         this.softwareId = softwareId;
     }
 
-    public Long getBusyDate() {
-        return busyDate;
+    public Long getBuyDate() {
+        return buyDate;
     }
 
-    public void setBusyDate(Long busyDate) {
-        this.busyDate = busyDate;
+    public void setBuyDate(Long buyDate) {
+        this.buyDate = buyDate;
     }
 
     public Long getExpiryDate() {
@@ -90,7 +90,7 @@ public class AssetSoftwareLicenseRequest extends BasicRequest implements ObjectV
     @Override
     public void validate() throws RequestParamValidateException {
 //        ParamterExceptionUtils.isNull(expiryDate, "有效期限不能为空");
-//        ParamterExceptionUtils.isNull(busyDate,"购买日期不能为空");
+//        ParamterExceptionUtils.isNull(buyDate,"购买日期不能为空");
 //        ParamterExceptionUtils.isBlank(licenseSecretKey, "许可密钥不能为空");
     }
     public void setExpiryDate(Long expiryDate) {
