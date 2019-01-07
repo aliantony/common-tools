@@ -81,10 +81,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public List<AssetResponse> findListAsset(AssetQuery query) throws Exception {
         List<Asset> asset = assetDao.findListAsset(query);
-        List<Object> objects = BeanConvert.convert(asset, AssetResponse.class);
-        List<AssetResponse> assetResponses = new ArrayList<>();
-        objects.forEach(x -> assetResponses.add((AssetResponse) x));
-        return assetResponses;
+        List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
+        return objects;
     }
 
     public Integer findCountAsset(AssetQuery query) throws Exception {

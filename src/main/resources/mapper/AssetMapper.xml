@@ -544,17 +544,12 @@
             and type = #{type }
         </if>
         <if test=" name != null">
-            and name  LIKE CONCAT('%',#{name},'%')
+            and name LIKE CONCAT('%',#{name},'%')
         </if>
         <if test=" serial != null">
             and serial = #{serial }
         </if>
-        <if test=" category != null">
-            and category = #{category }
-        </if>
-        <if test=" model != null">
-            and model = #{model }
-        </if>
+
         <if test=" manufacturer != null">
             and manufacturer = #{manufacturer }
         </if>
@@ -621,6 +616,62 @@
 
     </sql>
 
+    <!--资产条件查询-->
+    <sql id="Multiple_Query">
+        <if test=" assetGroup != null">
+            and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id = #{assetGroup})
+        </if>
+        <if test=" multipleQuery != null">
+            and (name LIKE CONCAT('%',#{multipleQuery},'%')
+            or number LIKE CONCAT('%',#{multipleQuery},'%')
+            or serial LIKE CONCAT('%',#{multipleQuery},'%')
+            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
+            CONCAT('%',#{multipleQuery},'%'))
+            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and mac_address like
+            CONCAT('%',#{multipleQuery},'%'))
+            )
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+        <if test=" type != null">
+            and type = #{type }
+        </if>
+        <if test=" serial != null">
+            and serial = #{serial }
+        </if>
+        <if test=" category != null">
+            and category = #{category }
+        </if>
+        <if test=" model != null">
+            and model = #{model }
+        </if>
+        <if test=" manufacturer != null">
+            and manufacturer LIKE CONCAT('%',#{manufacturer},'%')
+        </if>
+        <if test=" operationSystem != null">
+            and operation_system LIKE CONCAT('%',#{operationSystem },'%')
+        </if>
+        <if test=" responsibleUserId != null">
+            and responsible_user_id = #{responsibleUserId }
+        </if>
+        <if test=" assetSource != null">
+            and asset_source = #{assetSource }
+        </if>
+        <if test=" importanceDegree != null">
+            and importance_degree = #{importanceDegree }
+        </if>
+        <if test=" firstEnterNettBegin != null">
+            and first_enter_nett &gt;= #{firstEnterNettBegin }
+        </if>
+        <if test=" firstEnterNettEnd != null">
+            and first_enter_nett &lt;= #{firstEnterNettEnd }
+        </if>
+        and status =0
+    </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.Asset" useGeneratedKeys="true" keyProperty="id">
         insert into
@@ -679,13 +730,13 @@
     </select>
 
 
-    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
         select count(1) count
         from
         <include refid="Table_Name"></include>
         <where>
             <trim prefixOverrides="and">
-                <include refid="Where_Column"></include>
+                <include refid="Multiple_Query"></include>
             </trim>
         </where>
     </select>
@@ -695,7 +746,7 @@
         <include refid="Table_Name"></include>
         <where>
             <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
+                <include refid="Multiple_Query"></include>
             </trim>
         </where>
         <if test="pageSize !=-1">
@@ -711,9 +762,7 @@
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-            <include refid="Where_Column"></include>
-            and
-            status=0
+            <include refid="Multiple_Query"></include>
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
