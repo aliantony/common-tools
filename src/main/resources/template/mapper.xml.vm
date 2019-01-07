@@ -8,7 +8,7 @@
 
 #end
 #if(${baseResultMap})
-<!-- 通用查询映射结果 -->
+    <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="${package.Entity}.${entity}">
 #foreach($field in ${table.fields})
 #if(${field.keyFlag})##生成主键排在第一位
@@ -26,7 +26,7 @@
     </resultMap>
 #end
 #if(${baseColumnList})
-<!-- 通用查询结果列 -->
+    <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
 #foreach($field in ${table.commonFields})
 #if(${field.name} == 'id') #else
