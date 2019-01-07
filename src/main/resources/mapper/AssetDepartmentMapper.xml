@@ -128,16 +128,34 @@
 
     <sql id="Where_Column_List">
         <if test=" name != null">
-            and name = #{name }
+            AND name = #{name },
         </if>
         <if test=" responsibleUser != null">
-            and responsible_user = #{responsibleUser }
+            AND responsible_user = #{responsibleUser },
         </if>
         <if test=" telephone != null">
-            and telephone = #{telephone }
+            AND telephone = #{telephone },
         </if>
         <if test=" parentId != null">
-            and parent_id = #{parentId }
+            AND parent_id = #{parentId },
+        </if>
+        <if test=" gmtCreate != null">
+            AND gmt_create = #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            AND gmt_modified = #{gmtModified },
+        </if>
+        <if test=" memo != null">
+            AND memo = #{memo },
+        </if>
+        <if test=" createUser != null">
+            AND create_user = #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            AND modify_user = #{modifyUser },
+        </if>
+        <if test=" status != null">
+            AND status = #{status },
         </if>
     </sql>
     <sql id="Page_List">

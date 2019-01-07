@@ -523,7 +523,90 @@
         </where>
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.Asset">
+    <sql id="Where_Column">
+        <if test=" number != null">
+            and number = #{number }
+        </if>
+        <if test=" type != null">
+            and type = #{type }
+        </if>
+        <if test=" name != null">
+            and name  LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test=" serial != null">
+            and serial = #{serial }
+        </if>
+        <if test=" category != null">
+            and category = #{category }
+        </if>
+        <if test=" model != null">
+            and model = #{model }
+        </if>
+        <if test=" manufacturer != null">
+            and manufacturer = #{manufacturer }
+        </if>
+        <if test=" assetStatus != null">
+            and asset_status = #{assetStatus }
+        </if>
+        <if test=" operationSystem != null">
+            and operation_system = #{operationSystem }
+        </if>
+        <if test=" systemBit != null">
+            and system_bit = #{systemBit }
+        </if>
+        <if test=" location != null">
+            and location = #{location }
+        </if>
+
+        <if test=" firmwareVersion != null">
+            and firmware_version = #{firmwareVersion }
+        </if>
+        <if test=" uuid != null">
+            and uuid = #{uuid }
+        </if>
+        <if test=" responsibleUserId != null">
+            and responsible_user_id = #{responsibleUserId }
+        </if>
+
+        <if test=" assetSource != null">
+            and asset_source = #{assetSource }
+        </if>
+        <if test=" importanceDegree != null">
+            and importance_degree = #{importanceDegree }
+        </if>
+
+        <if test=" parentId != null">
+            and parent_id = #{parentId }
+        </if>
+        <if test=" tags != null">
+            and tags = #{tags }
+        </if>
+        <if test=" isInnet != null">
+            and is_innet = #{isInnet }
+        </if>
+        <if test=" serviceLife != null">
+            and service_life = #{serviceLife }
+        </if>
+        <if test=" buyDate != null">
+            and buy_date = #{buyDate }
+        </if>
+        <if test=" warranty != null">
+            and warranty = #{warranty }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+
+
+        and status =0
+
+    </sql>
+
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.Asset" useGeneratedKeys="true" keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -586,7 +669,7 @@
         <include refid="Table_Name"></include>
         <where>
             <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
+                <include refid="Where_Column"></include>
             </trim>
         </where>
     </select>
@@ -612,7 +695,7 @@
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-            <include refid="Where_Column_List"></include>
+            <include refid="Where_Column"></include>
             and
             status=0
         </trim>

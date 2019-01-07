@@ -39,7 +39,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Resource
     private AssetDao assetDao;
-
     @Resource
     private AssetMainboradDao assetMainboradDao;
     @Resource
@@ -248,5 +247,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         map.put("assetStatus", new Integer[]{targetStatus});
         row = assetDao.changeStatus(map);
         return row;
+    }
+
+    @Override
+    public Integer saveAllAsset(HashMap<String, Object> map) throws Exception {
+        Asset asset = new Asset ();
+        Integer aid = assetDao.insert (asset);
+        Object id = map.get ("id");
+        return  null;
     }
 }
