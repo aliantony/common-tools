@@ -206,20 +206,30 @@
         select count(1)
         from
         <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-            </trim>
-        </where>
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" featureLibrary != null and featureLibrary != '' ">
+                and featureLibrary like #{featureLibrary}"%"
+            </if>
+            <if test=" strategy != null and strategy !='' ">
+                and strategy like #{strategy}"%"
+            </if>
+            and status = 1
+        </trim>
     </select>
 
     <select id="findQuery" resultType="com.antiy.asset.entity.AssetSafetyEquipment"
             parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-            </trim>
-        </where>
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" featureLibrary != null and featureLibrary != '' ">
+                and featureLibrary like #{featureLibrary}"%"
+            </if>
+            <if test=" strategy != null and strategy !='' ">
+                and strategy like #{strategy}"%"
+            </if>
+            and status = 1
+        </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
