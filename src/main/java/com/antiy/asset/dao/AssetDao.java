@@ -33,10 +33,19 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 网络拓扑查询
+     *
      * @param query
      * @return
      * @throws Exception
      */
     List<Topology> findTopologyList(AssetQuery query);
+
+
+    /**
+     * 查询厂商
+     *
+     * @return
+     */
+    List<Asset> findManufacturer() throws Exception;
 
 }
