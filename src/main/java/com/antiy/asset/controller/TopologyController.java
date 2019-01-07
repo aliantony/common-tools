@@ -1,16 +1,20 @@
 package com.antiy.asset.controller;
 
-import com.antiy.asset.service.ITopologyService;
-import com.antiy.asset.vo.request.TopologyRequest;
-import com.antiy.asset.vo.response.TopologyResponse;
-import com.antiy.common.base.ActionResponse;
-import io.swagger.annotations.*;
+import javax.annotation.Resource;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import com.antiy.asset.enums.TopologyTypeEnum;
+import com.antiy.asset.service.ITopologyService;
+import com.antiy.asset.vo.request.TopologyRequest;
+import com.antiy.asset.vo.response.TopologyResponse;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.utils.ParamterExceptionUtils;
+
+import io.swagger.annotations.*;
 
 /**
  * @Auther: zhangbing
@@ -31,9 +35,9 @@ public class TopologyController {
      * @return actionResponse
      */
     @ApiOperation(value = "查询网络拓扑初始化信息", notes = "传入实体对象信息")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = TopologyResponse.class)})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = TopologyResponse.class) })
     @RequestMapping(value = "/query/init", method = RequestMethod.GET)
-    public ActionResponse queryTopologyInit() {
+    public ActionResponse queryTopologyInit() throws Exception {
         return ActionResponse.success(iTopologyService.queryTopologyInit());
     }
 
@@ -44,9 +48,9 @@ public class TopologyController {
      * @return
      */
     @ApiOperation(value = "保存网络拓扑信息", notes = "传入实体对象信息")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class)})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class) })
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public ActionResponse saveTopology(@RequestBody @ApiParam(value = "网络拓扑保存信息") TopologyRequest topologyRequest) {
+    public ActionResponse saveTopology(@RequestBody @ApiParam(value = "网络拓扑保存信息") TopologyRequest topologyRequest) throws Exception {
         return ActionResponse.success(iTopologyService.saveTopology(topologyRequest));
     }
 
@@ -56,9 +60,11 @@ public class TopologyController {
      * @return
      */
     @ApiOperation(value = "查询网络拓扑信息", notes = "传入实体对象信息")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class)})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class) })
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public ActionResponse<String> queryTopology() {
-        return ActionResponse.success(iTopologyService.queryTopology());
+    public ActionResponse<String> queryTopology(String topologyType) throws Exception {
+        ParamterExceptionUtils.isNull(TopologyTypeEnum.getTopologyByName(topologyType), "拓扑类型错误");
+        return ActionResponse
+            .success(iTopologyService.queryTopology(TopologyTypeEnum.getTopologyByName(topologyType).getCode()));
     }
 }
