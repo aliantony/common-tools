@@ -171,7 +171,7 @@ public class AssetSoftwareController {
     /**
      * 查询操作系统信息
      *
-     * @return actionResponse
+     * @return 操作系统名称集合
      */
     @ApiOperation(value = "查询操作系统接口", notes = "无查询条件")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
