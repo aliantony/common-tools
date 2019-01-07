@@ -69,15 +69,6 @@
         <if test=" topologyType != null">
             and topology_type = #{topologyType }
         </if>
-        <if test=" relation != null">
-            and relation = #{relation }
-        </if>
-        <if test=" createUser != null">
-            and create_user = #{createUser }
-        </if>
-        <if test=" gmtCreate != null">
-            and gmt_create = #{gmtCreate }
-        </if>
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetTopology">

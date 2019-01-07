@@ -17,19 +17,19 @@ public interface ITopologyService {
      *
      * @return
      */
-    List<TopologyResponse> queryTopologyInit();
+    List<TopologyResponse> queryTopologyInit() throws Exception;
 
     /**
      * 查询网络拓扑
      *
      * @return
      */
-    String queryTopology();
+    String queryTopology(Integer topologyType) throws Exception;
 
     /**
      * 保存网络拓扑
      *
      * @return
      */
-    int saveTopology(TopologyRequest topologyRequest);
+    int saveTopology(TopologyRequest topologyRequest)  throws Exception;
 }

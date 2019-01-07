@@ -1,5 +1,15 @@
 package com.antiy.asset.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletResponse;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.BeanConvert;
@@ -13,15 +23,8 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.ServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -42,14 +45,13 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "保存全部数据总接口", notes = "传入Map对象信息")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/all", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "map") HashMap<String,Object> map) throws Exception {
+    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "map") HashMap<String, Object> map) throws Exception {
         iAssetService.saveAllAsset(map);
         return ActionResponse.success();
     }
+
     /**
      * 保存
      *
@@ -57,9 +59,7 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "asset") AssetRequest asset) throws Exception {
         iAssetService.saveAsset(asset);
@@ -73,9 +73,7 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "asset") AssetRequest asset) throws Exception {
         iAssetService.updateAsset(asset);
@@ -89,9 +87,7 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
         return ActionResponse.success(iAssetService.findPageAsset(asset));
@@ -104,9 +100,7 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
     public ActionResponse queryById(@ApiParam(value = "asset") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
@@ -120,9 +114,7 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
@@ -136,9 +128,7 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "根据条件导出硬件信息", notes = "主键封装对象", produces = "application/octet-stream")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/file", method = RequestMethod.GET)
     public void export(@ApiParam(value = "query") AssetQuery assetQuery, ServletResponse response) throws Exception {
         List<AssetResponse> list = iAssetService.findListAsset(assetQuery);
@@ -153,14 +143,12 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "根据条件导出硬件信息", notes = "主键封装对象", produces = "application/octet-stream")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
-    public void exportTemplate(@ApiParam(value = "query") AssetQuery assetQuery, ServletResponse response) throws Exception {
+    public void exportTemplate(@ApiParam(value = "query") AssetQuery assetQuery,
+                               ServletResponse response) throws Exception {
         ExcelUtils.exportToClient(AssetEntity.class, "硬件信息表.xls", "硬件信息", null);
     }
-
 
     /**
      * 导入文件
@@ -197,13 +185,11 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "批量修改资产状态接口", notes = "传入资产状态和资产ID数组")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/changeStatus", method = RequestMethod.POST)
-    public ActionResponse changeStatus(@ApiParam(value = "资产ID数组") @RequestParam Integer[] ids, @ApiParam(value = "资产新状态") @RequestParam("targetStatus") Integer targetStatus) throws Exception {
+    public ActionResponse changeStatus(@ApiParam(value = "资产ID数组") @RequestParam Integer[] ids,
+                                       @ApiParam(value = "资产新状态") @RequestParam("targetStatus") Integer targetStatus) throws Exception {
         iAssetService.changeStatus(ids, targetStatus);
         return ActionResponse.success();
     }
 }
-

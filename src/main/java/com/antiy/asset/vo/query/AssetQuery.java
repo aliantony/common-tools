@@ -18,187 +18,199 @@ public class AssetQuery extends ObjectQuery {
      * 资产编号
      */
     @ApiModelProperty("资产编号")
-    private String        number;
+    private String number;
+
+    /**
+     * 综合查询条件
+     */
+    private String  multipleQuery;
+
     /**
      * 资产类型:1台式办公机,2便携式办公机,3服务器虚拟终,4移动设备,4ATM机,5工控上位机,6路由器,7交换机,8防火墙,9IDS,10IPS,
      */
     @ApiModelProperty("资产类型:1台式办公机,2便携式办公机,3服务器虚拟终,4移动设备,4ATM机,5工控上位机,6路由器,7交换机,8防火墙,9IDS,10IPS,")
-    private Integer       type;
+    private Integer type;
     /**
      * 资产名称
      */
     @ApiModelProperty("资产名称")
-    private String        name;
+    private String name;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    private String        serial;
+    private String serial;
     /**
      * 品类
      */
     @ApiModelProperty("品类")
-    private Integer       category;
+    private Integer category;
     /**
      * 资产型号
      */
     @ApiModelProperty("资产型号")
-    private Integer       model;
+    private Integer model;
     /**
      * 厂商
      */
     @ApiModelProperty("厂商")
-    private String        manufacturer;
+    private String manufacturer;
     /**
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
      */
     @ApiModelProperty("资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役")
-    private Integer       assetStatus;
+    private Integer assetStatus;
     /**
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统,如果type为IDS或者IPS则此字段存放软件版本信息")
-    private String        operationSystem;
+    private String operationSystem;
     /**
      * 系统位数
      */
     @ApiModelProperty("系统位数")
-    private Integer       systemBit;
+    private Integer systemBit;
     /**
      * 物理位置
      */
     @ApiModelProperty("物理位置")
-    private String        location;
+    private String location;
     /**
      * 纬度
      */
     @ApiModelProperty("纬度")
-    private String        latitude;
+    private String latitude;
     /**
      * 经度
      */
     @ApiModelProperty("经度")
-    private String        longitude;
+    private String longitude;
     /**
      * 固件版本
      */
     @ApiModelProperty("固件版本")
-    private String        firmwareVersion;
+    private String firmwareVersion;
     /**
      * 设备uuid
      */
     @ApiModelProperty("设备uuid")
-    private String        uuid;
+    private String uuid;
     /**
      * 责任人主键
      */
     @ApiModelProperty("责任人主键")
-    private Integer       responsibleUserId;
+    private Integer responsibleUserId;
     /**
      * 联系电话
      */
     @ApiModelProperty("联系电话")
-    private String        contactTel;
+    private String contactTel;
     /**
      * 邮箱
      */
     @ApiModelProperty("邮箱")
-    private String        email;
+    private String email;
     /**
      * 硬盘
      */
     @ApiModelProperty("硬盘")
-    private String        hardDisk;
+    private String hardDisk;
     /**
      * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
      */
     @ApiModelProperty("内存JSON数据{ID:1,name:Kingston,rom:8GB}")
-    private String        memory;
+    private String memory;
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
     @ApiModelProperty("上报来源,1-自动上报，2-人工上报")
-    private Integer       assetSource;
+    private Integer assetSource;
     /**
      * 0-不重要(not_major),1- 一般(general),3-重要(major),
      */
     @ApiModelProperty("0-不重要(not_major),1- 一般(general),3-重要(major),")
-    private Integer       importanceDegree;
+    private Integer importanceDegree;
     /**
      * 描述
      */
     @ApiModelProperty("描述")
-    private String        describle;
+    private String describle;
     /**
      * CPUJSON数据{ID:1,name:intel,coresize:8}
      */
     @ApiModelProperty("CPUJSON数据{ID:1,name:intel,coresize:8}")
-    private String        cpu;
+    private String cpu;
     /**
      * 网卡JSON数据{ID:1,name:intel,speed:1900M}
      */
     @ApiModelProperty("网卡JSON数据{ID:1,name:intel,speed:1900M}")
-    private String        networkCard;
+    private String networkCard;
     /**
      * 父类资源Id
      */
     @ApiModelProperty("父类资源Id")
-    private Integer       parentId;
+    private Integer parentId;
     /**
      * 所属标签ID和名称列表JSON串
      */
     @ApiModelProperty("所属标签ID和名称列表JSON串")
-    private String        tags;
+    private String tags;
     /**
      * 是否入网,0表示未入网,1表示入网
      */
     @ApiModelProperty("是否入网,0表示未入网,1表示入网")
-    private Boolean       isInnet;
+    private Boolean isInnet;
     /**
      * 使用到期时间
      */
     @ApiModelProperty("使用到期时间")
-    private Long          serviceLife;
+    private Long serviceLife;
     /**
      * 制造日期
      */
     @ApiModelProperty("制造日期")
-    private Long          buyDate;
+    private Long buyDate;
     /**
      * 保修期
      */
     @ApiModelProperty("保修期")
-    private Long          warranty;
+    private Long warranty;
     /**
      * 创建时间
      */
     @ApiModelProperty("创建时间")
-    private Long          gmtCreate;
+    private Long gmtCreate;
     /**
      * 更新时间
      */
     @ApiModelProperty("更新时间")
-    private Long          gmtModified;
+    private Long gmtModified;
     /**
      * 备注
      */
     @ApiModelProperty("备注")
-    private String        memo;
+    private String memo;
     /**
      * 创建人
      */
     @ApiModelProperty("创建人")
-    private Integer       createUser;
+    private Integer createUser;
     /**
      * 修改人
      */
     @ApiModelProperty("修改人")
-    private Integer       modifyUser;
+    private Integer modifyUser;
     /**
      * 资产状态
      */
     private List<Integer> assetStatusList;
-    private Integer       status;
+
+    /**
+     * 资产组id
+     */
+    private Integer assetGroup;
+
+    private Integer status;
 
     public Integer getStatus() {
         return status;
@@ -502,5 +514,21 @@ public class AssetQuery extends ObjectQuery {
 
     public void setAssetStatusList(List<Integer> assetStatusList) {
         this.assetStatusList = assetStatusList;
+    }
+
+    public String getMultipleQuery() {
+        return multipleQuery;
+    }
+
+    public void setMultipleQuery(String multipleQuery) {
+        this.multipleQuery = multipleQuery;
+    }
+
+    public Integer getAssetGroup() {
+        return assetGroup;
+    }
+
+    public void setAssetGroup(Integer assetGroup) {
+        this.assetGroup = assetGroup;
     }
 }
