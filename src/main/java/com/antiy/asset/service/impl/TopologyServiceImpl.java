@@ -116,7 +116,7 @@ public class TopologyServiceImpl implements ITopologyService {
         AssetTopology assetTopology = new AssetTopology();
         assetTopology.setGmtCreate(System.currentTimeMillis());
         assetTopology.setRelation(topologyRequest.getDataJson());
-        assetTopology.setTopologyType(topologyRequest.getTopologyType());
+        assetTopology.setTopologyType(topologyRequest.getTopologyType().getCode());
         int resultCount = assetTopologyDao.insert(assetTopology);
         // TODO 保存到缓存中
         return resultCount;
