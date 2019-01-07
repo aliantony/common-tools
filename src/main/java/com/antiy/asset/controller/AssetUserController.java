@@ -1,18 +1,16 @@
 package com.antiy.asset.controller;
 
 import com.antiy.asset.service.IAssetUserService;
-import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
 import com.antiy.asset.vo.request.AssetUserUpdateRequest;
+import com.antiy.asset.vo.response.UserNameResponse;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 /**
@@ -100,6 +98,18 @@ public class AssetUserController {
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@PathVariable @RequestBody @ApiParam(value = "id") Integer id) throws Exception {
         return ActionResponse.success(iAssetUserService.deleteById(id));
+    }
+
+    /**
+     * 查询用户名信息
+     *
+     * @return 用户名集合
+     */
+    @ApiOperation(value = "查询用户名接口", notes = "无查询条件")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @RequestMapping(value = "/query/userName", method = RequestMethod.GET)
+    public List<UserNameResponse> queryManufacturer() throws Exception {
+        return iAssetUserService.findUserName();
     }
 }
 
