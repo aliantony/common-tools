@@ -612,7 +612,7 @@
         </if>
 
 
-        and status =0
+        and status =1
 
     </sql>
 
@@ -670,7 +670,7 @@
         <if test=" firstEnterNettEnd != null">
             and first_enter_nett &lt;= #{firstEnterNettEnd }
         </if>
-        and status =0
+        and status =1
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.Asset" useGeneratedKeys="true" keyProperty="id">
@@ -703,12 +703,12 @@
     </select>
 
 
-    <delete id="deleteById" parameterType="java.lang.Integer">
+    <update id="deleteById" parameterType="java.lang.Integer">
         update
         <include refid="Table_Name"></include>
-        set status = 0
+        set status = 1
         where id = #{id}
-    </delete>
+    </update>
 
     <select id="getByWhere" resultType="com.antiy.asset.entity.Asset" parameterType="java.util.Map">
         select

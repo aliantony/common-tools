@@ -38,7 +38,7 @@ public class AssetLableController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetLable") AssetLableRequest assetLable) throws Exception {
+    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetLable") AssetLableRequest assetLable) throws Exception {
         iAssetLableService.saveAssetLable(assetLable);
         return ActionResponse.success();
     }
@@ -54,7 +54,7 @@ public class AssetLableController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetLable") AssetLableRequest assetLable) throws Exception {
+    public ActionResponse updateSingle(@RequestBody(required = false)  @ApiParam(value = "assetLable") AssetLableRequest assetLable) throws Exception {
         iAssetLableService.updateAssetLable(assetLable);
         return ActionResponse.success();
     }
