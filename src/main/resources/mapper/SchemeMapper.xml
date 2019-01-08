@@ -264,7 +264,7 @@
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" putintoUser != null">
-                and putinto_user like concat(#{putintoUser},'%')
+                and putinto_user like concat('%','${putintoUser}','%')
             </if>
             <if test=" type != null">
                 and type = #{type}

@@ -4,12 +4,15 @@ import com.antiy.asset.dao.AssetDepartmentDao;
 import com.antiy.asset.entity.AssetDepartment;
 import com.antiy.asset.service.IAssetDepartmentService;
 import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.NodeUtilsConverter;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
+import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -94,13 +97,24 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         }
     }
 
-
     public Integer findCountAssetDepartment(AssetDepartmentQuery query) throws Exception {
         return assetDepartmentDao.findCount(query);
     }
 
     @Override
     public PageResult<AssetDepartmentResponse> findPageAssetDepartment(AssetDepartmentQuery query) throws Exception {
-        return new PageResult<>(query.getPageSize(), this.findCountAssetDepartment(query), query.getCurrentPage(), this.findListAssetDepartment(query));
+        return new PageResult<>(query.getPageSize(), this.findCountAssetDepartment(query), query.getCurrentPage(),
+            this.findListAssetDepartment(query));
+    }
+
+    @Override
+    public AssetDepartmentNodeResponse findDepartmentNode() throws Exception {
+        AssetDepartmentQuery query = new AssetDepartmentQuery();
+        query.setStatus(1);
+        List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
+        NodeUtilsConverter nodeResponseNodeUtilsConverter = new NodeUtilsConverter<>();
+        List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeResponseNodeUtilsConverter
+            .columnToNode(assetDepartment, AssetDepartmentNodeResponse.class);
+        return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
 }
