@@ -44,6 +44,10 @@ public class AssetCategoryModel extends BaseEntity {
     @ApiModelProperty("描述")
     private String description;
     /**
+     * 是否系统默认：0系统1自定义
+     */
+    private Integer isDefault;
+    /**
      * 创建时间
      */
     @ApiModelProperty("创建时间")
@@ -172,6 +176,13 @@ public class AssetCategoryModel extends BaseEntity {
         this.status = status;
     }
 
+    public Integer getIsDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(Integer isDefault) {
+        this.isDefault = isDefault;
+    }
 
     @Override
     public String toString() {

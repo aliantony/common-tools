@@ -10,6 +10,7 @@
         <result column="asset_type" property="assetType"/>
         <result column="parent_id" property="parentId"/>
         <result column="description" property="description"/>
+        <result column="is_default" property="isDefault"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
@@ -42,6 +43,9 @@
         </if>
         <if test=" description != null">
             description,
+        </if>
+        <if test=" isDefault != null">
+            is_default,
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
@@ -79,6 +83,9 @@
         <if test=" description != null">
             #{description },
         </if>
+        <if test=" isDefault != null">
+            #{is_default},
+        </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
         </if>
@@ -115,6 +122,9 @@
         <if test=" description != null">
             description = #{description },
         </if>
+        <if test=" isDefault != null">
+            is_default = #{isDefault},
+        </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
         </if>
@@ -150,6 +160,9 @@
         </if>
         <if test=" description != null">
             and description = #{description }
+        </if>
+        <if test=" isDefault != null">
+            and is_default = #{isDefault}
         </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }
