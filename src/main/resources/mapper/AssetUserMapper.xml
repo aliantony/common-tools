@@ -191,10 +191,10 @@
             AND gmt_modified = #{gmtModified }
         </if>
         <if test=" status != null">
-            AND    status = #{status }
+            AND status = #{status }
         </if>
         <if test=" status == null">
-            AND    status = 0
+            AND status = 1
         </if>
         <if test=" memo != null">
             AND memo = #{memo }
@@ -308,4 +308,10 @@
         select name from
         <include refid="Table_Name"></include>
     </select>
+
+    <update id="setDepartmentIdNull" parameterType="com.antiy.asset.entity.AssetUser">
+        update
+        <include refid="Table_Name"></include>
+        set department_id=null where id=#{id}
+    </update>
 </mapper>
