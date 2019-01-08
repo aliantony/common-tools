@@ -208,7 +208,7 @@
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" featureLibrary != null and featureLibrary != '' ">
-                and featureLibrary like #{featureLibrary}"%"
+                and feature_library like #{featureLibrary}"%"
             </if>
             <if test=" strategy != null and strategy !='' ">
                 and strategy like #{strategy}"%"
@@ -217,13 +217,13 @@
         </trim>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetSafetyEquipment"
+    <select id="findQuery" resultMap="BaseResultMap"
             parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" featureLibrary != null and featureLibrary != '' ">
-                and featureLibrary like #{featureLibrary}"%"
+                and feature_library like #{featureLibrary}"%"
             </if>
             <if test=" strategy != null and strategy !='' ">
                 and strategy like #{strategy}"%"

@@ -247,7 +247,7 @@
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" putintoUser != null">
-                and putinto_user like #{putintoUser}"%"
+                and putinto_user like concat(#{putintoUser},'%')
             </if>
             <if test=" type != null">
                 and type = #{type}
@@ -259,12 +259,12 @@
         </if>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.Scheme" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
         select type, result, putinto_user_id, putinto_user, filepath,memo from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" putintoUser != null">
-                and putinto_user like #{putintoUser}"%"
+                and putinto_user like concat(#{putintoUser},'%')
             </if>
             <if test=" type != null">
                 and type = #{type}
