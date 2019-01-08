@@ -30,6 +30,13 @@ public class AssetCategoryModelQuery extends ObjectQuery implements ObjectValida
      */
     @ApiModelProperty("id")
     private Integer id;
+
+    /**
+     * 品类型号id列表
+     */
+    @ApiModelProperty("ids")
+    private Integer ids;
+
     /**
      * 名称
      */
@@ -86,6 +93,13 @@ public class AssetCategoryModelQuery extends ObjectQuery implements ObjectValida
     @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer status;
 
+    public Integer getIds() {
+        return ids;
+    }
+
+    public void setIds(Integer ids) {
+        this.ids = ids;
+    }
 
     public String getName() {
         return name;
