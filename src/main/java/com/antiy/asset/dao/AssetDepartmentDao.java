@@ -1,6 +1,7 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetDepartment;
+import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.common.base.IBaseDao;
 

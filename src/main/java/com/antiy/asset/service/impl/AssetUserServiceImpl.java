@@ -14,6 +14,7 @@ import com.antiy.common.base.PageResult;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Resource
     private BaseConverter<AssetUser, UserNameResponse> userNameResponseConverter;
     @Resource
-    private BaseConverter<AssetUser,AssetUserResponse > responseConverter;
+    private BaseConverter<AssetUser, AssetUserResponse> responseConverter;
 
     @Override
     public Integer saveAssetUser(AssetUserRequest request) throws Exception {
@@ -60,8 +61,10 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         return assetUserDao.findCount(query);
     }
 
+
+
     private List<AssetUserResponse> convert(List<AssetUser> assetUsers) {
-       return responseConverter.convert(assetUsers,AssetUserResponse.class);
+        return responseConverter.convert(assetUsers, AssetUserResponse.class);
     }
 
 

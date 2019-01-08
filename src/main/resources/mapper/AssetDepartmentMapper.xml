@@ -29,7 +29,7 @@
         asset_user
     </sql>
     <sql id="Delete_Status">
-        1
+        0
     </sql>
     <sql id="Null">
         NULL
@@ -165,7 +165,7 @@
             AND status = #{status }
         </if>
         <if test=" status == null">
-            AND status = 0
+            AND status = 1
         </if>
     </sql>
     <sql id="Page_List">
@@ -204,16 +204,11 @@
 
 
     <update id="deleteById" parameterType="java.lang.Integer">
-        UPDATE <include refid="Table_Name"></include> de
-        LEFT JOIN
-        <include refid="User_Table_Name"></include>
-        us
-        ON
-        de.id=us.department_id
+        UPDATE
+        <include refid="Table_Name"></include>
         SET
-        de.status=<include refid="Delete_Status"></include>,
-        us.department_id=<include refid="Null"></include>
-        where de.id=#{id};
+        status=<include refid="Delete_Status"></include>
+        where id=#{id}
     </update>
 
     <select id="getByWhere" resultType="com.antiy.asset.entity.AssetDepartment" parameterType="java.util.Map">
