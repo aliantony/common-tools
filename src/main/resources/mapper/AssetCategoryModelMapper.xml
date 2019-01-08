@@ -217,7 +217,7 @@
     <delete id="deleteById" parameterType="java.lang.Integer">
         update
         <include refid="Table_Name"></include>
-        set status = 0
+        set status = 1
         where id = #{id}
     </delete>
 
@@ -308,7 +308,7 @@
                 and modify_user = #{modifyUser }
             </if>
 
-            and status =0
+            and status =1
 
         </trim>
         <if test="pageSize !=-1">

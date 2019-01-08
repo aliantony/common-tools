@@ -3,12 +3,10 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.AssetSoftwareLicenseResponse;
 import com.antiy.asset.vo.response.ManufacturerResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -262,7 +259,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public Integer saveAllAsset(HashMap<String, Object> map) throws Exception {
         Asset asset = new Asset ();
         Integer aid = assetDao.insert (asset);
-        Object id = map.get ("id");
+
         return  null;
     }
 }

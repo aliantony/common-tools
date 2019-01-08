@@ -37,7 +37,7 @@ public class AssetCategoryModelController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
+    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
         iAssetCategoryModelService.saveAssetCategoryModel(assetCategoryModel);
         return ActionResponse.success();
     }
@@ -53,7 +53,7 @@ public class AssetCategoryModelController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
+    public ActionResponse updateSingle(@RequestBody(required = false)  @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
         iAssetCategoryModelService.updateAssetCategoryModel(assetCategoryModel);
         return ActionResponse.success();
     }

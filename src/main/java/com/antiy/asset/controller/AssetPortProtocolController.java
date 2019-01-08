@@ -38,7 +38,7 @@ public class AssetPortProtocolController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetPortProtocol") AssetPortProtocolRequest assetPortProtocol) throws Exception {
+    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetPortProtocol") AssetPortProtocolRequest assetPortProtocol) throws Exception {
         iAssetPortProtocolService.saveAssetPortProtocol(assetPortProtocol);
         return ActionResponse.success();
     }
@@ -54,7 +54,7 @@ public class AssetPortProtocolController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetPortProtocol") AssetPortProtocolRequest assetPortProtocol) throws Exception {
+    public ActionResponse updateSingle(@RequestBody(required = false)  @ApiParam(value = "assetPortProtocol") AssetPortProtocolRequest assetPortProtocol) throws Exception {
         iAssetPortProtocolService.updateAssetPortProtocol(assetPortProtocol);
         return ActionResponse.success();
     }

@@ -175,7 +175,7 @@
             and gmt_modified = #{gmtModified }
         </if>
 
-        and status = 0
+        and status = 1
 
     </sql>
 
@@ -212,7 +212,7 @@
     <update id="deleteById" parameterType="java.lang.Integer">
         update
         <include refid="Table_Name"></include>
-        set status= 0
+        set status= 1
         where id = #{id}
     </update>
 
@@ -286,7 +286,7 @@
             </if>
 
 
-            and status = 0
+            and status = 1
 
         </trim>
         <if test="pageSize !=-1">
