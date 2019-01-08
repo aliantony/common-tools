@@ -271,4 +271,13 @@
             asset_id = #{assetId}
             AND asoftrel.software_status = 1
     </select>
+
+    <select id="countAssetBySoftId" resultType="int" parameterType="int">
+        SELECT
+        count(1)
+        FROM
+          <include refid="Table_Name"></include>
+        WHERE
+            software_id = #{softId}
+    </select>
 </mapper>

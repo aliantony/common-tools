@@ -23,4 +23,12 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     List<AssetSoftware> getSoftByAssetId(Integer assetId);
+
+    /**
+     * 通过软件ID统计资产数量
+     *
+     * @param id
+     * @return
+     */
+    Integer countAssetBySoftId(Integer id);
 }

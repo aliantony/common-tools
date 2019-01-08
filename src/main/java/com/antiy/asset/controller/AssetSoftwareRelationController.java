@@ -104,5 +104,21 @@ public class AssetSoftwareRelationController {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetSoftwareRelationService.deleteById(id));
     }
+
+    /**
+     * 通过软件ID统计资产数量
+     *
+     * @param id
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过软件ID统计资产数量", notes = "软件ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
+    })
+    @RequestMapping(value = "/countAssetBySoftId/{id}", method = RequestMethod.GET)
+    public ActionResponse countAssetBySoftId(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {
+        ParamterExceptionUtils.isNull(id, "ID不能为空");
+        return ActionResponse.success(iAssetSoftwareRelationService.countAssetBySoftId(id));
+    }
 }
 

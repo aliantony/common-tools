@@ -70,4 +70,9 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<AssetSoftwareResponse> assetSoftwareRelationResponse = responseSoftConverter.convert(assetSoftwareRelationList, AssetSoftwareResponse.class);
         return assetSoftwareRelationResponse;
     }
+
+    @Override
+    public Integer countAssetBySoftId(Integer id) {
+        return assetSoftwareRelationDao.countAssetBySoftId(id);
+    }
 }
