@@ -6,6 +6,7 @@ import com.antiy.asset.vo.request.AssetDepartmentRequest;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
+import io.swagger.models.auth.In;
 
 import java.util.List;
 
@@ -51,5 +52,13 @@ public interface IAssetDepartmentService extends IBaseService<AssetDepartment> {
      * @return
      */
     PageResult<AssetDepartmentResponse> findPageAssetDepartment(AssetDepartmentQuery query) throws Exception;
+    /**
+     * 根据id查询所有部门及子部门
+     *
+     * @param id
+     * @return
+     */
+    List<AssetDepartmentResponse> findAssetDepartmentById(Integer id) throws Exception;
+
 
 }

@@ -25,8 +25,15 @@
     <sql id="Table_Name">
         asset_department
     </sql>
-
-
+    <sql id="User_Table_Name">
+        asset_user
+    </sql>
+    <sql id="Delete_Status">
+        1
+    </sql>
+    <sql id="Null">
+        NULL
+    </sql>
     <sql id="IF_Base_Column_List">
         <if test=" name != null">
             name,
@@ -155,10 +162,10 @@
             AND modify_user = #{modifyUser }
         </if>
         <if test=" status != null">
-            AND    status = #{status }
+            AND status = #{status }
         </if>
         <if test=" status == null">
-            AND    status = 0
+            AND status = 0
         </if>
     </sql>
     <sql id="Page_List">
@@ -196,12 +203,18 @@
     </select>
 
 
-    <delete id="deleteById" parameterType="java.lang.Integer">
-        update
-        <include refid="Table_Name"></include>
-        set status = 0
-        where id = #{id}
-    </delete>
+    <update id="deleteById" parameterType="java.lang.Integer">
+        UPDATE <include refid="Table_Name"></include> de
+        LEFT JOIN
+        <include refid="User_Table_Name"></include>
+        us
+        ON
+        de.id=us.department_id
+        SET
+        de.status=<include refid="Delete_Status"></include>,
+        us.department_id=<include refid="Null"></include>
+        where de.id=#{id};
+    </update>
 
     <select id="getByWhere" resultType="com.antiy.asset.entity.AssetDepartment" parameterType="java.util.Map">
         select

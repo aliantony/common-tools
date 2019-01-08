@@ -35,6 +35,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     private BaseConverter<AssetUserRequest, AssetUser> requestConverter;
     @Resource
     private BaseConverter<AssetUser, UserNameResponse> userNameResponseConverter;
+    @Resource
+    private BaseConverter<AssetUser,AssetUserResponse > responseConverter;
 
     @Override
     public Integer saveAssetUser(AssetUserRequest request) throws Exception {
@@ -59,23 +61,9 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     }
 
     private List<AssetUserResponse> convert(List<AssetUser> assetUsers) {
-        if (assetUsers.size() > 0) {
-            List assetUserResponses = BeanConvert.convert(assetUsers, AssetUserResponse.class);
-            setListID(assetUsers, assetUserResponses);
-            return assetUserResponses;
-        }
-        return new ArrayList<>();
+       return responseConverter.convert(assetUsers,AssetUserResponse.class);
     }
 
-    private void setListID(List<AssetUser> assetUsers, List<AssetUserResponse> assetUserResponses) {
-        for (int i = 0; i < assetUserResponses.size(); i++) {
-            setID(assetUsers.get(i), assetUserResponses.get(i));
-        }
-    }
-
-    private void setID(AssetUser assetUser, AssetUserResponse assetUserResponse) {
-        assetUserResponse.setId(assetUser.getId());
-    }
 
     @Override
     public PageResult<AssetUserResponse> findPageAssetUser(AssetUserQuery query) throws Exception {

@@ -7,6 +7,7 @@ import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.GroupValueResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
@@ -34,6 +35,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Resource
     private BaseConverter<AssetGroupRequest, AssetGroup> requestConverter;
     @Resource
+    private BaseConverter<AssetGroup, AssetGroupResponse> responseConverter;
+    @Resource
     private BaseConverter<AssetGroup, GroupValueResponse> groupValueResponseConverter;
 
     @Override
@@ -59,23 +62,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     }
 
     private List<AssetGroupResponse> convert(List<AssetGroup> assetGroups) {
-        if (assetGroups.size() > 0) {
-            List assetGroupResponses = BeanConvert.convert(assetGroups, AssetGroupResponse.class);
-            setListID(assetGroups, assetGroupResponses);
-            return assetGroupResponses;
-        } else
-            return new ArrayList<>();
+        return responseConverter.convert(assetGroups, AssetGroupResponse.class);
     }
 
-    private void setListID(List<AssetGroup> assetGroups, List<AssetGroupResponse> assetGroupResponses) {
-        for (int i = 0; i < assetGroupResponses.size(); i++) {
-            setID(assetGroups.get(i), assetGroupResponses.get(i));
-        }
-    }
-
-    private void setID(AssetGroup assetGroup, AssetGroupResponse assetGroupResponse) {
-        assetGroupResponse.setId(assetGroup.getId());
-    }
 
     @Override
     public PageResult<AssetGroupResponse> findPageAssetGroup(AssetGroupQuery query) throws Exception {
@@ -84,6 +73,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public List<GroupValueResponse> findGroupValue() throws Exception {
-        return groupValueResponseConverter.convert(assetGroupDao.findGroupValue(),GroupValueResponse.class);
+        return groupValueResponseConverter.convert(assetGroupDao.findGroupValue(), GroupValueResponse.class);
     }
 }
