@@ -61,4 +61,13 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      */
     List<AssetSoftwareResponse> getSoftByAssetId(Integer assetId);
 
+    /**
+     * 通过软件ID统计资产数量
+     *
+     * @param id
+     * @return
+     */
+    Integer countAssetBySoftId(Integer id);
+
+
 }
