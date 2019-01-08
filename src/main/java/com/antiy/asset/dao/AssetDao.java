@@ -1,7 +1,9 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.Topology;
+import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.common.base.IBaseDao;
 
@@ -48,4 +50,17 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     List<Asset> findManufacturer() throws Exception;
 
+    /**
+     * 通过品类型号查询资产数量
+     * @param query
+     * @return
+     */
+    Integer findCountByCategoryModel(AssetCategoryModelQuery query) throws Exception;
+
+    /**
+     * 通过品类型号查询资产列表
+     * @param query
+     * @return
+     */
+    List<Asset> findListAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception;
 }

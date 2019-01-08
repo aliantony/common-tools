@@ -68,6 +68,9 @@ public class BeanConvert {
      * @throws InstantiationException
      */
     public static Object convertBean(Object target, Class<?> c2) {
+        if (target == null) {
+            return null;
+        }
         BeanCopier copier = BeanCopier.create(target.getClass(), c2, false);
         Object o2 = null;
         try {
@@ -91,6 +94,9 @@ public class BeanConvert {
      * @throws InstantiationException
      */
     public static List<Object> convert(List<?> target, Class<?> c2) {
+        if (target == null || target.isEmpty()) {
+            return null;
+        }
         BeanCopier copier = BeanCopier.create(target.get(0).getClass(), c2, false);
         List<Object> list = Lists.newArrayList();
         Object o2 = null;

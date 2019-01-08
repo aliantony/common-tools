@@ -809,4 +809,43 @@
         select distinct manufacturer from
         <include refid="Table_Name"></include>
     </select>
+
+    <select id="findCountByCategoryModel" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select count(1) count
+        from
+        <include refid="Table_Name"></include>
+        where 1 = 1
+        <if test=" category != null">
+            and category in
+            <foreach collection="category" open="(" close=")" separator="," item="item" index="index">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" model != null">
+            and model in
+            <foreach collection="model" open="(" close=")" separator="," item="item" index="index">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="findListAssetByCategoryModel" resultType="com.antiy.asset.entity.Asset" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where 1 = 1
+        <if test=" category != null">
+            and category in
+            <foreach collection="category" open="(" close=")" separator="," item="item" index="index">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" model != null">
+            and model in
+            <foreach collection="model" open="(" close=")" separator="," item="item" index="index">
+                #{item}
+            </foreach>
+        </if>
+    </select>
 </mapper>
