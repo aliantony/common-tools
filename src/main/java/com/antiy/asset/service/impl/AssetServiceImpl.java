@@ -424,7 +424,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<AssetResponse> findListAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception {
-        assetCategoryModelD
         List<Asset> asset = assetDao.findListAssetByCategoryModel(query);
         List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
         return objects;
