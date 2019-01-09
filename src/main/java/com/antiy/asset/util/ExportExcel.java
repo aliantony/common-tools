@@ -345,7 +345,11 @@ public class ExportExcel {
             }
         } catch (Exception e) {
             logger.info("Set cell value [" + row.getRowNum() + "," + column + "] error: " + e.toString());
-            cell.setCellValue(val.toString());
+            if (val != null) {
+                cell.setCellValue(val.toString());
+            } else {
+                cell.setCellValue("");
+            }
         }
 
     }
@@ -358,7 +362,7 @@ public class ExportExcel {
      * @return
      */
     public <T> ExportExcel setDataList(List<T> list) {
-        if (list != null && list.size() >= 0) {
+        if (list != null && !list.isEmpty()) {
             if (annotationList != null && annotationList.size() > 0) {
                 list.forEach(data -> {
                     int colunm = 0;
