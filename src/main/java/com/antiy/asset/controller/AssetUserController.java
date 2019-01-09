@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import com.antiy.asset.service.IAssetUserService;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
-import com.antiy.asset.vo.request.AssetUserUpdateRequest;
 import com.antiy.asset.vo.response.UserNameResponse;
 import com.antiy.common.base.ActionResponse;
 
@@ -49,7 +48,7 @@ public class AssetUserController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetUser") AssetUserUpdateRequest assetUser) throws Exception {
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetUser") AssetUserRequest assetUser) throws Exception {
         return ActionResponse.success(iAssetUserService.updateAssetUser(assetUser));
     }
 

@@ -50,6 +50,7 @@ public interface IAssetDepartmentService extends IBaseService<AssetDepartment> {
      * @return
      */
     PageResult<AssetDepartmentResponse> findPageAssetDepartment(AssetDepartmentQuery query) throws Exception;
+
     /**
      * 根据id查询所有部门及子部门
      *
@@ -61,9 +62,11 @@ public interface IAssetDepartmentService extends IBaseService<AssetDepartment> {
 
     /**
      * 查询部门树形结构
+     *
      * @return
      * @throws Exception
      */
     AssetDepartmentNodeResponse findDepartmentNode() throws Exception;
+
 
 }

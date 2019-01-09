@@ -17,6 +17,11 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetDepartmentRequest extends BasicRequest implements ObjectValidator {
 
     private static final long serialVersionUID = 1L;
+    /**
+     * id
+     */
+    @ApiModelProperty("主键")
+    private Integer id;
 
     /**
      * 部门名
@@ -69,6 +74,9 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
 
+    public Integer getId() { return id; }
+
+    public void setId(Integer id) { this.id = id; }
 
     public String getName() {
         return name;

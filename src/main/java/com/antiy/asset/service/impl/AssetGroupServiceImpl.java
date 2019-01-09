@@ -42,7 +42,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public Integer saveAssetGroup(AssetGroupRequest request) throws Exception {
         AssetGroup assetGroup = requestConverter.convert(request, AssetGroup.class);
-        return assetGroupDao.insert(assetGroup);
+        assetGroupDao.insert(assetGroup);
+        return assetGroup.getId();
     }
 
     @Override

@@ -42,7 +42,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Override
     public Integer saveAssetUser(AssetUserRequest request) throws Exception {
         AssetUser assetUser = requestConverter.convert(request, AssetUser.class);
-        return assetUserDao.insert(assetUser);
+        assetUserDao.insert(assetUser);
+        return assetUser.getId();
     }
 
     @Override
