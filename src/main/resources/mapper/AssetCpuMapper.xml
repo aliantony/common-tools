@@ -180,7 +180,7 @@
         and status = 1
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetCpu">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetCpu" useGeneratedKeys="true" keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">

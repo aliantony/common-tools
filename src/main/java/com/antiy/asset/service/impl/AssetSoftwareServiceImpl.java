@@ -40,7 +40,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
         AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
-        return assetSoftwareDao.insert(assetSoftware);
+        assetSoftwareDao.insert(assetSoftware);
+        return assetSoftware.getId();
     }
 
     @Override

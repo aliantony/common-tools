@@ -36,7 +36,8 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
     @Override
     public Integer saveAssetNetworkEquipment(AssetNetworkEquipmentRequest request) throws Exception {
         AssetNetworkEquipment assetNetworkEquipment = requestConverter.convert(request, AssetNetworkEquipment.class);
-        return assetNetworkEquipmentDao.insert(assetNetworkEquipment);
+        assetNetworkEquipmentDao.insert(assetNetworkEquipment);
+        return assetNetworkEquipment.getId();
     }
 
     @Override
