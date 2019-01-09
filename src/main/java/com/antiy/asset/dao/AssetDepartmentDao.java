@@ -20,6 +20,6 @@ public interface AssetDepartmentDao extends IBaseDao<AssetDepartment> {
 
     List<AssetDepartment> findListAssetDepartment(AssetDepartmentQuery query) throws Exception;
 
-    Integer delete(Map map) throws Exception;
+    Integer delete(List list) throws Exception;
 
 }

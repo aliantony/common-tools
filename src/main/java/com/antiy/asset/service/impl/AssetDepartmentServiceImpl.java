@@ -56,15 +56,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
 
 
 
-    private void updateUserDepartment(Integer id) throws Exception {
-        HashMap map = new HashMap();
-        map.put("departmentId", id);
-        List<AssetUser> list = assetUserDao.getByWhere(map);
-        for (AssetUser assetUser : list) {
-            assetUser.setDepartmentId(null);
-            assetUserDao.setDepartmentIdNull(assetUser);
-        }
-    }
+
 
     @Override
     public Integer updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
@@ -146,11 +138,9 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
 
     @Override
     public Integer deleteById(Serializable id) throws Exception {
-        List<AssetDepartment> idList = recursionSearch((Integer) id);
-        if (idList != null && idList.size() > 0) {
-            Map map = new HashMap();
-            map.put("idList", idList);
-            return assetDepartmentDao.delete(map);
+        List<AssetDepartment> list = recursionSearch((Integer) id);
+        if (CollectionUtils.isNotEmpty(list)) {
+            return assetDepartmentDao.delete(list);
         } else {
             return 0;
         }
