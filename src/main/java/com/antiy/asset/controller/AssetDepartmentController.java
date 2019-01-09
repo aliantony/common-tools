@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import com.antiy.asset.service.IAssetDepartmentService;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
-import com.antiy.asset.vo.request.AssetDepartmentUpdateRequest;
 import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.common.base.ActionResponse;
 
@@ -47,7 +46,7 @@ public class AssetDepartmentController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentUpdateRequest assetDepartment) throws Exception {
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentRequest assetDepartment) throws Exception {
         return ActionResponse.success(iAssetDepartmentService.updateAssetDepartment(assetDepartment));
     }
 

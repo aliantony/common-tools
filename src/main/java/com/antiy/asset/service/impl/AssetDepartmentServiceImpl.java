@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -49,21 +50,11 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Override
     public Integer saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
-        return assetDepartmentDao.insert(assetDepartment);
+        assetDepartmentDao.insert(assetDepartment);
+        return assetDepartment.getId();
     }
 
-    @Override
-    @Transactional
-    public Integer deleteById(Serializable id) throws Exception {
-        int sum = 0;
-        List<AssetDepartmentResponse> list = findAssetDepartmentById((Integer) id);
-        for (AssetDepartmentResponse assetDepartment : list) {
-            assetDepartmentDao.deleteById(assetDepartment.getId());
-            updateUserDepartment(assetDepartment.getId());
-            sum++;
-        }
-        return sum;
-    }
+
 
     private void updateUserDepartment(Integer id) throws Exception {
         HashMap map = new HashMap();
@@ -97,11 +88,20 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
 
     @Override
     public List<AssetDepartmentResponse> findAssetDepartmentById(Integer id) throws Exception {
+        return convert(recursionSearch(id));
+    }
+
+    /**
+     * 递归查询出所有的部门和其子部门
+     *
+     * @param id 查询的部门id
+     */
+    private List<AssetDepartment> recursionSearch(Integer id) throws Exception {
         List<AssetDepartment> list = assetDepartmentDao.getAll();
-        List<AssetDepartmentResponse> result = new ArrayList();
+        List<AssetDepartment> result = new ArrayList();
         for (AssetDepartment assetDepartment : list) {
             if (assetDepartment.getId() == id)
-                result.add(convert(assetDepartment));
+                result.add(assetDepartment);
         }
         recursion(result, list, id);
         return result;
@@ -114,15 +114,13 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
      * @param list   查询的数据集
      * @param id     递归的参数
      */
-    private void recursion(List<AssetDepartmentResponse> result, List<AssetDepartment> list, Integer id) {
+    private void recursion(List<AssetDepartment> result, List<AssetDepartment> list, Integer id) {
         for (AssetDepartment assetDepartment : list) {
             if (assetDepartment.getParentId() == id) {
-                result.add(convert(assetDepartment));
+                result.add(assetDepartment);
                 recursion(result, list, assetDepartment.getId());
             }
         }
-
-
     }
 
     public Integer findCountAssetDepartment(AssetDepartmentQuery query) throws Exception {
@@ -144,5 +142,17 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeResponseNodeUtilsConverter
                 .columnToNode(assetDepartment, AssetDepartmentNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
+    }
+
+    @Override
+    public Integer deleteById(Serializable id) throws Exception {
+        List<AssetDepartment> idList = recursionSearch((Integer) id);
+        if (idList != null && idList.size() > 0) {
+            Map map = new HashMap();
+            map.put("idList", idList);
+            return assetDepartmentDao.delete(map);
+        } else {
+            return 0;
+        }
     }
 }

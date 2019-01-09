@@ -3,7 +3,6 @@ package com.antiy.asset.controller;
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
-import com.antiy.asset.vo.request.AssetGroupUpdateRequest;
 import com.antiy.asset.vo.response.GroupValueResponse;
 import com.antiy.common.base.ActionResponse;
 import io.swagger.annotations.*;
@@ -51,7 +50,7 @@ public class AssetGroupController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetGroup") AssetGroupUpdateRequest assetGroup) throws Exception {
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetGroup") AssetGroupRequest assetGroup) throws Exception {
         return ActionResponse.success(iAssetGroupService.updateAssetGroup(assetGroup));
     }
 
