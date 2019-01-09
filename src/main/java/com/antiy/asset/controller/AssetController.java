@@ -12,7 +12,6 @@ import com.antiy.asset.vo.templet.AssetEntity;
 import com.antiy.asset.vo.templet.ImportResult;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
-import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +58,7 @@ public class AssetController {
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "asset") AssetRequest asset) throws Exception {
+    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetRequest asset) throws Exception {
         iAssetService.saveAsset(asset);
         return ActionResponse.success();
     }
@@ -73,7 +72,7 @@ public class AssetController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "asset") AssetRequest asset) throws Exception {
+    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetRequest asset) throws Exception {
         iAssetService.updateAsset(asset);
         return ActionResponse.success();
     }

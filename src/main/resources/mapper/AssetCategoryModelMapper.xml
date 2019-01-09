@@ -183,8 +183,29 @@
             and status = #{status }
         </if>
     </sql>
+    <sql id="Where_Column">
+        <if test=" name != null">
+            and name = #{name }
+        </if>
+        <if test=" type != null">
+            and type = #{type }
+        </if>
+        <if test=" assetType != null">
+            and asset_type = #{assetType }
+        </if>
+        <if test=" parentId != null">
+            and parent_id = #{parentId }
+        </if>
+        <if test=" description != null">
+            and description = #{description }
+        </if>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetCategoryModel">
+
+        and status = 1
+
+    </sql>
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetCategoryModel" useGeneratedKeys="true"
+            keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -247,7 +268,7 @@
         <include refid="Table_Name"></include>
         <where>
             <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
+                <include refid="Where_Column"></include>
             </trim>
         </where>
     </select>
@@ -267,10 +288,10 @@
     </select>
 
 
-    <select id="findListAssetCategoryModel" resultType="com.antiy.asset.entity.AssetCategoryModel"
+    <select id="findListAssetCategoryModel" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetCategoryModelQuery">
         select
-        <include refid="Base_Column_List"></include>
+        *
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
@@ -292,22 +313,6 @@
             <if test=" description != null">
                 and description = #{description }
             </if>
-            <if test=" gmtCreate != null">
-                and gmt_create = #{gmtCreate }
-            </if>
-            <if test=" gmtModified != null">
-                and gmt_modified = #{gmtModified }
-            </if>
-            <if test=" memo != null">
-                and memo = #{memo }
-            </if>
-            <if test=" createUser != null">
-                and create_user = #{createUser }
-            </if>
-            <if test=" modifyUser != null">
-                and modify_user = #{modifyUser }
-            </if>
-
             and status =1
 
         </trim>

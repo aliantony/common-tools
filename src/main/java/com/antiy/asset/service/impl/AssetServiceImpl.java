@@ -1,17 +1,13 @@
 package com.antiy.asset.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.AssetSoftwareLicenseResponse;
 import com.antiy.asset.vo.response.ManufacturerResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
@@ -24,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -417,8 +412,107 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public Integer saveAllAsset(HashMap<String, Object> map) throws Exception {
         Asset asset = new Asset ();
+        AssetCpu assetCpu = new AssetCpu();
+        AssetNetworkCard assetNetworkCard = new AssetNetworkCard();
+        AssetHardDisk assetHardDisk = new AssetHardDisk();
+        AssetMainborad assetMainborad = new AssetMainborad();
+        AssetMemory assetMemory = new AssetMemory();
+        asset.setNumber((String) map.get("number"));
+        asset.setType((Integer) map.get("type"));
+        asset.setCategory((Integer) map.get("category"));
+        asset.setModel((Integer) map.get("model"));
+        asset.setResponsibleUserId((Integer) map.get("responsibleUserId"));
+        asset.setSystemBit((Integer) map.get("systemBit"));
+        asset.setImportanceDegree((Integer) map.get("importanceDegree"));
+        asset.setParentId((Integer) map.get("parentId"));
+        asset.setCreateUser((Integer) map.get("createUser"));
+        asset.setAssetStatus(1);
+        // 2-人工上报
+        asset.setAssetSource(2);
+        asset.setName((String) map.get("name"));
+        asset.setSerial((String) map.get("serial"));
+        asset.setManufacturer((String) map.get("manufacturer"));
+        asset.setOperationSystem((String) map.get("operationSystem"));
+        asset.setLocation((String) map.get("location"));
+        asset.setLatitude((String) map.get("latitude"));
+        asset.setLongitude((String) map.get("longitude"));
+        asset.setFirmwareVersion((String) map.get("firmwareVersion"));
+        asset.setUuid((String) map.get("uuid"));
+        asset.setContactTel((String) map.get("contactTel"));
+        asset.setEmail((String) map.get("email"));
+        asset.setHardDisk((String) map.get("hardDisk"));
+        asset.setMemory((String) map.get("memory"));
+        asset.setDescrible((String) map.get("describle"));
+        asset.setCpu((String) map.get("cpu"));
+        asset.setNetworkCard((String) map.get("networkCard"));
+        asset.setTags((String) map.get("tags"));
+        asset.setMemo((String) map.get("memo"));
+        asset.setInnet(true);
+        asset.setFirstEnterNett((Long) map.get("firstEnterNett"));
+        asset.setServiceLife((Long) map.get("serviceLife"));
+        asset.setBuyDate((Long) map.get("buyDate"));
+        asset.setWarranty((Long) map.get("warranty"));
+        asset.setGmtCreate(System.currentTimeMillis());
+
         Integer aid = assetDao.insert (asset);
-        Object id = map.get ("id");
+
+        assetCpu.setAssetId(aid);
+        assetCpu.setSerial((String) map.get("cserial"));
+        assetCpu.setBrand((String) map.get("cbrand"));
+        assetCpu.setModel((String) map.get("cmodel"));
+        assetCpu.setMainFrequency((Float) map.get("mainFrequency"));
+        assetCpu.setThreadSize((Integer) map.get("threadSize"));
+        assetCpu.setCoreSize((Integer) map.get("coreSize"));
+        assetCpu.setGmtCreate(System.currentTimeMillis());
+        assetCpu.setMemo((String) map.get("memo"));
+        assetCpu.setCreateUser((Integer) map.get("createUser"));
+        Integer cid = assetCpuDao.insert(assetCpu);
+
+        assetNetworkCard.setAssetId(aid);
+        assetNetworkCard.setBrand((String) map.get("nbrand"));
+        assetNetworkCard.setSerial((String) map.get("nserial"));
+        assetNetworkCard.setModel((String) map.get("nmodel"));
+        assetNetworkCard.setIpAddress((String) map.get("ipAddress"));
+        assetNetworkCard.setMacAddress((String) map.get("macAddress"));
+        assetNetworkCard.setDefaultGateway((String) map.get("defaultGateway"));
+        assetNetworkCard.setNetwordAddress((String) map.get("networdAddress"));
+        assetNetworkCard.setSubnetMask((String) map.get("subnetMask"));
+        assetNetworkCard.setGmtCreate(System.currentTimeMillis());
+        assetNetworkCard.setMemo((String) map.get("memo"));
+        assetNetworkCard.setCreateUser((Integer) map.get("createUser"));
+        Integer nid = assetNetworkCardDao.insert(assetNetworkCard);
+
+        assetHardDisk.setAssetId(aid);
+        assetHardDisk.setSerial((String) map.get("hserial"));
+        assetHardDisk.setBrand((String) map.get("hbrand"));
+        assetHardDisk.setModel((String) map.get("hmodel"));
+        assetHardDisk.setInterfaceType((Integer) map.get("interfaceType"));
+        assetHardDisk.setCapacity((Integer) map.get("hcapacity"));
+        assetHardDisk.setDiskType((Integer) map.get("diskType"));
+        assetHardDisk.setBuyDate((Long) map.get("hbuyDate"));
+        assetHardDisk.setGmtCreate(System.currentTimeMillis());
+        assetHardDisk.setMemo((String) map.get("memo"));
+        assetHardDisk.setCreateUser((Integer) map.get("createUser"));
+        Integer hid = assetHardDiskDao.insert(assetHardDisk);
+
+        assetMainborad.setAssetId(aid);
+        assetMainborad.setSerial((String) map.get("mserial"));
+        assetMainborad.setBrand((String) map.get("mbrand"));
+        assetMainborad.setModel((String) map.get("mmodel"));
+        assetMainborad.setBiosVersion((String) map.get("biosVersion"));
+        assetMainborad.setBiosDate((Long) map.get("biosDate"));
+        assetMainborad.setGmtCreate(System.currentTimeMillis());
+        assetMainborad.setMemo((String) map.get("memo"));
+        assetMainborad.setCreateUser((Integer) map.get("createUser"));
+        Integer mid = assetMainboradDao.insert(assetMainborad);
+
+        assetMemory.setAssetId(aid);
+        assetMemory.setCapacity((Integer) map.get("mecapacity"));
+        assetMemory.setFrequency((Integer) map.get("mefrequency"));
+        assetMemory.setSlotType((Integer) map.get("meslotType"));
+        assetMemory.setStitch((Integer) map.get("slotType"));
+        assetMemory.setHeatsink(true);
+
         return  null;
     }
 

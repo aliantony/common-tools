@@ -179,7 +179,8 @@
 
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetPortProtocol">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetPortProtocol" useGeneratedKeys="true"
+            keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
