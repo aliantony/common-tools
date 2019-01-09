@@ -212,7 +212,7 @@
         where id=#{id}
     </update>
 
-    <update id="delete" parameterType="java.util.Map">
+    <update id="delete" >
         update
         <include refid="Table_Name"></include>
         department
@@ -223,11 +223,11 @@
         set
         department.status=
         <include refid="Delete_Status"></include>,
-        user.department_id=null
+        user.department_id=<include refid="Null"></include>
         where
         department.id
         in
-        <foreach collection="idList" index="index" item="item" open="(" separator="," close=")">
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
             #{item.id}
         </foreach>
     </update>
