@@ -309,9 +309,4 @@
         <include refid="Table_Name"></include>
     </select>
 
-    <update id="setDepartmentIdNull" parameterType="com.antiy.asset.entity.AssetUser">
-        update
-        <include refid="Table_Name"></include>
-        set department_id=null where id=#{id}
-    </update>
 </mapper>

@@ -23,12 +23,5 @@ public interface AssetUserDao extends IBaseDao<AssetUser> {
      * @return
      */
     List<AssetUser> findUserName() throws Exception;
-    /**
-     * 设置部门为null
-     *
-     * @return
-     */
-    Integer setDepartmentIdNull(AssetUser assetUser);
-
 
 }
