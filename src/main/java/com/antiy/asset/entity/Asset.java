@@ -38,13 +38,8 @@ public class Asset extends BaseEntity {
     /**
      * 品类
      */
-    @ApiModelProperty("品类")
-    private Integer category;
-    /**
-     * 资产型号
-     */
-    @ApiModelProperty("资产型号")
-    private Integer model;
+    @ApiModelProperty("品类型号")
+    private Integer categoryModelId;
     /**
      * 厂商
      */
@@ -238,20 +233,12 @@ public class Asset extends BaseEntity {
         this.serial = serial;
     }
 
-    public Integer getCategory() {
-        return category;
+    public Integer getCategoryModelId() {
+        return categoryModelId;
     }
 
-    public void setCategory(Integer category) {
-        this.category = category;
-    }
-
-    public Integer getModel() {
-        return model;
-    }
-
-    public void setModel(Integer model) {
-        this.model = model;
+    public void setCategoryModelId(Integer categoryModelId) {
+        this.categoryModelId = categoryModelId;
     }
 
     public String getManufacturer() {
@@ -513,7 +500,7 @@ public class Asset extends BaseEntity {
     @Override
     public String toString() {
         return "Asset{" + ", number=" + number + ", type=" + type + ", name=" + name + ", serial=" + serial
-                + ", category=" + category + ", model=" + model + ", manufacturer=" + manufacturer + ", assetStatus="
+                + ", categoryModelId=" + categoryModelId + ", manufacturer=" + manufacturer + ", assetStatus="
                 + assetStatus + ", operationSystem=" + operationSystem + ", systemBit=" + systemBit + ", location="
                 + location + ", latitude=" + latitude + ", longitude=" + longitude + ", firmwareVersion="
                 + firmwareVersion + ", uuid=" + uuid + ", responsibleUserId=" + responsibleUserId + ", contactTel="
