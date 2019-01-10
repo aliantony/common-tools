@@ -36,7 +36,8 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
     @Override
     public Integer saveAssetMainborad(AssetMainboradRequest request) throws Exception {
         AssetMainborad assetMainborad = requestConverter.convert(request, AssetMainborad.class);
-        return assetMainboradDao.insert(assetMainborad);
+        assetMainboradDao.insert(assetMainborad);
+        return assetMainborad.getId();
     }
 
     @Override

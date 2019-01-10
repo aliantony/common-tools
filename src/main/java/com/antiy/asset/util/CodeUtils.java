@@ -146,6 +146,9 @@ public class CodeUtils {
     public static String[] getCodeArray(String codeType) {
 
         List list = getCodeList(codeType);
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
         String[] strings = (String[]) list.toArray(new String[list.size()]);
         return strings;
     }

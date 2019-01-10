@@ -36,7 +36,8 @@ public class AssetCpuServiceImpl extends BaseServiceImpl<AssetCpu> implements IA
     @Override
     public Integer saveAssetCpu(AssetCpuRequest request) throws Exception {
         AssetCpu assetCpu = requestConverter.convert(request, AssetCpu.class);
-        return assetCpuDao.insert(assetCpu);
+        assetCpuDao.insert(assetCpu);
+        return assetCpu.getId();
     }
 
     @Override

@@ -227,7 +227,7 @@
         and status = 1
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetNetworkEquipment">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetNetworkEquipment" useGeneratedKeys="true" keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">

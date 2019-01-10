@@ -167,7 +167,7 @@
         and status = 0
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetMainborad">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetMainborad" useGeneratedKeys="true" keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">

@@ -23,6 +23,7 @@ public class AssetQuery extends ObjectQuery {
     /**
      * 综合查询条件
      */
+    @ApiModelProperty("综合查询条件")
     private String  multipleQuery;
 
     /**
@@ -65,31 +66,7 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("操作系统,如果type为IDS或者IPS则此字段存放软件版本信息")
     private String operationSystem;
-    /**
-     * 系统位数
-     */
-    @ApiModelProperty("系统位数")
-    private Integer systemBit;
-    /**
-     * 物理位置
-     */
-    @ApiModelProperty("物理位置")
-    private String location;
-    /**
-     * 纬度
-     */
-    @ApiModelProperty("纬度")
-    private String latitude;
-    /**
-     * 经度
-     */
-    @ApiModelProperty("经度")
-    private String longitude;
-    /**
-     * 固件版本
-     */
-    @ApiModelProperty("固件版本")
-    private String firmwareVersion;
+
     /**
      * 设备uuid
      */
@@ -100,26 +77,7 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("责任人主键")
     private Integer responsibleUserId;
-    /**
-     * 联系电话
-     */
-    @ApiModelProperty("联系电话")
-    private String contactTel;
-    /**
-     * 邮箱
-     */
-    @ApiModelProperty("邮箱")
-    private String email;
-    /**
-     * 硬盘
-     */
-    @ApiModelProperty("硬盘")
-    private String hardDisk;
-    /**
-     * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
-     */
-    @ApiModelProperty("内存JSON数据{ID:1,name:Kingston,rom:8GB}")
-    private String memory;
+
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
@@ -130,85 +88,42 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("0-不重要(not_major),1- 一般(general),3-重要(major),")
     private Integer importanceDegree;
-    /**
-     * 描述
-     */
-    @ApiModelProperty("描述")
-    private String describle;
-    /**
-     * CPUJSON数据{ID:1,name:intel,coresize:8}
-     */
-    @ApiModelProperty("CPUJSON数据{ID:1,name:intel,coresize:8}")
-    private String cpu;
-    /**
-     * 网卡JSON数据{ID:1,name:intel,speed:1900M}
-     */
-    @ApiModelProperty("网卡JSON数据{ID:1,name:intel,speed:1900M}")
-    private String networkCard;
+
     /**
      * 父类资源Id
      */
     @ApiModelProperty("父类资源Id")
     private Integer parentId;
-    /**
-     * 所属标签ID和名称列表JSON串
-     */
-    @ApiModelProperty("所属标签ID和名称列表JSON串")
-    private String tags;
+
     /**
      * 是否入网,0表示未入网,1表示入网
      */
     @ApiModelProperty("是否入网,0表示未入网,1表示入网")
     private Boolean isInnet;
-    /**
-     * 使用到期时间
-     */
-    @ApiModelProperty("使用到期时间")
-    private Long serviceLife;
-    /**
-     * 制造日期
-     */
-    @ApiModelProperty("制造日期")
-    private Long buyDate;
-    /**
-     * 保修期
-     */
-    @ApiModelProperty("保修期")
-    private Long warranty;
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty("创建时间")
-    private Long gmtCreate;
-    /**
-     * 更新时间
-     */
-    @ApiModelProperty("更新时间")
-    private Long gmtModified;
-    /**
-     * 备注
-     */
-    @ApiModelProperty("备注")
-    private String memo;
-    /**
-     * 创建人
-     */
-    @ApiModelProperty("创建人")
-    private Integer createUser;
-    /**
-     * 修改人
-     */
-    @ApiModelProperty("修改人")
-    private Integer modifyUser;
+
+
     /**
      * 资产状态
      */
+    @ApiModelProperty("资产状态")
     private List<Integer> assetStatusList;
 
     /**
      * 资产组id
      */
+    @ApiModelProperty("资产组id")
     private Integer assetGroup;
+    /**
+     * 首次入网时间
+     */
+    @ApiModelProperty("首次入网时间（起始）")
+    private Long firstEnterNettBegin;
+
+    /**
+     * 首次入网时间
+     */
+    @ApiModelProperty("首次入网时间（截止）")
+    private Long firstEnterNettEnd;
 
     private Integer status;
 
@@ -292,45 +207,6 @@ public class AssetQuery extends ObjectQuery {
         this.operationSystem = operationSystem;
     }
 
-    public Integer getSystemBit() {
-        return systemBit;
-    }
-
-    public void setSystemBit(Integer systemBit) {
-        this.systemBit = systemBit;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getFirmwareVersion() {
-        return firmwareVersion;
-    }
-
-    public void setFirmwareVersion(String firmwareVersion) {
-        this.firmwareVersion = firmwareVersion;
-    }
 
     public String getUuid() {
         return uuid;
@@ -348,37 +224,7 @@ public class AssetQuery extends ObjectQuery {
         this.responsibleUserId = responsibleUserId;
     }
 
-    public String getContactTel() {
-        return contactTel;
-    }
 
-    public void setContactTel(String contactTel) {
-        this.contactTel = contactTel;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getHardDisk() {
-        return hardDisk;
-    }
-
-    public void setHardDisk(String hardDisk) {
-        this.hardDisk = hardDisk;
-    }
-
-    public String getMemory() {
-        return memory;
-    }
-
-    public void setMemory(String memory) {
-        this.memory = memory;
-    }
 
     public Integer getAssetSource() {
         return assetSource;
@@ -396,29 +242,6 @@ public class AssetQuery extends ObjectQuery {
         this.importanceDegree = importanceDegree;
     }
 
-    public String getDescrible() {
-        return describle;
-    }
-
-    public void setDescrible(String describle) {
-        this.describle = describle;
-    }
-
-    public String getCpu() {
-        return cpu;
-    }
-
-    public void setCpu(String cpu) {
-        this.cpu = cpu;
-    }
-
-    public String getNetworkCard() {
-        return networkCard;
-    }
-
-    public void setNetworkCard(String networkCard) {
-        this.networkCard = networkCard;
-    }
 
     public Integer getParentId() {
         return parentId;
@@ -426,14 +249,6 @@ public class AssetQuery extends ObjectQuery {
 
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
     }
 
     public Boolean getInnet() {
@@ -444,69 +259,6 @@ public class AssetQuery extends ObjectQuery {
         isInnet = innet;
     }
 
-    public Long getServiceLife() {
-        return serviceLife;
-    }
-
-    public void setServiceLife(Long serviceLife) {
-        this.serviceLife = serviceLife;
-    }
-
-    public Long getBuyDate() {
-        return buyDate;
-    }
-
-    public void setBuyDate(Long buyDate) {
-        this.buyDate = buyDate;
-    }
-
-    public Long getWarranty() {
-        return warranty;
-    }
-
-    public void setWarranty(Long warranty) {
-        this.warranty = warranty;
-    }
-
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-    public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
-
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
 
     public List<Integer> getAssetStatusList() {
         return assetStatusList;
@@ -530,5 +282,21 @@ public class AssetQuery extends ObjectQuery {
 
     public void setAssetGroup(Integer assetGroup) {
         this.assetGroup = assetGroup;
+    }
+
+    public Long getFirstEnterNettBegin() {
+        return firstEnterNettBegin;
+    }
+
+    public void setFirstEnterNettBegin(Long firstEnterNettBegin) {
+        this.firstEnterNettBegin = firstEnterNettBegin;
+    }
+
+    public Long getFirstEnterNettEnd() {
+        return firstEnterNettEnd;
+    }
+
+    public void setFirstEnterNettEnd(Long firstEnterNettEnd) {
+        this.firstEnterNettEnd = firstEnterNettEnd;
     }
 }

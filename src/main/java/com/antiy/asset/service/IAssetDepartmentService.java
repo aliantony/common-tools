@@ -1,19 +1,18 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+
 import com.antiy.asset.entity.AssetDepartment;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
+import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
-import java.util.List;
-
+import io.swagger.models.auth.In;
 
 /**
- * <p>
- * 资产部门信息 服务类
- * </p>
+ * <p> 资产部门信息 服务类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02
@@ -51,5 +50,23 @@ public interface IAssetDepartmentService extends IBaseService<AssetDepartment> {
      * @return
      */
     PageResult<AssetDepartmentResponse> findPageAssetDepartment(AssetDepartmentQuery query) throws Exception;
+
+    /**
+     * 根据id查询所有部门及子部门
+     *
+     * @param id
+     * @return
+     */
+    List<AssetDepartmentResponse> findAssetDepartmentById(Integer id) throws Exception;
+
+
+    /**
+     * 查询部门树形结构
+     *
+     * @return
+     * @throws Exception
+     */
+    AssetDepartmentNodeResponse findDepartmentNode() throws Exception;
+
 
 }

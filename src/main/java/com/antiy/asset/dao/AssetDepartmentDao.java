@@ -1,10 +1,12 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetDepartment;
+import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.common.base.IBaseDao;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -17,4 +19,7 @@ import java.util.List;
 public interface AssetDepartmentDao extends IBaseDao<AssetDepartment> {
 
     List<AssetDepartment> findListAssetDepartment(AssetDepartmentQuery query) throws Exception;
+
+    Integer delete(List list) throws Exception;
+
 }

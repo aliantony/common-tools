@@ -36,7 +36,8 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
     @Override
     public Integer saveAssetNetworkCard(AssetNetworkCardRequest request) throws Exception {
         AssetNetworkCard assetNetworkCard = requestConverter.convert(request, AssetNetworkCard.class);
-        return assetNetworkCardDao.insert(assetNetworkCard);
+        assetNetworkCardDao.insert(assetNetworkCard);
+        return assetNetworkCard.getId();
     }
 
     @Override

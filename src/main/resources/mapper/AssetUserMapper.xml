@@ -191,10 +191,10 @@
             AND gmt_modified = #{gmtModified }
         </if>
         <if test=" status != null">
-            AND    status = #{status }
+            AND status = #{status }
         </if>
         <if test=" status == null">
-            AND    status = 0
+            AND status = 1
         </if>
         <if test=" memo != null">
             AND memo = #{memo }
@@ -206,7 +206,7 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </sql>
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetUser">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetUser"  useGeneratedKeys="true" keyProperty="id"  keyColumn="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -308,4 +308,5 @@
         select name from
         <include refid="Table_Name"></include>
     </select>
+
 </mapper>

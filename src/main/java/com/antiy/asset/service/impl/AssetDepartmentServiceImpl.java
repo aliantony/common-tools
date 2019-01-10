@@ -1,20 +1,30 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetDepartmentDao;
+import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.AssetDepartment;
+import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.IAssetDepartmentService;
 import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.NodeUtilsConverter;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
+import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -34,12 +44,19 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     private BaseConverter<AssetDepartmentRequest, AssetDepartment> requestConverter;
     @Resource
     private BaseConverter<AssetDepartment, AssetDepartmentResponse> responseConverter;
+    @Resource
+    private AssetUserDao assetUserDao;
 
     @Override
     public Integer saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
-        return assetDepartmentDao.insert(assetDepartment);
+        assetDepartmentDao.insert(assetDepartment);
+        return assetDepartment.getId();
     }
+
+
+
+
 
     @Override
     public Integer updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
@@ -50,26 +67,52 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Override
     public List<AssetDepartmentResponse> findListAssetDepartment(AssetDepartmentQuery query) throws Exception {
         List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
-        return convert(assetDepartment);
+        return responseConverter.convert(assetDepartment, AssetDepartmentResponse.class);
     }
 
-    private List<AssetDepartmentResponse> convert(List<AssetDepartment> assetDepartments) {
-        if (assetDepartments.size() > 0) {
-            List assetDepartmentResponse = BeanConvert.convert(assetDepartments, AssetDepartmentResponse.class);
-            setListID(assetDepartments, assetDepartmentResponse);
-            return assetDepartmentResponse;
-        } else
-            return new ArrayList<>();
+    private List<AssetDepartmentResponse> convert(List<AssetDepartment> list) {
+        return responseConverter.convert(list, AssetDepartmentResponse.class);
     }
 
-    private void setListID(List<AssetDepartment> assetDepartments, List<AssetDepartmentResponse> assetDepartmentResponses) {
-        for (int i = 0; i < assetDepartmentResponses.size(); i++) {
-            setID(assetDepartments.get(i), assetDepartmentResponses.get(i));
+    private AssetDepartmentResponse convert(AssetDepartment assetDepartment) {
+        return responseConverter.convert(assetDepartment, AssetDepartmentResponse.class);
+    }
+
+    @Override
+    public List<AssetDepartmentResponse> findAssetDepartmentById(Integer id) throws Exception {
+        return convert(recursionSearch(id));
+    }
+
+    /**
+     * 递归查询出所有的部门和其子部门
+     *
+     * @param id 查询的部门id
+     */
+    private List<AssetDepartment> recursionSearch(Integer id) throws Exception {
+        List<AssetDepartment> list = assetDepartmentDao.getAll();
+        List<AssetDepartment> result = new ArrayList();
+        for (AssetDepartment assetDepartment : list) {
+            if (assetDepartment.getId() == id)
+                result.add(assetDepartment);
         }
+        recursion(result, list, id);
+        return result;
     }
 
-    private void setID(AssetDepartment assetDepartment, AssetDepartmentResponse assetDepartmentResponse) {
-        assetDepartmentResponse.setId(assetDepartment.getId());
+    /**
+     * 递归查询出所有的部门和其子部门
+     *
+     * @param result 查询的结果集
+     * @param list   查询的数据集
+     * @param id     递归的参数
+     */
+    private void recursion(List<AssetDepartment> result, List<AssetDepartment> list, Integer id) {
+        for (AssetDepartment assetDepartment : list) {
+            if (assetDepartment.getParentId() == id) {
+                result.add(assetDepartment);
+                recursion(result, list, assetDepartment.getId());
+            }
+        }
     }
 
     public Integer findCountAssetDepartment(AssetDepartmentQuery query) throws Exception {
@@ -78,6 +121,28 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
 
     @Override
     public PageResult<AssetDepartmentResponse> findPageAssetDepartment(AssetDepartmentQuery query) throws Exception {
-        return new PageResult<>(query.getPageSize(), this.findCountAssetDepartment(query), query.getCurrentPage(), this.findListAssetDepartment(query));
+        return new PageResult<>(query.getPageSize(), this.findCountAssetDepartment(query), query.getCurrentPage(),
+                this.findListAssetDepartment(query));
+    }
+
+    @Override
+    public AssetDepartmentNodeResponse findDepartmentNode() throws Exception {
+        AssetDepartmentQuery query = new AssetDepartmentQuery();
+        query.setStatus(1);
+        List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
+        NodeUtilsConverter nodeResponseNodeUtilsConverter = new NodeUtilsConverter<>();
+        List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeResponseNodeUtilsConverter
+                .columnToNode(assetDepartment, AssetDepartmentNodeResponse.class);
+        return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
+    }
+
+    @Override
+    public Integer deleteById(Serializable id) throws Exception {
+        List<AssetDepartment> list = recursionSearch((Integer) id);
+        if (CollectionUtils.isNotEmpty(list)) {
+            return assetDepartmentDao.delete(list);
+        } else {
+            return 0;
+        }
     }
 }

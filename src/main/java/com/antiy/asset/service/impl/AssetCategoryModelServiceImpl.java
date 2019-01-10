@@ -46,12 +46,13 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public List<AssetCategoryModel> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public List<AssetCategoryModelResponse> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
         List<AssetCategoryModel> assetCategoryModel = assetCategoryModelDao.findListAssetCategoryModel(query);
-        //TODO
+        List<AssetCategoryModelResponse> convert = responseConverter.convert(assetCategoryModel,
+            AssetCategoryModelResponse.class);
 
 
-        return assetCategoryModel;
+        return convert;
     }
 
     public Integer findCountAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
@@ -59,7 +60,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public PageResult<AssetCategoryModel> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetCategoryModel(query), query.getCurrentPage(), this.findListAssetCategoryModel(query));
     }
 }

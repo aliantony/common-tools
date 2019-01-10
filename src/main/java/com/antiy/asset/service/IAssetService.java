@@ -1,6 +1,7 @@
 package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
@@ -98,4 +99,27 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     List<ManufacturerResponse> findManufacturer() throws Exception;
 
+
+    /**
+     * 根据品类型号查询对应资产列表
+     * @param query
+     * @return
+     * @throws Exception
+     */
+    List<AssetResponse> findListAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception;
+
+    /**
+     * 根据品类型号查询对应资产数量
+     * @param query
+     * @return
+     * @throws Exception
+     */
+    Integer findCountByCategoryModel(AssetCategoryModelQuery query) throws Exception;
+
+    /**
+     * 根据品类型号查询对应资产
+     * @return
+     * @throws Exception
+     */
+    PageResult<AssetResponse> findPageAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception;
 }
