@@ -419,8 +419,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetMemory assetMemory = new AssetMemory();
         asset.setNumber((String) map.get("number"));
         asset.setType((Integer) map.get("type"));
-        asset.setCategory((Integer) map.get("category"));
-        asset.setModel((Integer) map.get("model"));
+        asset.setCategoryModelId((Integer) map.get("categoryModelId"));
         asset.setResponsibleUserId((Integer) map.get("responsibleUserId"));
         asset.setSystemBit((Integer) map.get("systemBit"));
         asset.setImportanceDegree((Integer) map.get("importanceDegree"));

@@ -38,7 +38,8 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
         AssetSafetyEquipment assetSafetyEquipment = requestConverter.convert(request, AssetSafetyEquipment.class);
         //TODO 添加创建人信息
         assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
-        return assetSafetyEquipmentDao.insert(assetSafetyEquipment);
+        assetSafetyEquipmentDao.insert(assetSafetyEquipment);
+        return assetSafetyEquipment.getId();
     }
 
     @Override

@@ -38,8 +38,7 @@ public class AssetSoftwareRelationController {
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetSoftwareRelation") @RequestBody AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
-        iAssetSoftwareRelationService.saveAssetSoftwareRelation(assetSoftwareRelationRequest);
-        return ActionResponse.success();
+        return ActionResponse.success(iAssetSoftwareRelationService.saveAssetSoftwareRelation(assetSoftwareRelationRequest));
     }
 
     /**

@@ -38,8 +38,7 @@ public class SchemeController {
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "scheme") @RequestBody SchemeRequest schemeRequest) throws Exception {
-        iSchemeService.saveScheme(schemeRequest);
-        return ActionResponse.success();
+        return ActionResponse.success(iSchemeService.saveScheme(schemeRequest));
     }
 
     /**

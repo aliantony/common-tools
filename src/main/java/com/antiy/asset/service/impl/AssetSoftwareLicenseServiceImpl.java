@@ -35,11 +35,11 @@ public class AssetSoftwareLicenseServiceImpl extends BaseServiceImpl<AssetSoftwa
 
     @Override
     public Integer saveAssetSoftwareLicense(AssetSoftwareLicenseRequest request) throws Exception {
-//
         AssetSoftwareLicense assetSoftwareLicense = requestConverter.convert(request, AssetSoftwareLicense.class);
         //TODO 添加创建人信息
         assetSoftwareLicense.setGmtCreate(System.currentTimeMillis());
-        return assetSoftwareLicenseDao.insert(assetSoftwareLicense);
+        assetSoftwareLicenseDao.insert(assetSoftwareLicense);
+        return assetSoftwareLicense.getId();
     }
 
     @Override

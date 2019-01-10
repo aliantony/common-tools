@@ -38,8 +38,7 @@ public class AssetSoftwareLicenseController {
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetSoftwareLicense") @RequestBody AssetSoftwareLicenseRequest assetSoftwareLicenseRequest)throws Exception{
-        iAssetSoftwareLicenseService.saveAssetSoftwareLicense(assetSoftwareLicenseRequest);
-        return ActionResponse.success();
+        return ActionResponse.success(iAssetSoftwareLicenseService.saveAssetSoftwareLicense(assetSoftwareLicenseRequest));
     }
 
     /**

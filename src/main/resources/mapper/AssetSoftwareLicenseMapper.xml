@@ -185,7 +185,7 @@
         </if>
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetSoftwareLicense">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetSoftwareLicense" useGeneratedKeys="true" keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
