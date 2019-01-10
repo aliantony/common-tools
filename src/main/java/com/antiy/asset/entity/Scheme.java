@@ -19,6 +19,11 @@ public class Scheme extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 资产主键
+     */
+    @ApiModelProperty("资产主键")
+    private Integer asset_id;
+    /**
      * 类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）
      */
     @ApiModelProperty("类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）")
@@ -79,6 +84,13 @@ public class Scheme extends BaseEntity {
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
 
+    public Integer getAsset_id() {
+        return asset_id;
+    }
+
+    public void setAsset_id(Integer asset_id) {
+        this.asset_id = asset_id;
+    }
 
     public Integer getType() {
         return type;
