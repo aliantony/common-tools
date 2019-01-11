@@ -7,7 +7,6 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,7 +22,6 @@ import javax.annotation.Resource;
 @Api(value = "AssetGroupRelation", description = "资产与资产组关系表")
 @RestController
 @RequestMapping("/v1/asset/assetgrouprelation")
-@Slf4j
 public class AssetGroupRelationController {
 
     @Resource
