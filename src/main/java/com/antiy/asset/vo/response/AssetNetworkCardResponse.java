@@ -15,6 +15,11 @@ public class AssetNetworkCardResponse {
 
     private static final long serialVersionUID = 1L;
     /**
+     * 主键
+     */
+    @ApiModelProperty("主键")
+    private int id;
+    /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
@@ -59,11 +64,14 @@ public class AssetNetworkCardResponse {
      */
     @ApiModelProperty("子网掩码")
     private String subnetMask;
-    /**
-     * 状态,1未删除,0已删除
-     */
-    @ApiModelProperty("状态,1未删除,0已删除")
-    private Integer status;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Integer getAssetId() {
         return assetId;
@@ -137,11 +145,4 @@ public class AssetNetworkCardResponse {
         this.subnetMask = subnetMask;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
 }

@@ -200,6 +200,43 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer isDelete;
+    /**
+     * 资产组
+     */
+    private String assetGroups;
+
+    /**
+     * ip
+     */
+    private String ip;
+    /**
+     * mac
+     */
+    private String mac;
+
+    public String getAssetGroups() {
+        return assetGroups;
+    }
+
+    public void setAssetGroups(String assetGroups) {
+        this.assetGroups = assetGroups;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
 
     public String getNumber() {
         return number;

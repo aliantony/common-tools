@@ -63,4 +63,11 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<Asset> findListAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception;
+    /**
+     * 通过ID列表查询资产列表
+     *
+     * @param ids
+     * @return actionResponse
+     */
+    List<Asset> queryAssetByIds(Integer[] ids);
 }

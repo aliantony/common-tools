@@ -49,11 +49,6 @@ public class AssetMainboradResponse {
      */
     @ApiModelProperty("BIOS日期")
     private Long biosDate;
-    /**
-     * 状态,1未删除,0已删除
-     */
-    @ApiModelProperty("状态,1未删除,0已删除")
-    private Integer status;
 
     public int getId() {
         return id;
@@ -109,13 +104,5 @@ public class AssetMainboradResponse {
 
     public void setBiosDate(Long biosDate) {
         this.biosDate = biosDate;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 }

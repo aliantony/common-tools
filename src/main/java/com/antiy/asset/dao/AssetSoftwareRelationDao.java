@@ -2,6 +2,7 @@ package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareRelation;
+import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.common.base.IBaseDao;
 
 import java.util.List;

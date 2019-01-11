@@ -7,6 +7,7 @@ import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
+import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.ManufacturerResponse;
 import com.antiy.common.base.BaseConverter;
@@ -530,5 +531,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public PageResult<AssetResponse> findPageAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountByCategoryModel(query), query.getCurrentPage(), this.findListAssetByCategoryModel(query));
+    }
+
+    @Override
+    public List<AssetResponse> queryAssetByIds(Integer[] ids) {
+        List<Asset> asset = assetDao.queryAssetByIds(ids);
+        List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
+        return objects;
+    }
+
+    @Override
+    public AssetOuterResponse getByAssetId(Integer id) throws Exception {
+        AssetOuterResponse assetOuterResponse = new AssetOuterResponse();
+        Asset asset = assetDao.getById(id);
+        return null;
     }
 }

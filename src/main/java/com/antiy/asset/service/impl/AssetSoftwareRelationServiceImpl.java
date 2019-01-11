@@ -76,4 +76,5 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     public Integer countAssetBySoftId(Integer id) {
         return assetSoftwareRelationDao.countAssetBySoftId(id);
     }
+
 }
