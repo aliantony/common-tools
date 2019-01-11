@@ -14,7 +14,6 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,6 @@ import java.util.Map;
  * @since 2019-01-02
  */
 @Service
-@Slf4j
 public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetService {
 
 
