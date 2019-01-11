@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author liuyu
  * @date 2018/11/01
  */
+
 @SpringBootApplication
 @EnableTransactionManagement
 @MapperScan({"com.antiy.asset.dao"})

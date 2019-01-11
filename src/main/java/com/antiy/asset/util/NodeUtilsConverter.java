@@ -137,6 +137,7 @@ public class NodeUtilsConverter<S, T> extends BaseConverter<S, T> {
                 Object obj = ReflectionUtils.invokeGetterMethod(t, childrenNodeColumn);
                 if (obj == null) {
                     ReflectionUtils.setFieldValue(t, childrenNodeColumn, new ArrayList<>());
+                    obj = ReflectionUtils.invokeGetterMethod(t, childrenNodeColumn);
                 }
 
                 // 反射调用并且设置值。
