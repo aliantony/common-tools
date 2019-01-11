@@ -101,7 +101,7 @@ public class AssetController {
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
     public ActionResponse queryById(@ApiParam(value = "asset") @PathVariable("id") Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetService.getById(id));
+        return ActionResponse.success(iAssetService.getByAssetId(id));
     }
 
     /**

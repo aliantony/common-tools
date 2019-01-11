@@ -69,5 +69,4 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      */
     Integer countAssetBySoftId(Integer id);
 
-
 }
