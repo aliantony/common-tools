@@ -38,8 +38,7 @@ public class AssetSoftwareRelationController {
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetSoftwareRelation") @RequestBody AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
-        iAssetSoftwareRelationService.saveAssetSoftwareRelation(assetSoftwareRelationRequest);
-        return ActionResponse.success();
+        return ActionResponse.success(iAssetSoftwareRelationService.saveAssetSoftwareRelation(assetSoftwareRelationRequest));
     }
 
     /**
@@ -119,6 +118,22 @@ public class AssetSoftwareRelationController {
     public ActionResponse countAssetBySoftId(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetSoftwareRelationService.countAssetBySoftId(id));
+    }
+
+    /**
+     * 查询硬件资产关联的软件列表
+     *
+     * @param assetId
+     * @return actionResponse
+     */
+    @ApiOperation(value = "查询硬件资产关联的软件列表", notes = "资产ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
+    })
+    @RequestMapping(value = "/getSoftwareByAssetId/{id}", method = RequestMethod.GET)
+    public ActionResponse getSoftwareByAssetId(@ApiParam(value = "assetId") @PathVariable("assetId") Integer assetId) throws Exception {
+        ParamterExceptionUtils.isNull(assetId, "资产ID不能为空");
+        return ActionResponse.success(iAssetSoftwareRelationService.getSoftByAssetId(assetId));
     }
 }
 

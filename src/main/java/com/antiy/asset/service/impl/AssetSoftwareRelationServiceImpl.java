@@ -41,7 +41,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     public Integer saveAssetSoftwareRelation(AssetSoftwareRelationRequest request) throws Exception {
         AssetSoftwareRelation assetSoftwareRelation = requestConverter.convert(request, AssetSoftwareRelation.class);
         //TODO 添加创建人信息
-        return assetSoftwareRelationDao.insert(assetSoftwareRelation);
+        assetSoftwareRelationDao.insert(assetSoftwareRelation);
+        return assetSoftwareRelation.getId();
     }
 
     @Override
@@ -75,4 +76,5 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     public Integer countAssetBySoftId(Integer id) {
         return assetSoftwareRelationDao.countAssetBySoftId(id);
     }
+
 }

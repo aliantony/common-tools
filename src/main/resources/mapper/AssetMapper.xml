@@ -13,6 +13,9 @@
         <result column="number" property="number"/>
         <result column="type" property="type"/>
         <result column="name" property="name"/>
+        <result column="asset_groups" property="assetGroups"/>
+        <result column="ip" property="ip"/>
+        <result column="mac" property="mac"/>
         <result column="serial" property="serial"/>
         <result column="category" property="category"/>
         <result column="model" property="model"/>
@@ -51,7 +54,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, number, type, name, serial, category, model, manufacturer, asset_status AS assetStatus, operation_system AS operationSystem, system_bit AS systemBit, location, latitude, longitude, firmware_version AS firmwareVersion, uuid, responsible_user_id AS responsibleUserId, contact_tel AS contactTel, email, hard_disk AS hardDisk, memory, asset_source AS assetSource, importance_degree AS importanceDegree, describle, cpu, network_card AS networkCard, parent_id AS parentId, tags, is_innet AS isInnet, first_enter_nett AS firstEnterNett, service_life AS serviceLife, buy_date AS buyDate, warranty, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser
+        id, number, type, name, asset_groups as assetGroups, serial, category, model, manufacturer, asset_status AS assetStatus, operation_system AS operationSystem, system_bit AS systemBit, location, latitude, longitude, firmware_version AS firmwareVersion, uuid, responsible_user_id AS responsibleUserId, contact_tel AS contactTel, email, hard_disk AS hardDisk, memory, asset_source AS assetSource, importance_degree AS importanceDegree, describle, cpu, network_card AS networkCard, parent_id AS parentId, tags, is_innet AS isInnet, first_enter_nett AS firstEnterNett, service_life AS serviceLife, buy_date AS buyDate, warranty, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser
     </sql>
 
     <sql id="Table_Name">
@@ -618,8 +621,15 @@
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
+        <if test=" assetIds != null">
+            and identity in
+            <foreach index="index" item="item" collection="assetIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test=" assetGroup != null">
-            and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id = #{assetGroup})
+            and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id =
+            #{assetGroup})
         </if>
         <if test=" multipleQuery != null">
             and (name LIKE CONCAT('%',#{multipleQuery},'%')
@@ -637,17 +647,16 @@
                 #{assetStatus}
             </foreach>
         </if>
-        <if test=" type != null">
-            and type = #{type }
-        </if>
-        <if test=" serial != null">
-            and serial = #{serial }
-        </if>
         <if test=" category != null">
-            and category = #{category }
-        </if>
-        <if test=" model != null">
-            and model = #{model }
+            and (category in
+            <foreach collection="category" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+            or model in
+            <foreach collection="category" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+            )
         </if>
         <if test=" manufacturer != null">
             and manufacturer LIKE CONCAT('%',#{manufacturer},'%')
@@ -754,21 +763,6 @@
         </if>
     </select>
 
-
-    <select id="findListAsset" resultType="com.antiy.asset.entity.Asset"
-            parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select
-        <include refid="Base_Column_List"></include>
-        from
-        <include refid="Table_Name"></include>
-        <trim prefix="WHERE" prefixOverrides="AND|OR">
-            <include refid="Multiple_Query"></include>
-        </trim>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
-    </select>
-
     <!--变更资产状态-->
     <update id="changeStatus" parameterType="java.util.Map">
         update
@@ -831,7 +825,8 @@
         </if>
     </select>
 
-    <select id="findListAssetByCategoryModel" resultType="com.antiy.asset.entity.Asset" parameterType="java.lang.Integer">
+    <select id="findListAssetByCategoryModel" resultType="com.antiy.asset.entity.Asset"
+            parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
         from
@@ -847,6 +842,24 @@
                 #{item}
             </foreach>
             )
+        </if>
+    </select>
+
+    <select id="findListAsset" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select * from (SELECT
+            a.*,
+            GROUP_CONCAT( b.ip_address ) as ip,
+            GROUP_CONCAT( b.mac_address ) as ip
+        FROM
+         asset a
+        LEFT JOIN asset_network_card b ON a.id = b.asset_id
+        GROUP BY
+        a.id) asset
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <include refid="Multiple_Query"></include>
+        </trim>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
 </mapper>

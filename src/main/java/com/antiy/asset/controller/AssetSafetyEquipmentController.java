@@ -38,8 +38,7 @@ public class AssetSafetyEquipmentController {
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetSafetyEquipment") @RequestBody AssetSafetyEquipmentRequest assetSafetyEquipmentRequest) throws Exception {
-        iAssetSafetyEquipmentService.saveAssetSafetyEquipment(assetSafetyEquipmentRequest);
-        return ActionResponse.success();
+        return ActionResponse.success(iAssetSafetyEquipmentService.saveAssetSafetyEquipment(assetSafetyEquipmentRequest));
     }
 
     /**

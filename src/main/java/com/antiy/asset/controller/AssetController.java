@@ -11,7 +11,6 @@ import com.antiy.asset.vo.response.ManufacturerResponse;
 import com.antiy.asset.vo.templet.AssetEntity;
 import com.antiy.asset.vo.templet.ImportResult;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.ServletResponse;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -35,19 +33,21 @@ public class AssetController {
     @Resource
     public IAssetService iAssetService;
 
-    /**
-     * 保存全部数据总接口
-     *
-     * @param map
-     * @return actionResponse
-     */
-    @ApiOperation(value = "保存全部数据总接口", notes = "传入Map对象信息")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "/save/all", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "map") HashMap<String, Object> map) throws Exception {
-        iAssetService.saveAllAsset(map);
-        return ActionResponse.success();
-    }
+    // /**
+    // *保存PC接口
+    // * @param assetPCRequest
+    // * @return actionResponse
+    // * @throws Exception
+    // */
+    // @ApiOperation(value = "保存全部数据总接口", notes = "传入Map对象信息")
+    // @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class,
+    // responseContainer = "actionResponse"),})
+    // @RequestMapping(value = "/save/pc", method = RequestMethod.POST)
+    // public ActionResponse saveAssetPC(@RequestBody @ApiParam(value = "assetPc")AssetPCRequest assetPCRequest) throws
+    // Exception {
+    // iAssetService.saveAssetPC(assetPCRequest);
+    // return ActionResponse.success();
+    // }
 
     /**
      * 保存
@@ -93,29 +93,29 @@ public class AssetController {
     /**
      * 通过ID查询
      *
-     * @param query 主键封装对象
+     * @param id 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "asset") QueryCondition query) throws Exception {
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetService.getById(Integer.parseInt(query.getPrimaryKey())));
+    public ActionResponse queryById(@ApiParam(value = "asset") @PathVariable("id") Integer id) throws Exception {
+        ParamterExceptionUtils.isNull(id, "ID不能为空");
+        return ActionResponse.success(iAssetService.getByAssetId(id));
     }
 
     /**
      * 通过ID删除
      *
-     * @param query 主键封装对象
+     * @param id 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetService.deleteById(Integer.parseInt(query.getPrimaryKey())));
+    public ActionResponse deleteById(@ApiParam(value = "query") @PathVariable("id") Integer id) throws Exception {
+        ParamterExceptionUtils.isNull(id, "ID不能为空");
+        return ActionResponse.success(iAssetService.deleteById(id));
     }
 
     /**
@@ -195,5 +195,19 @@ public class AssetController {
     @RequestMapping(value = "/query/manufacturer", method = RequestMethod.GET)
     public List<ManufacturerResponse> queryManufacturer() throws Exception {
         return iAssetService.findManufacturer();
+    }
+
+    /**
+     * 通过ID列表查询资产列表
+     *
+     * @param ids
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过ID列表查询资产列表", notes = "传入资产ID数组")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @RequestMapping(value = "/query/{ids}", method = RequestMethod.POST)
+    public ActionResponse queryAssetByIds(@ApiParam(value = "资产ID数组") @RequestParam("ids") Integer[] ids) throws Exception {
+        iAssetService.queryAssetByIds(ids);
+        return ActionResponse.success();
     }
 }

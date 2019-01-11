@@ -4,13 +4,14 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
+import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
+import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.ManufacturerResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -79,15 +80,9 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     Integer changeStatus(Integer[] idArrays, Integer assetStatus) throws Exception;
 
+
     /**
-     * 保存全部信息
-     * @param map
-     * @return
-     */
-    Integer saveAllAsset(HashMap<String, Object> map) throws Exception;
-    /**
-     * 批量保存
-     *
+     * 批量保存 m
      * @param assets
      * @return
      */
@@ -122,4 +117,26 @@ public interface IAssetService extends IBaseService<Asset> {
      * @throws Exception
      */
     PageResult<AssetResponse> findPageAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception;
+    
+    /**
+     * 保存PC
+     * @return
+     * @throws Exception
+     */
+    Integer saveAssetPC(AssetPCRequest assetPCRequest);
+
+    /**
+     * 通过ID列表查询资产列表
+     *
+     * @param ids
+     * @return List<AssetResponse>
+     */
+    List<AssetResponse> queryAssetByIds(Integer[] ids);
+    /**
+     * 通过ID查询
+     *
+     * @param id 主键封装对象
+     * @return AssetOuterResponse
+     */
+    AssetOuterResponse getByAssetId(Integer id) throws Exception;
 }
