@@ -94,29 +94,29 @@ public class AssetController {
     /**
      * 通过ID查询
      *
-     * @param query 主键封装对象
+     * @param id 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "asset") QueryCondition query) throws Exception {
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetService.getById(Integer.parseInt(query.getPrimaryKey())));
+    public ActionResponse queryById(@ApiParam(value = "asset") @PathVariable("id") Integer id) throws Exception {
+        ParamterExceptionUtils.isNull(id, "ID不能为空");
+        return ActionResponse.success(iAssetService.getByAssetId(id));
     }
 
     /**
      * 通过ID删除
      *
-     * @param query 主键封装对象
+     * @param id 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetService.deleteById(Integer.parseInt(query.getPrimaryKey())));
+    public ActionResponse deleteById(@ApiParam(value = "query") @PathVariable("id") Integer id) throws Exception {
+        ParamterExceptionUtils.isNull(id, "ID不能为空");
+        return ActionResponse.success(iAssetService.deleteById(id));
     }
 
     /**
@@ -196,6 +196,20 @@ public class AssetController {
     @RequestMapping(value = "/query/manufacturer", method = RequestMethod.GET)
     public List<ManufacturerResponse> queryManufacturer() throws Exception {
         return iAssetService.findManufacturer();
+    }
+
+    /**
+     * 通过ID列表查询资产列表
+     *
+     * @param ids
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过ID列表查询资产列表", notes = "传入资产ID数组")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @RequestMapping(value = "/query/{ids}", method = RequestMethod.POST)
+    public ActionResponse queryAssetByIds(@ApiParam(value = "资产ID数组") @RequestParam("ids") Integer[] ids) throws Exception {
+        iAssetService.queryAssetByIds(ids);
+        return ActionResponse.success();
     }
 
     /**

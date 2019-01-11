@@ -5,6 +5,7 @@ import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
+import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.ManufacturerResponse;
 import com.antiy.common.base.IBaseService;
@@ -157,4 +158,18 @@ public interface IAssetService extends IBaseService<Asset> {
      * @throws Exception
      */
     Map<String, Long> countCategory() throws Exception;
+    /**
+     * 通过ID列表查询资产列表
+     *
+     * @param ids
+     * @return List<AssetResponse>
+     */
+    List<AssetResponse> queryAssetByIds(Integer[] ids);
+    /**
+     * 通过ID查询
+     *
+     * @param id 主键封装对象
+     * @return AssetOuterResponse
+     */
+    AssetOuterResponse getByAssetId(Integer id) throws Exception;
 }

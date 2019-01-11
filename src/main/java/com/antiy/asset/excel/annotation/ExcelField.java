@@ -59,6 +59,13 @@ public @interface ExcelField {
     boolean isDate() default false;
 
     /**
+     * 是否是父ID
+     *
+     * @return
+     */
+    boolean isParent() default false;
+
+    /**
      * 反射类型
      *
      * @return

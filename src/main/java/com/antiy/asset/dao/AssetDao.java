@@ -79,4 +79,11 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<Map<String, Long>> countStatus();
+    /**
+     * 通过ID列表查询资产列表
+     *
+     * @param ids
+     * @return actionResponse
+     */
+    List<Asset> queryAssetByIds(Integer[] ids);
 }
