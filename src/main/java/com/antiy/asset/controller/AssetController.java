@@ -11,7 +11,6 @@ import com.antiy.asset.vo.response.ManufacturerResponse;
 import com.antiy.asset.vo.templet.AssetEntity;
 import com.antiy.asset.vo.templet.ImportResult;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.ServletResponse;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,19 +34,21 @@ public class AssetController {
     @Resource
     public IAssetService iAssetService;
 
-    /**
-     * 保存全部数据总接口
-     *
-     * @param map
-     * @return actionResponse
-     */
-    @ApiOperation(value = "保存全部数据总接口", notes = "传入Map对象信息")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "/save/all", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "map") HashMap<String, Object> map) throws Exception {
-        iAssetService.saveAllAsset(map);
-        return ActionResponse.success();
-    }
+    // /**
+    // *保存PC接口
+    // * @param assetPCRequest
+    // * @return actionResponse
+    // * @throws Exception
+    // */
+    // @ApiOperation(value = "保存全部数据总接口", notes = "传入Map对象信息")
+    // @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class,
+    // responseContainer = "actionResponse"),})
+    // @RequestMapping(value = "/save/pc", method = RequestMethod.POST)
+    // public ActionResponse saveAssetPC(@RequestBody @ApiParam(value = "assetPc")AssetPCRequest assetPCRequest) throws
+    // Exception {
+    // iAssetService.saveAssetPC(assetPCRequest);
+    // return ActionResponse.success();
+    // }
 
     /**
      * 保存

@@ -84,6 +84,7 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     Integer changeStatus(Integer[] idArrays, Integer assetStatus) throws Exception;
 
+
     /**
      * 保存全部信息
      *
@@ -95,11 +96,11 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * 批量保存
      *
+     * 批量保存 m
      * @param assets
      * @return
      */
     Integer batchSave(List<Asset> assets) throws Exception;
-
     /**
      * 查询厂商
      *
@@ -110,7 +111,6 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 根据品类型号查询对应资产列表
-     *
      * @param query
      * @return
      * @throws Exception
@@ -119,7 +119,6 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 根据品类型号查询对应资产数量
-     *
      * @param query
      * @return
      * @throws Exception
@@ -128,7 +127,6 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 根据品类型号查询对应资产
-     *
      * @return
      * @throws Exception
      */
@@ -158,6 +156,14 @@ public interface IAssetService extends IBaseService<Asset> {
      * @throws Exception
      */
     Map<String, Long> countCategory() throws Exception;
+
+    /**
+     * 保存PC
+     * @return
+     * @throws Exception
+     */
+    Integer saveAssetPC(AssetPCRequest assetPCRequest);
+
     /**
      * 通过ID列表查询资产列表
      *
