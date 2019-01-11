@@ -12,6 +12,7 @@ import com.antiy.common.base.PageResult;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,4 +64,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetCategoryModel(query), query.getCurrentPage(), this.findListAssetCategoryModel(query));
     }
+
+
+
 }

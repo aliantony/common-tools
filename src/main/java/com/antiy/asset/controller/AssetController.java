@@ -22,6 +22,7 @@ import javax.servlet.ServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zhangyajun
@@ -195,5 +196,39 @@ public class AssetController {
     @RequestMapping(value = "/query/manufacturer", method = RequestMethod.GET)
     public List<ManufacturerResponse> queryManufacturer() throws Exception {
         return iAssetService.findManufacturer();
+    }
+
+    /**
+     * 硬件资产按品类型号统计
+     *
+     * @return 品类型号名和该品类型号资产数量的映射
+     */
+    @ApiOperation(value = "硬件资产按类型统计接口", notes = "无查询条件")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @RequestMapping(value = "/count/type", method = RequestMethod.GET)
+    public Map<String, Long> countAssetByCategory() throws Exception {
+        return iAssetService.countCategory();
+    }
+    /**
+     * 硬件资产按状态统计
+     *
+     * @return 状态名和该状态下资产数量的映射
+     */
+    @ApiOperation(value = "硬件资产按状态统计接口", notes = "无查询条件")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @RequestMapping(value = "/count/status", method = RequestMethod.GET)
+    public Map<String, Long> countAssetByStatus() throws Exception {
+        return iAssetService.countStatus();
+    }
+    /**
+     * 硬件资产按厂商统计
+     *
+     * @return 厂商名和该厂商资产数量的映射
+     */
+    @ApiOperation(value = "硬件资产按厂商统计接口", notes = "无查询条件")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @RequestMapping(value = "/count/manufacturer", method = RequestMethod.GET)
+    public Map<String, Long> countAssetByManufacturer() throws Exception {
+        return iAssetService.countManufacturer();
     }
 }

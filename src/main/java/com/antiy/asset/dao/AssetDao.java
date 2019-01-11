@@ -52,6 +52,7 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 通过品类型号查询资产数量
+     *
      * @param query
      * @return
      */
@@ -59,8 +60,23 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 通过品类型号查询资产列表
+     *
      * @param query
      * @return
      */
     List<Asset> findListAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception;
+
+    /**
+     * 统计厂商数量
+     *
+     * @return
+     */
+    List<Map<String, Long>> countManufacturer();
+
+    /**
+     * 统计状态数量
+     *
+     * @return
+     */
+    List<Map<String, Long>> countStatus();
 }

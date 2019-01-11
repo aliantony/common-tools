@@ -12,6 +12,7 @@ import com.antiy.common.base.PageResult;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -58,6 +59,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 保存上报数据
+     *
      * @param assetOuterRequestList
      * @throws Exception
      */
@@ -65,11 +67,13 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 判断资产是否重复
+     *
      * @param uuid
      * @param ipMac
      * @return
      */
     boolean checkRepeatAsset(String uuid, List<String[]> ipMac);
+
     /**
      * 批量修改
      *
@@ -81,10 +85,12 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 保存全部信息
+     *
      * @param map
      * @return
      */
     Integer saveAllAsset(HashMap<String, Object> map) throws Exception;
+
     /**
      * 批量保存
      *
@@ -92,6 +98,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     Integer batchSave(List<Asset> assets) throws Exception;
+
     /**
      * 查询厂商
      *
@@ -102,6 +109,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 根据品类型号查询对应资产列表
+     *
      * @param query
      * @return
      * @throws Exception
@@ -110,6 +118,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 根据品类型号查询对应资产数量
+     *
      * @param query
      * @return
      * @throws Exception
@@ -118,8 +127,34 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 根据品类型号查询对应资产
+     *
      * @return
      * @throws Exception
      */
     PageResult<AssetResponse> findPageAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception;
+
+    /**
+     * 按厂商统计数量
+     *
+     * @return
+     * @throws Exception
+     */
+    Map<String, Long> countManufacturer() throws Exception;
+
+    /**
+     * 按状态统计数量
+     *
+     * @return
+     * @throws Exception
+     */
+    Map<String, Long> countStatus() throws Exception;
+
+
+    /**
+     * 按第二级品类统计数量
+     *
+     * @return
+     * @throws Exception
+     */
+    Map<String, Long> countCategory() throws Exception;
 }

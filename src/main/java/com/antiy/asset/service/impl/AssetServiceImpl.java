@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
+import com.antiy.asset.enums.AssetStatusEnum;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -12,6 +13,7 @@ import com.antiy.asset.vo.response.ManufacturerResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.Lists;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +75,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Asset asset = requestConverter.convert(request, Asset.class);
         return assetDao.insert(asset);
     }
-
 
 
     @Override
@@ -350,6 +352,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         });
     }
+
     @Override
     @Transactional
     public Integer batchSave(List<Asset> assetList) throws Exception {
@@ -362,7 +365,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<ManufacturerResponse> findManufacturer() throws Exception {
-        List<ManufacturerResponse> manufacturerResponseList = manufacturerResponseConverter.convert(assetDao.findManufacturer(),ManufacturerResponse.class);
+        List<ManufacturerResponse> manufacturerResponseList = manufacturerResponseConverter.convert(assetDao.findManufacturer(), ManufacturerResponse.class);
         return manufacturerResponseList;
     }
 
@@ -411,7 +414,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer saveAllAsset(HashMap<String, Object> map) throws Exception {
-        Asset asset = new Asset ();
+        Asset asset = new Asset();
         AssetCpu assetCpu = new AssetCpu();
         AssetNetworkCard assetNetworkCard = new AssetNetworkCard();
         AssetHardDisk assetHardDisk = new AssetHardDisk();
@@ -453,7 +456,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         asset.setWarranty((Long) map.get("warranty"));
         asset.setGmtCreate(System.currentTimeMillis());
 
-        Integer aid = assetDao.insert (asset);
+        Integer aid = assetDao.insert(asset);
 
         assetCpu.setAssetId(aid);
         assetCpu.setSerial((String) map.get("cserial"));
@@ -512,7 +515,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetMemory.setStitch((Integer) map.get("slotType"));
         assetMemory.setHeatsink(true);
 
-        return  null;
+        return null;
     }
 
     @Override
@@ -531,4 +534,81 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public PageResult<AssetResponse> findPageAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountByCategoryModel(query), query.getCurrentPage(), this.findListAssetByCategoryModel(query));
     }
+
+    @Override
+    public Map<String, Long> countManufacturer() throws Exception {
+        List<Map<String, Long>> list = assetDao.countManufacturer();
+        return transferListToMap(list);
+    }
+
+    private Map<String, Long> transferListToMap(List<Map<String, Long>> list) {
+        Map result = new HashMap();
+        for (Map map : list) {
+            result.put(map.get("key"), map.get("value"));
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, Long> countStatus() throws Exception {
+        List<Map<String, Long>> list = assetDao.countStatus();
+        Map<String, Long> result = new HashMap();
+        for (Map map : list) {
+            result.put(AssetStatusEnum.getAssetByCode((Integer) map.get("key")) + "", (Long) map.get("value"));
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, Long> countCategory() throws Exception {
+        HashMap<String, Object> map = new HashMap();
+        map.put("name", "硬件");
+        map.put("parentId", 0);
+        List<AssetCategoryModel> categoryModelList = assetCategoryModelDao.getByWhere(map);
+        HashMap<String,Long> result=new HashMap<>();
+        for (AssetCategoryModel a : categoryModelList) {
+            List<AssetCategoryModel> search = recursionSearch(a.getId());
+            Long sum = 0L;
+            for (AssetCategoryModel b : search) {
+                HashMap param = new HashMap();
+                param.put("categoryModel", b.getId());
+                sum += assetDao.getByWhere(param).size();
+            }
+            map.put(a.getName(),sum);
+        }
+        return result;
+    }
+
+    /**
+     * 递归查询出品类和其子品类
+     *
+     * @param id 查询的品类id
+     */
+    private List<AssetCategoryModel> recursionSearch(Integer id) throws Exception {
+        List<AssetCategoryModel> list = assetCategoryModelDao.getAll();
+        List<AssetCategoryModel> result = new ArrayList();
+        for (AssetCategoryModel AssetCategoryModel : list) {
+            if (AssetCategoryModel.getId() == id)
+                result.add(AssetCategoryModel);
+        }
+        recursion(result, list, id);
+        return result;
+    }
+
+    /**
+     * 递归查询出所有的品类和其子品类
+     *
+     * @param result 查询的结果集
+     * @param list   查询的数据集
+     * @param id     递归的参数
+     */
+    private void recursion(List<AssetCategoryModel> result, List<AssetCategoryModel> list, Integer id) {
+        for (AssetCategoryModel AssetCategoryModel : list) {
+            if (AssetCategoryModel.getParentId() == id) {
+                result.add(AssetCategoryModel);
+                recursion(result, list, AssetCategoryModel.getId());
+            }
+        }
+    }
+
 }

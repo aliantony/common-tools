@@ -11,11 +11,9 @@
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.Asset">
         <id column="id" property="id"/>
         <result column="number" property="number"/>
-        <result column="type" property="type"/>
         <result column="name" property="name"/>
         <result column="serial" property="serial"/>
-        <result column="category" property="category"/>
-        <result column="model" property="model"/>
+        <result column="category_model" property="categoryModel"/>
         <result column="manufacturer" property="manufacturer"/>
         <result column="asset_status" property="assetStatus"/>
         <result column="operation_system" property="operationSystem"/>
@@ -28,13 +26,9 @@
         <result column="responsible_user_id" property="responsibleUserId"/>
         <result column="contact_tel" property="contactTel"/>
         <result column="email" property="email"/>
-        <result column="hard_disk" property="hardDisk"/>
-        <result column="memory" property="memory"/>
         <result column="asset_source" property="assetSource"/>
         <result column="importance_degree" property="importanceDegree"/>
         <result column="describle" property="describle"/>
-        <result column="cpu" property="cpu"/>
-        <result column="network_card" property="networkCard"/>
         <result column="parent_id" property="parentId"/>
         <result column="tags" property="tags"/>
         <result column="is_innet" property="isInnet"/>
@@ -49,9 +43,17 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
     </resultMap>
+    <resultMap id="ManufacturerResultMap" type="java.util.HashMap">
+        <result property="key" column="manufacturer"/>
+        <result property="value" column="num"/>
+    </resultMap>
+    <resultMap id="StatusResultMap" type="java.util.HashMap">
+        <result property="key" column="asset_status"/>
+        <result property="value" column="num"/>
+    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, number, type, name, serial, category, model, manufacturer, asset_status AS assetStatus, operation_system AS operationSystem, system_bit AS systemBit, location, latitude, longitude, firmware_version AS firmwareVersion, uuid, responsible_user_id AS responsibleUserId, contact_tel AS contactTel, email, hard_disk AS hardDisk, memory, asset_source AS assetSource, importance_degree AS importanceDegree, describle, cpu, network_card AS networkCard, parent_id AS parentId, tags, is_innet AS isInnet, first_enter_nett AS firstEnterNett, service_life AS serviceLife, buy_date AS buyDate, warranty, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser
+        id, number,  name, serial, category_model as categoryModel, manufacturer, asset_status AS assetStatus, operation_system AS operationSystem, system_bit AS systemBit, location, latitude, longitude, firmware_version AS firmwareVersion, uuid, responsible_user_id AS responsibleUserId, contact_tel AS contactTel, email, asset_source AS assetSource, importance_degree AS importanceDegree, describle, parent_id AS parentId, tags, is_innet AS isInnet, first_enter_nett AS firstEnterNett, service_life AS serviceLife, buy_date AS buyDate, warranty, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser
     </sql>
 
     <sql id="Table_Name">
@@ -63,20 +65,14 @@
         <if test=" number != null">
             number,
         </if>
-        <if test=" type != null">
-            type,
-        </if>
         <if test=" name != null">
             name,
         </if>
         <if test=" serial != null">
             serial,
         </if>
-        <if test=" category != null">
-            category,
-        </if>
-        <if test=" model != null">
-            model,
+        <if test=" categoryModel != null">
+            category_model,
         </if>
         <if test=" manufacturer != null">
             manufacturer,
@@ -114,12 +110,7 @@
         <if test=" email != null">
             email,
         </if>
-        <if test=" hardDisk != null">
-            hard_disk,
-        </if>
-        <if test=" memory != null">
-            memory,
-        </if>
+
         <if test=" assetSource != null">
             asset_source,
         </if>
@@ -129,12 +120,7 @@
         <if test=" describle != null">
             describle,
         </if>
-        <if test=" cpu != null">
-            cpu,
-        </if>
-        <if test=" networkCard != null">
-            network_card,
-        </if>
+
         <if test=" parentId != null">
             parent_id,
         </if>
@@ -189,12 +175,10 @@
         <if test=" serial != null">
             #{serial },
         </if>
-        <if test=" category != null">
-            #{category },
+        <if test=" categoryModel != null">
+            #{categoryModel },
         </if>
-        <if test=" model != null">
-            #{model },
-        </if>
+
         <if test=" manufacturer != null">
             #{manufacturer },
         </if>
@@ -306,12 +290,10 @@
         <if test=" serial != null">
             serial = #{serial },
         </if>
-        <if test=" category != null">
-            category = #{category },
+        <if test=" categoryModel != null">
+            category_model = #{categoryModel },
         </if>
-        <if test=" model != null">
-            model = #{model },
-        </if>
+
         <if test=" manufacturer != null">
             manufacturer = #{manufacturer },
         </if>
@@ -348,12 +330,7 @@
         <if test=" email != null">
             email = #{email },
         </if>
-        <if test=" hardDisk != null">
-            hard_disk = #{hardDisk },
-        </if>
-        <if test=" memory != null">
-            memory = #{memory },
-        </if>
+
         <if test=" assetSource != null">
             asset_source = #{assetSource },
         </if>
@@ -363,12 +340,7 @@
         <if test=" describle != null">
             describle = #{describle },
         </if>
-        <if test=" cpu != null">
-            cpu = #{cpu },
-        </if>
-        <if test=" networkCard != null">
-            network_card = #{networkCard },
-        </if>
+
         <if test=" parentId != null">
             parent_id = #{parentId },
         </if>
@@ -411,7 +383,6 @@
     </sql>
 
     <sql id="Where_Column_List">
-        <where>
             <if test=" number != null">
                 and number = #{number }
             </if>
@@ -424,11 +395,8 @@
             <if test=" serial != null">
                 and serial = #{serial }
             </if>
-            <if test=" category != null">
-                and category = #{category }
-            </if>
-            <if test=" model != null">
-                and model = #{model }
+            <if test=" categoryModel != null">
+                and category_model = #{categoryModel }
             </if>
             <if test=" manufacturer != null">
                 and manufacturer = #{manufacturer }
@@ -466,12 +434,8 @@
             <if test=" email != null">
                 and email = #{email }
             </if>
-            <if test=" hardDisk != null">
-                and hard_disk = #{hardDisk }
-            </if>
-            <if test=" memory != null">
-                and memory = #{memory }
-            </if>
+
+
             <if test=" assetSource != null">
                 and asset_source = #{assetSource }
             </if>
@@ -481,12 +445,7 @@
             <if test=" describle != null">
                 and describle = #{describle }
             </if>
-            <if test=" cpu != null">
-                and cpu = #{cpu }
-            </if>
-            <if test=" networkCard != null">
-                and network_card = #{networkCard }
-            </if>
+
             <if test=" parentId != null">
                 and parent_id = #{parentId }
             </if>
@@ -533,7 +492,6 @@
                     #{assetStatus}
                 </foreach>
             </if>
-        </where>
     </sql>
 
     <sql id="Where_Column">
@@ -619,7 +577,8 @@
     <!--资产条件查询-->
     <sql id="Multiple_Query">
         <if test=" assetGroup != null">
-            and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id = #{assetGroup})
+            and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id =
+            #{assetGroup})
         </if>
         <if test=" multipleQuery != null">
             and (name LIKE CONCAT('%',#{multipleQuery},'%')
@@ -831,7 +790,8 @@
         </if>
     </select>
 
-    <select id="findListAssetByCategoryModel" resultType="com.antiy.asset.entity.Asset" parameterType="java.lang.Integer">
+    <select id="findListAssetByCategoryModel" resultType="com.antiy.asset.entity.Asset"
+            parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
         from
@@ -848,5 +808,17 @@
             </foreach>
             )
         </if>
+    </select>
+
+    <select id="countManufacturer" resultMap="ManufacturerResultMap">
+        select manufacturer, count(manufacturer) num from
+        <include refid="Table_Name"></include>
+        GROUP BY manufacturer
+    </select>
+
+    <select id="countStatus" resultMap="StatusResultMap">
+        select asset_status, count(asset_status) num from
+        <include refid="Table_Name"></include>
+        GROUP BY asset_status
     </select>
 </mapper>
