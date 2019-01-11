@@ -1,0 +1,835 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetDao">
+    <resultMap id="topologyResultMap" type="com.antiy.asset.entity.Topology">
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="name" property="name"/>
+        <result column="type" property="type"/>
+    </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.Asset">
+        <id column="id" property="id"/>
+        <result column="number" property="number"/>
+        <result column="name" property="name"/>
+        <result column="asset_groups" property="assetGroups"/>
+        <result column="ip" property="ip"/>
+        <result column="mac" property="mac"/>
+        <result column="serial" property="serial"/>
+        <result column="category_model" property="categoryModel"/>
+        <result column="manufacturer" property="manufacturer"/>
+        <result column="asset_status" property="assetStatus"/>
+        <result column="operation_system" property="operationSystem"/>
+        <result column="system_bit" property="systemBit"/>
+        <result column="location" property="location"/>
+        <result column="latitude" property="latitude"/>
+        <result column="longitude" property="longitude"/>
+        <result column="firmware_version" property="firmwareVersion"/>
+        <result column="uuid" property="uuid"/>
+        <result column="responsible_user_id" property="responsibleUserId"/>
+        <result column="contact_tel" property="contactTel"/>
+        <result column="email" property="email"/>
+        <result column="asset_source" property="assetSource"/>
+        <result column="importance_degree" property="importanceDegree"/>
+        <result column="describle" property="describle"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="tags" property="tags"/>
+        <result column="is_innet" property="isInnet"/>
+        <result column="first_enter_nett" property="firstEnterNett"/>
+        <result column="service_life" property="serviceLife"/>
+        <result column="buy_date" property="buyDate"/>
+        <result column="warranty" property="warranty"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="memo" property="memo"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modify_user" property="modifyUser"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <resultMap id="ManufacturerResultMap" type="java.util.HashMap">
+        <result property="key" column="manufacturer"/>
+        <result property="value" column="num"/>
+    </resultMap>
+    <resultMap id="StatusResultMap" type="java.util.HashMap">
+        <result property="key" column="asset_status"/>
+        <result property="value" column="num"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, number,  name, serial, category_model as categoryModel, manufacturer, asset_status AS assetStatus, operation_system AS operationSystem, system_bit AS systemBit, location, latitude, longitude, firmware_version AS firmwareVersion, uuid, responsible_user_id AS responsibleUserId, contact_tel AS contactTel, email, asset_source AS assetSource, importance_degree AS importanceDegree, describle, parent_id AS parentId, tags, is_innet AS isInnet, first_enter_nett AS firstEnterNett, service_life AS serviceLife, buy_date AS buyDate, warranty, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser
+    </sql>
+
+    <sql id="Table_Name">
+        asset
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+        <if test=" number != null">
+            number,
+        </if>
+        <if test=" name != null">
+            name,
+        </if>
+        <if test=" serial != null">
+            serial,
+        </if>
+        <if test=" categoryModel != null">
+            category_model,
+        </if>
+        <if test=" manufacturer != null">
+            manufacturer,
+        </if>
+        <if test=" assetStatus != null">
+            asset_status,
+        </if>
+        <if test=" operationSystem != null">
+            operation_system,
+        </if>
+        <if test=" systemBit != null">
+            system_bit,
+        </if>
+        <if test=" location != null">
+            location,
+        </if>
+        <if test=" latitude != null">
+            latitude,
+        </if>
+        <if test=" longitude != null">
+            longitude,
+        </if>
+        <if test=" firmwareVersion != null">
+            firmware_version,
+        </if>
+        <if test=" uuid != null">
+            uuid,
+        </if>
+        <if test=" responsibleUserId != null">
+            responsible_user_id,
+        </if>
+        <if test=" contactTel != null">
+            contact_tel,
+        </if>
+        <if test=" email != null">
+            email,
+        </if>
+
+        <if test=" assetSource != null">
+            asset_source,
+        </if>
+        <if test=" importanceDegree != null">
+            importance_degree,
+        </if>
+        <if test=" describle != null">
+            describle,
+        </if>
+
+        <if test=" parentId != null">
+            parent_id,
+        </if>
+        <if test=" tags != null">
+            tags,
+        </if>
+        <if test=" isInnet != null">
+            is_innet,
+        </if>
+        <if test=" firstEnterNett != null">
+            first_enter_nett,
+        </if>
+        <if test=" serviceLife != null">
+            service_life,
+        </if>
+        <if test=" buyDate != null">
+            buy_date,
+        </if>
+        <if test=" warranty != null">
+            warranty,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified,
+        </if>
+        <if test=" memo != null">
+            memo,
+        </if>
+        <if test=" createUser != null">
+            create_user,
+        </if>
+        <if test=" modifyUser != null">
+            modify_user,
+        </if>
+        <if test=" status != null">
+            status,
+        </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+        <if test=" number != null">
+            #{number },
+        </if>
+        <if test=" type != null">
+            #{type },
+        </if>
+        <if test=" name != null">
+            #{name },
+        </if>
+        <if test=" serial != null">
+            #{serial },
+        </if>
+        <if test=" categoryModel != null">
+            #{categoryModel },
+        </if>
+
+        <if test=" manufacturer != null">
+            #{manufacturer },
+        </if>
+        <if test=" assetStatus != null">
+            #{assetStatus },
+        </if>
+        <if test=" operationSystem != null">
+            #{operationSystem },
+        </if>
+        <if test=" systemBit != null">
+            #{systemBit },
+        </if>
+        <if test=" location != null">
+            #{location },
+        </if>
+        <if test=" latitude != null">
+            #{latitude },
+        </if>
+        <if test=" longitude != null">
+            #{longitude },
+        </if>
+        <if test=" firmwareVersion != null">
+            #{firmwareVersion },
+        </if>
+        <if test=" uuid != null">
+            #{uuid },
+        </if>
+        <if test=" responsibleUserId != null">
+            #{responsibleUserId },
+        </if>
+        <if test=" contactTel != null">
+            #{contactTel },
+        </if>
+        <if test=" email != null">
+            #{email },
+        </if>
+        <if test=" hardDisk != null">
+            #{hardDisk },
+        </if>
+        <if test=" memory != null">
+            #{memory },
+        </if>
+        <if test=" assetSource != null">
+            #{assetSource },
+        </if>
+        <if test=" importanceDegree != null">
+            #{importanceDegree },
+        </if>
+        <if test=" describle != null">
+            #{describle },
+        </if>
+        <if test=" cpu != null">
+            #{cpu },
+        </if>
+        <if test=" networkCard != null">
+            #{networkCard },
+        </if>
+        <if test=" parentId != null">
+            #{parentId },
+        </if>
+        <if test=" tags != null">
+            #{tags },
+        </if>
+        <if test=" isInnet != null">
+            #{isInnet },
+        </if>
+        <if test=" firstEnterNett != null">
+            #{first_enter_nett },
+        </if>
+        <if test=" serviceLife != null">
+            #{serviceLife },
+        </if>
+        <if test=" buyDate != null">
+            #{buyDate },
+        </if>
+        <if test=" warranty != null">
+            #{warranty },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            #{gmtModified },
+        </if>
+        <if test=" memo != null">
+            #{memo },
+        </if>
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            #{modifyUser },
+        </if>
+        <if test=" status != null">
+            #{status },
+        </if>
+    </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" number != null">
+            number = #{number },
+        </if>
+        <if test=" type != null">
+            type = #{type },
+        </if>
+        <if test=" name != null">
+            name = #{name },
+        </if>
+        <if test=" serial != null">
+            serial = #{serial },
+        </if>
+        <if test=" categoryModel != null">
+            category_model = #{categoryModel },
+        </if>
+
+        <if test=" manufacturer != null">
+            manufacturer = #{manufacturer },
+        </if>
+        <if test=" assetStatus != null">
+            asset_status = 3,
+        </if>
+        <if test=" operationSystem != null">
+            operation_system = #{operationSystem },
+        </if>
+        <if test=" systemBit != null">
+            system_bit = #{systemBit },
+        </if>
+        <if test=" location != null">
+            location = #{location },
+        </if>
+        <if test=" latitude != null">
+            latitude = #{latitude },
+        </if>
+        <if test=" longitude != null">
+            longitude = #{longitude },
+        </if>
+        <if test=" firmwareVersion != null">
+            firmware_version = #{firmwareVersion },
+        </if>
+        <if test=" uuid != null">
+            uuid = #{uuid },
+        </if>
+        <if test=" responsibleUserId != null">
+            responsible_user_id = #{responsibleUserId },
+        </if>
+        <if test=" contactTel != null">
+            contact_tel = #{contactTel },
+        </if>
+        <if test=" email != null">
+            email = #{email },
+        </if>
+
+        <if test=" assetSource != null">
+            asset_source = #{assetSource },
+        </if>
+        <if test=" importanceDegree != null">
+            importance_degree = #{importanceDegree },
+        </if>
+        <if test=" describle != null">
+            describle = #{describle },
+        </if>
+
+        <if test=" parentId != null">
+            parent_id = #{parentId },
+        </if>
+        <if test=" tags != null">
+            tags = #{tags },
+        </if>
+        <if test=" isInnet != null">
+            is_innet = #{isInnet },
+        </if>
+        <if test=" firstEnterNett != null">
+            first_enter_nett = #{firstEnterNett },
+        </if>
+        <if test=" serviceLife != null">
+            service_life = #{serviceLife },
+        </if>
+        <if test=" buyDate != null">
+            buy_date = #{buyDate },
+        </if>
+        <if test=" warranty != null">
+            warranty = #{warranty },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+        <if test=" memo != null">
+            memo = #{memo },
+        </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            modify_user = #{modifyUser },
+        </if>
+        <if test=" status != null">
+            status = #{status },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+            <if test=" number != null">
+                and number = #{number }
+            </if>
+            <if test=" type != null">
+                and type = #{type }
+            </if>
+            <if test=" name != null">
+                and name = #{name }
+            </if>
+            <if test=" serial != null">
+                and serial = #{serial }
+            </if>
+            <if test=" categoryModel != null">
+                and category_model = #{categoryModel }
+            </if>
+            <if test=" manufacturer != null">
+                and manufacturer = #{manufacturer }
+            </if>
+            <if test=" assetStatus != null">
+                and asset_status = #{assetStatus }
+            </if>
+            <if test=" operationSystem != null">
+                and operation_system = #{operationSystem }
+            </if>
+            <if test=" systemBit != null">
+                and system_bit = #{systemBit }
+            </if>
+            <if test=" location != null">
+                and location = #{location }
+            </if>
+            <if test=" latitude != null">
+                and latitude = #{latitude }
+            </if>
+            <if test=" longitude != null">
+                and longitude = #{longitude }
+            </if>
+            <if test=" firmwareVersion != null">
+                and firmware_version = #{firmwareVersion }
+            </if>
+            <if test=" uuid != null">
+                and uuid = #{uuid }
+            </if>
+            <if test=" responsibleUserId != null">
+                and responsible_user_id = #{responsibleUserId }
+            </if>
+            <if test=" contactTel != null">
+                and contact_tel = #{contactTel }
+            </if>
+            <if test=" email != null">
+                and email = #{email }
+            </if>
+
+
+            <if test=" assetSource != null">
+                and asset_source = #{assetSource }
+            </if>
+            <if test=" importanceDegree != null">
+                and importance_degree = #{importanceDegree }
+            </if>
+            <if test=" describle != null">
+                and describle = #{describle }
+            </if>
+
+            <if test=" parentId != null">
+                and parent_id = #{parentId }
+            </if>
+            <if test=" tags != null">
+                and tags = #{tags }
+            </if>
+            <if test=" isInnet != null">
+                and is_innet = #{isInnet }
+            </if>
+            <if test=" firstEnterNett != null">
+                and first_enter_nett = #{firstEnterNett }
+            </if>
+            <if test=" serviceLife != null">
+                and service_life = #{serviceLife }
+            </if>
+            <if test=" buyDate != null">
+                and buy_date = #{buyDate }
+            </if>
+            <if test=" warranty != null">
+                and warranty = #{warranty }
+            </if>
+            <if test=" gmtCreate != null">
+                and gmt_create = #{gmtCreate }
+            </if>
+            <if test=" gmtModified != null">
+                and gmt_modified = #{gmtModified }
+            </if>
+            <if test=" memo != null">
+                and memo = #{memo }
+            </if>
+            <if test=" createUser != null">
+                and create_user = #{createUser }
+            </if>
+            <if test=" modifyUser != null">
+                and modify_user = #{modifyUser }
+            </if>
+            <if test=" status != null">
+                and status = #{status }
+            </if>
+
+            <if test="assetStatusList != null and assetStatusList.size() > 0">
+                and asset_status in
+                <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                    #{assetStatus}
+                </foreach>
+            </if>
+    </sql>
+
+    <sql id="Where_Column">
+        <if test=" number != null">
+            and number = #{number }
+        </if>
+        <if test=" type != null">
+            and type = #{type }
+        </if>
+        <if test=" name != null">
+            and name LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test=" serial != null">
+            and serial = #{serial }
+        </if>
+
+        <if test=" manufacturer != null">
+            and manufacturer = #{manufacturer }
+        </if>
+        <if test=" assetStatus != null">
+            and asset_status = #{assetStatus }
+        </if>
+        <if test=" operationSystem != null">
+            and operation_system = #{operationSystem }
+        </if>
+        <if test=" systemBit != null">
+            and system_bit = #{systemBit }
+        </if>
+        <if test=" location != null">
+            and location = #{location }
+        </if>
+
+        <if test=" firmwareVersion != null">
+            and firmware_version = #{firmwareVersion }
+        </if>
+        <if test=" uuid != null">
+            and uuid = #{uuid }
+        </if>
+        <if test=" responsibleUserId != null">
+            and responsible_user_id = #{responsibleUserId }
+        </if>
+
+        <if test=" assetSource != null">
+            and asset_source = #{assetSource }
+        </if>
+        <if test=" importanceDegree != null">
+            and importance_degree = #{importanceDegree }
+        </if>
+
+        <if test=" parentId != null">
+            and parent_id = #{parentId }
+        </if>
+        <if test=" tags != null">
+            and tags = #{tags }
+        </if>
+        <if test=" isInnet != null">
+            and is_innet = #{isInnet }
+        </if>
+        <if test=" firstEnterNett != null">
+            and first_enter_nett = #{firstEnterNett }
+        </if>
+        <if test=" serviceLife != null">
+            and service_life = #{serviceLife }
+        </if>
+        <if test=" buyDate != null">
+            and buy_date = #{buyDate }
+        </if>
+        <if test=" warranty != null">
+            and warranty = #{warranty }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+
+
+        and status =1
+
+    </sql>
+
+    <!--资产条件查询-->
+    <sql id="Multiple_Query">
+        <if test=" assetIds != null">
+            and identity in
+            <foreach index="index" item="item" collection="assetIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" assetGroup != null">
+            and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id =
+            #{assetGroup})
+        </if>
+        <if test=" multipleQuery != null">
+            and (name LIKE CONCAT('%',#{multipleQuery},'%')
+            or number LIKE CONCAT('%',#{multipleQuery},'%')
+            or serial LIKE CONCAT('%',#{multipleQuery},'%')
+            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
+            CONCAT('%',#{multipleQuery},'%'))
+            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and mac_address like
+            CONCAT('%',#{multipleQuery},'%'))
+            )
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+        <if test=" category != null">
+            and (category in
+            <foreach collection="category" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+            or model in
+            <foreach collection="category" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test=" manufacturer != null">
+            and manufacturer LIKE CONCAT('%',#{manufacturer},'%')
+        </if>
+        <if test=" operationSystem != null">
+            and operation_system LIKE CONCAT('%',#{operationSystem },'%')
+        </if>
+        <if test=" responsibleUserId != null">
+            and responsible_user_id = #{responsibleUserId }
+        </if>
+        <if test=" assetSource != null">
+            and asset_source = #{assetSource }
+        </if>
+        <if test=" importanceDegree != null">
+            and importance_degree = #{importanceDegree }
+        </if>
+        <if test=" firstEnterNettBegin != null">
+            and first_enter_nett &gt;= #{firstEnterNettBegin }
+        </if>
+        <if test=" firstEnterNettEnd != null">
+            and first_enter_nett &lt;= #{firstEnterNettEnd }
+        </if>
+        and status =1
+    </sql>
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.Asset" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.Asset">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultType="com.antiy.asset.entity.Asset" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+
+    <update id="deleteById" parameterType="java.lang.Integer">
+        update
+        <include refid="Table_Name"></include>
+        set status = 1
+        where id = #{id}
+    </update>
+
+    <select id="getByWhere" resultType="com.antiy.asset.entity.Asset" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+
+    <select id="getAll" resultType="com.antiy.asset.entity.Asset">
+        select *
+        from
+        <include refid="Table_Name"></include>
+    </select>
+
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select count(1) count
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Multiple_Query"></include>
+            </trim>
+        </where>
+    </select>
+
+    <select id="findQuery" resultType="com.antiy.asset.entity.Asset" parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Multiple_Query"></include>
+            </trim>
+        </where>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+
+    <!--变更资产状态-->
+    <update id="changeStatus" parameterType="java.util.Map">
+        update
+        <include refid="Table_Name"></include>
+        set
+        asset_status = #{assetStatus[0]}
+        where `id` in
+        <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="checkRepeatAsset" resultType="com.antiy.asset.entity.Asset" parameterType="java.util.List">
+        SELECT
+        b.id,
+        b.uuid
+        FROM
+        asset_network_card a
+        LEFT JOIN asset b ON a.asset_id = b.id
+        WHERE
+        ( a.ip_address, a.mac_address ) IN
+        <foreach collection="list" open="(" close=")" index="index" item="item" separator=",">
+            <foreach collection="item" open="(" close=")" item="a" separator=",">
+                #{a}
+            </foreach>
+        </foreach>
+        AND a.status = 1
+        AND b.status = 1
+    </select>
+
+    <select id="findTopologyList" resultMap="topologyResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select id,type,name,parent_id from
+        <include refid="Table_Name"></include>
+        <include refid="Where_Column_List"/>
+    </select>
+
+    <select id="findManufacturer" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select distinct manufacturer from
+        <include refid="Table_Name"></include>
+    </select>
+
+    <select id="findCountByCategoryModel" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select count(1) count
+        from
+        <include refid="Table_Name"></include>
+        where 1 = 1
+        <if test=" ids != null">
+            and (category in
+            <foreach collection="ids" open="(" close=")" separator="," item="item" index="index">
+                #{item}
+            </foreach>
+            or model in
+            <foreach collection="ids" open="(" close=")" separator="," item="item" index="index">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test=" model != null">
+
+        </if>
+    </select>
+
+    <select id="findListAssetByCategoryModel" resultType="com.antiy.asset.entity.Asset"
+            parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where 1 = 1
+        <if test=" ids != null">
+            and (category in
+            <foreach collection="ids" open="(" close=")" separator="," item="item" index="index">
+                #{item}
+            </foreach>
+            or model in
+            <foreach collection="ids" open="(" close=")" separator="," item="item" index="index">
+                #{item}
+            </foreach>
+            )
+        </if>
+    </select>
+
+    <select id="findListAsset" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select * from (SELECT
+            a.*,
+            GROUP_CONCAT( b.ip_address ) as ip,
+            GROUP_CONCAT( b.mac_address ) as ip
+        FROM
+         asset a
+        LEFT JOIN asset_network_card b ON a.id = b.asset_id
+        GROUP BY
+        a.id) asset
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <include refid="Multiple_Query"></include>
+        </trim>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+
+    <select id="countManufacturer" resultMap="ManufacturerResultMap">
+        select manufacturer, count(manufacturer) num from
+        <include refid="Table_Name"></include>
+        GROUP BY manufacturer
+    </select>
+
+    <select id="countStatus" resultMap="StatusResultMap">
+        select asset_status, count(asset_status) num from
+        <include refid="Table_Name"></include>
+        GROUP BY asset_status
+    </select>
+</mapper>
