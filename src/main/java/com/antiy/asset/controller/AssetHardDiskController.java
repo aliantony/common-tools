@@ -7,12 +7,10 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
 
 
@@ -23,7 +21,6 @@ import javax.annotation.Resource;
 @Api(value = "AssetHardDisk", description = "硬盘表")
 @RestController
 @RequestMapping("/v1/asset/assetharddisk")
-@Slf4j
 public class AssetHardDiskController {
 
     @Resource
