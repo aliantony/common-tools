@@ -92,14 +92,14 @@ public class AssetUserController {
     }
 
     /**
-     * 查询用户名信息
+     * 查询资产使用者信息
      *
      * @return 用户名集合
      */
-    @ApiOperation(value = "查询用户名接口", notes = "无查询条件")
+    @ApiOperation(value = "查询资产使用者信息", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/userName", method = RequestMethod.GET)
-    public List<UserNameResponse> queryManufacturer() throws Exception {
-        return iAssetUserService.findUserName();
+    public ActionResponse queryUserName() throws Exception {
+        return ActionResponse.success(iAssetUserService.findUserName());
     }
 }

@@ -303,10 +303,12 @@
         </trim>
         <include refid="Page_List"></include>
     </select>
-
+    <!--来源于资产表的使用者信息-->
     <select id="findUserName" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
-        select name from
-        <include refid="Table_Name"></include>
+        SELECT DISTINCT au.name
+        FROM
+            asset
+            LEFT JOIN asset_user au ON asset.responsible_user_id = au.id
     </select>
 
 </mapper>
