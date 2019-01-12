@@ -65,6 +65,9 @@
 
 
     <sql id="IF_Base_Column_List">
+        <if test=" assetGroup != null">
+            asset_group,
+        </if>
         <if test=" number != null">
             number,
         </if>
@@ -73,6 +76,9 @@
         </if>
         <if test=" serial != null">
             serial,
+        </if>
+        <if test=" areaId != null">
+            area_id,
         </if>
         <if test=" categoryModel != null">
             category_model,
@@ -98,6 +104,9 @@
         <if test=" longitude != null">
             longitude,
         </if>
+        <if test=" houseLocation != null">
+            house_location,
+        </if>
         <if test=" firmwareVersion != null">
             firmware_version,
         </if>
@@ -113,7 +122,6 @@
         <if test=" email != null">
             email,
         </if>
-
         <if test=" assetSource != null">
             asset_source,
         </if>
@@ -123,18 +131,17 @@
         <if test=" describle != null">
             describle,
         </if>
-
         <if test=" parentId != null">
             parent_id,
         </if>
         <if test=" tags != null">
             tags,
         </if>
-        <if test=" isInnet != null">
-            is_innet,
-        </if>
         <if test=" firstEnterNett != null">
             first_enter_nett,
+        </if>
+        <if test=" isInnet != null">
+            is_innet,
         </if>
         <if test=" serviceLife != null">
             service_life,
@@ -165,12 +172,15 @@
         </if>
     </sql>
 
+
+
+
     <sql id="IF_Value_Column_List">
+        <if test=" assetGroup != null">
+            #{assetGroup },
+        </if>
         <if test=" number != null">
             #{number },
-        </if>
-        <if test=" type != null">
-            #{type },
         </if>
         <if test=" name != null">
             #{name },
@@ -178,10 +188,12 @@
         <if test=" serial != null">
             #{serial },
         </if>
+        <if test=" areaId != null">
+            #{areaId },
+        </if>
         <if test=" categoryModel != null">
             #{categoryModel },
         </if>
-
         <if test=" manufacturer != null">
             #{manufacturer },
         </if>
@@ -203,6 +215,9 @@
         <if test=" longitude != null">
             #{longitude },
         </if>
+        <if test=" houseLocation != null">
+            #{houseLocation },
+        </if>
         <if test=" firmwareVersion != null">
             #{firmwareVersion },
         </if>
@@ -218,12 +233,6 @@
         <if test=" email != null">
             #{email },
         </if>
-        <if test=" hardDisk != null">
-            #{hardDisk },
-        </if>
-        <if test=" memory != null">
-            #{memory },
-        </if>
         <if test=" assetSource != null">
             #{assetSource },
         </if>
@@ -233,23 +242,17 @@
         <if test=" describle != null">
             #{describle },
         </if>
-        <if test=" cpu != null">
-            #{cpu },
-        </if>
-        <if test=" networkCard != null">
-            #{networkCard },
-        </if>
         <if test=" parentId != null">
             #{parentId },
         </if>
         <if test=" tags != null">
             #{tags },
         </if>
+        <if test=" firstEnterNett != null">
+            #{firstEnterNett },
+        </if>
         <if test=" isInnet != null">
             #{isInnet },
-        </if>
-        <if test=" firstEnterNett != null">
-            #{first_enter_nett },
         </if>
         <if test=" serviceLife != null">
             #{serviceLife },
@@ -281,11 +284,11 @@
     </sql>
 
     <sql id="Set_Column_List">
+        <if test=" assetGroup != null">
+            asset_group = #{assetGroup },
+        </if>
         <if test=" number != null">
             number = #{number },
-        </if>
-        <if test=" type != null">
-            type = #{type },
         </if>
         <if test=" name != null">
             name = #{name },
@@ -293,15 +296,17 @@
         <if test=" serial != null">
             serial = #{serial },
         </if>
+        <if test=" areaId != null">
+            area_id = #{areaId },
+        </if>
         <if test=" categoryModel != null">
             category_model = #{categoryModel },
         </if>
-
         <if test=" manufacturer != null">
             manufacturer = #{manufacturer },
         </if>
         <if test=" assetStatus != null">
-            asset_status = 3,
+            asset_status = #{assetStatus },
         </if>
         <if test=" operationSystem != null">
             operation_system = #{operationSystem },
@@ -318,6 +323,9 @@
         <if test=" longitude != null">
             longitude = #{longitude },
         </if>
+        <if test=" houseLocation != null">
+            house_location = #{houseLocation },
+        </if>
         <if test=" firmwareVersion != null">
             firmware_version = #{firmwareVersion },
         </if>
@@ -333,7 +341,6 @@
         <if test=" email != null">
             email = #{email },
         </if>
-
         <if test=" assetSource != null">
             asset_source = #{assetSource },
         </if>
@@ -343,18 +350,17 @@
         <if test=" describle != null">
             describle = #{describle },
         </if>
-
         <if test=" parentId != null">
             parent_id = #{parentId },
         </if>
         <if test=" tags != null">
             tags = #{tags },
         </if>
-        <if test=" isInnet != null">
-            is_innet = #{isInnet },
-        </if>
         <if test=" firstEnterNett != null">
             first_enter_nett = #{firstEnterNett },
+        </if>
+        <if test=" isInnet != null">
+            is_innet = #{isInnet },
         </if>
         <if test=" serviceLife != null">
             service_life = #{serviceLife },
@@ -384,6 +390,8 @@
             status = #{status },
         </if>
     </sql>
+
+
 
     <sql id="Where_Column_List">
             <if test=" number != null">
@@ -641,7 +649,7 @@
         and status =1
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.Asset" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.antiy.asset.entity.Asset" useGeneratedKeys="true" keyProperty="aid">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
