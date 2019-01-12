@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.convert.UserResponseConverter;
+import com.antiy.asset.vo.response.SelectResponse;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetUserDao;
@@ -12,7 +15,6 @@ import com.antiy.asset.service.IAssetUserService;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
 import com.antiy.asset.vo.response.AssetUserResponse;
-import com.antiy.asset.vo.response.UserNameResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -31,7 +33,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Resource
     private BaseConverter<AssetUserRequest, AssetUser>  requestConverter;
     @Resource
-    private BaseConverter<AssetUser, UserNameResponse>  userNameResponseConverter;
+    private UserResponseConverter userResponseConverter;
     @Resource
     private BaseConverter<AssetUser, AssetUserResponse> responseConverter;
 
@@ -69,7 +71,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     }
 
     @Override
-    public List<UserNameResponse> findUserName() throws Exception {
-        return userNameResponseConverter.convert(assetUserDao.findUserName(), UserNameResponse.class);
+    public List<SelectResponse> queryUserInAsset() throws Exception {
+        return userResponseConverter.convert(assetUserDao.findUserInAsset(), SelectResponse.class);
     }
 }

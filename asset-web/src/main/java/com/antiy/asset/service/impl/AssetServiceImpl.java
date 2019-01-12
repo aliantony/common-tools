@@ -11,7 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.antiy.asset.convert.ManufacturerResponseConverter;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetCategoryModel;
@@ -24,7 +23,6 @@ import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -413,19 +411,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     // }
 
     @Override
-    public List<AssetResponse> findListAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public List<AssetResponse> findListAssetByCategoryModel(AssetQuery query) throws Exception {
         List<Asset> asset = assetDao.findListAssetByCategoryModel(query);
         List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
         return objects;
     }
 
     @Override
-    public Integer findCountByCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public Integer findCountByCategoryModel(AssetQuery query) throws Exception {
         return assetDao.findCountByCategoryModel(query);
     }
 
     @Override
-    public PageResult<AssetResponse> findPageAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public PageResult<AssetResponse> findPageAssetByCategoryModel(AssetQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountByCategoryModel(query), query.getCurrentPage(),
             this.findListAssetByCategoryModel(query));
     }

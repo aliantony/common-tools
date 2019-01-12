@@ -6,7 +6,7 @@ import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
 import com.antiy.asset.vo.response.AssetUserResponse;
-import com.antiy.asset.vo.response.UserNameResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -51,10 +51,10 @@ public interface IAssetUserService extends IBaseService<AssetUser> {
     PageResult<AssetUserResponse> findPageAssetUser(AssetUserQuery query) throws Exception;
 
     /**
-     * 查询用户名称
+     * 查询资产的使用者
      *
      * @return
      */
-    List<UserNameResponse> findUserName() throws Exception;
+    List<SelectResponse> queryUserInAsset() throws Exception;
 
 }

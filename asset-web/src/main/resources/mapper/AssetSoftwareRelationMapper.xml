@@ -145,7 +145,8 @@
         </if>
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetSoftwareRelation" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetSoftwareRelation" useGeneratedKeys="true"
+            keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -276,8 +277,15 @@
         SELECT
         count(1)
         FROM
-          <include refid="Table_Name"></include>
+        <include refid="Table_Name"></include>
         WHERE
-            software_id = #{softId}
+        software_id = #{softId}
+    </select>
+
+    <select id="findOS" resultType="string" parameterType="com.antiy.common.base.ObjectQuery">
+        select distinct operation_system from
+        <include refid="Table_Name"></include> asr
+        left join asset_software asoft on asoft.id = asr.software_id
+        where asoft.operation_system is not null
     </select>
 </mapper>
