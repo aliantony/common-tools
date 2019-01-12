@@ -110,7 +110,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      * @throws Exception
      */
-    List<AssetResponse> findListAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception;
+    List<AssetResponse> findListAssetByCategoryModel(AssetQuery query) throws Exception;
 
     /**
      * 根据品类型号查询对应资产数量
@@ -118,14 +118,14 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      * @throws Exception
      */
-    Integer findCountByCategoryModel(AssetCategoryModelQuery query) throws Exception;
+    Integer findCountByCategoryModel(AssetQuery query) throws Exception;
 
     /**
      * 根据品类型号查询对应资产
      * @return
      * @throws Exception
      */
-    PageResult<AssetResponse> findPageAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception;
+    PageResult<AssetResponse> findPageAssetByCategoryModel(AssetQuery query) throws Exception;
 
     /**
      * 按厂商统计数量

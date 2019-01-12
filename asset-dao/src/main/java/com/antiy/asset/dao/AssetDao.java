@@ -51,7 +51,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param query
      * @return
      */
-    Integer findCountByCategoryModel(AssetCategoryModelQuery query) throws Exception;
+    Integer findCountByCategoryModel(AssetQuery query) throws Exception;
 
     /**
      * 通过品类型号查询资产列表
@@ -59,7 +59,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param query
      * @return
      */
-    List<Asset> findListAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception;
+    List<Asset> findListAssetByCategoryModel(AssetQuery query) throws Exception;
 
     /**
      * 统计厂商数量
