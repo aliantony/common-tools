@@ -11,7 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.antiy.asset.convert.ManufacturerResponseConverter;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetCategoryModel;
@@ -24,7 +23,6 @@ import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
