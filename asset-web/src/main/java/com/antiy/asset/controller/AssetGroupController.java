@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.response.SelectResponse;
 import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.IAssetGroupService;
@@ -103,4 +104,7 @@ public class AssetGroupController {
     public ActionResponse<List<SelectResponse>> queryGroupInfo() throws Exception {
         return ActionResponse.success(iAssetGroupService.queryGroupInfo());
     }
+
+
+
 }

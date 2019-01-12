@@ -55,6 +55,11 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
      */
     @ApiModelProperty("描述")
     private String  description;
+    /**
+     * 描述
+     */
+    @ApiModelProperty("备注")
+    private String  memo;
 
     public String getName() {
         return name;
@@ -94,6 +99,14 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
     @Override

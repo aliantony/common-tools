@@ -1,18 +1,15 @@
 package com.antiy.asset.entity;
 
-
 import com.antiy.common.base.BaseEntity;
+
 /**
- * <p>软件信息表</p>
+ * <p> 软件信息表 </p>
  *
- * @author why
- * @since 2019-01-12
+ * @author zhangyajun
+ * @since 2018-12-29
  */
 
 public class AssetSoftware extends BaseEntity {
-
-
-private static final long serialVersionUID = 1L;
 
     /**
     *  软件大小(KB)

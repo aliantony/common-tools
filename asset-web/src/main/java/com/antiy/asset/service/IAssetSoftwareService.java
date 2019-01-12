@@ -1,6 +1,7 @@
 package com.antiy.asset.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
@@ -64,5 +65,30 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @throws Exception
      */
     List<String> getManufacturerName(String manufacturerName) throws Exception;
+
+    /**
+     * 按厂商统计数量
+     *
+     * @return
+     * @throws Exception
+     */
+    Map<String, Long> countManufacturer() throws Exception;
+
+    /**
+     * 按状态统计数量
+     *
+     * @return
+     * @throws Exception
+     */
+    Map<String, Long> countStatus() throws Exception;
+
+
+    /**
+     * 按第二级品类统计数量
+     *
+     * @return
+     * @throws Exception
+     */
+    Map<String, Long> countCategory() throws Exception;
 
 }

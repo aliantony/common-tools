@@ -173,8 +173,6 @@
     </sql>
 
 
-
-
     <sql id="IF_Value_Column_List">
         <if test=" assetGroup != null">
             #{assetGroup },
@@ -392,117 +390,116 @@
     </sql>
 
 
-
     <sql id="Where_Column_List">
-            <if test=" number != null">
-                and number = #{number }
-            </if>
-            <if test=" type != null">
-                and type = #{type }
-            </if>
-            <if test=" name != null">
-                and name = #{name }
-            </if>
-            <if test=" serial != null">
-                and serial = #{serial }
-            </if>
-            <if test=" categoryModel != null">
-                and category_model = #{categoryModel }
-            </if>
-            <if test=" manufacturer != null">
-                and manufacturer = #{manufacturer }
-            </if>
-            <if test=" assetStatus != null">
-                and asset_status = #{assetStatus }
-            </if>
-            <if test=" operationSystem != null">
-                and operation_system = #{operationSystem }
-            </if>
-            <if test=" systemBit != null">
-                and system_bit = #{systemBit }
-            </if>
-            <if test=" location != null">
-                and location = #{location }
-            </if>
-            <if test=" latitude != null">
-                and latitude = #{latitude }
-            </if>
-            <if test=" longitude != null">
-                and longitude = #{longitude }
-            </if>
-            <if test=" firmwareVersion != null">
-                and firmware_version = #{firmwareVersion }
-            </if>
-            <if test=" uuid != null">
-                and uuid = #{uuid }
-            </if>
-            <if test=" responsibleUserId != null">
-                and responsible_user_id = #{responsibleUserId }
-            </if>
-            <if test=" contactTel != null">
-                and contact_tel = #{contactTel }
-            </if>
-            <if test=" email != null">
-                and email = #{email }
-            </if>
+        <if test=" number != null">
+            and number = #{number }
+        </if>
+        <if test=" type != null">
+            and type = #{type }
+        </if>
+        <if test=" name != null">
+            and name = #{name }
+        </if>
+        <if test=" serial != null">
+            and serial = #{serial }
+        </if>
+        <if test=" categoryModel != null">
+            and category_model = #{categoryModel }
+        </if>
+        <if test=" manufacturer != null">
+            and manufacturer = #{manufacturer }
+        </if>
+        <if test=" assetStatus != null">
+            and asset_status = #{assetStatus }
+        </if>
+        <if test=" operationSystem != null">
+            and operation_system = #{operationSystem }
+        </if>
+        <if test=" systemBit != null">
+            and system_bit = #{systemBit }
+        </if>
+        <if test=" location != null">
+            and location = #{location }
+        </if>
+        <if test=" latitude != null">
+            and latitude = #{latitude }
+        </if>
+        <if test=" longitude != null">
+            and longitude = #{longitude }
+        </if>
+        <if test=" firmwareVersion != null">
+            and firmware_version = #{firmwareVersion }
+        </if>
+        <if test=" uuid != null">
+            and uuid = #{uuid }
+        </if>
+        <if test=" responsibleUserId != null">
+            and responsible_user_id = #{responsibleUserId }
+        </if>
+        <if test=" contactTel != null">
+            and contact_tel = #{contactTel }
+        </if>
+        <if test=" email != null">
+            and email = #{email }
+        </if>
 
 
-            <if test=" assetSource != null">
-                and asset_source = #{assetSource }
-            </if>
-            <if test=" importanceDegree != null">
-                and importance_degree = #{importanceDegree }
-            </if>
-            <if test=" describle != null">
-                and describle = #{describle }
-            </if>
+        <if test=" assetSource != null">
+            and asset_source = #{assetSource }
+        </if>
+        <if test=" importanceDegree != null">
+            and importance_degree = #{importanceDegree }
+        </if>
+        <if test=" describle != null">
+            and describle = #{describle }
+        </if>
 
-            <if test=" parentId != null">
-                and parent_id = #{parentId }
-            </if>
-            <if test=" tags != null">
-                and tags = #{tags }
-            </if>
-            <if test=" isInnet != null">
-                and is_innet = #{isInnet }
-            </if>
-            <if test=" firstEnterNett != null">
-                and first_enter_nett = #{firstEnterNett }
-            </if>
-            <if test=" serviceLife != null">
-                and service_life = #{serviceLife }
-            </if>
-            <if test=" buyDate != null">
-                and buy_date = #{buyDate }
-            </if>
-            <if test=" warranty != null">
-                and warranty = #{warranty }
-            </if>
-            <if test=" gmtCreate != null">
-                and gmt_create = #{gmtCreate }
-            </if>
-            <if test=" gmtModified != null">
-                and gmt_modified = #{gmtModified }
-            </if>
-            <if test=" memo != null">
-                and memo = #{memo }
-            </if>
-            <if test=" createUser != null">
-                and create_user = #{createUser }
-            </if>
-            <if test=" modifyUser != null">
-                and modify_user = #{modifyUser }
-            </if>
-            <if test=" status != null">
-                and status = #{status }
-            </if>
+        <if test=" parentId != null">
+            and parent_id = #{parentId }
+        </if>
+        <if test=" tags != null">
+            and tags = #{tags }
+        </if>
+        <if test=" isInnet != null">
+            and is_innet = #{isInnet }
+        </if>
+        <if test=" firstEnterNett != null">
+            and first_enter_nett = #{firstEnterNett }
+        </if>
+        <if test=" serviceLife != null">
+            and service_life = #{serviceLife }
+        </if>
+        <if test=" buyDate != null">
+            and buy_date = #{buyDate }
+        </if>
+        <if test=" warranty != null">
+            and warranty = #{warranty }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+        <if test=" memo != null">
+            and memo = #{memo }
+        </if>
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+        <if test=" modifyUser != null">
+            and modify_user = #{modifyUser }
+        </if>
+        <if test=" status != null">
+            and status = #{status }
+        </if>
 
-            <if test="assetStatusList != null and assetStatusList.size() > 0">
-                and asset_status in
-                <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
-                    #{assetStatus}
-                </foreach>
-            </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
     </sql>
 
     <sql id="Where_Column">
@@ -700,7 +697,8 @@
 
 
     <select id="getAll" resultType="com.antiy.asset.entity.Asset">
-        select *
+        select
+        <include refid="Base_Column_List"/>
         from
         <include refid="Table_Name"></include>
     </select>
@@ -782,7 +780,7 @@
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
-        </if>
+        </if> and status=0
     </select>
 
     <select id="findListAssetByCategoryModel" resultType="com.antiy.asset.entity.Asset"
@@ -802,11 +800,11 @@
 
     <select id="findListAsset" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
         select * from (SELECT
-            a.*,
-            GROUP_CONCAT( b.ip_address ) as ip,
-            GROUP_CONCAT( b.mac_address ) as mac
+        a.*,
+        GROUP_CONCAT( b.ip_address ) as ip,
+        GROUP_CONCAT( b.mac_address ) as mac
         FROM
-         asset a
+        asset a
         LEFT JOIN asset_network_card b ON a.id = b.asset_id
         GROUP BY
         a.id) asset
@@ -821,12 +819,12 @@
     <select id="countManufacturer" resultMap="ManufacturerResultMap">
         select manufacturer, count(manufacturer) num from
         <include refid="Table_Name"></include>
-        GROUP BY manufacturer
+        GROUP BY manufacturer where status=0
     </select>
 
     <select id="countStatus" resultMap="StatusResultMap">
         select asset_status, count(asset_status) num from
         <include refid="Table_Name"></include>
-        GROUP BY asset_status
+        GROUP BY asset_status where status=0
     </select>
 </mapper>

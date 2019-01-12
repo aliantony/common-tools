@@ -7,14 +7,14 @@
         <id column="id" property="id"/>
         <result column="size" property="size"/>
         <result column="operation_system" property="operationSystem"/>
-        <result column="category_model" property="categoryModel"/>
+        <result column="category" property="category"/>
+        <result column="model" property="model"/>
         <result column="name" property="name"/>
         <result column="upload_software_name" property="uploadSoftwareName"/>
         <result column="path" property="path"/>
         <result column="version" property="version"/>
         <result column="manufacturer" property="manufacturer"/>
         <result column="description" property="description"/>
-        <result column="asset_group" property="assetGroup"/>
         <result column="software_label" property="softwareLabel"/>
         <result column="software_status" property="softwareStatus"/>
         <result column="authorization" property="authorization"/>
@@ -29,6 +29,14 @@
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
+    </resultMap>
+    <resultMap id="ManufacturerResultMap" type="java.util.HashMap">
+        <result property="key" column="manufacturer"/>
+        <result property="value" column="num"/>
+    </resultMap>
+    <resultMap id="StatusResultMap" type="java.util.HashMap">
+        <result property="key" column="software_status"/>
+        <result property="value" column="num"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -391,7 +399,8 @@
 
 
     <select id="getAll" resultType="com.antiy.asset.entity.AssetSoftware">
-        select *
+        select
+        <include refid="Base_Column_List"/>
         from
         <include refid="Table_Name"></include>
     </select>
@@ -431,11 +440,8 @@
             <if test=" operationSystem != null">
                 and operation_system = #{operationSystem }
             </if>
-            <if test=" category != null">
-                and category = #{category }
-            </if>
-            <if test=" model != null">
-                and model = #{model }
+            <if test=" categoryModel != null">
+                and category_model = #{categoryModel }
             </if>
             <if test=" name != null">
                 and name = #{name }
@@ -508,5 +514,30 @@
                 </foreach>
             </if>
         </where>
+    </select>
+    <select id="countManufacturer" resultMap="ManufacturerResultMap">
+        select manufacturer, count(manufacturer) num from
+        <include refid="Table_Name"></include>
+        GROUP BY manufacturer
+    </select>
+
+    <select id="countStatus" resultMap="StatusResultMap">
+        select software_status, count(software_status) num from
+        <include refid="Table_Name"></include>
+        GROUP BY software_status
+    </select>
+
+    <select id="findCountByCategoryModel" resultType="java.lang.Long"
+            parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
+        select count(1) count
+        from
+        <include refid="Table_Name"></include>
+        where 1 = 1
+        <if test=" categoryModels != null">
+            and category_model in
+            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
     </select>
 </mapper>

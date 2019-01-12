@@ -1,6 +1,7 @@
 package com.antiy.asset.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -35,4 +36,19 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
      * @return
      */
     List<String> findManufacturerName(@Param(value = "manufacturerName") String manufacturerName,@Param("areaIds") List<String> areaIds);
+    /**
+     * 统计厂商数量
+     *
+     * @return
+     */
+    List<Map<String, Long>> countManufacturer();
+
+    /**
+     * 统计状态数量
+     *
+     * @return
+     */
+    List<Map<String, Long>> countStatus();
+
+    Long findCountByCategoryModel(AssetSoftwareQuery assetSoftwareQuery);
 }

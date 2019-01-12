@@ -49,4 +49,6 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      */
     PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
 
+
+
 }

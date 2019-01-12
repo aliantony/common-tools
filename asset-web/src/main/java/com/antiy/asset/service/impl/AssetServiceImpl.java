@@ -1,9 +1,22 @@
 package com.antiy.asset.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.common.utils.BusinessExceptionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
@@ -426,11 +439,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Map<String, Long> countManufacturer() throws Exception {
+        // todo 添加区域id
         List<Map<String, Long>> list = assetDao.countManufacturer();
-        return transferListToMap(list);
-    }
-
-    private Map<String, Long> transferListToMap(List<Map<String, Long>> list) {
         Map result = new HashMap();
         for (Map map : list) {
             result.put(map.get("key"), map.get("value"));
@@ -440,6 +450,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Map<String, Long> countStatus() throws Exception {
+        // todo 添加区域id
         List<Map<String, Long>> list = assetDao.countStatus();
         Map<String, Long> result = new HashMap();
         for (Map map : list) {
@@ -450,6 +461,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Map<String, Long> countCategory() throws Exception {
+        // todo 添加区域id
         HashMap<String, Object> map = new HashMap();
         map.put("name", "硬件");
         map.put("parentId", 0);
@@ -462,12 +474,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         for (AssetCategoryModel a : categoryModelList1) {
             List<AssetCategoryModel> search = recursionSearch(a.getId());
             Long sum = 0L;
+            List<Integer> list = new ArrayList<>();
             for (AssetCategoryModel b : search) {
-                HashMap param = new HashMap();
-                param.put("parentId", b.getId());
-                sum += assetDao.getByWhere(param).size();
+                list.add(b.getId());
             }
-            result.put(a.getName(), sum);
+            AssetQuery assetQuery = new AssetQuery();
+            assetQuery.setCategoryModels(ArrayTypeUtil.ObjectArrayToIntegerArray(list.toArray()));
+            result.put(a.getName(), (long) assetDao.findCountByCategoryModel(assetQuery));
         }
         return result;
     }
@@ -587,7 +600,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetOuterResponse assetOuterResponse = new AssetOuterResponse();
         // 资产信息
         AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setIds(new Integer[] { id });
+        assetQuery.setIds(new Integer[]{id});
         List<Asset> assetList = assetDao.findListAsset(assetQuery);
         BusinessExceptionUtils.isEmpty(assetList, "资产不存在");
         Asset asset = assetList.get(0);
