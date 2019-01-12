@@ -758,7 +758,7 @@
         <include refid="Where_Column_List"/>
     </select>
 
-    <select id="findManufacturer" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="pulldownManufacturer" resultMap="BaseResultMap">
         select distinct manufacturer from
         <include refid="Table_Name"></include>
     </select>

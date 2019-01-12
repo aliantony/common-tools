@@ -10,9 +10,7 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
-import com.antiy.asset.vo.response.AssetOuterResponse;
-import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.ManufacturerResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -100,11 +98,11 @@ public interface IAssetService extends IBaseService<Asset> {
     Integer batchSave(List<Asset> assets) throws Exception;
 
     /**
-     * 查询厂商
+     * 查询下拉的厂商信息
      *
      * @return
      */
-    List<ManufacturerResponse> findManufacturer() throws Exception;
+    List<SelectResponse> pulldownManufacturer() throws Exception;
 
     /**
      * 根据品类型号查询对应资产列表

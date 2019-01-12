@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.antiy.asset.convert.ManufacturerResponseConverter;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetCategoryModel;
@@ -23,7 +24,7 @@ import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.ManufacturerResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -39,34 +40,34 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetService {
 
     @Resource
-    private AssetDao                                   assetDao;
+    private AssetDao                            assetDao;
     @Resource
-    private AssetMainboradDao                          assetMainboradDao;
+    private AssetMainboradDao                   assetMainboradDao;
     @Resource
-    private AssetMemoryDao                             assetMemoryDao;
+    private AssetMemoryDao                      assetMemoryDao;
     @Resource
-    private AssetHardDiskDao                           assetHardDiskDao;
+    private AssetHardDiskDao                    assetHardDiskDao;
     @Resource
-    private AssetCpuDao                                assetCpuDao;
+    private AssetCpuDao                         assetCpuDao;
     @Resource
-    private AssetNetworkCardDao                        assetNetworkCardDao;
+    private AssetNetworkCardDao                 assetNetworkCardDao;
     @Resource
-    private AssetNetworkEquipmentDao                   assetNetworkEquipmentDao;
+    private AssetNetworkEquipmentDao            assetNetworkEquipmentDao;
     @Resource
-    private AssetSafetyEquipmentDao                    assetSafetyEquipmentDao;
+    private AssetSafetyEquipmentDao             assetSafetyEquipmentDao;
     @Resource
-    private AssetSoftwareDao                           assetSoftwareDao;
+    private AssetSoftwareDao                    assetSoftwareDao;
     @Resource
-    private AssetCategoryModelDao                      assetCategoryModelDao;
+    private AssetCategoryModelDao               assetCategoryModelDao;
 
     @Resource
-    private AssetSoftwareRelationDao                   assetSoftwareRelationDao;
+    private AssetSoftwareRelationDao            assetSoftwareRelationDao;
     @Resource
-    private BaseConverter<AssetRequest, Asset>         requestConverter;
+    private BaseConverter<AssetRequest, Asset>  requestConverter;
     @Resource
-    private BaseConverter<Asset, AssetResponse>        responseConverter;
+    private BaseConverter<Asset, AssetResponse> responseConverter;
     @Resource
-    private BaseConverter<Asset, ManufacturerResponse> manufacturerResponseConverter;
+    private ManufacturerResponseConverter       manufacturerResponseConverter;
 
     @Override
     public Integer saveAsset(AssetRequest request) throws Exception {
@@ -253,9 +254,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<ManufacturerResponse> findManufacturer() throws Exception {
-        List<ManufacturerResponse> manufacturerResponseList = manufacturerResponseConverter
-            .convert(assetDao.findManufacturer(), ManufacturerResponse.class);
+    public List<SelectResponse> pulldownManufacturer() throws Exception {
+        List<SelectResponse> manufacturerResponseList = manufacturerResponseConverter
+            .convert(assetDao.pulldownManufacturer(), SelectResponse.class);
         return manufacturerResponseList;
     }
 

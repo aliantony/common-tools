@@ -1,5 +1,15 @@
 package com.antiy.asset.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletResponse;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.AssetEntity;
@@ -13,14 +23,6 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author zhangyajun
@@ -57,7 +59,7 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetRequest asset) throws Exception {
         iAssetService.saveAsset(asset);
@@ -71,7 +73,7 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetRequest asset) throws Exception {
         iAssetService.updateAsset(asset);
@@ -79,13 +81,13 @@ public class AssetController {
     }
 
     /**
-     * 条件查询
+     * 批量查询
      *
      * @param asset
      * @return actionResponse
      */
-    @ApiOperation(value = "条件查询接口", notes = "传入查询条件")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
         return ActionResponse.success(iAssetService.findPageAsset(asset));
@@ -187,15 +189,16 @@ public class AssetController {
     }
 
     /**
-     * 查询厂商信息
+     * 查询下拉的厂商信息
+     * @author zhangyajun
      *
      * @return 厂商名称集合
      */
     @ApiOperation(value = "查询厂商接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/manufacturer", method = RequestMethod.GET)
-    public ActionResponse queryManufacturer() throws Exception {
-        return ActionResponse.success(iAssetService.findManufacturer());
+    @RequestMapping(value = "/query/pulldown/manufacturer", method = RequestMethod.GET)
+    public ActionResponse pulldownManufacturer() throws Exception {
+        return ActionResponse.success(iAssetService.pulldownManufacturer());
     }
 
     /**
@@ -230,7 +233,7 @@ public class AssetController {
      * @return 状态名和该状态下资产数量的映射
      */
     @ApiOperation(value = "硬件资产按状态统计接口", notes = "无查询条件")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/status", method = RequestMethod.GET)
     public Map<String, Long> countAssetByStatus() throws Exception {
         return iAssetService.countStatus();
