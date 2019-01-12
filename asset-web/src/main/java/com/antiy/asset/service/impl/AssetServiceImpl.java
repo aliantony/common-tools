@@ -413,19 +413,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     // }
 
     @Override
-    public List<AssetResponse> findListAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public List<AssetResponse> findListAssetByCategoryModel(AssetQuery query) throws Exception {
         List<Asset> asset = assetDao.findListAssetByCategoryModel(query);
         List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
         return objects;
     }
 
     @Override
-    public Integer findCountByCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public Integer findCountByCategoryModel(AssetQuery query) throws Exception {
         return assetDao.findCountByCategoryModel(query);
     }
 
     @Override
-    public PageResult<AssetResponse> findPageAssetByCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public PageResult<AssetResponse> findPageAssetByCategoryModel(AssetQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountByCategoryModel(query), query.getCurrentPage(),
             this.findListAssetByCategoryModel(query));
     }

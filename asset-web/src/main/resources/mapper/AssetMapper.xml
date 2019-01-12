@@ -777,7 +777,7 @@
     </select>
 
     <select id="findListAssetByCategoryModel" resultType="com.antiy.asset.entity.Asset"
-            parameterType="java.lang.Integer">
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
         select
         <include refid="Base_Column_List"/>
         from
