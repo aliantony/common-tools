@@ -1,9 +1,9 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+
 import com.antiy.asset.vo.request.TopologyRequest;
 import com.antiy.asset.vo.response.TopologyResponse;
-
-import java.util.List;
 
 /**
  * @Auther: zhangbing
@@ -31,5 +31,5 @@ public interface ITopologyService {
      *
      * @return
      */
-    int saveTopology(TopologyRequest topologyRequest)  throws Exception;
+    int saveTopology(TopologyRequest topologyRequest) throws Exception;
 }

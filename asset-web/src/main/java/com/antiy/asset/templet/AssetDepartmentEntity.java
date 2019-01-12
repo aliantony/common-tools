@@ -5,34 +5,29 @@ import com.antiy.asset.annotation.ExcelField;
 public class AssetDepartmentEntity {
     private static final long serialVersionUID = 1L;
 
-
     /**
      * 部门名
      */
     @ExcelField(value = "name", align = 1, title = "部门名", type = 0)
-    private String name;
-
+    private String            name;
 
     /**
      * 负责人
      */
     @ExcelField(value = "responsibleUser", align = 1, title = "负责人", type = 0)
-    private String responsibleUser;
-
+    private String            responsibleUser;
 
     /**
      * 联系电话
      */
     @ExcelField(value = "telephone", align = 1, title = "电话号码", type = 0)
-    private String telephone;
-
+    private String            telephone;
 
     /**
      * 上级部门
      */
     @ExcelField(value = "parentId", align = 1, title = "上级部门", type = 0)
-    private Integer parentId;
-
+    private Integer           parentId;
 
     public String getName() {
         return name;
@@ -58,7 +53,6 @@ public class AssetDepartmentEntity {
         this.telephone = telephone;
     }
 
-
     public Integer getParentId() {
         return parentId;
     }
@@ -66,6 +60,5 @@ public class AssetDepartmentEntity {
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
     }
-
 
 }

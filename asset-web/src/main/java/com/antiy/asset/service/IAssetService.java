@@ -1,5 +1,9 @@
 package com.antiy.asset.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -12,15 +16,8 @@ import com.antiy.asset.vo.response.ManufacturerResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-
 /**
- * <p>
- * 资产主表 服务类
- * </p>
+ * <p> 资产主表 服务类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02
@@ -85,7 +82,6 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     Integer changeStatus(Integer[] idArrays, Integer assetStatus) throws Exception;
 
-
     /**
      * 保存全部信息
      *
@@ -102,13 +98,13 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     Integer batchSave(List<Asset> assets) throws Exception;
+
     /**
      * 查询厂商
      *
      * @return
      */
     List<ManufacturerResponse> findManufacturer() throws Exception;
-
 
     /**
      * 根据品类型号查询对应资产列表
@@ -149,7 +145,6 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     Map<String, Long> countStatus() throws Exception;
 
-
     /**
      * 按第二级品类统计数量
      *
@@ -172,6 +167,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return List<AssetResponse>
      */
     List<AssetResponse> queryAssetByIds(Integer[] ids);
+
     /**
      * 通过ID查询
      *

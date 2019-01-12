@@ -1,5 +1,7 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+
 import com.antiy.asset.entity.AssetLabelRelation;
 import com.antiy.asset.vo.query.AssetLabelRelationQuery;
 import com.antiy.asset.vo.request.AssetLabelRelationRequest;
@@ -7,13 +9,8 @@ import com.antiy.asset.vo.response.AssetLabelRelationResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
-import java.util.List;
-
-
 /**
- * <p>
- * 资产标签关系表 服务类
- * </p>
+ * <p> 资产标签关系表 服务类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02

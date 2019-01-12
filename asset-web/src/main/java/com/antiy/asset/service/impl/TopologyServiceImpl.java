@@ -6,7 +6,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.enums.AssetStatusEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -18,6 +17,7 @@ import com.antiy.asset.dao.AssetTopologyDao;
 import com.antiy.asset.entity.AssetTopology;
 import com.antiy.asset.entity.Topology;
 import com.antiy.asset.service.ITopologyService;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.TopologyRequest;
 import com.antiy.asset.vo.response.TopologyResponse;

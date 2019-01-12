@@ -1,6 +1,5 @@
 /**
- * **********************************************************************
- * All rights Reserved, Designed By changhong
+ * ********************************************************************** All rights Reserved, Designed By changhong
  *
  * @Title: IEventService.java
  * @Package com.changhong.zbcloud.system.service
@@ -9,15 +8,14 @@
  * @date: 2018年1月17日 上午10:35:33
  * @version V1.0
  * @Copyright: 2018 www.changhong.com Inc. All rights reserved.
- * **********************************************************************
+ *             **********************************************************************
  */
 package com.antiy.asset.service;
 
-import com.antiy.asset.entity.Event;
-import com.antiy.common.base.IBaseService;
-
 import java.util.List;
 
+import com.antiy.asset.entity.Event;
+import com.antiy.common.base.IBaseService;
 
 /**
  * @author chenxinchong

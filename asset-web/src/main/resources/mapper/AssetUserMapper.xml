@@ -206,7 +206,8 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </sql>
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetUser"  useGeneratedKeys="true" keyProperty="id"  keyColumn="id">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetUser" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">

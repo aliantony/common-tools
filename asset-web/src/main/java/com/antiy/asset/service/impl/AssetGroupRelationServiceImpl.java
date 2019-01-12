@@ -1,5 +1,12 @@
 package com.antiy.asset.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.antiy.asset.dao.AssetGroupRelationDao;
 import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.service.IAssetGroupRelationService;
@@ -9,28 +16,21 @@ import com.antiy.asset.vo.response.AssetGroupRelationResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * <p>
- * 资产与资产组关系表 服务实现类
- * </p>
+ * <p> 资产与资产组关系表 服务实现类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02
  */
 @Service
-public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRelation> implements IAssetGroupRelationService {
-
+public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRelation>
+                                           implements IAssetGroupRelationService {
 
     @Resource
-    private AssetGroupRelationDao assetGroupRelationDao;
+    private AssetGroupRelationDao                                         assetGroupRelationDao;
     @Resource
-    private BaseConverter<AssetGroupRelationRequest, AssetGroupRelation> requestConverter;
+    private BaseConverter<AssetGroupRelationRequest, AssetGroupRelation>  requestConverter;
     @Resource
     private BaseConverter<AssetGroupRelation, AssetGroupRelationResponse> responseConverter;
 
@@ -49,7 +49,7 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
     @Override
     public List<AssetGroupRelationResponse> findListAssetGroupRelation(AssetGroupRelationQuery query) throws Exception {
         List<AssetGroupRelation> assetGroupRelation = assetGroupRelationDao.findListAssetGroupRelation(query);
-        //TODO
+        // TODO
         List<AssetGroupRelationResponse> assetGroupRelationResponse = new ArrayList<AssetGroupRelationResponse>();
         return assetGroupRelationResponse;
     }
@@ -60,6 +60,7 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
 
     @Override
     public PageResult<AssetGroupRelationResponse> findPageAssetGroupRelation(AssetGroupRelationQuery query) throws Exception {
-        return new PageResult<>(query.getPageSize(), this.findCountAssetGroupRelation(query), query.getCurrentPage(), this.findListAssetGroupRelation(query));
+        return new PageResult<>(query.getPageSize(), this.findCountAssetGroupRelation(query), query.getCurrentPage(),
+            this.findListAssetGroupRelation(query));
     }
 }

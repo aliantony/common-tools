@@ -1,16 +1,16 @@
 package com.antiy.asset.util;
 
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+
 public class CodeUtils {
 
     public static Map<String, Map<Integer, String>> codeMap = new HashMap();
-    public static Map<Integer, String> code = new HashMap(16);
+    public static Map<Integer, String>              code    = new HashMap(16);
 
     static {
         init();

@@ -1,5 +1,11 @@
 package com.antiy.asset.service.impl;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.antiy.asset.dao.AssetNetworkEquipmentDao;
 import com.antiy.asset.entity.AssetNetworkEquipment;
 import com.antiy.asset.service.IAssetNetworkEquipmentService;
@@ -9,27 +15,21 @@ import com.antiy.asset.vo.response.AssetNetworkEquipmentResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
- * <p>
- * 网络设备详情表 服务实现类
- * </p>
+ * <p> 网络设备详情表 服务实现类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02
  */
 @Service
-public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetworkEquipment> implements IAssetNetworkEquipmentService {
-
+public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetworkEquipment>
+                                              implements IAssetNetworkEquipmentService {
 
     @Resource
-    private AssetNetworkEquipmentDao assetNetworkEquipmentDao;
+    private AssetNetworkEquipmentDao                                            assetNetworkEquipmentDao;
     @Resource
-    private BaseConverter<AssetNetworkEquipmentRequest, AssetNetworkEquipment> requestConverter;
+    private BaseConverter<AssetNetworkEquipmentRequest, AssetNetworkEquipment>  requestConverter;
     @Resource
     private BaseConverter<AssetNetworkEquipment, AssetNetworkEquipmentResponse> responseConverter;
 
@@ -48,9 +48,11 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
 
     @Override
     public List<AssetNetworkEquipmentResponse> findListAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception {
-        List<AssetNetworkEquipment> assetNetworkEquipment = assetNetworkEquipmentDao.findListAssetNetworkEquipment(query);
-        //TODO
-        List<AssetNetworkEquipmentResponse> assetNetworkCardResponse = responseConverter.convert(assetNetworkEquipment, AssetNetworkEquipmentResponse.class);
+        List<AssetNetworkEquipment> assetNetworkEquipment = assetNetworkEquipmentDao
+            .findListAssetNetworkEquipment(query);
+        // TODO
+        List<AssetNetworkEquipmentResponse> assetNetworkCardResponse = responseConverter.convert(assetNetworkEquipment,
+            AssetNetworkEquipmentResponse.class);
         return assetNetworkCardResponse;
     }
 
@@ -60,6 +62,7 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
 
     @Override
     public PageResult<AssetNetworkEquipmentResponse> findPageAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception {
-        return new PageResult<>(query.getPageSize(), this.findCountAssetNetworkEquipment(query), query.getCurrentPage(), this.findListAssetNetworkEquipment(query));
+        return new PageResult<>(query.getPageSize(), this.findCountAssetNetworkEquipment(query), query.getCurrentPage(),
+            this.findListAssetNetworkEquipment(query));
     }
 }

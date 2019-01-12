@@ -1,5 +1,7 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
@@ -8,13 +10,8 @@ import com.antiy.asset.vo.response.OsResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
-import java.util.List;
-
-
 /**
- * <p>
- * 软件信息表 服务类
- * </p>
+ * <p> 软件信息表 服务类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02

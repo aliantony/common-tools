@@ -1,5 +1,11 @@
 package com.antiy.asset.service.impl;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.antiy.asset.dao.AssetCpuDao;
 import com.antiy.asset.entity.AssetCpu;
 import com.antiy.asset.service.IAssetCpuService;
@@ -9,15 +15,9 @@ import com.antiy.asset.vo.response.AssetCpuResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
- * <p>
- * 处理器表 服务实现类
- * </p>
+ * <p> 处理器表 服务实现类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02
@@ -25,11 +25,10 @@ import java.util.List;
 @Service
 public class AssetCpuServiceImpl extends BaseServiceImpl<AssetCpu> implements IAssetCpuService {
 
-
     @Resource
-    private AssetCpuDao assetCpuDao;
+    private AssetCpuDao                               assetCpuDao;
     @Resource
-    private BaseConverter<AssetCpuRequest, AssetCpu> requestConverter;
+    private BaseConverter<AssetCpuRequest, AssetCpu>  requestConverter;
     @Resource
     private BaseConverter<AssetCpu, AssetCpuResponse> responseConverter;
 
@@ -49,7 +48,7 @@ public class AssetCpuServiceImpl extends BaseServiceImpl<AssetCpu> implements IA
     @Override
     public List<AssetCpuResponse> findListAssetCpu(AssetCpuQuery query) throws Exception {
         List<AssetCpu> assetCpu = assetCpuDao.findListAssetCpu(query);
-        //TODO
+        // TODO
         List<AssetCpuResponse> assetCpuResponse = responseConverter.convert(assetCpu, AssetCpuResponse.class);
         return assetCpuResponse;
     }
@@ -60,6 +59,7 @@ public class AssetCpuServiceImpl extends BaseServiceImpl<AssetCpu> implements IA
 
     @Override
     public PageResult<AssetCpuResponse> findPageAssetCpu(AssetCpuQuery query) throws Exception {
-        return new PageResult<>(query.getPageSize(), this.findCountAssetCpu(query), query.getCurrentPage(), this.findListAssetCpu(query));
+        return new PageResult<>(query.getPageSize(), this.findCountAssetCpu(query), query.getCurrentPage(),
+            this.findListAssetCpu(query));
     }
 }

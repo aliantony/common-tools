@@ -1,8 +1,9 @@
 package com.antiy.asset.util;
 
+import org.slf4j.Logger;
+
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
-import org.slf4j.Logger;
 
 /**
  * @Auther: zhangbing

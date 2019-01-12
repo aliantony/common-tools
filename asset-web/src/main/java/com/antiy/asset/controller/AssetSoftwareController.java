@@ -1,28 +1,30 @@
 package com.antiy.asset.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.templet.AssetSoftwareEntity;
+import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.asset.vo.response.OsResponse;
-import com.antiy.asset.templet.AssetSoftwareEntity;
-import com.antiy.asset.templet.ImportResult;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
+
 import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 
 /**
  * @author zhangyajun
@@ -43,9 +45,7 @@ public class AssetSoftwareController {
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware) throws Exception {
         iAssetSoftwareService.saveAssetSoftware(assetSoftware);
@@ -59,9 +59,7 @@ public class AssetSoftwareController {
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware) throws Exception {
         iAssetSoftwareService.updateAssetSoftware(assetSoftware);
@@ -75,9 +73,7 @@ public class AssetSoftwareController {
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "assetSoftware") AssetSoftwareQuery assetSoftware) throws Exception {
         return ActionResponse.success(iAssetSoftwareService.findPageAssetSoftware(assetSoftware));
@@ -90,9 +86,7 @@ public class AssetSoftwareController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     public ActionResponse queryById(@ApiParam(value = "assetSoftware") @PathVariable("id") Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
@@ -106,9 +100,7 @@ public class AssetSoftwareController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
-    })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") @PathVariable("id") Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
@@ -136,7 +128,8 @@ public class AssetSoftwareController {
     @ApiOperation(value = "导出模板文件", notes = "主键封装对象")
     @RequestMapping(value = "/export/file", method = RequestMethod.GET)
     public void exportFile(@ApiParam(value = "assetSoftwareQuery") AssetSoftwareQuery assetSoftwareQuery) throws Exception {
-        List<AssetSoftwareResponse> assetSoftwareResponses = iAssetSoftwareService.findListAssetSoftware(assetSoftwareQuery);
+        List<AssetSoftwareResponse> assetSoftwareResponses = iAssetSoftwareService
+            .findListAssetSoftware(assetSoftwareQuery);
         List list = BeanConvert.convert(assetSoftwareResponses, AssetSoftwareEntity.class);
         ExcelUtils.exportToClient(AssetSoftwareEntity.class, "软件信息表.xlsx", "软件信息", list);
     }
@@ -170,46 +163,48 @@ public class AssetSoftwareController {
      * @return 操作系统名称集合
      */
     @ApiOperation(value = "查询操作系统接口", notes = "无查询条件")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/os", method = RequestMethod.GET)
     public List<OsResponse> queryOS() throws Exception {
         return iAssetSoftwareService.findOS();
     }
+
     /**
      * 软件资产按品类型号统计
      *
      * @return 品类型号名和该品类信号型产数量的映射
      */
     @ApiOperation(value = "软件资产按品类型号统计接口", notes = "无查询条件")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/type", method = RequestMethod.GET)
     public Map<String, Integer> countAssetByType() throws Exception {
-        //todo
+        // todo
         return null;
     }
+
     /**
      * 硬件资产按状态统计
      *
      * @return 状态名和该状态下资产数量的映射
      */
     @ApiOperation(value = "软件资产按状态统计接口", notes = "无查询条件")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/status", method = RequestMethod.GET)
     public Map<String, Integer> countAssetByStatus() throws Exception {
-        //todo
+        // todo
         return null;
     }
+
     /**
      * 硬件资产按厂商统计
      *
      * @return 厂商名和该厂商资产数量的映射
      */
     @ApiOperation(value = "软件资产按厂商统计接口", notes = "无查询条件")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/manufacturer", method = RequestMethod.GET)
     public Map<String, Integer> countAssetByManufacturer() throws Exception {
-        //todo
+        // todo
         return null;
     }
 }
-

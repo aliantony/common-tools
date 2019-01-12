@@ -9,7 +9,6 @@ import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-import io.swagger.models.auth.In;
 
 /**
  * <p> 资产部门信息 服务类 </p>
@@ -59,7 +58,6 @@ public interface IAssetDepartmentService extends IBaseService<AssetDepartment> {
      */
     List<AssetDepartmentResponse> findAssetDepartmentById(Integer id) throws Exception;
 
-
     /**
      * 查询部门树形结构
      *
@@ -67,6 +65,5 @@ public interface IAssetDepartmentService extends IBaseService<AssetDepartment> {
      * @throws Exception
      */
     AssetDepartmentNodeResponse findDepartmentNode() throws Exception;
-
 
 }

@@ -1,5 +1,7 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
@@ -8,13 +10,8 @@ import com.antiy.asset.vo.response.GroupValueResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
-import java.util.List;
-
-
 /**
- * <p>
- * 资产组表 服务类
- * </p>
+ * <p> 资产组表 服务类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02
@@ -52,6 +49,7 @@ public interface IAssetGroupService extends IBaseService<AssetGroup> {
      * @return
      */
     PageResult<AssetGroupResponse> findPageAssetGroup(AssetGroupQuery query) throws Exception;
+
     /**
      * 查询资产组名称
      *

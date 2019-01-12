@@ -1,5 +1,7 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+
 import com.antiy.asset.entity.AssetLable;
 import com.antiy.asset.vo.query.AssetLableQuery;
 import com.antiy.asset.vo.request.AssetLableRequest;
@@ -7,13 +9,8 @@ import com.antiy.asset.vo.response.AssetLableResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
-import java.util.List;
-
-
 /**
- * <p>
- * 标签信息表 服务类
- * </p>
+ * <p> 标签信息表 服务类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02

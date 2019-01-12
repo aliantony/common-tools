@@ -1,5 +1,7 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
@@ -7,13 +9,8 @@ import com.antiy.asset.vo.response.AssetCategoryModelResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
-import java.util.List;
-
-
 /**
- * <p>
- * 品类型号表 服务类
- * </p>
+ * <p> 品类型号表 服务类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02

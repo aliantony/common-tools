@@ -1,7 +1,15 @@
 package com.antiy.asset.util;
 
-import com.antiy.asset.annotation.ExcelField;
-import com.antiy.common.utils.LogUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.util.*;
+
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -13,15 +21,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.util.*;
+import com.antiy.asset.annotation.ExcelField;
+import com.antiy.common.utils.LogUtils;
 
 /**
  * @Description: 导入excel
@@ -30,58 +31,58 @@ import java.util.*;
  */
 public class ImportExcel {
 
-    private static Logger log = LogUtils.get(ImportExcel.class);
-    private static String XLS = ".xls";
-    private static String XLSX = ".xlsx";
+    private static Logger        log         = LogUtils.get(ImportExcel.class);
+    private static String        XLS         = ".xls";
+    private static String        XLSX        = ".xlsx";
     /**
      * 导入信息
      */
-    private static StringBuilder sb = new StringBuilder();
+    private static StringBuilder sb          = new StringBuilder();
     /**
      * 空白条数
      */
-    private static int blankNums = 0;
+    private static int           blankNums   = 0;
     /**
      * 失败条数
      */
-    private static int failNums = 0;
+    private static int           failNums    = 0;
     /**
      * 成功条数
      */
-    private static int successNums = 0;
+    private static int           successNums = 0;
     /**
      * 总条数
      */
-    private static int totalNums = 0;
+    private static int           totalNums   = 0;
     /**
      * 工作薄对象
      */
-    private XSSFWorkbook wb;
+    private XSSFWorkbook         wb;
 
     /**
      * 工作表对象
      */
-    private XSSFSheet sheet;
+    private XSSFSheet            sheet;
 
     /**
      * 标题行号
      */
-    private int headerNum;
+    private int                  headerNum;
 
     /**
      * 最后一样行号
      */
-    private int lastRowNum;
+    private int                  lastRowNum;
 
     /**
      * 注解列表Obejct{excelField, field/method}
      */
-    private List<Object[]> annotationList;
+    private List<Object[]>       annotationList;
 
     /**
      * 构造方法
      *
-     * @param filePath  文件路径
+     * @param filePath 文件路径
      * @param headerNum 标题行号
      */
     public ImportExcel(String filePath, int headerNum) throws IOException {
@@ -91,7 +92,7 @@ public class ImportExcel {
     /**
      * 构造方法
      *
-     * @param file      文件对象
+     * @param file 文件对象
      * @param headerNum 标题行号，数据行号=标题行号+1
      */
     public ImportExcel(File file, int headerNum) throws IOException {
@@ -102,8 +103,8 @@ public class ImportExcel {
     /**
      * 构造方法
      *
-     * @param filePath   文件路径
-     * @param headerNum  标题行号，数据行号=标题行号+1
+     * @param filePath 文件路径
+     * @param headerNum 标题行号，数据行号=标题行号+1
      * @param sheetIndex 工作表编号
      */
     public ImportExcel(String filePath, int headerNum, int sheetIndex) throws IOException {
@@ -113,8 +114,8 @@ public class ImportExcel {
     /**
      * 构造方法
      *
-     * @param file       导入文件对象
-     * @param headerNum  标题行号，数据行号=标题行号+1
+     * @param file 导入文件对象
+     * @param headerNum 标题行号，数据行号=标题行号+1
      * @param sheetIndex 工作表编号
      */
     public ImportExcel(File file, int headerNum, int sheetIndex) throws IOException {
@@ -125,26 +126,24 @@ public class ImportExcel {
      * 构造方法
      *
      * @param multipartFile 导入文件对象
-     * @param headerNum     标题行号，数据行号=标题行号+1
-     * @param sheetIndex    工作表编号
+     * @param headerNum 标题行号，数据行号=标题行号+1
+     * @param sheetIndex 工作表编号
      * @throws IOException
      */
-    public ImportExcel(MultipartFile multipartFile, int headerNum, int sheetIndex)
-            throws IOException {
+    public ImportExcel(MultipartFile multipartFile, int headerNum, int sheetIndex) throws IOException {
         this(multipartFile.getOriginalFilename(), multipartFile.getInputStream(), headerNum, sheetIndex);
     }
 
     /**
      * 构造方法
      *
-     * @param filePath   文件路径
-     * @param is         文件输入流
-     * @param headerNum  标题行号，数据行号=标题行号+1
+     * @param filePath 文件路径
+     * @param is 文件输入流
+     * @param headerNum 标题行号，数据行号=标题行号+1
      * @param sheetIndex 工作表编号
      * @throws IOException
      */
-    public ImportExcel(String filePath, InputStream is, int headerNum, int sheetIndex)
-            throws IOException {
+    public ImportExcel(String filePath, InputStream is, int headerNum, int sheetIndex) throws IOException {
         if (StringUtils.isBlank(filePath)) {
             throw new RuntimeException("导入文档为空!");
         } else if (filePath.toLowerCase().endsWith(XLS) || filePath.toLowerCase().endsWith(XLSX)) {
@@ -161,7 +160,6 @@ public class ImportExcel {
         log.debug("Initialize success.");
     }
 
-
     /**
      * 初始化注解列表
      *
@@ -169,32 +167,31 @@ public class ImportExcel {
      */
     public void initAnnotationList(Class<?> clazz) {
         annotationList = Lists.newArrayList();
-        //处理属性注解
+        // 处理属性注解
         Field[] fields = clazz.getDeclaredFields();
         Arrays.asList(fields).stream().forEach(field -> {
             ExcelField excelField = field.getAnnotation(ExcelField.class);
             if (excelField != null) {
                 if (excelField.type() == 0 || excelField.type() == 2) {
-                    annotationList.add(new Object[]{excelField, field});
+                    annotationList.add(new Object[] { excelField, field });
                 }
             }
         });
-        //处理方法上的注解
+        // 处理方法上的注解
         Method[] methods = clazz.getMethods();
         Arrays.asList(methods).stream().forEach(method -> {
             ExcelField excelField = method.getAnnotation(ExcelField.class);
             if (excelField != null) {
                 if (excelField.type() == 0 || excelField.type() == 2) {
-                    annotationList.add(new Object[]{excelField, method});
+                    annotationList.add(new Object[] { excelField, method });
                 }
             }
         });
-        //排序
+        // 排序
         annotationList.sort(new Comparator<Object[]>() {
             @Override
             public int compare(Object[] o1, Object[] o2) {
-                return new Integer(((ExcelField) o1[0]).sort())
-                        .compareTo(new Integer(((ExcelField) o2[0]).sort()));
+                return new Integer(((ExcelField) o1[0]).sort()).compareTo(new Integer(((ExcelField) o2[0]).sort()));
             }
         });
     }
@@ -238,7 +235,7 @@ public class ImportExcel {
     /**
      * 获取单元格数据
      *
-     * @param row    行
+     * @param row 行
      * @param colunm 列数
      * @return
      */
@@ -249,8 +246,9 @@ public class ImportExcel {
             if (cell != null) {
                 if (cell.getCellType() == CellType.NUMERIC) {
                     val = cell.getNumericCellValue();
-                    //  判断是否为科学计数法（包含E、e、+等符号）
-                    if (val.toString().indexOf("E") != -1 || val.toString().indexOf("e") != -1 || val.toString().indexOf("+") != -1) {
+                    // 判断是否为科学计数法（包含E、e、+等符号）
+                    if (val.toString().indexOf("E") != -1 || val.toString().indexOf("e") != -1
+                        || val.toString().indexOf("+") != -1) {
                         BigDecimal bd = new BigDecimal(val + "");
                         val = bd.toPlainString();
                     }
@@ -279,30 +277,31 @@ public class ImportExcel {
      * @param <T>
      * @return
      */
-    public <T> List<T> getDataList(Class<T> clazz) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+    public <T> List<T> getDataList(Class<T> clazz) throws IllegalAccessException, InstantiationException,
+                                                   NoSuchMethodException, InvocationTargetException {
         initAnnotationList(clazz);
         List<T> dataList = new ArrayList<>();
         for (int i = getDataRownum(); i < lastRowNum; i++) {
-            //数据行
+            // 数据行
             Row dataRow = this.getRow(i);
             if (isRowEmpty(dataRow)) {
                 blankNums++;
                 break;
             }
-            //反射创建实例对象
+            // 反射创建实例对象
             T data = clazz.newInstance();
-            //列号
+            // 列号
             int column = 0;
             for (Object[] os : annotationList) {
                 Object val = this.getCellValue(dataRow, column++);
                 if (val != null) {
                     ExcelField ef = (ExcelField) os[0];
-                    //是码表数据
+                    // 是码表数据
                     if (StringUtils.isNotBlank(ef.dictType())) {
-                        //转换
+                        // 转换
                         val = CodeUtils.getCodeValue(ef.dictType(), val.toString());
                     }
-                    //获取属性类型
+                    // 获取属性类型
                     Class<?> valType = Class.class;
                     if (os[1] instanceof Field) {
                         valType = ((Field) os[1]).getType();
@@ -314,7 +313,7 @@ public class ImportExcel {
                             valType = method.getParameterTypes()[0];
                         }
                     }
-                    //转换数据
+                    // 转换数据
                     if (valType == String.class) {
                         val = val.toString();
                     } else if (valType == int.class) {
@@ -322,11 +321,13 @@ public class ImportExcel {
                     } else if (valType == Integer.class) {
                         try {
                             if (!(val instanceof String)) {
-                                if (val.toString().split("\\.").length > 2 || !"0".equals(val.toString().split("\\.")[1])) {
+                                if (val.toString().split("\\.").length > 2
+                                    || !"0".equals(val.toString().split("\\.")[1])) {
                                     failNums++;
-                                    sb.append("数据格式错误,第").append(dataRow.getRowNum()).append("行，第").append(column).append(column).append("列")
-                                            .append(ef.title()).append(val).append("\n");
-                                    log.error("数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title() + " " + val);
+                                    sb.append("数据格式错误,第").append(dataRow.getRowNum()).append("行，第").append(column)
+                                        .append(column).append("列").append(ef.title()).append(val).append("\n");
+                                    log.error("数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title() + " "
+                                              + val);
                                     break;
                                 }
                             }
@@ -341,9 +342,10 @@ public class ImportExcel {
                             val = date.getTime();
                         } catch (NumberFormatException e) {
                             failNums++;
-                            sb.append("数据格式错误,第").append(dataRow.getRowNum()).append("行，第").append(column).append(column)
-                                    .append("列").append(ef.title()).append(val).append("\n");
-                            log.error("数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列：" + ef.title() + " " + val);
+                            sb.append("数据格式错误,第").append(dataRow.getRowNum()).append("行，第").append(column)
+                                .append(column).append("列").append(ef.title()).append(val).append("\n");
+                            log.error(
+                                "数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列：" + ef.title() + " " + val);
                             break;
                         }
                     } else if (valType == Double.class) {
@@ -393,10 +395,8 @@ public class ImportExcel {
      * @return
      */
     public String getResultMsg() {
-        sb.append("成功条数:").append(successNums).append("\n")
-                .append("空白条数:").append(blankNums).append("\n")
-                .append("失败条数:").append(failNums).append("\n")
-                .append("总条数:").append(totalNums).append("\n");
+        sb.append("成功条数:").append(successNums).append("\n").append("空白条数:").append(blankNums).append("\n")
+            .append("失败条数:").append(failNums).append("\n").append("总条数:").append(totalNums).append("\n");
         return sb.toString();
     }
 }

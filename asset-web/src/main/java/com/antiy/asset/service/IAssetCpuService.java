@@ -1,5 +1,7 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+
 import com.antiy.asset.entity.AssetCpu;
 import com.antiy.asset.vo.query.AssetCpuQuery;
 import com.antiy.asset.vo.request.AssetCpuRequest;
@@ -7,13 +9,8 @@ import com.antiy.asset.vo.response.AssetCpuResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
-import java.util.List;
-
-
 /**
- * <p>
- * 处理器表 服务类
- * </p>
+ * <p> 处理器表 服务类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02

@@ -1,15 +1,18 @@
 package com.antiy.asset.controller.swagger;
 
-import com.antiy.common.utils.LogUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.antiy.common.utils.LogUtils;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * demo
@@ -27,6 +30,5 @@ public class ApiDemo {
     public void api(HttpServletResponse response) throws IOException {
         response.sendRedirect("swagger-ui.html");
     }
-
 
 }

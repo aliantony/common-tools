@@ -1,12 +1,11 @@
 package com.antiy.asset.util;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.lang.reflect.*;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
- * 反射工具类
- * 用于调用getter/setter方法，访问私有方法，获取私有变量，获取泛型类型
+ * 反射工具类 用于调用getter/setter方法，访问私有方法，获取私有变量，获取泛型类型
  */
 public class ReflectionUtils {
 
@@ -17,16 +16,17 @@ public class ReflectionUtils {
     /**
      * 反射调用get方法
      *
-     * @param target       目标对象
+     * @param target 目标对象
      * @param propertyName 属性名
      * @return
      */
-    public static Object invokeGetterMethod(Object target, String propertyName) throws IllegalAccessException, InstantiationException {
+    public static Object invokeGetterMethod(Object target, String propertyName) throws IllegalAccessException,
+                                                                                InstantiationException {
         String[] names = StringUtils.split(propertyName);
         String methodName;
         for (int i = 0; i < names.length; i++) {
             methodName = GETTER_PREFIX + StringUtils.capitalize(names[i]);
-            target = invokeMethod(target, methodName, new Class[]{}, new Object[]{});
+            target = invokeMethod(target, methodName, new Class[] {}, new Object[] {});
         }
         return target;
     }
@@ -34,16 +34,17 @@ public class ReflectionUtils {
     /**
      * 反射调用get方法(去掉is)
      *
-     * @param target       目标对象
+     * @param target 目标对象
      * @param propertyName 属性名
      * @return
      */
-    public static Object invokeGetterMethodWithoutIs(Object target, String propertyName) throws IllegalAccessException, InstantiationException {
+    public static Object invokeGetterMethodWithoutIs(Object target, String propertyName) throws IllegalAccessException,
+                                                                                         InstantiationException {
         String[] names = StringUtils.split(propertyName);
         String methodName;
         for (int i = 0; i < names.length; i++) {
             methodName = GETTER_PREFIX + StringUtils.capitalize(names[i].replace("is", ""));
-            target = invokeMethod(target, methodName, new Class[]{}, new Object[]{});
+            target = invokeMethod(target, methodName, new Class[] {}, new Object[] {});
         }
         return target;
     }
@@ -51,20 +52,21 @@ public class ReflectionUtils {
     /**
      * 反射调用set方法
      *
-     * @param target       目标对象
+     * @param target 目标对象
      * @param propertyName 属性名
      * @return
      */
-    public static void invokeSetterMethod(Object target, String propertyName, Object val) throws IllegalAccessException, InstantiationException {
+    public static void invokeSetterMethod(Object target, String propertyName, Object val) throws IllegalAccessException,
+                                                                                          InstantiationException {
         String[] names = StringUtils.split(propertyName);
         String methodName = "";
         for (int i = 0; i < names.length; i++) {
             if (i < names.length - 1) {
                 methodName = GETTER_PREFIX + StringUtils.capitalize(names[i]);
-                target = invokeMethod(target, methodName, new Class[]{}, new Object[]{});
+                target = invokeMethod(target, methodName, new Class[] {}, new Object[] {});
             } else {
                 methodName = SETTER_PREFIX + StringUtils.capitalize(names[i]);
-                invokeMethodByName(target, methodName, new Object[]{val});
+                invokeMethodByName(target, methodName, new Object[] { val });
             }
         }
     }
@@ -72,20 +74,21 @@ public class ReflectionUtils {
     /**
      * 反射调用set方法(去掉is)
      *
-     * @param target       目标对象
+     * @param target 目标对象
      * @param propertyName 属性名
      * @return
      */
-    public static void invokeSetterMethodWithoutIs(Object target, String propertyName, Object val) throws IllegalAccessException, InstantiationException {
+    public static void invokeSetterMethodWithoutIs(Object target, String propertyName,
+                                                   Object val) throws IllegalAccessException, InstantiationException {
         String[] names = StringUtils.split(propertyName);
         String methodName = "";
         for (int i = 0; i < names.length; i++) {
             if (i < names.length - 1) {
                 methodName = GETTER_PREFIX + StringUtils.capitalize(names[i].replace("is", ""));
-                target = invokeMethod(target, methodName, new Class[]{}, new Object[]{});
+                target = invokeMethod(target, methodName, new Class[] {}, new Object[] {});
             } else {
                 methodName = SETTER_PREFIX + StringUtils.capitalize(names[i].replace("is", ""));
-                invokeMethodByName(target, methodName, new Object[]{val});
+                invokeMethodByName(target, methodName, new Object[] { val });
             }
         }
     }
@@ -93,9 +96,9 @@ public class ReflectionUtils {
     /**
      * 给属性设置值,无视private/protected修饰符
      *
-     * @param target    目标对象
+     * @param target 目标对象
      * @param fieldName 属性名
-     * @param val       属性值
+     * @param val 属性值
      */
     public static void setFieldValue(Object target, String fieldName, Object val) {
         Field field = getAccessibleField(target, fieldName);
@@ -112,7 +115,7 @@ public class ReflectionUtils {
     /**
      * 获取属性值,无视private/protected修饰符
      *
-     * @param target    目标对象
+     * @param target 目标对象
      * @param fieldName 属性名
      * @return
      */
@@ -132,10 +135,10 @@ public class ReflectionUtils {
     /**
      * 反射调用方法
      *
-     * @param target        目标对象
-     * @param methodName    目标方法名
+     * @param target 目标对象
+     * @param methodName 目标方法名
      * @param paramterTypes 方法参数类型
-     * @param args          参数
+     * @param args 参数
      * @return
      */
     public static Object invokeMethod(Object target, String methodName, Class<?>[] paramterTypes, Object[] args) {
@@ -156,9 +159,9 @@ public class ReflectionUtils {
     /**
      * 反射调用方法
      *
-     * @param target     目标对象
+     * @param target 目标对象
      * @param methodName 目标方法名
-     * @param args       参数
+     * @param args 参数
      * @return
      */
     public static Object invokeMethodByName(Object target, String methodName, Object[] args) {
@@ -176,12 +179,11 @@ public class ReflectionUtils {
         return null;
     }
 
-
     /**
      * 获取可访问方法
      *
-     * @param target        目标对象
-     * @param methodName    目标对象的方法名
+     * @param target 目标对象
+     * @param methodName 目标对象的方法名
      * @param paramterTypes 方法参数类型
      * @return
      */
@@ -195,7 +197,7 @@ public class ReflectionUtils {
         for (Class<?> targetClass = target.getClass(); targetClass != null; targetClass = targetClass.getSuperclass()) {
             try {
                 Method method = targetClass.getDeclaredMethod(methodName, paramterTypes);
-                //如果是private方法，设置其可访问
+                // 如果是private方法，设置其可访问
                 setAccessible(method);
                 return method;
             } catch (NoSuchMethodException e) {
@@ -208,7 +210,7 @@ public class ReflectionUtils {
     /**
      * 通过方法名获取方法
      *
-     * @param target     目标对象
+     * @param target 目标对象
      * @param methodName 方法名
      * @return
      */
@@ -223,7 +225,7 @@ public class ReflectionUtils {
             Method[] methods = targetClass.getDeclaredMethods();
             for (Method method : methods) {
                 if (methodName.equals(method.getName())) {
-                    //如果是private方法，设置其可访问
+                    // 如果是private方法，设置其可访问
                     setAccessible(method);
                     return method;
                 }
@@ -235,7 +237,7 @@ public class ReflectionUtils {
     /**
      * 获取可访问属性
      *
-     * @param target    目标对象
+     * @param target 目标对象
      * @param fieldName 目标对象的属性名
      * @return
      */
@@ -260,8 +262,7 @@ public class ReflectionUtils {
     }
 
     /**
-     * 设置属性为可访问
-     * 改变private/protected的方法为public
+     * 设置属性为可访问 改变private/protected的方法为public
      *
      * @param field 属性
      * @return
@@ -276,8 +277,7 @@ public class ReflectionUtils {
     }
 
     /**
-     * 设置方法可访问
-     * 改变private/protected的方法为public
+     * 设置方法可访问 改变private/protected的方法为public
      *
      * @param method 方法
      * @return

@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.TYPE})
+@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExcelField {
     /**
@@ -37,8 +37,7 @@ public @interface ExcelField {
     int align() default 0;
 
     /**
-     * 字段排序
-     * （升序）
+     * 字段排序 （升序）
      *
      * @return
      */

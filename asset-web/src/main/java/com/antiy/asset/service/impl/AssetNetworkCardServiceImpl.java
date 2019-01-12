@@ -1,5 +1,11 @@
 package com.antiy.asset.service.impl;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.antiy.asset.dao.AssetNetworkCardDao;
 import com.antiy.asset.entity.AssetNetworkCard;
 import com.antiy.asset.service.IAssetNetworkCardService;
@@ -9,15 +15,9 @@ import com.antiy.asset.vo.response.AssetNetworkCardResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
- * <p>
- * 网卡信息表 服务实现类
- * </p>
+ * <p> 网卡信息表 服务实现类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02
@@ -25,11 +25,10 @@ import java.util.List;
 @Service
 public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCard> implements IAssetNetworkCardService {
 
-
     @Resource
-    private AssetNetworkCardDao assetNetworkCardDao;
+    private AssetNetworkCardDao                                       assetNetworkCardDao;
     @Resource
-    private BaseConverter<AssetNetworkCardRequest, AssetNetworkCard> requestConverter;
+    private BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>  requestConverter;
     @Resource
     private BaseConverter<AssetNetworkCard, AssetNetworkCardResponse> responseConverter;
 
@@ -49,8 +48,9 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
     @Override
     public List<AssetNetworkCardResponse> findListAssetNetworkCard(AssetNetworkCardQuery query) throws Exception {
         List<AssetNetworkCard> assetNetworkCard = assetNetworkCardDao.findListAssetNetworkCard(query);
-        //TODO
-        List<AssetNetworkCardResponse> assetNetworkCardResponse = responseConverter.convert(assetNetworkCard, AssetNetworkCardResponse.class);
+        // TODO
+        List<AssetNetworkCardResponse> assetNetworkCardResponse = responseConverter.convert(assetNetworkCard,
+            AssetNetworkCardResponse.class);
         return assetNetworkCardResponse;
     }
 
@@ -60,6 +60,7 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
 
     @Override
     public PageResult<AssetNetworkCardResponse> findPageAssetNetworkCard(AssetNetworkCardQuery query) throws Exception {
-        return new PageResult<>(query.getPageSize(), this.findCountAssetNetworkCard(query), query.getCurrentPage(), this.findListAssetNetworkCard(query));
+        return new PageResult<>(query.getPageSize(), this.findCountAssetNetworkCard(query), query.getCurrentPage(),
+            this.findListAssetNetworkCard(query));
     }
 }

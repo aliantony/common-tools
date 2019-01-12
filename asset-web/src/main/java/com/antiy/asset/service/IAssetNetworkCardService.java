@@ -1,5 +1,7 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+
 import com.antiy.asset.entity.AssetNetworkCard;
 import com.antiy.asset.vo.query.AssetNetworkCardQuery;
 import com.antiy.asset.vo.request.AssetNetworkCardRequest;
@@ -7,13 +9,8 @@ import com.antiy.asset.vo.response.AssetNetworkCardResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
-import java.util.List;
-
-
 /**
- * <p>
- * 网卡信息表 服务类
- * </p>
+ * <p> 网卡信息表 服务类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02

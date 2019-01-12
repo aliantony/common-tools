@@ -1,11 +1,11 @@
 package com.antiy.asset.util;
 
-import org.apache.commons.compress.utils.Lists;
-import org.springframework.cglib.beans.BeanCopier;
-
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.compress.utils.Lists;
+import org.springframework.cglib.beans.BeanCopier;
 
 /**
  * Bean转换
@@ -29,10 +29,10 @@ public class BeanConvert {
             if (fieldNames.contains(field.getName())) {
                 if (field.getName().startsWith("is")) {
                     ReflectionUtils.invokeSetterMethodWithoutIs(o, field.getName(),
-                            ReflectionUtils.invokeGetterMethodWithoutIs(o1, field.getName()));
+                        ReflectionUtils.invokeGetterMethodWithoutIs(o1, field.getName()));
                 } else {
                     ReflectionUtils.invokeSetterMethod(o, field.getName(),
-                            ReflectionUtils.invokeGetterMethod(o1, field.getName()));
+                        ReflectionUtils.invokeGetterMethod(o1, field.getName()));
                 }
 
             }
@@ -57,12 +57,11 @@ public class BeanConvert {
         return o2;
     }
 
-
     /**
      * 实体转换
      *
      * @param target 被转换的对象
-     * @param c2     目标对象的字节码
+     * @param c2 目标对象的字节码
      * @return
      * @throws IllegalAccessException
      * @throws InstantiationException
@@ -88,7 +87,7 @@ public class BeanConvert {
      * 实体转换
      *
      * @param target 被转换的对象
-     * @param c2     目标对象的字节码
+     * @param c2 目标对象的字节码
      * @return
      * @throws IllegalAccessException
      * @throws InstantiationException

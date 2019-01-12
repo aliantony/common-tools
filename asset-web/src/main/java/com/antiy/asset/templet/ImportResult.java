@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class ImportResult {
 
-    private String msg;
+    private String  msg;
 
     private List<?> dataList;
 

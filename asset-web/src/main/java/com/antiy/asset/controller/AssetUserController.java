@@ -1,7 +1,5 @@
 package com.antiy.asset.controller;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import com.antiy.asset.service.IAssetUserService;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
-import com.antiy.asset.vo.response.UserNameResponse;
 import com.antiy.common.base.ActionResponse;
 
 import io.swagger.annotations.*;

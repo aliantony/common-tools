@@ -1,5 +1,12 @@
 package com.antiy.asset.service.impl;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.service.IAssetSoftwareService;
@@ -10,16 +17,9 @@ import com.antiy.asset.vo.response.OsResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
- * <p>
- * 软件信息表 服务实现类
- * </p>
+ * <p> 软件信息表 服务实现类 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02
@@ -27,15 +27,14 @@ import java.util.List;
 @Service
 public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> implements IAssetSoftwareService {
 
-
     @Resource
-    private AssetSoftwareDao assetSoftwareDao;
+    private AssetSoftwareDao                                    assetSoftwareDao;
     @Resource
-    private BaseConverter<AssetSoftwareRequest, AssetSoftware> requestConverter;
+    private BaseConverter<AssetSoftwareRequest, AssetSoftware>  requestConverter;
     @Resource
     private BaseConverter<AssetSoftware, AssetSoftwareResponse> responseConverter;
     @Resource
-    private BaseConverter<AssetSoftware, OsResponse> osResponseConverter;
+    private BaseConverter<AssetSoftware, OsResponse>            osResponseConverter;
 
     @Override
     public Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -63,7 +62,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query) throws Exception {
         List<AssetSoftware> assetSoftware = assetSoftwareDao.findListAssetSoftware(query);
-        List<AssetSoftwareResponse> assetSoftwareResponse = responseConverter.convert(assetSoftware, AssetSoftwareResponse.class);
+        List<AssetSoftwareResponse> assetSoftwareResponse = responseConverter.convert(assetSoftware,
+            AssetSoftwareResponse.class);
         return assetSoftwareResponse;
     }
 
@@ -73,7 +73,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public PageResult<AssetSoftwareResponse> findPageAssetSoftware(AssetSoftwareQuery query) throws Exception {
-        return new PageResult<>(query.getPageSize(), this.findCountAssetSoftware(query), query.getCurrentPage(), this.findListAssetSoftware(query));
+        return new PageResult<>(query.getPageSize(), this.findCountAssetSoftware(query), query.getCurrentPage(),
+            this.findListAssetSoftware(query));
     }
 
     @Override

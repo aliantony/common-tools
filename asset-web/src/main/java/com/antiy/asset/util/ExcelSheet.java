@@ -12,16 +12,16 @@ public class ExcelSheet<T> {
     /**
      * sheet名称
      */
-    private String name;
+    private String       name;
     /**
      * sheet英文名
      */
-    private String englishName;
+    private String       englishName;
 
     /**
      * sheet标题
      */
-    private String sheetTitle;
+    private String       sheetTitle;
     /**
      * sheet表头
      */
@@ -29,21 +29,21 @@ public class ExcelSheet<T> {
     /**
      * 注解列表（Object[]{ ExcelField, Field/Method }）
      */
-    List<Object[]> annotationList;
+    List<Object[]>       annotationList;
     /**
      * sheet数据
      */
-    private List<T> dataList;
+    private List<T>      dataList;
 
     /**
      * 是否为父sheet
      */
-    private int isParent;
+    private int          isParent;
 
     /**
      * 外键名称
      */
-    private String foreignerName;
+    private String       foreignerName;
 
     public String getName() {
         return name;
@@ -109,7 +109,8 @@ public class ExcelSheet<T> {
         this.foreignerName = foreignerName;
     }
 
-    public ExcelSheet(String name, String englishName, String sheetTitle, List<String> header, List<T> dataList, int isParent, String foreignerName) {
+    public ExcelSheet(String name, String englishName, String sheetTitle, List<String> header, List<T> dataList,
+                      int isParent, String foreignerName) {
         this.name = name;
         this.englishName = englishName;
         this.sheetTitle = sheetTitle;
