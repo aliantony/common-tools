@@ -476,7 +476,7 @@
             <if test=" publisher != null">
                 and publisher = #{publisher }
             </if>
-            and status = 0
+            and status = 1
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
@@ -518,12 +518,14 @@
     <select id="countManufacturer" resultMap="ManufacturerResultMap">
         select manufacturer, count(manufacturer) num from
         <include refid="Table_Name"></include>
+        where status=1
         GROUP BY manufacturer
     </select>
 
     <select id="countStatus" resultMap="StatusResultMap">
         select software_status, count(software_status) num from
         <include refid="Table_Name"></include>
+        where status=1
         GROUP BY software_status
     </select>
 
@@ -539,5 +541,6 @@
                 #{item}
             </foreach>
         </if>
+        and status=1
     </select>
 </mapper>
