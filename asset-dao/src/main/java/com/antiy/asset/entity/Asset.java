@@ -19,6 +19,18 @@ public class Asset extends BaseEntity {
 
     private String            number;
     /**
+     * 资产zu
+     */
+    private String            assetGroup;
+    /**
+     * 区域ID
+     */
+    private String            areaId;
+    /**
+     * 机房位置
+     */
+    private String            houseLocation;
+    /**
      * 资产类型:1台式办公机,2便携式办公机,3服务器虚拟终,4移动设备,4ATM机,5工控上位机,6路由器,7交换机,8防火墙,9IDS,10IPS,
      */
     private Integer           type;
@@ -511,4 +523,27 @@ public class Asset extends BaseEntity {
                + ", modifyUser=" + modifyUser + ", isDelete=" + status + "}";
     }
 
+    public String getAssetGroup() {
+        return assetGroup;
+    }
+
+    public void setAssetGroup(String assetGroup) {
+        this.assetGroup = assetGroup;
+    }
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
+    }
+
+    public String getHouseLocation() {
+        return houseLocation;
+    }
+
+    public void setHouseLocation(String houseLocation) {
+        this.houseLocation = houseLocation;
+    }
 }

@@ -12,7 +12,7 @@
         <result column="ip_address" property="ipAddress"/>
         <result column="mac_address" property="macAddress"/>
         <result column="default_gateway" property="defaultGateway"/>
-        <result column="netword_address" property="networdAddress"/>
+        <result column="netword_address" property="networkAddress"/>
         <result column="subnet_mask" property="subnetMask"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
@@ -23,7 +23,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id AS assetId, brand, model, serial, ip_address AS ipAddress, mac_address AS macAddress, default_gateway AS defaultGateway, netword_address AS networdAddress, subnet_mask AS subnetMask, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
+        id, asset_id AS assetId, brand, model, serial, ip_address AS ipAddress, mac_address AS macAddress, default_gateway AS defaultGateway, netword_address AS networkAddress, subnet_mask AS subnetMask, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
 
     <sql id="Table_Name">
@@ -53,7 +53,7 @@
         <if test=" defaultGateway != null">
             default_gateway,
         </if>
-        <if test=" networdAddress != null">
+        <if test=" networkAddress != null">
             netword_address,
         </if>
         <if test=" subnetMask != null">
@@ -101,8 +101,8 @@
         <if test=" defaultGateway != null">
             #{defaultGateway },
         </if>
-        <if test=" networdAddress != null">
-            #{networdAddress },
+        <if test=" networkAddress != null">
+            #{networkAddress },
         </if>
         <if test=" subnetMask != null">
             #{subnetMask },
@@ -149,8 +149,8 @@
         <if test=" defaultGateway != null">
             default_gateway = #{defaultGateway },
         </if>
-        <if test=" networdAddress != null">
-            netword_address = #{networdAddress },
+        <if test=" networkAddress != null">
+            netword_address = #{networkAddress },
         </if>
         <if test=" subnetMask != null">
             subnet_mask = #{subnetMask },
@@ -197,8 +197,8 @@
         <if test=" defaultGateway != null">
             and default_gateway = #{defaultGateway }
         </if>
-        <if test=" networdAddress != null">
-            and netword_address = #{networdAddress }
+        <if test=" networkAddress != null">
+            and netword_address = #{networkAddress }
         </if>
         <if test=" subnetMask != null">
             and subnet_mask = #{subnetMask }
@@ -315,8 +315,8 @@
             <if test=" defaultGateway != null">
                 and default_gateway = #{defaultGateway }
             </if>
-            <if test=" networdAddress != null">
-                and netword_address = #{networdAddress }
+            <if test=" networkAddress != null">
+                and netword_address = #{networkAddress }
             </if>
             <if test=" subnetMask != null">
                 and subnet_mask = #{subnetMask }

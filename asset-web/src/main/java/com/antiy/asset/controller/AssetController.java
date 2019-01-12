@@ -1,15 +1,5 @@
 package com.antiy.asset.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletResponse;
-
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.AssetEntity;
@@ -17,12 +7,20 @@ import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author zhangyajun
@@ -36,21 +34,21 @@ public class AssetController {
     @Resource
     public IAssetService iAssetService;
 
-    // /**
-    // *保存PC接口
-    // * @param assetPCRequest
-    // * @return actionResponse
-    // * @throws Exception
-    // */
-    // @ApiOperation(value = "保存全部数据总接口", notes = "传入Map对象信息")
-    // @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class,
-    // responseContainer = "actionResponse"),})
-    // @RequestMapping(value = "/save/pc", method = RequestMethod.POST)
-    // public ActionResponse saveAssetPC(@RequestBody @ApiParam(value = "assetPc")AssetPCRequest assetPCRequest) throws
-    // Exception {
-    // iAssetService.saveAssetPC(assetPCRequest);
-    // return ActionResponse.success();
-    // }
+     /**
+     *保存PC接口
+     * @param assetPCRequest
+     * @return actionResponse
+     * @throws Exception
+     */
+     @ApiOperation(value = "保存全部数据总接口", notes = "传入json信息")
+     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class,
+     responseContainer = "actionResponse"),})
+     @RequestMapping(value = "/save/pc", method = RequestMethod.POST)
+     public ActionResponse saveAssetPC(@RequestBody @ApiParam(value = "assetPc")AssetPCRequest assetPCRequest) throws
+     Exception {
+     iAssetService.saveAssetPC(assetPCRequest);
+     return ActionResponse.success();
+     }
 
     /**
      * 保存

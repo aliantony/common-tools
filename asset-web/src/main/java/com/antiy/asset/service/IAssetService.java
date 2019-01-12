@@ -1,9 +1,5 @@
 package com.antiy.asset.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -13,6 +9,10 @@ import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p> 资产主表 服务类 </p>
@@ -156,7 +156,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      * @throws Exception
      */
-    Integer saveAssetPC(AssetPCRequest assetPCRequest);
+    Integer saveAssetPC(AssetPCRequest assetPCRequest) throws Exception;
 
     /**
      * 通过ID列表查询资产列表
