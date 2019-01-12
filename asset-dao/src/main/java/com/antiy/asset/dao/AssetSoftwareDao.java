@@ -23,11 +23,11 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
     int checkRepeatSoftware(AssetSoftware software);
 
     /**
-     * 查询操作系统
+     * 查询下拉项的资产操作系统信息
      *
      * @return
      */
-    List<AssetSoftware> findOS() throws Exception;
+    List<String> findOS() throws Exception;
 
     /**
      * 模糊查询所有厂商

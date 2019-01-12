@@ -1,5 +1,7 @@
 package com.antiy.asset.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -123,5 +125,17 @@ public class AssetSoftwareRelationController {
     public ActionResponse getSoftwareByAssetId(@ApiParam(value = "assetId") @PathVariable("assetId") Integer assetId) throws Exception {
         ParamterExceptionUtils.isNull(assetId, "资产ID不能为空");
         return ActionResponse.success(iAssetSoftwareRelationService.getSoftByAssetId(assetId));
+    }
+
+    /**
+     * 查询下拉项的资产操作系统信息
+     *
+     * @return 操作系统名称集合
+     */
+    @ApiOperation(value = "查询操作系统接口", notes = "无查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/os", method = RequestMethod.GET)
+    public ActionResponse<List<String>> queryOS() throws Exception {
+        return ActionResponse.success(iAssetSoftwareRelationService.findOS());
     }
 }

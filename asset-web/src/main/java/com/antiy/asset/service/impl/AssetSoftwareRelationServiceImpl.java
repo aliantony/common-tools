@@ -80,4 +80,9 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         return assetSoftwareRelationDao.countAssetBySoftId(id);
     }
 
+    @Override
+    public List<String> findOS() throws Exception {
+        return assetSoftwareRelationDao.findOS();
+    }
+
 }

@@ -66,4 +66,11 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      */
     Integer countAssetBySoftId(Integer id);
 
+    /**
+     * 查询下拉项的资产操作系统信息
+     *
+     * @return
+     */
+    List<String> findOS() throws Exception;
+
 }
