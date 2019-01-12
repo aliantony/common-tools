@@ -1,16 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
@@ -23,6 +12,15 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -65,7 +63,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public Integer saveAsset(AssetRequest request) throws Exception {
         Asset asset = requestConverter.convert(request, Asset.class);
         Integer insert = assetDao.insert(asset);
-        System.out.println("-----------why--------值=" + insert + "," + "当前类=.()");
         return insert;
     }
 
@@ -489,8 +486,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             .convert(assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
 
         Asset asset = requestConverter.convert(assetPCRequest.getAsset(), Asset.class);
-        Integer aid = assetDao.insert(asset);
-
+        assetDao.insert(asset);
+        Integer aid = asset.getId();
         if (networkCard != null && networkCard.size() > 0) {
             for (AssetNetworkCard assetNetworkCard : networkCard) {
                 assetNetworkCard.setAssetId(aid);
