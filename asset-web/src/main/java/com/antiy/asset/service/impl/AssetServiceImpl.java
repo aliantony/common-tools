@@ -1,32 +1,17 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.Resource;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.common.utils.BusinessExceptionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.request.AssetOuterRequest;
-import com.antiy.asset.vo.request.AssetPCRequest;
-import com.antiy.asset.vo.request.AssetRequest;
-import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.AssetOuterResponse;
-import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -503,6 +488,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         Asset asset = requestConverter.convert(assetPCRequest.getAsset(), Asset.class);
         Integer aid = assetDao.insert(asset);
+        String softwareids = assetPCRequest.getSoftwareids();
+        if (StringUtils.isNotBlank(softwareids)) {
+            String[] split = softwareids.split(",");
+            for (String s : split) {
+                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                assetSoftwareRelation.setAssetId(aid);
+                assetSoftwareRelation.setSoftwareId(Integer.parseInt(s));
+                assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+                assetSoftwareRelationDao.insert(assetSoftwareRelation);
+            }
+        }
 
         if (networkCard != null && networkCard.size() > 0) {
             for (AssetNetworkCard assetNetworkCard : networkCard) {
@@ -526,13 +522,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMemoryDao.insert(assetMemory);
             }
         }
-        Integer insert = 0;
-
         if (cpu != null && cpu.size() > 0) {
             for (AssetCpu assetCpu : cpu) {
                 assetCpu.setAssetId(aid);
                 assetCpu.setGmtCreate(System.currentTimeMillis());
-                insert = assetCpuDao.insert(assetCpu);
+                assetCpuDao.insert(assetCpu);
                 assetCpu.setGmtCreate(System.currentTimeMillis());
                 assetCpuDao.insert(assetCpu);
             }
@@ -593,7 +587,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetOuterResponse assetOuterResponse = new AssetOuterResponse();
         // 资产信息
         AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setIds(new Integer[]{id});
+        assetQuery.setIds(new Integer[] { id });
         List<Asset> assetList = assetDao.findListAsset(assetQuery);
         BusinessExceptionUtils.isEmpty(assetList, "资产不存在");
         Asset asset = assetList.get(0);
