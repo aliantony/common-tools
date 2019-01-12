@@ -528,4 +528,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Asset asset = assetDao.getById(id);
         return null;
     }
+
+    @Override
+    public void changeAsset(Integer id) {
+
+    }
 }

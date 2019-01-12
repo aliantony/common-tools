@@ -579,9 +579,9 @@
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
-        <if test=" assetIds != null">
+        <if test=" ids != null">
             and id in
-            <foreach index="index" item="item" collection="assetIds" open="(" separator="," close=")">
+            <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
@@ -626,17 +626,17 @@
         <if test=" importanceDegree != null">
             and importance_degree = #{importanceDegree }
         </if>
-        <if test=" firstEnterNettBegin != null">
-            and first_enter_nett &gt;= #{firstEnterNettBegin }
+        <if test=" timeType != null and timeType == 1  and beginTime != null">
+            and first_enter_nett &gt;= #{beginTime }
         </if>
-        <if test=" firstEnterNettEnd != null">
-            and first_enter_nett &lt;= #{firstEnterNettEnd }
+        <if test=" timeType != null and timeType == 1  and endTime != null">
+            and first_enter_nett &lt;= #{endTime }
         </if>
-        <if test=" firstFindBegin != null">
-            and gmt_create &gt;= #{firstFindBegin }
+        <if test=" timeType != null and timeType == 2  and beginTime != null">
+            and gmt_create &gt;= #{beginTime }
         </if>
-        <if test=" firstFindEnd != null">
-            and gmt_create &lt;= #{firstFindEnd }
+        <if test=" timeType != null and timeType == 2  and endTime != null">
+            and gmt_create &lt;= #{endTime }
         </if>
         and status =1
     </sql>
@@ -795,7 +795,7 @@
         select * from (SELECT
             a.*,
             GROUP_CONCAT( b.ip_address ) as ip,
-            GROUP_CONCAT( b.mac_address ) as ip
+            GROUP_CONCAT( b.mac_address ) as mac
         FROM
          asset a
         LEFT JOIN asset_network_card b ON a.id = b.asset_id

@@ -17,11 +17,6 @@ public class AssetQuery extends ObjectQuery {
      * 资产id列表
      */
     private Integer[]     ids;
-    /**
-     * 资产编号
-     */
-    @ApiModelProperty("资产编号")
-    private String        number;
 
     /**
      * 综合查询条件
@@ -48,7 +43,7 @@ public class AssetQuery extends ObjectQuery {
      * 品类型号
      */
     @ApiModelProperty("品类型号")
-    private Integer       categoryModel;
+    private Integer[]       categoryModel;
     /**
      * 品类型号列表
      */
@@ -120,27 +115,9 @@ public class AssetQuery extends ObjectQuery {
     @ApiModelProperty("资产组id")
     private Integer       assetGroup;
     /**
-     * 首次入网时间
+     * 首次发现时间还是首次入网时间（1：发现。2：入网）
      */
-    @ApiModelProperty("首次入网时间（起始）")
-    private Long          firstEnterNettBegin;
-
-    /**
-     * 首次入网时间
-     */
-    @ApiModelProperty("首次入网时间（截止）")
-    private Long          firstEnterNettEnd;
-    /**
-     * 首次发现时间
-     */
-    @ApiModelProperty("首次发现时间（起始）")
-    private Long          firstFindBegin;
-
-    /**
-     * 首次发现时间
-     */
-    @ApiModelProperty("首次发现时间（截止）")
-    private Long          firstFindEnd;
+    private Integer timeType;
 
     private Integer       status;
 
@@ -158,14 +135,6 @@ public class AssetQuery extends ObjectQuery {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
     }
 
     public Integer getType() {
@@ -192,11 +161,11 @@ public class AssetQuery extends ObjectQuery {
         this.serial = serial;
     }
 
-    public Integer getCategoryModel() {
+    public Integer[] getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(Integer[] categoryModel) {
         this.categoryModel = categoryModel;
     }
 
@@ -312,35 +281,11 @@ public class AssetQuery extends ObjectQuery {
         this.assetGroup = assetGroup;
     }
 
-    public Long getFirstEnterNettBegin() {
-        return firstEnterNettBegin;
+    public Integer getTimeType() {
+        return timeType;
     }
 
-    public void setFirstEnterNettBegin(Long firstEnterNettBegin) {
-        this.firstEnterNettBegin = firstEnterNettBegin;
-    }
-
-    public Long getFirstEnterNettEnd() {
-        return firstEnterNettEnd;
-    }
-
-    public void setFirstEnterNettEnd(Long firstEnterNettEnd) {
-        this.firstEnterNettEnd = firstEnterNettEnd;
-    }
-
-    public Long getFirstFindBegin() {
-        return firstFindBegin;
-    }
-
-    public void setFirstFindBegin(Long firstFindBegin) {
-        this.firstFindBegin = firstFindBegin;
-    }
-
-    public Long getFirstFindEnd() {
-        return firstFindEnd;
-    }
-
-    public void setFirstFindEnd(Long firstFindEnd) {
-        this.firstFindEnd = firstFindEnd;
+    public void setTimeType(Integer timeType) {
+        this.timeType = timeType;
     }
 }

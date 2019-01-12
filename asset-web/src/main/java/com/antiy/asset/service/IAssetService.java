@@ -173,4 +173,10 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return AssetOuterResponse
      */
     AssetOuterResponse getByAssetId(Integer id) throws Exception;
+
+    /**
+     * 资产变更
+     * @param id 资产主键
+     */
+    void changeAsset(Integer id);
 }

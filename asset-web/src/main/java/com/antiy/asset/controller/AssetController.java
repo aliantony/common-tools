@@ -94,19 +94,32 @@ public class AssetController {
     }
 
     /**
-     * 通过ID查询
+     * 通过ID查询资产详情
      *
      * @param id 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     public ActionResponse queryById(@ApiParam(value = "asset") @PathVariable("id") Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetService.getByAssetId(id));
     }
-
+    /**
+     * 资产变更
+     * @author lvliang
+     * @param id
+     * @return actionResponse
+     */
+    @ApiOperation(value = "资产变更", notes = "传入实体对象信息")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @RequestMapping(value = "/change/{id}", method = RequestMethod.POST)
+    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "id") Integer id) throws Exception {
+        ParamterExceptionUtils.isNull(id, "ID不能为空");
+        iAssetService.changeAsset(id);
+        return ActionResponse.success();
+    }
     /**
      * 通过ID删除
      *
@@ -122,7 +135,7 @@ public class AssetController {
     }
 
     /**
-     * 通过ID删除
+     * 导出资产信息
      *
      * @param assetQuery 封装对象
      * @return actionResponse

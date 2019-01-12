@@ -161,7 +161,7 @@ public class Asset extends BaseEntity {
     /**
      * 状态,1未删除,0已删除
      */
-    private Integer           isDelete;
+    private Integer           status;
     /**
      * 资产组
      */
@@ -488,12 +488,12 @@ public class Asset extends BaseEntity {
         this.modifyUser = modifyUser;
     }
 
-    public Integer getIsDelete() {
-        return isDelete;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setIsDelete(Integer isDelete) {
-        this.isDelete = isDelete;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Override
@@ -508,7 +508,7 @@ public class Asset extends BaseEntity {
                + ", networkCard=" + networkCard + ", parentId=" + parentId + ", tags=" + tags + ", isInnet=" + isInnet
                + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty=" + warranty + ", gmtCreate="
                + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser=" + createUser
-               + ", modifyUser=" + modifyUser + ", isDelete=" + isDelete + "}";
+               + ", modifyUser=" + modifyUser + ", isDelete=" + status + "}";
     }
 
 }
