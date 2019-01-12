@@ -1,9 +1,8 @@
 package com.antiy.asset.convert;
 
-import com.antiy.asset.entity.AssetUser;
 import org.springframework.stereotype.Component;
 
-import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.BaseConverter;
 
@@ -18,7 +17,7 @@ public class UserResponseConverter extends BaseConverter<AssetUser, SelectRespon
     @Override
     protected void convert(AssetUser assetUser, SelectResponse selectResponse) {
         super.convert(assetUser, selectResponse);
-        //TODO 用户id没有返回
+        selectResponse.setId(assetUser.getId().toString());
         selectResponse.setValue(assetUser.getName());
     }
 }
