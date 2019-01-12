@@ -1,19 +1,16 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.Topology;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
 
-import java.util.List;
-import java.util.Map;
-
 /**
- * <p>
- * 资产主表 Mapper 接口
- * </p>
+ * <p> 资产主表 Mapper 接口 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02
@@ -32,7 +29,6 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     Integer changeStatus(Map<String, Integer[]> map) throws Exception;
 
-
     /**
      * 网络拓扑查询
      *
@@ -41,7 +37,6 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @throws Exception
      */
     List<Topology> findTopologyList(AssetQuery query);
-
 
     /**
      * 查询下拉的厂商信息
@@ -79,6 +74,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<Map<String, Long>> countStatus();
+
     /**
      * 通过ID列表查询资产列表
      *
