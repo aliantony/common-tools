@@ -66,8 +66,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private BaseConverter<AssetRequest, Asset>  requestConverter;
     @Resource
     private BaseConverter<Asset, AssetResponse> responseConverter;
-    @Resource
-    private ManufacturerResponseConverter       manufacturerResponseConverter;
 
     @Override
     public Integer saveAsset(AssetRequest request) throws Exception {
@@ -254,10 +252,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<SelectResponse> pulldownManufacturer() throws Exception {
-        List<SelectResponse> manufacturerResponseList = manufacturerResponseConverter
-            .convert(assetDao.pulldownManufacturer(), SelectResponse.class);
-        return manufacturerResponseList;
+    public List<String> pulldownManufacturer() throws Exception {
+        return assetDao.pulldownManufacturer();
     }
 
     @Override

@@ -102,7 +102,7 @@ public interface IAssetService extends IBaseService<Asset> {
      *
      * @return
      */
-    List<SelectResponse> pulldownManufacturer() throws Exception;
+    List<String> pulldownManufacturer() throws Exception;
 
     /**
      * 根据品类型号查询对应资产列表

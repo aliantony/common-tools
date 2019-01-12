@@ -758,7 +758,7 @@
         <include refid="Where_Column_List"/>
     </select>
 
-    <select id="pulldownManufacturer" resultMap="BaseResultMap">
+    <select id="pulldownManufacturer" resultType="string">
         select distinct manufacturer from
         <include refid="Table_Name"></include>
     </select>

@@ -197,7 +197,7 @@ public class AssetController {
     @ApiOperation(value = "查询厂商接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/pulldown/manufacturer", method = RequestMethod.GET)
-    public ActionResponse pulldownManufacturer() throws Exception {
+    public ActionResponse<List<String>> pulldownManufacturer() throws Exception {
         return ActionResponse.success(iAssetService.pulldownManufacturer());
     }
 
