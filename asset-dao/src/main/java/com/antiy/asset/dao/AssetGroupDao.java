@@ -19,9 +19,9 @@ public interface AssetGroupDao extends IBaseDao<AssetGroup> {
     List<AssetGroup> findListAssetGroup(AssetGroupQuery query) throws Exception;
 
     /**
-     * 查询资产组名称
+     * 查询下拉项的资产组信息
      *
      * @return
      */
-    List<AssetGroup> findGroupValue() throws Exception;
+    List<AssetGroup> findPulldownGroup() throws Exception;
 }

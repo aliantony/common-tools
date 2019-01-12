@@ -118,34 +118,34 @@
 
     <sql id="Where_Column_List">
         <if test=" purpose != null">
-        AND    purpose = #{purpose }
+            AND purpose = #{purpose }
         </if>
         <if test=" importantDegree != null">
-            AND   important_degree = #{importantDegree }
+            AND important_degree = #{importantDegree }
         </if>
         <if test=" name != null">
-            AND   name = #{name }
+            AND name = #{name }
         </if>
         <if test=" gmtCreate != null">
-            AND   gmt_create = #{gmtCreate }
+            AND gmt_create = #{gmtCreate }
         </if>
         <if test=" gmtModified != null">
-            AND    gmt_modified = #{gmtModified }
+            AND gmt_modified = #{gmtModified }
         </if>
         <if test=" memo != null">
-            AND   memo = #{memo },
+            AND memo = #{memo },
         </if>
         <if test=" createUser != null">
-            AND   create_user = #{createUser }
+            AND create_user = #{createUser }
         </if>
         <if test=" modifyUser != null">
-            AND    modify_user = #{modifyUser }
+            AND modify_user = #{modifyUser }
         </if>
         <if test=" status != null">
-            AND    status = #{status }
+            AND status = #{status }
         </if>
         <if test=" status == null">
-            AND    status = 0
+            AND status = 0
         </if>
 
     </sql>
@@ -154,7 +154,8 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </sql>
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetGroup"  useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetGroup" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -251,8 +252,8 @@
         <include refid="Page_List"></include>
     </select>
 
-    <select id="findGroupValue" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
-        select distinct name from
+    <select id="findPulldownGroup" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select id,name from
         <include refid="Table_Name"></include>
     </select>
 </mapper>
