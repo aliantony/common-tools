@@ -4,17 +4,16 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.convert.AssetGroupResponseConverter;
-import com.antiy.asset.vo.response.SelectResponse;
 import org.springframework.stereotype.Service;
 
+import com.antiy.asset.convert.AssetGroupResponseConverter;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
-import com.antiy.asset.vo.response.GroupValueResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -35,11 +34,12 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Resource
     private BaseConverter<AssetGroup, AssetGroupResponse> responseConverter;
     @Resource
-    private AssetGroupResponseConverter assetGroupResponseConverter;
+    private AssetGroupResponseConverter                   assetGroupResponseConverter;
 
     @Override
     public Integer saveAssetGroup(AssetGroupRequest request) throws Exception {
         AssetGroup assetGroup = requestConverter.convert(request, AssetGroup.class);
+        assetGroup.setGmtCreate(System.currentTimeMillis());
         assetGroupDao.insert(assetGroup);
         return assetGroup.getId();
     }
@@ -47,6 +47,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public Integer updateAssetGroup(AssetGroupRequest request) throws Exception {
         AssetGroup assetGroup = requestConverter.convert(request, AssetGroup.class);
+        assetGroup.setGmtModified(System.currentTimeMillis());
         return assetGroupDao.update(assetGroup);
     }
 

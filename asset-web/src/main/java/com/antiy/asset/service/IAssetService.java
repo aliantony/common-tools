@@ -1,18 +1,18 @@
 package com.antiy.asset.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.antiy.asset.entity.Asset;
-import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
-import com.antiy.asset.vo.response.*;
+import com.antiy.asset.vo.response.AssetOuterResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p> 资产主表 服务类 </p>
