@@ -43,6 +43,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Override
     public Integer saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
+        assetDepartment.setStatus(1);
         assetDepartmentDao.insert(assetDepartment);
         return assetDepartment.getId();
     }
@@ -50,6 +51,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Override
     public Integer updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
+        assetDepartment.setStatus(1);
         return assetDepartmentDao.update(assetDepartment);
     }
 

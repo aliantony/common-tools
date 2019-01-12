@@ -26,7 +26,9 @@
     <sql id="Table_Name">
         asset_category_model
     </sql>
-
+    <sql id="Delete_Status">
+        0
+    </sql>
 
     <sql id="IF_Base_Column_List">
         <if test=" name != null">
@@ -235,12 +237,26 @@
     </select>
 
 
-    <delete id="deleteById" parameterType="java.lang.Integer">
+    <update id="deleteById" parameterType="java.lang.Integer">
         update
         <include refid="Table_Name"></include>
-        set status = 1
+        set status = 0
         where id = #{id}
-    </delete>
+    </update>
+
+    <update id="delete">
+        update
+        <include refid="Table_Name"></include>
+        set
+        status=
+        <include refid="Delete_Status"></include>
+        where
+        id
+        in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
 
     <select id="getByWhere" resultType="com.antiy.asset.entity.AssetCategoryModel" parameterType="java.util.Map">
         select

@@ -7,9 +7,7 @@ import com.antiy.common.base.IBaseDao;
 import java.util.List;
 
 /**
- * <p>
- * 品类型号表 Mapper 接口
- * </p>
+ * <p> 品类型号表 Mapper 接口 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02
@@ -17,4 +15,6 @@ import java.util.List;
 public interface AssetCategoryModelDao extends IBaseDao<AssetCategoryModel> {
 
     List<AssetCategoryModel> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
+
+    Integer delete(List<AssetCategoryModel> list);
 }
