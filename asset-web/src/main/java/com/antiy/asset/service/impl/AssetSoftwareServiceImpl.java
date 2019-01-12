@@ -82,4 +82,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         List<OsResponse> osResponseList = osResponseConverter.convert(assetSoftwareDao.findOS(), OsResponse.class);
         return osResponseList;
     }
+
+    @Override
+    public List<String> getManufacturerName(String manufacturerName) throws Exception {
+
+        // TODO 从ThreadLocal里面获取区域Id
+        return assetSoftwareDao.findManufacturerName(manufacturerName, null);
+    }
 }

@@ -65,4 +65,12 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      */
     List<OsResponse> findOS() throws Exception;
 
+    /**
+     * 查询厂商
+     * @param manufacturerName
+     * @return
+     * @throws Exception
+     */
+    List<String> getManufacturerName(String manufacturerName) throws Exception;
+
 }

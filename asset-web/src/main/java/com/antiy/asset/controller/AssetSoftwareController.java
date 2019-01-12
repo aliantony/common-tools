@@ -207,4 +207,17 @@ public class AssetSoftwareController {
         // todo
         return null;
     }
+
+    /**
+     * 软件资产厂商查询
+     * @param manufacturerName
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "软件资产厂商查询", notes = "无查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/manufacturer", method = RequestMethod.GET)
+    public ActionResponse<List<String>> queryAssetByManufacturer(@ApiParam(value = "manufacturerName") String manufacturerName) throws Exception {
+        return ActionResponse.success(iAssetSoftwareService.getManufacturerName(manufacturerName));
+    }
 }

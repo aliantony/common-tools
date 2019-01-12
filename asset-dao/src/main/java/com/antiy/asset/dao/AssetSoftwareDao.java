@@ -1,10 +1,12 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.common.base.IBaseDao;
-
-import java.util.List;
 
 /**
  * <p>
@@ -27,4 +29,10 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
      */
     List<AssetSoftware> findOS() throws Exception;
 
+    /**
+     * 模糊查询所有厂商
+     * @param manufacturerName
+     * @return
+     */
+    List<String> findManufacturerName(@Param(value = "manufacturerName") String manufacturerName,@Param("areaIds") List<String> areaIds);
 }
