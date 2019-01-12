@@ -58,5 +58,4 @@ public interface IAssetGroupService extends IBaseService<AssetGroup> {
      * @return
      */
     List<SelectResponse> queryGroupInfo() throws Exception;
-
 }

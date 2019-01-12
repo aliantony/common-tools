@@ -4,14 +4,19 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.response.SelectResponse;
 import org.springframework.web.bind.annotation.*;
 
+import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.service.IAssetGroupService;
+import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.query.AssetGroupQuery;
+import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
+import com.antiy.asset.vo.response.AssetGroupDetailResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.PageResult;
 
 import io.swagger.annotations.*;
 
@@ -26,6 +31,8 @@ public class AssetGroupController {
 
     @Resource
     public IAssetGroupService iAssetGroupService;
+    @Resource
+    public IAssetService      iAssetService;
 
     /**
      * 保存
@@ -105,6 +112,28 @@ public class AssetGroupController {
         return ActionResponse.success(iAssetGroupService.queryGroupInfo());
     }
 
-
-
+    /**
+     * 通过资产组ID查询资产组详情
+     * @author zhangyajun
+     *
+     * @return 资产组名称集合
+     */
+    @ApiOperation(value = "通过资产组ID查询资产组详情", notes = "无查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupDetailResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/assetByGroupId/{id}", method = RequestMethod.GET)
+    public ActionResponse<AssetGroupDetailResponse> queryAssetByGroupId(@ApiParam(value = "资产组ID") @PathVariable Integer id) throws Exception {
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setAssetGroup(id);
+        AssetGroup assetGroup = iAssetGroupService.getById(id);
+        PageResult<AssetResponse> pageResult = iAssetService.findPageAsset(assetQuery);
+        int assetSize = pageResult.getItems().size();
+        AssetGroupDetailResponse assetGroupDetailResponse = null;
+        if (assetSize > 0) {
+            assetGroupDetailResponse = new AssetGroupDetailResponse();
+            assetGroupDetailResponse.setAssetGroupName(assetGroup.getName());
+            assetGroupDetailResponse.setAssetGroupMemo(assetGroup.getMemo());
+            assetGroupDetailResponse.setAssetResponseList(pageResult.getItems());
+        }
+        return ActionResponse.success(assetGroupDetailResponse);
+    }
 }

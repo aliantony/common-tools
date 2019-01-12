@@ -63,4 +63,12 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
         return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
             this.findListAssetOperationRecord(query));
     }
+
+    @Override
+    public List<AssetOperationRecordResponse> findAssetOperationRecordByAssetId(Integer assetId) {
+        List<AssetOperationRecord> assetOperationRecordList = assetOperationRecordDao.findAssetOperationRecordByAssetId(assetId);
+        List<AssetOperationRecordResponse> assetOperationRecordResponse = responseConverter
+                .convert(assetOperationRecordList, AssetOperationRecordResponse.class);
+        return assetOperationRecordResponse;
+    }
 }
