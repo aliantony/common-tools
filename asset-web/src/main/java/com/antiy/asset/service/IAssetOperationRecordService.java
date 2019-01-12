@@ -49,4 +49,10 @@ public interface IAssetOperationRecordService extends IBaseService<AssetOperatio
      */
     PageResult<AssetOperationRecordResponse> findPageAssetOperationRecord(AssetOperationRecordQuery query) throws Exception;
 
+    /**
+     * 通过资产主键查询资产操作记录
+     * @param assetId
+     * @return
+     */
+    List<AssetOperationRecordResponse> findAssetOperationRecordByAssetId(Integer assetId);
 }
