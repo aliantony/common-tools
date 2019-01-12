@@ -16,7 +16,7 @@ public class AssetMainboradResponse {
      * 主键
      */
     @ApiModelProperty("主键")
-    private int               id;
+    private Integer               id;
     /**
      * 资产主键
      */
@@ -48,11 +48,11 @@ public class AssetMainboradResponse {
     @ApiModelProperty("BIOS日期")
     private Long              biosDate;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

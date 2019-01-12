@@ -23,12 +23,10 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      * 软件品类
      */
     @ApiModelProperty("软件品类")
-    private Integer category;
-    /**
-     * 软件型号
-     */
-    @ApiModelProperty("软件型号")
-    private Integer model;
+    private Integer categoryModel;
+    @ApiModelProperty("软件品类型号列表")
+    private Integer[] categoryModels;
+
     /**
      * 软件名称
      */
@@ -101,21 +99,6 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
         this.operationSystem = operationSystem;
     }
 
-    public Integer getCategory() {
-        return category;
-    }
-
-    public void setCategory(Integer category) {
-        this.category = category;
-    }
-
-    public Integer getModel() {
-        return model;
-    }
-
-    public void setModel(Integer model) {
-        this.model = model;
-    }
 
     public String getName() {
         return name;
@@ -211,6 +194,22 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getCategoryModel() {
+        return categoryModel;
+    }
+
+    public void setCategoryModel(Integer categoryModel) {
+        this.categoryModel = categoryModel;
+    }
+
+    public Integer[] getCategoryModels() {
+        return categoryModels;
+    }
+
+    public void setCategoryModels(Integer[] categoryModels) {
+        this.categoryModels = categoryModels;
     }
 
     @Override

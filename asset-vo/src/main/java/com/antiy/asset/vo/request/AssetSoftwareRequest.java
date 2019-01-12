@@ -15,107 +15,115 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetSoftwareRequest extends BasicRequest implements ObjectValidator {
 
     private static final long serialVersionUID = 1L;
+
+   private AssetSoftwareLicenseRequest softwareLicenseRequest;
     /**
      * 主键
      */
     @ApiModelProperty("主键")
-    private int               id;
+    private Integer               id;
     /**
-     * 软件大小(KB)
+     *  软件大小(KB)
      */
-    @ApiModelProperty("软件大小(KB)")
-    private Integer           size;
+    private Integer size;
     /**
-     * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
+     *  操作系统(WINDOWS7-32-64,WINDOWS8-64)
      */
-    @ApiModelProperty("操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)")
-    private String            operationSystem;
+    private String operationSystem;
     /**
-     * 软件品类
+     *  软件品类
      */
-    @ApiModelProperty("软件品类")
-    private Integer           category;
+    private Integer categoryModel;
     /**
-     * 软件型号
+     *  软件名称
      */
-    @ApiModelProperty("软件型号")
-    private Integer           model;
+    private String name;
     /**
-     * 软件名称
+     *  上传的软件名称
      */
-    @ApiModelProperty("软件名称")
-    private String            name;
+    private String uploadSoftwareName;
     /**
-     * 上传的软件名称
+     *  安装包路径
      */
-    @ApiModelProperty("上传的软件名称")
-    private String            uploadSoftwareName;
+    private String path;
     /**
-     * 安装包路径
+     *  版本
      */
-    @ApiModelProperty("安装包路径")
-    private String            path;
+    private String version;
     /**
-     * 版本
+     *  厂商
      */
-    @ApiModelProperty("版本")
-    private String            version;
+    private String manufacturer;
     /**
-     * 厂商
+     *  软件描述
      */
-    @ApiModelProperty("厂商")
-    private String            manufacturer;
+    private String description;
     /**
-     * 软件描述
+     *  资产组
      */
-    @ApiModelProperty("软件描述")
-    private String            description;
+    private String assetGroup;
     /**
-     * 软件标签
+     *  软件标签
      */
-    @ApiModelProperty("软件标签")
-    private Integer           softwareLabel;
+    private Integer softwareLabel;
     /**
-     * 1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
+     *  1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
      */
-    @ApiModelProperty("1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役")
-    private Integer           softwareStatus;
+    private Integer softwareStatus;
     /**
-     * 0-免费软件，1-商业软件
+     *  0-免费软件，1-商业软件
      */
-    @ApiModelProperty("0-免费软件，1-商业软件")
-    private Integer           authorization;
+    private Integer authorization;
     /**
-     * 上报来源:1-自动上报，2-人工上报
+     *  上报来源:1-自动上报，2-人工上报
      */
-    @ApiModelProperty("上报来源:1-自动上报，2-人工上报")
-    private Integer           reportSource;
+    private Integer reportSource;
     /**
-     * 端口
+     *  端口
      */
-    @ApiModelProperty("端口")
-    private String            port;
+    private String port;
     /**
-     * 语言
+     *  语言
      */
-    @ApiModelProperty("语言")
-    private String            language;
+    private String language;
     /**
-     * 发布时间
+     *  发布时间
      */
-    @ApiModelProperty("发布时间")
-    private Long              releaseTime;
+    private Long releaseTime;
     /**
-     * 发布者
+     *  发布者
      */
-    @ApiModelProperty("发布者")
-    private String            publisher;
+    private String publisher;
+    /**
+     *  创建时间
+     */
+    private Long gmtCreate;
+    /**
+     *  备注
+     */
+    private String memo;
+    /**
+     *  更新时间
+     */
+    private Long gmtModified;
+    /**
+     *  创建人
+     */
+    private Integer createUser;
+    /**
+     *  修改人
+     */
+    private Integer modifyUser;
+    /**
+     *  状态,0 未删除,1已删除
+     */
+    private Integer status;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -135,20 +143,12 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.operationSystem = operationSystem;
     }
 
-    public Integer getCategory() {
-        return category;
+    public Integer getCategoryModel() {
+        return categoryModel;
     }
 
-    public void setCategory(Integer category) {
-        this.category = category;
-    }
-
-    public Integer getModel() {
-        return model;
-    }
-
-    public void setModel(Integer model) {
-        this.model = model;
+    public void setCategoryModel(Integer categoryModel) {
+        this.categoryModel = categoryModel;
     }
 
     public String getName() {
@@ -197,6 +197,14 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getAssetGroup() {
+        return assetGroup;
+    }
+
+    public void setAssetGroup(String assetGroup) {
+        this.assetGroup = assetGroup;
     }
 
     public Integer getSoftwareLabel() {
@@ -263,9 +271,64 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.publisher = publisher;
     }
 
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public Long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
+    }
+
+    public Integer getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(Integer modifyUser) {
+        this.modifyUser = modifyUser;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     @Override
     public void validate() throws RequestParamValidateException {
 
     }
 
+    public AssetSoftwareLicenseRequest getSoftwareLicenseRequest() {
+        return softwareLicenseRequest;
+    }
+
+    public void setSoftwareLicenseRequest(AssetSoftwareLicenseRequest softwareLicenseRequest) {
+        this.softwareLicenseRequest = softwareLicenseRequest;
+    }
 }

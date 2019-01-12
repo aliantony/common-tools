@@ -256,7 +256,8 @@
 
 
     <select id="getAll" resultType="com.antiy.asset.entity.AssetCategoryModel">
-        select *
+        select
+        <include refid="Base_Column_List"></include>
         from
         <include refid="Table_Name"></include>
     </select>

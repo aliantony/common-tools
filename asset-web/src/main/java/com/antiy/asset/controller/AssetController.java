@@ -2,14 +2,15 @@ package com.antiy.asset.controller;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.templet.AssetEntity;
-import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.ManufacturerResponse;
+import com.antiy.asset.templet.AssetEntity;
+import com.antiy.asset.templet.ImportResult;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
@@ -170,10 +171,10 @@ public class AssetController {
     @ApiOperation(value = "导入文件", notes = "主键封装对象")
     @RequestMapping(value = "/import/file", method = RequestMethod.POST)
     public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws Exception {
-        ImportResult importResult = ExcelUtils.importExcelFromClient(AssetEntity.class, multipartFile, 1, 0);
-        List<?> list = importResult.getDataList();
-        List<Object> asset = BeanConvert.convert(list, Asset.class);
-        Integer successNum = iAssetService.batchSave(transferList(asset));
+        ImportResult<Asset> importResult = ExcelUtils.importExcelFromClient(AssetEntity.class, multipartFile, 1, 0);
+        List<Asset> list = importResult.getDataList();
+        //List<Object> asset = BeanConvert.convert(list, Asset.class);
+        Integer successNum = iAssetService.batchSave(list);
         return ActionResponse.success(successNum);
     }
 
@@ -231,9 +232,9 @@ public class AssetController {
      *
      * @return 品类型号名和该品类型号资产数量的映射
      */
-    @ApiOperation(value = "硬件资产按类型统计接口", notes = "无查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/count/type", method = RequestMethod.GET)
+    @ApiOperation(value = "硬件资产按二级品类型号统计接口", notes = "无查询条件")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @RequestMapping(value = "/count/category", method = RequestMethod.GET)
     public Map<String, Long> countAssetByCategory() throws Exception {
         return iAssetService.countCategory();
     }
@@ -252,7 +253,6 @@ public class AssetController {
 
     /**
      * 硬件资产-按厂商统计
-     * @author zhangyajun
      *
      * @return 厂商名和该厂商资产数量的映射
      */

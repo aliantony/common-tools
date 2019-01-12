@@ -1,5 +1,6 @@
 package com.antiy.asset.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -24,12 +25,12 @@ import com.antiy.common.base.PageResult;
  */
 @Service
 public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel>
-                                           implements IAssetCategoryModelService {
+        implements IAssetCategoryModelService {
 
     @Resource
-    private AssetCategoryModelDao                                         assetCategoryModelDao;
+    private AssetCategoryModelDao assetCategoryModelDao;
     @Resource
-    private BaseConverter<AssetCategoryModelRequest, AssetCategoryModel>  requestConverter;
+    private BaseConverter<AssetCategoryModelRequest, AssetCategoryModel> requestConverter;
     @Resource
     private BaseConverter<AssetCategoryModel, AssetCategoryModelResponse> responseConverter;
 
@@ -49,7 +50,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public List<AssetCategoryModelResponse> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
         List<AssetCategoryModel> assetCategoryModel = assetCategoryModelDao.findListAssetCategoryModel(query);
         List<AssetCategoryModelResponse> convert = responseConverter.convert(assetCategoryModel,
-            AssetCategoryModelResponse.class);
+                AssetCategoryModelResponse.class);
+
 
         return convert;
     }
@@ -61,7 +63,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Override
     public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetCategoryModel(query), query.getCurrentPage(),
-            this.findListAssetCategoryModel(query));
+                this.findListAssetCategoryModel(query));
     }
+
+
 
 }

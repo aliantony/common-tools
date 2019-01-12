@@ -4,8 +4,6 @@ import java.util.List;
 
 public class AssetOuterResponse {
 
-    private static final long              serialVersionUID = 1L;
-
     private AssetResponse                  asset;
 
     private List<AssetCpuResponse>         assetCpu;
@@ -17,6 +15,8 @@ public class AssetOuterResponse {
     private List<AssetMainboradResponse>   assetMainborad;
 
     private List<AssetHardDiskResponse>    assetHardDisk;
+
+    private List<AssetSoftwareResponse>    assetSoftware;
 
     public AssetResponse getAsset() {
         return asset;
@@ -64,5 +64,13 @@ public class AssetOuterResponse {
 
     public void setAssetHardDisk(List<AssetHardDiskResponse> assetHardDisk) {
         this.assetHardDisk = assetHardDisk;
+    }
+
+    public List<AssetSoftwareResponse> getAssetSoftware() {
+        return assetSoftware;
+    }
+
+    public void setAssetSoftware(List<AssetSoftwareResponse> assetSoftware) {
+        this.assetSoftware = assetSoftware;
     }
 }

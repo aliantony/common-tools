@@ -66,12 +66,12 @@ public class BeanConvert {
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    public static Object convertBean(Object target, Class<?> c2) {
+    public static <T> T convertBean(Object target, Class<T> c2) {
         if (target == null) {
             return null;
         }
         BeanCopier copier = BeanCopier.create(target.getClass(), c2, false);
-        Object o2 = null;
+        T o2 = null;
         try {
             o2 = c2.newInstance();
         } catch (InstantiationException e) {
@@ -92,13 +92,13 @@ public class BeanConvert {
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    public static List<Object> convert(List<?> target, Class<?> c2) {
+    public static <T>  List<T> convert(List<?> target, Class<T> c2) {
         if (target == null || target.isEmpty()) {
             return null;
         }
         BeanCopier copier = BeanCopier.create(target.get(0).getClass(), c2, false);
-        List<Object> list = Lists.newArrayList();
-        Object o2 = null;
+        List<T> list = Lists.newArrayList();
+        T o2 = null;
         for (Object o : target) {
             try {
                 o2 = c2.newInstance();

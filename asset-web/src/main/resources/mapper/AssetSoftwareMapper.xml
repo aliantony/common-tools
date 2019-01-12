@@ -30,9 +30,17 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
     </resultMap>
+    <resultMap id="ManufacturerResultMap" type="java.util.HashMap">
+        <result property="key" column="manufacturer"/>
+        <result property="value" column="num"/>
+    </resultMap>
+    <resultMap id="StatusResultMap" type="java.util.HashMap">
+        <result property="key" column="software_status"/>
+        <result property="value" column="num"/>
+    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, size, operation_system AS operationSystem, category, model, name, upload_software_name AS uploadSoftwareName, path, version, manufacturer, description, software_label AS softwareLabel, software_status AS softwareStatus, authorization, report_source AS reportSource, port, language, release_time AS releaseTime, publisher, gmt_create AS gmtCreate, memo, gmt_modified AS gmtModified, create_user AS createUser, modify_user AS modifyUser, status
+        id, size, operation_system, category_model, name, upload_software_name, path, version, manufacturer, description, asset_group, software_label, software_status, authorization, report_source, port, language, release_time, publisher, gmt_create, memo, gmt_modified, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -47,11 +55,8 @@
         <if test=" operationSystem != null">
             operation_system,
         </if>
-        <if test=" category != null">
-            category,
-        </if>
-        <if test=" model != null">
-            model,
+        <if test=" categoryModel != null">
+            category_model,
         </if>
         <if test=" name != null">
             name,
@@ -70,6 +75,9 @@
         </if>
         <if test=" description != null">
             description,
+        </if>
+        <if test=" assetGroup != null">
+            asset_group,
         </if>
         <if test=" softwareLabel != null">
             software_label,
@@ -122,11 +130,8 @@
         <if test=" operationSystem != null">
             #{operationSystem },
         </if>
-        <if test=" category != null">
-            #{category },
-        </if>
-        <if test=" model != null">
-            #{model },
+        <if test=" categoryModel != null">
+            #{categoryModel },
         </if>
         <if test=" name != null">
             #{name },
@@ -145,6 +150,9 @@
         </if>
         <if test=" description != null">
             #{description },
+        </if>
+        <if test=" assetGroup != null">
+            #{assetGroup },
         </if>
         <if test=" softwareLabel != null">
             #{softwareLabel },
@@ -197,11 +205,8 @@
         <if test=" operationSystem != null">
             operation_system = #{operationSystem },
         </if>
-        <if test=" category != null">
-            category = #{category },
-        </if>
-        <if test=" model != null">
-            model = #{model },
+        <if test=" categoryModel != null">
+            category_model = #{categoryModel },
         </if>
         <if test=" name != null">
             name = #{name },
@@ -220,6 +225,9 @@
         </if>
         <if test=" description != null">
             description = #{description },
+        </if>
+        <if test=" assetGroup != null">
+            asset_group = #{assetGroup },
         </if>
         <if test=" softwareLabel != null">
             software_label = #{softwareLabel },
@@ -266,23 +274,35 @@
     </sql>
 
     <sql id="Where_Column_List">
+        <if test=" size != null">
+            and size = #{size }
+        </if>
         <if test=" operationSystem != null">
             and operation_system = #{operationSystem }
         </if>
-        <if test=" category != null">
-            and category = #{category }
-        </if>
-        <if test=" model != null">
-            and model = #{model }
+        <if test=" categoryModel != null">
+            and category_model = #{categoryModel }
         </if>
         <if test=" name != null">
             and name = #{name }
+        </if>
+        <if test=" uploadSoftwareName != null">
+            and upload_software_name = #{uploadSoftwareName }
+        </if>
+        <if test=" path != null">
+            and path = #{path }
         </if>
         <if test=" version != null">
             and version = #{version }
         </if>
         <if test=" manufacturer != null">
             and manufacturer = #{manufacturer }
+        </if>
+        <if test=" description != null">
+            and description = #{description }
+        </if>
+        <if test=" assetGroup != null">
+            and asset_group = #{assetGroup }
         </if>
         <if test=" softwareLabel != null">
             and software_label = #{softwareLabel }
@@ -308,7 +328,24 @@
         <if test=" publisher != null">
             and publisher = #{publisher }
         </if>
-        and status = 1
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" memo != null">
+            and memo = #{memo }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+        <if test=" modifyUser != null">
+            and modify_user = #{modifyUser }
+        </if>
+        <if test=" status != null">
+            and status = #{status }
+        </if>
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetSoftware" useGeneratedKeys="true" keyProperty="id">
@@ -362,7 +399,8 @@
 
 
     <select id="getAll" resultType="com.antiy.asset.entity.AssetSoftware">
-        select *
+        select
+        <include refid="Base_Column_List"/>
         from
         <include refid="Table_Name"></include>
     </select>
@@ -402,11 +440,8 @@
             <if test=" operationSystem != null">
                 and operation_system = #{operationSystem }
             </if>
-            <if test=" category != null">
-                and category = #{category }
-            </if>
-            <if test=" model != null">
-                and model = #{model }
+            <if test=" categoryModel != null">
+                and category_model = #{categoryModel }
             </if>
             <if test=" name != null">
                 and name = #{name }
@@ -479,5 +514,30 @@
                 </foreach>
             </if>
         </where>
+    </select>
+    <select id="countManufacturer" resultMap="ManufacturerResultMap">
+        select manufacturer, count(manufacturer) num from
+        <include refid="Table_Name"></include>
+        GROUP BY manufacturer
+    </select>
+
+    <select id="countStatus" resultMap="StatusResultMap">
+        select software_status, count(software_status) num from
+        <include refid="Table_Name"></include>
+        GROUP BY software_status
+    </select>
+
+    <select id="findCountByCategoryModel" resultType="java.lang.Long"
+            parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
+        select count(1) count
+        from
+        <include refid="Table_Name"></include>
+        where 1 = 1
+        <if test=" categoryModels != null">
+            and category_model in
+            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
     </select>
 </mapper>

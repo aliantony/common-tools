@@ -7,9 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.IAssetGroupService;
-import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.query.AssetGroupQuery;
-import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
