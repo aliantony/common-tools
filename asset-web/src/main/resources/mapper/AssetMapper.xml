@@ -780,7 +780,8 @@
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
-        </if> and status=0
+        </if>
+        and status=1
     </select>
 
     <select id="findListAssetByCategoryModel" resultType="com.antiy.asset.entity.Asset"
@@ -819,12 +820,12 @@
     <select id="countManufacturer" resultMap="ManufacturerResultMap">
         select manufacturer, count(manufacturer) num from
         <include refid="Table_Name"></include>
-        GROUP BY manufacturer where status=0
+        where status=1 GROUP BY manufacturer
     </select>
 
     <select id="countStatus" resultMap="StatusResultMap">
         select asset_status, count(asset_status) num from
         <include refid="Table_Name"></include>
-        GROUP BY asset_status where status=0
+        where status=1 GROUP BY asset_status
     </select>
 </mapper>
