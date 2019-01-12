@@ -470,7 +470,7 @@
             and t1.asset_status!=8
             <choose>
                 <when test="manufacturerName != null and manufacturerName != ''">
-                    and like t3.manufacturer CONCAT('%',#{manufacturerName},'%')
+                    and t3.manufacturer like CONCAT('%',#{manufacturerName},'%')
                 </when>
                 <otherwise>
                     and t3.manufacturer is not null
