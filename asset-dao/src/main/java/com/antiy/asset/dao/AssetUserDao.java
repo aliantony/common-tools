@@ -18,10 +18,10 @@ public interface AssetUserDao extends IBaseDao<AssetUser> {
 
     List<AssetUser> findListAssetUser(AssetUserQuery query) throws Exception;
     /**
-     * 查询用户名称
+     * 查询资产的使用者
      *
      * @return
      */
-    List<AssetUser> findUserName() throws Exception;
+    List<AssetUser> findUserInAsset() throws Exception;
 
 }

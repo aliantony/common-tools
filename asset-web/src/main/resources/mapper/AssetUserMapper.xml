@@ -304,12 +304,15 @@
         </trim>
         <include refid="Page_List"></include>
     </select>
-    <!--来源于资产表的使用者信息-->
-    <select id="findUserName" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
-        SELECT DISTINCT au.name
+    <!--查询资产表的使用者信息-->
+    <select id="findUserInAsset" resultType="AssetUser" parameterType="com.antiy.common.base.ObjectQuery">
+        SELECT
+            au.name,
+            au.id
         FROM
             asset
             LEFT JOIN asset_user au ON asset.responsible_user_id = au.id
+        WHERE
+            asset.responsible_user_id IS NOT NULL
     </select>
-
 </mapper>
