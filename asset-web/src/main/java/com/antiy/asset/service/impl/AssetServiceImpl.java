@@ -500,7 +500,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             .convert(assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
 
         Asset asset = requestConverter.convert(assetPCRequest.getAsset(), Asset.class);
-        Integer aid = assetDao.insert(asset);
+        assetDao.insert(asset);
+        Integer aid = asset.getId();
         String softwareids = assetPCRequest.getSoftwareids();
         if (StringUtils.isNotBlank(softwareids)) {
             String[] split = softwareids.split(",");
