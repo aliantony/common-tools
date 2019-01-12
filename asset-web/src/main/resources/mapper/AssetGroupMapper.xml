@@ -255,5 +255,7 @@
     <select id="findPulldownGroup" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
         select id,name from
         <include refid="Table_Name"></include>
+        where
+        status = 1
     </select>
 </mapper>

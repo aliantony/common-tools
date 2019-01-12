@@ -769,6 +769,7 @@
     <select id="pulldownManufacturer" resultType="string">
         select distinct manufacturer from
         <include refid="Table_Name"></include>
+        status = 1
     </select>
 
     <select id="findCountByCategoryModel" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">

@@ -314,5 +314,7 @@
             LEFT JOIN asset_user au ON asset.responsible_user_id = au.id
         WHERE
             asset.responsible_user_id IS NOT NULL
+        and
+            au.status = 1
     </select>
 </mapper>

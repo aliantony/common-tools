@@ -283,9 +283,14 @@
     </select>
 
     <select id="findOS" resultType="string" parameterType="com.antiy.common.base.ObjectQuery">
-        select distinct operation_system from
-        <include refid="Table_Name"></include> asr
-        left join asset_software asoft on asoft.id = asr.software_id
-        where asoft.operation_system is not null
+        SELECT DISTINCT
+            asoft.operation_system
+        FROM
+            asset_software_relation asr
+            LEFT JOIN asset_software asoft ON asoft.id = asr.software_id
+            LEFT JOIN asset ON asset.id = asr.asset_id
+        WHERE
+            asoft.operation_system IS NOT NULL
+            AND asset.STATUS = 1
     </select>
 </mapper>
