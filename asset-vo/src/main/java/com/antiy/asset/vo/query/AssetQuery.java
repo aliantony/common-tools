@@ -14,6 +14,10 @@ import java.util.List;
 
 public class AssetQuery extends ObjectQuery {
     /**
+     * 资产id列表
+     */
+    private Integer[]     ids;
+    /**
      * 资产编号
      */
     @ApiModelProperty("资产编号")
@@ -41,15 +45,19 @@ public class AssetQuery extends ObjectQuery {
     @ApiModelProperty("序列号")
     private String        serial;
     /**
-     * 品类
+     * 品类型号
      */
-    @ApiModelProperty("品类")
-    private Integer       category;
+    @ApiModelProperty("品类型号")
+    private Integer       categoryModel;
     /**
-     * 资产型号
+     * 品类型号列表
      */
-    @ApiModelProperty("资产型号")
-    private Integer       model;
+    @ApiModelProperty("品类型号列表")
+    private Integer[]     categoryModels;
+    /**
+     * 行政区划主键列表
+     */
+    private Integer[]     areaIds;
     /**
      * 厂商
      */
@@ -122,8 +130,27 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("首次入网时间（截止）")
     private Long          firstEnterNettEnd;
+    /**
+     * 首次发现时间
+     */
+    @ApiModelProperty("首次发现时间（起始）")
+    private Long          firstFindBegin;
+
+    /**
+     * 首次发现时间
+     */
+    @ApiModelProperty("首次发现时间（截止）")
+    private Long          firstFindEnd;
 
     private Integer       status;
+
+    public Integer[] getIds() {
+        return ids;
+    }
+
+    public void setIds(Integer[] ids) {
+        this.ids = ids;
+    }
 
     public Integer getStatus() {
         return status;
@@ -165,20 +192,28 @@ public class AssetQuery extends ObjectQuery {
         this.serial = serial;
     }
 
-    public Integer getCategory() {
-        return category;
+    public Integer getCategoryModel() {
+        return categoryModel;
     }
 
-    public void setCategory(Integer category) {
-        this.category = category;
+    public void setCategoryModel(Integer categoryModel) {
+        this.categoryModel = categoryModel;
     }
 
-    public Integer getModel() {
-        return model;
+    public Integer[] getCategoryModels() {
+        return categoryModels;
     }
 
-    public void setModel(Integer model) {
-        this.model = model;
+    public void setCategoryModels(Integer[] categoryModels) {
+        this.categoryModels = categoryModels;
+    }
+
+    public Integer[] getAreaIds() {
+        return areaIds;
+    }
+
+    public void setAreaIds(Integer[] areaIds) {
+        this.areaIds = areaIds;
     }
 
     public String getManufacturer() {
@@ -291,5 +326,21 @@ public class AssetQuery extends ObjectQuery {
 
     public void setFirstEnterNettEnd(Long firstEnterNettEnd) {
         this.firstEnterNettEnd = firstEnterNettEnd;
+    }
+
+    public Long getFirstFindBegin() {
+        return firstFindBegin;
+    }
+
+    public void setFirstFindBegin(Long firstFindBegin) {
+        this.firstFindBegin = firstFindBegin;
+    }
+
+    public Long getFirstFindEnd() {
+        return firstFindEnd;
+    }
+
+    public void setFirstFindEnd(Long firstFindEnd) {
+        this.firstFindEnd = firstFindEnd;
     }
 }

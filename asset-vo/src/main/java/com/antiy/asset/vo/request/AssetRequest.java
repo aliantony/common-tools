@@ -42,15 +42,15 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty("序列号")
     private String            serial;
     /**
-     * 品类
+     * 品类型号
      */
-    @ApiModelProperty("品类")
-    private Integer           category;
+    @ApiModelProperty("品类型号")
+    private Integer           categoryModel;
+
     /**
-     * 资产型号
+     * 行政区划主键列表
      */
-    @ApiModelProperty("资产型号")
-    private Integer           model;
+    private Integer         areaId;
     /**
      * 厂商
      */
@@ -167,20 +167,20 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.serial = serial;
     }
 
-    public Integer getCategory() {
-        return category;
+    public Integer getCategoryModel() {
+        return categoryModel;
     }
 
-    public void setCategory(Integer category) {
-        this.category = category;
+    public void setCategoryModel(Integer categoryModel) {
+        this.categoryModel = categoryModel;
     }
 
-    public Integer getModel() {
-        return model;
+    public Integer getAreaId() {
+        return areaId;
     }
 
-    public void setModel(Integer model) {
-        this.model = model;
+    public void setAreaId(Integer areaId) {
+        this.areaId = areaId;
     }
 
     public String getManufacturer() {

@@ -580,7 +580,7 @@
     <!--资产条件查询-->
     <sql id="Multiple_Query">
         <if test=" assetIds != null">
-            and identity in
+            and id in
             <foreach index="index" item="item" collection="assetIds" open="(" separator="," close=")">
                 #{item}
             </foreach>
@@ -605,22 +605,17 @@
                 #{assetStatus}
             </foreach>
         </if>
-        <if test=" category != null">
-            and (category in
-            <foreach collection="category" open="(" close=")" separator="," index="index" item="item">
+        <if test=" categoryModels != null and categoryModels.size() > 0">
+            and category_model in
+            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
-            or model in
-            <foreach collection="category" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-            )
         </if>
         <if test=" manufacturer != null">
-            and manufacturer LIKE CONCAT('%',#{manufacturer},'%')
+            and manufacturer = #{manufacturer}
         </if>
         <if test=" operationSystem != null">
-            and operation_system LIKE CONCAT('%',#{operationSystem },'%')
+            and operation_system = #{operationSystem}
         </if>
         <if test=" responsibleUserId != null">
             and responsible_user_id = #{responsibleUserId }
@@ -636,6 +631,12 @@
         </if>
         <if test=" firstEnterNettEnd != null">
             and first_enter_nett &lt;= #{firstEnterNettEnd }
+        </if>
+        <if test=" firstFindBegin != null">
+            and gmt_create &gt;= #{firstFindBegin }
+        </if>
+        <if test=" firstFindEnd != null">
+            and gmt_create &lt;= #{firstFindEnd }
         </if>
         and status =1
     </sql>
@@ -767,19 +768,11 @@
         from
         <include refid="Table_Name"></include>
         where 1 = 1
-        <if test=" ids != null">
-            and (category in
-            <foreach collection="ids" open="(" close=")" separator="," item="item" index="index">
+        <if test=" categoryModels != null">
+            and category_model in
+            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
-            or model in
-            <foreach collection="ids" open="(" close=")" separator="," item="item" index="index">
-                #{item}
-            </foreach>
-            )
-        </if>
-        <if test=" model != null">
-
         </if>
     </select>
 
@@ -790,16 +783,11 @@
         from
         <include refid="Table_Name"></include>
         where 1 = 1
-        <if test=" ids != null">
-            and (category in
-            <foreach collection="ids" open="(" close=")" separator="," item="item" index="index">
+        <if test=" categoryModels != null">
+            and category_model in
+            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
-            or model in
-            <foreach collection="ids" open="(" close=")" separator="," item="item" index="index">
-                #{item}
-            </foreach>
-            )
         </if>
     </select>
 

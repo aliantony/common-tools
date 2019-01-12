@@ -169,7 +169,7 @@ public interface IAssetService extends IBaseService<Asset> {
     List<AssetResponse> queryAssetByIds(Integer[] ids);
 
     /**
-     * 通过ID查询
+     * 通过ID查询资产详情
      *
      * @param id 主键封装对象
      * @return AssetOuterResponse
