@@ -4,6 +4,7 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.Topology;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
 
 import java.util.List;
@@ -43,11 +44,11 @@ public interface AssetDao extends IBaseDao<Asset> {
 
 
     /**
-     * 查询厂商
+     * 查询下拉的厂商信息
      *
      * @return
      */
-    List<Asset> findManufacturer() throws Exception;
+    List<String> pulldownManufacturer() throws Exception;
 
     /**
      * 通过品类型号查询资产数量
