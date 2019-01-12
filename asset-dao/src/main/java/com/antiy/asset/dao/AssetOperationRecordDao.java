@@ -3,6 +3,8 @@ package com.antiy.asset.dao;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.common.base.IBaseDao;
 
+import java.util.List;
+
 /**
  * <p>
  * 资产操作记录表 Mapper 接口
@@ -13,4 +15,5 @@ import com.antiy.common.base.IBaseDao;
  */
 public interface AssetOperationRecordDao extends IBaseDao<AssetOperationRecord> {
 
+    List<AssetOperationRecord> findAssetOperationRecordByAssetId(Integer assetId);
 }

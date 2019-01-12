@@ -33,6 +33,30 @@ public class AssetOperationRecord extends BaseEntity {
      * 创建时间
      */
     private Long              gmtCreate;
+    /**
+     * 资产名称
+     */
+    private String            assetName;
+    /**
+     * 类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）
+     */
+    private Integer           type;
+    /**
+     * 结果
+     */
+    private Integer           result;
+    /**
+     * 实施时间
+     */
+    private Long              putintoTime;
+    /**
+     * 实施人
+     */
+    private String            putintoUser;
+    /**
+     * 附件路径
+     */
+    private String            filepath;
 
     public Integer getTargetObject() {
         return targetObject;
@@ -72,6 +96,54 @@ public class AssetOperationRecord extends BaseEntity {
 
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
+    }
+
+    public String getAssetName() {
+        return assetName;
+    }
+
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getResult() {
+        return result;
+    }
+
+    public void setResult(Integer result) {
+        this.result = result;
+    }
+
+    public Long getPutintoTime() {
+        return putintoTime;
+    }
+
+    public void setPutintoTime(Long putintoTime) {
+        this.putintoTime = putintoTime;
+    }
+
+    public String getPutintoUser() {
+        return putintoUser;
+    }
+
+    public void setPutintoUser(String putintoUser) {
+        this.putintoUser = putintoUser;
+    }
+
+    public String getFilepath() {
+        return filepath;
+    }
+
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
     }
 
     @Override
