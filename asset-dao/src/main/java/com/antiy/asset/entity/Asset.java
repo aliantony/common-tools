@@ -13,6 +13,7 @@ public class Asset extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+
     /**
      * 资产编号
      */
@@ -244,13 +245,6 @@ public class Asset extends BaseEntity {
         this.serial = serial;
     }
 
-    public Integer getCategoryModel() {
-        return categoryModel;
-    }
-
-    public void setCategoryModel(Integer categoryModelId) {
-        this.categoryModel = categoryModelId;
-    }
 
     public String getManufacturer() {
         return manufacturer;
@@ -511,7 +505,7 @@ public class Asset extends BaseEntity {
     @Override
     public String toString() {
         return "Asset{" + ", number=" + number + ", type=" + type + ", name=" + name + ", serial=" + serial
-               + ", categoryModelId=" + categoryModel + ", manufacturer=" + manufacturer + ", assetStatus="
+               + ", categoryModel=" + categoryModel + ", manufacturer=" + manufacturer + ", assetStatus="
                + assetStatus + ", operationSystem=" + operationSystem + ", systemBit=" + systemBit + ", location="
                + location + ", latitude=" + latitude + ", longitude=" + longitude + ", firmwareVersion="
                + firmwareVersion + ", uuid=" + uuid + ", responsibleUserId=" + responsibleUserId + ", contactTel="
@@ -545,5 +539,9 @@ public class Asset extends BaseEntity {
 
     public void setHouseLocation(String houseLocation) {
         this.houseLocation = houseLocation;
+    }
+
+    public void setCategoryModel(Integer categoryModel) {
+        this.categoryModel = categoryModel;
     }
 }

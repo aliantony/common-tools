@@ -62,8 +62,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public Integer saveAsset(AssetRequest request) throws Exception {
         Asset asset = requestConverter.convert(request, Asset.class);
-        Integer insert = assetDao.insert (asset);
-        System.out.println ("-----------why--------值=" + insert + "," + "当前类=.()");
+        Integer insert = assetDao.insert(asset);
         return insert;
     }
 
@@ -474,21 +473,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer saveAssetPC(AssetPCRequest assetPCRequest) throws Exception {
-        List<AssetCpuRequest> cpuRequestList = assetPCRequest.getCpu ();
-        BaseConverter<AssetCpuRequest,AssetCpu> baseConverter = new BaseConverter<> ();
-        List<AssetCpu> cpu = baseConverter.convert (cpuRequestList, AssetCpu.class);
-        List<AssetHardDisk> hardDisk = new BaseConverter<AssetHardDiskRequest,AssetHardDisk> ().convert (assetPCRequest.getHardDisk(),AssetHardDisk.class);
-        List<AssetMemory> memory = new BaseConverter<AssetMemoryRequest,AssetMemory> ().convert ( assetPCRequest.getMemory(),AssetMemory.class);
-        List<AssetMainborad> mainboard = new BaseConverter<AssetMainboradRequest,AssetMainborad> ().convert ( assetPCRequest.getMainboard(),AssetMainborad.class);
-        List<AssetNetworkCard> networkCard = new BaseConverter<AssetNetworkCardRequest,AssetNetworkCard> ().convert ( assetPCRequest.getNetworkCard(),AssetNetworkCard.class);
+        List<AssetCpuRequest> cpuRequestList = assetPCRequest.getCpu();
+        BaseConverter<AssetCpuRequest, AssetCpu> baseConverter = new BaseConverter<>();
+        List<AssetCpu> cpu = baseConverter.convert(cpuRequestList, AssetCpu.class);
+        List<AssetHardDisk> hardDisk = new BaseConverter<AssetHardDiskRequest, AssetHardDisk>()
+            .convert(assetPCRequest.getHardDisk(), AssetHardDisk.class);
+        List<AssetMemory> memory = new BaseConverter<AssetMemoryRequest, AssetMemory>()
+            .convert(assetPCRequest.getMemory(), AssetMemory.class);
+        List<AssetMainborad> mainboard = new BaseConverter<AssetMainboradRequest, AssetMainborad>()
+            .convert(assetPCRequest.getMainboard(), AssetMainborad.class);
+        List<AssetNetworkCard> networkCard = new BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>()
+            .convert(assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
 
-        Asset asset = requestConverter.convert ( assetPCRequest.getAsset (), Asset.class);
-        Integer aid = assetDao.insert (asset);
-
+        Asset asset = requestConverter.convert(assetPCRequest.getAsset(), Asset.class);
+        assetDao.insert(asset);
+        Integer aid = asset.getId();
         if (networkCard != null && networkCard.size() > 0) {
             for (AssetNetworkCard assetNetworkCard : networkCard) {
                 assetNetworkCard.setAssetId(aid);
-                assetNetworkCard.setGmtCreate (System.currentTimeMillis ());
+                assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                 assetNetworkCardDao.insert(assetNetworkCard);
 
             }
@@ -496,30 +499,30 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (mainboard != null && mainboard.size() > 0) {
             for (AssetMainborad assetMainborad : mainboard) {
                 assetMainborad.setAssetId(aid);
-                assetMainborad.setGmtCreate (System.currentTimeMillis ());
+                assetMainborad.setGmtCreate(System.currentTimeMillis());
                 assetMainboradDao.insert(assetMainborad);
             }
         }
         if (memory != null && memory.size() > 0) {
             for (AssetMemory assetMemory : memory) {
                 assetMemory.setAssetId(aid);
-                assetMemory.setGmtCreate (System.currentTimeMillis ());
+                assetMemory.setGmtCreate(System.currentTimeMillis());
                 assetMemoryDao.insert(assetMemory);
             }
         }
-        Integer insert=0;
+        Integer insert = 0;
         if (cpu != null && cpu.size() > 0) {
             for (AssetCpu assetCpu : cpu) {
                 assetCpu.setAssetId(aid);
-                assetCpu.setGmtCreate (System.currentTimeMillis ());
-                 insert = assetCpuDao.insert (assetCpu);
+                assetCpu.setGmtCreate(System.currentTimeMillis());
+                insert = assetCpuDao.insert(assetCpu);
             }
         }
 
         if (hardDisk != null && hardDisk.size() > 0) {
             for (AssetHardDisk assetHardDisk : hardDisk) {
                 assetHardDisk.setAssetId(aid);
-                assetHardDisk.setGmtCreate (System.currentTimeMillis ());
+                assetHardDisk.setGmtCreate(System.currentTimeMillis());
                 assetHardDiskDao.insert(assetHardDisk);
             }
         }
