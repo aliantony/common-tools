@@ -297,114 +297,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return null;
     }
 
-    // public Integer saveAllAsset(HashMap<String, Object> map) throws Exception {
-    // Asset asset = new Asset ();
-    // AssetCpu assetCpu = new AssetCpu();
-    // AssetNetworkCard assetNetworkCard = new AssetNetworkCard();
-    // AssetHardDisk assetHardDisk = new AssetHardDisk();
-    // AssetMainborad assetMainborad = new AssetMainborad();
-    // AssetMemory assetMemory = new AssetMemory();
-    // asset.setNumber((String) map.get("number"));
-    // asset.setType((Integer) map.get("type"));
-    // asset.setCategory((Integer) map.get("category"));
-    // asset.setModel((Integer) map.get("model"));
-    // asset.setResponsibleUserId((Integer) map.get("responsibleUserId"));
-    // asset.setSystemBit((Integer) map.get("systemBit"));
-    // asset.setImportanceDegree((Integer) map.get("importanceDegree"));
-    // asset.setParentId((Integer) map.get("parentId"));
-    // asset.setCreateUser((Integer) map.get("createUser"));
-    // //3-待配置
-    // asset.setAssetStatus(3);
-    // // 2-人工上报
-    // asset.setAssetSource(2);
-    // asset.setName((String) map.get("name"));
-    // asset.setSerial((String) map.get("serial"));
-    // asset.setManufacturer((String) map.get("manufacturer"));
-    // asset.setOperationSystem((String) map.get("operationSystem"));
-    // asset.setLocation((String) map.get("location"));
-    // asset.setLatitude((String) map.get("latitude"));
-    // asset.setLongitude((String) map.get("longitude"));
-    // asset.setFirmwareVersion((String) map.get("firmwareVersion"));
-    // asset.setUuid((String) map.get("uuid"));
-    // asset.setContactTel((String) map.get("contactTel"));
-    // asset.setEmail((String) map.get("email"));
-    // asset.setHardDisk((String) map.get("hardDisk"));
-    // asset.setMemory((String) map.get("memory"));
-    // asset.setDescrible((String) map.get("describle"));
-    // asset.setCpu((String) map.get("cpu"));
-    // asset.setNetworkCard((String) map.get("networkCard"));
-    // asset.setTags((String) map.get("tags"));
-    // asset.setMemo((String) map.get("memo"));
-    // asset.setInnet(true);
-    // asset.setFirstEnterNett((Long) map.get("firstEnterNett"));
-    // asset.setServiceLife((Long) map.get("serviceLife"));
-    // asset.setBuyDate((Long) map.get("buyDate"));
-    // asset.setWarranty((Long) map.get("warranty"));
-    // asset.setGmtCreate(System.currentTimeMillis());
-    //
-    // Integer aid = assetDao.insert (asset);
-    //
-    // assetCpu.setAssetId(aid);
-    // assetCpu.setSerial((String) map.get("cserial"));
-    // assetCpu.setBrand((String) map.get("cbrand"));
-    // assetCpu.setModel((String) map.get("cmodel"));
-    // assetCpu.setMainFrequency((Float) map.get("mainFrequency"));
-    // assetCpu.setThreadSize((Integer) map.get("threadSize"));
-    // assetCpu.setCoreSize((Integer) map.get("coreSize"));
-    // assetCpu.setGmtCreate(System.currentTimeMillis());
-    // assetCpu.setMemo((String) map.get("memo"));
-    // assetCpu.setCreateUser((Integer) map.get("createUser"));
-    // Integer cid = assetCpuDao.insert(assetCpu);
-    //
-    // assetNetworkCard.setAssetId(aid);
-    // assetNetworkCard.setBrand((String) map.get("nbrand"));
-    // assetNetworkCard.setSerial((String) map.get("nserial"));
-    // assetNetworkCard.setModel((String) map.get("nmodel"));
-    // assetNetworkCard.setIpAddress((String) map.get("ipAddress"));
-    // assetNetworkCard.setMacAddress((String) map.get("macAddress"));
-    // assetNetworkCard.setDefaultGateway((String) map.get("defaultGateway"));
-    // assetNetworkCard.setNetwordAddress((String) map.get("networdAddress"));
-    // assetNetworkCard.setSubnetMask((String) map.get("subnetMask"));
-    // assetNetworkCard.setGmtCreate(System.currentTimeMillis());
-    // assetNetworkCard.setMemo((String) map.get("memo"));
-    // assetNetworkCard.setCreateUser((Integer) map.get("createUser"));
-    // Integer nid = assetNetworkCardDao.insert(assetNetworkCard);
-    //
-    // assetHardDisk.setAssetId(aid);
-    // assetHardDisk.setSerial((String) map.get("hserial"));
-    // assetHardDisk.setBrand((String) map.get("hbrand"));
-    // assetHardDisk.setModel((String) map.get("hmodel"));
-    // assetHardDisk.setInterfaceType((Integer) map.get("interfaceType"));
-    // assetHardDisk.setCapacity((Integer) map.get("hcapacity"));
-    // assetHardDisk.setDiskType((Integer) map.get("diskType"));
-    // assetHardDisk.setBuyDate((Long) map.get("hbuyDate"));
-    // assetHardDisk.setGmtCreate(System.currentTimeMillis());
-    // assetHardDisk.setMemo((String) map.get("memo"));
-    // assetHardDisk.setCreateUser((Integer) map.get("createUser"));
-    // Integer hid = assetHardDiskDao.insert(assetHardDisk);
-    //
-    // assetMainborad.setAssetId(aid);
-    // assetMainborad.setSerial((String) map.get("mserial"));
-    // assetMainborad.setBrand((String) map.get("mbrand"));
-    // assetMainborad.setModel((String) map.get("mmodel"));
-    // assetMainborad.setBiosVersion((String) map.get("biosVersion"));
-    // assetMainborad.setBiosDate((Long) map.get("biosDate"));
-    // assetMainborad.setGmtCreate(System.currentTimeMillis());
-    // assetMainborad.setMemo((String) map.get("memo"));
-    // assetMainborad.setCreateUser((Integer) map.get("createUser"));
-    // Integer mid = assetMainboradDao.insert(assetMainborad);
-    //
-    // assetMemory.setAssetId(aid);
-    // assetMemory.setCapacity((Integer) map.get("mecapacity"));
-    // assetMemory.setFrequency((Integer) map.get("mefrequency"));
-    // assetMemory.setSlotType((Integer) map.get("meslotType"));
-    // assetMemory.setStitch((Integer) map.get("mestitch"));
-    // assetMemory.setHeatsink(true);
-    // assetMemory.setBuyDate ((Long) map.get("hbuyDate"));
-    //
-    // return null;
-    // }
-
     @Override
     public List<AssetResponse> findListAssetByCategoryModel(AssetQuery query) throws Exception {
         List<Asset> asset = assetDao.findListAssetByCategoryModel(query);
@@ -488,6 +380,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Asset asset = requestConverter.convert(assetPCRequest.getAsset(), Asset.class);
         assetDao.insert(asset);
         Integer aid = asset.getId();
+        String softwareids = assetPCRequest.getSoftwareids();
+        if (StringUtils.isNotBlank(softwareids)) {
+            String[] split = softwareids.split(",");
+            for (String s : split) {
+                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                assetSoftwareRelation.setAssetId(aid);
+                assetSoftwareRelation.setSoftwareId(Integer.parseInt(s));
+                assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+                assetSoftwareRelationDao.insert(assetSoftwareRelation);
+            }
+        }
+
         if (networkCard != null && networkCard.size() > 0) {
             for (AssetNetworkCard assetNetworkCard : networkCard) {
                 assetNetworkCard.setAssetId(aid);
@@ -510,12 +414,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMemoryDao.insert(assetMemory);
             }
         }
-        Integer insert = 0;
+
         if (cpu != null && cpu.size() > 0) {
             for (AssetCpu assetCpu : cpu) {
                 assetCpu.setAssetId(aid);
                 assetCpu.setGmtCreate(System.currentTimeMillis());
-                insert = assetCpuDao.insert(assetCpu);
+                assetCpuDao.insert(assetCpu);
             }
         }
 
@@ -526,17 +430,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetHardDiskDao.insert(assetHardDisk);
             }
         }
-
-        System.out.println("-----------why--------值=" + cpu + "," + "当前类=.()");
-        System.out.println("-----------why--------值=" + asset + "," + "当前类=.()");
-        System.out.println("-----------why--------值=" + hardDisk + "," + "当前类=.()");
-        System.out.println("-----------why--------值=" + mainboard + "," + "当前类=.()");
-        System.out.println("-----------why--------值=" + memory + "," + "当前类=.()");
-        System.out.println("-----------why--------值=" + networkCard + "," + "当前类=.()");
-        System.out.println("-----------why--------值=" + aid + "," + "当前类=.()");
-        System.out.println("-----------why--------值=" + insert + "," + "当前类=.()");
-
-        return null;
+        return aid;
     }
 
     /**
