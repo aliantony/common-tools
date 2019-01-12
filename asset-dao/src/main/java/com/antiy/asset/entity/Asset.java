@@ -33,7 +33,7 @@ public class Asset extends BaseEntity {
     /**
      * 品类
      */
-    private Integer           categoryModelId;
+    private Integer           categoryModel;
     /**
      * 厂商
      */
@@ -232,12 +232,12 @@ public class Asset extends BaseEntity {
         this.serial = serial;
     }
 
-    public Integer getCategoryModelId() {
-        return categoryModelId;
+    public Integer getCategoryModel() {
+        return categoryModel;
     }
 
-    public void setCategoryModelId(Integer categoryModelId) {
-        this.categoryModelId = categoryModelId;
+    public void setCategoryModel(Integer categoryModelId) {
+        this.categoryModel = categoryModelId;
     }
 
     public String getManufacturer() {
@@ -499,7 +499,7 @@ public class Asset extends BaseEntity {
     @Override
     public String toString() {
         return "Asset{" + ", number=" + number + ", type=" + type + ", name=" + name + ", serial=" + serial
-               + ", categoryModelId=" + categoryModelId + ", manufacturer=" + manufacturer + ", assetStatus="
+               + ", categoryModelId=" + categoryModel + ", manufacturer=" + manufacturer + ", assetStatus="
                + assetStatus + ", operationSystem=" + operationSystem + ", systemBit=" + systemBit + ", location="
                + location + ", latitude=" + latitude + ", longitude=" + longitude + ", firmwareVersion="
                + firmwareVersion + ", uuid=" + uuid + ", responsibleUserId=" + responsibleUserId + ", contactTel="
