@@ -188,28 +188,29 @@ public class AssetController {
 
     /**
      * 查询厂商信息
+     * @author zhangyajun
      *
      * @return 厂商名称集合
      */
     @ApiOperation(value = "查询厂商接口", notes = "无查询条件")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/query/manufacturer", method = RequestMethod.GET)
-    public List<ManufacturerResponse> queryManufacturer() throws Exception {
-        return iAssetService.findManufacturer();
+    public ActionResponse queryManufacturer() throws Exception {
+        return ActionResponse.success(iAssetService.findManufacturer());
     }
 
     /**
-     * 通过ID列表查询资产列表
+     * 通过ID数组查询资产列表
+     * @author zhangyajun
      *
      * @param ids
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID列表查询资产列表", notes = "传入资产ID数组")
+    @ApiOperation(value = "通过ID数组查询资产列表", notes = "传入资产ID数组")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/query/{ids}", method = RequestMethod.POST)
     public ActionResponse queryAssetByIds(@ApiParam(value = "资产ID数组") @RequestParam("ids") Integer[] ids) throws Exception {
-        iAssetService.queryAssetByIds(ids);
-        return ActionResponse.success();
+        return ActionResponse.success(iAssetService.queryAssetByIds(ids));
     }
 
     /**
@@ -235,14 +236,15 @@ public class AssetController {
         return iAssetService.countStatus();
     }
     /**
-     * 硬件资产按厂商统计
+     * 硬件资产-按厂商统计
+     * @author zhangyajun
      *
      * @return 厂商名和该厂商资产数量的映射
      */
     @ApiOperation(value = "硬件资产按厂商统计接口", notes = "无查询条件")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/count/manufacturer", method = RequestMethod.GET)
-    public Map<String, Long> countAssetByManufacturer() throws Exception {
-        return iAssetService.countManufacturer();
+    public ActionResponse countAssetByManufacturer() throws Exception {
+        return ActionResponse.success(iAssetService.countManufacturer());
     }
 }
