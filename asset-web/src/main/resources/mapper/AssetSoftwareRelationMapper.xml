@@ -245,9 +245,8 @@
             asoft.id,
             asoft.size,
             asoft.operation_system AS operationSystem,
-            asoft.category,
-            asoft.model,
-            asoft.NAME,
+            asoft.category_model,
+            asoft.name,
             asoft.upload_software_name AS uploadSoftwareName,
             asoft.path,
             asoft.version,
@@ -270,6 +269,7 @@
             LEFT JOIN asset_software asoft ON asoftrel.software_id = asoft.id
         WHERE
             asset_id = #{assetId}
+            and asoft.id is not null
             AND asoftrel.software_status = 1
     </select>
 

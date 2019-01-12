@@ -16,7 +16,7 @@ public class AssetHardDiskResponse {
      * 主键
      */
     @ApiModelProperty("主键")
-    private int               id;
+    private Integer               id;
     /**
      * 资产主键
      */
@@ -58,11 +58,11 @@ public class AssetHardDiskResponse {
     @ApiModelProperty("购买日期")
     private Long              buyDate;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

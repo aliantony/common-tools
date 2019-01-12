@@ -143,9 +143,9 @@ public class AssetSoftwareController {
     @RequestMapping(value = "/import/file", method = RequestMethod.POST)
     public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws Exception {
         ImportResult importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class, multipartFile, 1, 0);
-        List<?> list = importResult.getDataList();
-        List<Object> assetSoftwares = BeanConvert.convert(list, AssetSoftware.class);
-        Integer successNum = iAssetSoftwareService.batchSave(transferList(assetSoftwares));
+        List<AssetSoftware> list = importResult.getDataList();
+        //List<AssetSoftware> assetSoftwares = BeanConvert.convert(list, AssetSoftware.class);
+        Integer successNum = iAssetSoftwareService.batchSave(list);
         return ActionResponse.success(successNum);
 
     }

@@ -121,7 +121,7 @@ public class AssetSoftwareRelationController {
      */
     @ApiOperation(value = "查询硬件资产关联的软件列表", notes = "资产ID")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/getSoftwareByAssetId/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/getSoftwareByAssetId/{assetId}", method = RequestMethod.GET)
     public ActionResponse getSoftwareByAssetId(@ApiParam(value = "assetId") @PathVariable("assetId") Integer assetId) throws Exception {
         ParamterExceptionUtils.isNull(assetId, "资产ID不能为空");
         return ActionResponse.success(iAssetSoftwareRelationService.getSoftByAssetId(assetId));

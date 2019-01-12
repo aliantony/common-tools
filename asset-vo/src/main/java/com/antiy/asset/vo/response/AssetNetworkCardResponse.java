@@ -16,7 +16,7 @@ public class AssetNetworkCardResponse {
      * 主键
      */
     @ApiModelProperty("主键")
-    private int               id;
+    private Integer               id;
     /**
      * 资产主键
      */
@@ -63,11 +63,11 @@ public class AssetNetworkCardResponse {
     @ApiModelProperty("子网掩码")
     private String            subnetMask;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

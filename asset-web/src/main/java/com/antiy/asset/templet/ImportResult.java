@@ -5,16 +5,16 @@ import java.util.List;
 /**
  * 导入结果
  */
-public class ImportResult {
+public class ImportResult<T> {
 
     private String  msg;
 
-    private List<?> dataList;
+    private List<T> dataList;
 
     public ImportResult() {
     }
 
-    public ImportResult(String msg, List<?> dataList) {
+    public ImportResult(String msg, List<T> dataList) {
         this.msg = msg;
         this.dataList = dataList;
     }
@@ -27,11 +27,11 @@ public class ImportResult {
         this.msg = msg;
     }
 
-    public List<?> getDataList() {
+    public List<T> getDataList() {
         return dataList;
     }
 
-    public void setDataList(List<?> dataList) {
+    public void setDataList(List<T> dataList) {
         this.dataList = dataList;
     }
 }

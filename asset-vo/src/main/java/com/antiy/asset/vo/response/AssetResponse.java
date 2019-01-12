@@ -9,8 +9,6 @@ package com.antiy.asset.vo.response;
 
 public class AssetResponse {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 主键
      */
@@ -26,7 +24,7 @@ public class AssetResponse {
     /**
      * 资产组
      */
-    private String            assetGroups;
+    private String            assetGroup;
     /**
      * ip
      */
@@ -42,11 +40,7 @@ public class AssetResponse {
     /**
      * 品类
      */
-    private Integer           category;
-    /**
-     * 资产型号
-     */
-    private Integer           model;
+    private Integer           categoryModel;
     /**
      * 厂商
      */
@@ -119,12 +113,12 @@ public class AssetResponse {
      */
     private Long              warranty;
 
-    public String getAssetGroups() {
-        return assetGroups;
+    public String getAssetGroup() {
+        return assetGroup;
     }
 
-    public void setAssetGroups(String assetGroups) {
-        this.assetGroups = assetGroups;
+    public void setAssetGroup(String assetGroup) {
+        this.assetGroup = assetGroup;
     }
 
     public String getIp() {
@@ -175,20 +169,12 @@ public class AssetResponse {
         this.serial = serial;
     }
 
-    public Integer getCategory() {
-        return category;
+    public Integer getCategoryModel() {
+        return categoryModel;
     }
 
-    public void setCategory(Integer category) {
-        this.category = category;
-    }
-
-    public Integer getModel() {
-        return model;
-    }
-
-    public void setModel(Integer model) {
-        this.model = model;
+    public void setCategoryModel(Integer categoryModel) {
+        this.categoryModel = categoryModel;
     }
 
     public String getManufacturer() {
@@ -326,4 +312,6 @@ public class AssetResponse {
     public void setWarranty(Long warranty) {
         this.warranty = warranty;
     }
+
+
 }

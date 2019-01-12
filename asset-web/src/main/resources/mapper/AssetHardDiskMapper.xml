@@ -324,9 +324,6 @@
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-            <if test=" id != null">
-                and id = #{id }
-            </if>
             <if test=" assetId != null">
                 and asset_id = #{assetId }
             </if>
@@ -342,39 +339,7 @@
             <if test=" interfaceType != null">
                 and interface_type = #{interfaceType }
             </if>
-            <if test=" capacity != null">
-                and capacity = #{capacity }
-            </if>
-            <if test=" diskType != null">
-                and disk_type = #{diskType }
-            </if>
-            <if test=" buyDate != null">
-                and buy_date = #{buyDate }
-            </if>
-            <if test=" useTimes != null">
-                and use_times = #{useTimes }
-            </if>
-            <if test=" cumulativeHour != null">
-                and cumulative_hour = #{cumulativeHour }
-            </if>
-            <if test=" gmtCreate != null">
-                and gmt_create = #{gmtCreate }
-            </if>
-            <if test=" gmtModified != null">
-                and gmt_modified = #{gmtModified }
-            </if>
-            <if test=" memo != null">
-                and memo = #{memo }
-            </if>
-            <if test=" createUser != null">
-                and create_user = #{createUser }
-            </if>
-            <if test=" modifyUser != null">
-                and modify_user = #{modifyUser }
-            </if>
-            <if test=" status != null">
-                and status = #{status }
-            </if>
+            and status = 1
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}

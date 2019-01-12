@@ -170,10 +170,10 @@ public class AssetController {
     @ApiOperation(value = "导入文件", notes = "主键封装对象")
     @RequestMapping(value = "/import/file", method = RequestMethod.POST)
     public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws Exception {
-        ImportResult importResult = ExcelUtils.importExcelFromClient(AssetEntity.class, multipartFile, 1, 0);
-        List<?> list = importResult.getDataList();
-        List<Object> asset = BeanConvert.convert(list, Asset.class);
-        Integer successNum = iAssetService.batchSave(transferList(asset));
+        ImportResult<Asset> importResult = ExcelUtils.importExcelFromClient(AssetEntity.class, multipartFile, 1, 0);
+        List<Asset> list = importResult.getDataList();
+        //List<Object> asset = BeanConvert.convert(list, Asset.class);
+        Integer successNum = iAssetService.batchSave(list);
         return ActionResponse.success(successNum);
     }
 
