@@ -54,7 +54,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         SchemaTypeEnum codeEnum = EnumUtil.getByCode(SchemaTypeEnum.class, scheme.getType());
         assetOperationRecord.setTargetObjectId(request.getAssetId());
         assetOperationRecord
-            .setTargetType(AssetOperationTableEnum.ASSET.getMsg());
+            .setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setTargetStatus(request.getTargetStatus());
         assetOperationRecord.setSchemaId(scheme.getId());
         assetOperationRecord.setContent(codeEnum.getMsg());
