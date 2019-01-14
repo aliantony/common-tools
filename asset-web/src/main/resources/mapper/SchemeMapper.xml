@@ -10,7 +10,7 @@
         <result column="putinto_user_id" property="putintoUserId"/>
         <result column="putinto_time" property="putintoTime"/>
         <result column="putinto_user" property="putintoUser"/>
-        <result column="filepath" property="filepath"/>
+        <result column="file_info" property="fileInfo"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
@@ -20,7 +20,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, type, result, putinto_user_id AS putintoUserId, putinto_time AS putintoTime, putinto_user AS putintoUser,  filepath, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status AS status
+        id, type, result, putinto_user_id AS putintoUserId, putinto_time AS putintoTime, putinto_user AS putintoUser,  file_info AS fileInfo, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status AS status
     </sql>
 
     <sql id="Table_Name">
@@ -44,8 +44,8 @@
         <if test=" putintoUser != null">
             putinto_user,
         </if>
-        <if test=" filepath != null">
-            filepath,
+        <if test=" fileInfo != null">
+            file_info,
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
@@ -83,8 +83,8 @@
         <if test=" putintoUser != null">
             #{putintoUser },
         </if>
-        <if test=" filepath != null">
-            #{filepath },
+        <if test=" fileInfo != null">
+            #{file_info },
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
@@ -122,8 +122,8 @@
         <if test=" putintoUser != null">
             putinto_user = #{putintoUser },
         </if>
-        <if test=" filepath != null">
-            filepath = #{filepath },
+        <if test=" fileInfo != null">
+            file_info = #{file_info },
         </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
@@ -161,8 +161,8 @@
         <if test=" putintoUser != null">
             and putinto_user = #{putintoUser }
         </if>
-        <if test=" filepath != null">
-            and filepath = #{filepath }
+        <if test=" fileInfo != null">
+            and file_info = #{file_info }
         </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }
@@ -260,7 +260,7 @@
     </select>
 
     <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
-        select type, result, putinto_user_id, putinto_user, filepath,memo from
+        select type, result, putinto_user_id, putinto_user, file_info,memo from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" putintoUser != null">

@@ -222,7 +222,7 @@
             a.gmt_create as gmtCreate,
             c.putinto_user as putintoUser,
             c.putinto_time as putintoTime,
-            c.filepath,
+            c.file_info,
             b.NAME as targetName,
             c.type,
             c.result
