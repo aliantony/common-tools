@@ -17,4 +17,6 @@ import java.util.List;
 public interface AssetNetworkCardDao extends IBaseDao<AssetNetworkCard> {
 
     List<AssetNetworkCard> findListAssetNetworkCard(AssetNetworkCardQuery query) throws Exception;
+
+    void updateBatch(List<AssetNetworkCard> assetNetworkCardList);
 }

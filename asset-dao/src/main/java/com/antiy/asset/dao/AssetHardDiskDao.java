@@ -17,4 +17,6 @@ import java.util.List;
 public interface AssetHardDiskDao extends IBaseDao<AssetHardDisk> {
 
     List<AssetHardDisk> findListAssetHardDisk(AssetHardDiskQuery query) throws Exception;
+
+    void updateBatch(List<AssetHardDisk> assetHardDiskList);
 }

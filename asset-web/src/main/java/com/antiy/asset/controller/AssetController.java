@@ -5,6 +5,7 @@ import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -113,10 +114,11 @@ public class AssetController {
      */
     @ApiOperation(value = "资产变更", notes = "传入实体对象信息")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "/change/{id}", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "id") Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        iAssetService.changeAsset(id);
+    @RequestMapping(value = "/change/asset", method = RequestMethod.POST)
+    public ActionResponse updateSingle(@RequestBody(required = false)AssetOuterRequest assetOuterRequest) throws Exception {
+        ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息b不能为空");
+        ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
+        iAssetService.changeAsset(assetOuterRequest);
         return ActionResponse.success();
     }
     /**

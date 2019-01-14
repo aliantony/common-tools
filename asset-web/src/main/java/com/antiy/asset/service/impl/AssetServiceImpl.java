@@ -642,8 +642,58 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public void changeAsset(Integer id) {
-        BusinessExceptionUtils.isNull(id, "资产ID不能为空");
-
+    public void changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
+        ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "请传入资产信息");
+        ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
+        Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
+        // 更新资产主表
+        assetDao.update(asset);
+        List<AssetCpuRequest> assetCpuRequestList = assetOuterRequest.getCpu();
+        if (assetCpuRequestList != null && !assetCpuRequestList.isEmpty()) {
+            List<AssetCpu> assetCpuList = BeanConvert.convert(assetCpuRequestList, AssetCpu.class);
+            for (AssetCpu assetCpu : assetCpuList) {
+                assetCpu.setGmtModified(System.currentTimeMillis());
+                //TODO 更新人
+            }
+            // 更新cpu信息
+            assetCpuDao.updateBatch(assetCpuList);
+        }
+        List<AssetNetworkCardRequest> assetNetworkCardRequestList = assetOuterRequest.getNetworkCard();
+        if (assetNetworkCardRequestList != null && !assetNetworkCardRequestList.isEmpty()) {
+            List<AssetNetworkCard> assetNetworkCardList = BeanConvert.convert(assetNetworkCardRequestList,
+                AssetNetworkCard.class);
+            for (AssetNetworkCard assetNetworkCard : assetNetworkCardList) {
+                assetNetworkCard.setGmtModified(System.currentTimeMillis());
+                //TODO 更新人
+            }
+            // 更新网卡信息
+            assetNetworkCardDao.updateBatch(assetNetworkCardList);
+        }
+        AssetMainboradRequest assetMainboradRequest = assetOuterRequest.getMainboard();
+        if (assetNetworkCardRequestList != null) {
+            AssetMainborad assetMainborad = BeanConvert.convertBean(assetMainboradRequest, AssetMainborad.class);
+            // 更新主板信息
+            assetMainboradDao.update(assetMainborad);
+        }
+        List<AssetMemoryRequest> assetMemoryRequestList = assetOuterRequest.getMemory();
+        if (assetMemoryRequestList != null && !assetMemoryRequestList.isEmpty()) {
+            List<AssetMemory> assetMemoryList = BeanConvert.convert(assetMemoryRequestList, AssetMemory.class);
+            for (AssetMemory assetMemory : assetMemoryList) {
+                assetMemory.setGmtCreate(System.currentTimeMillis());
+                //TODO 更新人
+            }
+            // 更新内存信息
+            assetMemoryDao.updateBatch(assetMemoryList);
+        }
+        List<AssetHardDiskRequest> assetHardDiskRequestList = assetOuterRequest.getHardDisk();
+        if (assetHardDiskRequestList != null && !assetHardDiskRequestList.isEmpty()) {
+            List<AssetHardDisk> assetHardDiskList = BeanConvert.convert(assetHardDiskRequestList, AssetHardDisk.class);
+            for (AssetHardDisk assetHardDisk : assetHardDiskList) {
+                assetHardDisk.setGmtCreate(System.currentTimeMillis());
+                //TODO 更新人
+            }
+            // 更新硬盘信息
+            assetHardDiskDao.updateBatch(assetHardDiskList);
+        }
     }
 }

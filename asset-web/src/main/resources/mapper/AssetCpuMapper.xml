@@ -135,23 +135,14 @@
         <if test=" coreSize != null">
             core_size = #{coreSize },
         </if>
-        <if test=" gmtCreate != null">
-            gmt_create = #{gmtCreate },
-        </if>
         <if test=" gmtModified != null">
             gmt_modified = #{gmtModified },
         </if>
         <if test=" memo != null">
             memo = #{memo },
         </if>
-        <if test=" createUser != null">
-            create_user = #{createUser },
-        </if>
         <if test=" modifyUser != null">
             modify_user = #{modifyUser },
-        </if>
-        <if test=" status != null">
-            status = #{status },
         </if>
     </sql>
 
@@ -298,4 +289,14 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <update id="updateBatch" parameterType="com.antiy.asset.entity.AssetCpu">
+        <foreach collection="assetCpuList" separator=";" index="index" item="item">
+            update
+            <include refid="Table_Name"></include>
+            <trim prefix="SET" suffixOverrides=",">
+                <include refid="Set_Column_List"></include>
+            </trim>
+            where id = #{id}
+        </foreach>
+    </update>
 </mapper>
