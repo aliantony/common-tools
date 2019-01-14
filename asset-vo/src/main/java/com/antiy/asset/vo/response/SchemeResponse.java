@@ -40,7 +40,7 @@ public class SchemeResponse {
      * 附件路径
      */
     @ApiModelProperty("附件路径")
-    private String  filepath;
+    private String  fileInfo;
 
     /**
      * 备注
@@ -88,12 +88,12 @@ public class SchemeResponse {
         this.putintoUser = putintoUser;
     }
 
-    public String getFilepath() {
-        return filepath;
+    public String getFileInfo() {
+        return fileInfo;
     }
 
-    public void setFilepath(String filepath) {
-        this.filepath = filepath;
+    public void setFileInfo(String fileInfo) {
+        this.fileInfo = fileInfo;
     }
 
     public String getMemo() {

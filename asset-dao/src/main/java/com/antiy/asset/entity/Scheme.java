@@ -38,7 +38,7 @@ public class Scheme extends BaseEntity {
     /**
      * 附件路径
      */
-    private String  filepath;
+    private String  fileInfo;
     /**
      * 创建时间
      */
@@ -113,11 +113,11 @@ public class Scheme extends BaseEntity {
     }
 
     public String getFilepath() {
-        return filepath;
+        return fileInfo;
     }
 
-    public void setFilepath(String filepath) {
-        this.filepath = filepath;
+    public void setFilepath(String fileInfo) {
+        this.fileInfo = fileInfo;
     }
 
     public Long getGmtCreate() {
@@ -171,7 +171,7 @@ public class Scheme extends BaseEntity {
     @Override
     public String toString() {
         return "Scheme{" + ", type=" + type + ", result=" + result + ", putintoUserId=" + putintoUserId
-               + ", putintoTime=" + putintoTime + ", putintoUser=" + putintoUser + ", filepath=" + filepath
+               + ", putintoTime=" + putintoTime + ", putintoUser=" + putintoUser + ", fileInfo=" + fileInfo
                + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser="
                + createUser + ", modifyUser=" + modifyUser + ", status=" + status + "}";
     }

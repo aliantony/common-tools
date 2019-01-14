@@ -3,6 +3,7 @@ package com.antiy.asset.vo.request;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -51,7 +52,7 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      * 附件路径
      */
     @ApiModelProperty("附件路径")
-    private String  filepath;
+    private String  fileInfo;
 
     /**
      * 备注
@@ -63,7 +64,7 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      * 目标状态
      */
     @ApiModelProperty("目标状态")
-    private Integer  targetStatus;
+    private Integer targetStatus;
 
     public Integer getAssetd() {
         return assetd;
@@ -113,12 +114,12 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
         this.putintoUser = putintoUser;
     }
 
-    public String getFilepath() {
-        return filepath;
+    public String getFileInfo() {
+        return fileInfo;
     }
 
-    public void setFilepath(String filepath) {
-        this.filepath = filepath;
+    public void setFileInfo(String fileInfo) {
+        this.fileInfo = fileInfo;
     }
 
     public String getMemo() {
