@@ -48,11 +48,11 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         schemeDao.insert(scheme);
         // TODO 调用工作流
 
-        // 记录操作
+        // 记录操作历史
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         // 判断请求的方案类型
         SchemaTypeEnum codeEnum = EnumUtil.getByCode(SchemaTypeEnum.class, scheme.getType());
-        assetOperationRecord.setTargetObjectId(request.getAssetd());
+        assetOperationRecord.setTargetObjectId(request.getAssetId());
         assetOperationRecord
             .setTargetType(AssetOperationTableEnum.ASSET.getMsg());
         assetOperationRecord.setTargetStatus(request.getTargetStatus());
