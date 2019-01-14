@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.entity.AssetOperationRecordMapper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -33,40 +34,11 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
     @Resource
     private AssetOperationRecordDao                                           assetOperationRecordDao;
     @Resource
-    private BaseConverter<AssetOperationRecordRequest, AssetOperationRecord>  requestConverter;
-    @Resource
-    private BaseConverter<AssetOperationRecord, AssetOperationRecordResponse> responseConverter;
-
-    @Override
-    public Integer saveAssetOperationRecord(AssetOperationRecordRequest request) throws Exception {
-        AssetOperationRecord assetOperationRecord = requestConverter.convert(request, AssetOperationRecord.class);
-        return assetOperationRecordDao.insert(assetOperationRecord);
-    }
-
-    @Override
-    public Integer updateAssetOperationRecord(AssetOperationRecordRequest request) throws Exception {
-        AssetOperationRecord assetOperationRecord = requestConverter.convert(request, AssetOperationRecord.class);
-        return assetOperationRecordDao.update(assetOperationRecord);
-    }
-
-    @Override
-    public List<AssetOperationRecordResponse> findListAssetOperationRecord(AssetOperationRecordQuery query) throws Exception {
-        List<AssetOperationRecord> assetOperationRecordList = assetOperationRecordDao.findQuery(query);
-        // TODO
-        List<AssetOperationRecordResponse> assetOperationRecordResponse = responseConverter
-            .convert(assetOperationRecordList, AssetOperationRecordResponse.class);
-        return assetOperationRecordResponse;
-    }
-
-    @Override
-    public PageResult<AssetOperationRecordResponse> findPageAssetOperationRecord(AssetOperationRecordQuery query) throws Exception {
-        return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
-            this.findListAssetOperationRecord(query));
-    }
+    private BaseConverter<AssetOperationRecordMapper, AssetOperationRecordResponse> responseConverter;
 
     @Override
     public List<AssetOperationRecordResponse> findAssetOperationRecordByAssetId(Integer assetId) {
-        List<AssetOperationRecord> assetOperationRecordList = assetOperationRecordDao.findAssetOperationRecordByAssetId(assetId);
+        List<AssetOperationRecordMapper> assetOperationRecordList = assetOperationRecordDao.findAssetOperationRecordByAssetId(assetId);
         List<AssetOperationRecordResponse> assetOperationRecordResponse = responseConverter
                 .convert(assetOperationRecordList, AssetOperationRecordResponse.class);
         return assetOperationRecordResponse;

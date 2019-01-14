@@ -18,38 +18,6 @@ import com.antiy.common.base.PageResult;
 public interface IAssetOperationRecordService extends IBaseService<AssetOperationRecord> {
 
     /**
-     * 保存
-     *
-     * @param request
-     * @return
-     */
-    Integer saveAssetOperationRecord(AssetOperationRecordRequest request) throws Exception;
-
-    /**
-     * 修改
-     *
-     * @param request
-     * @return
-     */
-    Integer updateAssetOperationRecord(AssetOperationRecordRequest request) throws Exception;
-
-    /**
-     * 查询对象集合
-     *
-     * @param query
-     * @return
-     */
-    List<AssetOperationRecordResponse> findListAssetOperationRecord(AssetOperationRecordQuery query) throws Exception;
-
-    /**
-     * 批量查询
-     *
-     * @param query
-     * @return
-     */
-    PageResult<AssetOperationRecordResponse> findPageAssetOperationRecord(AssetOperationRecordQuery query) throws Exception;
-
-    /**
      * 通过资产主键查询资产操作记录
      * @param assetId
      * @return

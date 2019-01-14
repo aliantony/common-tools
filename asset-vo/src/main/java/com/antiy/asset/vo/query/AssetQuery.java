@@ -43,7 +43,7 @@ public class AssetQuery extends ObjectQuery {
      * 品类型号
      */
     @ApiModelProperty("品类型号")
-    private Integer[]       categoryModel;
+    private Integer       categoryModel;
     /**
      * 品类型号列表
      */
@@ -161,11 +161,11 @@ public class AssetQuery extends ObjectQuery {
         this.serial = serial;
     }
 
-    public Integer[] getCategoryModel() {
+    public Integer getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer[] categoryModel) {
+    public void setCategoryModel(Integer categoryModel) {
         this.categoryModel = categoryModel;
     }
 
