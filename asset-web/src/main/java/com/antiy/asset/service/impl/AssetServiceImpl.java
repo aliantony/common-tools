@@ -653,7 +653,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetCpu> assetCpuList = BeanConvert.convert(assetCpuRequestList, AssetCpu.class);
             for (AssetCpu assetCpu : assetCpuList) {
                 assetCpu.setGmtModified(System.currentTimeMillis());
-                //TODO 更新人
+                // TODO 更新人
             }
             // 更新cpu信息
             assetCpuDao.updateBatch(assetCpuList);
@@ -664,7 +664,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 AssetNetworkCard.class);
             for (AssetNetworkCard assetNetworkCard : assetNetworkCardList) {
                 assetNetworkCard.setGmtModified(System.currentTimeMillis());
-                //TODO 更新人
+                // TODO 更新人
             }
             // 更新网卡信息
             assetNetworkCardDao.updateBatch(assetNetworkCardList);
@@ -680,7 +680,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetMemory> assetMemoryList = BeanConvert.convert(assetMemoryRequestList, AssetMemory.class);
             for (AssetMemory assetMemory : assetMemoryList) {
                 assetMemory.setGmtCreate(System.currentTimeMillis());
-                //TODO 更新人
+                // TODO 更新人
             }
             // 更新内存信息
             assetMemoryDao.updateBatch(assetMemoryList);
@@ -690,7 +690,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetHardDisk> assetHardDiskList = BeanConvert.convert(assetHardDiskRequestList, AssetHardDisk.class);
             for (AssetHardDisk assetHardDisk : assetHardDiskList) {
                 assetHardDisk.setGmtCreate(System.currentTimeMillis());
-                //TODO 更新人
+                // TODO 更新人
             }
             // 更新硬盘信息
             assetHardDiskDao.updateBatch(assetHardDiskList);

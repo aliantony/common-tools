@@ -335,4 +335,14 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <update id="updateBatch" parameterType="com.antiy.asset.entity.AssetMemory">
+        <foreach collection="assetMemoryList" separator=";" index="index" item="item">
+            update
+            <include refid="Table_Name"></include>
+            <trim prefix="SET" suffixOverrides=",">
+                <include refid="Set_Column_List"></include>
+            </trim>
+            where id = #{id}
+        </foreach>
+    </update>
 </mapper>
