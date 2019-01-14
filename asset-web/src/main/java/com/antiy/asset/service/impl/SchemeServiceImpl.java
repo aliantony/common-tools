@@ -93,6 +93,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         return schemeResponse;
     }
 
+    @Override
     public SchemeResponse findSchemeById(Integer id) throws Exception {
         return responseConverter.convert(super.getById(id), SchemeResponse.class);
     }
