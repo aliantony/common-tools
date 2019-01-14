@@ -264,8 +264,18 @@
         <include refid="Table_Name"></include>
     </select>
 
-
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1) count
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+    <select id="findListCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetUserQuery">
         select count(1) count
         from
         <include refid="Table_Name"></include>
