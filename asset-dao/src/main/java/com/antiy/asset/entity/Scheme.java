@@ -36,7 +36,7 @@ public class Scheme extends BaseEntity {
      */
     private String  putintoUser;
     /**
-     * 工单级别
+     * 工单级别(1提示2紧急2重要3次要)
      */
     private String  orderLevel;
     /**
