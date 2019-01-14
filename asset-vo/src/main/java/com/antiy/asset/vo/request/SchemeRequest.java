@@ -51,15 +51,15 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     /**
      * 工单级别(1提示2紧急2重要3次要)
      */
-    private String  orderLevel;
+    private Integer orderLevel;
     /**
-     *  预计开始时间
+     * 预计开始时间
      */
-    private Long expecteStartTime;
+    private Long    expecteStartTime;
     /**
-     *  预计结束时间
+     * 预计结束时间
      */
-    private Long expecteEndTime;
+    private Long    expecteEndTime;
     /**
      * 附件路径
      */
@@ -86,11 +86,11 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
         this.assetId = assetId;
     }
 
-    public String getOrderLevel() {
+    public Integer getOrderLevel() {
         return orderLevel;
     }
 
-    public void setOrderLevel(String orderLevel) {
+    public void setOrderLevel(Integer orderLevel) {
         this.orderLevel = orderLevel;
     }
 
