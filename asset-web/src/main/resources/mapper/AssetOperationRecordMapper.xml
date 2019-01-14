@@ -175,7 +175,7 @@
     </select>
 
     <select id="findAssetOperationRecordByAssetId" parameterType="java.lang.Integer"
-            resultType="com.antiy.asset.entity.AssetOperationRecord">
+            resultType="com.antiy.asset.entity.AssetOperationRecordMapper">
         SELECT
             a.id,
             a.target_object_id,
@@ -193,6 +193,9 @@
             asset_operation_record a
           LEFT JOIN asset b ON a.target_object_id = b.id
           LEFT JOIN scheme c ON a.schema_id = c.id
+          AND a.status = 1
+          AND b.status = 1
+          AND c.status = 1
           AND a.target_object_id = 2
     </select>
 </mapper>

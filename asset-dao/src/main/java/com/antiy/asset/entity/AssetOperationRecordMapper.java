@@ -1,15 +1,13 @@
-package com.antiy.asset.vo.response;
-
-import com.antiy.common.base.BaseEntity;
+package com.antiy.asset.entity;
 
 /**
- * <p> AssetOperationRecordResponse 响应对象 </p>
+ * <p> AssetOperationRecordMapper 数据库返回实体对象 </p>
  *
  * @author lvliang
  * @since 2018-12-27
  */
 
-public class AssetOperationRecordResponse {
+public class AssetOperationRecordMapper {
     /**
      * 被操作的对象ID
      */
