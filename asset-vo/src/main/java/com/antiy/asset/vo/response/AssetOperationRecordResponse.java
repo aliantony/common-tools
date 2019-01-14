@@ -11,7 +11,7 @@ public class AssetOperationRecordResponse extends BaseResponse {
     /**
      * 被操作的对象ID
      */
-    private Integer targetObjectIdId;
+    private Integer targetObjectId;
     /**
      * 被操作对象类别
      */
@@ -59,15 +59,9 @@ public class AssetOperationRecordResponse extends BaseResponse {
     /**
      * 附件信息（[{"XXX文件","10.12.5.1:5566/file/asset/dj"}]）
      */
-    private String  files;
+    private String  fileInfo;
 
-    public String getFiles() {
-        return files;
-    }
 
-    public void setFiles(String files) {
-        this.files = files;
-    }
 
     public String getOperateUserName() {
         return operateUserName;
@@ -75,14 +69,6 @@ public class AssetOperationRecordResponse extends BaseResponse {
 
     public void setOperateUserName(String operateUserName) {
         this.operateUserName = operateUserName;
-    }
-
-    public Integer getTargetObjectIdId() {
-        return targetObjectIdId;
-    }
-
-    public void setTargetObjectIdId(Integer targetObjectIdId) {
-        this.targetObjectIdId = targetObjectIdId;
     }
 
     public String getTargetType() {
@@ -163,5 +149,21 @@ public class AssetOperationRecordResponse extends BaseResponse {
 
     public void setPutintoUser(String putintoUser) {
         this.putintoUser = putintoUser;
+    }
+
+    public Integer getTargetObjectId() {
+        return targetObjectId;
+    }
+
+    public void setTargetObjectId(Integer targetObjectId) {
+        this.targetObjectId = targetObjectId;
+    }
+
+    public String getFileInfo() {
+        return fileInfo;
+    }
+
+    public void setFileInfo(String fileInfo) {
+        this.fileInfo = fileInfo;
     }
 }
