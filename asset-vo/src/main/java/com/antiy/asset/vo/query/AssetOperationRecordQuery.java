@@ -14,13 +14,13 @@ public class AssetOperationRecordQuery extends ObjectQuery {
     /**
      * 被操作的对象ID
      */
-    private Integer targetObject;
+    private Integer targetObjectId;
 
     public Integer getTargetObject() {
-        return targetObject;
+        return targetObjectId;
     }
 
-    public void setTargetObject(Integer targetObject) {
-        this.targetObject = targetObject;
+    public void setTargetObject(Integer targetObjectId) {
+        this.targetObjectId = targetObjectId;
     }
 }

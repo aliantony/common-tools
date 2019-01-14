@@ -5,15 +5,16 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetOperationRecord">
         <id column="id" property="id"/>
-        <result column="target_object" property="targetObject"/>
-        <result column="target_table_name" property="targetTableName"/>
+        <result column="target_object_id" property="targetObjectId"/>
+        <result column="target_type" property="targetType"/>
+        <result column="target_status" property="targetStatus"/>
         <result column="content" property="content"/>
         <result column="create_user" property="createUser"/>
         <result column="gmt_create" property="gmtCreate"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, target_object AS targetObject, target_table_name AS targetTableName, content, create_user AS createUser, gmt_create AS gmtCreate
+        id, target_object_id AS targetObjectId, target_type AS targetType, content, create_user AS createUser, gmt_create AS gmtCreate, target_status AS targetStatus
     </sql>
 
     <sql id="Table_Name">
@@ -22,17 +23,26 @@
 
 
     <sql id="IF_Base_Column_List">
-        <if test=" targetObject != null">
-            target_object,
+        <if test=" targetObjectId != null">
+            target_object_id,
         </if>
-        <if test=" targetTableName != null">
-            target_table_name,
+        <if test=" targetType != null">
+            target_type,
+        </if>
+        <if test=" targetStatus != null">
+            target_status,
         </if>
         <if test=" content != null">
             content,
         </if>
-        <if test=" createUser != null">
-            create_user,
+        <if test=" operateUserId != null">
+            operate_user_id,
+        </if>
+        <if test=" operateUserName != null">
+            operate_user_name,
+        </if>
+        <if test=" schemaId != null">
+            schema_id,
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
@@ -40,17 +50,26 @@
     </sql>
 
     <sql id="IF_Value_Column_List">
-        <if test=" targetObject != null">
-            #{targetObject },
+        <if test=" targetObjectId != null">
+            #{targetObjectId },
         </if>
-        <if test=" targetTableName != null">
-            #{targetTableName },
+        <if test=" targetType != null">
+            #{targetType },
+        </if>
+        <if test=" targetStatus != null">
+            #{targetStatus },
         </if>
         <if test=" content != null">
             #{content },
         </if>
-        <if test=" createUser != null">
-            #{createUser },
+        <if test=" operateUserId != null">
+            #{operateUserId },
+        </if>
+        <if test=" operateUserName != null">
+            #{operateUserName },
+        </if>
+        <if test=" schemaId != null">
+            #{schemaId },
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
@@ -58,17 +77,26 @@
     </sql>
 
     <sql id="Set_Column_List">
-        <if test=" targetObject != null">
-            target_object = #{targetObject },
+        <if test=" targetObjectId != null">
+            target_object_id = #{targetObjectId },
         </if>
-        <if test=" targetTableName != null">
-            target_table_name = #{targetTableName },
+        <if test=" targetType != null">
+            target_type = #{targetType },
+        </if>
+        <if test=" targetStatus != null">
+            target_status = #{targetStatus },
         </if>
         <if test=" content != null">
             content = #{content },
         </if>
-        <if test=" createUser != null">
-            create_user = #{createUser },
+        <if test=" operateUserId != null">
+            operate_user_id = #{operateUserId },
+        </if>
+        <if test=" operateUserName != null">
+            operate_user_name = #{operateUserName },
+        </if>
+        <if test=" schemaId != null">
+            schema_id = #{schemaId },
         </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
@@ -76,17 +104,26 @@
     </sql>
 
     <sql id="Where_Column_List">
-        <if test=" targetObject != null">
-            and target_object = #{targetObject }
+        <if test=" targetObjectId != null">
+            and target_object_id = #{targetObjectId }
         </if>
-        <if test=" targetTableName != null">
-            and target_table_name = #{targetTableName }
+        <if test=" targetType != null">
+            and target_type = #{targetType }
+        </if>
+        <if test=" targetStatus != null">
+            and target_status = #{targetStatus }
         </if>
         <if test=" content != null">
             and content = #{content }
         </if>
-        <if test=" createUser != null">
-            and create_user = #{createUser }
+        <if test=" operateUserId != null">
+            and operate_user_id = #{operateUserId }
+        </if>
+        <if test=" operateUserName != null">
+            and operate_user_name = #{operateUserName }
+        </if>
+        <if test=" schemaId != null">
+            and schema_id = #{schemaId }
         </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }
@@ -178,7 +215,7 @@
             resultType="com.antiy.asset.entity.AssetOperationRecordMapper">
         SELECT
             a.id,
-            a.target_object_id as targetObject,
+            a.target_object_id_id as targetObjectId,
             a.target_status_name as targetStatusName,
             a.content,
             a.operate_user_name as operateUserName,
@@ -191,10 +228,10 @@
             c.result
         FROM
             asset_operation_record a
-          LEFT JOIN asset b ON a.target_object_id = b.id
+          LEFT JOIN asset b ON a.target_object_id_id = b.id
           LEFT JOIN scheme c ON a.schema_id = c.id
           AND b.status = 1
           AND c.status = 1
-          AND a.target_object_id = #{id}
+          AND a.target_object_id_id = #{id}
     </select>
 </mapper>

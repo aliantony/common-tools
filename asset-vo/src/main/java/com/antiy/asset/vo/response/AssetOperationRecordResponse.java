@@ -14,119 +14,43 @@ public class AssetOperationRecordResponse {
     /**
      * 被操作的对象ID
      */
-    private Integer                   targetObject;
+    private Integer                   targetObjectIdId;
     /**
-     * 被操作对象名称
+     * 被操作对象类别
      */
-    private String                    targetName;
+    private String                    targetType;
     /**
      * 状态
      */
-    private String                    targetStatus;
-    /**
-     * 操作人名字
-     */
-    private String                    operateUserName;
+    private Integer                   targetStatus;
     /**
      * 操作内容
      */
     private String                    content;
     /**
+     * 操作人ID
+     */
+    private Integer                   operateUserId;
+    /**
+     * 操作人名字
+     */
+    private String                    operateUserName;
+    /**
+     * 方案表ID
+     */
+    private Integer                   schemaId;
+    /**
      * 创建时间
      */
     private Long                      gmtCreate;
     /**
-     * 类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）
+     * 创建人
      */
-    private String                    type;
-    /**
-     * 结果
-     */
-    private String                    result;
-    /**
-     * 实施时间
-     */
-    private Long                      putintoTime;
-    /**
-     * 实施人
-     */
-    private String                    putintoUser;
+    private Integer                   createUser;
     /**
      * 附件信息（[{"XXX文件","10.12.5.1:5566/file/asset/dj"}]）
      */
     private List<Map<String, String>> files;
-
-    public Integer getTargetObject() {
-        return targetObject;
-    }
-
-    public void setTargetObject(Integer targetObject) {
-        this.targetObject = targetObject;
-    }
-
-    public String getTargetName() {
-        return targetName;
-    }
-
-    public void setTargetName(String targetName) {
-        this.targetName = targetName;
-    }
-
-    public String getTargetStatus() {
-        return targetStatus;
-    }
-
-    public void setTargetStatus(String targetStatus) {
-        this.targetStatus = targetStatus;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
-    }
-
-    public Long getPutintoTime() {
-        return putintoTime;
-    }
-
-    public void setPutintoTime(Long putintoTime) {
-        this.putintoTime = putintoTime;
-    }
-
-    public String getPutintoUser() {
-        return putintoUser;
-    }
-
-    public void setPutintoUser(String putintoUser) {
-        this.putintoUser = putintoUser;
-    }
 
     public List<Map<String, String>> getFiles() {
         return files;
@@ -142,5 +66,69 @@ public class AssetOperationRecordResponse {
 
     public void setOperateUserName(String operateUserName) {
         this.operateUserName = operateUserName;
+    }
+
+    public Integer getTargetObjectIdId() {
+        return targetObjectIdId;
+    }
+
+    public void setTargetObjectIdId(Integer targetObjectIdId) {
+        this.targetObjectIdId = targetObjectIdId;
+    }
+
+    public String getTargetType() {
+        return targetType;
+    }
+
+    public void setTargetType(String targetType) {
+        this.targetType = targetType;
+    }
+
+    public Integer getTargetStatus() {
+        return targetStatus;
+    }
+
+    public void setTargetStatus(Integer targetStatus) {
+        this.targetStatus = targetStatus;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Integer getOperateUserId() {
+        return operateUserId;
+    }
+
+    public void setOperateUserId(Integer operateUserId) {
+        this.operateUserId = operateUserId;
+    }
+
+    public Integer getSchemaId() {
+        return schemaId;
+    }
+
+    public void setSchemaId(Integer schemaId) {
+        this.schemaId = schemaId;
+    }
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
     }
 }

@@ -13,7 +13,7 @@ public class AssetOperationRecordMapper {
     /**
      * 被操作的对象ID
      */
-    private Integer        targetObject;
+    private Integer        targetObjectId;
     /**
      * 被操作对象名称
      */
@@ -56,11 +56,11 @@ public class AssetOperationRecordMapper {
     private List<String[]> files;
 
     public Integer getTargetObject() {
-        return targetObject;
+        return targetObjectId;
     }
 
-    public void setTargetObject(Integer targetObject) {
-        this.targetObject = targetObject;
+    public void setTargetObject(Integer targetObjectId) {
+        this.targetObjectId = targetObjectId;
     }
 
     public String getTargetName() {

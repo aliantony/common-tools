@@ -19,12 +19,12 @@ public class AssetOperationRecordRequest extends BasicRequest implements ObjectV
      *  被操作的对象ID
      */
     @ApiModelProperty("被操作的对象ID")
-    private Integer targetObject;
+    private Integer targetObjectId;
     /**
-     *  被修改的表名称
+     *  被操作对象类别
      */
-    @ApiModelProperty("被修改的表名称")
-    private String targetTableName;
+    @ApiModelProperty("被操作对象类别")
+    private String targetType;
     /**
      *  操作内容
      */
@@ -44,20 +44,20 @@ public class AssetOperationRecordRequest extends BasicRequest implements ObjectV
                 
                 
     public Integer getTargetObject() {
-    return targetObject;
+    return targetObjectId;
     }
 
-    public void setTargetObject(Integer targetObject) {
-        this.targetObject = targetObject;
+    public void setTargetObject(Integer targetObjectId) {
+        this.targetObjectId = targetObjectId;
         }
     
                 
     public String getTargetTableName() {
-    return targetTableName;
+    return targetType;
     }
 
-    public void setTargetTableName(String targetTableName) {
-        this.targetTableName = targetTableName;
+    public void setTargetTableName(String targetType) {
+        this.targetType = targetType;
         }
     
                 
