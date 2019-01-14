@@ -1,8 +1,5 @@
 package com.antiy.asset.vo.response;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * <p> AssetOperationRecordResponse 响应对象 </p>
  *
@@ -50,13 +47,13 @@ public class AssetOperationRecordResponse extends BaseResponse{
     /**
      * 附件信息（[{"XXX文件","10.12.5.1:5566/file/asset/dj"}]）
      */
-    private List<Map<String, String>> files;
+    private String files;
 
-    public List<Map<String, String>> getFiles() {
+    public String getFiles() {
         return files;
     }
 
-    public void setFiles(List<Map<String, String>> files) {
+    public void setFiles(String files) {
         this.files = files;
     }
 

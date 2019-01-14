@@ -53,7 +53,7 @@ public class AssetOperationRecordMapper {
     /**
      * 附件信息（[{"XXX文件","10.12.5.1:5566/file/asset/dj"}]）
      */
-    private List<String[]> files;
+    private String files;
 
     public Integer getTargetObject() {
         return targetObjectId;
@@ -135,11 +135,11 @@ public class AssetOperationRecordMapper {
         this.operateUserName = operateUserName;
     }
 
-    public List<String[]> getFiles() {
+    public String getFiles() {
         return files;
     }
 
-    public void setFiles(List<String[]> files) {
+    public void setFiles(String files) {
         this.files = files;
     }
 }
