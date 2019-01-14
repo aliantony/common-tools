@@ -18,9 +18,9 @@ public class AssetOperationRecord extends BaseEntity {
      */
     private Integer           targetObjectId;
     /**
-     * 被修改的表名称
+     * 被操作对象类别
      */
-    private String            targetTableName;
+    private String            targetType;
     /**
      * 状态
      */
@@ -54,12 +54,12 @@ public class AssetOperationRecord extends BaseEntity {
         this.targetObjectId = targetObjectId;
     }
 
-    public String getTargetTableName() {
-        return targetTableName;
+    public String getTargetType() {
+        return targetType;
     }
 
-    public void setTargetTableName(String targetTableName) {
-        this.targetTableName = targetTableName;
+    public void setTargetType(String targetType) {
+        this.targetType = targetType;
     }
 
     public Integer getTargetStatus() {
@@ -112,7 +112,7 @@ public class AssetOperationRecord extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetOperationRecord{" + ", targetObjectId=" + targetObjectId + ", targetTableName=" + targetTableName
+        return "AssetOperationRecord{" + ", targetObjectId=" + targetObjectId + ", targetType=" + targetType
                + ", targetStatus=" + targetStatus + ", content=" + content + ", operateUserId=" + operateUserId
                + ", operateUserName=" + operateUserName + ", schemaId=" + schemaId + ", gmtCreate=" + gmtCreate + "}";
     }
