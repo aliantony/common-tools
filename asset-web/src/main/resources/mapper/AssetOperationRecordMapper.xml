@@ -211,27 +211,26 @@
         </if>
     </select>
 
-    <select id="findAssetOperationRecordByAssetId" parameterType="java.lang.Integer"
+    <select id="findAssetOperationRecordByAssetId" parameterType="com.antiy.asset.vo.query.AssetOperationRecordQuery"
             resultType="com.antiy.asset.entity.AssetOperationRecordMapper">
         SELECT
             a.id,
-            a.target_object_id_id as targetObjectId,
-            a.target_status_name as targetStatusName,
+            a.target_object_id as targetObjectId,
+            a.target_status as targetStatus,
             a.content,
             a.operate_user_name as operateUserName,
             a.gmt_create as gmtCreate,
             c.putinto_user as putintoUser,
             c.putinto_time as putintoTime,
-            c.file_info,
-            b.NAME as targetName,
+            c.file_info as fileInfo,
             c.type,
             c.result
         FROM
             asset_operation_record a
-          LEFT JOIN asset b ON a.target_object_id_id = b.id
           LEFT JOIN scheme c ON a.schema_id = c.id
-          AND b.status = 1
           AND c.status = 1
-          AND a.target_object_id_id = #{id}
+          AND a.target_object_id = #{targetObjectId}
+          AND a.target_type = #{targetType}
+          order by a.id
     </select>
 </mapper>

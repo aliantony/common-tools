@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.antiy.common.base.Constants;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -171,23 +172,26 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         map.put("name", "软件");
         map.put("parentId", 0);
         List<AssetCategoryModel> categoryModelList = assetCategoryModelDao.getByWhere(map);
-        Integer id = categoryModelList.get(0).getId();
-        map.clear();
-        map.put("parentId", id);
-        List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getByWhere(map);
-        HashMap<String, Long> result = new HashMap<>();
-        for (AssetCategoryModel a : categoryModelList1) {
-            List<AssetCategoryModel> search = recursionSearch(a.getId());
-            List list = new ArrayList();
-            for (AssetCategoryModel b : search) {
-                list.add(b.getId());
+        if (CollectionUtils.isNotEmpty(categoryModelList)) {
+            Integer id = categoryModelList.get(0).getId();
+            map.clear();
+            map.put("parentId", id);
+            List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getByWhere(map);
+            HashMap<String, Long> result = new HashMap<>();
+            for (AssetCategoryModel a : categoryModelList1) {
+                List<AssetCategoryModel> search = recursionSearch(a.getId());
+                List list = new ArrayList();
+                for (AssetCategoryModel b : search) {
+                    list.add(b.getId());
+                }
+                AssetSoftwareQuery assetSoftwareQuery = new AssetSoftwareQuery();
+                assetSoftwareQuery.setCategoryModels(ArrayTypeUtil.ObjectArrayToIntegerArray(list.toArray()));
+                Long sum = assetSoftwareDao.findCountByCategoryModel(assetSoftwareQuery);
+                result.put(a.getName(), sum);
             }
-            AssetSoftwareQuery assetSoftwareQuery = new AssetSoftwareQuery();
-            assetSoftwareQuery.setCategoryModels(ArrayTypeUtil.ObjectArrayToIntegerArray(list.toArray()));
-            Long sum = assetSoftwareDao.findCountByCategoryModel(assetSoftwareQuery);
-            result.put(a.getName(), sum);
+            return result;
         }
-        return result;
+        return null;
     }
 
     @Override

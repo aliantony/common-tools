@@ -49,4 +49,12 @@ public interface ISchemeService extends IBaseService<Scheme> {
      */
     PageResult<SchemeResponse> findPageScheme(SchemeQuery query) throws Exception;
 
+    /**
+     * 通过id查询方案
+     *
+     * @param id
+     * @return
+     */
+    SchemeResponse findSchemeById(Integer id) throws Exception;
+
 }

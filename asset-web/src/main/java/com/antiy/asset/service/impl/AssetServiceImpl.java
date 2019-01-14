@@ -9,6 +9,7 @@ import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.utils.BusinessExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -466,23 +467,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         map.put("name", "硬件");
         map.put("parentId", 0);
         List<AssetCategoryModel> categoryModelList = assetCategoryModelDao.getByWhere(map);
-        Integer id = categoryModelList.get(0).getId();
-        map.clear();
-        map.put("parentId", id);
-        List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getByWhere(map);
-        HashMap<String, Long> result = new HashMap<>();
-        for (AssetCategoryModel a : categoryModelList1) {
-            List<AssetCategoryModel> search = recursionSearch(a.getId());
-            Long sum = 0L;
-            List<Integer> list = new ArrayList<>();
-            for (AssetCategoryModel b : search) {
-                list.add(b.getId());
+        if (CollectionUtils.isNotEmpty(categoryModelList)) {
+            Integer id = categoryModelList.get(0).getId();
+            map.clear();
+            map.put("parentId", id);
+            List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getByWhere(map);
+            HashMap<String, Long> result = new HashMap<>();
+            for (AssetCategoryModel a : categoryModelList1) {
+                List<AssetCategoryModel> search = recursionSearch(a.getId());
+                Long sum = 0L;
+                List<Integer> list = new ArrayList<>();
+                for (AssetCategoryModel b : search) {
+                    list.add(b.getId());
+                }
+                AssetQuery assetQuery = new AssetQuery();
+                assetQuery.setCategoryModels(ArrayTypeUtil.ObjectArrayToIntegerArray(list.toArray()));
+                result.put(a.getName(), (long) assetDao.findCountByCategoryModel(assetQuery));
             }
-            AssetQuery assetQuery = new AssetQuery();
-            assetQuery.setCategoryModels(ArrayTypeUtil.ObjectArrayToIntegerArray(list.toArray()));
-            result.put(a.getName(), (long) assetDao.findCountByCategoryModel(assetQuery));
+            return result;
         }
-        return result;
+        return null;
     }
 
     @Override

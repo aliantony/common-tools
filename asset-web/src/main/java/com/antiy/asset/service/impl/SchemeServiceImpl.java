@@ -96,6 +96,10 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         return schemeResponse;
     }
 
+    public SchemeResponse findSchemeById(Integer id) throws Exception {
+        return responseConverter.convert(super.getById(id),SchemeResponse.class);
+    }
+
     @Override
     public PageResult<SchemeResponse> findPageScheme(SchemeQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
