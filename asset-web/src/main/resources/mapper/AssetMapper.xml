@@ -592,7 +592,7 @@
         </if>
         <if test=" assetGroup != null">
             and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id =
-            #{assetGroup})
+            #{assetGroup} and b.status = 1)
         </if>
 
         <if test="softwareId != null and softwareId != ''">
@@ -604,9 +604,9 @@
             or number LIKE CONCAT('%',#{multipleQuery},'%')
             or serial LIKE CONCAT('%',#{multipleQuery},'%')
             or exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
-            CONCAT('%',#{multipleQuery},'%'))
+            CONCAT('%',#{multipleQuery},'%') and b.status = 1)
             or exists (select 1 from asset_network_card b where asset.id = b.asset_id and mac_address like
-            CONCAT('%',#{multipleQuery},'%'))
+            CONCAT('%',#{multipleQuery},'%') and b.status = 1)
             )
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
