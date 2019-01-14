@@ -40,6 +40,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     private BaseConverter<AssetGroup, GroupValueResponse> groupValueResponseConverter;
     @Resource
     private GroupSelectResponseConverter groupSelectResponseConverter;
+    @Resource
     private AssetGroupResponseConverter                   assetGroupResponseConverter;
 
     @Override
