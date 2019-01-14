@@ -16,7 +16,7 @@ public class AssetOperationRecord extends BaseEntity {
     /**
      * 被操作的对象ID
      */
-    private Integer           targetObjectId;
+    private Integer           targetObjectIdId;
     /**
      * 被操作对象类别
      */
@@ -45,13 +45,17 @@ public class AssetOperationRecord extends BaseEntity {
      * 创建时间
      */
     private Long              gmtCreate;
+    /**
+     * 创建人
+     */
+    private Integer           createUser;
 
     public Integer getTargetObjectId() {
-        return targetObjectId;
+        return targetObjectIdId;
     }
 
-    public void setTargetObjectId(Integer targetObjectId) {
-        this.targetObjectId = targetObjectId;
+    public void setTargetObjectId(Integer targetObjectIdId) {
+        this.targetObjectIdId = targetObjectIdId;
     }
 
     public String getTargetType() {
@@ -110,9 +114,25 @@ public class AssetOperationRecord extends BaseEntity {
         this.gmtCreate = gmtCreate;
     }
 
+    public Integer getTargetObjectIdId() {
+        return targetObjectIdId;
+    }
+
+    public void setTargetObjectIdId(Integer targetObjectIdId) {
+        this.targetObjectIdId = targetObjectIdId;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
+    }
+
     @Override
     public String toString() {
-        return "AssetOperationRecord{" + ", targetObjectId=" + targetObjectId + ", targetType=" + targetType
+        return "AssetOperationRecord{" + ", targetObjectIdId=" + targetObjectIdId + ", targetType=" + targetType
                + ", targetStatus=" + targetStatus + ", content=" + content + ", operateUserId=" + operateUserId
                + ", operateUserName=" + operateUserName + ", schemaId=" + schemaId + ", gmtCreate=" + gmtCreate + "}";
     }
