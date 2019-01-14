@@ -31,7 +31,7 @@ import io.swagger.annotations.*;
  * @author zhangyajun
  * @since 2019-01-02
  */
-@Api(value = "AssetSoftware", description = "软件信息表")
+@Api(value = "AssetSoftware", description = "资产操作记录")
 @RestController
 @RequestMapping("/v1/asset/assetoperationrecord")
 public class AssetOperationRecordController {
