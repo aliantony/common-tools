@@ -2,10 +2,13 @@ package com.antiy.asset.service.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.entity.AssetUser;
+import com.antiy.asset.vo.query.AssetUserQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -118,6 +121,42 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             this.findListAssetDepartment(query));
     }
 
+    /**
+     *
+     * @param id
+     * @param isConfirm 是否二次确认删除
+     * @return -1表示存在子部门或人员，需要确认，>0表示影响的部门数和人数
+     * @throws Exception
+     */
+    @Override
+    public Integer delete(Serializable id, boolean isConfirm) throws Exception {
+        if (isConfirm) {
+            return confirmDelete((Integer) id);
+        }
+        return notConfirmDelete((Integer) id);
+
+    }
+
+    Integer confirmDelete(Integer id) throws Exception {
+        return deleteAllById(id);
+    }
+
+    Integer notConfirmDelete(Integer id) throws Exception {
+        List<AssetDepartment> list = recursionSearch((Integer) id);
+        if (list.size() > 1) {
+            return -1;
+        } else {
+            AssetUserQuery assetUserQuery = new AssetUserQuery();
+            assetUserQuery.setDepartmentId(id);
+            Integer count = assetUserDao.findListCount(assetUserQuery);
+            if (count > 0) {
+                return -1;
+            } else {
+                return deleteById(id);
+            }
+        }
+    }
+
     @Override
     public AssetDepartmentNodeResponse findDepartmentNode() throws Exception {
         AssetDepartmentQuery query = new AssetDepartmentQuery();
@@ -136,9 +175,27 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
      * @return 影响的数据库行数
      * @throws Exception
      */
-    @Override
-    public Integer deleteById(Serializable id) throws Exception {
+    public Integer deleteAllById(Serializable id) throws Exception {
         List<AssetDepartment> list = recursionSearch((Integer) id);
+        if (CollectionUtils.isNotEmpty(list)) {
+            return assetDepartmentDao.delete(list);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 删除部门，并将这些部门下的人员部门信息置为null
+     *
+     * @param id
+     * @return 影响的数据库行数
+     * @throws Exception
+     */
+    public Integer deleteById(Serializable id) throws Exception {
+        List<AssetDepartment> list = new ArrayList<>();
+        AssetDepartment assetDepartment = new AssetDepartment();
+        assetDepartment.setId((Integer) id);
+        list.add(assetDepartment);
         if (CollectionUtils.isNotEmpty(list)) {
             return assetDepartmentDao.delete(list);
         } else {

@@ -10,6 +10,9 @@
         <result column="putinto_user_id" property="putintoUserId"/>
         <result column="putinto_time" property="putintoTime"/>
         <result column="putinto_user" property="putintoUser"/>
+        <result column="expecte_start_time" property="expecteStartTime"/>
+        <result column="expecte_end_time" property="expecteEndTime"/>
+        <result column="order_level" property="orderLevel"/>
         <result column="file_info" property="fileInfo"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
@@ -20,7 +23,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, type, result, putinto_user_id AS putintoUserId, putinto_time AS putintoTime, putinto_user AS putintoUser,  file_info AS fileInfo, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status AS status
+        id, asset_id, type, result, putinto_user_id, putinto_time, putinto_user, file_info, order_level , expecte_start_time, expecte_end_time, gmt_create, gmt_modified, memo, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -29,6 +32,9 @@
 
 
     <sql id="IF_Base_Column_List">
+        <if test=" assetId != null">
+            asset_id,
+        </if>
         <if test=" type != null">
             type,
         </if>
@@ -46,6 +52,15 @@
         </if>
         <if test=" fileInfo != null">
             file_info,
+        </if>
+        <if test=" orderLevel != null">
+            order_level,
+        </if>
+        <if test=" expecteStartTime != null">
+            expecte_start_time,
+        </if>
+        <if test=" expecteEndTime != null">
+            expecte_end_time,
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
@@ -68,6 +83,9 @@
     </sql>
 
     <sql id="IF_Value_Column_List">
+        <if test=" assetId != null">
+            #{assetId },
+        </if>
         <if test=" type != null">
             #{type },
         </if>
@@ -83,8 +101,17 @@
         <if test=" putintoUser != null">
             #{putintoUser },
         </if>
+        <if test=" orderLevel != null">
+            #{orderLevel },
+        </if>
         <if test=" fileInfo != null">
-            #{file_info },
+            #{fileInfo },
+        </if>
+        <if test=" expecteStartTime != null">
+            #{expecteStartTime },
+        </if>
+        <if test=" expecteEndTime != null">
+            #{expecteEndTime },
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
@@ -107,6 +134,9 @@
     </sql>
 
     <sql id="Set_Column_List">
+        <if test=" assetId != null">
+            asset_id = #{assetId },
+        </if>
         <if test=" type != null">
             type = #{type },
         </if>
@@ -122,8 +152,17 @@
         <if test=" putintoUser != null">
             putinto_user = #{putintoUser },
         </if>
+        <if test=" orderLevel != null">
+            order_level = #{orderLevel },
+        </if>
         <if test=" fileInfo != null">
-            file_info = #{file_info },
+            file_info = #{fileInfo },
+        </if>
+        <if test=" expecteStartTime != null">
+            expecte_start_time = #{expecteStartTime },
+        </if>
+        <if test=" expecteEndTime != null">
+            expecte_end_time = #{expecteEndTime },
         </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
@@ -146,6 +185,9 @@
     </sql>
 
     <sql id="Where_Column_List">
+        <if test=" assetId != null">
+            and asset_id = #{assetId }
+        </if>
         <if test=" type != null">
             and type = #{type }
         </if>
@@ -161,8 +203,17 @@
         <if test=" putintoUser != null">
             and putinto_user = #{putintoUser }
         </if>
+        <if test="orderLevel != null">
+            and order_level = #{orderLevel }
+        </if>
         <if test=" fileInfo != null">
-            and file_info = #{file_info }
+            and file_info = #{fileInfo }
+        </if>
+        <if test=" expecteStartTime != null">
+            and expecte_start_time = #{expecteStartTime }
+        </if>
+        <if test=" expecteEndTime != null">
+            and expecte_end_time = #{expecteEndTime }
         </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }

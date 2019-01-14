@@ -1,5 +1,6 @@
 package com.antiy.asset.service;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.antiy.asset.entity.AssetDepartment;
@@ -65,5 +66,13 @@ public interface IAssetDepartmentService extends IBaseService<AssetDepartment> {
      * @throws Exception
      */
     AssetDepartmentNodeResponse findDepartmentNode() throws Exception;
+
+    /**
+     * 删除部门
+     *
+     * @return
+     * @throws Exception
+     */
+    Integer delete(Serializable id,boolean isConfirm) throws Exception ;
 
 }

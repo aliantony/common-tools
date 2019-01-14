@@ -14,7 +14,7 @@ public class Scheme extends BaseEntity {
     /**
      * 资产主键
      */
-    private Integer assetd;
+    private Integer assetId;
     /**
      * 类型（1.准入实施、2.效果检查、3.制定待退役方案、4.验证退役方案、5.实施退役方案）
      */
@@ -35,6 +35,18 @@ public class Scheme extends BaseEntity {
      * 实施人
      */
     private String  putintoUser;
+    /**
+     * 工单级别(1提示2紧急2重要3次要)
+     */
+    private String  orderLevel;
+    /**
+     *  预计开始时间
+     */
+    private Long expecteStartTime;
+    /**
+     *  预计结束时间
+     */
+    private Long expecteEndTime;
     /**
      * 附件路径
      */
@@ -65,11 +77,11 @@ public class Scheme extends BaseEntity {
     private Integer status;
 
     public Integer getAssetd() {
-        return assetd;
+        return assetId;
     }
 
-    public void setAssetd(Integer assetd) {
-        this.assetd = assetd;
+    public void setAssetd(Integer assetId) {
+        this.assetId = assetId;
     }
 
     public Integer getType() {
@@ -166,6 +178,46 @@ public class Scheme extends BaseEntity {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(Integer assetId) {
+        this.assetId = assetId;
+    }
+
+    public String getOrderLevel() {
+        return orderLevel;
+    }
+
+    public void setOrderLevel(String orderLevel) {
+        this.orderLevel = orderLevel;
+    }
+
+    public Long getExpecteStartTime() {
+        return expecteStartTime;
+    }
+
+    public void setExpecteStartTime(Long expecteStartTime) {
+        this.expecteStartTime = expecteStartTime;
+    }
+
+    public Long getExpecteEndTime() {
+        return expecteEndTime;
+    }
+
+    public void setExpecteEndTime(Long expecteEndTime) {
+        this.expecteEndTime = expecteEndTime;
+    }
+
+    public String getFileInfo() {
+        return fileInfo;
+    }
+
+    public void setFileInfo(String fileInfo) {
+        this.fileInfo = fileInfo;
     }
 
     @Override

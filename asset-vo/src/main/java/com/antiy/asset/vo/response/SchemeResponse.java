@@ -37,6 +37,18 @@ public class SchemeResponse {
     @ApiModelProperty("实施人")
     private String  putintoUser;
     /**
+     * 工单级别(1提示2紧急2重要3次要)
+     */
+    private String  orderLevel;
+    /**
+     * 预计开始时间
+     */
+    private Long    expecteStartTime;
+    /**
+     * 预计结束时间
+     */
+    private Long    expecteEndTime;
+    /**
      * 附件路径
      */
     @ApiModelProperty("附件路径")
@@ -47,6 +59,30 @@ public class SchemeResponse {
      */
     @ApiModelProperty("备注")
     private String  memo;
+
+    public String getOrderLevel() {
+        return orderLevel;
+    }
+
+    public void setOrderLevel(String orderLevel) {
+        this.orderLevel = orderLevel;
+    }
+
+    public Long getExpecteStartTime() {
+        return expecteStartTime;
+    }
+
+    public void setExpecteStartTime(Long expecteStartTime) {
+        this.expecteStartTime = expecteStartTime;
+    }
+
+    public Long getExpecteEndTime() {
+        return expecteEndTime;
+    }
+
+    public void setExpecteEndTime(Long expecteEndTime) {
+        this.expecteEndTime = expecteEndTime;
+    }
 
     public Integer getType() {
         return type;

@@ -48,20 +48,21 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         schemeDao.insert(scheme);
         // TODO 调用工作流
 
-        // 记录操作
+        // 记录操作历史
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         // 判断请求的方案类型
         SchemaTypeEnum codeEnum = EnumUtil.getByCode(SchemaTypeEnum.class, scheme.getType());
-        assetOperationRecord.setTargetObjectId(request.getAssetd());
+        assetOperationRecord.setTargetObjectId(request.getAssetId());
         assetOperationRecord
-            .setTargetType(AssetOperationTableEnum.ASSET.getMsg());
+            .setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setTargetStatus(request.getTargetStatus());
         assetOperationRecord.setSchemaId(scheme.getId());
         assetOperationRecord.setContent(codeEnum.getMsg());
+        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         // TODO 操作者
         assetOperationRecord.setOperateUserId(1);
         assetOperationRecord.setOperateUserName("张三");
-        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+
         operationRecordDao.insert(assetOperationRecord);
 
         return scheme.getId();
@@ -70,6 +71,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Override
     public Integer updateScheme(SchemeRequest request) throws Exception {
         Scheme scheme = requestConverter.convert(request, Scheme.class);
+        scheme.setGmtModified(System.currentTimeMillis());
         // TODO 添加修改人信息
         return schemeDao.update(scheme);
     }
