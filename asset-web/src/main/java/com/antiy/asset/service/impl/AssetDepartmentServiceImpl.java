@@ -55,6 +55,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Override
     public Integer updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
+        assetDepartment.setParentId(null);
         assetDepartment.setStatus(1);
         assetDepartment.setGmtCreate(System.currentTimeMillis());
         return assetDepartmentDao.update(assetDepartment);
