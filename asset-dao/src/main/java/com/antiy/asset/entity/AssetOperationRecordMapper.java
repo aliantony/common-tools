@@ -1,7 +1,7 @@
 package com.antiy.asset.entity;
 
 /**
- * <p> AssetOperationRecordMapper 数据库返回实体对象 </p>
+ * <p> AssetOperationRecordResponse 响应对象 </p>
  *
  * @author lvliang
  * @since 2018-12-27
@@ -21,6 +21,10 @@ public class AssetOperationRecordMapper {
      */
     private String  targetStatusName;
     /**
+     * 操作人名字
+     */
+    private String  operateUserName;
+    /**
      * 操作内容
      */
     private String  content;
@@ -28,10 +32,6 @@ public class AssetOperationRecordMapper {
      * 创建时间
      */
     private Long    gmtCreate;
-    /**
-     * 资产名称
-     */
-    private String  assetName;
     /**
      * 类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）
      */
@@ -48,6 +48,10 @@ public class AssetOperationRecordMapper {
      * 实施人
      */
     private String  putintoUser;
+    /**
+     * 附件名称
+     */
+    private String  filename;
     /**
      * 附件路径
      */
@@ -133,11 +137,19 @@ public class AssetOperationRecordMapper {
         this.filepath = filepath;
     }
 
-    public String getAssetName() {
-        return assetName;
+    public String getOperateUserName() {
+        return operateUserName;
     }
 
-    public void setAssetName(String assetName) {
-        this.assetName = assetName;
+    public void setOperateUserName(String operateUserName) {
+        this.operateUserName = operateUserName;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }

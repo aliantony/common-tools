@@ -178,24 +178,23 @@
             resultType="com.antiy.asset.entity.AssetOperationRecordMapper">
         SELECT
             a.id,
-            a.target_object_id,
-            a.target_status_name,
+            a.target_object_id as targetObject,
+            a.target_status_name as targetStatusName,
             a.content,
-            a.operate_user_name,
-            a.gmt_create,
-            c.putinto_user,
-            c.putinto_time,
+            a.operate_user_name as operateUserName,
+            a.gmt_create as gmtCreate,
+            c.putinto_user as putintoUser,
+            c.putinto_time as putintoTime,
             c.filepath,
-            b.NAME,
+            b.NAME as targetName,
             c.type,
             c.result
         FROM
             asset_operation_record a
           LEFT JOIN asset b ON a.target_object_id = b.id
           LEFT JOIN scheme c ON a.schema_id = c.id
-          AND a.status = 1
           AND b.status = 1
           AND c.status = 1
-          AND a.target_object_id = 2
+          AND a.target_object_id = #{id}
     </select>
 </mapper>

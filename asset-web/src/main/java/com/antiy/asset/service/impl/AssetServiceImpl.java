@@ -601,11 +601,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetOuterResponse assetOuterResponse = new AssetOuterResponse();
         // 资产信息
         AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setIds(new Integer[]{id});
+        assetQuery.setIds(new Integer[] { id });
         List<Asset> assetList = assetDao.findListAsset(assetQuery);
         BusinessExceptionUtils.isEmpty(assetList, "资产不存在");
         Asset asset = assetList.get(0);
-        assetOuterResponse.setAsset((AssetResponse) BeanConvert.convertBean(asset, AssetResponse.class));
+        assetOuterResponse.setAsset(BeanConvert.convertBean(asset, AssetResponse.class));
         // CPU
         AssetCpuQuery assetCpuQuery = new AssetCpuQuery();
         assetCpuQuery.setAssetId(id);
@@ -639,6 +639,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public void changeAsset(Integer id) {
+        BusinessExceptionUtils.isNull(id, "资产ID不能为空");
 
     }
 }

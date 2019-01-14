@@ -306,7 +306,7 @@
     </select>
 
 
-    <select id="findListAssetMemory" resultType="com.antiy.asset.entity.AssetMemory"
+    <select id="findListAssetMemory" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetMemoryQuery">
         select * from
         <include refid="Table_Name"></include>
