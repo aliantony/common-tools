@@ -41,9 +41,21 @@ public class AssetOperationRecordResponse extends BaseResponse{
      */
     private Long                      gmtCreate;
     /**
-     * 创建人
+     * 类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）
      */
-    private Integer                   createUser;
+    private Integer        type;
+    /**
+     * 结果
+     */
+    private Integer        result;
+    /**
+     * 实施时间
+     */
+    private Long           putintoTime;
+    /**
+     * 实施人
+     */
+    private String         putintoUser;
     /**
      * 附件信息（[{"XXX文件","10.12.5.1:5566/file/asset/dj"}]）
      */
@@ -121,11 +133,35 @@ public class AssetOperationRecordResponse extends BaseResponse{
         this.gmtCreate = gmtCreate;
     }
 
-    public Integer getCreateUser() {
-        return createUser;
+    public Integer getType() {
+        return type;
     }
 
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getResult() {
+        return result;
+    }
+
+    public void setResult(Integer result) {
+        this.result = result;
+    }
+
+    public Long getPutintoTime() {
+        return putintoTime;
+    }
+
+    public void setPutintoTime(Long putintoTime) {
+        this.putintoTime = putintoTime;
+    }
+
+    public String getPutintoUser() {
+        return putintoUser;
+    }
+
+    public void setPutintoUser(String putintoUser) {
+        this.putintoUser = putintoUser;
     }
 }
