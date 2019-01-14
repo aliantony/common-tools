@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.request.AssetCategoryDeleteRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -86,14 +87,14 @@ public class AssetCategoryModelController {
     /**
      * 通过ID删除
      *
-     * @param query 主键封装对象
+     * @param request 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetCategoryModelService.deleteById(Integer.parseInt(query.getPrimaryKey())));
+    public ActionResponse deleteById(@ApiParam(value = "query") AssetCategoryDeleteRequest request) throws Exception {
+        ParamterExceptionUtils.isBlank(request.getPrimaryKey(), "ID不能为空");
+        return ActionResponse.success(iAssetCategoryModelService.delete(Integer.parseInt(request.getPrimaryKey()),request.getConfrim()));
     }
 }
