@@ -80,13 +80,14 @@ public class AssetDepartmentController {
     /**
      * 通过ID删除 删除后会把该部门下的所有用户的部门id置为null
      *
-     * @param id 主键
+     * @param id 主键,isConfirm 是否已经确认删除
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public ActionResponse deleteById(@PathVariable @ApiParam(value = "id") Integer id) throws Exception {
+    public ActionResponse deleteById(@PathVariable @ApiParam(value = "id") Integer id,
+                                     @ApiParam(value = "isConfirm") Boolean isConfirm) throws Exception {
         return ActionResponse.success(iAssetDepartmentService.deleteById(id));
     }
 

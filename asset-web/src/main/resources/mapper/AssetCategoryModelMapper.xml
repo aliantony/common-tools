@@ -86,7 +86,7 @@
             #{description },
         </if>
         <if test=" isDefault != null">
-            #{is_default},
+            #{isDefault},
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },

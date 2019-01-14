@@ -47,21 +47,26 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Override
     public Integer saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel assetCategoryModel = requestConverter.convert(request, AssetCategoryModel.class);
-        if (!checkParentType(assetCategoryModel)) {
-            return 0;
+        if (setParentType(assetCategoryModel)) {
+            assetCategoryModel.setGmtCreate(System.currentTimeMillis());
+            assetCategoryModel.setStatus(1);
+            assetCategoryModelDao.insert(assetCategoryModel);
+            return assetCategoryModel.getId();
         }
-        assetCategoryModel.setGmtCreate(System.currentTimeMillis());
-        assetCategoryModel.setIsDefault(1);
-        assetCategoryModel.setStatus(1);
-        return assetCategoryModel.getId();
+        return -1;
     }
 
-    private boolean checkParentType(AssetCategoryModel assetCategoryModel) throws Exception {
+    /**
+     * 设置资产类型与父品类的资产类型一致
+     * @param assetCategoryModel
+     * @return
+     */
+    private boolean setParentType(AssetCategoryModel assetCategoryModel) throws Exception {
         if (assetCategoryModel != null && assetCategoryModel.getParentId() != null) {
             Integer parentId = assetCategoryModel.getParentId();
             AssetCategoryModel parent = assetCategoryModelDao.getById(parentId);
-            boolean isAssetTypeEqual = Objects.equals(parent.getAssetType(), assetCategoryModel.getAssetType());
-            return isAssetTypeEqual;
+            assetCategoryModel.setAssetType(parent.getAssetType());
+            return true;
         }
         return false;
     }
@@ -69,13 +74,26 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Override
     public Integer updateAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel assetCategoryModel = requestConverter.convert(request, AssetCategoryModel.class);
-        // 判断是否是系统内置
-        if (assetCategoryModel.getIsDefault().equals(0)) {
-            return 0;
+        AssetCategoryModel assetCategoryModelById = assetCategoryModelDao.getById(assetCategoryModel.getId());
+        // 判断是不是系统内置
+        if (checkIsDefault(assetCategoryModelById)) {
+            assetCategoryModel.setGmtModified(System.currentTimeMillis());
+            assetCategoryModel.setStatus(1);
+            assetCategoryModel.setParentId(null);
+            assetCategoryModel.setAssetType(null);
+            return assetCategoryModelDao.update(assetCategoryModel);
         }
-        assetCategoryModel.setGmtModified(System.currentTimeMillis());
-        assetCategoryModel.setStatus(1);
-        return assetCategoryModelDao.update(assetCategoryModel);
+        return 0;
+    }
+
+    /**
+     * 判断是否是自定义的品类
+     * @param assetCategoryModel
+     * @return
+     */
+    private Boolean checkIsDefault(AssetCategoryModel assetCategoryModel) {
+        return assetCategoryModel != null && assetCategoryModel.getIsDefault() != null
+               && Objects.equals(assetCategoryModel.getIsDefault(), 1);
     }
 
     @Override
@@ -106,6 +124,11 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         if (isConfirm == null) {
             return 0;
         }
+        AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getById(id);
+        // 判断是否自定义品类
+        if (!checkIsDefault(assetCategoryModel)) {
+            return -3;
+        }
         // 是否是确认删除
         if (!isConfirm) {
             List<AssetCategoryModel> list = recursionSearch((Integer) id);
@@ -121,15 +144,25 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     /**
-     * 删除品类及其子品类,若存在资产则不能删
-     * @return -1 表示存在资产，不能删除 -3 是系统内置品类，不能删除 >=0 表示删除的品类数
+     * 删除品类,若存在资产则不能删（不进行递归）
+     * @return -1 表示存在资产，不能删除 , 表示删除的品类数
+     */
+    @Override
+    public Integer deleteById(Serializable id) throws Exception {
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setCategoryModel((Integer) id);
+        Integer count = assetDao.findCountByCategoryModel(assetQuery);
+        if (count > 0) {
+            return -1;
+        }
+        return super.deleteById(id);
+    }
+
+    /**
+     * 删除品类及其子品类,若存在资产则不能删（进行递归）
+     * @return -1 表示存在资产，不能删除 , 表示删除的品类数
      */
     public Integer deleteAllById(Serializable id) throws Exception {
-        AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getById(id);
-        // 判断是否是系统内置
-        if (Objects.equals(assetCategoryModel.getIsDefault(), 0)) {
-            return -3;
-        }
         List<AssetCategoryModel> list = recursionSearch((Integer) id);
         AssetQuery assetQuery = new AssetQuery();
         Integer[] ids = new Integer[list.size()];
