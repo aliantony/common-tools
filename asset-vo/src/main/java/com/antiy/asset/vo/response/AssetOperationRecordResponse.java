@@ -7,59 +7,59 @@ package com.antiy.asset.vo.response;
  * @since 2018-12-27
  */
 
-public class AssetOperationRecordResponse extends BaseResponse{
+public class AssetOperationRecordResponse extends BaseResponse {
     /**
      * 被操作的对象ID
      */
-    private Integer                   targetObjectIdId;
+    private Integer targetObjectIdId;
     /**
      * 被操作对象类别
      */
-    private String                    targetType;
+    private String  targetType;
     /**
      * 状态
      */
-    private Integer                   targetStatus;
+    private Integer targetStatus;
     /**
      * 操作内容
      */
-    private String                    content;
+    private String  content;
     /**
      * 操作人ID
      */
-    private Integer                   operateUserId;
+    private Integer operateUserId;
     /**
      * 操作人名字
      */
-    private String                    operateUserName;
+    private String  operateUserName;
     /**
      * 方案表ID
      */
-    private Integer                   schemaId;
+    private Integer schemaId;
     /**
      * 创建时间
      */
-    private Long                      gmtCreate;
+    private Long    gmtCreate;
     /**
      * 类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）
      */
-    private Integer        type;
+    private Integer type;
     /**
      * 结果
      */
-    private Integer        result;
+    private Integer result;
     /**
      * 实施时间
      */
-    private Long           putintoTime;
+    private Long    putintoTime;
     /**
      * 实施人
      */
-    private String         putintoUser;
+    private String  putintoUser;
     /**
      * 附件信息（[{"XXX文件","10.12.5.1:5566/file/asset/dj"}]）
      */
-    private String files;
+    private String  files;
 
     public String getFiles() {
         return files;
