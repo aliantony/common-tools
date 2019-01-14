@@ -9,52 +9,38 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetMainboradResponse {
+public class AssetMainboradResponse extends BaseResponse {
 
-    private static final long serialVersionUID = 1L;
-    /**
-     * 主键
-     */
-    @ApiModelProperty("主键")
-    private Integer               id;
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer           assetId;
+    private Integer assetId;
     /**
      * 品牌
      */
     @ApiModelProperty("品牌")
-    private String            brand;
+    private String  brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
-    private String            model;
+    private String  model;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    private String            serial;
+    private String  serial;
     /**
      * BIOS版本
      */
     @ApiModelProperty("BIOS版本")
-    private String            biosVersion;
+    private String  biosVersion;
     /**
      * BIOS日期
      */
     @ApiModelProperty("BIOS日期")
-    private Long              biosDate;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private Long    biosDate;
 
     public Integer getAssetId() {
         return assetId;

@@ -16,7 +16,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 @MapperScan({ "com.antiy.asset.dao" })
-@ComponentScan(basePackages = { "com.antiy.common.base", "com.antiy.asset", "com.antiy.common.exception" })// TODO 测试
+@ComponentScan(basePackages = { "com.antiy.common.base", "com.antiy.asset", "com.antiy.common.exception",
+                                "com.antiy.biz.config","com.antiy.common.utils" })// TODO 测试
 public class AssetApplication {
 
     public static void main(String[] args) {

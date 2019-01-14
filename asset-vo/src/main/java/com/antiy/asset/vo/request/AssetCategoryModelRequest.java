@@ -5,6 +5,9 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.Valid;
+import java.util.List;
+
 /**
  * <p> AssetCategoryModelRequest 请求对象 </p>
  *

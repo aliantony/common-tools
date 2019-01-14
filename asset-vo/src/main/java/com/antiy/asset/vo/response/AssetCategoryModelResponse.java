@@ -9,56 +9,40 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetCategoryModelResponse {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * id
-     */
-    @ApiModelProperty("id")
-    private Integer           id;
+public class AssetCategoryModelResponse extends BaseResponse {
 
     /**
      * 名称
      */
     @ApiModelProperty("名称")
-    private String            name;
+    private String  name;
     /**
      * 类型:1-品类，2-型号
      */
     @ApiModelProperty("类型:1-品类，2-型号")
-    private Integer           type;
+    private Integer type;
     /**
      * 资产类型:1软件，2硬件
      */
     @ApiModelProperty("资产类型:1软件，2硬件")
-    private Integer           assetType;
+    private Integer assetType;
     /**
      * 父ID
      */
     @ApiModelProperty("父ID")
-    private Integer           parentId;
+    private Integer parentId;
     /**
      * 描述
      */
     @ApiModelProperty("描述")
-    private String            description;
+    private String  description;
     // /**
     // * 是否系统默认：0系统1自定义
     // */
     // private Integer isDefault;
 
     @ApiModelProperty("状态,1未删除,0已删除")
-    private Integer           status;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private Integer status;
 
     public String getName() {
         return name;

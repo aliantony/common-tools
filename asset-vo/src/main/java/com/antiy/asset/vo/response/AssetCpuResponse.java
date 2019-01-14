@@ -9,57 +9,42 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetCpuResponse {
-
-    private static final long serialVersionUID = 1L;
-    /**
-     * 主键
-     */
-    @ApiModelProperty("主键")
-    private Integer           id;
+public class AssetCpuResponse extends BaseResponse {
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer           assetId;
+    private Integer assetId;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    private String            serial;
+    private String  serial;
     /**
      * 品牌
      */
     @ApiModelProperty("品牌")
-    private String            brand;
+    private String  brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
-    private String            model;
+    private String  model;
     /**
      * CPU主频
      */
     @ApiModelProperty("CPU主频")
-    private Float             mainFrequency;
+    private Float   mainFrequency;
     /**
      * 线程数
      */
     @ApiModelProperty("线程数")
-    private Integer           threadSize;
+    private Integer threadSize;
     /**
      * 核心数
      */
     @ApiModelProperty("核心数")
-    private Integer           coreSize;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private Integer coreSize;
 
     public Integer getAssetId() {
         return assetId;

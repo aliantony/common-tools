@@ -9,60 +9,52 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetLableResponse {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * id
-     */
-    @ApiModelProperty("id")
-    private Integer           id;
+public class AssetLableResponse extends BaseResponse {
     /**
      * /** 名称
      */
     @ApiModelProperty("名称")
-    private String            name;
+    private String  name;
     /**
      * 标签类型:1东区２西区
      */
     @ApiModelProperty("标签类型:1东区２西区")
-    private Integer           labelType;
+    private Integer labelType;
     /**
      * 描述
      */
     @ApiModelProperty("描述")
-    private String            description;
+    private String  description;
     /**
      * 创建时间
      */
     @ApiModelProperty("创建时间")
-    private Long              gmtCreate;
+    private Long    gmtCreate;
     /**
      * 更新时间
      */
     @ApiModelProperty("更新时间")
-    private Long              gmtModified;
+    private Long    gmtModified;
     /**
      * 备注
      */
     @ApiModelProperty("备注")
-    private String            memo;
+    private String  memo;
     /**
      * 创建人
      */
     @ApiModelProperty("创建人")
-    private Integer           createUser;
+    private Integer createUser;
     /**
      * 修改人
      */
     @ApiModelProperty("修改人")
-    private Integer           modifyUser;
+    private Integer modifyUser;
     /**
      * 状态,1未删除,0已删除
      */
     @ApiModelProperty("状态,1未删除,0已删除")
-    private Integer           status;
+    private Integer status;
 
     public String getName() {
         return name;
@@ -136,11 +128,4 @@ public class AssetLableResponse {
         this.status = status;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 }

@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -9,20 +11,65 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetPortProtocolResponse {
-
-    private static final long serialVersionUID = 1L;
+public class AssetPortProtocolResponse extends BaseResponse {
     /**
      * 资产软件关系表主键
      */
     @ApiModelProperty("资产软件关系表主键")
-    private Integer           assetSoftId;
+    @Encode
+    private String  assetSoftId;
 
-    public Integer getAssetSoftId() {
+    /**
+     * 端口
+     */
+    @ApiModelProperty("端口")
+    private Integer port;
+    /**
+     * 协议
+     */
+    @ApiModelProperty("协议")
+    private String  protocol;
+    /**
+     * 描述
+     */
+    @ApiModelProperty("描述")
+    private String  description;
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("创建时间")
+    private Long    gmtCreate;
+    /**
+     * 更新时间
+     */
+    @ApiModelProperty("更新时间")
+    private Long    gmtModified;
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
+    private String  memo;
+    /**
+     * 创建人
+     */
+    @ApiModelProperty("创建人")
+    private Integer createUser;
+    /**
+     * 修改人
+     */
+    @ApiModelProperty("修改人")
+    private Integer modifyUser;
+    /**
+     * 状态,1未删除,0已删除
+     */
+    @ApiModelProperty("状态,1未删除,0已删除")
+    private Integer status;
+
+    public String getAssetSoftId() {
         return assetSoftId;
     }
 
-    public void setAssetSoftId(Integer assetSoftId) {
+    public void setAssetSoftId(String assetSoftId) {
         this.assetSoftId = assetSoftId;
     }
 
@@ -96,64 +143,5 @@ public class AssetPortProtocolResponse {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    /**
-     * id
-     */
-    @ApiModelProperty("id")
-    private Integer id;
-    /**
-     * 端口
-     */
-    @ApiModelProperty("端口")
-    private Integer port;
-    /**
-     * 协议
-     */
-    @ApiModelProperty("协议")
-    private String  protocol;
-    /**
-     * 描述
-     */
-    @ApiModelProperty("描述")
-    private String  description;
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty("创建时间")
-    private Long    gmtCreate;
-    /**
-     * 更新时间
-     */
-    @ApiModelProperty("更新时间")
-    private Long    gmtModified;
-    /**
-     * 备注
-     */
-    @ApiModelProperty("备注")
-    private String  memo;
-    /**
-     * 创建人
-     */
-    @ApiModelProperty("创建人")
-    private Integer createUser;
-    /**
-     * 修改人
-     */
-    @ApiModelProperty("修改人")
-    private Integer modifyUser;
-    /**
-     * 状态,1未删除,0已删除
-     */
-    @ApiModelProperty("状态,1未删除,0已删除")
-    private Integer status;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 }

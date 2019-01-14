@@ -8,8 +8,8 @@ import io.swagger.annotations.ApiModelProperty;
  * @author zhangyajun
  * @since 2018-12-27
  */
-public class AssetSoftwareRelationResponse {
-    private int     id;
+public class AssetSoftwareRelationResponse extends BaseResponse {
+
     /**
      * 资产主键
      */
@@ -30,14 +30,6 @@ public class AssetSoftwareRelationResponse {
      */
     @ApiModelProperty("备注")
     private String  memo;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public Integer getAssetId() {
         return assetId;

@@ -9,12 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetGroupResponse {
-    /**
-     * 用途
-     */
-    @ApiModelProperty("id")
-    private Integer id;
+public class AssetGroupResponse extends BaseResponse {
     /**
      * 用途
      */
@@ -60,14 +55,6 @@ public class AssetGroupResponse {
      */
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getPurpose() {
         return purpose;
@@ -141,10 +128,4 @@ public class AssetGroupResponse {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "AssetGroup{" + ", purpose=" + purpose + ", importantDegree=" + importantDegree + ", name=" + name
-               + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser="
-               + createUser + ", modifyUser=" + modifyUser + ", status=" + status + "}";
-    }
 }

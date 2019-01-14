@@ -2,6 +2,7 @@ package com.antiy.asset.vo.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -10,8 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author zhangyajun
  * @since 2018-12-27
  */
-public class AssetSoftwareLicenseResponse {
-    private int     id;
+public class AssetSoftwareLicenseResponse extends BaseResponse {
 
     /**
      * 许可名称
@@ -64,14 +64,6 @@ public class AssetSoftwareLicenseResponse {
      */
     @ApiModelProperty("许可有效期还剩多少天")
     private Integer remainDay;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
