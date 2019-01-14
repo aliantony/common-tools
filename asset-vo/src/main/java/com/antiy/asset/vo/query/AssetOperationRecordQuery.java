@@ -16,11 +16,24 @@ public class AssetOperationRecordQuery extends ObjectQuery {
      */
     private Integer targetObjectId;
 
+    /**
+     * 被操作对象类型
+     */
+    private Integer targetType;
+
     public Integer getTargetObject() {
         return targetObjectId;
     }
 
-    public void setTargetObject(Integer targetObjectId) {
+    public void setTargetObjectId(Integer targetObjectId) {
         this.targetObjectId = targetObjectId;
+    }
+
+    public Integer getTargetType() {
+        return targetType;
+    }
+
+    public void setTargetType(Integer targetType) {
+        this.targetType = targetType;
     }
 }

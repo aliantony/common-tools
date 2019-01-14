@@ -19,8 +19,8 @@ public interface IAssetOperationRecordService extends IBaseService<AssetOperatio
 
     /**
      * 通过资产主键查询资产操作记录
-     * @param assetId
+     * @param assetOperationRecordQuery
      * @return
      */
-    List<AssetOperationRecordResponse> findAssetOperationRecordByAssetId(Integer assetId);
+    List<AssetOperationRecordResponse> findAssetOperationRecordByAssetId(AssetOperationRecordQuery assetOperationRecordQuery);
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.entity.AssetOperationRecordMapper;
+import com.antiy.asset.vo.query.AssetOperationRecordQuery;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -34,9 +35,9 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
     private AssetOperationRecordMapperToResponse responseConverter;
 
     @Override
-    public List<AssetOperationRecordResponse> findAssetOperationRecordByAssetId(Integer assetId) {
+    public List<AssetOperationRecordResponse> findAssetOperationRecordByAssetId(AssetOperationRecordQuery assetOperationRecordQuery) {
         List<AssetOperationRecordMapper> assetOperationRecordList = assetOperationRecordDao
-            .findAssetOperationRecordByAssetId(assetId);
+            .findAssetOperationRecordByAssetId(assetOperationRecordQuery);
         if (assetOperationRecordList == null || assetOperationRecordList.isEmpty()) {
             return Lists.newArrayList();
         }
