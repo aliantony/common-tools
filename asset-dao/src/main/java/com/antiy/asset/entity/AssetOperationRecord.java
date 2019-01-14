@@ -24,7 +24,7 @@ public class AssetOperationRecord extends BaseEntity {
     /**
      * 状态
      */
-    private String            targetStatusName;
+    private Integer           targetStatus;
     /**
      * 操作内容
      */
@@ -62,12 +62,12 @@ public class AssetOperationRecord extends BaseEntity {
         this.targetTableName = targetTableName;
     }
 
-    public String getTargetStatusName() {
-        return targetStatusName;
+    public Integer getTargetStatus() {
+        return targetStatus;
     }
 
-    public void setTargetStatusName(String targetStatusName) {
-        this.targetStatusName = targetStatusName;
+    public void setTargetStatus(Integer targetStatus) {
+        this.targetStatus = targetStatus;
     }
 
     public String getContent() {
@@ -113,7 +113,7 @@ public class AssetOperationRecord extends BaseEntity {
     @Override
     public String toString() {
         return "AssetOperationRecord{" + ", targetObjectId=" + targetObjectId + ", targetTableName=" + targetTableName
-               + ", targetStatusName=" + targetStatusName + ", content=" + content + ", operateUserId=" + operateUserId
+               + ", targetStatus=" + targetStatus + ", content=" + content + ", operateUserId=" + operateUserId
                + ", operateUserName=" + operateUserName + ", schemaId=" + schemaId + ", gmtCreate=" + gmtCreate + "}";
     }
 }
