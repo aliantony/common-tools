@@ -9,142 +9,130 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetSoftwareResponse {
+public class AssetSoftwareResponse extends BaseResponse {
 
-    private static final long serialVersionUID = 1L;
-    /**
-     * 主键
-     */
-    @ApiModelProperty("主键")
-    private int               id;
     /**
      * 软件大小(KB)
      */
     @ApiModelProperty("软件大小(KB)")
-    private Integer           size;
+    private Integer size;
     /**
      * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
      */
     @ApiModelProperty("操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)")
-    private String            operationSystem;
+    private String  operationSystem;
     /**
      * 软件品类
      */
     @ApiModelProperty("软件品类")
-    private Integer           category;
+    private Integer category;
+
+    /**
+     * 软件品类名字
+     */
+    @ApiModelProperty(value = "软件品类名字")
+    private String  categoryName;
     /**
      * 软件型号
      */
     @ApiModelProperty("软件型号")
-    private Integer           model;
+    private Integer model;
     /**
      * 软件名称
      */
     @ApiModelProperty("软件名称")
-    private String            name;
+    private String  name;
     /**
      * 上传的软件名称
      */
     @ApiModelProperty("上传的软件名称")
-    private String            uploadSoftwareName;
+    private String  uploadSoftwareName;
     /**
      * 安装包路径
      */
     @ApiModelProperty("安装包路径")
-    private String            path;
+    private String  path;
     /**
      * 版本
      */
     @ApiModelProperty("版本")
-    private String            version;
+    private String  version;
     /**
      * 厂商
      */
     @ApiModelProperty("厂商")
-    private String            manufacturer;
+    private String  manufacturer;
     /**
      * 软件描述
      */
     @ApiModelProperty("软件描述")
-    private String            description;
-    /**
-     * 软件标签
-     */
-    @ApiModelProperty("软件标签")
-    private Integer           softwareLabel;
+    private String  description;
+
     /**
      * 1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
      */
     @ApiModelProperty("1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役")
-    private Integer           softwareStatus;
+    private Integer softwareStatus;
     /**
      * 0-免费软件，1-商业软件
      */
     @ApiModelProperty("0-免费软件，1-商业软件")
-    private Integer           authorization;
+    private Integer authorization;
     /**
      * 上报来源:1-自动上报，2-人工上报
      */
     @ApiModelProperty("上报来源:1-自动上报，2-人工上报")
-    private Integer           reportSource;
+    private Integer reportSource;
     /**
      * 端口
      */
     @ApiModelProperty("端口")
-    private String            port;
+    private String  port;
     /**
      * 语言
      */
     @ApiModelProperty("语言")
-    private String            language;
+    private String  language;
     /**
      * 发布时间
      */
     @ApiModelProperty("发布时间")
-    private Long              releaseTime;
+    private Long    releaseTime;
     /**
      * 发布者
      */
     @ApiModelProperty("发布者")
-    private String            publisher;
+    private String  publisher;
     /**
      * 创建时间
      */
     @ApiModelProperty("创建时间")
-    private Long              gmtCreate;
+    private Long    gmtCreate;
     /**
      * 备注
      */
     @ApiModelProperty("备注")
-    private String            memo;
+    private String  memo;
     /**
      * 更新时间
      */
     @ApiModelProperty("更新时间")
-    private Long              gmtModified;
+    private Long    gmtModified;
     /**
      * 创建人
      */
     @ApiModelProperty("创建人")
-    private Integer           createUser;
+    private Integer createUser;
     /**
      * 修改人
      */
     @ApiModelProperty("修改人")
-    private Integer           modifyUser;
+    private Integer modifyUser;
     /**
      * 状态,0 未删除,1已删除
      */
     @ApiModelProperty("状态,0 未删除,1已删除")
-    private Integer           status;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    private Integer status;
 
     public Integer getSize() {
         return size;
@@ -226,12 +214,12 @@ public class AssetSoftwareResponse {
         this.description = description;
     }
 
-    public Integer getSoftwareLabel() {
-        return softwareLabel;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setSoftwareLabel(Integer softwareLabel) {
-        this.softwareLabel = softwareLabel;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public Integer getSoftwareStatus() {

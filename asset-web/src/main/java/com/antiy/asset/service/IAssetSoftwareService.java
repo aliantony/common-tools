@@ -5,7 +5,9 @@ import java.util.Map;
 
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
+import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -82,7 +84,6 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      */
     Map<String, Long> countStatus() throws Exception;
 
-
     /**
      * 按第二级品类统计数量
      *
@@ -91,4 +92,11 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      */
     Map<String, Long> countCategory() throws Exception;
 
+    /**
+     * 软件详情查询
+     * @param softwareQuery 软件详情查询条件
+     * @return
+     * @throws Exception
+     */
+    AssetSoftwareDetailResponse querySoftWareDetail(SoftwareQuery softwareQuery) throws Exception;
 }

@@ -7,18 +7,28 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.dao.AssetCategoryModelDao;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.util.ArrayTypeUtil;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.common.base.Constants;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
+import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.service.IAssetPortProtocolService;
+import com.antiy.asset.service.IAssetSoftwareLicenseService;
 import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.util.ArrayTypeUtil;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetPortProtocolQuery;
+import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
+import com.antiy.asset.vo.response.AssetPortProtocolResponse;
+import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
+import com.antiy.asset.vo.response.AssetSoftwareLicenseResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
@@ -34,13 +44,22 @@ import com.antiy.common.base.PageResult;
 public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> implements IAssetSoftwareService {
 
     @Resource
-    private AssetSoftwareDao                                    assetSoftwareDao;
+    private AssetSoftwareDao                                          assetSoftwareDao;
     @Resource
-    private AssetCategoryModelDao                               assetCategoryModelDao;
+    private AssetCategoryModelDao                                     assetCategoryModelDao;
     @Resource
-    private BaseConverter<AssetSoftwareRequest, AssetSoftware>  requestConverter;
+    private BaseConverter<AssetSoftwareRequest, AssetSoftware>        requestConverter;
     @Resource
-    private BaseConverter<AssetSoftware, AssetSoftwareResponse> responseConverter;
+    private BaseConverter<AssetSoftware, AssetSoftwareResponse>       responseConverter;
+
+    @Resource
+    private BaseConverter<AssetSoftware, AssetSoftwareDetailResponse> assetSoftwareDetailConverter;
+
+    @Resource
+    private IAssetPortProtocolService                                 iAssetPortProtocolService;
+
+    @Resource
+    private IAssetSoftwareLicenseService                              iAssetSoftwareLicenseService;
 
     @Override
     public Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -99,8 +118,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         List<AssetCategoryModel> list = assetCategoryModelDao.getAll();
         List<AssetCategoryModel> result = new ArrayList();
         for (AssetCategoryModel AssetCategoryModel : list) {
-            if (AssetCategoryModel.getId() == id)
+            if (AssetCategoryModel.getId().equals(id)) {
                 result.add(AssetCategoryModel);
+            }
         }
         recursion(result, list, id);
         return result;
@@ -115,7 +135,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      */
     private void recursion(List<AssetCategoryModel> result, List<AssetCategoryModel> list, Integer id) {
         for (AssetCategoryModel AssetCategoryModel : list) {
-            if (AssetCategoryModel.getParentId() == id) {
+            if (AssetCategoryModel.getParentId().equals(id)) {
                 result.add(AssetCategoryModel);
                 recursion(result, list, AssetCategoryModel.getId());
             }
@@ -168,6 +188,61 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             result.put(a.getName(), sum);
         }
         return result;
+    }
+
+    @Override
+    public AssetSoftwareDetailResponse querySoftWareDetail(SoftwareQuery softwareQuery) throws Exception {
+
+        // 1 获取软件资产详情
+        AssetSoftware assetSoftware = this.getById(DataTypeUtils.stringToInteger(softwareQuery.getPrimaryKey()));
+        AssetSoftwareDetailResponse assetSoftwareDetailResponse = assetSoftwareDetailConverter.convert(assetSoftware,
+            AssetSoftwareDetailResponse.class);
+
+        // TODO 软件资产码表信息
+
+        // 2 是否需要查询端口信息
+        if (softwareQuery.getQueryPort()) {
+            querySoftwarePort(softwareQuery, assetSoftwareDetailResponse);
+        }
+
+        // 3 是否需要查询license信息
+        if (softwareQuery.getQueryLicense()) {
+            querySoftwareLicense(softwareQuery, assetSoftwareDetailResponse);
+        }
+
+        return assetSoftwareDetailResponse;
+    }
+
+    /**
+     * 查询软件端口信息
+     * @param softwareQuery
+     * @param assetSoftwareDetailResponse
+     * @throws Exception
+     */
+    private void querySoftwarePort(SoftwareQuery softwareQuery,
+                                   AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+        AssetPortProtocolQuery assetPortProtocolQuery = new AssetPortProtocolQuery();
+        assetPortProtocolQuery.setAssetSoftId(DataTypeUtils.stringToInteger(softwareQuery.getPrimaryKey()));
+        assetPortProtocolQuery.setPageSize(Constants.MAX_PAGESIZE);
+        List<AssetPortProtocolResponse> assetPortProtocolResponses = iAssetPortProtocolService
+            .findListAssetPortProtocol(assetPortProtocolQuery);
+        assetSoftwareDetailResponse.setSoftwarePort(assetPortProtocolResponses);
+    }
+
+    /**
+     * 查询软件license 信息
+     * @param softwareQuery
+     * @param assetSoftwareDetailResponse
+     * @throws Exception
+     */
+    private void querySoftwareLicense(SoftwareQuery softwareQuery,
+                                      AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+        AssetSoftwareLicenseQuery assetSoftwareLicenseQuery = new AssetSoftwareLicenseQuery();
+        assetSoftwareLicenseQuery.setSoftwareId(DataTypeUtils.stringToInteger(softwareQuery.getPrimaryKey()));
+        assetSoftwareLicenseQuery.setPageSize(Constants.MAX_PAGESIZE);
+        List<AssetSoftwareLicenseResponse> assetSoftwareLicenseResponses = iAssetSoftwareLicenseService
+            .findListAssetSoftwareLicense(assetSoftwareLicenseQuery);
+        assetSoftwareDetailResponse.setSoftwareLicense(assetSoftwareLicenseResponses);
     }
 
 }

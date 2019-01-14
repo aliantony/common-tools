@@ -10,7 +10,7 @@ import java.util.Map;
  * @since 2018-12-27
  */
 
-public class AssetOperationRecordResponse {
+public class AssetOperationRecordResponse extends BaseResponse{
     /**
      * 被操作的对象ID
      */

@@ -17,7 +17,9 @@ import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
+import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
@@ -144,7 +146,7 @@ public class AssetSoftwareController {
     public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws Exception {
         ImportResult importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class, multipartFile, 1, 0);
         List<AssetSoftware> list = importResult.getDataList();
-        //List<AssetSoftware> assetSoftwares = BeanConvert.convert(list, AssetSoftware.class);
+        // List<AssetSoftware> assetSoftwares = BeanConvert.convert(list, AssetSoftware.class);
         Integer successNum = iAssetSoftwareService.batchSave(list);
         return ActionResponse.success(successNum);
 
@@ -162,7 +164,7 @@ public class AssetSoftwareController {
      * @return 品类型号名和该品类信号型产数量的映射
      */
     @ApiOperation(value = "软件资产按二级品类型号统计接口", notes = "无查询条件")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/category", method = RequestMethod.GET)
     public Map<String, Long> countAssetByCategory() throws Exception {
         return iAssetSoftwareService.countCategory();
@@ -203,5 +205,19 @@ public class AssetSoftwareController {
     @RequestMapping(value = "/query/manufacturer", method = RequestMethod.GET)
     public ActionResponse<List<String>> queryAssetByManufacturer(@ApiParam(value = "manufacturerName") String manufacturerName) throws Exception {
         return ActionResponse.success(iAssetSoftwareService.getManufacturerName(manufacturerName));
+    }
+
+    /**
+     * 软件详情查询
+     * @param softwareQuery
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "软件详情查询", notes = "无查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/detail", method = RequestMethod.GET)
+    public ActionResponse<AssetSoftwareDetailResponse> querySoftwareDetail(@ApiParam(value = "softwareQuery") SoftwareQuery softwareQuery) throws Exception {
+        ParamterExceptionUtils.isBlank(softwareQuery.getPrimaryKey(), "软件资产Id不能为空");
+        return ActionResponse.success(iAssetSoftwareService.querySoftWareDetail(softwareQuery));
     }
 }

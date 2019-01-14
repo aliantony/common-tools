@@ -9,62 +9,47 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetHardDiskResponse {
-
-    private static final long serialVersionUID = 1L;
-    /**
-     * 主键
-     */
-    @ApiModelProperty("主键")
-    private Integer               id;
+public class AssetHardDiskResponse extends BaseResponse {
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer           assetId;
+    private Integer assetId;
     /**
      * 硬盘品牌
      */
     @ApiModelProperty("硬盘品牌")
-    private String            brand;
+    private String  brand;
     /**
      * 硬盘型号
      */
     @ApiModelProperty("硬盘型号")
-    private String            model;
+    private String  model;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    private String            serial;
+    private String  serial;
     /**
      * 接口类型:1SATA、2IDE、3ATA、4SCSI、5光纤通道
      */
     @ApiModelProperty("接口类型:1SATA、2IDE、3ATA、4SCSI、5光纤通道")
-    private Integer           interfaceType;
+    private Integer interfaceType;
     /**
      * 容量 (MB)
      */
     @ApiModelProperty("容量 (MB)")
-    private Integer           capacity;
+    private Integer capacity;
     /**
      * 磁盘类型,1 HDD,2,SSD
      */
     @ApiModelProperty("磁盘类型,1 HDD,2,SSD")
-    private Integer           diskType;
+    private Integer diskType;
     /**
      * 购买日期
      */
     @ApiModelProperty("购买日期")
-    private Long              buyDate;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private Long    buyDate;
 
     public Integer getAssetId() {
         return assetId;

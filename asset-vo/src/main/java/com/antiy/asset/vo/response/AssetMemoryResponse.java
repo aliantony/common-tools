@@ -9,63 +9,47 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetMemoryResponse {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 主键
-     */
-    @ApiModelProperty("主键")
-    private Integer               id;
+public class AssetMemoryResponse extends BaseResponse {
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer           assetId;
+    private Integer assetId;
     /**
      * 内存容量
      */
     @ApiModelProperty("内存容量")
-    private Integer           capacity;
+    private Integer capacity;
     /**
      * 内存主频(MHz)
      */
     @ApiModelProperty("内存主频(MHz)")
-    private Integer           frequency;
+    private Integer frequency;
     /**
      * 插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM
      */
     @ApiModelProperty("插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM")
-    private Integer           slotType;
+    private Integer slotType;
     /**
      * 是否带散热片:0-不带，1-带
      */
     @ApiModelProperty("是否带散热片:0-不带，1-带")
-    private Boolean           isHeatsink;
+    private Boolean isHeatsink;
     /**
      * 针脚数
      */
     @ApiModelProperty("针脚数")
-    private Integer           stitch;
+    private Integer stitch;
     /**
      * 购买日期
      */
     @ApiModelProperty("购买日期")
-    private Long              buyDate;
+    private Long    buyDate;
     /**
      * 保修期
      */
     @ApiModelProperty("保修期")
-    private Long              warrantyDate;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private Long    warrantyDate;
 
     public Integer getAssetId() {
         return assetId;

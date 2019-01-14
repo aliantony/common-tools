@@ -29,6 +29,12 @@
         </dependency>
 
         <dependency>
+            <artifactId>csos-biz</artifactId>
+            <groupId>com.antiy</groupId>
+            <version>1.0.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -50,6 +56,12 @@
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
         <!-- alibaba的druid数据库连接池 -->
         <dependency>
             <groupId>com.alibaba</groupId>

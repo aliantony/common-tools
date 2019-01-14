@@ -9,67 +9,52 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetNetworkCardResponse {
-
-    private static final long serialVersionUID = 1L;
-    /**
-     * 主键
-     */
-    @ApiModelProperty("主键")
-    private Integer               id;
+public class AssetNetworkCardResponse extends BaseResponse {
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer           assetId;
+    private Integer assetId;
     /**
      * 品牌
      */
     @ApiModelProperty("品牌")
-    private String            brand;
+    private String  brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
-    private String            model;
+    private String  model;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    private String            serial;
+    private String  serial;
     /**
      * IP地址
      */
     @ApiModelProperty("IP地址")
-    private String            ipAddress;
+    private String  ipAddress;
     /**
      * MAC地址
      */
     @ApiModelProperty("MAC地址")
-    private String            macAddress;
+    private String  macAddress;
     /**
      * 默认网关
      */
     @ApiModelProperty("默认网关")
-    private String            defaultGateway;
+    private String  defaultGateway;
     /**
      * 网络地址
      */
     @ApiModelProperty("网络地址")
-    private String            networkAddress;
+    private String  networkAddress;
     /**
      * 子网掩码
      */
     @ApiModelProperty("子网掩码")
-    private String            subnetMask;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private String  subnetMask;
 
     public Integer getAssetId() {
         return assetId;
