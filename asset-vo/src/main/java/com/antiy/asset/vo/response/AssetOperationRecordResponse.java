@@ -37,11 +37,11 @@ public class AssetOperationRecordResponse {
     /**
      * 类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）
      */
-    private Integer        type;
+    private String        type;
     /**
      * 结果
      */
-    private Integer        result;
+    private String        result;
     /**
      * 实施时间
      */
@@ -95,19 +95,19 @@ public class AssetOperationRecordResponse {
         this.gmtCreate = gmtCreate;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    public Integer getResult() {
+    public String getResult() {
         return result;
     }
 
-    public void setResult(Integer result) {
+    public void setResult(String result) {
         this.result = result;
     }
 
