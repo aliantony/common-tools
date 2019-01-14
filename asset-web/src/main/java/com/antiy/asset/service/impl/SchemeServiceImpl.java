@@ -6,9 +6,15 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.SchemeDao;
+import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.service.ISchemeService;
+import com.antiy.asset.util.EnumUtil;
+import com.antiy.asset.vo.enums.AssetOperationTableEnum;
+import com.antiy.asset.vo.enums.CodeEnum;
+import com.antiy.asset.vo.enums.SchemaTypeEnum;
 import com.antiy.asset.vo.query.SchemeQuery;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.asset.vo.response.SchemeResponse;
@@ -28,6 +34,8 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Resource
     private SchemeDao                             schemeDao;
     @Resource
+    private AssetOperationRecordDao               operationRecordDao;
+    @Resource
     private BaseConverter<SchemeRequest, Scheme>  requestConverter;
     @Resource
     private BaseConverter<Scheme, SchemeResponse> responseConverter;
@@ -38,6 +46,24 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         // TODO 添加创建人信息
         scheme.setGmtCreate(System.currentTimeMillis());
         schemeDao.insert(scheme);
+        // TODO 调用工作流
+
+        // 记录操作
+        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+        // 判断请求的方案类型
+        SchemaTypeEnum codeEnum = EnumUtil.getByCode(SchemaTypeEnum.class, scheme.getType());
+        assetOperationRecord.setTargetObjectId(request.getAssetd());
+        assetOperationRecord
+            .setTargetType(AssetOperationTableEnum.ASSET.getMsg());
+        assetOperationRecord.setTargetStatus(request.getTargetStatus());
+        assetOperationRecord.setSchemaId(scheme.getId());
+        assetOperationRecord.setContent(codeEnum.getMsg());
+        // TODO 操作者
+        assetOperationRecord.setOperateUserId(1);
+        assetOperationRecord.setOperateUserName("张三");
+        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+        operationRecordDao.insert(assetOperationRecord);
+
         return scheme.getId();
     }
 
