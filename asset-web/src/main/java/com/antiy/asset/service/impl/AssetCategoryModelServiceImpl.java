@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,9 +47,23 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Override
     public Integer saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel assetCategoryModel = requestConverter.convert(request, AssetCategoryModel.class);
+        if (!checkParentType(assetCategoryModel)) {
+            return 0;
+        }
+        assetCategoryModel.setGmtCreate(System.currentTimeMillis());
         assetCategoryModel.setIsDefault(1);
         assetCategoryModel.setStatus(1);
         return assetCategoryModel.getId();
+    }
+
+    private boolean checkParentType(AssetCategoryModel assetCategoryModel) throws Exception {
+        if (assetCategoryModel != null && assetCategoryModel.getParentId() != null) {
+            Integer parentId = assetCategoryModel.getParentId();
+            AssetCategoryModel parent = assetCategoryModelDao.getById(parentId);
+            boolean isAssetTypeEqual = Objects.equals(parent.getAssetType(), assetCategoryModel.getAssetType());
+            return isAssetTypeEqual;
+        }
+        return false;
     }
 
     @Override
@@ -58,6 +73,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         if (assetCategoryModel.getIsDefault().equals(0)) {
             return 0;
         }
+        assetCategoryModel.setGmtModified(System.currentTimeMillis());
         assetCategoryModel.setStatus(1);
         return assetCategoryModelDao.update(assetCategoryModel);
     }
@@ -111,7 +127,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public Integer deleteAllById(Serializable id) throws Exception {
         AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getById(id);
         // 判断是否是系统内置
-        if (Objects.equals(assetCategoryModel.getIsDefault(),0)) {
+        if (Objects.equals(assetCategoryModel.getIsDefault(), 0)) {
             return -3;
         }
         List<AssetCategoryModel> list = recursionSearch((Integer) id);

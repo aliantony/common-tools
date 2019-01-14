@@ -95,6 +95,6 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "query") AssetCategoryDeleteRequest request) throws Exception {
         ParamterExceptionUtils.isBlank(request.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetCategoryModelService.delete(Integer.parseInt(request.getPrimaryKey()),request.getConfrim()));
+        return ActionResponse.success(iAssetCategoryModelService.delete(Integer.parseInt(request.getPrimaryKey()),request.getConfirm()));
     }
 }
