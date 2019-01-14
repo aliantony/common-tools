@@ -134,6 +134,20 @@ public class AssetSoftwareResponse extends BaseResponse {
     @ApiModelProperty("状态,0 未删除,1已删除")
     private Integer status;
 
+    /**
+     * 关联硬件资产数
+     */
+    @ApiModelProperty(value = "关联 硬件资产数")
+    private Integer assetCount;
+
+    public Integer getAssetCount() {
+        return assetCount;
+    }
+
+    public void setAssetCount(Integer assetCount) {
+        this.assetCount = assetCount;
+    }
+
     public Integer getSize() {
         return size;
     }
