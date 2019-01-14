@@ -274,9 +274,6 @@
     </sql>
 
     <sql id="Where_Column_List">
-        <if test=" size != null">
-            and size = #{size }
-        </if>
         <if test=" operationSystem != null">
             and operation_system = #{operationSystem }
         </if>
@@ -286,20 +283,11 @@
         <if test=" name != null">
             and name = #{name }
         </if>
-        <if test=" uploadSoftwareName != null">
-            and upload_software_name = #{uploadSoftwareName }
-        </if>
-        <if test=" path != null">
-            and path = #{path }
-        </if>
         <if test=" version != null">
             and version = #{version }
         </if>
         <if test=" manufacturer != null">
             and manufacturer = #{manufacturer }
-        </if>
-        <if test=" description != null">
-            and description = #{description }
         </if>
         <if test=" assetGroup != null">
             and asset_group = #{assetGroup }
@@ -327,21 +315,6 @@
         </if>
         <if test=" publisher != null">
             and publisher = #{publisher }
-        </if>
-        <if test=" gmtCreate != null">
-            and gmt_create = #{gmtCreate }
-        </if>
-        <if test=" memo != null">
-            and memo = #{memo }
-        </if>
-        <if test=" gmtModified != null">
-            and gmt_modified = #{gmtModified }
-        </if>
-        <if test=" createUser != null">
-            and create_user = #{createUser }
-        </if>
-        <if test=" modifyUser != null">
-            and modify_user = #{modifyUser }
         </if>
         <if test=" status != null">
             and status = #{status }
@@ -543,4 +516,5 @@
         </if>
         and status=1
     </select>
+
 </mapper>

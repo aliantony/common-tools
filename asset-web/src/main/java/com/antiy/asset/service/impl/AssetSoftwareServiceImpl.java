@@ -7,13 +7,14 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.antiy.common.base.Constants;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
+import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.service.IAssetPortProtocolService;
@@ -33,6 +34,7 @@ import com.antiy.asset.vo.response.AssetSoftwareLicenseResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.Constants;
 import com.antiy.common.base.PageResult;
 
 /**
@@ -62,6 +64,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Resource
     private IAssetSoftwareLicenseService                              iAssetSoftwareLicenseService;
 
+    @Resource
+    private AssetSoftwareRelationDao                                  assetSoftwareRelationDao;
+
     @Override
     public Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
         AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
@@ -85,12 +90,40 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return assetSoftwareDao.update(assetSoftware);
     }
 
+    private Map<Integer, Long> handleSoftCount(List<Map<String, Object>> softObjectList) {
+        Map<Integer, Long> map = new HashMap<>();
+        for (Map<String, Object> objectMap : softObjectList) {
+            Integer id = objectMap.get("id") != null ? Integer.valueOf(objectMap.get("id").toString()) : 0;
+            Long count = objectMap.get("name") != null ? Long.parseLong(objectMap.get("name").toString()) : 0;
+            map.put(id, count);
+        }
+        return map;
+    }
+
     @Override
     public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query) throws Exception {
         List<AssetSoftware> assetSoftware = assetSoftwareDao.findListAssetSoftware(query);
-        List<AssetSoftwareResponse> assetSoftwareResponse = responseConverter.convert(assetSoftware,
-            AssetSoftwareResponse.class);
-        return assetSoftwareResponse;
+        Map<Integer, Long> softAssetCount = null;
+        if (query.getQueryAssetCount()) {
+            List<Integer> allSoftwareIds = new ArrayList<>();
+            assetSoftware.stream().forEach(assetSoftwareDO -> allSoftwareIds.add(assetSoftwareDO.getId()));
+            softAssetCount = handleSoftCount(assetSoftwareRelationDao.countSoftwareRelAsset(allSoftwareIds));
+        }
+
+        Map<Integer, Long> finalSoftAssetCount = softAssetCount;
+        BaseConverter baseConverter = new BaseConverter<AssetSoftware, AssetSoftwareResponse>() {
+
+            @Override
+            protected void convert(AssetSoftware assetSoftware, AssetSoftwareResponse assetSoftwareResponse) {
+                super.convert(assetSoftware, assetSoftwareResponse);
+                if (MapUtils.isNotEmpty(finalSoftAssetCount)) {
+                    assetSoftwareResponse.setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null
+                        ? finalSoftAssetCount.get(assetSoftware.getId()).intValue()
+                        : 0);
+                }
+            }
+        };
+        return baseConverter.convert(assetSoftware, AssetSoftwareResponse.class);
     }
 
     public Integer findCountAssetSoftware(AssetSoftwareQuery query) throws Exception {
