@@ -22,7 +22,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetGroupRelation", description = "资产与资产组关系表")
 @RestController
-@RequestMapping("/v1/asset/assetgrouprelation")
+@RequestMapping("/api/v1/asset/assetgrouprelation")
 public class AssetGroupRelationController {
 
     @Resource

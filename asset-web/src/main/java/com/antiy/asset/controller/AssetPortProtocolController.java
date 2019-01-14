@@ -22,7 +22,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetPortProtocol", description = "端口协议")
 @RestController
-@RequestMapping("/v1/asset/assetportprotocol")
+@RequestMapping("/api/v1/asset/assetportprotocol")
 public class AssetPortProtocolController {
 
     @Resource

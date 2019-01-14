@@ -17,7 +17,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetUser", description = "资产用户信息")
 @RestController
-@RequestMapping("/v1/asset/assetuser")
+@RequestMapping("/api/v1/asset/assetuser")
 public class AssetUserController {
 
     @Resource

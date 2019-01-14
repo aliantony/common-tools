@@ -20,7 +20,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetSafetyEquipment", description = "安全设备详情表")
 @RestController
-@RequestMapping("/v1/asset/assetsafetyequipment")
+@RequestMapping("/api/v1/asset/assetsafetyequipment")
 public class AssetSafetyEquipmentController {
     private static final Logger         logger = LogUtils.get();
 

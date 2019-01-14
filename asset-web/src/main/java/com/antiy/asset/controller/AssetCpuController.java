@@ -18,7 +18,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetCpu", description = "处理器表")
 @RestController
-@RequestMapping("/v1/asset/assetcpu")
+@RequestMapping("/api/v1/asset/assetcpu")
 public class AssetCpuController {
 
     @Resource

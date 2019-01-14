@@ -20,7 +20,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetNetworkCard", description = "网卡信息表")
 @RestController
-@RequestMapping("/v1/asset/assetnetworkcard")
+@RequestMapping("/api/v1/asset/assetnetworkcard")
 public class AssetNetworkCardController {
 
     @Resource

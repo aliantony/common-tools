@@ -18,7 +18,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetNetworkEquipment", description = "网络设备详情表")
 @RestController
-@RequestMapping("/v1/asset/assetnetworkequipment")
+@RequestMapping("/api/v1/asset/assetnetworkequipment")
 public class AssetNetworkEquipmentController {
 
     @Resource

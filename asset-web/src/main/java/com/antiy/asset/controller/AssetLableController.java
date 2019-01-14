@@ -22,7 +22,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetLable", description = "标签信息表")
 @RestController
-@RequestMapping("/v1/asset/assetlable")
+@RequestMapping("/api/v1/asset/assetlable")
 public class AssetLableController {
 
     @Resource

@@ -22,7 +22,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetMemory", description = "内存表")
 @RestController
-@RequestMapping("/v1/asset/assetmemory")
+@RequestMapping("/api/v1/asset/assetmemory")
 public class AssetMemoryController {
 
     @Resource

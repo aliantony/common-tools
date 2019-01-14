@@ -20,7 +20,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetCategoryModel", description = "品类型号表")
 @RestController
-@RequestMapping("/v1/asset/assetcategorymodel")
+@RequestMapping("/api/v1/asset/assetcategorymodel")
 public class AssetCategoryModelController {
 
     @Resource

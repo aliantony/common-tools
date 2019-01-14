@@ -22,7 +22,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetSoftwareRelation", description = "资产软件关系信息")
 @RestController
-@RequestMapping("/v1/asset/assetsoftwarerelation")
+@RequestMapping("/api/v1/asset/assetsoftwarerelation")
 public class AssetSoftwareRelationController {
     private static final Logger          logger = LogUtils.get();
 

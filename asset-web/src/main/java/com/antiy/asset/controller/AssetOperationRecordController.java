@@ -33,7 +33,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetSoftware", description = "资产操作记录")
 @RestController
-@RequestMapping("/v1/asset/assetoperationrecord")
+@RequestMapping("/api/v1/asset/assetoperationrecord")
 public class AssetOperationRecordController {
 
     @Resource

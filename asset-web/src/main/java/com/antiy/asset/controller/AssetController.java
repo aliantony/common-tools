@@ -29,7 +29,7 @@ import java.util.Map;
  */
 @Api(value = "Asset", description = "资产主表")
 @RestController
-@RequestMapping("/v1/asset")
+@RequestMapping("/api/v1/asset")
 public class AssetController {
 
     @Resource

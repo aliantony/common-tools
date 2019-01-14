@@ -21,7 +21,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetSoftwareLicense", description = "软件许可表")
 @RestController
-@RequestMapping("/v1/asset/assetsoftwarelicense")
+@RequestMapping("/api/v1/asset/assetsoftwarelicense")
 public class AssetSoftwareLicenseController {
     private static final Logger         logger = LogUtils.get();
 

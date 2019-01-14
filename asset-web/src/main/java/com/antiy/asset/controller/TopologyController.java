@@ -23,7 +23,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "Scheme", description = "网络拓扑")
 @RestController
-@RequestMapping("/v1/asset/topology")
+@RequestMapping("/api/v1/asset/topology")
 public class TopologyController {
 
     @Resource

@@ -22,7 +22,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetHardDisk", description = "硬盘表")
 @RestController
-@RequestMapping("/v1/asset/assetharddisk")
+@RequestMapping("/api/v1/asset/assetharddisk")
 public class AssetHardDiskController {
 
     @Resource
