@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import java.util.List;
+
 /**
  * <p> AssetOperationRecordResponse 响应对象 </p>
  *
@@ -11,51 +13,47 @@ public class AssetOperationRecordResponse {
     /**
      * 被操作的对象ID
      */
-    private Integer targetObject;
+    private Integer        targetObject;
     /**
      * 被操作对象名称
      */
-    private String  targetName;
+    private String         targetName;
     /**
      * 最终状态
      */
-    private String  targetStatusName;
+    private String         targetStatusName;
     /**
      * 操作人名字
      */
-    private String  operateUserName;
+    private String         operateUserName;
     /**
      * 操作内容
      */
-    private String  content;
+    private String         content;
     /**
      * 创建时间
      */
-    private Long    gmtCreate;
+    private Long           gmtCreate;
     /**
      * 类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）
      */
-    private Integer type;
+    private String        type;
     /**
      * 结果
      */
-    private Integer result;
+    private String        result;
     /**
      * 实施时间
      */
-    private Long    putintoTime;
+    private Long           putintoTime;
     /**
      * 实施人
      */
-    private String  putintoUser;
+    private String         putintoUser;
     /**
-     * 附件名称
+     * 附件信息（[{"XXX文件","10.12.5.1:5566/file/asset/dj"}]）
      */
-    private String  filename;
-    /**
-     * 附件路径
-     */
-    private String  filepath;
+    private List<String[]> files;
 
     public Integer getTargetObject() {
         return targetObject;
@@ -97,19 +95,19 @@ public class AssetOperationRecordResponse {
         this.gmtCreate = gmtCreate;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    public Integer getResult() {
+    public String getResult() {
         return result;
     }
 
-    public void setResult(Integer result) {
+    public void setResult(String result) {
         this.result = result;
     }
 
@@ -129,12 +127,12 @@ public class AssetOperationRecordResponse {
         this.putintoUser = putintoUser;
     }
 
-    public String getFilepath() {
-        return filepath;
+    public List<String[]> getFiles() {
+        return files;
     }
 
-    public void setFilepath(String filepath) {
-        this.filepath = filepath;
+    public void setFiles(List<String[]> files) {
+        this.files = files;
     }
 
     public String getOperateUserName() {
@@ -143,13 +141,5 @@ public class AssetOperationRecordResponse {
 
     public void setOperateUserName(String operateUserName) {
         this.operateUserName = operateUserName;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
     }
 }
