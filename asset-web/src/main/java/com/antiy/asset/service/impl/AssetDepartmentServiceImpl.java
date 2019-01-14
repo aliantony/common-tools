@@ -44,6 +44,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     public Integer saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
         assetDepartment.setStatus(1);
+        assetDepartment.setGmtCreate(System.currentTimeMillis());
         assetDepartmentDao.insert(assetDepartment);
         return assetDepartment.getId();
     }
@@ -52,6 +53,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     public Integer updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
         assetDepartment.setStatus(1);
+        assetDepartment.setGmtCreate(System.currentTimeMillis());
         return assetDepartmentDao.update(assetDepartment);
     }
 
@@ -127,6 +129,13 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
 
+    /**
+     * 删除部门及子部门，并将这些部门下的人员部门信息置为null
+     *
+     * @param id
+     * @return 影响的数据库行数
+     * @throws Exception
+     */
     @Override
     public Integer deleteById(Serializable id) throws Exception {
         List<AssetDepartment> list = recursionSearch((Integer) id);

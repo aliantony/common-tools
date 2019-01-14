@@ -17,14 +17,7 @@ public class AssetDepartment extends BaseEntity {
      * 部门名
      */
     private String            name;
-    /**
-     * 负责人
-     */
-    private String            responsibleUser;
-    /**
-     * 联系电话
-     */
-    private String            telephone;
+
     /**
      * 上级部门
      */
@@ -60,22 +53,6 @@ public class AssetDepartment extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getResponsibleUser() {
-        return responsibleUser;
-    }
-
-    public void setResponsibleUser(String responsibleUser) {
-        this.responsibleUser = responsibleUser;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
     }
 
     public Integer getParentId() {
@@ -136,9 +113,15 @@ public class AssetDepartment extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetDepartment{" + ", name=" + name + ", responsibleUser=" + responsibleUser + ", telephone="
-               + telephone + ", parentId=" + parentId + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified
-               + ", memo=" + memo + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status
-               + "}";
+        return "AssetDepartment{" +
+                "name='" + name + '\'' +
+                ", parentId=" + parentId +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                '}';
     }
 }

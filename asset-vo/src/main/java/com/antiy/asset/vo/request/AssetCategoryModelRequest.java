@@ -35,14 +35,7 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
      */
     @ApiModelProperty("名称")
     private String  name;
-    /**
-     * 类型:1-品类，2-型号
-     */
-    @ApiModelProperty("类型:1-品类，2-型号")
-    private Integer type;
-    /**
-     * 资产类型:1软件，2硬件
-     */
+
     @ApiModelProperty("资产类型:1软件，2硬件")
     private Integer assetType;
     /**
@@ -50,13 +43,14 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
      */
     @ApiModelProperty("父ID")
     private Integer parentId;
+
     /**
-     * 描述
+     * 是否系统默认：0系统1自定义
      */
-    @ApiModelProperty("描述")
-    private String  description;
+    @ApiModelProperty("是否是系统默认")
+    private Integer isDefault;
     /**
-     * 描述
+     * 备注
      */
     @ApiModelProperty("备注")
     private String  memo;
@@ -67,14 +61,6 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public Integer getAssetType() {
@@ -93,20 +79,20 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
         this.parentId = parentId;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getMemo() {
         return memo;
     }
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public Integer getIsDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(Integer isDefault) {
+        this.isDefault = isDefault;
     }
 
     @Override

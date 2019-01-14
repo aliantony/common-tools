@@ -39,8 +39,7 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
-        iAssetCategoryModelService.saveAssetCategoryModel(assetCategoryModel);
-        return ActionResponse.success();
+        return ActionResponse.success(iAssetCategoryModelService.saveAssetCategoryModel(assetCategoryModel));
     }
 
     /**
@@ -53,8 +52,7 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
-        iAssetCategoryModelService.updateAssetCategoryModel(assetCategoryModel);
-        return ActionResponse.success();
+        return ActionResponse.success(iAssetCategoryModelService.updateAssetCategoryModel(assetCategoryModel));
     }
 
     /**
@@ -88,7 +86,7 @@ public class AssetCategoryModelController {
      * 通过ID删除
      *
      * @param request 主键封装对象
-     * @return actionResponse
+     * @return  -1 表示存在资产，不能删除 -2 表示存在子品类，需要确认 -3 是系统内置品类，不能删除 >=0 表示删除的品类数
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
