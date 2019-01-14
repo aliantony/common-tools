@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p> AssetOperationRecordResponse 响应对象 </p>
@@ -13,47 +14,47 @@ public class AssetOperationRecordResponse {
     /**
      * 被操作的对象ID
      */
-    private Integer        targetObject;
+    private Integer                   targetObject;
     /**
      * 被操作对象名称
      */
-    private String         targetName;
+    private String                    targetName;
     /**
-     * 最终状态
+     * 状态
      */
-    private String         targetStatusName;
+    private String                    targetStatus;
     /**
      * 操作人名字
      */
-    private String         operateUserName;
+    private String                    operateUserName;
     /**
      * 操作内容
      */
-    private String         content;
+    private String                    content;
     /**
      * 创建时间
      */
-    private Long           gmtCreate;
+    private Long                      gmtCreate;
     /**
      * 类型（1.准入实施、2.效果检查、3.资产退役、4.验证退役方案、5.实施退役方案）
      */
-    private String        type;
+    private String                    type;
     /**
      * 结果
      */
-    private String        result;
+    private String                    result;
     /**
      * 实施时间
      */
-    private Long           putintoTime;
+    private Long                      putintoTime;
     /**
      * 实施人
      */
-    private String         putintoUser;
+    private String                    putintoUser;
     /**
      * 附件信息（[{"XXX文件","10.12.5.1:5566/file/asset/dj"}]）
      */
-    private List<String[]> files;
+    private List<Map<String, String>> files;
 
     public Integer getTargetObject() {
         return targetObject;
@@ -71,12 +72,12 @@ public class AssetOperationRecordResponse {
         this.targetName = targetName;
     }
 
-    public String getTargetStatusName() {
-        return targetStatusName;
+    public String getTargetStatus() {
+        return targetStatus;
     }
 
-    public void setTargetStatusName(String targetStatusName) {
-        this.targetStatusName = targetStatusName;
+    public void setTargetStatus(String targetStatus) {
+        this.targetStatus = targetStatus;
     }
 
     public String getContent() {
@@ -127,11 +128,11 @@ public class AssetOperationRecordResponse {
         this.putintoUser = putintoUser;
     }
 
-    public List<String[]> getFiles() {
+    public List<Map<String, String>> getFiles() {
         return files;
     }
 
-    public void setFiles(List<String[]> files) {
+    public void setFiles(List<Map<String, String>> files) {
         this.files = files;
     }
 

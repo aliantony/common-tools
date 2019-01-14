@@ -19,9 +19,9 @@ public class AssetOperationRecordMapper {
      */
     private String         targetName;
     /**
-     * 最终状态
+     * 状态
      */
-    private String         targetStatusName;
+    private Integer        targetStatus;
     /**
      * 操作人名字
      */
@@ -71,12 +71,12 @@ public class AssetOperationRecordMapper {
         this.targetName = targetName;
     }
 
-    public String getTargetStatusName() {
-        return targetStatusName;
+    public Integer getTargetStatus() {
+        return targetStatus;
     }
 
-    public void setTargetStatusName(String targetStatusName) {
-        this.targetStatusName = targetStatusName;
+    public void setTargetStatus(Integer targetStatus) {
+        this.targetStatus = targetStatus;
     }
 
     public String getContent() {
