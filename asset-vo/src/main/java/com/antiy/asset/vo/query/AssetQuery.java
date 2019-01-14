@@ -1,9 +1,11 @@
 package com.antiy.asset.vo.query;
 
-import com.antiy.common.base.ObjectQuery;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.List;
+
+import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> Asset 查询条件 </p>
@@ -117,9 +119,21 @@ public class AssetQuery extends ObjectQuery {
     /**
      * 首次发现时间还是首次入网时间（1：发现。2：入网）
      */
-    private Integer timeType;
+    private Integer       timeType;
 
     private Integer       status;
+
+    @Encode
+    @ApiModelProperty(value = "软件资产Id")
+    private String        softwareId;
+
+    public String getSoftwareId() {
+        return softwareId;
+    }
+
+    public void setSoftwareId(String softwareId) {
+        this.softwareId = softwareId;
+    }
 
     public Integer[] getIds() {
         return ids;
