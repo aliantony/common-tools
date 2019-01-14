@@ -70,9 +70,9 @@ public class ExcelUtils {
      * @param dataList 数据
      * @throws IOException
      */
-    public static void exportToFile(Class<?> clazz, String fileName, String title, List<?> dataList, String filepath) {
+    public static void exportToFile(Class<?> clazz, String fileName, String title, List<?> dataList, String fileInfo) {
         try {
-            new ExportExcel(title, clazz).exportToFile(filepath + fileName, dataList);
+            new ExportExcel(title, clazz).exportToFile(fileInfo + fileName, dataList);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -163,10 +163,10 @@ public class ExcelUtils {
      * @param filename 文件名
      * @param title 文件标题
      */
-    public static void exportTemplet(Class<?> clazz, String filename, String title, String filepath) {
+    public static void exportTemplet(Class<?> clazz, String filename, String title, String fileInfo) {
         ParamterExceptionUtils.isBlank(filename, "文件名不能为空");
         try {
-            new ExportExcel(title, clazz, 2).exportTempleteToFile(filepath + filename);
+            new ExportExcel(title, clazz, 2).exportTempleteToFile(fileInfo + filename);
         } catch (IOException e) {
             e.printStackTrace();
         }
