@@ -594,6 +594,11 @@
             and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id =
             #{assetGroup})
         </if>
+
+        <if test="softwareId != null and softwareId != ''">
+           and exists (select 1 from asset_software_relation b where asset.id = b.asset_id and b.software_id=#{softwareId} and b.software_status !=8 and b.status=1)
+        </if>
+
         <if test=" multipleQuery != null">
             and (name LIKE CONCAT('%',#{multipleQuery},'%')
             or number LIKE CONCAT('%',#{multipleQuery},'%')
