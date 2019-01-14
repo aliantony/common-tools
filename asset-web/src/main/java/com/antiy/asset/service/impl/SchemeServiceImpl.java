@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.dao.AssetDao;
 import org.springframework.stereotype.Service;
 
+import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.AssetOperationRecord;
@@ -16,7 +16,6 @@ import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.service.ISchemeService;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.vo.enums.AssetOperationTableEnum;
-import com.antiy.asset.vo.enums.CodeEnum;
 import com.antiy.asset.vo.enums.SchemaTypeEnum;
 import com.antiy.asset.vo.query.SchemeQuery;
 import com.antiy.asset.vo.request.SchemeRequest;
@@ -37,7 +36,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Resource
     private SchemeDao                             schemeDao;
     @Resource
-    private AssetDao assetDao;
+    private AssetDao                              assetDao;
     @Resource
     private AssetOperationRecordDao               operationRecordDao;
     @Resource
@@ -51,22 +50,20 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         // TODO 添加创建人信息
         scheme.setGmtCreate(System.currentTimeMillis());
         schemeDao.insert(scheme);
-        //修改资产状态
+        // 修改资产状态
         Map<String, Integer[]> assetIdMap = new HashMap();
-        assetIdMap.put("ids",new Integer[]{request.getAssetId()});
-        assetIdMap.put("assetStatus",new Integer[]{request.getTargetStatus()});
+        assetIdMap.put("ids", new Integer[] { request.getAssetId() });
+        assetIdMap.put("assetStatus", new Integer[] { request.getTargetStatus() });
         assetDao.changeStatus(assetIdMap);
 
         // TODO 调用工作流
-
 
         // 记录操作历史
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         // 判断请求的方案类型
         SchemaTypeEnum codeEnum = EnumUtil.getByCode(SchemaTypeEnum.class, scheme.getType());
         assetOperationRecord.setTargetObjectId(request.getAssetId());
-        assetOperationRecord
-            .setTargetType(AssetOperationTableEnum.ASSET.getCode());
+        assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setTargetStatus(request.getTargetStatus());
         assetOperationRecord.setSchemaId(scheme.getId());
         assetOperationRecord.setContent(codeEnum != null ? codeEnum.getMsg() : null);
@@ -97,7 +94,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     }
 
     public SchemeResponse findSchemeById(Integer id) throws Exception {
-        return responseConverter.convert(super.getById(id),SchemeResponse.class);
+        return responseConverter.convert(super.getById(id), SchemeResponse.class);
     }
 
     @Override
