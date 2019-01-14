@@ -36,6 +36,18 @@ public class Scheme extends BaseEntity {
      */
     private String  putintoUser;
     /**
+     * 工单级别
+     */
+    private String  orderLevel;
+    /**
+     *  预计开始时间
+     */
+    private Long expecteStartTime;
+    /**
+     *  预计结束时间
+     */
+    private Long expecteEndTime;
+    /**
      * 附件路径
      */
     private String  fileInfo;
@@ -166,6 +178,46 @@ public class Scheme extends BaseEntity {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(Integer assetId) {
+        this.assetId = assetId;
+    }
+
+    public String getOrderLevel() {
+        return orderLevel;
+    }
+
+    public void setOrderLevel(String orderLevel) {
+        this.orderLevel = orderLevel;
+    }
+
+    public Long getExpecteStartTime() {
+        return expecteStartTime;
+    }
+
+    public void setExpecteStartTime(Long expecteStartTime) {
+        this.expecteStartTime = expecteStartTime;
+    }
+
+    public Long getExpecteEndTime() {
+        return expecteEndTime;
+    }
+
+    public void setExpecteEndTime(Long expecteEndTime) {
+        this.expecteEndTime = expecteEndTime;
+    }
+
+    public String getFileInfo() {
+        return fileInfo;
+    }
+
+    public void setFileInfo(String fileInfo) {
+        this.fileInfo = fileInfo;
     }
 
     @Override
