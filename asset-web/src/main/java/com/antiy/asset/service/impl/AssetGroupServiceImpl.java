@@ -4,9 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.convert.GroupSelectResponseConverter;
-import com.antiy.asset.vo.response.GroupValueResponse;
-import com.antiy.asset.vo.response.SelectResponse;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.convert.AssetGroupResponseConverter;
@@ -36,10 +33,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     private BaseConverter<AssetGroupRequest, AssetGroup>  requestConverter;
     @Resource
     private BaseConverter<AssetGroup, AssetGroupResponse> responseConverter;
-    @Resource
-    private BaseConverter<AssetGroup, GroupValueResponse> groupValueResponseConverter;
-    @Resource
-    private GroupSelectResponseConverter groupSelectResponseConverter;
     @Resource
     private AssetGroupResponseConverter                   assetGroupResponseConverter;
 
@@ -82,6 +75,5 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     public List<SelectResponse> queryGroupInfo() throws Exception {
         return assetGroupResponseConverter.convert(assetGroupDao.findPulldownGroup(), SelectResponse.class);
     }
-
 
 }
