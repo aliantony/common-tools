@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
  * @description:操作流程表类型
  */
 public enum AssetOperationTableEnum {
-                                     ASSET("ASSET", "硬件资产"), SOFTWARE("SOFTWARE", "软件资产");
+                                     ASSET("ASSET", "硬件资产"), SOFTWARE("SOFTWARE", "软件资产"),SCHEMA("SCHEMA", "方案表");
 
     AssetOperationTableEnum(String code, String msg) {
         this.code = code;
