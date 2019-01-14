@@ -3,10 +3,7 @@ package com.antiy.asset.controller;
 import javax.annotation.Resource;
 
 import com.antiy.asset.vo.request.AssetCategoryDeleteRequest;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
@@ -71,28 +68,26 @@ public class AssetCategoryModelController {
     /**
      * 通过ID查询
      *
-     * @param query 主键封装对象
+     * @param id 主键
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "assetCategoryModel") QueryCondition query) throws Exception {
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetCategoryModelService.getById(Integer.parseInt(query.getPrimaryKey())));
+    @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
+    public ActionResponse queryById(@PathVariable  @ApiParam(value = "assetCategoryModel") Integer id) throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.getById(id));
     }
 
     /**
      * 通过ID删除
      *
-     * @param request 主键封装对象
+     * @param id 主键,isConfirm 二次确认
      * @return  -1 表示存在资产，不能删除 -2 表示存在子品类，需要确认 -3 是系统内置品类，不能删除 >=0 表示删除的品类数
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "query") AssetCategoryDeleteRequest request) throws Exception {
-        ParamterExceptionUtils.isBlank(request.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetCategoryModelService.delete(Integer.parseInt(request.getPrimaryKey()),request.getConfirm()));
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public ActionResponse deleteById(@PathVariable @ApiParam(value = "id")Integer id,@RequestBody @ApiParam(value = "二次确认") Boolean isConfirm) throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.delete(id,isConfirm));
     }
 }

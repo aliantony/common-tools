@@ -1,5 +1,6 @@
 package com.antiy.asset.service.impl;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -53,8 +54,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         // 判断请求的方案类型
         SchemaTypeEnum codeEnum = EnumUtil.getByCode(SchemaTypeEnum.class, scheme.getType());
         assetOperationRecord.setTargetObjectId(request.getAssetId());
-        assetOperationRecord
-            .setTargetType(AssetOperationTableEnum.ASSET.getCode());
+        assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setTargetStatus(request.getTargetStatus());
         assetOperationRecord.setSchemaId(scheme.getId());
         assetOperationRecord.setContent(codeEnum.getMsg());
@@ -82,6 +82,10 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         // TODO
         List<SchemeResponse> schemeResponse = responseConverter.convert(schemeList, SchemeResponse.class);
         return schemeResponse;
+    }
+
+    public SchemeResponse findSchemeById(Integer id) throws Exception {
+        return responseConverter.convert(super.getById(id),SchemeResponse.class);
     }
 
     @Override
