@@ -17,4 +17,6 @@ import java.util.List;
 public interface AssetMemoryDao extends IBaseDao<AssetMemory> {
 
     List<AssetMemory> findListAssetMemory(AssetMemoryQuery query) throws Exception;
+
+    void updateBatch(List<AssetMemory> assetMemoryList);
 }

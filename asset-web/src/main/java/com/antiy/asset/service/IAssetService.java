@@ -176,7 +176,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 资产变更
-     * @param id 资产主键
+     * @param assetOuterRequest 资产信息
      */
-    void changeAsset(Integer id);
+    void changeAsset(AssetOuterRequest assetOuterRequest) throws Exception;
 }

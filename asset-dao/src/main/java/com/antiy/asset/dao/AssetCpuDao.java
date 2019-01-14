@@ -17,4 +17,6 @@ import java.util.List;
 public interface AssetCpuDao extends IBaseDao<AssetCpu> {
 
     List<AssetCpu> findListAssetCpu(AssetCpuQuery query) throws Exception;
+
+    void updateBatch(List<AssetCpu> assetCpuList);
 }
