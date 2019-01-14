@@ -179,12 +179,20 @@
 
 
     <update id="deleteById" parameterType="java.lang.Integer">
-        UPDATE
+        update
         <include refid="Table_Name"></include>
-        SET
-        status=
-        <include refid="Delete_Status"></include>
-        where id=#{id}
+        department
+        left join
+        <include refid="User_Table_Name"></include>
+        user
+        on department.id=user.department_id
+        set
+        department.status=
+        <include refid="Delete_Status"></include>,
+        user.department_id=
+        <include refid="Null"></include>
+        where
+        department.id=#{id}
     </update>
 
     <update id="delete">

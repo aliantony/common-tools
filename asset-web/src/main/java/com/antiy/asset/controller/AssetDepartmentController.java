@@ -87,8 +87,8 @@ public class AssetDepartmentController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@PathVariable @ApiParam(value = "id") Integer id,
-                                     @ApiParam(value = "isConfirm") Boolean isConfirm) throws Exception {
-        return ActionResponse.success(iAssetDepartmentService.deleteById(id));
+                                     @RequestBody @ApiParam(value = "二次确认") Boolean isConfirm) throws Exception {
+        return ActionResponse.success(iAssetDepartmentService.delete(id,isConfirm));
     }
 
     @ApiOperation(value = "通过ID查询所有部门信息及子部门信息", notes = "主键封装对象")
