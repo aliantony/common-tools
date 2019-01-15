@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -10,7 +12,8 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class SchemeResponse {
-    private int     id;
+    @Encode
+    private String  id;
     /**
      * 类型（1.准入实施、2.效果检查、3.制定待退役方案、4.验证退役方案、5.实施退役方案）
      */
@@ -140,11 +143,11 @@ public class SchemeResponse {
         this.memo = memo;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 }

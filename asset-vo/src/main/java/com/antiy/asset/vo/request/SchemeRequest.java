@@ -80,6 +80,19 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("目标状态")
     private Integer targetStatus;
+    /**
+     * 同意/拒绝
+     */
+    @ApiModelProperty("同意/拒绝")
+    private Integer  is_agree;
+
+    public Integer getIs_agree() {
+        return is_agree;
+    }
+
+    public void setIs_agree(Integer is_agree) {
+        this.is_agree = is_agree;
+    }
 
     public String getId() {
         return id;
