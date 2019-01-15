@@ -25,6 +25,7 @@ import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -459,7 +460,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Map<String, Long> countManufacturer() throws Exception {
-        List<Map<String, Long>> list = assetDao.countManufacturer();
+        List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        List<Map<String, Long>> list = assetDao.countManufacturer(areaIds);
         Map result = new HashMap();
         for (Map map : list) {
             result.put(map.get("key"), map.get("value"));
@@ -469,8 +471,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Map<String, Long> countStatus() throws Exception {
-        // todo 添加区域id
-        List<Map<String, Long>> list = assetDao.countStatus();
+        List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        List<Map<String, Long>> list = assetDao.countStatus(areaIds);
         Map<String, Long> result = new HashMap();
         for (Map map : list) {
             result.put(AssetStatusEnum.getAssetByCode((Integer) map.get("key")) + "", (Long) map.get("value"));
@@ -480,18 +482,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Map<String, Long> countCategory() throws Exception {
-        // todo 添加区域id
+        List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         HashMap<String, Object> map = new HashMap();
         map.put("name", "硬件");
         map.put("parentId", 0);
+        //查询第一级分类id
         List<AssetCategoryModel> categoryModelList = assetCategoryModelDao.getByWhere(map);
         if (CollectionUtils.isNotEmpty(categoryModelList)) {
             Integer id = categoryModelList.get(0).getId();
             map.clear();
             map.put("parentId", id);
+            //查询第二级分类id
             List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getByWhere(map);
             HashMap<String, Long> result = new HashMap<>();
             for (AssetCategoryModel a : categoryModelList1) {
+                //查询第二级每个分类下所有的分类id，并添加至list集合
                 List<AssetCategoryModel> search = recursionSearch(a.getId());
                 Long sum = 0L;
                 List<Integer> list = new ArrayList<>();
@@ -500,6 +505,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
                 AssetQuery assetQuery = new AssetQuery();
                 assetQuery.setCategoryModels(ArrayTypeUtil.ObjectArrayToIntegerArray(list.toArray()));
+                assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(areaIds.toArray()));
                 result.put(a.getName(), (long) assetDao.findCountByCategoryModel(assetQuery));
             }
             return result;
