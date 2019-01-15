@@ -299,7 +299,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int row;
         Map<String, Object> map = new HashMap<>();
         map.put("ids", ids);
-        map.put("assetStatus", new String[] { targetStatus.toString() });
+        map.put("targetStatus", new String[] { targetStatus.toString() });
         map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
         map.put("gmtModified", System.currentTimeMillis());
         row = assetDao.changeStatus(map);
@@ -310,7 +310,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public Integer changeStatusById(String id, Integer targetStatus) throws Exception {
         Map<String, Object> map = new HashMap<>();
         map.put("ids", new String[] { id });
-        map.put("assetStatus", targetStatus);
+        map.put("targetStatus", targetStatus);
 //        map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
         map.put("gmtModified", System.currentTimeMillis());
         return assetDao.changeStatus(map);
