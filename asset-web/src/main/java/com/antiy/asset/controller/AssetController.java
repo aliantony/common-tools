@@ -216,9 +216,9 @@ public class AssetController {
      */
     @ApiOperation(value = "通过资产ID修改资产状态", notes = "传入资产ID")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/changeStatus/{id}", method = RequestMethod.POST)
-    public ActionResponse changeStatusById(@ApiParam(value = "资产ID") @RequestParam @Encode @PathVariable String id,
-                                       @ApiParam(value = "资产新状态") @RequestParam("targetStatus") @Encode Integer targetStatus) throws Exception {
+    @RequestMapping(value = "/changeStatusById", method = RequestMethod.POST)
+    public ActionResponse changeStatusById(@ApiParam(value = "资产ID") @RequestParam String id,
+                                       @ApiParam(value = "资产新状态") @RequestParam("targetStatus") Integer targetStatus) throws Exception {
         iAssetService.changeStatusById(id, targetStatus);
         return ActionResponse.success();
     }

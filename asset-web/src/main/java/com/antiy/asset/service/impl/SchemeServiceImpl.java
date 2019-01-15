@@ -7,7 +7,10 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.biz.util.LoginUserUtil;
+import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetDao;
@@ -53,12 +56,30 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         scheme.setGmtCreate(System.currentTimeMillis());
         schemeDao.insert(scheme);
         // 修改资产状态
-        Map<String, String[]> assetIdMap = new HashMap<>(2);
-        assetIdMap.put("ids", new String[] { request.getAssetId()});
-        assetIdMap.put("assetStatus", new String[] { request.getTargetStatus().toString() });
+        Map<String, Object> assetIdMap = new HashMap<String, Object>(2);
+        assetIdMap.put("ids", request.getAssetId());
+        assetIdMap.put("assetStatus", request.getTargetStatus().toString());
         assetDao.changeStatus(assetIdMap);
 
         // TODO 调用工作流
+        Integer type = scheme.getType();
+        if (EnumUtil.getByCode(SchemeTypeEnum.class, scheme.getType()) != null){
+            switch (type){
+                case 1: ;
+                break;
+                case 2:
+                    ;
+                case 3://制定待退役方案-由入网变为“待退役”
+                    assetDao.changeStatusById(request.getAssetId(),request.getTargetStatus(), AssetStatusEnum.NET_IN.getCode()) ;
+                    break;
+                case 4:;
+                case 5:;
+                default:break;
+            }
+        }else {
+            throw new BusinessException(RespBasicCode.PARAMETER_ERROR.getResultDes());
+        }
+
 
         // 记录操作历史
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();

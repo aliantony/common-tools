@@ -83,10 +83,10 @@ public interface IAssetService extends IBaseService<Asset> {
      * 通过资产ID修改资产状态
      *
      * @param id
-     * @param assetStatus
+     * @param targetStatus
      * @return
      */
-    Integer changeStatusById(String id, Integer assetStatus) throws Exception;
+    Integer changeStatusById(String id, Integer targetStatus) throws Exception;
 
     /**
      * 保存全部信息
