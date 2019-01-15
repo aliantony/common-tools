@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.biz.util.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetDao;
@@ -48,7 +49,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Override
     public Integer saveScheme(SchemeRequest request) throws Exception {
         Scheme scheme = requestConverter.convert(request, Scheme.class);
-        // TODO 添加创建人信息
+        scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         scheme.setGmtCreate(System.currentTimeMillis());
         schemeDao.insert(scheme);
         // 修改资产状态
@@ -69,9 +70,8 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         assetOperationRecord.setSchemaId(scheme.getId());
         assetOperationRecord.setContent(codeEnum != null ? codeEnum.getMsg() : null);
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
-        // TODO 操作者
-        assetOperationRecord.setOperateUserId(1);
-        assetOperationRecord.setOperateUserName("张三");
+        assetOperationRecord.setOperateUserId(request.getPutintoUserId());
+        assetOperationRecord.setOperateUserName(request.getPutintoUser());
 
         operationRecordDao.insert(assetOperationRecord);
 
