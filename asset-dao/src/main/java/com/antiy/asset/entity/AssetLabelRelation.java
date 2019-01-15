@@ -104,6 +104,10 @@ public class AssetLabelRelation extends BaseEntity {
         this.status = status;
     }
 
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     @Override
     public String toString() {
         return "AssetLabelRelation{" + ", assetId=" + assetId + ", assetLabelId=" + assetLabelId + ", gmtCreate="

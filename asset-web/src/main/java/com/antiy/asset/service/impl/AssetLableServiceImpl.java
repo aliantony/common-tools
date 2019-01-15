@@ -12,6 +12,7 @@ import com.antiy.asset.service.IAssetLableService;
 import com.antiy.asset.vo.query.AssetLableQuery;
 import com.antiy.asset.vo.request.AssetLableRequest;
 import com.antiy.asset.vo.response.AssetLableResponse;
+import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -35,12 +36,16 @@ public class AssetLableServiceImpl extends BaseServiceImpl<AssetLable> implement
     @Override
     public Integer saveAssetLable(AssetLableRequest request) throws Exception {
         AssetLable assetLable = requestConverter.convert(request, AssetLable.class);
+        assetLable.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetLable.setGmtCreate(System.currentTimeMillis());
         return assetLableDao.insert(assetLable);
     }
 
     @Override
     public Integer updateAssetLable(AssetLableRequest request) throws Exception {
         AssetLable assetLable = requestConverter.convert(request, AssetLable.class);
+        assetLable.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        assetLable.setGmtModified(System.currentTimeMillis());
         return assetLableDao.update(assetLable);
     }
 

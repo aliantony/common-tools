@@ -50,6 +50,10 @@ public class AssetLable extends BaseEntity {
      */
     private Integer           status;
 
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     public String getName() {
         return name;
     }

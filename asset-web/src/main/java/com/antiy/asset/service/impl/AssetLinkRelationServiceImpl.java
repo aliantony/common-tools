@@ -13,6 +13,7 @@ import com.antiy.asset.service.IAssetLinkRelationService;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.response.AssetLinkRelationResponse;
+import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -37,12 +38,16 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Override
     public Integer saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
+        assetLinkRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetLinkRelation.setGmtCreate(System.currentTimeMillis());
         return assetLinkRelationDao.insert(assetLinkRelation);
     }
 
     @Override
     public Integer updateAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
+        assetLinkRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        assetLinkRelation.setGmtModified(System.currentTimeMillis());
         return assetLinkRelationDao.update(assetLinkRelation);
     }
 

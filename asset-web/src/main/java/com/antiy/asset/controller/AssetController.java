@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.ServletResponse;
 
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.templet.ComputeDeviceEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
