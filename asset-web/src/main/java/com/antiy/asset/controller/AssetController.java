@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.ServletResponse;
 
+import com.antiy.asset.templet.ComputeDeviceEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -154,17 +155,17 @@ public class AssetController {
     }
 
     /**
-     * 通过ID删除
+     * 导出模板
      *
-     * @param assetQuery 封装对象
+     * @param type 封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "根据条件导出硬件信息", notes = "主键封装对象", produces = "application/octet-stream")
+    @ApiOperation(value = "导出模板", notes = "主键封装对象", produces = "application/octet-stream")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
-    public void exportTemplate(@ApiParam(value = "query") AssetQuery assetQuery,
-                               ServletResponse response) throws Exception {
-        ExcelUtils.exportToClient(AssetEntity.class, "硬件信息表.xlsx", "硬件信息", null);
+    public void exportTemplate(@ApiParam("导出的模板类型") Integer type) throws Exception {
+        ParamterExceptionUtils.isNull(type,"类型不能为空");
+        iAssetService.exportTemplate(type);
     }
 
     /**

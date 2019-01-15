@@ -72,11 +72,7 @@ public class AssetDepartment extends BaseEntity {
     }
 
     public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
+        return System.currentTimeMillis();
     }
 
     public String getMemo() {
@@ -113,15 +109,8 @@ public class AssetDepartment extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetDepartment{" +
-                "name='" + name + '\'' +
-                ", parentId=" + parentId +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", memo='" + memo + '\'' +
-                ", createUser=" + createUser +
-                ", modifyUser=" + modifyUser +
-                ", status=" + status +
-                '}';
+        return "AssetDepartment{" + "name='" + name + '\'' + ", parentId=" + parentId + ", gmtCreate=" + gmtCreate
+               + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
+               + ", modifyUser=" + modifyUser + ", status=" + status + '}';
     }
 }

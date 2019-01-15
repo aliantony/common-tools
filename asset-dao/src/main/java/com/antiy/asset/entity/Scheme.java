@@ -40,13 +40,13 @@ public class Scheme extends BaseEntity {
      */
     private String  orderLevel;
     /**
-     *  预计开始时间
+     * 预计开始时间
      */
-    private Long expecteStartTime;
+    private Long    expecteStartTime;
     /**
-     *  预计结束时间
+     * 预计结束时间
      */
-    private Long expecteEndTime;
+    private Long    expecteEndTime;
     /**
      * 附件路径
      */
@@ -78,7 +78,7 @@ public class Scheme extends BaseEntity {
     /**
      * 方案内容
      */
-    private String content;
+    private String  content;
 
     public String getContent() {
         return content;
@@ -153,11 +153,7 @@ public class Scheme extends BaseEntity {
     }
 
     public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
+        return System.currentTimeMillis();
     }
 
     public String getMemo() {

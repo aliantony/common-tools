@@ -47,7 +47,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public Integer updateAssetGroup(AssetGroupRequest request) throws Exception {
         AssetGroup assetGroup = requestConverter.convert(request, AssetGroup.class);
-        assetGroup.setGmtModified(System.currentTimeMillis());
         return assetGroupDao.update(assetGroup);
     }
 

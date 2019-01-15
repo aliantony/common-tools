@@ -451,7 +451,7 @@ public class ExportExcel {
         response.reset();
         response.setContentType("application/octet-stream; charset=utf-8");
         response.setHeader("Content-Disposition",
-            "attachment; filename=" + new String(fileName.getBytes("gbk"), "UTF-8"));
+            "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
         // 填充数据
         setDataList(dataList);
         write(response.getOutputStream());

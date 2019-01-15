@@ -81,7 +81,6 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Override
     public Integer updateScheme(SchemeRequest request) throws Exception {
         Scheme scheme = requestConverter.convert(request, Scheme.class);
-        scheme.setGmtModified(System.currentTimeMillis());
         // TODO 添加修改人信息
         return schemeDao.update(scheme);
     }
