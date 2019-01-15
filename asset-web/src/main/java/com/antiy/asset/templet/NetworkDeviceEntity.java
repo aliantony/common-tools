@@ -99,4 +99,131 @@ public class NetworkDeviceEntity extends AssetEntity{
     @ExcelField(value = "memo", align = 1, title = "备注", type = 0)
     private String            memo;
 
+    public String getAssetGroup() {
+        return assetGroup;
+    }
+
+    public void setAssetGroup(String assetGroup) {
+        this.assetGroup = assetGroup;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Integer getResponsibleUserId() {
+        return responsibleUserId;
+    }
+
+    public void setResponsibleUserId(Integer responsibleUserId) {
+        this.responsibleUserId = responsibleUserId;
+    }
+
+    public String getAssetStatus() {
+        return assetStatus;
+    }
+
+    public void setAssetStatus(String assetStatus) {
+        this.assetStatus = assetStatus;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
+    public Boolean getInnet() {
+        return isInnet;
+    }
+
+    public void setInnet(Boolean innet) {
+        isInnet = innet;
+    }
+
+    public String getNetworkCard() {
+        return networkCard;
+    }
+
+    public void setNetworkCard(String networkCard) {
+        this.networkCard = networkCard;
+    }
+
+    public Long getWarranty() {
+        return warranty;
+    }
+
+    public void setWarranty(Long warranty) {
+        this.warranty = warranty;
+    }
+
+    public Long getServiceLife() {
+        return serviceLife;
+    }
+
+    public void setServiceLife(Long serviceLife) {
+        this.serviceLife = serviceLife;
+    }
+
+    public Long getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(Long buyDate) {
+        this.buyDate = buyDate;
+    }
+
+    public Long getPort() {
+        return port;
+    }
+
+    public void setPort(Long port) {
+        this.port = port;
+    }
+
+    public Long getFirstEnterNett() {
+        return firstEnterNett;
+    }
+
+    public void setFirstEnterNett(Long firstEnterNett) {
+        this.firstEnterNett = firstEnterNett;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 }
