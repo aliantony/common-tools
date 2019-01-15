@@ -739,7 +739,7 @@
         update
         <include refid="Table_Name"></include>
         set
-        asset_status = #{assetStatus[0]},
+        asset_status = #{targetStatus},
         gmt_modified = #{gmtModified},
         modify_user = #{modifyUser}
         where `id` in
@@ -747,7 +747,7 @@
             #{id}
         </foreach>
         <if test=" limitStatus != null">
-            and importance_degree = #{limitStatus }
+            and asset_status = #{limitStatus }
         </if>
     </update>
 

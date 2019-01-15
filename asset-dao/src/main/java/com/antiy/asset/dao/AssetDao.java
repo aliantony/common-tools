@@ -31,11 +31,10 @@ public interface AssetDao extends IBaseDao<Asset> {
     /**
      * 通过资产ID修改资产状态
      *
-     * @param id
-     * @param targetStatus
+     * @param map
      * @return
      */
-    Integer changeStatusById(String id, Integer targetStatus, Integer limitStatus) throws Exception;
+    Integer changeStatusById(Map<String, Object> map) throws Exception;
 
     /**
      * 网络拓扑查询
