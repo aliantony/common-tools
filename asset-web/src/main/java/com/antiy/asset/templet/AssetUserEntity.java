@@ -46,6 +46,19 @@ public class AssetUserEntity {
      */
     @ExcelField(value = "address", align = 1, title = "地址", type = 0)
     private String  address;
+    /**
+     * 备注
+     */
+    @ExcelField(value = "memo", align = 1, title = "备注", type = 0)
+    private String  memo;
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
     public String getName() {
         return name;
