@@ -2,6 +2,16 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetUser;
+import com.antiy.asset.templet.AssetEntity;
+import com.antiy.asset.templet.AssetUserEntity;
+import com.antiy.asset.templet.ImportResult;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.encoder.Encode;
 import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.IAssetUserService;
@@ -10,9 +20,12 @@ import com.antiy.asset.vo.request.AssetUserRequest;
 import com.antiy.common.base.ActionResponse;
 
 import io.swagger.annotations.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
- * @author zhangyajun
+ * @author lvliang
  * @since 2019-01-02
  */
 @Api(value = "AssetUser", description = "资产用户信息")
@@ -34,6 +47,35 @@ public class AssetUserController {
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetUser") AssetUserRequest assetUser) throws Exception {
         return ActionResponse.success(iAssetUserService.saveAssetUser(assetUser));
+    }
+
+    /**
+     * 导入用户信息
+     * @param file
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/importUser", method = RequestMethod.POST)
+    public void importUser(@RequestBody @PathVariable("file") MultipartFile file) throws Exception {
+        ImportResult<AssetUserEntity> importResult = ExcelUtils.importExcelFromClient(AssetUserEntity.class, file, 1,
+            0);
+        List<AssetUserEntity> assetUserEntityList = importResult.getDataList();
+        List<AssetUser> assetUserList = BeanConvert.convert(assetUserEntityList, AssetUser.class);
+        iAssetUserService.importUser(assetUserList);
+    }
+
+    /**
+     * 导出用户模板
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/exportTemplet", method = RequestMethod.GET)
+    public void exportTemplet() throws Exception {
+        ExcelUtils.exportTemplet(AssetUserEntity.class, "用户信息表", "用户信息");
     }
 
     /**
@@ -71,21 +113,21 @@ public class AssetUserController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
-    public ActionResponse queryById(@PathVariable @ApiParam(value = "id") Integer id) throws Exception {
-        return ActionResponse.success(iAssetUserService.getById(id));
+    public ActionResponse queryById(@PathVariable @ApiParam(value = "id") @Encode String id) throws Exception {
+        return ActionResponse.success(iAssetUserService.getById(DataTypeUtils.stringToInteger(id)));
     }
 
     /**
-     * 通过ID删除
+     * 注销用户
      *
      * @param id 主键
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
+    @ApiOperation(value = "注销用户", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public ActionResponse deleteById(@PathVariable @RequestBody @ApiParam(value = "id") Integer id) throws Exception {
-        return ActionResponse.success(iAssetUserService.deleteById(id));
+    @RequestMapping(value = "/cancel/{id}", method = RequestMethod.POST)
+    public ActionResponse cancelUser(@PathVariable @RequestBody @ApiParam(value = "id") @Encode String id) throws Exception {
+        return ActionResponse.success(iAssetUserService.deleteById(DataTypeUtils.stringToInteger(id)));
     }
 
     /**

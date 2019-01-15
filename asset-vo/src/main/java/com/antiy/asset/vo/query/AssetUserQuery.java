@@ -19,11 +19,7 @@ public class AssetUserQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty("姓名")
     private String  name;
-    /**
-     * 姓名
-     */
-    @ApiModelProperty("备注")
-    private String  memo;
+
     /**
      * 部门主键
      */
@@ -54,31 +50,6 @@ public class AssetUserQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty("住址")
     private String  address;
-    /**
-     * 创建人
-     */
-    @ApiModelProperty("创建人")
-    private Integer createUser;
-    /**
-     * 修改人
-     */
-    @ApiModelProperty("修改人")
-    private Integer modifyUser;
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty("创建时间")
-    private Long    gmtCreate;
-    /**
-     * 更新时间
-     */
-    @ApiModelProperty("更新时间")
-    private Long    gmtModified;
-    /**
-     * 状态,1未删除,0已删除
-     */
-    @ApiModelProperty("状态,1未删除,0已删除")
-    private Integer status;
 
     public String getName() {
         return name;
@@ -134,54 +105,6 @@ public class AssetUserQuery extends ObjectQuery implements ObjectValidator {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-    public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
     }
 
     @Override

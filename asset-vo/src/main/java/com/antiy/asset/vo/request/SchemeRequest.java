@@ -25,6 +25,7 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     /**
      * 资产主键
      */
+    @Encode
     @ApiModelProperty("资产主键")
     private String  assetId;
     /**

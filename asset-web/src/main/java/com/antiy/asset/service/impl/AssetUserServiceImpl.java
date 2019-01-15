@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.biz.util.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.convert.UserResponseConverter;
@@ -39,6 +42,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Override
     public Integer saveAssetUser(AssetUserRequest request) throws Exception {
         AssetUser assetUser = requestConverter.convert(request, AssetUser.class);
+        // assetUser.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetUser.setGmtCreate(System.currentTimeMillis());
         assetUserDao.insert(assetUser);
         return assetUser.getId();
     }
@@ -46,6 +51,9 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Override
     public Integer updateAssetUser(AssetUserRequest request) throws Exception {
         AssetUser assetUser = requestConverter.convert(request, AssetUser.class);
+        assetUser.setId(DataTypeUtils.stringToInteger(request.getId()));
+        // assetUser.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        assetUser.setGmtCreate(System.currentTimeMillis());
         return assetUserDao.update(assetUser);
     }
 
@@ -72,5 +80,16 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Override
     public List<SelectResponse> queryUserInAsset() throws Exception {
         return userResponseConverter.convert(assetUserDao.findUserInAsset(), SelectResponse.class);
+    }
+
+    @Override
+    public void importUser(List<AssetUser> assetUserList) {
+        assetUserList.stream().forEach(user -> {
+//            user.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setStatus(1);
+            user.setMemo("");
+        });
+        assetUserDao.insertBatch(assetUserList);
     }
 }

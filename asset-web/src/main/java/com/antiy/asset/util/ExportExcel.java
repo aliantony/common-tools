@@ -496,9 +496,9 @@ public class ExportExcel {
             fileName = fileName + XLSX;
         }
         response.reset();
-        response.setHeader("content-Type", "application/vnd.ms-excel");
-        // 下载文件的默认名称
-        response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, "utf-8"));
+        response.setContentType("application/octet-stream; charset=utf-8");
+        response.setHeader("Content-Disposition",
+                "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
         write(response.getOutputStream());
     }
 }
