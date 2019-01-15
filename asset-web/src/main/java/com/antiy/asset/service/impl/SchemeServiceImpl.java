@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.biz.util.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetDao;
@@ -17,7 +18,7 @@ import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.service.ISchemeService;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.vo.enums.AssetOperationTableEnum;
-import com.antiy.asset.vo.enums.SchemaTypeEnum;
+import com.antiy.asset.vo.enums.SchemeTypeEnum;
 import com.antiy.asset.vo.query.SchemeQuery;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.asset.vo.response.SchemeResponse;
@@ -48,7 +49,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Override
     public Integer saveScheme(SchemeRequest request) throws Exception {
         Scheme scheme = requestConverter.convert(request, Scheme.class);
-        // TODO 添加创建人信息
+        scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         scheme.setGmtCreate(System.currentTimeMillis());
         schemeDao.insert(scheme);
         // 修改资产状态
@@ -62,16 +63,15 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         // 记录操作历史
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         // 判断请求的方案类型
-        SchemaTypeEnum codeEnum = EnumUtil.getByCode(SchemaTypeEnum.class, scheme.getType());
+        SchemeTypeEnum codeEnum = EnumUtil.getByCode(SchemeTypeEnum.class, scheme.getType());
         assetOperationRecord.setTargetObjectId(DataTypeUtils.stringToInteger(request.getAssetId()));
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setTargetStatus(request.getTargetStatus());
         assetOperationRecord.setSchemaId(scheme.getId());
         assetOperationRecord.setContent(codeEnum != null ? codeEnum.getMsg() : null);
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
-        // TODO 操作者
-        assetOperationRecord.setOperateUserId(1);
-        assetOperationRecord.setOperateUserName("张三");
+        assetOperationRecord.setOperateUserId(request.getPutintoUserId());
+        assetOperationRecord.setOperateUserName(request.getPutintoUser());
 
         operationRecordDao.insert(assetOperationRecord);
 
@@ -81,7 +81,6 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Override
     public Integer updateScheme(SchemeRequest request) throws Exception {
         Scheme scheme = requestConverter.convert(request, Scheme.class);
-        scheme.setGmtModified(System.currentTimeMillis());
         // TODO 添加修改人信息
         return schemeDao.update(scheme);
     }

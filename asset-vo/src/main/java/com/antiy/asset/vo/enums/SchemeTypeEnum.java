@@ -7,14 +7,14 @@ package com.antiy.asset.vo.enums;
  * @Date: 2019/1/14 11:36
  * @Description:
  */
-public enum SchemaTypeEnum implements CodeEnum {
+public enum SchemeTypeEnum implements CodeEnum {
                                                 PERMIT_IMPLEMENTATION(1,
                                                                       "准入实施"), EFFECT_CHECK(2,
                                                                                             "效果检查"), WAIT_RETIRE_SCHEMA(3,
                                                                                                                         "制定待退役方案"), VALIDATE_RETIRE_RESULT(4,
                                                                                                                                                            "退役结果验证");
 
-    SchemaTypeEnum(Integer code, String msg) {
+    SchemeTypeEnum(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
     }
