@@ -72,6 +72,18 @@ public class AssetNetworkCard extends BaseEntity {
      */
     private Integer status;
 
+    public String getNetworkAddress() {
+        return networkAddress;
+    }
+
+    public void setNetworkAddress(String networkAddress) {
+        this.networkAddress = networkAddress;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     public Integer getAssetId() {
         return assetId;
     }

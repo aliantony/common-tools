@@ -60,6 +60,10 @@ public class AssetMainborad extends BaseEntity {
      */
     private Integer status;
 
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     public Integer getAssetId() {
         return assetId;
     }
