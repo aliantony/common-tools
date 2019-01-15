@@ -228,9 +228,9 @@
         FROM
             asset_operation_record a
           LEFT JOIN scheme c ON a.schema_id = c.id
-          AND c.status = 1
+          where c.status = 1
           AND a.target_object_id = #{targetObjectId}
-          AND a.target_type = #{targetType}
+          AND a.target_type = #{targetType.code}
           order by a.id
     </select>
 </mapper>

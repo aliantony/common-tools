@@ -245,7 +245,8 @@
             asoft.id,
             asoft.size,
             asoft.operation_system AS operationSystem,
-            asoft.category_model,
+            a.name as categoryName,
+            asoft.category_model as categoryModel,
             asoft.name,
             asoft.upload_software_name AS uploadSoftwareName,
             asoft.path,
@@ -267,6 +268,7 @@
         FROM
             asset_software_relation asoftrel
             LEFT JOIN asset_software asoft ON asoftrel.software_id = asoft.id
+            LEFT JOIN asset_category_model a ON asoft.category_model = a.id
         WHERE
             asset_id = #{assetId}
             and asoft.id is not null
