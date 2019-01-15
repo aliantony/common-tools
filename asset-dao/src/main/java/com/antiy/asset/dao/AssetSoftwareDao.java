@@ -35,20 +35,20 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
      * @param manufacturerName
      * @return
      */
-    List<String> findManufacturerName(@Param(value = "manufacturerName") String manufacturerName,@Param("areaIds") List<String> areaIds);
+    List<String> findManufacturerName(@Param(value = "manufacturerName") String manufacturerName,@Param("areaIds") List<Integer> areaIds);
     /**
      * 统计厂商数量
      *
      * @return
      */
-    List<Map<String, Long>> countManufacturer();
+    List<Map<String, Long>> countManufacturer(List<Integer> areaIds);
 
     /**
      * 统计状态数量
      *
      * @return
      */
-    List<Map<String, Long>> countStatus();
+    List<Map<String, Long>> countStatus(List<Integer> areaIds);
 
     Long findCountByCategoryModel(AssetSoftwareQuery assetSoftwareQuery);
 }

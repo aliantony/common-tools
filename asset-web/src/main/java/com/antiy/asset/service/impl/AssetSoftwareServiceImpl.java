@@ -2,6 +2,21 @@ package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
+import java.util.*;
+
+import javax.annotation.Resource;
+
+import com.antiy.biz.util.LoginUserUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.antiy.asset.dao.AssetCategoryModelDao;
+import com.antiy.asset.dao.AssetSoftwareDao;
+import com.antiy.asset.dao.AssetSoftwareRelationDao;
+import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.service.IAssetPortProtocolService;
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
 import com.antiy.asset.service.IAssetSoftwareService;
@@ -159,9 +174,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public List<String> getManufacturerName(String manufacturerName) throws Exception {
-
-        // TODO 从ThreadLocal里面获取区域Id
-        return assetSoftwareDao.findManufacturerName(manufacturerName, null);
+        List<Integer> list = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        return assetSoftwareDao.findManufacturerName(manufacturerName, list);
     }
 
     /**
@@ -199,8 +213,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public Map<String, Long> countManufacturer() throws Exception {
-        // todo 添加区域id
-        List<Map<String, Long>> list = assetSoftwareDao.countManufacturer();
+        List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        List<Map<String, Long>> list = assetSoftwareDao.countManufacturer(ids);
         Map result = new HashMap();
         for (Map map : list) {
             result.put(map.get("key"), map.get("value"));
@@ -210,8 +224,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public Map<String, Long> countStatus() throws Exception {
-        // todo 添加区域id
-        List<Map<String, Long>> list = assetSoftwareDao.countStatus();
+        List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        List<Map<String, Long>> list = assetSoftwareDao.countStatus(ids);
         Map<String, Long> result = new HashMap();
         for (Map map : list) {
             result.put(AssetStatusEnum.getAssetByCode((Integer) map.get("key")) + "", (Long) map.get("value"));
@@ -221,7 +235,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public Map<String, Long> countCategory() throws Exception {
-        // todo 添加区域id
+        List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         HashMap<String, Object> map = new HashMap();
         map.put("name", "软件");
         map.put("parentId", 0);
@@ -240,6 +254,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 }
                 AssetSoftwareQuery assetSoftwareQuery = new AssetSoftwareQuery();
                 assetSoftwareQuery.setCategoryModels(ArrayTypeUtil.ObjectArrayToIntegerArray(list.toArray()));
+                assetSoftwareQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(ids.toArray()));
                 Long sum = assetSoftwareDao.findCountByCategoryModel(assetSoftwareQuery);
                 result.put(a.getName(), sum);
             }
@@ -277,8 +292,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param assetSoftwareDetailResponse
      * @throws Exception
      */
-    private void querySoftwarePort(SoftwareQuery softwareQuery,
-                                   AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+    private void querySoftwarePort(SoftwareQuery softwareQuery, AssetSoftwareDetailResponse assetSoftwareDetailResponse)
+                                                                                                                        throws Exception {
         AssetPortProtocolQuery assetPortProtocolQuery = new AssetPortProtocolQuery();
         assetPortProtocolQuery.setAssetSoftId(softwareQuery.getPrimaryKey());
         assetPortProtocolQuery.setPageSize(Constants.MAX_PAGESIZE);

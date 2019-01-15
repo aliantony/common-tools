@@ -489,6 +489,12 @@
         select manufacturer, count(manufacturer) num from
         <include refid="Table_Name"></include>
         where status=1
+        <if test="areaIds != null and areaIds.size() > 0">
+            and t1.area_id in
+            <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
+                #{areaId}
+            </foreach>
+        </if>
         GROUP BY manufacturer
     </select>
 
@@ -496,7 +502,14 @@
         select software_status, count(software_status) num from
         <include refid="Table_Name"></include>
         where status=1
+        <if test="areaIds != null and areaIds.size() > 0">
+            and t1.area_id in
+            <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
+                #{areaId}
+            </foreach>
+        </if>
         GROUP BY software_status
+
     </select>
 
     <select id="findCountByCategoryModel" resultType="java.lang.Long"
@@ -505,9 +518,15 @@
         from
         <include refid="Table_Name"></include>
         where 1 = 1
-        <if test=" categoryModels != null">
+        <if test=" categoryModels != null ">
             and category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" areaIds != null ">
+            and area_id in
+            <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
         </if>

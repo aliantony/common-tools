@@ -25,9 +25,12 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty("软件品类")
     private Integer   categoryModel;
+
     @ApiModelProperty("软件品类型号列表")
     private Integer[] categoryModels;
 
+    @ApiModelProperty("区域id列表")
+    private Integer[] areaIds;
     /**
      * 软件名称
      */
@@ -232,6 +235,14 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
 
     public void setCategoryModels(Integer[] categoryModels) {
         this.categoryModels = categoryModels;
+    }
+
+    public Integer[] getAreaIds() {
+        return areaIds;
+    }
+
+    public void setAreaIds(Integer[] areaIds) {
+        this.areaIds = areaIds;
     }
 
     @Override
