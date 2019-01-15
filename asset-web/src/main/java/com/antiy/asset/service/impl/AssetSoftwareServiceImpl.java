@@ -1,19 +1,7 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.antiy.asset.dao.AssetCategoryModelDao;
-import com.antiy.asset.dao.AssetSoftwareDao;
-import com.antiy.asset.dao.AssetSoftwareRelationDao;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetPortProtocolService;
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
 import com.antiy.asset.service.IAssetSoftwareService;
@@ -24,6 +12,8 @@ import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
+import com.antiy.asset.vo.request.AssetPortProtocolRequest;
+import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.AssetPortProtocolResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
@@ -33,6 +23,14 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.Constants;
 import com.antiy.common.base.PageResult;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.*;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -45,6 +43,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Resource
     private AssetSoftwareDao                                          assetSoftwareDao;
+    @Resource
+    private AssetSoftwareRelationDao                                  assetSoftwareRelationDao;
+    @Resource
+    private AssetSoftwareLicenseDao                                   assetSoftwareLicenseDao;
+    @Resource
+    private AssetPortProtocolDao                                      assetPortProtocolDaoDao;
     @Resource
     private AssetCategoryModelDao                                     assetCategoryModelDao;
     @Resource
@@ -61,14 +65,34 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Resource
     private IAssetSoftwareLicenseService                              iAssetSoftwareLicenseService;
 
-    @Resource
-    private AssetSoftwareRelationDao                                  assetSoftwareRelationDao;
-
+    @Transactional
     @Override
     public Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
         AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
+        AssetSoftwareLicense license = new BaseConverter<AssetSoftwareLicenseRequest, AssetSoftwareLicense>()
+            .convert(request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
+        AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>()
+            .convert(request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
+
         assetSoftwareDao.insert(assetSoftware);
-        return assetSoftware.getId();
+        Integer sid = assetSoftware.getId();
+        license.setSoftwareId(sid);
+        protocol.setAssetSoftId(sid);
+        assetSoftwareLicenseDao.insert(license);
+        assetPortProtocolDaoDao.insert(protocol);
+        String assetIds = request.getAssetIds();
+        if (StringUtils.isNotBlank(assetIds)) {
+            String[] split = assetIds.split(",");
+            for (String s : split) {
+                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                assetSoftwareRelation.setSoftwareId(sid);
+                assetSoftwareRelation.setAssetId(Integer.parseInt(s));
+                assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+                assetSoftwareRelationDao.insert(assetSoftwareRelation);
+            }
+        }
+        // TODO: 2019/1/14 工作流
+        return sid;
     }
 
     @Override
@@ -166,7 +190,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      */
     private void recursion(List<AssetCategoryModel> result, List<AssetCategoryModel> list, Integer id) {
         for (AssetCategoryModel AssetCategoryModel : list) {
-            if (Objects.equals(AssetCategoryModel.getParentId(),id)) {
+            if (Objects.equals(AssetCategoryModel.getParentId(), id)) {
                 result.add(AssetCategoryModel);
                 recursion(result, list, AssetCategoryModel.getId());
             }

@@ -1,14 +1,13 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -19,7 +18,21 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetSoftwareRequest extends BasicRequest implements ObjectValidator {
 
-    private AssetSoftwareLicenseRequest softwareLicenseRequest;
+    private static final long serialVersionUID = 1L;
+
+   private AssetSoftwareLicenseRequest softwareLicenseRequest;
+
+    public AssetPortProtocolRequest getAssetPortProtocolRequest() {
+        return assetPortProtocolRequest;
+    }
+
+    public void setAssetPortProtocolRequest(AssetPortProtocolRequest assetPortProtocolRequest) {
+        this.assetPortProtocolRequest = assetPortProtocolRequest;
+    }
+
+    private AssetPortProtocolRequest assetPortProtocolRequest;
+   private String assetIds;
+
     /**
      * 主键
      */
@@ -302,5 +315,13 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     public void setSoftwareLicenseRequest(AssetSoftwareLicenseRequest softwareLicenseRequest) {
         this.softwareLicenseRequest = softwareLicenseRequest;
+    }
+
+    public String getAssetIds() {
+        return assetIds;
+    }
+
+    public void setAssetIds(String assetIds) {
+        this.assetIds = assetIds;
     }
 }
