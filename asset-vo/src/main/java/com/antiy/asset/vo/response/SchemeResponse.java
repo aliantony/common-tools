@@ -2,6 +2,8 @@ package com.antiy.asset.vo.response;
 
 import com.antiy.common.encoder.Encode;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -62,6 +64,19 @@ public class SchemeResponse {
      */
     @ApiModelProperty("备注")
     private String  memo;
+
+    /**
+     * 方案内容
+     */
+    private String content;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public String getOrderLevel() {
         return orderLevel;
