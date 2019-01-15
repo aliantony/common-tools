@@ -265,9 +265,6 @@
         <if test=" createUser != null">
             create_user = #{createUser },
         </if>
-        <if test=" modifyUser != null">
-            modify_user = #{modifyUser },
-        </if>
         <if test=" status != null">
             status = #{status },
         </if>

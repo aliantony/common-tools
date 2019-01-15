@@ -74,7 +74,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         AssetCategoryModel assetCategoryModelById = assetCategoryModelDao.getById(assetCategoryModel.getId());
         // 判断是不是系统内置
         if (checkIsDefault(assetCategoryModelById)) {
-            assetCategoryModel.setGmtModified(System.currentTimeMillis());
             assetCategoryModel.setStatus(1);
             assetCategoryModel.setParentId(null);
             assetCategoryModel.setAssetType(null);

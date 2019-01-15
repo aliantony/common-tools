@@ -63,6 +63,7 @@ public class AssetSoftwareController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware) throws Exception {
+        ParamterExceptionUtils.isBlank(assetSoftware.getId(), "软件Id不能为空");
         iAssetSoftwareService.updateAssetSoftware(assetSoftware);
         return ActionResponse.success();
     }

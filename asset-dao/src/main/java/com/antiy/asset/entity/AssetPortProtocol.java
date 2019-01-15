@@ -95,11 +95,7 @@ public class AssetPortProtocol extends BaseEntity {
     }
 
     public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
+        return System.currentTimeMillis();
     }
 
     public String getMemo() {

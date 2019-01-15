@@ -1,5 +1,8 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -26,99 +29,107 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     /**
      * 软件大小(KB)
      */
+    @ApiModelProperty(value = "软件大小")
     private Integer                     size;
     /**
      * 操作系统(WINDOWS7-32-64,WINDOWS8-64)
      */
+    @ApiModelProperty(value = "操作系统")
+    @NotBlank(message = "操作系统不能为空")
     private String                      operationSystem;
     /**
      * 软件品类
      */
-    private Integer                     categoryModel;
+    @ApiModelProperty(value = "软件品类")
+    @Encode
+    @NotBlank(message = "软件品类不能为空")
+    private String                      categoryModel;
     /**
      * 软件名称
      */
+    @NotBlank(message = "软件名称不能为空")
+    @Size(message = "软件名称字段长度不能超过20位", max = 20)
+    @ApiModelProperty(value = "软件名称")
     private String                      name;
     /**
      * 上传的软件名称
      */
+    @ApiModelProperty(value = "上传的软件名称")
     private String                      uploadSoftwareName;
     /**
      * 安装包路径
      */
+    @ApiModelProperty(value = "安装包路径")
     private String                      path;
     /**
      * 版本
      */
+    @ApiModelProperty(value = "软件版本")
+    @NotBlank(message = "软件版本不能为空")
     private String                      version;
     /**
      * 厂商
      */
+    @ApiModelProperty(value = "厂商")
     private String                      manufacturer;
     /**
      * 软件描述
      */
+    @ApiModelProperty(value = "软件描述")
     private String                      description;
     /**
      * 资产组
      */
+    @ApiModelProperty(value = "资产组")
     private String                      assetGroup;
     /**
      * 软件标签
      */
-    private Integer                     softwareLabel;
+    @ApiModelProperty(value = "软件标签")
+    @Encode
+    private String                      softwareLabel;
     /**
      * 1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
      */
+    @ApiModelProperty(value = "软件状态")
     private Integer                     softwareStatus;
     /**
      * 0-免费软件，1-商业软件
      */
+    @ApiModelProperty(value = "软件是否免费")
+    @NotBlank(message = "软件是否免费不能为空")
     private Integer                     authorization;
     /**
      * 上报来源:1-自动上报，2-人工上报
      */
+    @ApiModelProperty(value = "上报来源", allowableValues = "1-自动上报，2-人工上报")
+    @NotBlank(message = "上报来源不能为空")
     private Integer                     reportSource;
     /**
      * 端口
      */
+    @ApiModelProperty(value = "端口")
     private String                      port;
     /**
      * 语言
      */
+    @ApiModelProperty(value = "语言")
     private String                      language;
     /**
      * 发布时间
      */
+    @ApiModelProperty(value = "发布时间")
     private Long                        releaseTime;
     /**
      * 发布者
      */
+    @ApiModelProperty(value = "发布者")
     private String                      publisher;
-    /**
-     * 创建时间
-     */
-    private Long                        gmtCreate;
     /**
      * 备注
      */
+    @ApiModelProperty(value = "备注")
     private String                      memo;
-    /**
-     * 更新时间
-     */
-    private Long                        gmtModified;
-    /**
-     * 创建人
-     */
-    private Integer                     createUser;
-    /**
-     * 修改人
-     */
-    private Integer                     modifyUser;
-    /**
-     * 状态,0 未删除,1已删除
-     */
-    private Integer                     status;
 
     public String getId() {
         return id;
@@ -142,14 +153,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     public void setOperationSystem(String operationSystem) {
         this.operationSystem = operationSystem;
-    }
-
-    public Integer getCategoryModel() {
-        return categoryModel;
-    }
-
-    public void setCategoryModel(Integer categoryModel) {
-        this.categoryModel = categoryModel;
     }
 
     public String getName() {
@@ -208,14 +211,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.assetGroup = assetGroup;
     }
 
-    public Integer getSoftwareLabel() {
-        return softwareLabel;
-    }
-
-    public void setSoftwareLabel(Integer softwareLabel) {
-        this.softwareLabel = softwareLabel;
-    }
-
     public Integer getSoftwareStatus() {
         return softwareStatus;
     }
@@ -272,12 +267,20 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.publisher = publisher;
     }
 
-    public Long getGmtCreate() {
-        return gmtCreate;
+    public String getCategoryModel() {
+        return categoryModel;
     }
 
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
+    public void setCategoryModel(String categoryModel) {
+        this.categoryModel = categoryModel;
+    }
+
+    public String getSoftwareLabel() {
+        return softwareLabel;
+    }
+
+    public void setSoftwareLabel(String softwareLabel) {
+        this.softwareLabel = softwareLabel;
     }
 
     public String getMemo() {
@@ -286,38 +289,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     public void setMemo(String memo) {
         this.memo = memo;
-    }
-
-    public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     @Override

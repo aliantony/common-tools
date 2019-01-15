@@ -13,7 +13,6 @@ public class Asset extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-
     /**
      * 资产编号
      */
@@ -245,7 +244,6 @@ public class Asset extends BaseEntity {
         this.serial = serial;
     }
 
-
     public String getManufacturer() {
         return manufacturer;
     }
@@ -463,11 +461,7 @@ public class Asset extends BaseEntity {
     }
 
     public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
+        return System.currentTimeMillis();
     }
 
     public String getMemo() {
@@ -505,12 +499,12 @@ public class Asset extends BaseEntity {
     @Override
     public String toString() {
         return "Asset{" + ", number=" + number + ", type=" + type + ", name=" + name + ", serial=" + serial
-               + ", categoryModel=" + categoryModel + ", manufacturer=" + manufacturer + ", assetStatus="
-               + assetStatus + ", operationSystem=" + operationSystem + ", systemBit=" + systemBit + ", location="
-               + location + ", latitude=" + latitude + ", longitude=" + longitude + ", firmwareVersion="
-               + firmwareVersion + ", uuid=" + uuid + ", responsibleUserId=" + responsibleUserId + ", contactTel="
-               + contactTel + ", email=" + email + ", hardDisk=" + hardDisk + ", memory=" + memory + ", assetSource="
-               + assetSource + ", importanceDegree=" + importanceDegree + ", describle=" + describle + ", cpu=" + cpu
+               + ", categoryModel=" + categoryModel + ", manufacturer=" + manufacturer + ", assetStatus=" + assetStatus
+               + ", operationSystem=" + operationSystem + ", systemBit=" + systemBit + ", location=" + location
+               + ", latitude=" + latitude + ", longitude=" + longitude + ", firmwareVersion=" + firmwareVersion
+               + ", uuid=" + uuid + ", responsibleUserId=" + responsibleUserId + ", contactTel=" + contactTel
+               + ", email=" + email + ", hardDisk=" + hardDisk + ", memory=" + memory + ", assetSource=" + assetSource
+               + ", importanceDegree=" + importanceDegree + ", describle=" + describle + ", cpu=" + cpu
                + ", networkCard=" + networkCard + ", parentId=" + parentId + ", tags=" + tags + ", isInnet=" + isInnet
                + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty=" + warranty + ", gmtCreate="
                + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser=" + createUser

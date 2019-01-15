@@ -644,7 +644,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (assetCpuRequestList != null && !assetCpuRequestList.isEmpty()) {
             List<AssetCpu> assetCpuList = BeanConvert.convert(assetCpuRequestList, AssetCpu.class);
             for (AssetCpu assetCpu : assetCpuList) {
-                assetCpu.setGmtModified(System.currentTimeMillis());
                 // TODO 更新人
             }
             // 更新cpu信息
@@ -655,7 +654,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetNetworkCard> assetNetworkCardList = BeanConvert.convert(assetNetworkCardRequestList,
                 AssetNetworkCard.class);
             for (AssetNetworkCard assetNetworkCard : assetNetworkCardList) {
-                assetNetworkCard.setGmtModified(System.currentTimeMillis());
                 // TODO 更新人
             }
             // 更新网卡信息
