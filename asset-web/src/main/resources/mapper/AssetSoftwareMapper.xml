@@ -490,7 +490,7 @@
         <include refid="Table_Name"></include>
         where status=1
         <if test="areaIds != null and areaIds.size() > 0">
-            and t1.area_id in
+            and area_id in
             <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
                 #{areaId}
             </foreach>
@@ -503,7 +503,7 @@
         <include refid="Table_Name"></include>
         where status=1
         <if test="areaIds != null and areaIds.size() > 0">
-            and t1.area_id in
+            and area_id in
             <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
                 #{areaId}
             </foreach>
