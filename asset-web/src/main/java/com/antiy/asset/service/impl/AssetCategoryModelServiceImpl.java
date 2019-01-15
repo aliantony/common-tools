@@ -2,7 +2,6 @@ package com.antiy.asset.service.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,13 +9,11 @@ import javax.annotation.Resource;
 
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.vo.query.AssetQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetCategoryModelDao;
-import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
@@ -191,7 +188,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         List<AssetCategoryModel> list = assetCategoryModelDao.getAll();
         List<AssetCategoryModel> result = new ArrayList();
         for (AssetCategoryModel assetCategoryModel : list) {
-            if (assetCategoryModel.getId() == id)
+            if (Objects.equals(assetCategoryModel.getId(), id) )
                 result.add(assetCategoryModel);
         }
         recursion(result, list, id);
@@ -207,7 +204,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      */
     private void recursion(List<AssetCategoryModel> result, List<AssetCategoryModel> list, Integer id) {
         for (AssetCategoryModel assetCategoryModel : list) {
-            if (assetCategoryModel.getParentId() == id) {
+            if (Objects.equals(assetCategoryModel.getParentId(),id)) {
                 result.add(assetCategoryModel);
                 recursion(result, list, assetCategoryModel.getId());
             }

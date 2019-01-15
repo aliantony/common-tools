@@ -1,9 +1,6 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Resource;
 import com.antiy.asset.util.BeanConvert;
@@ -563,7 +560,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetCategoryModel> list = assetCategoryModelDao.getAll();
         List<AssetCategoryModel> result = new ArrayList();
         for (AssetCategoryModel AssetCategoryModel : list) {
-            if (AssetCategoryModel.getId() == id)
+            if (Objects.equals(AssetCategoryModel.getId(), id) )
                 result.add(AssetCategoryModel);
         }
         recursion(result, list, id);
@@ -579,7 +576,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      */
     private void recursion(List<AssetCategoryModel> result, List<AssetCategoryModel> list, Integer id) {
         for (AssetCategoryModel AssetCategoryModel : list) {
-            if (AssetCategoryModel.getParentId() == id) {
+            if (Objects.equals(AssetCategoryModel.getParentId(),id) ) {
                 result.add(AssetCategoryModel);
                 recursion(result, list, AssetCategoryModel.getId());
             }

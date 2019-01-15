@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
@@ -89,7 +90,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         List<AssetDepartment> list = assetDepartmentDao.getAll();
         List<AssetDepartment> result = new ArrayList();
         for (AssetDepartment assetDepartment : list) {
-            if (assetDepartment.getId() == id)
+            if (Objects.equals(assetDepartment.getId(), id) )
                 result.add(assetDepartment);
         }
         recursion(result, list, id);
@@ -105,7 +106,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
      */
     private void recursion(List<AssetDepartment> result, List<AssetDepartment> list, Integer id) {
         for (AssetDepartment assetDepartment : list) {
-            if (assetDepartment.getParentId() == id) {
+            if (Objects.equals(assetDepartment.getParentId(),id) ) {
                 result.add(assetDepartment);
                 recursion(result, list, assetDepartment.getId());
             }
