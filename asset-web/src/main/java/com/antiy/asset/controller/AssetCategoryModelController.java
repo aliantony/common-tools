@@ -2,15 +2,14 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.request.AssetCategoryDeleteRequest;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
 
@@ -74,7 +73,8 @@ public class AssetCategoryModelController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
-    public ActionResponse queryById(@PathVariable  @ApiParam(value = "assetCategoryModel") Integer id) throws Exception {
+    public ActionResponse queryById(@PathVariable  @ApiParam(value = "assetCategoryModel") @Encode Integer id) throws Exception {
+        ParamterExceptionUtils.isNull(id,"id不能为空");
         return ActionResponse.success(iAssetCategoryModelService.getById(id));
     }
 
@@ -87,7 +87,9 @@ public class AssetCategoryModelController {
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public ActionResponse deleteById(@PathVariable @ApiParam(value = "id")Integer id,@RequestBody @ApiParam(value = "二次确认") Boolean isConfirm) throws Exception {
+    public ActionResponse deleteById(@PathVariable @ApiParam(value = "id") @Encode Integer id,@RequestBody @ApiParam(value = "二次确认") Boolean isConfirm) throws Exception {
+        ParamterExceptionUtils.isNull(id,"id不能为空");
+        ParamterExceptionUtils.isNull(isConfirm,"二次确认不能为空");
         return ActionResponse.success(iAssetCategoryModelService.delete(id,isConfirm));
     }
 }

@@ -7,7 +7,11 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * <p> AssetCategoryModelRequest 请求对象 </p>
@@ -21,6 +25,7 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
     /**
      * id
      */
+    @NotNull
     @ApiModelProperty("id")
     @Encode
     private String  id;
@@ -28,9 +33,12 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
     /**
      * 名称
      */
+    @NotNull
     @ApiModelProperty("名称")
     private String  name;
 
+    @Max(value = 2)
+    @Min(value = 1)
     @ApiModelProperty("资产类型:1软件，2硬件")
     @NotNull
     private Integer assetType;
@@ -43,6 +51,9 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
     /**
      * 是否系统默认：0系统1自定义
      */
+    @NotNull
+    @Max(value = 1)
+    @Min(value = 0)
     @ApiModelProperty("是否是系统默认")
     private Integer isDefault;
     /**

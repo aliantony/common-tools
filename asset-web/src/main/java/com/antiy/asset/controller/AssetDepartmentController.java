@@ -2,6 +2,8 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.IAssetDepartmentService;
@@ -72,7 +74,8 @@ public class AssetDepartmentController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
-    public ActionResponse queryById(@PathVariable @ApiParam(value = "assetDepartment") Integer id) throws Exception {
+    public ActionResponse queryById(@PathVariable @ApiParam(value = "assetDepartment") @Encode Integer id) throws Exception {
+        ParamterExceptionUtils.isNull(id,"id不能为空");
         return ActionResponse.success(iAssetDepartmentService.getById(id));
 
     }
@@ -88,13 +91,16 @@ public class AssetDepartmentController {
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@PathVariable @ApiParam(value = "id") Integer id,
                                      @RequestBody @ApiParam(value = "二次确认") Boolean isConfirm) throws Exception {
+        ParamterExceptionUtils.isNull(id,"id不能为空");
+        ParamterExceptionUtils.isNull(isConfirm,"二次确认不能为空");
         return ActionResponse.success(iAssetDepartmentService.delete(id,isConfirm));
     }
 
     @ApiOperation(value = "通过ID查询所有部门信息及子部门信息", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/get/{id}", method = RequestMethod.POST)
-    public ActionResponse getByID(@PathVariable @ApiParam(value = "id") Integer id) throws Exception {
+    public ActionResponse getByID(@PathVariable @ApiParam(value = "id") @Encode Integer id) throws Exception {
+        ParamterExceptionUtils.isNull(id,"id不能为空");
         return ActionResponse.success(iAssetDepartmentService.findAssetDepartmentById(id));
     }
 
