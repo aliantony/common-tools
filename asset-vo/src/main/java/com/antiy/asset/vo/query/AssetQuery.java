@@ -55,6 +55,7 @@ public class AssetQuery extends ObjectQuery {
     /**
      * 行政区划主键列表
      */
+    @Encode
     private Integer[]     areaIds;
     /**
      * 厂商

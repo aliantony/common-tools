@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.common.utils.BusinessExceptionUtils;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -16,8 +21,6 @@ import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.ArrayTypeUtil;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
@@ -687,5 +690,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 更新硬盘信息
             assetHardDiskDao.updateBatch(assetHardDiskList);
         }
+        // TODO 下发智甲
     }
 }
