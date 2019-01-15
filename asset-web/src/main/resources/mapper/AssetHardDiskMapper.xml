@@ -319,7 +319,7 @@
     </select>
 
 
-    <select id="findListAssetHardDisk" resultType="com.antiy.asset.entity.AssetHardDisk"
+    <select id="findListAssetHardDisk" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetHardDiskQuery">
         select * from
         <include refid="Table_Name"></include>

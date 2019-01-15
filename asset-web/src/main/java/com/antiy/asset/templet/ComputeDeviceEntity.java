@@ -2,39 +2,17 @@ package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
 
-public class ComputeDeviceEntity {
+/**
+ * 计算设备
+ */
+public class ComputeDeviceEntity extends AssetEntity {
     private static final long serialVersionUID = 1L;
-    /**
-     * 资产名称
-     */
-    @ExcelField(value = "name", align = 1, title = "资产名称", type = 0)
-    private String            name;
-    /**
-     * 品类
-     */
-    @ExcelField(value = "category_model", align = 1, title = "资产品类", type = 0)
-    private String            category;
+
 
     /**
-     * 资产型号
+     * 资产分组
      */
-    @ExcelField(value = "number", align = 1, title = "编号", type = 0)
-    private String            number;
-    /**
-     * 序列号
-     */
-    @ExcelField(value = "serial", align = 1, title = "序列号", type = 0)
-    private String            serial;
-    /**
-     * 厂商
-     */
-    @ExcelField(value = "manufacturer", align = 1, title = "厂商", type = 0)
-    private String            manufacturer;
-
-    /**
-     * 1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
-     */
-    @ExcelField(value = "asset_group", align = 1, title = "资产分组", type = 0)
+    @ExcelField(value = "asset_group", align = 1, title = "所属分组", type = 0)
     private String            assetGroup;
 
     /**
@@ -62,10 +40,10 @@ public class ComputeDeviceEntity {
     private Integer           responsibleUserId;
 
     /**
-     * 责任人主键
+     * 资产来源
      */
-    @ExcelField(value = "house_location", align = 1, title = "机房位置", type = 0)
-    private String            houseLocation;
+    @ExcelField(value = "asset_source", align = 1, title = "资产来源", type = 0)
+    private String            assetSource;
 
     /**
      * 固件版本
@@ -76,99 +54,70 @@ public class ComputeDeviceEntity {
     /**
      * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
      */
-    @ExcelField(value = "ip", align = 1, title = "IP地址", type = 1)
-    private String            ip;
-
+    @ExcelField(value = "outer_ip", align = 1, title = "IP地址", type = 1)
+    private String            outerIp;
+    /**
+     * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
+     */
+    @ExcelField(value = "inner_ip", align = 1, title = "IP地址", type = 1)
+    private String            innerIp;
     /**
      * mac地址
      */
     @ExcelField(value = "mac", align = 1, title = "mac地址", type = 0)
     private String            mac;
+    /**
+     * 子网掩码
+     */
+    @ExcelField(value = "subnet_mask", align = 1, title = "mac地址", type = 0)
+    private String            subnetMask;
+    /**
+     * 预计带宽
+     */
+    @ExcelField(value = "expect_bandwidth", align = 1, title = "预计带宽", type = 0)
+    private String            expectBandwidth;
 
     /**
-     * 0-不重要(not_major),1- 一般(general),3-重要(major),
+     * 配置寄存器
      */
-    @ExcelField(value = "is_innet", align = 1, title = "是否入网", type = 0, dictType = "major_type")
-    private Boolean           isInnet;
+    @ExcelField(value = "register", align = 1, title = "预计带宽", type = 0)
+    private String            register;
 
     /**
-     * 网卡JSON数据{ID:1,name:intel,speed:1900M}
+     * cpu
      */
-    @ExcelField(value = "buy_date", align = 1, title = "购买时间", type = 1)
-    private String            networkCard;
+    @ExcelField(value = "cpu", align = 1, title = "预计带宽", type = 0)
+    private String            cpu;
 
     /**
-     * 描述
+     * cpu版本
      */
-    @ExcelField(value = "warranty", align = 1, title = "保修期", type = 0)
-    private Long              warranty;
+    @ExcelField(value = "cpu_version", align = 1, title = "cpu版本", type = 0)
+    private String            cpuVersion;
 
     /**
-     * 使用到期时间
+     * dram大小
      */
-    @ExcelField(value = "service_life", align = 1, title = "使用到期时间", type = 0, isDate = true)
-    private Long              serviceLife;
+    @ExcelField(value = "dram_size", align = 1, title = "cpu版本", type = 0)
+    private String            dramSize;
 
     /**
-     * 制造日期
+     * flash大小
      */
-    @ExcelField(value = "buyDate", align = 1, title = "制造日期", type = 0, isDate = true)
-    private Long              buyDate;
+    @ExcelField(value = "flash_size", align = 1, title = "cpu版本", type = 0)
+    private String            flashSize;
+
+
     /**
-     * 制造日期
+     * NCRM大小
      */
-    @ExcelField(value = "port", align = 1, title = "端口", type = 0)
-    private Long              port;
-    /**
-     * 制造日期
-     */
-    @ExcelField(value = "first_enter_nett", align = 1, title = "制造日期", type = 0, isDate = true)
-    private Long              firstEnterNett;
+    @ExcelField(value = "ncrm_size", align = 1, title = "cpu版本", type = 0)
+    private String            ncrmSize;
     /**
      * 备注
      */
     @ExcelField(value = "memo", align = 1, title = "备注", type = 0)
     private String            memo;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getSerial() {
-        return serial;
-    }
-
-    public void setSerial(String serial) {
-        this.serial = serial;
-    }
-
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
 
     public String getAssetGroup() {
         return assetGroup;
@@ -210,12 +159,12 @@ public class ComputeDeviceEntity {
         this.responsibleUserId = responsibleUserId;
     }
 
-    public String getHouseLocation() {
-        return houseLocation;
+    public String getAssetSource() {
+        return assetSource;
     }
 
-    public void setHouseLocation(String houseLocation) {
-        this.houseLocation = houseLocation;
+    public void setAssetSource(String assetSource) {
+        this.assetSource = assetSource;
     }
 
     public String getAssetStatus() {
@@ -226,12 +175,20 @@ public class ComputeDeviceEntity {
         this.assetStatus = assetStatus;
     }
 
-    public String getIp() {
-        return ip;
+    public String getOuterIp() {
+        return outerIp;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setOuterIp(String outerIp) {
+        this.outerIp = outerIp;
+    }
+
+    public String getInnerIp() {
+        return innerIp;
+    }
+
+    public void setInnerIp(String innerIp) {
+        this.innerIp = innerIp;
     }
 
     public String getMac() {
@@ -242,60 +199,68 @@ public class ComputeDeviceEntity {
         this.mac = mac;
     }
 
-    public Boolean getInnet() {
-        return isInnet;
+    public String getSubnetMask() {
+        return subnetMask;
     }
 
-    public void setInnet(Boolean innet) {
-        isInnet = innet;
+    public void setSubnetMask(String subnetMask) {
+        this.subnetMask = subnetMask;
     }
 
-    public String getNetworkCard() {
-        return networkCard;
+    public String getExpectBandwidth() {
+        return expectBandwidth;
     }
 
-    public void setNetworkCard(String networkCard) {
-        this.networkCard = networkCard;
+    public void setExpectBandwidth(String expectBandwidth) {
+        this.expectBandwidth = expectBandwidth;
     }
 
-    public Long getWarranty() {
-        return warranty;
+    public String getRegister() {
+        return register;
     }
 
-    public void setWarranty(Long warranty) {
-        this.warranty = warranty;
+    public void setRegister(String register) {
+        this.register = register;
     }
 
-    public Long getServiceLife() {
-        return serviceLife;
+    public String getCpu() {
+        return cpu;
     }
 
-    public void setServiceLife(Long serviceLife) {
-        this.serviceLife = serviceLife;
+    public void setCpu(String cpu) {
+        this.cpu = cpu;
     }
 
-    public Long getBuyDate() {
-        return buyDate;
+    public String getCpuVersion() {
+        return cpuVersion;
     }
 
-    public void setBuyDate(Long buyDate) {
-        this.buyDate = buyDate;
+    public void setCpuVersion(String cpuVersion) {
+        this.cpuVersion = cpuVersion;
     }
 
-    public Long getPort() {
-        return port;
+    public String getDramSize() {
+        return dramSize;
     }
 
-    public void setPort(Long port) {
-        this.port = port;
+    public void setDramSize(String dramSize) {
+        this.dramSize = dramSize;
     }
 
-    public Long getFirstEnterNett() {
-        return firstEnterNett;
+    public String getFlashSize() {
+        return flashSize;
     }
 
-    public void setFirstEnterNett(Long firstEnterNett) {
-        this.firstEnterNett = firstEnterNett;
+    public void setFlashSize(String flashSize) {
+        this.flashSize = flashSize;
+    }
+
+    public String getNcrmSize() {
+        return ncrmSize;
+    }
+
+    public void setNcrmSize(String ncrmSize) {
+        this.ncrmSize = ncrmSize;
     }
 
     public String getMemo() {
