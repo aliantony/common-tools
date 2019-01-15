@@ -88,8 +88,9 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         List<AssetDepartment> list = assetDepartmentDao.getAll();
         List<AssetDepartment> result = new ArrayList();
         for (AssetDepartment assetDepartment : list) {
-            if (Objects.equals(assetDepartment.getId(), id))
+            if (Objects.equals(assetDepartment.getId(), id)) {
                 result.add(assetDepartment);
+            }
         }
         recursion(result, list, id);
         return result;
@@ -163,8 +164,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         query.setStatus(1);
         List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
         NodeUtilsConverter nodeResponseNodeUtilsConverter = new NodeUtilsConverter<>();
-        List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeResponseNodeUtilsConverter
-            .columnToNode(assetDepartment, AssetDepartmentNodeResponse.class);
+        List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeResponseNodeUtilsConverter.columnToNode(
+            assetDepartment, AssetDepartmentNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
 

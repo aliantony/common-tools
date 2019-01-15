@@ -25,7 +25,7 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
     /**
      * id
      */
-    @NotNull
+    @NotNull(message = "id不能为空")
     @ApiModelProperty("id")
     @Encode
     private String  id;
@@ -33,27 +33,27 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
     /**
      * 名称
      */
-    @NotNull
+    @NotNull(message = "name不能为空")
     @ApiModelProperty("名称")
     private String  name;
 
-    @Max(value = 2)
-    @Min(value = 1)
+    @Max(value = 2,message = "资产类型只能为1或2")
+    @Min(value = 1,message = "资产类型只能为1或2")
     @ApiModelProperty("资产类型:1软件，2硬件")
-    @NotNull
     private Integer assetType;
     /**
      * 父ID
      */
     @ApiModelProperty("父ID")
+    @NotNull(message = "父ID不能为空")
     private Integer parentId;
 
     /**
      * 是否系统默认：0系统1自定义
      */
-    @NotNull
-    @Max(value = 1)
-    @Min(value = 0)
+    @NotNull(message = "isDefault不能为空")
+    @Max(value = 1,message = "isDefault只能为0和1")
+    @Min(value = 0,message = "isDefault只能为0和1")
     @ApiModelProperty("是否是系统默认")
     private Integer isDefault;
     /**

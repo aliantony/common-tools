@@ -505,7 +505,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return null;
     }
 
-    @Override@Transactional
+    @Override
+    @Transactional
     public Integer saveAssetPC(AssetPCRequest assetPCRequest) throws Exception {
         List<AssetCpuRequest> cpuRequestList = assetPCRequest.getCpu();
         BaseConverter<AssetCpuRequest, AssetCpu> baseConverter = new BaseConverter<>();

@@ -29,8 +29,8 @@ import com.antiy.common.base.PageResult;
  * @since 2019-01-02
  */
 @Service
-public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel>
-                                           implements IAssetCategoryModelService {
+public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel> implements
+                                                                                      IAssetCategoryModelService {
 
     @Resource
     private AssetCategoryModelDao                                         assetCategoryModelDao;
@@ -105,7 +105,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query)
+                                                                                                           throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetCategoryModel(query), query.getCurrentPage(),
             this.findListAssetCategoryModel(query));
     }
@@ -187,8 +188,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         List<AssetCategoryModel> list = assetCategoryModelDao.getAll();
         List<AssetCategoryModel> result = new ArrayList();
         for (AssetCategoryModel assetCategoryModel : list) {
-            if (Objects.equals(assetCategoryModel.getId(), id) )
+            if (Objects.equals(assetCategoryModel.getId(), id)) {
                 result.add(assetCategoryModel);
+            }
         }
         recursion(result, list, id);
         return result;
@@ -203,7 +205,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      */
     private void recursion(List<AssetCategoryModel> result, List<AssetCategoryModel> list, Integer id) {
         for (AssetCategoryModel assetCategoryModel : list) {
-            if (Objects.equals(assetCategoryModel.getParentId(),id)) {
+            if (Objects.equals(assetCategoryModel.getParentId(), id)) {
                 result.add(assetCategoryModel);
                 recursion(result, list, assetCategoryModel.getId());
             }
