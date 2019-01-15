@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.DataTypeUtils;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetDao;
@@ -52,7 +53,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         schemeDao.insert(scheme);
         // 修改资产状态
         Map<String, Integer[]> assetIdMap = new HashMap();
-        assetIdMap.put("ids", new Integer[] { request.getAssetId() });
+        assetIdMap.put("ids", new Integer[] { DataTypeUtils.stringToInteger(request.getAssetId()) });
         assetIdMap.put("assetStatus", new Integer[] { request.getTargetStatus() });
         assetDao.changeStatus(assetIdMap);
 
@@ -62,7 +63,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         // 判断请求的方案类型
         SchemaTypeEnum codeEnum = EnumUtil.getByCode(SchemaTypeEnum.class, scheme.getType());
-        assetOperationRecord.setTargetObjectId(request.getAssetId());
+        assetOperationRecord.setTargetObjectId(DataTypeUtils.stringToInteger(request.getAssetId()));
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setTargetStatus(request.getTargetStatus());
         assetOperationRecord.setSchemaId(scheme.getId());

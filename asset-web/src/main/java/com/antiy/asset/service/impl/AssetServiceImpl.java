@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.common.utils.BusinessExceptionUtils;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.ArrayTypeUtil;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
@@ -27,15 +27,6 @@ import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -600,12 +591,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public AssetOuterResponse getByAssetId(Integer id) throws Exception {
+    public AssetOuterResponse getByAssetId(String id) throws Exception {
         BusinessExceptionUtils.isNull(id, "资产ID不能为空");
         AssetOuterResponse assetOuterResponse = new AssetOuterResponse();
         // 资产信息
         AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setIds(new Integer[] { id });
+        assetQuery.setIds(new String[] { id });
         List<Asset> assetList = assetDao.findListAsset(assetQuery);
         BusinessExceptionUtils.isEmpty(assetList, "资产不存在");
         Asset asset = assetList.get(0);
@@ -636,7 +627,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOuterResponse.setAssetMemory(
             BeanConvert.convert(assetMemoryDao.findListAssetMemory(assetMemoryQuery), AssetMemoryResponse.class));
         // 软件
-        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSoftByAssetId(id);
+        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
+            .getSoftByAssetId(DataTypeUtils.stringToInteger(id));
         assetOuterResponse.setAssetSoftware(BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class));
         return assetOuterResponse;
     }
