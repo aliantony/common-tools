@@ -1,29 +1,14 @@
 package com.antiy.asset.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetOperationRecordService;
 import com.antiy.asset.vo.query.AssetOperationRecordQuery;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.antiy.asset.entity.AssetSoftware;
-import com.antiy.asset.service.IAssetSoftwareService;
-import com.antiy.asset.templet.AssetSoftwareEntity;
-import com.antiy.asset.templet.ImportResult;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.vo.query.AssetSoftwareQuery;
-import com.antiy.asset.vo.request.AssetSoftwareRequest;
-import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
 
@@ -49,8 +34,8 @@ public class AssetOperationRecordController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "assetSoftware") AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
-        return ActionResponse.success(assetOperationRecordService.findAssetOperationRecordByAssetId(assetOperationRecordQuery));
+        return ActionResponse
+            .success(assetOperationRecordService.findAssetOperationRecordByAssetId(assetOperationRecordQuery));
     }
-
 
 }
