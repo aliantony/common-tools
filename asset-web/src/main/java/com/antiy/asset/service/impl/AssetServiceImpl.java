@@ -4,6 +4,8 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.templet.ComputeDeviceEntity;
+import com.antiy.asset.util.ExcelUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -490,14 +492,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetCpuRequest> cpuRequestList = assetPCRequest.getCpu();
         BaseConverter<AssetCpuRequest, AssetCpu> baseConverter = new BaseConverter<>();
         List<AssetCpu> cpu = baseConverter.convert(cpuRequestList, AssetCpu.class);
-        List<AssetHardDisk> hardDisk = new BaseConverter<AssetHardDiskRequest, AssetHardDisk>()
-            .convert(assetPCRequest.getHardDisk(), AssetHardDisk.class);
-        List<AssetMemory> memory = new BaseConverter<AssetMemoryRequest, AssetMemory>()
-            .convert(assetPCRequest.getMemory(), AssetMemory.class);
-        List<AssetMainborad> mainboard = new BaseConverter<AssetMainboradRequest, AssetMainborad>()
-            .convert(assetPCRequest.getMainboard(), AssetMainborad.class);
-        List<AssetNetworkCard> networkCard = new BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>()
-            .convert(assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
+        List<AssetHardDisk> hardDisk = new BaseConverter<AssetHardDiskRequest, AssetHardDisk>().convert(
+            assetPCRequest.getHardDisk(), AssetHardDisk.class);
+        List<AssetMemory> memory = new BaseConverter<AssetMemoryRequest, AssetMemory>().convert(
+            assetPCRequest.getMemory(), AssetMemory.class);
+        List<AssetMainborad> mainboard = new BaseConverter<AssetMainboradRequest, AssetMainborad>().convert(
+            assetPCRequest.getMainboard(), AssetMainborad.class);
+        List<AssetNetworkCard> networkCard = new BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>().convert(
+            assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
 
         Asset asset = requestConverter.convert(assetPCRequest.getAsset(), Asset.class);
         assetDao.insert(asset);
@@ -609,8 +611,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // CPU
         AssetCpuQuery assetCpuQuery = new AssetCpuQuery();
         assetCpuQuery.setAssetId(id);
-        assetOuterResponse
-            .setAssetCpu(BeanConvert.convert(assetCpuDao.findListAssetCpu(assetCpuQuery), AssetCpuResponse.class));
+        assetOuterResponse.setAssetCpu(BeanConvert.convert(assetCpuDao.findListAssetCpu(assetCpuQuery),
+            AssetCpuResponse.class));
         // 网卡
         AssetNetworkCardQuery assetNetworkCardQuery = new AssetNetworkCardQuery();
         assetNetworkCardQuery.setAssetId(id);
@@ -619,21 +621,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 硬盘
         AssetHardDiskQuery assetHardDiskQuery = new AssetHardDiskQuery();
         assetHardDiskQuery.setAssetId(id);
-        assetOuterResponse.setAssetHardDisk(BeanConvert
-            .convert(assetHardDiskDao.findListAssetHardDisk(assetHardDiskQuery), AssetHardDiskResponse.class));
+        assetOuterResponse.setAssetHardDisk(BeanConvert.convert(
+            assetHardDiskDao.findListAssetHardDisk(assetHardDiskQuery), AssetHardDiskResponse.class));
         // 主板
         AssetMainboradQuery assetMainboradQuery = new AssetMainboradQuery();
         assetMainboradQuery.setAssetId(id);
-        assetOuterResponse.setAssetMainborad(BeanConvert
-            .convert(assetMainboradDao.findListAssetMainborad(assetMainboradQuery), AssetMainboradResponse.class));
+        assetOuterResponse.setAssetMainborad(BeanConvert.convert(
+            assetMainboradDao.findListAssetMainborad(assetMainboradQuery), AssetMainboradResponse.class));
         // 内存
         AssetMemoryQuery assetMemoryQuery = new AssetMemoryQuery();
         assetMemoryQuery.setAssetId(id);
-        assetOuterResponse.setAssetMemory(
-            BeanConvert.convert(assetMemoryDao.findListAssetMemory(assetMemoryQuery), AssetMemoryResponse.class));
+        assetOuterResponse.setAssetMemory(BeanConvert.convert(assetMemoryDao.findListAssetMemory(assetMemoryQuery),
+            AssetMemoryResponse.class));
         // 软件
-        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
-            .getSoftByAssetId(DataTypeUtils.stringToInteger(id));
+        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSoftByAssetId(DataTypeUtils
+            .stringToInteger(id));
         assetOuterResponse.setAssetSoftware(BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class));
         return assetOuterResponse;
     }
@@ -693,5 +695,36 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetHardDiskDao.updateBatch(assetHardDiskList);
         }
         // TODO 下发智甲
+    }
+
+    /**
+     * 1-计算设备 2-网络设备 3-安全设备 4-存储介质 5-服务器 6-外设
+     * @param type 导出模板的类型
+     */
+    public void exportTemplate(int type) throws Exception {
+        switch (type) {
+            case 1:
+                exportToClient(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备");
+                break;
+            case 2:
+                exportToClient(ComputeDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备");
+                break;
+            case 3:
+                exportToClient(ComputeDeviceEntity.class, "安全设备信息模板.xlsx", "安全设备");
+                break;
+            case 4:
+                exportToClient(ComputeDeviceEntity.class, "存储介质信息模板.xlsx", "存储介质");
+                break;
+            case 5:
+                exportToClient(ComputeDeviceEntity.class, "服务器信息模板.xlsx", "服务器");
+                break;
+            case 6:
+                exportToClient(ComputeDeviceEntity.class, "外设信息模板.xlsx", "外设");
+                break;
+        }
+    }
+
+    private void exportToClient(Class clazz, String fileName, String title) {
+        ExcelUtils.exportToClient(clazz, fileName, title, null);
     }
 }
