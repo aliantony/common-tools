@@ -75,6 +75,18 @@ public class Scheme extends BaseEntity {
      * 状态,1未删除,0已删除
      */
     private Integer status;
+    /**
+     * 方案内容
+     */
+    private String content;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public Integer getAssetd() {
         return assetId;

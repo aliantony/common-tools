@@ -256,7 +256,7 @@
     </update>
 
     <!-- 根据主键查询 -->
-    <select id="getById" resultType="com.antiy.asset.entity.Scheme" parameterType="java.lang.Integer">
+    <select id="getById" resultMap="BaseResultMap" parameterType="string">
         select
         <include refid="Base_Column_List"/>
         from
@@ -311,7 +311,7 @@
     </select>
 
     <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
-        select type, result, putinto_user_id, putinto_user, file_info,memo from
+        select type, result, content, expecte_start_time, expecte_end_time, putinto_user_id, putinto_user, file_info,memo from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" putintoUser != null">
