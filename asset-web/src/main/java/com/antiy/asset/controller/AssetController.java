@@ -1,7 +1,19 @@
 package com.antiy.asset.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletResponse;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.templet.AssetEntity;
+import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -9,20 +21,11 @@ import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.ManufacturerResponse;
-import com.antiy.asset.templet.AssetEntity;
-import com.antiy.asset.templet.ImportResult;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.ServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -36,21 +39,19 @@ public class AssetController {
     @Resource
     public IAssetService iAssetService;
 
-     /**
-     *保存PC接口
+    /**
+     * 保存PC接口
      * @param assetPCRequest
      * @return actionResponse
      * @throws Exception
      */
-     @ApiOperation(value = "保存全部数据总接口", notes = "传入json信息")
-     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class,
-     responseContainer = "actionResponse"),})
-     @RequestMapping(value = "/save/pc", method = RequestMethod.POST)
-     public ActionResponse saveAssetPC(@RequestBody @ApiParam(value = "assetPc")AssetPCRequest assetPCRequest) throws
-     Exception {
-     iAssetService.saveAssetPC(assetPCRequest);
-     return ActionResponse.success();
-     }
+    @ApiOperation(value = "保存全部数据总接口", notes = "传入json信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/save/pc", method = RequestMethod.POST)
+    public ActionResponse saveAssetPC(@RequestBody @ApiParam(value = "assetPc") AssetPCRequest assetPCRequest) throws Exception {
+        iAssetService.saveAssetPC(assetPCRequest);
+        return ActionResponse.success();
+    }
 
     /**
      * 保存
@@ -102,25 +103,27 @@ public class AssetController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "asset") @PathVariable("id") Integer id) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "asset") @PathVariable("id") @Encode String id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetService.getByAssetId(id));
     }
+
     /**
      * 资产变更
      * @author lvliang
-     * @param id
+     * @param assetOuterRequest
      * @return actionResponse
      */
     @ApiOperation(value = "资产变更", notes = "传入实体对象信息")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/change/asset", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@RequestBody(required = false)AssetOuterRequest assetOuterRequest) throws Exception {
+    public ActionResponse updateSingle(@RequestBody(required = false) AssetOuterRequest assetOuterRequest) throws Exception {
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息b不能为空");
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
         iAssetService.changeAsset(assetOuterRequest);
         return ActionResponse.success();
     }
+
     /**
      * 通过ID删除
      *
@@ -129,8 +132,8 @@ public class AssetController {
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "query") @PathVariable("id") Integer id) throws Exception {
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public ActionResponse deleteById(@ApiParam(value = "query") @PathVariable("id") @Encode String id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetService.deleteById(id));
     }
@@ -175,7 +178,7 @@ public class AssetController {
     public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws Exception {
         ImportResult<Asset> importResult = ExcelUtils.importExcelFromClient(AssetEntity.class, multipartFile, 1, 0);
         List<Asset> list = importResult.getDataList();
-        //List<Object> asset = BeanConvert.convert(list, Asset.class);
+        // List<Object> asset = BeanConvert.convert(list, Asset.class);
         Integer successNum = iAssetService.batchSave(list);
         return ActionResponse.success(successNum);
     }
@@ -235,7 +238,7 @@ public class AssetController {
      * @return 品类型号名和该品类型号资产数量的映射
      */
     @ApiOperation(value = "硬件资产按二级品类型号统计接口", notes = "无查询条件")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/category", method = RequestMethod.GET)
     public Map<String, Long> countAssetByCategory() throws Exception {
         return iAssetService.countCategory();

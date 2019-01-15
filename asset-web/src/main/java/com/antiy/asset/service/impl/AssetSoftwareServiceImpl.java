@@ -259,7 +259,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private void querySoftwarePort(SoftwareQuery softwareQuery,
                                    AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
         AssetPortProtocolQuery assetPortProtocolQuery = new AssetPortProtocolQuery();
-        assetPortProtocolQuery.setAssetSoftId(DataTypeUtils.stringToInteger(softwareQuery.getPrimaryKey()));
+        assetPortProtocolQuery.setAssetSoftId(softwareQuery.getPrimaryKey());
         assetPortProtocolQuery.setPageSize(Constants.MAX_PAGESIZE);
         List<AssetPortProtocolResponse> assetPortProtocolResponses = iAssetPortProtocolService
             .findListAssetPortProtocol(assetPortProtocolQuery);

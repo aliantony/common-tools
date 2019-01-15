@@ -18,6 +18,7 @@ public class AssetQuery extends ObjectQuery {
     /**
      * 资产id列表
      */
+    @Encode
     private String[]      ids;
 
     /**
