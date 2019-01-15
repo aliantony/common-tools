@@ -3,6 +3,7 @@ package com.antiy.asset.vo.query;
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -12,6 +13,28 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 public class AssetLableQuery extends ObjectQuery implements ObjectValidator {
+
+    /**
+     * 名称
+     */
+    @ApiModelProperty("名称")
+    private String  name;
+    /**
+     * 标签类型:1东区２西区
+     */
+    @ApiModelProperty("标签类型:1东区２西区")
+    private Integer labelType;
+
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("创建时间")
+    private Long    gmtCreate;
+    /**
+     * 更新时间
+     */
+    @ApiModelProperty("更新时间")
+    private Long    gmtModified;
 
     public String getName() {
         return name;
@@ -44,28 +67,6 @@ public class AssetLableQuery extends ObjectQuery implements ObjectValidator {
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
     }
-
-    /**
-     * 名称
-     */
-    @ApiModelProperty("名称")
-    private String  name;
-    /**
-     * 标签类型:1东区２西区
-     */
-    @ApiModelProperty("标签类型:1东区２西区")
-    private Integer labelType;
-
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty("创建时间")
-    private Long    gmtCreate;
-    /**
-     * 更新时间
-     */
-    @ApiModelProperty("更新时间")
-    private Long    gmtModified;
 
     @Override
     public void validate() throws RequestParamValidateException {

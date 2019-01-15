@@ -1,8 +1,10 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -18,7 +20,8 @@ public class AssetPortProtocolQuery extends ObjectQuery implements ObjectValidat
      * 资产软件关系表主键
      */
     @ApiModelProperty("资产软件关系表主键")
-    private Integer assetSoftId;
+    @Encode
+    private String  assetSoftId;
     /**
      * 端口
      */
@@ -41,11 +44,11 @@ public class AssetPortProtocolQuery extends ObjectQuery implements ObjectValidat
     @ApiModelProperty("更新时间")
     private Long    gmtModified;
 
-    public Integer getAssetSoftId() {
+    public String getAssetSoftId() {
         return assetSoftId;
     }
 
-    public void setAssetSoftId(Integer assetSoftId) {
+    public void setAssetSoftId(String assetSoftId) {
         this.assetSoftId = assetSoftId;
     }
 

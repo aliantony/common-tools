@@ -1,8 +1,10 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -17,7 +19,8 @@ public class AssetNetworkEquipmentQuery extends ObjectQuery implements ObjectVal
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer assetId;
+    @Encode
+    private String  assetId;
     /**
      * 接口数目
      */
@@ -52,11 +55,11 @@ public class AssetNetworkEquipmentQuery extends ObjectQuery implements ObjectVal
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

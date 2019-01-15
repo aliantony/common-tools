@@ -3,6 +3,7 @@ package com.antiy.asset.vo.query;
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**

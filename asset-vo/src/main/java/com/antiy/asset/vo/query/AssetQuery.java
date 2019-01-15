@@ -18,7 +18,7 @@ public class AssetQuery extends ObjectQuery {
     /**
      * 资产id列表
      */
-    private Integer[]     ids;
+    private String[]      ids;
 
     /**
      * 综合查询条件
@@ -135,11 +135,11 @@ public class AssetQuery extends ObjectQuery {
         this.softwareId = softwareId;
     }
 
-    public Integer[] getIds() {
+    public String[] getIds() {
         return ids;
     }
 
-    public void setIds(Integer[] ids) {
+    public void setIds(String[] ids) {
         this.ids = ids;
     }
 

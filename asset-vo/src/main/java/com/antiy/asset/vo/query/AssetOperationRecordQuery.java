@@ -31,7 +31,22 @@ public class AssetOperationRecordQuery extends ObjectQuery {
      * 被操作对象类型
      */
     @NotNull(message = "操作对象类型不能为空")
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "资产类型")
     private AssetOperationTableEnum targetType;
 
+    public String getTargetObjectId() {
+        return targetObjectId;
+    }
+
+    public void setTargetObjectId(String targetObjectId) {
+        this.targetObjectId = targetObjectId;
+    }
+
+    public AssetOperationTableEnum getTargetType() {
+        return targetType;
+    }
+
+    public void setTargetType(AssetOperationTableEnum targetType) {
+        this.targetType = targetType;
+    }
 }

@@ -3,6 +3,7 @@ package com.antiy.asset.vo.query;
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -130,13 +131,6 @@ public class AssetGroupQuery extends ObjectQuery implements ObjectValidator {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "AssetGroup{" + ", purpose=" + purpose + ", importantDegree=" + importantDegree + ", name=" + name
-               + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser="
-               + createUser + ", modifyUser=" + modifyUser + ", status=" + status + "}";
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
@@ -15,7 +16,8 @@ public class AssetMemoryQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 资产主键
      */
-    private Integer assetId;
+    @Encode
+    private String  assetId;
     /**
      * 内存容量
      */
@@ -37,11 +39,11 @@ public class AssetMemoryQuery extends ObjectQuery implements ObjectValidator {
      */
     private Integer stitch;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

@@ -1,8 +1,10 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -13,58 +15,58 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetDepartmentQuery extends ObjectQuery implements ObjectValidator {
-    private static final long serialVersionUID = 1L;
 
     /**
      * 部门名
      */
     @ApiModelProperty("部门名")
-    private String            name;
+    private String  name;
     /**
      * 负责人
      */
     @ApiModelProperty("负责人")
-    private String            responsibleUser;
+    private String  responsibleUser;
     /**
      * 联系电话
      */
     @ApiModelProperty("联系电话")
-    private String            telephone;
+    private String  telephone;
     /**
      * 上级部门
      */
     @ApiModelProperty("上级部门")
-    private Integer           parentId;
+    @Encode
+    private String  parentId;
     /**
      * 创建时间
      */
     @ApiModelProperty("创建时间")
-    private Long              gmtCreate;
+    private Long    gmtCreate;
     /**
      * 修改时间
      */
     @ApiModelProperty("修改时间")
-    private Long              gmtModified;
+    private Long    gmtModified;
     /**
      * 备注
      */
     @ApiModelProperty("备注")
-    private String            memo;
+    private String  memo;
     /**
      * 创建人
      */
     @ApiModelProperty("创建人")
-    private Integer           createUser;
+    private Integer createUser;
     /**
      * 修改人
      */
     @ApiModelProperty("修改人")
-    private Integer           modifyUser;
+    private Integer modifyUser;
     /**
      * 状态,1未删除,0已删除
      */
     @ApiModelProperty("状态,1未删除,0已删除")
-    private Integer           status;
+    private Integer status;
 
     public String getName() {
         return name;
@@ -90,11 +92,11 @@ public class AssetDepartmentQuery extends ObjectQuery implements ObjectValidator
         this.telephone = telephone;
     }
 
-    public Integer getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 
