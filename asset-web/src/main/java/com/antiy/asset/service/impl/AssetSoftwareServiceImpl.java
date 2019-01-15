@@ -1,22 +1,18 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
 import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.antiy.biz.util.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.antiy.asset.dao.AssetCategoryModelDao;
-import com.antiy.asset.dao.AssetSoftwareDao;
-import com.antiy.asset.dao.AssetSoftwareRelationDao;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetPortProtocolService;
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
 import com.antiy.asset.service.IAssetSoftwareService;
@@ -34,18 +30,11 @@ import com.antiy.asset.vo.response.AssetPortProtocolResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareLicenseResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.Constants;
 import com.antiy.common.base.PageResult;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.*;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -57,28 +46,31 @@ import java.util.*;
 public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> implements IAssetSoftwareService {
 
     @Resource
-    private AssetSoftwareDao                                          assetSoftwareDao;
+    private AssetSoftwareDao                                                 assetSoftwareDao;
     @Resource
-    private AssetSoftwareRelationDao                                  assetSoftwareRelationDao;
+    private AssetSoftwareRelationDao                                         assetSoftwareRelationDao;
     @Resource
-    private AssetSoftwareLicenseDao                                   assetSoftwareLicenseDao;
+    private AssetSoftwareLicenseDao                                          assetSoftwareLicenseDao;
     @Resource
-    private AssetPortProtocolDao                                      assetPortProtocolDaoDao;
+    private AssetPortProtocolDao                                             assetPortProtocolDaoDao;
     @Resource
-    private AssetCategoryModelDao                                     assetCategoryModelDao;
+    private AssetCategoryModelDao                                            assetCategoryModelDao;
     @Resource
-    private BaseConverter<AssetSoftwareRequest, AssetSoftware>        requestConverter;
+    private BaseConverter<AssetSoftwareRequest, AssetSoftware>               requestConverter;
     @Resource
-    private BaseConverter<AssetSoftware, AssetSoftwareResponse>       responseConverter;
+    private BaseConverter<AssetSoftware, AssetSoftwareResponse>              responseConverter;
 
     @Resource
-    private BaseConverter<AssetSoftware, AssetSoftwareDetailResponse> assetSoftwareDetailConverter;
+    private BaseConverter<AssetSoftwareLicenseRequest, AssetSoftwareLicense> assetSoftwareLicenseBaseConverter;
 
     @Resource
-    private IAssetPortProtocolService                                 iAssetPortProtocolService;
+    private BaseConverter<AssetSoftware, AssetSoftwareDetailResponse>        assetSoftwareDetailConverter;
 
     @Resource
-    private IAssetSoftwareLicenseService                              iAssetSoftwareLicenseService;
+    private IAssetPortProtocolService                                        iAssetPortProtocolService;
+
+    @Resource
+    private IAssetSoftwareLicenseService                                     iAssetSoftwareLicenseService;
 
     @Transactional
     @Override
@@ -95,10 +87,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         protocol.setAssetSoftId(sid);
         assetSoftwareLicenseDao.insert(license);
         assetPortProtocolDaoDao.insert(protocol);
-        String assetIds = request.getAssetIds();
-        if (StringUtils.isNotBlank(assetIds)) {
-            String[] split = assetIds.split(",");
-            for (String s : split) {
+        if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
+            String[] assetIds = request.getAssetIds();
+            for (String s : assetIds) {
                 AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                 assetSoftwareRelation.setSoftwareId(sid);
                 assetSoftwareRelation.setAssetId(Integer.parseInt(s));
@@ -121,9 +112,35 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional
     public Integer updateAssetSoftware(AssetSoftwareRequest request) throws Exception {
+
+        // 1.更新软件信息
         AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
-        return assetSoftwareDao.update(assetSoftware);
+        assetSoftware.setId(DataTypeUtils.stringToInteger(request.getId()));
+        int assetSoftwareCount = assetSoftwareDao.update(assetSoftware);
+
+        // 2.更新license表
+        if (null != request.getSoftwareLicenseRequest()
+            && StringUtils.isNotBlank(request.getSoftwareLicenseRequest().getId())) {
+            updateLicense(request);
+        }
+
+        // 3.更新软件和硬件关联表
+
+        return assetSoftwareCount;
+    }
+
+
+    /**
+     * 更新lincense
+     * @param request
+     */
+    private void updateLicense(AssetSoftwareRequest request) throws Exception {
+        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter
+            .convert(request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
+        assetSoftwareLicense.setSoftwareId(DataTypeUtils.stringToInteger(request.getId()));
+        assetSoftwareLicenseDao.update(assetSoftwareLicense);
     }
 
     private Map<Integer, Long> handleSoftCount(List<Map<String, Object>> softObjectList) {
@@ -292,8 +309,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param assetSoftwareDetailResponse
      * @throws Exception
      */
-    private void querySoftwarePort(SoftwareQuery softwareQuery, AssetSoftwareDetailResponse assetSoftwareDetailResponse)
-                                                                                                                        throws Exception {
+    private void querySoftwarePort(SoftwareQuery softwareQuery,
+                                   AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
         AssetPortProtocolQuery assetPortProtocolQuery = new AssetPortProtocolQuery();
         assetPortProtocolQuery.setAssetSoftId(softwareQuery.getPrimaryKey());
         assetPortProtocolQuery.setPageSize(Constants.MAX_PAGESIZE);

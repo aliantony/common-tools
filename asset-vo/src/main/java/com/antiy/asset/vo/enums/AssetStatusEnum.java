@@ -13,9 +13,10 @@ public enum AssetStatusEnum {
     WAIT_SETTING(3, "待配置"),
     WAIT_VALIDATE(4, "待验证"),
     WAIT_NET(5, "待入网"),
-    NET_IN(6, "已入网"),
-    WAIT_RETIRE(7, "待退役"),
-    RETIRE(8, "已退役");
+    WAIT_CHECK(6, "待检查"),
+    NET_IN(7, "已入网"),
+    WAIT_RETIRE(8, "待退役"),
+    RETIRE(9, "已退役");
 
     AssetStatusEnum(Integer code, String msg) {
         this.code = code;

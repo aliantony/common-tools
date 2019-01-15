@@ -7,6 +7,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * <p> SchemeRequest 请求对象 </p>
  *
@@ -25,11 +27,18 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("资产主键")
     private String  assetId;
+    /**
+     * 资产主键
+     */
+    @ApiModelProperty("资产状态")
+    private Integer  assetStatus;
+
 
     /**
      * 类型（1.准入实施、2.效果检查、3.制定待退役方案、4.验证退役方案、5.实施退役方案）
      */
     @ApiModelProperty("类型（1.准入实施、2.效果检查、3.制定待退役方案、4.验证退役方案、5.实施退役方案）")
+    @NotNull(message = "类型不能为空")
     private Integer type;
     /**
      * 结果
@@ -84,12 +93,21 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      * 同意/拒绝
      */
     @ApiModelProperty("同意/拒绝")
+    @NotNull(message = "同意或拒绝不能为空")
     private Integer  is_agree;
 
     /**
      * 方案内容
      */
     private String content;
+
+    public Integer getAssetStatus() {
+        return assetStatus;
+    }
+
+    public void setAssetStatus(Integer assetStatus) {
+        this.assetStatus = assetStatus;
+    }
 
     public Integer getIs_agree() {
         return is_agree;

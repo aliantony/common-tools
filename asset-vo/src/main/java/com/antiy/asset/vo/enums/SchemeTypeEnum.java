@@ -12,7 +12,7 @@ public enum SchemeTypeEnum implements CodeEnum {
                                                                       "准入实施"), EFFECT_CHECK(2,
                                                                                             "效果检查"), WAIT_RETIRE_SCHEMA(3,
                                                                                                                         "制定待退役方案"), VALIDATE_RETIRE_RESULT(4,
-                                                                                                                                                           "退役结果验证");
+                                                                                                                                                           "实施退役");
 
     SchemeTypeEnum(Integer code, String msg) {
         this.code = code;

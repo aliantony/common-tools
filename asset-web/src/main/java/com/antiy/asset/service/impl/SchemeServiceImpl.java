@@ -6,8 +6,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.biz.util.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetDao;
@@ -16,8 +14,11 @@ import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.service.ISchemeService;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.vo.enums.AssetOperationTableEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.enums.ProcessTypeEnum;
 import com.antiy.asset.vo.enums.SchemeTypeEnum;
 import com.antiy.asset.vo.query.SchemeQuery;
 import com.antiy.asset.vo.request.SchemeRequest;
@@ -25,6 +26,8 @@ import com.antiy.asset.vo.response.SchemeResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.exception.BusinessException;
 
 /**
  * <p> 方案表 服务实现类 </p>
@@ -49,16 +52,56 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Override
     public Integer saveScheme(SchemeRequest request) throws Exception {
         Scheme scheme = requestConverter.convert(request, Scheme.class);
-        scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        Integer targetStatus = request.getTargetStatus();
+        Integer assetStatus = request.getAssetStatus();
+        Integer isAgree = request.getIs_agree();
+        // scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         scheme.setGmtCreate(System.currentTimeMillis());
         schemeDao.insert(scheme);
         // 修改资产状态
-        Map<String, String[]> assetIdMap = new HashMap<>(2);
-        assetIdMap.put("ids", new String[] { request.getAssetId()});
-        assetIdMap.put("assetStatus", new String[] { request.getTargetStatus().toString() });
-        assetDao.changeStatus(assetIdMap);
-
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("ids", new Object[] { request.getAssetId() });
+        map.put("targetStatus", request.getTargetStatus());
         // TODO 调用工作流
+        Integer type = scheme.getType();
+        if (EnumUtil.getByCode(SchemeTypeEnum.class, scheme.getType()) != null) {
+            switch (type) {
+                case 1:
+                    if (targetStatus.equals(AssetStatusEnum.WAIT_CHECK.getCode())) {
+                        map.put("limitStatus", AssetStatusEnum.WAIT_NET.getCode());
+                    }
+                    break;
+                case 2:
+                    if (targetStatus.equals(AssetStatusEnum.NET_IN.getCode())) {
+                        map.put("limitStatus", AssetStatusEnum.WAIT_CHECK.getCode());
+                    }
+                    break;
+                // 制定待退役方案-由入网变为“待退役”
+                case 3:
+                    if (targetStatus.equals(AssetStatusEnum.WAIT_RETIRE.getCode())) {
+                        map.put("limitStatus", AssetStatusEnum.NET_IN.getCode());
+                    }
+                    break;
+                case 4:
+                    if (targetStatus.equals(AssetStatusEnum.RETIRE.getCode())) {
+                        map.put("limitStatus", AssetStatusEnum.WAIT_RETIRE.getCode());
+                    }
+                case 5:
+
+                    if (request.getIs_agree().equals(ProcessTypeEnum.YES.getCode())) {
+                        map.put("targetStatus", AssetStatusEnum.NET_IN.getCode());
+                        map.put("limitStatus", AssetStatusEnum.WAIT_RETIRE.getCode());
+                        assetDao.changeStatus(map);
+                        return scheme.getId();
+                    }
+                    break;
+                default:
+                    break;
+            }
+            assetDao.changeStatus(map);
+        } else {
+            throw new BusinessException(RespBasicCode.PARAMETER_ERROR.getResultDes());
+        }
 
         // 记录操作历史
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();

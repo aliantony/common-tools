@@ -745,13 +745,16 @@
         update
         <include refid="Table_Name"></include>
         set
-        asset_status = #{assetStatus[0]},
+        asset_status = #{targetStatus},
         gmt_modified = #{gmtModified},
         modify_user = #{modifyUser}
         where `id` in
         <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
             #{id}
         </foreach>
+        <if test=" limitStatus != null">
+            and asset_status = #{limitStatus }
+        </if>
     </update>
 
     <select id="checkRepeatAsset" resultType="com.antiy.asset.entity.Asset" parameterType="java.util.List">
