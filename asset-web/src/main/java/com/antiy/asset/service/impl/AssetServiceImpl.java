@@ -485,7 +485,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return null;
     }
 
-    @Override@Transactional
+    @Override
+    @Transactional
     public Integer saveAssetPC(AssetPCRequest assetPCRequest) throws Exception {
         List<AssetCpuRequest> cpuRequestList = assetPCRequest.getCpu();
         BaseConverter<AssetCpuRequest, AssetCpu> baseConverter = new BaseConverter<>();
@@ -565,8 +566,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetCategoryModel> list = assetCategoryModelDao.getAll();
         List<AssetCategoryModel> result = new ArrayList();
         for (AssetCategoryModel AssetCategoryModel : list) {
-            if (Objects.equals(AssetCategoryModel.getId(), id))
+            if (Objects.equals(AssetCategoryModel.getId(), id)) {
                 result.add(AssetCategoryModel);
+            }
         }
         recursion(result, list, id);
         return result;
