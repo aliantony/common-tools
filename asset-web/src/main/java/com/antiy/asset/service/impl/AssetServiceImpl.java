@@ -29,7 +29,6 @@ import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
-
 /**
  * <p> 资产主表 服务实现类 </p>
  *
@@ -86,14 +85,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<AssetResponse> findListAsset(AssetQuery query) throws Exception {
-        query.setAreaIds((Integer[]) LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray());
         List<Asset> asset = assetDao.findListAsset(query);
         List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
         return objects;
     }
 
     public Integer findCountAsset(AssetQuery query) throws Exception {
-        query.setAreaIds((Integer[]) LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray());
         return assetDao.findCount(query);
     }
 
@@ -301,9 +298,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int row;
         Map<String, Object> map = new HashMap<>();
         map.put("ids", ids);
-        map.put("targetStatus", new String[] { targetStatus.toString() });
-        map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
-        map.put("gmtModified", System.currentTimeMillis());
+        map.put("assetStatus", new String[] { targetStatus.toString() });
+        map.put("gmtModified", LoginUserUtil.getLoginUser().getId());
+        map.put("modifyUser", System.currentTimeMillis());
         row = assetDao.changeStatus(map);
         return row;
     }
@@ -312,9 +309,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public Integer changeStatusById(String id, Integer targetStatus) throws Exception {
         Map<String, Object> map = new HashMap<>();
         map.put("ids", new String[] { id });
-        map.put("targetStatus", targetStatus);
-//        map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
-        map.put("gmtModified", System.currentTimeMillis());
+        map.put("assetStatus", new String[] { targetStatus.toString() });
+        map.put("gmtModified", LoginUserUtil.getLoginUser().getId());
+        map.put("modifyUser", System.currentTimeMillis());
         return assetDao.changeStatus(map);
     }
 
@@ -453,22 +450,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public Map<String, Long> countManufacturer() throws Exception {
         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<Map<String, Long>> list = assetDao.countManufacturer(areaIds);
-        Map result = new HashMap();
-        for (Map map : list) {
-            result.put(map.get("key"), map.get("value"));
-        }
-        return result;
+        if (CollectionUtils.isNotEmpty(list)) {
+            Map result = new HashMap();
+            for (Map map : list) {
+                result.put(map.get("key"), map.get("value"));
+            }
+            return result;
+        }return null;
     }
 
     @Override
     public Map<String, Long> countStatus() throws Exception {
         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<Map<String, Long>> list = assetDao.countStatus(areaIds);
-        Map<String, Long> result = new HashMap();
-        for (Map map : list) {
-            result.put(AssetStatusEnum.getAssetByCode((Integer) map.get("key")) + "", (Long) map.get("value"));
+        if (CollectionUtils.isNotEmpty(list)) {
+            Map<String, Long> result = new HashMap();
+            for (Map map : list) {
+                result.put(AssetStatusEnum.getAssetByCode((Integer) map.get("key")) + "", (Long) map.get("value"));
+            }
+            return result;
         }
-        return result;
+        return null;
     }
 
     @Override
@@ -477,17 +479,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         HashMap<String, Object> map = new HashMap();
         map.put("name", "硬件");
         map.put("parentId", 0);
-        //查询第一级分类id
+        // 查询第一级分类id
         List<AssetCategoryModel> categoryModelList = assetCategoryModelDao.getByWhere(map);
         if (CollectionUtils.isNotEmpty(categoryModelList)) {
             Integer id = categoryModelList.get(0).getId();
             map.clear();
             map.put("parentId", id);
-            //查询第二级分类id
+            // 查询第二级分类id
             List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getByWhere(map);
             HashMap<String, Long> result = new HashMap<>();
             for (AssetCategoryModel a : categoryModelList1) {
-                //查询第二级每个分类下所有的分类id，并添加至list集合
+                // 查询第二级每个分类下所有的分类id，并添加至list集合
                 List<AssetCategoryModel> search = recursionSearch(a.getId());
                 Long sum = 0L;
                 List<Integer> list = new ArrayList<>();

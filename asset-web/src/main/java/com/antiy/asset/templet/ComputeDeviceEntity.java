@@ -66,7 +66,7 @@ public class ComputeDeviceEntity {
     /**
      * 资产状态
      */
-    @ExcelField(value = "asset_status", align = 1, title = "资产状态")
+    @ExcelField(value = "asset_status", align = 1, title = "资产状态",dictType = "hardware_status")
     private String  assetStatus;
 
     /**
@@ -82,9 +82,9 @@ public class ComputeDeviceEntity {
     private String  mac;
 
     /**
-     * 0-不重要(not_major),1- 一般(general),3-重要(major),
+     * 是否入网
      */
-    @ExcelField(value = "is_innet", align = 1, title = "是否入网", dictType = "major_type")
+    @ExcelField(value = "is_innet", align = 1, title = "是否入网", dictType = "yesorno")
     private Boolean isInnet;
 
     /**

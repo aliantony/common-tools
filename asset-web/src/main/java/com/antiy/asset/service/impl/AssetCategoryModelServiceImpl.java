@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -118,9 +119,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @return -1 表示存在资产，不能删除 -2 表示存在子品类，需要确认 -3 是系统内置品类，不能删除 >=0 表示删除的品类数
      */
     public Integer delete(Serializable id, Boolean isConfirm) throws Exception {
-        if (isConfirm == null) {
-            return 0;
-        }
+        ParamterExceptionUtils.isNull(isConfirm,"二次确认不能为空");
+        ParamterExceptionUtils.isNull(id,"id不能为空");
         AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getById(id);
         // 判断是否自定义品类
         if (!checkIsDefault(assetCategoryModel)) {

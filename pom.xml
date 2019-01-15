@@ -149,6 +149,10 @@
         <repository>
             <id>cd-nexus</id>
             <url>http://10.240.50.102:8081/repository/maven-public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
         </repository>
     </repositories>
 </project>

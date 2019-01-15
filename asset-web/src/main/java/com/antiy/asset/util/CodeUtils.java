@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
+
 
 public class CodeUtils {
 
@@ -17,7 +19,6 @@ public class CodeUtils {
     }
 
     public static void init() {
-
         code.put(1, "待登记");
         code.put(2, "不予登记");
         code.put(3, "待配置");
@@ -49,10 +50,12 @@ public class CodeUtils {
         code.put(2, "不予登记");
         code.put(3, "待配置");
         code.put(4, "待验证");
-        code.put(6, "待入网");
-        code.put(5, "已入网");
-        code.put(7, "待退役");
-        code.put(8, "已退役");
+        code.put(6, "待检查");
+        code.put(5, "待入网");
+        code.put(7, "已入网");
+        code.put(8, "待退役");
+        code.put(9, "已退役");
+
         codeMap.put("software_status", code);
 
         code = new HashMap(16);
