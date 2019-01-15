@@ -57,4 +57,9 @@ public interface IAssetUserService extends IBaseService<AssetUser> {
      */
     List<SelectResponse> queryUserInAsset() throws Exception;
 
+    /**
+     * 保存导入的用户信息
+     * @param assetUserList
+     */
+    void importUser(List<AssetUser> assetUserList);
 }

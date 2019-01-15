@@ -85,7 +85,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Override
     public void importUser(List<AssetUser> assetUserList) {
         assetUserList.stream().forEach(user -> {
-//            user.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            // user.setCreateUser(LoginUserUtil.getLoginUser().getId());
             user.setGmtCreate(System.currentTimeMillis());
             user.setStatus(1);
             user.setMemo("");
