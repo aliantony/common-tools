@@ -48,7 +48,6 @@ public class AssetCpuServiceImpl extends BaseServiceImpl<AssetCpu> implements IA
     @Override
     public List<AssetCpuResponse> findListAssetCpu(AssetCpuQuery query) throws Exception {
         List<AssetCpu> assetCpu = assetCpuDao.findListAssetCpu(query);
-        // TODO
         List<AssetCpuResponse> assetCpuResponse = responseConverter.convert(assetCpu, AssetCpuResponse.class);
         return assetCpuResponse;
     }

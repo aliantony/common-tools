@@ -49,7 +49,6 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
     @Override
     public List<AssetGroupRelationResponse> findListAssetGroupRelation(AssetGroupRelationQuery query) throws Exception {
         List<AssetGroupRelation> assetGroupRelation = assetGroupRelationDao.findListAssetGroupRelation(query);
-        // TODO
         List<AssetGroupRelationResponse> assetGroupRelationResponse = new ArrayList<AssetGroupRelationResponse>();
         return assetGroupRelationResponse;
     }
