@@ -168,6 +168,10 @@ public class AssetNetworkCard extends BaseEntity {
         return System.currentTimeMillis();
     }
 
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     public String getMemo() {
         return memo;
     }

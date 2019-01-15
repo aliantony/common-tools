@@ -1,5 +1,18 @@
 package com.antiy.asset.service.impl;
 
+import java.util.*;
+
+import javax.annotation.Resource;
+
+import com.antiy.asset.templet.ComputeDeviceEntity;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.biz.util.LoginUserUtil;
+import com.antiy.biz.vo.LoginUser;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
@@ -65,6 +78,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public Integer saveAsset(AssetRequest request) throws Exception {
         Asset asset = requestConverter.convert(request, Asset.class);
+        asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        asset.setGmtCreate(System.currentTimeMillis());
         Integer insert = assetDao.insert(asset);
         return insert;
     }
@@ -72,6 +87,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public Integer updateAsset(AssetRequest request) throws Exception {
         Asset asset = requestConverter.convert(request, Asset.class);
+        asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        asset.setGmtCreate(System.currentTimeMillis());
         return assetDao.update(asset);
     }
 
@@ -288,18 +305,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public Integer changeStatus(String[] ids, Integer targetStatus) throws Exception {
         int row;
-        Map<String, String[]> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("ids", ids);
         map.put("assetStatus", new String[] { targetStatus.toString() });
+        map.put("gmtModified", LoginUserUtil.getLoginUser().getId());
+        map.put("modifyUser", System.currentTimeMillis());
         row = assetDao.changeStatus(map);
         return row;
     }
 
     @Override
     public Integer changeStatusById(String id, Integer targetStatus) throws Exception {
-        Map<String, String[]> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("ids", new String[] { id });
         map.put("assetStatus", new String[] { targetStatus.toString() });
+        map.put("gmtModified", LoginUserUtil.getLoginUser().getId());
+        map.put("modifyUser", System.currentTimeMillis());
         return assetDao.changeStatus(map);
     }
 
@@ -436,7 +457,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Map<String, Long> countManufacturer() throws Exception {
-        // todo 添加区域id
         List<Map<String, Long>> list = assetDao.countManufacturer();
         Map result = new HashMap();
         for (Map map : list) {
@@ -510,6 +530,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetSoftwareRelation.setAssetId(aid);
                 assetSoftwareRelation.setSoftwareId(Integer.parseInt(s));
                 assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+                assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetSoftwareRelationDao.insert(assetSoftwareRelation);
             }
         }
@@ -526,6 +547,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (AssetMainborad assetMainborad : mainboard) {
                 assetMainborad.setAssetId(aid);
                 assetMainborad.setGmtCreate(System.currentTimeMillis());
+                assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetMainboradDao.insert(assetMainborad);
             }
         }
@@ -533,6 +555,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (AssetMemory assetMemory : memory) {
                 assetMemory.setAssetId(aid);
                 assetMemory.setGmtCreate(System.currentTimeMillis());
+                assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetMemoryDao.insert(assetMemory);
             }
         }
@@ -540,9 +563,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (AssetCpu assetCpu : cpu) {
                 assetCpu.setAssetId(aid);
                 assetCpu.setGmtCreate(System.currentTimeMillis());
+                assetCpu.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetCpuDao.insert(assetCpu);
-                assetCpu.setGmtCreate(System.currentTimeMillis());
-                assetCpuDao.insert(assetCpu);
+
             }
         }
 
@@ -550,6 +573,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (AssetHardDisk assetHardDisk : hardDisk) {
                 assetHardDisk.setAssetId(aid);
                 assetHardDisk.setGmtCreate(System.currentTimeMillis());
+                assetHardDisk.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetHardDiskDao.insert(assetHardDisk);
             }
         }
@@ -565,8 +589,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetCategoryModel> list = assetCategoryModelDao.getAll();
         List<AssetCategoryModel> result = new ArrayList();
         for (AssetCategoryModel AssetCategoryModel : list) {
-            if (Objects.equals(AssetCategoryModel.getId(), id))
+            if (Objects.equals(AssetCategoryModel.getId(), id)) {
                 result.add(AssetCategoryModel);
+            }
         }
         recursion(result, list, id);
         return result;
@@ -649,7 +674,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (assetCpuRequestList != null && !assetCpuRequestList.isEmpty()) {
             List<AssetCpu> assetCpuList = BeanConvert.convert(assetCpuRequestList, AssetCpu.class);
             for (AssetCpu assetCpu : assetCpuList) {
-                // TODO 更新人
+                assetCpu.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                assetCpu.setGmtModified(System.currentTimeMillis());
             }
             // 更新cpu信息
             assetCpuDao.updateBatch(assetCpuList);
@@ -659,7 +685,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetNetworkCard> assetNetworkCardList = BeanConvert.convert(assetNetworkCardRequestList,
                 AssetNetworkCard.class);
             for (AssetNetworkCard assetNetworkCard : assetNetworkCardList) {
-                // TODO 更新人
+                assetNetworkCard.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                assetNetworkCard.setGmtModified(System.currentTimeMillis());
             }
             // 更新网卡信息
             assetNetworkCardDao.updateBatch(assetNetworkCardList);
@@ -667,6 +694,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetMainboradRequest assetMainboradRequest = assetOuterRequest.getMainboard();
         if (assetNetworkCardRequestList != null) {
             AssetMainborad assetMainborad = BeanConvert.convertBean(assetMainboradRequest, AssetMainborad.class);
+            assetMainborad.setModifyUser(LoginUserUtil.getLoginUser().getId());
+            assetMainborad.setGmtModified(System.currentTimeMillis());
             // 更新主板信息
             assetMainboradDao.update(assetMainborad);
         }
@@ -674,8 +703,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (assetMemoryRequestList != null && !assetMemoryRequestList.isEmpty()) {
             List<AssetMemory> assetMemoryList = BeanConvert.convert(assetMemoryRequestList, AssetMemory.class);
             for (AssetMemory assetMemory : assetMemoryList) {
-                assetMemory.setGmtCreate(System.currentTimeMillis());
-                // TODO 更新人
+                asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                assetMemory.setGmtModified(System.currentTimeMillis());
             }
             // 更新内存信息
             assetMemoryDao.updateBatch(assetMemoryList);
@@ -686,6 +715,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (AssetHardDisk assetHardDisk : assetHardDiskList) {
                 assetHardDisk.setGmtCreate(System.currentTimeMillis());
                 // TODO 更新人
+                assetHardDisk.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                assetHardDisk.setGmtModified(System.currentTimeMillis());
             }
             // 更新硬盘信息
             assetHardDiskDao.updateBatch(assetHardDiskList);

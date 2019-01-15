@@ -166,6 +166,10 @@ public class AssetHardDisk extends BaseEntity {
         this.gmtCreate = gmtCreate;
     }
 
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     public Long getGmtModified() {
         return System.currentTimeMillis();
     }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.biz.util.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
@@ -40,7 +41,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     public Integer saveAssetSoftwareRelation(AssetSoftwareRelationRequest request) throws Exception {
         AssetSoftwareRelation assetSoftwareRelation = requestConverter.convert(request, AssetSoftwareRelation.class);
-        // TODO 添加创建人信息
+        assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
         assetSoftwareRelationDao.insert(assetSoftwareRelation);
         return assetSoftwareRelation.getId();
     }
@@ -50,6 +52,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         AssetSoftwareRelation assetSoftwareRelation = requestConverter.convert(request, AssetSoftwareRelation.class);
         // TODO 添加修改人信息
         assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+        assetSoftwareRelation.setGmtModified(System.currentTimeMillis());
         return assetSoftwareRelationDao.update(assetSoftwareRelation);
     }
 

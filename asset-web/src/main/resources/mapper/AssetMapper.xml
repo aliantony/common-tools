@@ -738,7 +738,9 @@
         update
         <include refid="Table_Name"></include>
         set
-        asset_status = #{assetStatus[0]}
+        asset_status = #{assetStatus[0]},
+        gmt_modified = #{gmtModified},
+        modify_user = #{modifyUser}
         where `id` in
         <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
             #{id}

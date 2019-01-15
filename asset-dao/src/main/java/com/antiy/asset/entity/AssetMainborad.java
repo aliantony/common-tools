@@ -112,6 +112,10 @@ public class AssetMainborad extends BaseEntity {
         this.biosDate = biosDate;
     }
 
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     public Long getGmtCreate() {
         return gmtCreate;
     }

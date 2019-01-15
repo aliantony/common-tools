@@ -216,6 +216,10 @@ public class AssetNetworkEquipment extends BaseEntity {
         return System.currentTimeMillis();
     }
 
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     public Integer getStatus() {
         return status;
     }
