@@ -15,7 +15,7 @@ public enum AssetStatusEnum {
     WAIT_NET(5, "待入网"),
     WAIT_CHECK(6, "待检查"),
     NET_IN(7, "已入网"),
-    WAIT_RETIRE(9, "待退役"),
+    WAIT_RETIRE(8, "待退役"),
     RETIRE(9, "已退役");
 
     AssetStatusEnum(Integer code, String msg) {
