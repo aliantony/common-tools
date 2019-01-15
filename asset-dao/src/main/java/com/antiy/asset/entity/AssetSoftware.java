@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> 软件信息表 </p>
@@ -23,6 +24,11 @@ public class AssetSoftware extends BaseEntity {
     *  软件品类
     */
     private Integer categoryModel;
+    /**
+     * 软件品类名字
+     */
+    @ApiModelProperty(value = "软件品类名字")
+    private String  categoryModelName;
     /**
     *  软件名称
     */
@@ -136,6 +142,13 @@ public class AssetSoftware extends BaseEntity {
     this.categoryModel = categoryModel;
     }
 
+    public String getCategoryModelName() {
+        return categoryModelName;
+    }
+
+    public void setCategoryModelName(String categoryModelName) {
+        this.categoryModelName = categoryModelName;
+    }
 
     public String getName() {
         return name;

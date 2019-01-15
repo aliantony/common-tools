@@ -25,13 +25,13 @@ public class AssetSoftwareResponse extends BaseResponse {
      * 软件品类
      */
     @ApiModelProperty("软件品类")
-    private Integer category;
+    private Integer categoryModel;
 
     /**
      * 软件品类名字
      */
     @ApiModelProperty(value = "软件品类名字")
-    private String  categoryName;
+    private String  categoryModelName;
     /**
      * 软件型号
      */
@@ -164,12 +164,12 @@ public class AssetSoftwareResponse extends BaseResponse {
         this.operationSystem = operationSystem;
     }
 
-    public Integer getCategory() {
-        return category;
+    public Integer getCategoryModel() {
+        return categoryModel;
     }
 
-    public void setCategory(Integer category) {
-        this.category = category;
+    public void setCategoryModel(Integer categoryModel) {
+        this.categoryModel = categoryModel;
     }
 
     public Integer getModel() {
@@ -228,12 +228,12 @@ public class AssetSoftwareResponse extends BaseResponse {
         this.description = description;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public String getCategoryModelName() {
+        return categoryModelName;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setCategoryModelName(String categoryModelName) {
+        this.categoryModelName = categoryModelName;
     }
 
     public Integer getSoftwareStatus() {
