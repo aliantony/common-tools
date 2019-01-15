@@ -17,7 +17,7 @@ import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.service.ISchemeService;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.vo.enums.AssetOperationTableEnum;
-import com.antiy.asset.vo.enums.SchemaTypeEnum;
+import com.antiy.asset.vo.enums.SchemeTypeEnum;
 import com.antiy.asset.vo.query.SchemeQuery;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.asset.vo.response.SchemeResponse;
@@ -62,7 +62,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         // 记录操作历史
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         // 判断请求的方案类型
-        SchemaTypeEnum codeEnum = EnumUtil.getByCode(SchemaTypeEnum.class, scheme.getType());
+        SchemeTypeEnum codeEnum = EnumUtil.getByCode(SchemeTypeEnum.class, scheme.getType());
         assetOperationRecord.setTargetObjectId(DataTypeUtils.stringToInteger(request.getAssetId()));
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setTargetStatus(request.getTargetStatus());
