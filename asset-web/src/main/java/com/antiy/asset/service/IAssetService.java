@@ -172,7 +172,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @param id 主键封装对象
      * @return AssetOuterResponse
      */
-    AssetOuterResponse getByAssetId(Integer id) throws Exception;
+    AssetOuterResponse getByAssetId(String id) throws Exception;
 
     /**
      * 资产变更
