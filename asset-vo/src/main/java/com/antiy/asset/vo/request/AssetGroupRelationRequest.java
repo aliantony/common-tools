@@ -1,8 +1,10 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -20,7 +22,8 @@ public class AssetGroupRelationRequest extends BasicRequest implements ObjectVal
      * 资产组主键
      */
     @ApiModelProperty("主键")
-    private Integer           id;
+    @Encode
+    private String            id;
     /**
      * 资产组主键
      */
@@ -48,11 +51,11 @@ public class AssetGroupRelationRequest extends BasicRequest implements ObjectVal
         this.assetId = assetId;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

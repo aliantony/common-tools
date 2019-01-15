@@ -1,8 +1,10 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -14,88 +16,88 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetNetworkEquipmentRequest extends BasicRequest implements ObjectValidator {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 主键
      */
     @ApiModelProperty("主键")
-    private int               id;
+    @Encode
+    private String  id;
 
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer           assetId;
+    @Encode
+    private String  assetId;
     /**
      * 接口数目
      */
     @ApiModelProperty("接口数目")
-    private Integer           interfaceSize;
+    private Integer interfaceSize;
     /**
      * 是否无线:0-否,1-是
      */
     @ApiModelProperty("是否无线:0-否,1-是")
-    private Boolean           isWireless;
+    private Boolean isWireless;
     /**
      * 内网IP
      */
     @ApiModelProperty("内网IP")
-    private String            innerIp;
+    private String  innerIp;
     /**
      * 外网IP
      */
     @ApiModelProperty("外网IP")
-    private String            outerIp;
+    private String  outerIp;
     /**
      * MAC地址
      */
     @ApiModelProperty("MAC地址")
-    private String            macAddress;
+    private String  macAddress;
     /**
      * 子网掩码
      */
     @ApiModelProperty("子网掩码")
-    private String            subnetMask;
+    private String  subnetMask;
     /**
      * 预计带宽(M)
      */
     @ApiModelProperty("预计带宽(M)")
-    private Integer           expectBandwidth;
+    private Integer expectBandwidth;
     /**
      * 配置寄存器(GB)
      */
     @ApiModelProperty("配置寄存器(GB)")
-    private Integer           register;
+    private Integer register;
     /**
      * DRAM大小
      */
     @ApiModelProperty("DRAM大小")
-    private Float             dramSize;
+    private Float   dramSize;
     /**
      * FLASH大小
      */
     @ApiModelProperty("FLASH大小")
-    private Float             flashSize;
+    private Float   flashSize;
     /**
      * NCRM大小
      */
     @ApiModelProperty("NCRM大小")
-    private Float             ncrmSize;
+    private Float   ncrmSize;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(int assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

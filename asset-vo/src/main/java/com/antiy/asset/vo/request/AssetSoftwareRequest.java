@@ -1,8 +1,10 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -14,116 +16,115 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetSoftwareRequest extends BasicRequest implements ObjectValidator {
 
-    private static final long serialVersionUID = 1L;
-
-   private AssetSoftwareLicenseRequest softwareLicenseRequest;
+    private AssetSoftwareLicenseRequest softwareLicenseRequest;
     /**
      * 主键
      */
     @ApiModelProperty("主键")
-    private Integer               id;
+    @Encode
+    private String                      id;
     /**
-     *  软件大小(KB)
+     * 软件大小(KB)
      */
-    private Integer size;
+    private Integer                     size;
     /**
-     *  操作系统(WINDOWS7-32-64,WINDOWS8-64)
+     * 操作系统(WINDOWS7-32-64,WINDOWS8-64)
      */
-    private String operationSystem;
+    private String                      operationSystem;
     /**
-     *  软件品类
+     * 软件品类
      */
-    private Integer categoryModel;
+    private Integer                     categoryModel;
     /**
-     *  软件名称
+     * 软件名称
      */
-    private String name;
+    private String                      name;
     /**
-     *  上传的软件名称
+     * 上传的软件名称
      */
-    private String uploadSoftwareName;
+    private String                      uploadSoftwareName;
     /**
-     *  安装包路径
+     * 安装包路径
      */
-    private String path;
+    private String                      path;
     /**
-     *  版本
+     * 版本
      */
-    private String version;
+    private String                      version;
     /**
-     *  厂商
+     * 厂商
      */
-    private String manufacturer;
+    private String                      manufacturer;
     /**
-     *  软件描述
+     * 软件描述
      */
-    private String description;
+    private String                      description;
     /**
-     *  资产组
+     * 资产组
      */
-    private String assetGroup;
+    private String                      assetGroup;
     /**
-     *  软件标签
+     * 软件标签
      */
-    private Integer softwareLabel;
+    private Integer                     softwareLabel;
     /**
-     *  1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
+     * 1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
      */
-    private Integer softwareStatus;
+    private Integer                     softwareStatus;
     /**
-     *  0-免费软件，1-商业软件
+     * 0-免费软件，1-商业软件
      */
-    private Integer authorization;
+    private Integer                     authorization;
     /**
-     *  上报来源:1-自动上报，2-人工上报
+     * 上报来源:1-自动上报，2-人工上报
      */
-    private Integer reportSource;
+    private Integer                     reportSource;
     /**
-     *  端口
+     * 端口
      */
-    private String port;
+    private String                      port;
     /**
-     *  语言
+     * 语言
      */
-    private String language;
+    private String                      language;
     /**
-     *  发布时间
+     * 发布时间
      */
-    private Long releaseTime;
+    private Long                        releaseTime;
     /**
-     *  发布者
+     * 发布者
      */
-    private String publisher;
+    private String                      publisher;
     /**
-     *  创建时间
+     * 创建时间
      */
-    private Long gmtCreate;
+    private Long                        gmtCreate;
     /**
-     *  备注
+     * 备注
      */
-    private String memo;
+    private String                      memo;
     /**
-     *  更新时间
+     * 更新时间
      */
-    private Long gmtModified;
+    private Long                        gmtModified;
     /**
-     *  创建人
+     * 创建人
      */
-    private Integer createUser;
+    private Integer                     createUser;
     /**
-     *  修改人
+     * 修改人
      */
-    private Integer modifyUser;
+    private Integer                     modifyUser;
     /**
-     *  状态,0 未删除,1已删除
+     * 状态,0 未删除,1已删除
      */
-    private Integer status;
+    private Integer                     status;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

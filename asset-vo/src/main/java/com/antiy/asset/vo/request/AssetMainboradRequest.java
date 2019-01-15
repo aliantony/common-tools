@@ -3,6 +3,7 @@ package com.antiy.asset.vo.request;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -13,49 +14,47 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetMainboradRequest extends BasicRequest implements ObjectValidator {
-
-    private static final long serialVersionUID = 1L;
     /**
      * 主键
      */
     @ApiModelProperty("主键")
-    private int               id;
+    private String  id;
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer           assetId;
+    private Integer assetId;
     /**
      * 品牌
      */
     @ApiModelProperty("品牌")
-    private String            brand;
+    private String  brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
-    private String            model;
+    private String  model;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    private String            serial;
+    private String  serial;
     /**
      * BIOS版本
      */
     @ApiModelProperty("BIOS版本")
-    private String            biosVersion;
+    private String  biosVersion;
     /**
      * BIOS日期
      */
     @ApiModelProperty("BIOS日期")
-    private Long              biosDate;
+    private Long    biosDate;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

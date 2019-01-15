@@ -1,12 +1,13 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.Valid;
-import java.util.List;
+import javax.validation.constraints.NotNull;
 
 /**
  * <p> AssetCategoryModelRequest 请求对象 </p>
@@ -17,21 +18,12 @@ import java.util.List;
 
 public class AssetCategoryModelRequest extends BasicRequest implements ObjectValidator {
 
-    private static final long serialVersionUID = 1L;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     /**
      * id
      */
     @ApiModelProperty("id")
-    private Integer id;
+    @Encode
+    private String  id;
 
     /**
      * 名称
@@ -40,6 +32,7 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
     private String  name;
 
     @ApiModelProperty("资产类型:1软件，2硬件")
+    @NotNull
     private Integer assetType;
     /**
      * 父ID
@@ -57,6 +50,14 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
      */
     @ApiModelProperty("备注")
     private String  memo;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
@@ -15,13 +16,15 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class SchemeRequest extends BasicRequest implements ObjectValidator {
 
-    private Integer id;
+    @Encode
+    @ApiModelProperty(value = "主键")
+    private String  id;
 
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer assetId;
+    private String  assetId;
 
     /**
      * 类型（1.准入实施、2.效果检查、3.制定待退役方案、4.验证退役方案、5.实施退役方案）
@@ -78,11 +81,19 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty("目标状态")
     private Integer targetStatus;
 
-    public Integer getAssetId() {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 
@@ -164,14 +175,6 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
 
     public void setMemo(String memo) {
         this.memo = memo;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Integer getTargetStatus() {

@@ -1,8 +1,10 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -14,40 +16,48 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetPortProtocolRequest extends BasicRequest implements ObjectValidator {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 资产软件关系表主键
      */
     @ApiModelProperty("资产软件关系表主键")
-    private Integer           assetSoftId;
+    @Encode
+    private String  assetSoftId;
     /**
      * id
      */
     @ApiModelProperty("id")
-    private Integer           id;
+    @Encode
+    private String  id;
     /**
      * 端口
      */
     @ApiModelProperty("端口")
-    private Integer           port;
+    private Integer port;
     /**
      * 协议
      */
     @ApiModelProperty("协议")
-    private String            protocol;
+    private String  protocol;
     /**
      * 描述
      */
     @ApiModelProperty("描述")
-    private String            description;
+    private String  description;
 
-    public Integer getAssetSoftId() {
+    public String getAssetSoftId() {
         return assetSoftId;
     }
 
-    public void setAssetSoftId(Integer assetSoftId) {
+    public void setAssetSoftId(String assetSoftId) {
         this.assetSoftId = assetSoftId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Integer getPort() {
@@ -77,13 +87,5 @@ public class AssetPortProtocolRequest extends BasicRequest implements ObjectVali
     @Override
     public void validate() throws RequestParamValidateException {
 
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 }

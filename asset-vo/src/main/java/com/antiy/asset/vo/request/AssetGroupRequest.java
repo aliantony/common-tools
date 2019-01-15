@@ -1,8 +1,10 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -13,35 +15,34 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
-
-    private static final long serialVersionUID = 1L;
     /**
-     * 用途
+     * 主键
      */
     @ApiModelProperty("主键")
-    private Integer           id;
+    @Encode
+    private String  id;
 
     /**
      * 用途
      */
     @ApiModelProperty("用途")
-    private String            purpose;
+    private String  purpose;
     /**
      * 重要程度(0-不重要(not_major),1- 一般(general),3-重要(major),)
      */
     @ApiModelProperty("重要程度(0-不重要(not_major),1- 一般(general),3-重要(major),)")
-    private Integer           importantDegree;
+    private Integer importantDegree;
     /**
      * 资产组名称
      */
     @ApiModelProperty("资产组名称")
-    private String            name;
+    private String  name;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

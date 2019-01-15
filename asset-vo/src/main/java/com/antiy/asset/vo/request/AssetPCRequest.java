@@ -1,9 +1,8 @@
 package com.antiy.asset.vo.request;
 
+import java.util.List;
 
 import com.antiy.common.base.BaseEntity;
-
-import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -13,8 +12,6 @@ import java.util.List;
  */
 
 public class AssetPCRequest extends BaseEntity {
-
-    private static final long      serialVersionUID = 1L;
 
     private AssetRequest                  asset;
 
@@ -28,7 +25,7 @@ public class AssetPCRequest extends BaseEntity {
 
     private List<AssetNetworkCardRequest> networkCard;
 
-    private  String softwareids;
+    private String                        softwareids;
 
     public AssetRequest getAsset() {
         return asset;

@@ -1,8 +1,10 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -13,47 +15,50 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class AssetSoftwareLicenseRequest extends BasicRequest implements ObjectValidator {
 
-    private Integer id;
+    @ApiModelProperty(value = "主键")
+    @Encode
+    private String id;
 
     /**
      * 软件主键
      */
     @ApiModelProperty("软件主键")
-    private Integer softwareId;
+    @Encode
+    private String softwareId;
     /**
      * 购买日期
      */
     @ApiModelProperty("购买日期")
-    private Long    buyDate;
+    private Long   buyDate;
     /**
      * 有效期限
      */
     @ApiModelProperty("有效期限")
-    private Long    expiryDate;
+    private Long   expiryDate;
     /**
      * 许可密钥
      */
     @ApiModelProperty("许可密钥")
-    private String  licenseSecretKey;
+    private String licenseSecretKey;
     /**
      * 备注
      */
     @ApiModelProperty("备注")
-    private String  memo;
+    private String memo;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Integer getSoftwareId() {
+    public String getSoftwareId() {
         return softwareId;
     }
 
-    public void setSoftwareId(Integer softwareId) {
+    public void setSoftwareId(String softwareId) {
         this.softwareId = softwareId;
     }
 

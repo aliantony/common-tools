@@ -1,8 +1,10 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -13,28 +15,27 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetLableRequest extends BasicRequest implements ObjectValidator {
-
-    private static final long serialVersionUID = 1L;
     /**
      * id
      */
-    @ApiModelProperty("id")
-    private Integer           id;
+    @ApiModelProperty("主键")
+    @Encode
+    private String  id;
     /**
      * 名称
      */
     @ApiModelProperty("名称")
-    private String            name;
+    private String  name;
     /**
      * 标签类型:1东区２西区
      */
     @ApiModelProperty("标签类型:1东区２西区")
-    private Integer           labelType;
+    private Integer labelType;
     /**
      * 描述
      */
     @ApiModelProperty("描述")
-    private String            description;
+    private String  description;
 
     public String getName() {
         return name;
@@ -60,16 +61,17 @@ public class AssetLableRequest extends BasicRequest implements ObjectValidator {
         this.description = description;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public void validate() throws RequestParamValidateException {
 
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 }

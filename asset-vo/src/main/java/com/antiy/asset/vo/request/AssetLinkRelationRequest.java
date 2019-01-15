@@ -3,6 +3,7 @@ package com.antiy.asset.vo.request;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -14,43 +15,41 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetLinkRelationRequest extends BasicRequest implements ObjectValidator {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 通联名称
      */
     @ApiModelProperty("通联名称")
-    private String            name;
+    private String  name;
     /**
      * 通联类型:1光纤，2双绞线
      */
     @ApiModelProperty("通联类型:1光纤，2双绞线")
-    private Integer           linkType;
+    private Integer linkType;
     /**
      * 头节点资产
      */
     @ApiModelProperty("头节点资产")
-    private Integer           headAsset;
+    private Integer headAsset;
     /**
      * 尾节点资产
      */
     @ApiModelProperty("尾节点资产")
-    private Integer           tailAsse;
+    private Integer tailAsse;
     /**
      * 头节点类型
      */
     @ApiModelProperty("头节点类型")
-    private Integer           headType;
+    private Integer headType;
     /**
      * 尾节点类型
      */
     @ApiModelProperty("尾节点类型")
-    private Integer           tailType;
+    private Integer tailType;
     /**
      * 状态
      */
     @ApiModelProperty("状态")
-    private Integer           linkStatus;
+    private Integer linkStatus;
 
     public String getName() {
         return name;

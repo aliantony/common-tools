@@ -1,8 +1,10 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -14,59 +16,58 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetMemoryRequest extends BasicRequest implements ObjectValidator {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer           assetId;
+    @Encode
+    private String  assetId;
     /**
      * 内存容量
      */
     @ApiModelProperty("内存容量")
-    private Integer           capacity;
+    private Integer capacity;
     /**
      * 内存主频(MHz)
      */
     @ApiModelProperty("内存主频(MHz)")
-    private Integer           frequency;
+    private Integer frequency;
     /**
      * 插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM
      */
     @ApiModelProperty("插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM")
-    private Integer           slotType;
+    private Integer slotType;
     /**
      * 是否带散热片:0-不带，1-带
      */
     @ApiModelProperty("是否带散热片:0-不带，1-带")
-    private Boolean           isHeatsink;
+    private Boolean isHeatsink;
     /**
      * 针脚数
      */
     @ApiModelProperty("针脚数")
-    private Integer           stitch;
+    private Integer stitch;
     /**
      * 购买日期
      */
     @ApiModelProperty("购买日期")
-    private Long              buyDate;
+    private Long    buyDate;
     /**
      * 保修期
      */
     @ApiModelProperty("保修期")
-    private Long              warrantyDate;
+    private Long    warrantyDate;
     /**
      * 联系电话
      */
     @ApiModelProperty("联系电话")
-    private String            telephone;
+    private String  telephone;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

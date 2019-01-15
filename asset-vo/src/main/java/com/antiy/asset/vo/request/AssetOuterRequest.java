@@ -1,9 +1,10 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BaseEntity;
+import java.util.List;
+
 import com.antiy.common.base.BasicRequest;
 
-import java.util.List;
+import javax.validation.Valid;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -13,8 +14,6 @@ import java.util.List;
  */
 
 public class AssetOuterRequest extends BasicRequest {
-
-    private static final long             serialVersionUID = 1L;
 
     private AssetRequest                  asset;
 

@@ -1,12 +1,11 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetCpuRequest 请求对象 </p>
@@ -17,54 +16,53 @@ import javax.validation.constraints.NotNull;
 
 public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 主键
      */
     @ApiModelProperty("主键")
-    private Integer           id;
+    @Encode
+    private String  id;
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer           assetId;
+    private Integer assetId;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    private String            serial;
+    private String  serial;
     /**
      * 品牌
      */
     @ApiModelProperty("品牌")
-    private String            brand;
+    private String  brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
-    private String            model;
+    private String  model;
     /**
      * CPU主频
      */
     @ApiModelProperty("CPU主频")
-    private Float             mainFrequency;
+    private Float   mainFrequency;
     /**
      * 线程数
      */
     @ApiModelProperty("线程数")
-    private Integer           threadSize;
+    private Integer threadSize;
     /**
      * 核心数
      */
     @ApiModelProperty("核心数")
-    private Integer           coreSize;
+    private Integer coreSize;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

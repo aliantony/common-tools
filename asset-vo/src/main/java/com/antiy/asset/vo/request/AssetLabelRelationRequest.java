@@ -3,6 +3,7 @@ package com.antiy.asset.vo.request;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -14,24 +15,22 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetLabelRelationRequest extends BasicRequest implements ObjectValidator {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer           assetId;
+    private String  assetId;
     /**
      * 标签主键
      */
     @ApiModelProperty("标签主键")
-    private Integer           assetLabelId;
+    private Integer assetLabelId;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

@@ -1,8 +1,10 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -13,59 +15,58 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetUserRequest extends BasicRequest implements ObjectValidator {
-
-    private static final long serialVersionUID = 1L;
     /**
      * 主键
      */
     @ApiModelProperty("主键")
-    private Integer           id;
+    @Encode
+    private String  id;
     /**
      * 姓名
      */
     @ApiModelProperty("姓名")
-    private String            name;
+    private String  name;
     /**
      * 姓名
      */
     @ApiModelProperty("备注")
-    private String            memo;
+    private String  memo;
     /**
      * 部门主键
      */
     @ApiModelProperty("部门主键")
-    private Integer           departmentId;
+    private Integer departmentId;
     /**
      * 电子邮箱
      */
     @ApiModelProperty("电子邮箱")
-    private String            email;
+    private String  email;
     /**
      * qq号
      */
     @ApiModelProperty("qq号")
-    private String            qq;
+    private String  qq;
     /**
      * 微信
      */
     @ApiModelProperty("微信")
-    private String            weixin;
+    private String  weixin;
     /**
      * 手机号
      */
     @ApiModelProperty("手机号")
-    private String            mobile;
+    private String  mobile;
     /**
      * 住址
      */
     @ApiModelProperty("住址")
-    private String            address;
+    private String  address;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
