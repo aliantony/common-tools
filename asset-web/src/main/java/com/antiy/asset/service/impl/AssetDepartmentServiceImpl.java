@@ -2,14 +2,11 @@ package com.antiy.asset.service.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.entity.AssetUser;
-import com.antiy.asset.vo.query.AssetUserQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +16,7 @@ import com.antiy.asset.entity.AssetDepartment;
 import com.antiy.asset.service.IAssetDepartmentService;
 import com.antiy.asset.util.NodeUtilsConverter;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
+import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
 import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
@@ -90,7 +88,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         List<AssetDepartment> list = assetDepartmentDao.getAll();
         List<AssetDepartment> result = new ArrayList();
         for (AssetDepartment assetDepartment : list) {
-            if (Objects.equals(assetDepartment.getId(), id) )
+            if (Objects.equals(assetDepartment.getId(), id))
                 result.add(assetDepartment);
         }
         recursion(result, list, id);
@@ -106,7 +104,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
      */
     private void recursion(List<AssetDepartment> result, List<AssetDepartment> list, Integer id) {
         for (AssetDepartment assetDepartment : list) {
-            if (Objects.equals(assetDepartment.getParentId(),id) ) {
+            if (Objects.equals(assetDepartment.getParentId(), id)) {
                 result.add(assetDepartment);
                 recursion(result, list, assetDepartment.getId());
             }

@@ -27,11 +27,9 @@ import com.antiy.common.base.PageResult;
 public class AssetHardDiskServiceImpl extends BaseServiceImpl<AssetHardDisk> implements IAssetHardDiskService {
 
     @Resource
-    private AssetHardDiskDao                                    assetHardDiskDao;
+    private AssetHardDiskDao                                   assetHardDiskDao;
     @Resource
-    private BaseConverter<AssetHardDiskRequest, AssetHardDisk>  requestConverter;
-    @Resource
-    private BaseConverter<AssetHardDisk, AssetHardDiskResponse> responseConverter;
+    private BaseConverter<AssetHardDiskRequest, AssetHardDisk> requestConverter;
 
     @Override
     public Integer saveAssetHardDisk(AssetHardDiskRequest request) throws Exception {
@@ -48,7 +46,6 @@ public class AssetHardDiskServiceImpl extends BaseServiceImpl<AssetHardDisk> imp
     @Override
     public List<AssetHardDiskResponse> findListAssetHardDisk(AssetHardDiskQuery query) throws Exception {
         List<AssetHardDisk> assetHardDisk = assetHardDiskDao.findListAssetHardDisk(query);
-        // TODO
         List<AssetHardDiskResponse> assetHardDiskResponse = new ArrayList<AssetHardDiskResponse>();
         return assetHardDiskResponse;
     }
