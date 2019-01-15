@@ -74,14 +74,14 @@ public interface AssetDao extends IBaseDao<Asset> {
      *
      * @return
      */
-    List<Map<String, Long>> countManufacturer();
+    List<Map<String, Long>> countManufacturer(List<Integer> areaIds);
 
     /**
      * 统计状态数量
      *
      * @return
      */
-    List<Map<String, Long>> countStatus();
+    List<Map<String, Long>> countStatus(List<Integer> areaIds);
 
     /**
      * 通过ID列表查询资产列表
