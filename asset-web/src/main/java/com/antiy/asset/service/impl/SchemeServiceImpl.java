@@ -67,23 +67,23 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         if (EnumUtil.getByCode(SchemeTypeEnum.class, scheme.getType()) != null) {
             switch (type) {
                 case 1:
-                    if (targetStatus.equals(AssetStatusEnum.WAIT_CHECK)) {
+                    if (targetStatus.equals(AssetStatusEnum.WAIT_CHECK.getCode())) {
                         map.put("limitStatus", AssetStatusEnum.WAIT_NET.getCode());
                     }
                     break;
                 case 2:
-                    if (targetStatus.equals(AssetStatusEnum.NET_IN)) {
+                    if (targetStatus.equals(AssetStatusEnum.NET_IN.getCode())) {
                         map.put("limitStatus", AssetStatusEnum.WAIT_CHECK.getCode());
                     }
                     break;
                 // 制定待退役方案-由入网变为“待退役”
                 case 3:
-                    if (targetStatus.equals(AssetStatusEnum.WAIT_RETIRE)) {
+                    if (targetStatus.equals(AssetStatusEnum.WAIT_RETIRE.getCode())) {
                         map.put("limitStatus", AssetStatusEnum.NET_IN.getCode());
                     }
                     break;
                 case 4:
-                    if (targetStatus.equals(AssetStatusEnum.RETIRE)) {
+                    if (targetStatus.equals(AssetStatusEnum.RETIRE.getCode())) {
                         map.put("limitStatus", AssetStatusEnum.WAIT_RETIRE.getCode());
                     }
                 case 5:
