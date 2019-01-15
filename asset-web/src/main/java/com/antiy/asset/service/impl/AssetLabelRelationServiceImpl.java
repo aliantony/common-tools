@@ -13,6 +13,7 @@ import com.antiy.asset.service.IAssetLabelRelationService;
 import com.antiy.asset.vo.query.AssetLabelRelationQuery;
 import com.antiy.asset.vo.request.AssetLabelRelationRequest;
 import com.antiy.asset.vo.response.AssetLabelRelationResponse;
+import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -37,12 +38,16 @@ public class AssetLabelRelationServiceImpl extends BaseServiceImpl<AssetLabelRel
     @Override
     public Integer saveAssetLabelRelation(AssetLabelRelationRequest request) throws Exception {
         AssetLabelRelation assetLabelRelation = requestConverter.convert(request, AssetLabelRelation.class);
+        assetLabelRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetLabelRelation.setGmtCreate(System.currentTimeMillis());
         return assetLabelRelationDao.insert(assetLabelRelation);
     }
 
     @Override
     public Integer updateAssetLabelRelation(AssetLabelRelationRequest request) throws Exception {
         AssetLabelRelation assetLabelRelation = requestConverter.convert(request, AssetLabelRelation.class);
+        assetLabelRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        assetLabelRelation.setGmtModified(System.currentTimeMillis());
         return assetLabelRelationDao.update(assetLabelRelation);
     }
 

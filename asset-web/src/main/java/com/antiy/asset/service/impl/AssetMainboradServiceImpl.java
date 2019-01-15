@@ -12,6 +12,7 @@ import com.antiy.asset.service.IAssetMainboradService;
 import com.antiy.asset.vo.query.AssetMainboradQuery;
 import com.antiy.asset.vo.request.AssetMainboradRequest;
 import com.antiy.asset.vo.response.AssetMainboradResponse;
+import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -35,6 +36,8 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
     @Override
     public Integer saveAssetMainborad(AssetMainboradRequest request) throws Exception {
         AssetMainborad assetMainborad = requestConverter.convert(request, AssetMainborad.class);
+        assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetMainborad.setGmtCreate(System.currentTimeMillis());
         assetMainboradDao.insert(assetMainborad);
         return assetMainborad.getId();
     }
@@ -42,6 +45,8 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
     @Override
     public Integer updateAssetMainborad(AssetMainboradRequest request) throws Exception {
         AssetMainborad assetMainborad = requestConverter.convert(request, AssetMainborad.class);
+        assetMainborad.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        assetMainborad.setGmtModified(System.currentTimeMillis());
         return assetMainboradDao.update(assetMainborad);
     }
 

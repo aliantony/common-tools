@@ -13,6 +13,7 @@ import com.antiy.asset.service.IAssetMemoryService;
 import com.antiy.asset.vo.query.AssetMemoryQuery;
 import com.antiy.asset.vo.request.AssetMemoryRequest;
 import com.antiy.asset.vo.response.AssetMemoryResponse;
+import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -36,12 +37,16 @@ public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> impleme
     @Override
     public Integer saveAssetMemory(AssetMemoryRequest request) throws Exception {
         AssetMemory assetMemory = requestConverter.convert(request, AssetMemory.class);
+        assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetMemory.setGmtCreate(System.currentTimeMillis());
         return assetMemoryDao.insert(assetMemory);
     }
 
     @Override
     public Integer updateAssetMemory(AssetMemoryRequest request) throws Exception {
         AssetMemory assetMemory = requestConverter.convert(request, AssetMemory.class);
+        assetMemory.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        assetMemory.setGmtModified(System.currentTimeMillis());
         return assetMemoryDao.update(assetMemory);
     }
 
