@@ -53,6 +53,7 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
 
     @Override
     public List<AssetNetworkEquipmentResponse> findListAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception {
+
         List<AssetNetworkEquipment> assetNetworkEquipment = assetNetworkEquipmentDao
             .findListAssetNetworkEquipment(query);
         List<AssetNetworkEquipmentResponse> assetNetworkCardResponse = responseConverter.convert(assetNetworkEquipment,

@@ -94,12 +94,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<AssetResponse> findListAsset(AssetQuery query) throws Exception {
+        query.setAreaIds((Integer[]) LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray());
         List<Asset> asset = assetDao.findListAsset(query);
         List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
         return objects;
     }
 
     public Integer findCountAsset(AssetQuery query) throws Exception {
+        query.setAreaIds((Integer[]) LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray());
         return assetDao.findCount(query);
     }
 
