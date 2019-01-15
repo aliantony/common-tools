@@ -7,6 +7,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * <p> AssetDepartmentRequest 请求对象 </p>
  *
@@ -19,6 +21,7 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
     /**
      * id
      */
+    @NotNull
     @ApiModelProperty("主键")
     @Encode
     private String  id;
@@ -33,6 +36,11 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
      */
     @ApiModelProperty("上级部门")
     private Integer parentId;
+    /**
+     * 上级部门
+     */
+    @ApiModelProperty("备注")
+    private String  memo;
 
     public String getId() {
         return id;
