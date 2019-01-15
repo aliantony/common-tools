@@ -9,6 +9,7 @@ import com.antiy.asset.service.ISchemeService;
 import com.antiy.asset.vo.query.SchemeQuery;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
@@ -76,7 +77,7 @@ public class SchemeController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "scheme") @PathVariable("id") Integer id) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "scheme") @PathVariable("id") @Encode String id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iSchemeService.getById(id));
     }
@@ -90,7 +91,7 @@ public class SchemeController {
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {
+    public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") @Encode String id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iSchemeService.deleteById(id));
     }
