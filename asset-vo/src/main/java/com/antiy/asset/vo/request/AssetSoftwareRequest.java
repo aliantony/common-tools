@@ -1,13 +1,17 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -15,23 +19,22 @@ import javax.validation.constraints.Size;
  * @author zhangyajun
  * @since 2018-12-27
  */
-
+@ApiModel(value = "软件请求")
 public class AssetSoftwareRequest extends BasicRequest implements ObjectValidator {
 
-    private static final long serialVersionUID = 1L;
+    private static final long           serialVersionUID = 1L;
 
-   private AssetSoftwareLicenseRequest softwareLicenseRequest;
+    @Valid
+    @ApiModelProperty(value = "软件license")
+    private AssetSoftwareLicenseRequest softwareLicenseRequest;
 
-    public AssetPortProtocolRequest getAssetPortProtocolRequest() {
-        return assetPortProtocolRequest;
-    }
+    @ApiModelProperty(value = "端口信息")
+    @Valid
+    private AssetPortProtocolRequest    assetPortProtocolRequest;
 
-    public void setAssetPortProtocolRequest(AssetPortProtocolRequest assetPortProtocolRequest) {
-        this.assetPortProtocolRequest = assetPortProtocolRequest;
-    }
-
-    private AssetPortProtocolRequest assetPortProtocolRequest;
-   private String assetIds;
+    @ApiModelProperty(value = "资产Id")
+    @Encode
+    private String[]                    assetIds;
 
     /**
      * 主键
@@ -110,13 +113,13 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 0-免费软件，1-商业软件
      */
     @ApiModelProperty(value = "软件是否免费")
-    @NotBlank(message = "软件是否免费不能为空")
+    @NotNull(message = "软件是否免费不能为空")
     private Integer                     authorization;
     /**
      * 上报来源:1-自动上报，2-人工上报
      */
     @ApiModelProperty(value = "上报来源", allowableValues = "1-自动上报，2-人工上报")
-    @NotBlank(message = "上报来源不能为空")
+    @NotNull(message = "上报来源不能为空")
     private Integer                     reportSource;
     /**
      * 端口
@@ -143,6 +146,14 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty(value = "备注")
     private String                      memo;
+
+    public AssetPortProtocolRequest getAssetPortProtocolRequest() {
+        return assetPortProtocolRequest;
+    }
+
+    public void setAssetPortProtocolRequest(AssetPortProtocolRequest assetPortProtocolRequest) {
+        this.assetPortProtocolRequest = assetPortProtocolRequest;
+    }
 
     public String getId() {
         return id;
@@ -317,11 +328,11 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.softwareLicenseRequest = softwareLicenseRequest;
     }
 
-    public String getAssetIds() {
+    public String[] getAssetIds() {
         return assetIds;
     }
 
-    public void setAssetIds(String assetIds) {
+    public void setAssetIds(String[] assetIds) {
         this.assetIds = assetIds;
     }
 }

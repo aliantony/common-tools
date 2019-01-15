@@ -5,119 +5,126 @@ import com.antiy.asset.annotation.ExcelField;
 /**
  * 计算设备
  */
-public class ComputeDeviceEntity extends AssetEntity {
-    private static final long serialVersionUID = 1L;
+public class ComputeDeviceEntity {
 
+    /**
+     * 资产名称
+     */
+    @ExcelField(value = "name", align = 1, title = "资产名称")
+    private String  name;
+    /**
+     * 品类
+     */
+    @ExcelField(value = "category_model", align = 1, title = "资产品类")
+    private String  categoryModel;
 
+    /**
+     * 资产型号
+     */
+    @ExcelField(value = "number", align = 1, title = "编号")
+    private String  number;
+    /**
+     * 序列号
+     */
+    @ExcelField(value = "serial", align = 1, title = "序列号")
+    private String  serial;
+    /**
+     * 厂商
+     */
+    @ExcelField(value = "manufacturer", align = 1, title = "厂商")
+    private String  manufacturer;
     /**
      * 资产分组
      */
-    @ExcelField(value = "asset_group", align = 1, title = "所属分组", type = 0)
-    private String            assetGroup;
+    @ExcelField(value = "asset_group", align = 1, title = "资产分组")
+    private String  assetGroup;
 
     /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0)
-    private String            telephone;
+    @ExcelField(value = "telephone", align = 1, title = "联系电话")
+    private String  telephone;
 
     /**
      * 邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0)
-    private String            email;
+    @ExcelField(value = "email", align = 1, title = "邮箱")
+    private String  email;
 
     /**
      * 物理位置
      */
-    @ExcelField(value = "location", align = 1, title = "物理位置", type = 0)
-    private String            location;
+    @ExcelField(value = "location", align = 1, title = "物理位置")
+    private String  location;
 
     /**
      * 使用者
      */
-    @ExcelField(value = "responsible_user_id", align = 1, title = "使用者", type = 0)
-    private Integer           responsibleUserId;
+    @ExcelField(value = "responsible_user_id", align = 1, title = "使用者")
+    private Integer responsibleUserId;
 
     /**
-     * 资产来源
+     * 资产状态
      */
-    @ExcelField(value = "asset_source", align = 1, title = "资产来源", type = 0)
-    private String            assetSource;
-
-    /**
-     * 固件版本
-     */
-    @ExcelField(value = "asset_status", align = 1, title = "资产状态", type = 1)
-    private String            assetStatus;
+    @ExcelField(value = "asset_status", align = 1, title = "资产状态")
+    private String  assetStatus;
 
     /**
      * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
      */
-    @ExcelField(value = "outer_ip", align = 1, title = "IP地址", type = 1)
-    private String            outerIp;
-    /**
-     * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
-     */
-    @ExcelField(value = "inner_ip", align = 1, title = "IP地址", type = 1)
-    private String            innerIp;
+    @ExcelField(value = "ip", align = 1, title = "IP地址")
+    private String  ip;
+
     /**
      * mac地址
      */
-    @ExcelField(value = "mac", align = 1, title = "mac地址", type = 0)
-    private String            mac;
-    /**
-     * 子网掩码
-     */
-    @ExcelField(value = "subnet_mask", align = 1, title = "mac地址", type = 0)
-    private String            subnetMask;
-    /**
-     * 预计带宽
-     */
-    @ExcelField(value = "expect_bandwidth", align = 1, title = "预计带宽", type = 0)
-    private String            expectBandwidth;
+    @ExcelField(value = "mac", align = 1, title = "mac地址")
+    private String  mac;
 
     /**
-     * 配置寄存器
+     * 0-不重要(not_major),1- 一般(general),3-重要(major),
      */
-    @ExcelField(value = "register", align = 1, title = "预计带宽", type = 0)
-    private String            register;
+    @ExcelField(value = "is_innet", align = 1, title = "是否入网", dictType = "major_type")
+    private Boolean isInnet;
 
     /**
-     * cpu
+     * 网卡JSON数据{ID:1,name:intel,speed:1900M}
      */
-    @ExcelField(value = "cpu", align = 1, title = "预计带宽", type = 0)
-    private String            cpu;
+    @ExcelField(value = "buy_date", align = 1, title = "购买时间", isDate = true)
+    private String  networkCard;
 
     /**
-     * cpu版本
+     * 描述
      */
-    @ExcelField(value = "cpu_version", align = 1, title = "cpu版本", type = 0)
-    private String            cpuVersion;
+    @ExcelField(value = "warranty", align = 1, title = "保修期")
+    private Long    warranty;
 
     /**
-     * dram大小
+     * 使用到期时间
      */
-    @ExcelField(value = "dram_size", align = 1, title = "cpu版本", type = 0)
-    private String            dramSize;
+    @ExcelField(value = "service_life", align = 1, title = "使用到期时间", isDate = true)
+    private Long    serviceLife;
 
     /**
-     * flash大小
+     * 制造日期
      */
-    @ExcelField(value = "flash_size", align = 1, title = "cpu版本", type = 0)
-    private String            flashSize;
-
-
+    @ExcelField(value = "buyDate", align = 1, title = "制造日期", isDate = true)
+    private Long    buyDate;
     /**
-     * NCRM大小
+     * 制造日期
      */
-    @ExcelField(value = "ncrm_size", align = 1, title = "cpu版本", type = 0)
-    private String            ncrmSize;
+    @ExcelField(value = "port", align = 1, title = "端口")
+    private Long    port;
+    /**
+     * 制造日期
+     */
+    @ExcelField(value = "first_enter_nett", align = 1, title = "制造日期", isDate = true)
+    private Long    firstEnterNett;
     /**
      * 备注
      */
-    @ExcelField(value = "memo", align = 1, title = "备注", type = 0)
-    private String            memo;
+    @ExcelField(value = "memo", align = 1, title = "备注")
+    private String  memo;
 
     public String getAssetGroup() {
         return assetGroup;
@@ -159,14 +166,6 @@ public class ComputeDeviceEntity extends AssetEntity {
         this.responsibleUserId = responsibleUserId;
     }
 
-    public String getAssetSource() {
-        return assetSource;
-    }
-
-    public void setAssetSource(String assetSource) {
-        this.assetSource = assetSource;
-    }
-
     public String getAssetStatus() {
         return assetStatus;
     }
@@ -175,20 +174,12 @@ public class ComputeDeviceEntity extends AssetEntity {
         this.assetStatus = assetStatus;
     }
 
-    public String getOuterIp() {
-        return outerIp;
+    public String getIp() {
+        return ip;
     }
 
-    public void setOuterIp(String outerIp) {
-        this.outerIp = outerIp;
-    }
-
-    public String getInnerIp() {
-        return innerIp;
-    }
-
-    public void setInnerIp(String innerIp) {
-        this.innerIp = innerIp;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     public String getMac() {
@@ -199,68 +190,60 @@ public class ComputeDeviceEntity extends AssetEntity {
         this.mac = mac;
     }
 
-    public String getSubnetMask() {
-        return subnetMask;
+    public Boolean getInnet() {
+        return isInnet;
     }
 
-    public void setSubnetMask(String subnetMask) {
-        this.subnetMask = subnetMask;
+    public void setInnet(Boolean innet) {
+        isInnet = innet;
     }
 
-    public String getExpectBandwidth() {
-        return expectBandwidth;
+    public String getNetworkCard() {
+        return networkCard;
     }
 
-    public void setExpectBandwidth(String expectBandwidth) {
-        this.expectBandwidth = expectBandwidth;
+    public void setNetworkCard(String networkCard) {
+        this.networkCard = networkCard;
     }
 
-    public String getRegister() {
-        return register;
+    public Long getWarranty() {
+        return warranty;
     }
 
-    public void setRegister(String register) {
-        this.register = register;
+    public void setWarranty(Long warranty) {
+        this.warranty = warranty;
     }
 
-    public String getCpu() {
-        return cpu;
+    public Long getServiceLife() {
+        return serviceLife;
     }
 
-    public void setCpu(String cpu) {
-        this.cpu = cpu;
+    public void setServiceLife(Long serviceLife) {
+        this.serviceLife = serviceLife;
     }
 
-    public String getCpuVersion() {
-        return cpuVersion;
+    public Long getBuyDate() {
+        return buyDate;
     }
 
-    public void setCpuVersion(String cpuVersion) {
-        this.cpuVersion = cpuVersion;
+    public void setBuyDate(Long buyDate) {
+        this.buyDate = buyDate;
     }
 
-    public String getDramSize() {
-        return dramSize;
+    public Long getPort() {
+        return port;
     }
 
-    public void setDramSize(String dramSize) {
-        this.dramSize = dramSize;
+    public void setPort(Long port) {
+        this.port = port;
     }
 
-    public String getFlashSize() {
-        return flashSize;
+    public Long getFirstEnterNett() {
+        return firstEnterNett;
     }
 
-    public void setFlashSize(String flashSize) {
-        this.flashSize = flashSize;
-    }
-
-    public String getNcrmSize() {
-        return ncrmSize;
-    }
-
-    public void setNcrmSize(String ncrmSize) {
-        this.ncrmSize = ncrmSize;
+    public void setFirstEnterNett(Long firstEnterNett) {
+        this.firstEnterNett = firstEnterNett;
     }
 
     public String getMemo() {
@@ -269,5 +252,45 @@ public class ComputeDeviceEntity extends AssetEntity {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCategoryModel() {
+        return categoryModel;
+    }
+
+    public void setCategoryModel(String categoryModel) {
+        this.categoryModel = categoryModel;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
     }
 }

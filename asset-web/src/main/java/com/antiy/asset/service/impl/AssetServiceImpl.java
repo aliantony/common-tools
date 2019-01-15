@@ -4,7 +4,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.templet.ComputeDeviceEntity;
+import com.antiy.asset.templet.*;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.biz.vo.LoginUser;
@@ -16,28 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.templet.ComputeDeviceEntity;
 import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.util.*;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -744,16 +735,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 exportToClient(ComputeDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备");
                 break;
             case 3:
-                exportToClient(ComputeDeviceEntity.class, "安全设备信息模板.xlsx", "安全设备");
+                exportToClient(SafetyEquipment.class, "安全设备信息模板.xlsx", "安全设备");
                 break;
             case 4:
-                exportToClient(ComputeDeviceEntity.class, "存储介质信息模板.xlsx", "存储介质");
+                exportToClient(HardDiskEntity.class, "存储介质信息模板.xlsx", "存储介质");
                 break;
             case 5:
-                exportToClient(ComputeDeviceEntity.class, "服务器信息模板.xlsx", "服务器");
+                exportToClient(ServerEntity.class, "服务器信息模板.xlsx", "服务器");
                 break;
             case 6:
-                exportToClient(ComputeDeviceEntity.class, "外设信息模板.xlsx", "外设");
+                exportToClient(AssetPeripheralEquipmentEntity.class, "外设信息模板.xlsx", "外设");
                 break;
         }
     }
