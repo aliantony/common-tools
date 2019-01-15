@@ -80,10 +80,6 @@ public class AssetNetworkCard extends BaseEntity {
         this.networkAddress = networkAddress;
     }
 
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
     public Integer getAssetId() {
         return assetId;
     }
@@ -166,6 +162,10 @@ public class AssetNetworkCard extends BaseEntity {
 
     public Long getGmtModified() {
         return System.currentTimeMillis();
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
     public String getMemo() {

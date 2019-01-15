@@ -72,10 +72,6 @@ public class AssetMemory extends BaseEntity {
      */
     private Integer status;
 
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
     public Integer getAssetId() {
         return assetId;
     }
@@ -154,6 +150,10 @@ public class AssetMemory extends BaseEntity {
 
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
     public Long getGmtModified() {

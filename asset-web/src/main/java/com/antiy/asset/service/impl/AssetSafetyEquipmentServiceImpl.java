@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.biz.util.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetSafetyEquipmentDao;
@@ -36,7 +37,7 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
     @Override
     public Integer saveAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception {
         AssetSafetyEquipment assetSafetyEquipment = requestConverter.convert(request, AssetSafetyEquipment.class);
-        // TODO 添加创建人信息
+        assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
         assetSafetyEquipmentDao.insert(assetSafetyEquipment);
         return assetSafetyEquipment.getId();
@@ -45,7 +46,7 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
     @Override
     public Integer updateAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception {
         AssetSafetyEquipment assetSafetyEquipment = requestConverter.convert(request, AssetSafetyEquipment.class);
-        // TODO 添加修改人信息
+        assetSafetyEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
         return assetSafetyEquipmentDao.update(assetSafetyEquipment);
     }
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.biz.util.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetPortProtocolDao;
@@ -36,12 +37,16 @@ public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProto
     @Override
     public Integer saveAssetPortProtocol(AssetPortProtocolRequest request) throws Exception {
         AssetPortProtocol assetPortProtocol = requestConverter.convert(request, AssetPortProtocol.class);
+        assetPortProtocol.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetPortProtocol.setGmtCreate(System.currentTimeMillis());
         return assetPortProtocolDao.insert(assetPortProtocol);
     }
 
     @Override
     public Integer updateAssetPortProtocol(AssetPortProtocolRequest request) throws Exception {
         AssetPortProtocol assetPortProtocol = requestConverter.convert(request, AssetPortProtocol.class);
+        assetPortProtocol.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        assetPortProtocol.setGmtCreate(System.currentTimeMillis());
         return assetPortProtocolDao.update(assetPortProtocol);
     }
 

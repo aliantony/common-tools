@@ -60,10 +60,6 @@ public class AssetMainborad extends BaseEntity {
      */
     private Integer status;
 
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
     public Integer getAssetId() {
         return assetId;
     }
@@ -110,6 +106,10 @@ public class AssetMainborad extends BaseEntity {
 
     public void setBiosDate(Long biosDate) {
         this.biosDate = biosDate;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
     public Long getGmtCreate() {

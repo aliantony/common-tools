@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.biz.util.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetSoftwareLicenseDao;
@@ -36,7 +37,7 @@ public class AssetSoftwareLicenseServiceImpl extends BaseServiceImpl<AssetSoftwa
     @Override
     public Integer saveAssetSoftwareLicense(AssetSoftwareLicenseRequest request) throws Exception {
         AssetSoftwareLicense assetSoftwareLicense = requestConverter.convert(request, AssetSoftwareLicense.class);
-        // TODO 添加创建人信息
+        assetSoftwareLicense.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetSoftwareLicense.setGmtCreate(System.currentTimeMillis());
         assetSoftwareLicenseDao.insert(assetSoftwareLicense);
         return assetSoftwareLicense.getId();
@@ -45,7 +46,8 @@ public class AssetSoftwareLicenseServiceImpl extends BaseServiceImpl<AssetSoftwa
     @Override
     public Integer updateAssetSoftwareLicense(AssetSoftwareLicenseRequest request) throws Exception {
         AssetSoftwareLicense assetSoftwareLicense = requestConverter.convert(request, AssetSoftwareLicense.class);
-        // TODO 添加修改人信息
+        assetSoftwareLicense.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        assetSoftwareLicense.setGmtModified(System.currentTimeMillis());
         return assetSoftwareLicenseDao.update(assetSoftwareLicense);
     }
 

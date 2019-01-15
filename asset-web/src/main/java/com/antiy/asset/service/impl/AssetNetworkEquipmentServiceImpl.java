@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.biz.util.LoginUserUtil;
+import com.antiy.biz.vo.LoginUser;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetNetworkEquipmentDao;
@@ -36,6 +38,7 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
     @Override
     public Integer saveAssetNetworkEquipment(AssetNetworkEquipmentRequest request) throws Exception {
         AssetNetworkEquipment assetNetworkEquipment = requestConverter.convert(request, AssetNetworkEquipment.class);
+        assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetNetworkEquipmentDao.insert(assetNetworkEquipment);
         return assetNetworkEquipment.getId();
     }
@@ -43,6 +46,8 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
     @Override
     public Integer updateAssetNetworkEquipment(AssetNetworkEquipmentRequest request) throws Exception {
         AssetNetworkEquipment assetNetworkEquipment = requestConverter.convert(request, AssetNetworkEquipment.class);
+        assetNetworkEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        assetNetworkEquipment.setGmtModified(System.currentTimeMillis());
         return assetNetworkEquipmentDao.update(assetNetworkEquipment);
     }
 
@@ -50,7 +55,6 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
     public List<AssetNetworkEquipmentResponse> findListAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception {
         List<AssetNetworkEquipment> assetNetworkEquipment = assetNetworkEquipmentDao
             .findListAssetNetworkEquipment(query);
-        // TODO
         List<AssetNetworkEquipmentResponse> assetNetworkCardResponse = responseConverter.convert(assetNetworkEquipment,
             AssetNetworkEquipmentResponse.class);
         return assetNetworkCardResponse;
