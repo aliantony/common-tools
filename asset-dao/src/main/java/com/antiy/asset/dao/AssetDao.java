@@ -28,6 +28,13 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer changeStatus(Map<String, String[]> map) throws Exception;
+    /**
+     * 通过资产ID修改资产状态
+     *
+     * @param map
+     * @return
+     */
+    Integer changeStatusById(Map<String, String[]> map) throws Exception;
 
     /**
      * 网络拓扑查询

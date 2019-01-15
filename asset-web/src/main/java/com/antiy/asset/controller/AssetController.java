@@ -198,10 +198,26 @@ public class AssetController {
      */
     @ApiOperation(value = "批量修改资产状态接口", notes = "传入资产状态和资产ID数组")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/update/changeStatus", method = RequestMethod.POST)
-    public ActionResponse changeStatus(@ApiParam(value = "资产ID数组") @RequestParam Integer[] ids,
+    @RequestMapping(value = "/changeStatus/batch", method = RequestMethod.POST)
+    public ActionResponse changeStatus(@ApiParam(value = "资产ID数组") @RequestParam @Encode String[] ids,
                                        @ApiParam(value = "资产新状态") @RequestParam("targetStatus") Integer targetStatus) throws Exception {
         iAssetService.changeStatus(ids, targetStatus);
+        return ActionResponse.success();
+    }
+
+    /**
+     * 通过资产ID修改资产状态
+     *
+     * @param id
+     * @param targetStatus
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过资产ID修改资产状态", notes = "传入资产ID")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/changeStatus/{id}", method = RequestMethod.POST)
+    public ActionResponse changeStatusById(@ApiParam(value = "资产ID数组") @RequestParam @Encode String id,
+                                       @ApiParam(value = "资产新状态") @RequestParam("targetStatus") @Encode Integer targetStatus) throws Exception {
+        iAssetService.changeStatusById(id, targetStatus);
         return ActionResponse.success();
     }
 

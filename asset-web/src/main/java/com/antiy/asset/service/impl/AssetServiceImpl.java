@@ -3,11 +3,6 @@ package com.antiy.asset.service.impl;
 import java.util.*;
 
 import javax.annotation.Resource;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.common.utils.BusinessExceptionUtils;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -18,6 +13,8 @@ import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.ArrayTypeUtil;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
@@ -289,13 +286,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public Integer changeStatus(Integer[] ids, Integer targetStatus) throws Exception {
+    public Integer changeStatus(String[] ids, Integer targetStatus) throws Exception {
         int row;
-        Map<String, Integer[]> map = new HashMap<>();
+        Map<String, String[]> map = new HashMap<>();
         map.put("ids", ids);
-        map.put("assetStatus", new Integer[] { targetStatus });
+        map.put("assetStatus", new String[] { targetStatus.toString() });
         row = assetDao.changeStatus(map);
         return row;
+    }
+
+    @Override
+    public Integer changeStatusById(String id, Integer targetStatus) throws Exception {
+        Map<String, String[]> map = new HashMap<>();
+        map.put("ids", new String[] { id });
+        map.put("assetStatus", new String[] { targetStatus.toString() });
+        return assetDao.changeStatus(map);
     }
 
     @Override
@@ -560,7 +565,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetCategoryModel> list = assetCategoryModelDao.getAll();
         List<AssetCategoryModel> result = new ArrayList();
         for (AssetCategoryModel AssetCategoryModel : list) {
-            if (Objects.equals(AssetCategoryModel.getId(), id) )
+            if (Objects.equals(AssetCategoryModel.getId(), id))
                 result.add(AssetCategoryModel);
         }
         recursion(result, list, id);
@@ -576,7 +581,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      */
     private void recursion(List<AssetCategoryModel> result, List<AssetCategoryModel> list, Integer id) {
         for (AssetCategoryModel AssetCategoryModel : list) {
-            if (Objects.equals(AssetCategoryModel.getParentId(),id) ) {
+            if (Objects.equals(AssetCategoryModel.getParentId(), id)) {
                 result.add(AssetCategoryModel);
                 recursion(result, list, AssetCategoryModel.getId());
             }
