@@ -52,9 +52,9 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         scheme.setGmtCreate(System.currentTimeMillis());
         schemeDao.insert(scheme);
         // 修改资产状态
-        Map<String, Integer[]> assetIdMap = new HashMap();
-        assetIdMap.put("ids", new Integer[] { DataTypeUtils.stringToInteger(request.getAssetId()) });
-        assetIdMap.put("assetStatus", new Integer[] { request.getTargetStatus() });
+        Map<String, String[]> assetIdMap = new HashMap<>(2);
+        assetIdMap.put("ids", new String[] { request.getAssetId()});
+        assetIdMap.put("assetStatus", new String[] { request.getTargetStatus().toString() });
         assetDao.changeStatus(assetIdMap);
 
         // TODO 调用工作流
