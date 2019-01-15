@@ -23,4 +23,16 @@ public class DataTypeUtils {
         }
         return result;
     }
+    public static Integer[] stringArrayToIntegerArray(String[] values) {
+        Integer[] result = new Integer[values.length];
+        for (int i = 0; i < values.length; i++) {
+            try {
+                result[i] = Integer.valueOf(values[i]);
+            } catch (NumberFormatException e) {
+                logger.error("字符串转换为整形出错", e);
+                throw new BusinessException("字符串转换为整形出错");
+            }
+        }
+        return result;
+    }
 }

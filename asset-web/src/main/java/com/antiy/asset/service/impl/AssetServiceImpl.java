@@ -1,11 +1,13 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Resource;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.common.utils.BusinessExceptionUtils;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -16,8 +18,6 @@ import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.ArrayTypeUtil;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
@@ -560,7 +560,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetCategoryModel> list = assetCategoryModelDao.getAll();
         List<AssetCategoryModel> result = new ArrayList();
         for (AssetCategoryModel AssetCategoryModel : list) {
-            if (AssetCategoryModel.getId() == id)
+            if (Objects.equals(AssetCategoryModel.getId(), id) )
                 result.add(AssetCategoryModel);
         }
         recursion(result, list, id);
@@ -576,7 +576,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      */
     private void recursion(List<AssetCategoryModel> result, List<AssetCategoryModel> list, Integer id) {
         for (AssetCategoryModel AssetCategoryModel : list) {
-            if (AssetCategoryModel.getParentId() == id) {
+            if (Objects.equals(AssetCategoryModel.getParentId(),id) ) {
                 result.add(AssetCategoryModel);
                 recursion(result, list, AssetCategoryModel.getId());
             }
@@ -687,5 +687,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 更新硬盘信息
             assetHardDiskDao.updateBatch(assetHardDiskList);
         }
+        // TODO 下发智甲
     }
 }

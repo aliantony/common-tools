@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.common.encoder.Encode;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
@@ -122,9 +124,10 @@ public class AssetSoftwareRelationController {
     @ApiOperation(value = "查询硬件资产关联的软件列表", notes = "资产ID")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/getSoftwareByAssetId/{assetId}", method = RequestMethod.GET)
-    public ActionResponse getSoftwareByAssetId(@ApiParam(value = "assetId") @PathVariable("assetId") Integer assetId) throws Exception {
+    public ActionResponse getSoftwareByAssetId(@ApiParam(value = "assetId") @PathVariable("assetId") @Encode String assetId) throws Exception {
         ParamterExceptionUtils.isNull(assetId, "资产ID不能为空");
-        return ActionResponse.success(iAssetSoftwareRelationService.getSoftByAssetId(assetId));
+        return ActionResponse
+            .success(iAssetSoftwareRelationService.getSoftByAssetId(DataTypeUtils.stringToInteger(assetId)));
     }
 
     /**
