@@ -40,6 +40,7 @@ import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.Constants;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -165,12 +166,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                             assetSoftwareRelation.setAssetId(DataTypeUtils.stringToInteger(assetId));
                             assetSoftwareRelation.setSoftwareStatus(request.getSoftwareStatus());
                             assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
-                            Integer releationId = assetSoftwareRelationDao.insert(assetSoftwareRelation);
+                            assetSoftwareRelationDao.insert(assetSoftwareRelation);
 
+                            ParamterExceptionUtils.isNull(assetSoftwareRelation.getId(), "更新软件失败");
                             // TODO 目前产品端口信息没有关联某一个硬件资产和软件资产，所以目前没有更新单个实例的端口信息
                             AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>()
                                 .convert(request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
-                            protocol.setAssetSoftId(releationId);
+                            protocol.setAssetSoftId(assetSoftwareRelation.getId());
                             // 插入端口信息
                             assetPortProtocolDaoDao.insert(protocol);
                         }

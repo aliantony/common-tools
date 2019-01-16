@@ -58,7 +58,7 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware) throws Exception {
         ParamterExceptionUtils.isBlank(assetSoftware.getId(), "软件Id不能为空");
         iAssetSoftwareService.updateAssetSoftware(assetSoftware);
