@@ -294,4 +294,14 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+
+    <update id="deletePortProtocol">
+        update
+        <include refid="Table_Name"/>
+        set status=0
+        where asset_soft_id in
+        <foreach collection="releationIds" separator=";" index="index" item="item">
+            #{item}
+        </foreach>
+    </update>
 </mapper>

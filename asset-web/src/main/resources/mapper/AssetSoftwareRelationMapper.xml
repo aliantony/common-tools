@@ -326,4 +326,19 @@
 
         </where>
     </delete>
+
+    <select id="getAllReleationId" resultType="arraylist">
+        select id from
+        <include refid="Table_Name"/>
+        <where>
+            and status=1
+            <if test="assetId != null">
+                and asset_id = #{assetId}
+            </if>
+            <if test="softwareId != null">
+                and software_id = #{softwareId}
+            </if>
+
+        </where>
+    </select>
 </mapper>

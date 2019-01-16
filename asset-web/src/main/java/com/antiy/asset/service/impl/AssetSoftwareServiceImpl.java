@@ -8,8 +8,12 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -35,6 +39,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.Constants;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.utils.LogUtils;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -57,8 +62,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private AssetCategoryModelDao                                            assetCategoryModelDao;
     @Resource
     private BaseConverter<AssetSoftwareRequest, AssetSoftware>               requestConverter;
-    @Resource
-    private BaseConverter<AssetSoftware, AssetSoftwareRelation>              responseConverter;
 
     @Resource
     private BaseConverter<AssetSoftwareLicenseRequest, AssetSoftwareLicense> assetSoftwareLicenseBaseConverter;
@@ -71,6 +74,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Resource
     private IAssetSoftwareLicenseService                                     iAssetSoftwareLicenseService;
+
+    @Resource
+    private TransactionTemplate                                              transactionTemplate;
+    private static final Logger                                              LOGGER = LogUtils
+        .get(AssetSoftwareServiceImpl.class);
 
     @Transactional
     @Override
@@ -114,31 +122,69 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     @Transactional
     public Integer updateAssetSoftware(AssetSoftwareRequest request) throws Exception {
+        Integer count = transactionTemplate.execute(new TransactionCallback<Integer>() {
+            @Override
+            public Integer doInTransaction(TransactionStatus transactionStatus) {
+                try {
+                    // 1.更新软件信息
+                    request.setSoftwareStatus(3); // 软件变更需要改状态到带配置
+                    AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
+                    assetSoftware.setId(DataTypeUtils.stringToInteger(request.getId()));
+                    int assetSoftwareCount = assetSoftwareDao.update(assetSoftware);
 
-        // 1.更新软件信息
-        AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
-        assetSoftware.setId(DataTypeUtils.stringToInteger(request.getId()));
-        int assetSoftwareCount = assetSoftwareDao.update(assetSoftware);
+                    // 2.更新license表
+                    if (null != request.getSoftwareLicenseRequest()
+                        && StringUtils.isNotBlank(request.getSoftwareLicenseRequest().getId())) {
+                        updateLicense(request);
+                    }
 
-        // 2.更新license表
-        if (null != request.getSoftwareLicenseRequest()
-            && StringUtils.isNotBlank(request.getSoftwareLicenseRequest().getId())) {
-            updateLicense(request);
-        }
+                    // 3.是否存在关联表Id和状态，如果存在，则更新关联表即可(更新某一个实例)
+                    if (StringUtils.isNotBlank(request.getAssetSoftwareRelationId())
+                        && request.getSoftwareStatus() != null) {
+                        AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                        assetSoftwareRelation
+                            .setId(DataTypeUtils.stringToInteger(request.getAssetSoftwareRelationId()));
+                        assetSoftwareRelation.setSoftwareStatus(request.getSoftwareStatus());
+                        assetSoftwareRelationDao.update(assetSoftwareRelation);
+                    } else if (ArrayUtils.isNotEmpty(request.getAssetIds())) { // 更新一批实例
+                        // 4.移除端口和关联表的关系
+                        List<Integer> releationIds = assetSoftwareRelationDao.getAllReleationId(null,
+                            DataTypeUtils.stringToInteger(request.getId()));
+                        if (CollectionUtils.isNotEmpty(releationIds)) {
+                            assetPortProtocolDaoDao.deletePortProtocol(releationIds);
+                        }
 
-        // 3.是否存在关联表Id和状态，如果存在，则更新关联表即可(更新某一个实例)
-        if (StringUtils.isNotBlank(request.getAssetSoftwareRelationId()) && request.getSoftwareStatus() != null) {
-            AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-            assetSoftwareRelation.setId(DataTypeUtils.stringToInteger(request.getAssetSoftwareRelationId()));
-            assetSoftwareRelation.setSoftwareStatus(request.getSoftwareStatus());
-            assetSoftwareRelationDao.update(assetSoftwareRelation);
-        } else if (ArrayUtils.isNotEmpty(request.getAssetIds())) { // 更新一批实例
-            // 4.移除关系表
-            assetSoftwareRelationDao.deleteSoftwareRelAsset(null, DataTypeUtils.stringToInteger(request.getId()));
+                        // 5.移除关系表
+                        assetSoftwareRelationDao.deleteSoftwareRelAsset(null,
+                            DataTypeUtils.stringToInteger(request.getId()));
 
-            // 5.插入关系表，并且插入端口数据
-        }
-        return assetSoftwareCount;
+                        // 5.插入关系表，并且插入端口数据
+                        for (String assetId : request.getAssetIds()) {
+                            AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                            assetSoftwareRelation.setSoftwareId(DataTypeUtils.stringToInteger(request.getId()));
+                            assetSoftwareRelation.setAssetId(DataTypeUtils.stringToInteger(assetId));
+                            assetSoftwareRelation.setSoftwareStatus(request.getSoftwareStatus());
+                            assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+                            Integer releationId = assetSoftwareRelationDao.insert(assetSoftwareRelation);
+
+                            // TODO 目前产品端口信息没有关联某一个硬件资产和软件资产，所以目前没有更新单个实例的端口信息
+                            AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>()
+                                .convert(request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
+                            protocol.setAssetSoftId(releationId);
+                            // 插入端口信息
+                            assetPortProtocolDaoDao.insert(protocol);
+                        }
+                    }
+                    return assetSoftwareCount;
+                } catch (Exception e) {
+                    LOGGER.error("修改软件信息失败", e);
+                }
+                return 0;
+            }
+        });
+
+        // TODO 调用工作流，给配置管理员
+        return count;
     }
 
     /**

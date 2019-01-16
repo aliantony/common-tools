@@ -3,6 +3,7 @@ package com.antiy.asset.dao;
 import com.antiy.asset.entity.AssetPortProtocol;
 import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,4 +18,11 @@ import java.util.List;
 public interface AssetPortProtocolDao extends IBaseDao<AssetPortProtocol> {
 
     List<AssetPortProtocol> findListAssetPortProtocol(AssetPortProtocolQuery query) throws Exception;
+
+    /**
+     * 删除端口信息
+     * @param releationIds 关联Id列表
+     * @return
+     */
+    Integer deletePortProtocol(@Param("releationIds") List<Integer> releationIds);
 }
