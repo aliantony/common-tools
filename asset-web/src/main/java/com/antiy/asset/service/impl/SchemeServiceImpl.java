@@ -6,12 +6,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.antiy.biz.util.LoginUserUtil;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.antiy.asset.dao.AssetDao;
@@ -68,59 +64,60 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         Integer targetStatus = request.getTargetStatus();
         Integer isAgree = request.getIsAgree();
 
-//        transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+        // 修改资产状态
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("ids", new Object[] { request.getAssetId() });
+        map.put("targetStatus", request.getTargetStatus());
+
+        Integer flowType = scheme.getType();
+        if (EnumUtil.getByCode(SchemeTypeEnum.class, scheme.getType()) != null) {
+            switch (flowType) {
+                case 1:
+                    if (targetStatus.equals(AssetStatusEnum.WAIT_CHECK.getCode())) {
+                        map.put("targetStatus", AssetStatusEnum.WAIT_CHECK.getCode());
+                        map.put("limitStatus", AssetStatusEnum.WAIT_NET.getCode());
+                    }
+                    break;
+                case 2:
+                    if (targetStatus.equals(AssetStatusEnum.NET_IN.getCode())) {
+                        map.put("targetStatus", AssetStatusEnum.NET_IN.getCode());
+                        map.put("limitStatus", AssetStatusEnum.WAIT_CHECK.getCode());
+                    }
+                    break;
+                // 制定待退役方案-由入网变为“待退役”
+                case 3:
+                    if (targetStatus.equals(AssetStatusEnum.WAIT_RETIRE.getCode())) {
+                        map.put("targetStatus", AssetStatusEnum.WAIT_RETIRE.getCode());
+                        map.put("limitStatus", AssetStatusEnum.NET_IN.getCode());
+                    }
+                    break;
+                // 实施退役流程
+                case 4:
+                    if (!isAgree.equals(ProcessTypeEnum.YES.getCode())) {
+                        map.put("targetStatus", AssetStatusEnum.NET_IN.getCode());
+                        map.put("limitStatus", AssetStatusEnum.WAIT_RETIRE.getCode());
+                    }
+                case 5:
+                    if (isAgree.equals(ProcessTypeEnum.YES.getCode())) {
+                        map.put("targetStatus", AssetStatusEnum.RETIRE.getCode());
+                        map.put("limitStatus", AssetStatusEnum.WAIT_RETIRE.getCode());
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            throw new BusinessException(RespBasicCode.PARAMETER_ERROR.getResultDes());
+        }
+        // transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
         Integer count = transactionTemplate.execute(transactionStatus -> {
             int row = 0;
             try {
-                schemeDao.insert(scheme);
-                // 修改资产状态
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put("ids", new Object[] { request.getAssetId() });
-                map.put("targetStatus", request.getTargetStatus());
                 // TODO 调用工作流,推动流程start
                 // 开始调用工作流接口,推动流程
                 // TODO 调用工作流end
-                Integer flowType = scheme.getType();
-                if (EnumUtil.getByCode(SchemeTypeEnum.class, scheme.getType()) != null) {
-                    switch (flowType) {
-                        case 1:
-                            if (targetStatus.equals(AssetStatusEnum.WAIT_CHECK.getCode())) {
-                                map.put("targetStatus", AssetStatusEnum.WAIT_CHECK.getCode());
-                                map.put("limitStatus", AssetStatusEnum.WAIT_NET.getCode());
-                            }
-                            break;
-                        case 2:
-                            if (targetStatus.equals(AssetStatusEnum.NET_IN.getCode())) {
-                                map.put("targetStatus", AssetStatusEnum.NET_IN.getCode());
-                                map.put("limitStatus", AssetStatusEnum.WAIT_CHECK.getCode());
-                            }
-                            break;
-                        // 制定待退役方案-由入网变为“待退役”
-                        case 3:
-                            if (targetStatus.equals(AssetStatusEnum.WAIT_RETIRE.getCode())) {
-                                map.put("targetStatus", AssetStatusEnum.WAIT_RETIRE.getCode());
-                                map.put("limitStatus", AssetStatusEnum.NET_IN.getCode());
-                            }
-                            break;
-                        //实施退役流程
-                        case 4:
-                            if (!isAgree.equals(ProcessTypeEnum.YES.getCode())){
-                                map.put("targetStatus", AssetStatusEnum.NET_IN.getCode());
-                                map.put("limitStatus", AssetStatusEnum.WAIT_RETIRE.getCode());
-                            }
-                        case 5:
-                            if (isAgree.equals(ProcessTypeEnum.YES.getCode())) {
-                                map.put("targetStatus", AssetStatusEnum.RETIRE.getCode());
-                                map.put("limitStatus", AssetStatusEnum.WAIT_RETIRE.getCode());
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                    row = assetDao.changeStatus(map);
-                } else {
-                    throw new BusinessException(RespBasicCode.PARAMETER_ERROR.getResultDes());
-                }
+                schemeDao.insert(scheme);
+                row = assetDao.changeStatus(map);
             } catch (Exception e) {
                 LOGGER.error("保存信息失败", e);
             }
@@ -136,15 +133,15 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
 
         assetOperationRecord.setSchemaId(scheme.getId());
-        if (count != null && 0 < count){
+        if (count != null && 0 < count) {
             assetOperationRecord.setContent(codeEnum != null ? codeEnum.getMsg() : "类型参数异常");
-        }else {
-            assetOperationRecord.setContent("保存信息失败");
+        } else {
+            assetOperationRecord.setContent(codeEnum != null ? codeEnum.getMsg() + "：保存信息失败" : "类型参数异常");
         }
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setOperateUserId(request.getPutintoUserId());
         assetOperationRecord.setOperateUserName(request.getPutintoUser());
-        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        // assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
 
         operationRecordDao.insert(assetOperationRecord);
         return count;
