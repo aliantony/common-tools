@@ -355,4 +355,46 @@
             where id = #{id}
         </foreach>
     </update>
+    <update id="deleteByAssetId" parameterType="java.lang.Integer">
+        update
+        <include refid="Table_Name"></include>
+        set status = 0
+        where asset_id = #{assetId}
+    </update>
+    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetHardDisk" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        (
+        asset_id,
+        brand,
+        model,
+        serial,
+        interface_type,
+        capacity,
+        disk_type,
+        buy_date,
+        gmt_create,
+        memo,
+        create_user,
+        status
+        )
+        values
+        <foreach collection="list" item="hardDisk" separator=",">
+            (
+            #{hardDisk.assetId},
+            #{hardDisk.brand},
+            #{hardDisk.model},
+            #{hardDisk.serial},
+            #{hardDisk.interfaceType},
+            #{hardDisk.capacity},
+            #{hardDisk.diskType},
+            #{hardDisk.buyDate},
+            #{hardDisk.gmtCreate},
+            #{hardDisk.memo},
+            #{hardDisk.createUser},
+            #{hardDisk.status}
+            )
+        </foreach>
+    </insert>
 </mapper>

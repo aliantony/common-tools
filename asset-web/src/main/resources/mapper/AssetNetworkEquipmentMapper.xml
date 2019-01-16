@@ -206,6 +206,9 @@
     </sql>
 
     <sql id="Where_Column_List">
+        <if test=" assetId != null">
+            and asset_id = #{assetId }
+        </if>
         <if test=" interfaceSize != null">
             and interface_size = #{interfaceSize }
         </if>

@@ -345,4 +345,50 @@
             where id = #{id}
         </foreach>
     </update>
+    <update id="deleteByAssetId" parameterType="java.lang.Integer">
+        update
+        <include refid="Table_Name"></include>
+        set status = 0
+        where asset_id = #{assetId}
+    </update>
+    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetMemory" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        (
+        asset_id,
+        capacity,
+        brand,
+        frequency,
+        slot_type,
+        is_heatsink,
+        stitch,
+        buy_date,
+        warranty_date,
+        telephone,
+        gmt_create,
+        memo,
+        create_user,
+        status
+        )
+        values
+        <foreach collection="list" item="memory" separator=",">
+            (
+            #{memory.assetId},
+            #{memory.capacity},
+            #{memory.brand},
+            #{memory.frequency},
+            #{memory.slotType},
+            #{memory.isHeatsink},
+            #{memory.stitch},
+            #{memory.buyDate},
+            #{memory.warrantyDate},
+            #{memory.telephone},
+            #{memory.gmtCreate},
+            #{memory.memo},
+            #{memory.createUser},
+            #{memory.status}
+            )
+        </foreach>
+    </insert>
 </mapper>

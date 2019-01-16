@@ -3,7 +3,9 @@ package com.antiy.asset.service.impl;
 import java.util.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.biz.download.DownloadVO;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -34,6 +36,7 @@ import com.antiy.asset.vo.response.AssetPortProtocolResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareLicenseResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.biz.download.ExcelDownloadUtil;
 import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
@@ -78,6 +81,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Resource
     private TransactionTemplate                                              transactionTemplate;
+
+    @Resource
+    private ExcelDownloadUtil                                                excelDownloadUtil;
     private static final Logger                                              LOGGER = LogUtils
         .get(AssetSoftwareServiceImpl.class);
 
@@ -121,7 +127,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    @Transactional
     public Integer updateAssetSoftware(AssetSoftwareRequest request) throws Exception {
         Integer count = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
@@ -358,6 +363,35 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
 
         return assetSoftwareDetailResponse;
+    }
+
+    @Override
+    public void downloadSoftware(AssetSoftwareQuery query, HttpServletResponse response) throws Exception {
+        query.setPageSize(Constants.MAX_PAGESIZE);
+        PageResult<AssetSoftwareResponse> pageResult = this.findPageAssetSoftware(query);
+        List<AssetSoftwareResponse> items = pageResult.getItems();
+        while (!CollectionUtils.isNotEmpty(items)) {
+
+            // 如果返回数据小于当前页，那么直接退出循环
+            pageResult.setCurrentPage(getNextPage(pageResult));
+            if (items.size() < pageResult.getPageSize()) {
+                break;
+            }
+            query.setCurrentPage(pageResult.getCurrentPage());
+            items = this.findPageAssetSoftware(query).getItems();
+        }
+        DownloadVO downloadVO = new DownloadVO();
+        downloadVO.setDownloadList(items);
+        excelDownloadUtil.excelDownload(response,"软件导出",downloadVO);
+    }
+
+    private int getNextPage(PageResult pageResult) {
+        int currentPage = pageResult.getCurrentPage() + 1;
+        int pages = pageResult.getTotalPages();
+        if (pages > 0) {
+            return currentPage > pages ? pages : currentPage < 1 ? 1 : currentPage;
+        }
+        return 0;
     }
 
     /**

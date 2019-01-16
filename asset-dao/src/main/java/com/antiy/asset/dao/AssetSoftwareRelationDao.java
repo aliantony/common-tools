@@ -64,4 +64,18 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     List<Integer> getAllReleationId(@Param("assetId") Integer assetId, @Param("softwareId") Integer softwareId);
+
+    /**
+     * 删除资产下的软件
+     * @param id
+     * @return
+     */
+    Integer deleteByAssetId(Integer id);
+
+    /**
+     * 新资产软件关系
+     * @param assetSoftwareRelationList
+     * @return
+     */
+    Integer insertBatch(List<AssetSoftwareRelation> assetSoftwareRelationList);
 }

@@ -7,9 +7,7 @@ import com.antiy.common.base.IBaseDao;
 import java.util.List;
 
 /**
- * <p>
- * 内存表 Mapper 接口
- * </p>
+ * <p> 内存表 Mapper 接口 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02
@@ -18,5 +16,9 @@ public interface AssetMemoryDao extends IBaseDao<AssetMemory> {
 
     List<AssetMemory> findListAssetMemory(AssetMemoryQuery query) throws Exception;
 
-    void updateBatch(List<AssetMemory> assetMemoryList);
+    Integer updateBatch(List<AssetMemory> assetMemoryList) throws Exception;
+
+    Integer insertBatch(List<AssetMemory> assetMemoryList);
+
+    Integer deleteByAssetId(Integer id);
 }

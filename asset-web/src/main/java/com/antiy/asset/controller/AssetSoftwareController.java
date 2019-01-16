@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -114,8 +115,8 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "导出模板文件", notes = "主键封装对象")
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
-    public void export(@ApiParam(value = "query") QueryCondition query, HttpServletRequest request) throws Exception {
-        ExcelUtils.exportToClient(AssetSoftwareEntity.class, "软件信息模板.xlsx", "软件信息", null);
+    public void export(@ApiParam(value = "query") AssetSoftwareQuery query, HttpServletResponse response) throws Exception {
+        iAssetSoftwareService.downloadSoftware(query,response);
     }
 
     /**
