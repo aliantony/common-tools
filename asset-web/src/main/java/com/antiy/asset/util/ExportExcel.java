@@ -147,14 +147,14 @@ public class ExportExcel {
         // 初始化样式
         this.styles = createStyles(wb);
         // 设置标题
-        if (StringUtils.isNotBlank(title)) {
-            Row titleRow = addRow();
-            Cell titleCell = titleRow.createCell(0);
-            titleCell.setCellStyle(styles.get("title"));
-            titleCell.setCellValue(title);
-            sheet.addMergedRegion(new CellRangeAddress(titleRow.getRowNum(), titleRow.getRowNum(), titleRow.getRowNum(),
-                headerList.size() - 1));
-        }
+        // if (StringUtils.isNotBlank(title)) {
+        // Row titleRow = addRow();
+        // Cell titleCell = titleRow.createCell(0);
+        // titleCell.setCellStyle(styles.get("title"));
+        // titleCell.setCellValue(title);
+        // sheet.addMergedRegion(new CellRangeAddress(titleRow.getRowNum(), titleRow.getRowNum(), titleRow.getRowNum(),
+        // headerList.size() - 1));
+        // }
         // 设置表头
         ParamterExceptionUtils.isEmpty(headerList, "The table title can not be null");
         Row headRow = addRow();

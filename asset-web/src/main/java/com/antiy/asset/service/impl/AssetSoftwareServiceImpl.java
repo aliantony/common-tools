@@ -5,7 +5,9 @@ import java.util.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
-import com.antiy.biz.download.DownloadVO;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -36,8 +38,7 @@ import com.antiy.asset.vo.response.AssetPortProtocolResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareLicenseResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
-import com.antiy.biz.download.ExcelDownloadUtil;
-import com.antiy.biz.util.LoginUserUtil;
+
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.Constants;
@@ -83,7 +84,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private TransactionTemplate                                              transactionTemplate;
 
     @Resource
-    private ExcelDownloadUtil                                                excelDownloadUtil;
+    private ExcelDownloadUtil excelDownloadUtil;
     private static final Logger                                              LOGGER = LogUtils
         .get(AssetSoftwareServiceImpl.class);
 

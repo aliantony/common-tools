@@ -5,8 +5,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.biz.util.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.convert.UserResponseConverter;

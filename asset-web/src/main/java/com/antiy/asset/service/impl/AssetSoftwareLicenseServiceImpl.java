@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.biz.util.LoginUserUtil;
+import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetSoftwareLicenseDao;

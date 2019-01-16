@@ -45,34 +45,37 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetService {
 
     @Resource
-    private AssetDao                            assetDao;
+    private AssetDao                                  assetDao;
     @Resource
-    private AssetMainboradDao                   assetMainboradDao;
+    private AssetMainboradDao                         assetMainboradDao;
     @Resource
-    private AssetMemoryDao                      assetMemoryDao;
+    private AssetMemoryDao                            assetMemoryDao;
     @Resource
-    private AssetHardDiskDao                    assetHardDiskDao;
+    private AssetHardDiskDao                          assetHardDiskDao;
     @Resource
-    private AssetCpuDao                         assetCpuDao;
+    private AssetCpuDao                               assetCpuDao;
     @Resource
-    private AssetNetworkCardDao                 assetNetworkCardDao;
+    private AssetNetworkCardDao                       assetNetworkCardDao;
     @Resource
-    private AssetNetworkEquipmentDao            assetNetworkEquipmentDao;
+    private AssetNetworkEquipmentDao                  assetNetworkEquipmentDao;
     @Resource
-    private AssetSafetyEquipmentDao             assetSafetyEquipmentDao;
+    private AssetSafetyEquipmentDao                   assetSafetyEquipmentDao;
     @Resource
-    private AssetSoftwareDao                    assetSoftwareDao;
+    private AssetSoftwareDao                          assetSoftwareDao;
     @Resource
-    private AssetCategoryModelDao               assetCategoryModelDao;
+    private AssetCategoryModelDao                     assetCategoryModelDao;
     @Resource
-    private TransactionTemplate                 transactionTemplate;
+    private TransactionTemplate                       transactionTemplate;
     @Resource
-    private AssetSoftwareRelationDao            assetSoftwareRelationDao;
+    private AssetSoftwareRelationDao                  assetSoftwareRelationDao;
     @Resource
-    private BaseConverter<AssetRequest, Asset>  requestConverter;
+    private BaseConverter<AssetRequest, Asset>        requestConverter;
     @Resource
-    private BaseConverter<Asset, AssetResponse> responseConverter;
-    private static final Logger                 LOGGER = LogUtils.get(AssetServiceImpl.class);
+    private BaseConverter<Asset, AssetResponse>       responseConverter;
+    @Resource
+    private BaseConverter<Asset, ComputeDeviceEntity> entityConverter;
+
+    private static final Logger                       LOGGER = LogUtils.get(AssetServiceImpl.class);
 
     @Override
     public Integer saveAsset(AssetRequest request) throws Exception {
@@ -521,14 +524,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetCpuRequest> cpuRequestList = assetPCRequest.getCpu();
         BaseConverter<AssetCpuRequest, AssetCpu> baseConverter = new BaseConverter<>();
         List<AssetCpu> cpu = baseConverter.convert(cpuRequestList, AssetCpu.class);
-        List<AssetHardDisk> hardDisk = new BaseConverter<AssetHardDiskRequest, AssetHardDisk>()
-            .convert(assetPCRequest.getHardDisk(), AssetHardDisk.class);
-        List<AssetMemory> memory = new BaseConverter<AssetMemoryRequest, AssetMemory>()
-            .convert(assetPCRequest.getMemory(), AssetMemory.class);
-        List<AssetMainborad> mainboard = new BaseConverter<AssetMainboradRequest, AssetMainborad>()
-            .convert(assetPCRequest.getMainboard(), AssetMainborad.class);
-        List<AssetNetworkCard> networkCard = new BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>()
-            .convert(assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
+        List<AssetHardDisk> hardDisk = new BaseConverter<AssetHardDiskRequest, AssetHardDisk>().convert(
+            assetPCRequest.getHardDisk(), AssetHardDisk.class);
+        List<AssetMemory> memory = new BaseConverter<AssetMemoryRequest, AssetMemory>().convert(
+            assetPCRequest.getMemory(), AssetMemory.class);
+        List<AssetMainborad> mainboard = new BaseConverter<AssetMainboradRequest, AssetMainborad>().convert(
+            assetPCRequest.getMainboard(), AssetMainborad.class);
+        List<AssetNetworkCard> networkCard = new BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>().convert(
+            assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
 
         Asset asset = requestConverter.convert(assetPCRequest.getAsset(), Asset.class);
         assetDao.insert(asset);
@@ -647,32 +650,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // CPU
         assetOuterResponse.setAssetCpu(BeanConvert.convert(assetCpuDao.getByWhere(param), AssetCpuResponse.class));
         // 网卡
-        assetOuterResponse.setAssetNetworkCard(
-            BeanConvert.convert(assetNetworkCardDao.getByWhere(param), AssetNetworkCardResponse.class));
+        assetOuterResponse.setAssetNetworkCard(BeanConvert.convert(assetNetworkCardDao.getByWhere(param),
+            AssetNetworkCardResponse.class));
         // 硬盘
-        assetOuterResponse
-            .setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param), AssetHardDiskResponse.class));
+        assetOuterResponse.setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param),
+            AssetHardDiskResponse.class));
         // 主板
-        assetOuterResponse
-            .setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param), AssetMainboradResponse.class));
+        assetOuterResponse.setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param),
+            AssetMainboradResponse.class));
         // 内存
-        assetOuterResponse
-            .setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param), AssetMemoryResponse.class));
+        assetOuterResponse.setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param),
+            AssetMemoryResponse.class));
         // 网络设备
         List<AssetNetworkEquipment> assetNetworkEquipmentList = assetNetworkEquipmentDao.getByWhere(param);
         if (assetNetworkEquipmentList != null && !assetNetworkEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetNetworkEquipment(
-                BeanConvert.convertBean(assetNetworkEquipmentList.get(0), AssetNetworkEquipmentResponse.class));
+            assetOuterResponse.setAssetNetworkEquipment(BeanConvert.convertBean(assetNetworkEquipmentList.get(0),
+                AssetNetworkEquipmentResponse.class));
         }
         // 安全设备
         List<AssetSafetyEquipment> assetSafetyEquipmentList = assetSafetyEquipmentDao.getByWhere(param);
         if (assetSafetyEquipmentList != null && !assetSafetyEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetSafetyEquipment(
-                BeanConvert.convertBean(assetSafetyEquipmentList.get(0), AssetSafetyEquipmentResponse.class));
+            assetOuterResponse.setAssetSafetyEquipment(BeanConvert.convertBean(assetSafetyEquipmentList.get(0),
+                AssetSafetyEquipmentResponse.class));
         }
         // 软件
-        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
-            .getSoftByAssetId(DataTypeUtils.stringToInteger(id));
+        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSoftByAssetId(DataTypeUtils
+            .stringToInteger(id));
         assetOuterResponse.setAssetSoftware(BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class));
         return assetOuterResponse;
     }
@@ -800,10 +803,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     /**
      * 1-计算设备 2-网络设备 3-安全设备 4-存储介质 5-服务器 6-外设
-     * @param types 导出模板的类型
+     * @param type 导出模板的类型
      */
-    public void exportTemplate(int types) throws Exception {
-        switch (types) {
+    public void exportTemplate(int type) throws Exception {
+        switch (type) {
             case 1:
                 exportToClient(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备");
                 break;
@@ -831,21 +834,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             case 1:
                 exportData(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备", assetQuery);
                 break;
-            case 2:
-                exportData(ComputeDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备", assetQuery);
-                break;
-            case 3:
-                exportData(SafetyEquipment.class, "安全设备信息模板.xlsx", "安全设备", assetQuery);
-                break;
-            case 4:
-                exportData(HardDiskEntity.class, "存储介质信息模板.xlsx", "存储介质", assetQuery);
-                break;
-            case 5:
-                exportData(ServerEntity.class, "服务器信息模板.xlsx", "服务器", assetQuery);
-                break;
-            case 6:
-                exportData(AssetPeripheralEquipmentEntity.class, "外设信息模板.xlsx", "外设", assetQuery);
-                break;
+        // 之后会重写
+        // case 2:
+        // exportData(ComputeDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备", assetQuery);
+        // break;
+        // case 3:
+        // exportData(SafetyEquipment.class, "安全设备信息模板.xlsx", "安全设备", assetQuery);
+        // break;
+        // case 4:
+        // exportData(HardDiskEntity.class, "存储介质信息模板.xlsx", "存储介质", assetQuery);
+        // break;
+        // case 5:
+        // exportData(ServerEntity.class, "服务器信息模板.xlsx", "服务器", assetQuery);
+        // break;
+        // case 6:
+        // exportData(AssetPeripheralEquipmentEntity.class, "外设信息模板.xlsx", "外设", assetQuery);
+        // break;
         }
     }
 
@@ -854,6 +858,33 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     private void exportData(Class clazz, String fileName, String title, AssetQuery assetQuery) throws Exception {
+        List<Asset> list = assetDao.findListAsset(assetQuery);
+        List<ComputeDeviceEntity> computeDeviceEntities = entityConverter.convert(assetDao.findListAsset(assetQuery),
+            ComputeDeviceEntity.class);
         ExcelUtils.exportToClient(clazz, fileName, title, findListAsset(assetQuery));
+    }
+
+    /**
+     * 将ComputeDeviceEntity中的其他数据装填进去
+     * @param list 处理的数据
+     * @return 处理完的数据
+     */
+    private List<ComputeDeviceEntity> handleListComputeData(List<Asset> list) {
+        List<ComputeDeviceEntity> computeDeviceEntities = new ArrayList<>();
+        for (Asset asset : list) {
+            handleComputeData(asset);
+        }
+        return computeDeviceEntities;
+    }
+
+    private List<ComputeDeviceEntity> handleComputeData(Asset asset) {
+        ComputeDeviceEntity computeDeviceEntity=new ComputeDeviceEntity();
+        handleComputeUserData(asset,computeDeviceEntity);
+        return null;
+    }
+
+    private void handleComputeUserData(Asset asset,ComputeDeviceEntity computeDeviceEntity) {
+
+
     }
 }

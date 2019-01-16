@@ -12,7 +12,7 @@ import com.antiy.asset.service.IAssetMainboradService;
 import com.antiy.asset.vo.query.AssetMainboradQuery;
 import com.antiy.asset.vo.request.AssetMainboradRequest;
 import com.antiy.asset.vo.response.AssetMainboradResponse;
-import com.antiy.biz.util.LoginUserUtil;
+import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;

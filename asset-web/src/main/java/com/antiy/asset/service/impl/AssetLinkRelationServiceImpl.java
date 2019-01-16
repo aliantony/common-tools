@@ -13,7 +13,7 @@ import com.antiy.asset.service.IAssetLinkRelationService;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.response.AssetLinkRelationResponse;
-import com.antiy.biz.util.LoginUserUtil;
+import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
