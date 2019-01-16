@@ -3,6 +3,8 @@ package com.antiy.asset.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
@@ -99,4 +101,12 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @throws Exception
      */
     AssetSoftwareDetailResponse querySoftWareDetail(SoftwareQuery softwareQuery) throws Exception;
+
+    /**
+     * 导出
+     * @param query
+     * @param response
+     * @throws Exception
+     */
+    void downloadSoftware(AssetSoftwareQuery query, HttpServletResponse response) throws Exception;
 }
