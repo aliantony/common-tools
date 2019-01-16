@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -14,12 +15,14 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer assetId;
+    @Encode
+    private String assetId;
     /**
      * 软件主键
      */
     @ApiModelProperty("软件主键")
-    private Integer softwareId;
+    @Encode
+    private String softwareId;
     /**
      * 软件资产状态：1待登记，2不予登记，3待配置，4待验证，5待入网，6已入网，7待退役，8已退役
      */
@@ -31,19 +34,19 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
     @ApiModelProperty("备注")
     private String  memo;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 
-    public Integer getSoftwareId() {
+    public String getSoftwareId() {
         return softwareId;
     }
 
-    public void setSoftwareId(Integer softwareId) {
+    public void setSoftwareId(String softwareId) {
         this.softwareId = softwareId;
     }
 

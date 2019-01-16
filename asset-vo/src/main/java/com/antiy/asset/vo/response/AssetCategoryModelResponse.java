@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -30,16 +32,13 @@ public class AssetCategoryModelResponse extends BaseResponse {
      * 父ID
      */
     @ApiModelProperty("父ID")
-    private Integer parentId;
+    @Encode
+    private String  parentId;
     /**
      * 描述
      */
     @ApiModelProperty("描述")
     private String  description;
-    // /**
-    // * 是否系统默认：0系统1自定义
-    // */
-    // private Integer isDefault;
 
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
@@ -68,11 +67,11 @@ public class AssetCategoryModelResponse extends BaseResponse {
         this.assetType = assetType;
     }
 
-    public Integer getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 
@@ -83,14 +82,6 @@ public class AssetCategoryModelResponse extends BaseResponse {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    // public Integer getIsDefault() {
-    // return isDefault;
-    // }
-    //
-    // public void setIsDefault(Integer isDefault) {
-    // this.isDefault = isDefault;
-    // }
 
     public Integer getStatus() {
         return status;

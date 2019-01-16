@@ -1,5 +1,9 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
+
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p> AssetOperationRecordResponse 响应对象 </p>
  *
@@ -11,7 +15,9 @@ public class AssetOperationRecordResponse extends BaseResponse {
     /**
      * 被操作的对象ID
      */
-    private Integer targetObjectId;
+    @ApiModelProperty(value = "操作对象Id")
+    @Encode
+    private String  targetObjectId;
     /**
      * 被操作对象类别
      */
@@ -60,8 +66,6 @@ public class AssetOperationRecordResponse extends BaseResponse {
      * 附件信息（[{"XXX文件","10.12.5.1:5566/file/asset/dj"}]）
      */
     private String  fileInfo;
-
-
 
     public String getOperateUserName() {
         return operateUserName;
@@ -151,11 +155,11 @@ public class AssetOperationRecordResponse extends BaseResponse {
         this.putintoUser = putintoUser;
     }
 
-    public Integer getTargetObjectId() {
+    public String getTargetObjectId() {
         return targetObjectId;
     }
 
-    public void setTargetObjectId(Integer targetObjectId) {
+    public void setTargetObjectId(String targetObjectId) {
         this.targetObjectId = targetObjectId;
     }
 

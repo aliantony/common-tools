@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -14,7 +15,8 @@ public class AssetSafetyEquipmentResponse extends BaseResponse {
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer assetId;
+    @Encode
+    private String assetId;
     /**
      * 特征库配置
      */
@@ -51,11 +53,11 @@ public class AssetSafetyEquipmentResponse extends BaseResponse {
     @ApiModelProperty("更新时间")
     private Long    gmtModified;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

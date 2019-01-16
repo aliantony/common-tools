@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -21,7 +22,8 @@ public class AssetDepartmentResponse extends BaseResponse {
      * 上级部门
      */
     @ApiModelProperty("上级部门")
-    private Integer parentId;
+    @Encode
+    private String parentId;
 
     /**
      * 备注
@@ -43,11 +45,11 @@ public class AssetDepartmentResponse extends BaseResponse {
         this.name = name;
     }
 
-    public Integer getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 

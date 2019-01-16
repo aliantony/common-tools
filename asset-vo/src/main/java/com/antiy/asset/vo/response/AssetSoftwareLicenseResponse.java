@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
@@ -27,7 +28,8 @@ public class AssetSoftwareLicenseResponse extends BaseResponse {
      * 软件主键
      */
     @ApiModelProperty("软件主键")
-    private Integer softwareId;
+    @Encode
+    private String softwareId;
     /**
      * 购买日期
      */
@@ -81,11 +83,11 @@ public class AssetSoftwareLicenseResponse extends BaseResponse {
         this.manufacturer = manufacturer;
     }
 
-    public Integer getSoftwareId() {
+    public String getSoftwareId() {
         return softwareId;
     }
 
-    public void setSoftwareId(Integer softwareId) {
+    public void setSoftwareId(String softwareId) {
         this.softwareId = softwareId;
     }
 

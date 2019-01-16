@@ -13,12 +13,6 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetGroupResponse extends BaseResponse {
     /**
-     * 主键
-     */
-    @ApiModelProperty("主键")
-    @Encode
-    private String  id;
-    /**
      * 用途
      */
     @ApiModelProperty("用途")
@@ -64,13 +58,6 @@ public class AssetGroupResponse extends BaseResponse {
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getPurpose() {
         return purpose;

@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -14,7 +15,8 @@ public class AssetNetworkCardResponse extends BaseResponse {
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer assetId;
+    @Encode
+    private String assetId;
     /**
      * 品牌
      */
@@ -56,12 +58,20 @@ public class AssetNetworkCardResponse extends BaseResponse {
     @ApiModelProperty("子网掩码")
     private String  subnetMask;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
+    }
+
+    public String getNetworkAddress() {
+        return networkAddress;
+    }
+
+    public void setNetworkAddress(String networkAddress) {
+        this.networkAddress = networkAddress;
     }
 
     public String getBrand() {

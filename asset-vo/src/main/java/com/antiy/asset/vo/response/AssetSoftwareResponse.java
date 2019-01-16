@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -139,6 +141,7 @@ public class AssetSoftwareResponse extends BaseResponse {
      */
     @ApiModelProperty(value = "关联 硬件资产数")
     private Integer assetCount;
+
 
     public Integer getAssetCount() {
         return assetCount;
