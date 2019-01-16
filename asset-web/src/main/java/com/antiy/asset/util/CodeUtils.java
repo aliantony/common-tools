@@ -4,86 +4,54 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 
+import com.antiy.common.utils.SpringUtil;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
 
+import com.antiy.biz.entity.Code;
+import com.antiy.biz.entity.CodeType;
+import com.antiy.biz.enums.ModuleEnum;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
 
+@Component
 public class CodeUtils {
 
-    public static Map<String, Map<Integer, String>> codeMap = new HashMap();
-    public static Map<Integer, String>              code    = new HashMap(16);
-
-    static {
-        init();
-    }
+    public static Map<String, Map<Integer, String>> codeMap  = new HashMap();
+    public static Map<Integer, String>              code     = new HashMap(16);
+    private static Boolean                          initflag = false;
 
     public static void init() {
-        code.put(1, "待登记");
-        code.put(2, "不予登记");
-        code.put(3, "待配置");
-        code.put(4, "待验证");
-        code.put(6, "待入网");
-        code.put(5, "已入网");
-        code.put(7, "待退役");
-        code.put(8, "已退役");
-        codeMap.put("hardware_status", code);
+        if (!initflag) {
+            String key = RedisKeyUtil.getKeyWhenGetObjectsByKeyword(ModuleEnum.COMMON.getType(), CodeType.class);
+            try {
+                RedisUtil redisUtil = SpringUtil.getBean(RedisUtil.class);
+                List<CodeType> codeTypeList = redisUtil.getObjectsByKeyword(key, CodeType.class);
+                for (CodeType codeType : codeTypeList) {
+                    if (codeType.getId() <= 996 && codeType.getId() >= 982) {
+                        String ke = RedisKeyUtil.getKeyWhenHandleObjectList(ModuleEnum.COMMON.getType(), "codeTypeId",
+                            codeType.getId().toString(), Code.class);
+                        List<Code> list = redisUtil.getObjectList(ke, Code.class);
+                        code = new HashMap<>(16);
+                        for (Code cod : list) {
+                            code.put(cod.getCode(), cod.getValue());
+                        }
+                        codeMap.put(codeType.getCode(), code);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            code = new HashMap(16);
+            code.put(1, "是");
+            code.put(0, "否");
+            codeMap.put("yesorno", code);
+            initflag = true;
+        }
 
-        code = new HashMap(16);
-        code.put(1, "台式办公机");
-        code.put(2, "便携式办公机");
-        code.put(3, "服务器");
-        code.put(4, "移动设备");
-        code.put(5, "ATM机");
-        code.put(6, "工控上位机");
-        code.put(7, "路由器");
-        code.put(8, "交换机");
-        code.put(9, "防火墙");
-        code.put(10, "IDS");
-        code.put(11, "IPS");
-        code.put(12, "虚拟终端");
-        code.put(13, "未设置");
-        codeMap.put("hardware_type", code);
-
-        code = new HashMap(16);
-        code.put(1, "待登记");
-        code.put(2, "不予登记");
-        code.put(3, "待配置");
-        code.put(4, "待验证");
-        code.put(6, "待检查");
-        code.put(5, "待入网");
-        code.put(7, "已入网");
-        code.put(8, "待退役");
-        code.put(9, "已退役");
-
-        codeMap.put("software_status", code);
-
-        code = new HashMap(16);
-        code.put(1, "免费软件");
-        code.put(2, "商业软件");
-        codeMap.put("authorization", code);
-
-        code = new HashMap(16);
-        code.put(1, "SATA");
-        code.put(2, "IDE");
-        code.put(3, "ATA");
-        codeMap.put("interface_type", code);
-
-        code = new HashMap(16);
-        code.put(1, "不重要");
-        code.put(2, "一般");
-        code.put(3, "重要");
-        codeMap.put("major_type", code);
-
-        code = new HashMap(16);
-        code.put(1, "自动上报");
-        code.put(2, "人工上报");
-        codeMap.put("report_source", code);
-
-        code = new HashMap(16);
-        code.put(1, "是");
-        code.put(0, "否");
-        codeMap.put("yesorno", code);
     }
 
     /**
@@ -94,6 +62,7 @@ public class CodeUtils {
      * @return
      */
     public static Integer getCodeValue(String codeType, String codeName) {
+        init();
         if (StringUtils.isEmpty(codeType) || StringUtils.isEmpty(codeName)) {
             return null;
         }
@@ -114,6 +83,7 @@ public class CodeUtils {
      * @return
      */
     public static String getCodeName(String codeType, Integer codeValue) {
+        init();
         if (StringUtils.isEmpty(codeType) || codeValue == null) {
             return "";
         }
@@ -129,6 +99,7 @@ public class CodeUtils {
      * @return
      */
     public static List<String> getCodeList(String codeType) {
+        init();
         if (StringUtils.isEmpty(codeType)) {
             return null;
         }
@@ -147,7 +118,7 @@ public class CodeUtils {
      * @return
      */
     public static String[] getCodeArray(String codeType) {
-
+        init();
         List list = getCodeList(codeType);
         if (list == null || list.isEmpty()) {
             return null;

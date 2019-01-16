@@ -149,7 +149,7 @@ public class AssetController {
     @ApiOperation(value = "根据条件导出硬件信息", notes = "主键封装对象", produces = "application/octet-stream")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/file", method = RequestMethod.GET)
-    public void export(@ApiParam(value = "query") AssetQuery assetQuery, ServletResponse response) throws Exception {
+    public void export(@ApiParam(value = "query") AssetQuery assetQuery) throws Exception {
         List<AssetResponse> list = iAssetService.findListAsset(assetQuery);
         List entities = BeanConvert.convert(list, AssetEntity.class);
         ExcelUtils.exportToClient(AssetEntity.class, "硬件信息表.xlsx", "硬件信息", entities);
@@ -158,15 +158,15 @@ public class AssetController {
     /**
      * 导出模板
      *
-     * @param type 封装对象
+     * @param types 封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "导出模板", notes = "主键封装对象", produces = "application/octet-stream")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
-    public void exportTemplate(@ApiParam("导出的模板类型") Integer type) throws Exception {
-        ParamterExceptionUtils.isNull(type,"类型不能为空");
-        iAssetService.exportTemplate(type);
+    public void exportTemplate(@ApiParam("导出的模板类型") Integer types) throws Exception {
+        ParamterExceptionUtils.isNull(types,"类型不能为空");
+        iAssetService.exportTemplate(types);
     }
 
     /**

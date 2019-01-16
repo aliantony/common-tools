@@ -150,7 +150,7 @@ public class ExcelUtils {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
             .getResponse();
         try {
-            new ExportExcel(title, clazz).exportTempleteToClient(response, filename);
+            new ExportExcel(title, clazz,2).exportTempleteToClient(response, filename);
         } catch (IOException e) {
             e.printStackTrace();
         }

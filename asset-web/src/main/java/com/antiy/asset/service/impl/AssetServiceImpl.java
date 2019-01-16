@@ -6,14 +6,13 @@ import javax.annotation.Resource;
 
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.ExcelUtils;
-import com.antiy.biz.util.LoginUserUtil;
-import com.antiy.biz.vo.LoginUser;
+
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -801,10 +800,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     /**
      * 1-计算设备 2-网络设备 3-安全设备 4-存储介质 5-服务器 6-外设
-     * @param type 导出模板的类型
+     * @param types 导出模板的类型
      */
-    public void exportTemplate(int type) throws Exception {
-        switch (type) {
+    public void exportTemplate(int types) throws Exception {
+        switch (types) {
             case 1:
                 exportToClient(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备");
                 break;
@@ -826,7 +825,35 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
+    @Override
+    public void exportData(int type, AssetQuery assetQuery) throws Exception {
+        switch (type) {
+            case 1:
+                exportData(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备", assetQuery);
+                break;
+            case 2:
+                exportData(ComputeDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备", assetQuery);
+                break;
+            case 3:
+                exportData(SafetyEquipment.class, "安全设备信息模板.xlsx", "安全设备", assetQuery);
+                break;
+            case 4:
+                exportData(HardDiskEntity.class, "存储介质信息模板.xlsx", "存储介质", assetQuery);
+                break;
+            case 5:
+                exportData(ServerEntity.class, "服务器信息模板.xlsx", "服务器", assetQuery);
+                break;
+            case 6:
+                exportData(AssetPeripheralEquipmentEntity.class, "外设信息模板.xlsx", "外设", assetQuery);
+                break;
+        }
+    }
+
     private void exportToClient(Class clazz, String fileName, String title) {
-        ExcelUtils.exportToClient(clazz, fileName, title, null);
+        ExcelUtils.exportTemplet(clazz, fileName, title);
+    }
+
+    private void exportData(Class clazz, String fileName, String title, AssetQuery assetQuery) throws Exception {
+        ExcelUtils.exportToClient(clazz, fileName, title, findListAsset(assetQuery));
     }
 }

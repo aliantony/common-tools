@@ -79,6 +79,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     Integer changeStatus(String[] ids, Integer assetStatus) throws Exception;
+
     /**
      * 通过资产ID修改资产状态
      *
@@ -192,4 +193,11 @@ public interface IAssetService extends IBaseService<Asset> {
      * @param type 导出模板的类型
      */
     void exportTemplate(int type) throws Exception;
+
+    /**
+     * 1-计算设备 2-网络设备 3-安全设备 4-存储介质 5-服务器 6-外设
+     * @param type 导出模板的类型
+     * @param type 导出模板的条件
+     */
+    void exportData(int type, AssetQuery assetQuery) throws Exception;
 }

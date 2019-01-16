@@ -8,37 +8,30 @@ import com.antiy.asset.annotation.ExcelField;
 public class NetworkDeviceEntity {
     private static final long serialVersionUID = 1L;
     /**
+     * 序号
+     */
+    @ExcelField(value = "id", align = 1, title = "序号")
+    private String            id;
+    /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "资产名称")
+    @ExcelField(value = "name", align = 1, title = "名称")
     private String            name;
     /**
-     * 品类
+     * 厂商
      */
-    @ExcelField(value = "category_model", align = 1, title = "资产品类")
-    private String            categoryModel;
-
-    /**
-     * 资产型号
-     */
-    @ExcelField(value = "number", align = 1, title = "编号")
-    private String            number;
+    @ExcelField(value = "manufacturer", align = 1, title = "厂商")
+    private String            manufacturer;
     /**
      * 序列号
      */
     @ExcelField(value = "serial", align = 1, title = "序列号")
     private String            serial;
     /**
-     * 厂商
+     * 使用者
      */
-    @ExcelField(value = "manufacturer", align = 1, title = "厂商")
-    private String            manufacturer;
-
-    /**
-     * 资产分组
-     */
-    @ExcelField(value = "asset_group", align = 1, title = "所属分组")
-    private String            assetGroup;
+    @ExcelField(value = "user", align = 1, title = "使用者")
+    private String            user;
 
     /**
      * 联系电话
@@ -51,30 +44,28 @@ public class NetworkDeviceEntity {
      */
     @ExcelField(value = "email", align = 1, title = "邮箱")
     private String            email;
+    /**
+     * 资产组
+     */
+    @ExcelField(value = "asset_group", align = 1, title = "资产组")
+    private String            assetGroup;
 
     /**
      * 物理位置
      */
     @ExcelField(value = "location", align = 1, title = "物理位置")
     private String            location;
+    /**
+     * 机房位置
+     */
+    @ExcelField(value = "house_location", align = 1, title = "机房位置")
+    private String            houseLocation;
 
     /**
-     * 使用者
+     * 接口数目
      */
-    @ExcelField(value = "responsible_user_id", align = 1, title = "使用者")
-    private Integer           responsibleUserId;
-
-    /**
-     * 资产来源
-     */
-    @ExcelField(value = "asset_source", align = 1, title = "资产来源",dictType="asset_source")
-    private String            assetSource;
-
-    /**
-     * 资产状态
-     */
-    @ExcelField(value = "asset_status", align = 1, title = "资产状态",dictType="hardware_status")
-    private String            assetStatus;
+    @ExcelField(value = "interface_size", align = 1, title = "接口数目")
+    private Integer            interfaceSize;
 
     /**
      * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
@@ -143,196 +134,5 @@ public class NetworkDeviceEntity {
     @ExcelField(value = "memo", align = 1, title = "备注")
     private String            memo;
 
-    public String getAssetGroup() {
-        return assetGroup;
-    }
-
-    public void setAssetGroup(String assetGroup) {
-        this.assetGroup = assetGroup;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public Integer getResponsibleUserId() {
-        return responsibleUserId;
-    }
-
-    public void setResponsibleUserId(Integer responsibleUserId) {
-        this.responsibleUserId = responsibleUserId;
-    }
-
-    public String getAssetSource() {
-        return assetSource;
-    }
-
-    public void setAssetSource(String assetSource) {
-        this.assetSource = assetSource;
-    }
-
-    public String getAssetStatus() {
-        return assetStatus;
-    }
-
-    public void setAssetStatus(String assetStatus) {
-        this.assetStatus = assetStatus;
-    }
-
-    public String getOuterIp() {
-        return outerIp;
-    }
-
-    public void setOuterIp(String outerIp) {
-        this.outerIp = outerIp;
-    }
-
-    public String getInnerIp() {
-        return innerIp;
-    }
-
-    public void setInnerIp(String innerIp) {
-        this.innerIp = innerIp;
-    }
-
-    public String getMac() {
-        return mac;
-    }
-
-    public void setMac(String mac) {
-        this.mac = mac;
-    }
-
-    public String getSubnetMask() {
-        return subnetMask;
-    }
-
-    public void setSubnetMask(String subnetMask) {
-        this.subnetMask = subnetMask;
-    }
-
-    public String getExpectBandwidth() {
-        return expectBandwidth;
-    }
-
-    public void setExpectBandwidth(String expectBandwidth) {
-        this.expectBandwidth = expectBandwidth;
-    }
-
-    public String getRegister() {
-        return register;
-    }
-
-    public void setRegister(String register) {
-        this.register = register;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCategoryModel() {
-        return categoryModel;
-    }
-
-    public void setCategoryModel(String categoryModel) {
-        this.categoryModel = categoryModel;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getSerial() {
-        return serial;
-    }
-
-    public void setSerial(String serial) {
-        this.serial = serial;
-    }
-
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
-
-    public String getCpuSize() {
-        return cpuSize;
-    }
-
-    public void setCpuSize(String cpuSize) {
-        this.cpuSize = cpuSize;
-    }
-
-    public String getCpuVersion() {
-        return cpuVersion;
-    }
-
-    public void setCpuVersion(String cpuVersion) {
-        this.cpuVersion = cpuVersion;
-    }
-
-    public String getDramSize() {
-        return dramSize;
-    }
-
-    public void setDramSize(String dramSize) {
-        this.dramSize = dramSize;
-    }
-
-    public String getFlashSize() {
-        return flashSize;
-    }
-
-    public void setFlashSize(String flashSize) {
-        this.flashSize = flashSize;
-    }
-
-    public String getNcrmSize() {
-        return ncrmSize;
-    }
-
-    public void setNcrmSize(String ncrmSize) {
-        this.ncrmSize = ncrmSize;
-    }
-
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
 
 }
