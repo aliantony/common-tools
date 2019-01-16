@@ -80,6 +80,10 @@ public class Scheme extends BaseEntity {
      */
     private String  content;
 
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     public String getContent() {
         return content;
     }
