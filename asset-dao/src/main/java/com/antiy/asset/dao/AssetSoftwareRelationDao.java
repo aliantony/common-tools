@@ -3,10 +3,11 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.common.base.IBaseDao;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * <p> 资产软件关系信息 Mapper 接口 </p>
@@ -44,5 +45,13 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @param softwareIds
      * @return
      */
-    List<Map<String,Object>> countSoftwareRelAsset(@Param("softwareIds") List<Integer> softwareIds);
+    List<Map<String, Object>> countSoftwareRelAsset(@Param("softwareIds") List<Integer> softwareIds);
+
+    /**
+     * 
+     * @param assetId
+     * @param softwareId
+     * @return
+     */
+    Integer deleteSoftwareRelAsset(@Param("assetId") Integer assetId, @Param("softwareId") Integer softwareId);
 }

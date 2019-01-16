@@ -58,7 +58,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Resource
     private BaseConverter<AssetSoftwareRequest, AssetSoftware>               requestConverter;
     @Resource
-    private BaseConverter<AssetSoftware, AssetSoftwareResponse>              responseConverter;
+    private BaseConverter<AssetSoftware, AssetSoftwareRelation>              responseConverter;
 
     @Resource
     private BaseConverter<AssetSoftwareLicenseRequest, AssetSoftwareLicense> assetSoftwareLicenseBaseConverter;
@@ -126,11 +126,20 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             updateLicense(request);
         }
 
-        // 3.更新软件和硬件关联表
+        // 3.是否存在关联表Id和状态，如果存在，则更新关联表即可(更新某一个实例)
+        if (StringUtils.isNotBlank(request.getAssetSoftwareRelationId()) && request.getSoftwareStatus() != null) {
+            AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+            assetSoftwareRelation.setId(DataTypeUtils.stringToInteger(request.getAssetSoftwareRelationId()));
+            assetSoftwareRelation.setSoftwareStatus(request.getSoftwareStatus());
+            assetSoftwareRelationDao.update(assetSoftwareRelation);
+        } else if (ArrayUtils.isNotEmpty(request.getAssetIds())) { // 更新一批实例
+            // 4.移除关系表
+            assetSoftwareRelationDao.deleteSoftwareRelAsset(null, DataTypeUtils.stringToInteger(request.getId()));
 
+            // 5.插入关系表，并且插入端口数据
+        }
         return assetSoftwareCount;
     }
-
 
     /**
      * 更新lincense

@@ -108,6 +108,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
      */
     @ApiModelProperty(value = "软件状态")
+    @NotNull(message = "软件状态不能为空")
     private Integer                     softwareStatus;
     /**
      * 0-免费软件，1-商业软件
@@ -146,6 +147,18 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty(value = "备注")
     private String                      memo;
+
+    @ApiModelProperty(value = "硬件资产和软件资产关联表Id")
+    @Encode
+    private String                      assetSoftwareRelationId;
+
+    public String getAssetSoftwareRelationId() {
+        return assetSoftwareRelationId;
+    }
+
+    public void setAssetSoftwareRelationId(String assetSoftwareRelationId) {
+        this.assetSoftwareRelationId = assetSoftwareRelationId;
+    }
 
     public AssetPortProtocolRequest getAssetPortProtocolRequest() {
         return assetPortProtocolRequest;
