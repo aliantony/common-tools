@@ -12,7 +12,7 @@
         <result column="ip_address" property="ipAddress"/>
         <result column="mac_address" property="macAddress"/>
         <result column="default_gateway" property="defaultGateway"/>
-        <result column="netword_address" property="networkAddress"/>
+        <result column="network_address" property="networkAddress"/>
         <result column="subnet_mask" property="subnetMask"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
@@ -23,7 +23,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id AS assetId, brand, model, serial, ip_address AS ipAddress, mac_address AS macAddress, default_gateway AS defaultGateway, netword_address AS networkAddress, subnet_mask AS subnetMask, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
+        id, asset_id AS assetId, brand, model, serial, ip_address AS ipAddress, mac_address AS macAddress, default_gateway AS defaultGateway, network_address AS networkAddress, subnet_mask AS subnetMask, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
 
     <sql id="Table_Name">
@@ -54,7 +54,7 @@
             default_gateway,
         </if>
         <if test=" networkAddress != null">
-            netword_address,
+            network_address,
         </if>
         <if test=" subnetMask != null">
             subnet_mask,
@@ -150,7 +150,7 @@
             default_gateway = #{defaultGateway },
         </if>
         <if test=" networkAddress != null">
-            netword_address = #{networkAddress },
+            network_address = #{networkAddress },
         </if>
         <if test=" subnetMask != null">
             subnet_mask = #{subnetMask },
@@ -198,7 +198,7 @@
             and default_gateway = #{defaultGateway }
         </if>
         <if test=" networkAddress != null">
-            and netword_address = #{networkAddress }
+            and network_address = #{networkAddress }
         </if>
         <if test=" subnetMask != null">
             and subnet_mask = #{subnetMask }
@@ -206,7 +206,8 @@
         and status = 1
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetNetworkCard" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetNetworkCard" useGeneratedKeys="true"
+            keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -316,7 +317,7 @@
                 and default_gateway = #{defaultGateway }
             </if>
             <if test=" networkAddress != null">
-                and netword_address = #{networkAddress }
+                and network_address = #{networkAddress }
             </if>
             <if test=" subnetMask != null">
                 and subnet_mask = #{subnetMask }
@@ -337,4 +338,48 @@
             where id = #{id}
         </foreach>
     </update>
+    <update id="deleteByAssetId" parameterType="java.lang.Integer">
+        update
+        <include refid="Table_Name"></include>
+        set status = 0
+        where asset_id = #{assetId}
+    </update>
+    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetNetworkCard" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        (
+        asset_id,
+        brand,
+        model,
+        serial,
+        ip_address,
+        mac_address,
+        default_gateway,
+        network_address,
+        subnet_mask,
+        gmt_create,
+        memo,
+        create_user,
+        status
+        )
+        values
+        <foreach collection="list" item="networkCard" separator=",">
+            (
+            #{networkCard.assetId},
+            #{networkCard.brand},
+            #{networkCard.model},
+            #{networkCard.serial},
+            #{networkCard.ipAddress},
+            #{networkCard.macAddress},
+            #{networkCard.defaultGateway},
+            #{networkCard.networkAddress},
+            #{networkCard.subnetMask},
+            #{networkCard.gmtCreate},
+            #{networkCard.memo},
+            #{networkCard.createUser},
+            #{networkCard.status}
+            )
+        </foreach>
+    </insert>
 </mapper>

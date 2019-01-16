@@ -180,9 +180,13 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <include refid="IF_Base_Column_List"></include>
         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
+        values (
+
+        <trim prefix="(" suffix=")" suffixOverrides=",">
             <include refid="IF_Value_Column_List"></include>
         </trim>
+
+        )
     </insert>
 
     <update id="update" parameterType="com.antiy.asset.entity.AssetCpu">
@@ -299,4 +303,44 @@
             where id = #{id}
         </foreach>
     </update>
+    <update id="deleteByAssetId" parameterType="java.lang.Integer">
+        update
+        <include refid="Table_Name"></include>
+        set status = 0
+        where asset_id = #{assetId}
+    </update>
+    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetCpu" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        (
+        asset_id,
+        serial,
+        brand,
+        model,
+        main_frequency,
+        thread_size,
+        core_size,
+        gmt_create,
+        memo,
+        create_user,
+        status
+        )
+        values
+        <foreach collection="list" item="cpu" separator=",">
+            (
+            #{cpu.assetId},
+            #{cpu.serial},
+            #{cpu.brand},
+            #{cpu.model},
+            #{cpu.mainFrequency},
+            #{cpu.threadSize},
+            #{cpu.coreSize},
+            #{cpu.gmtCreate},
+            #{cpu.memo},
+            #{cpu.createUser},
+            #{cpu.status}
+            )
+        </foreach>
+    </insert>
 </mapper>

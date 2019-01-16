@@ -340,4 +340,9 @@
 
         </where>
     </select>
+    <delete id="deleteByAssetId" parameterType="java.lang.Integer">
+        delete from
+        <include refid="Table_Name"></include>
+        where asset_id = #{id}
+    </delete>
 </mapper>

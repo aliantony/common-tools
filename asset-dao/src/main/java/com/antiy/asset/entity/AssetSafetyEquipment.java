@@ -116,6 +116,10 @@ public class AssetSafetyEquipment extends BaseEntity {
         this.status = status;
     }
 
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     @Override
     public String toString() {
         return "AssetSafetyEquipment{" + ", assetId=" + assetId + ", featureLibrary=" + featureLibrary + ", strategy="

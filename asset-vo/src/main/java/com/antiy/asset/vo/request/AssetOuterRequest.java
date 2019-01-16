@@ -15,23 +15,44 @@ import javax.validation.Valid;
 
 public class AssetOuterRequest extends BasicRequest {
 
+    /**
+     * 资产主表信息
+     */
     private AssetRequest                  asset;
 
+    /**
+     * 主板
+     */
     private AssetMainboradRequest         mainboard;
 
+    /**
+     * 内存
+     */
     private List<AssetMemoryRequest>      memory;
 
+    /**
+     * 硬盘
+     */
     private List<AssetHardDiskRequest>    hardDisk;
 
+    /**
+     * cpu
+     */
     private List<AssetCpuRequest>         cpu;
-
+    /**
+     * 网卡
+     */
     private List<AssetNetworkCardRequest> networkCard;
-
+    /**
+     * 软件id列表
+     */
     private List<AssetSoftwareRequest>    software;
 
     private AssetNetworkEquipmentRequest  networkEquipment;
 
     private AssetSafetyEquipmentRequest   safetyEquipment;
+
+    private Integer[]                     assetSoftwareIds;
 
     public AssetRequest getAsset() {
         return asset;
@@ -103,5 +124,13 @@ public class AssetOuterRequest extends BasicRequest {
 
     public void setSafetyEquipment(AssetSafetyEquipmentRequest safetyEquipment) {
         this.safetyEquipment = safetyEquipment;
+    }
+
+    public Integer[] getAssetSoftwareIds() {
+        return assetSoftwareIds;
+    }
+
+    public void setAssetSoftwareIds(Integer[] assetSoftwareIds) {
+        this.assetSoftwareIds = assetSoftwareIds;
     }
 }

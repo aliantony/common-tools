@@ -16,6 +16,10 @@ public class AssetOuterResponse {
 
     private List<AssetHardDiskResponse>    assetHardDisk;
 
+    private AssetNetworkEquipmentResponse assetNetworkEquipment;
+
+    private AssetSafetyEquipmentResponse assetSafetyEquipment;
+
     private List<AssetSoftwareResponse>    assetSoftware;
 
     public AssetResponse getAsset() {
@@ -72,5 +76,21 @@ public class AssetOuterResponse {
 
     public void setAssetSoftware(List<AssetSoftwareResponse> assetSoftware) {
         this.assetSoftware = assetSoftware;
+    }
+
+    public AssetNetworkEquipmentResponse getAssetNetworkEquipment() {
+        return assetNetworkEquipment;
+    }
+
+    public void setAssetNetworkEquipment(AssetNetworkEquipmentResponse assetNetworkEquipment) {
+        this.assetNetworkEquipment = assetNetworkEquipment;
+    }
+
+    public AssetSafetyEquipmentResponse getAssetSafetyEquipment() {
+        return assetSafetyEquipment;
+    }
+
+    public void setAssetSafetyEquipment(AssetSafetyEquipmentResponse assetSafetyEquipment) {
+        this.assetSafetyEquipment = assetSafetyEquipment;
     }
 }

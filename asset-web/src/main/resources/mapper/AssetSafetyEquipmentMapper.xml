@@ -141,7 +141,7 @@
             and gmt_modified = #{gmtModified }
         </if>
         <if test=" status != null">
-            and status = #{status }
+            and status = 1
         </if>
     </sql>
 
