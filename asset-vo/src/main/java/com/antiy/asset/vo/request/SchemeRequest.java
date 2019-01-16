@@ -1,13 +1,13 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.NotNull;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * <p> SchemeRequest 请求对象 </p>
@@ -21,7 +21,6 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     @Encode
     @ApiModelProperty(value = "主键")
     private String  id;
-
     /**
      * 资产主键
      */
@@ -32,8 +31,7 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      * 资产主键
      */
     @ApiModelProperty("资产状态")
-    private Integer  assetStatus;
-
+    private Integer assetStatus;
 
     /**
      * 类型（1.准入实施、2.效果检查、3.制定待退役方案、4.验证退役方案、5.实施退役方案）
@@ -95,12 +93,20 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("同意/拒绝")
     @NotNull(message = "同意或拒绝不能为空")
-    private Integer  is_agree;
+    private Integer isAgree;
 
     /**
      * 方案内容
      */
-    private String content;
+    private String  content;
+
+    public Integer getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Integer taskId) {
+        this.taskId = taskId;
+    }
 
     public Integer getAssetStatus() {
         return assetStatus;
@@ -110,12 +116,12 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
         this.assetStatus = assetStatus;
     }
 
-    public Integer getIs_agree() {
-        return is_agree;
+    public Integer getIsAgree() {
+        return isAgree;
     }
 
-    public void setIs_agree(Integer is_agree) {
-        this.is_agree = is_agree;
+    public void setIsAgree(Integer isAgree) {
+        this.isAgree = isAgree;
     }
 
     public String getId() {
