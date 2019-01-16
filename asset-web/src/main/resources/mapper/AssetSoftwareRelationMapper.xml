@@ -313,9 +313,8 @@
     </select>
 
     <delete id="deleteSoftwareRelAsset" parameterType="java.lang.Integer">
-        update from
+        delete from
         <include refid="Table_Name"/>
-        set status=0
         <where>
             <if test="assetId != null">
                 and asset_id = #{assetId}
@@ -327,7 +326,7 @@
         </where>
     </delete>
 
-    <select id="getAllReleationId" resultType="arraylist">
+    <select id="getAllReleationId" resultType="java.lang.Integer">
         select id from
         <include refid="Table_Name"/>
         <where>
