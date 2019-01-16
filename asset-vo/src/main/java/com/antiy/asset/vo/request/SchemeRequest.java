@@ -100,14 +100,6 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      */
     private String  content;
 
-    public Integer getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(Integer taskId) {
-        this.taskId = taskId;
-    }
-
     public Integer getAssetStatus() {
         return assetStatus;
     }
