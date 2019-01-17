@@ -41,7 +41,7 @@ public class AssetOuterResponse {
     /**
      * 存储介质
      */
-    private AssetStorageMediumRequest      assetStorageMedium;
+    private AssetStorageMediumResponse      assetStorageMedium;
 
     private List<AssetSoftwareResponse>    assetSoftware;
 
@@ -117,11 +117,11 @@ public class AssetOuterResponse {
         this.assetSafetyEquipment = assetSafetyEquipment;
     }
 
-    public AssetStorageMediumRequest getAssetStorageMedium() {
+    public AssetStorageMediumResponse getAssetStorageMedium() {
         return assetStorageMedium;
     }
 
-    public void setAssetStorageMedium(AssetStorageMediumRequest assetStorageMedium) {
+    public void setAssetStorageMedium(AssetStorageMediumResponse assetStorageMedium) {
         this.assetStorageMedium = assetStorageMedium;
     }
 }
