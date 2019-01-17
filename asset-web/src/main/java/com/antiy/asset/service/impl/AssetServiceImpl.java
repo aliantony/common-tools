@@ -1,14 +1,11 @@
 package com.antiy.asset.service.impl;
 
 import java.util.*;
-
 import javax.annotation.Resource;
-
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.ExcelUtils;
-
+import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -16,7 +13,6 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
@@ -787,6 +783,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 9. 更新资产软件关系信息
                     assetSoftwareRelationDao.deleteByAssetId(asset.getId());
                     List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
+                    Integer[]  assetSoftwareIds = assetOuterRequest.getAssetSoftwareIds();
+                    for (int i = 0; i < assetSoftwareIds.length; i++) {
+                        AssetSoftwareRelation relation = new AssetSoftwareRelation();
+                        relation.setAssetId(asset.getId());
+                        relation.setSoftwareId(assetSoftwareIds[i]);
+                        relation.setSoftwareStatus(AssetStatusEnum.NET_IN.getCode());
+                        relation.setGmtCreate(System.currentTimeMillis());
+                        relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        relation.setMemo("");
+                        relation.setStatus(1);
+                        assetSoftwareRelationList.add(relation);
+                    }
                     assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
                     return count;
                 } catch (Exception e) {
