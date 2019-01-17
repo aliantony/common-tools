@@ -15,6 +15,8 @@ import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -31,6 +33,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -74,6 +78,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private BaseConverter<Asset, ComputeDeviceEntity> entityConverter;
     @Resource
     private AssetUserDao                              assetUserDao;
+    @Resource
+    private ExcelDownloadUtil                         excelDownloadUtil;
 
     private static final Logger                       LOGGER = LogUtils.get(AssetServiceImpl.class);
 
@@ -524,14 +530,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetCpuRequest> cpuRequestList = assetPCRequest.getCpu();
         BaseConverter<AssetCpuRequest, AssetCpu> baseConverter = new BaseConverter<>();
         List<AssetCpu> cpu = baseConverter.convert(cpuRequestList, AssetCpu.class);
-        List<AssetHardDisk> hardDisk = new BaseConverter<AssetHardDiskRequest, AssetHardDisk>()
-            .convert(assetPCRequest.getHardDisk(), AssetHardDisk.class);
-        List<AssetMemory> memory = new BaseConverter<AssetMemoryRequest, AssetMemory>()
-            .convert(assetPCRequest.getMemory(), AssetMemory.class);
-        List<AssetMainborad> mainboard = new BaseConverter<AssetMainboradRequest, AssetMainborad>()
-            .convert(assetPCRequest.getMainboard(), AssetMainborad.class);
-        List<AssetNetworkCard> networkCard = new BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>()
-            .convert(assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
+        List<AssetHardDisk> hardDisk = new BaseConverter<AssetHardDiskRequest, AssetHardDisk>().convert(
+            assetPCRequest.getHardDisk(), AssetHardDisk.class);
+        List<AssetMemory> memory = new BaseConverter<AssetMemoryRequest, AssetMemory>().convert(
+            assetPCRequest.getMemory(), AssetMemory.class);
+        List<AssetMainborad> mainboard = new BaseConverter<AssetMainboradRequest, AssetMainborad>().convert(
+            assetPCRequest.getMainboard(), AssetMainborad.class);
+        List<AssetNetworkCard> networkCard = new BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>().convert(
+            assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
 
         Asset asset = requestConverter.convert(assetPCRequest.getAsset(), Asset.class);
         assetDao.insert(asset);
@@ -886,32 +892,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // CPU
         assetOuterResponse.setAssetCpu(BeanConvert.convert(assetCpuDao.getByWhere(param), AssetCpuResponse.class));
         // 网卡
-        assetOuterResponse.setAssetNetworkCard(
-            BeanConvert.convert(assetNetworkCardDao.getByWhere(param), AssetNetworkCardResponse.class));
+        assetOuterResponse.setAssetNetworkCard(BeanConvert.convert(assetNetworkCardDao.getByWhere(param),
+            AssetNetworkCardResponse.class));
         // 硬盘
-        assetOuterResponse
-            .setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param), AssetHardDiskResponse.class));
+        assetOuterResponse.setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param),
+            AssetHardDiskResponse.class));
         // 主板
-        assetOuterResponse
-            .setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param), AssetMainboradResponse.class));
+        assetOuterResponse.setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param),
+            AssetMainboradResponse.class));
         // 内存
-        assetOuterResponse
-            .setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param), AssetMemoryResponse.class));
+        assetOuterResponse.setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param),
+            AssetMemoryResponse.class));
         // 网络设备
         List<AssetNetworkEquipment> assetNetworkEquipmentList = assetNetworkEquipmentDao.getByWhere(param);
         if (assetNetworkEquipmentList != null && !assetNetworkEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetNetworkEquipment(
-                BeanConvert.convertBean(assetNetworkEquipmentList.get(0), AssetNetworkEquipmentResponse.class));
+            assetOuterResponse.setAssetNetworkEquipment(BeanConvert.convertBean(assetNetworkEquipmentList.get(0),
+                AssetNetworkEquipmentResponse.class));
         }
         // 安全设备
         List<AssetSafetyEquipment> assetSafetyEquipmentList = assetSafetyEquipmentDao.getByWhere(param);
         if (assetSafetyEquipmentList != null && !assetSafetyEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetSafetyEquipment(
-                BeanConvert.convertBean(assetSafetyEquipmentList.get(0), AssetSafetyEquipmentResponse.class));
+            assetOuterResponse.setAssetSafetyEquipment(BeanConvert.convertBean(assetSafetyEquipmentList.get(0),
+                AssetSafetyEquipmentResponse.class));
         }
         // 软件
-        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
-            .getSoftByAssetId(DataTypeUtils.stringToInteger(id));
+        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSoftByAssetId(DataTypeUtils
+            .stringToInteger(id));
         assetOuterResponse.setAssetSoftware(BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class));
         return assetOuterResponse;
     }
@@ -1070,32 +1076,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             case 5:
                 exportToClient(OtherDeviceEntity.class, "其他设备信息模板.xlsx", "其他设备");
                 break;
-
         }
     }
 
     @Override
-    public void exportData(int type, AssetQuery assetQuery) throws Exception {
+    public void exportData(int type, AssetQuery assetQuery, HttpServletResponse response) throws Exception {
         switch (type) {
             case 1:
-                exportData(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备", assetQuery);
+                exportData(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", assetQuery, response);
                 break;
-            // 之后会重写
-            // case 2:
-            // exportData(ComputeDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备", assetQuery);
-            // break;
-            // case 3:
-            // exportData(SafetyEquipment.class, "安全设备信息模板.xlsx", "安全设备", assetQuery);
-            // break;
-            // case 4:
-            // exportData(HardDiskEntity.class, "存储介质信息模板.xlsx", "存储介质", assetQuery);
-            // break;
-            // case 5:
-            // exportData(ServerEntity.class, "服务器信息模板.xlsx", "服务器", assetQuery);
-            // break;
-            // case 6:
-            // exportData(AssetPeripheralEquipmentEntity.class, "外设信息模板.xlsx", "外设", assetQuery);
-            // break;
+            case 2:
+                exportData(NetworkDeviceEntity.class, "网络设备信息模板.xlsx", assetQuery, response);
+                break;
+            case 3:
+                exportData(SafetyEquipmentEntiy.class, "安全设备信息模板.xlsx", assetQuery, response);
+                break;
+            case 4:
+                exportData(StorageDeviceEntity.class, "存储设备信息模板.xlsx", assetQuery, response);
+                break;
+            case 5:
+                exportData(OtherDeviceEntity.class, "其他设备信息模板.xlsx", assetQuery, response);
+                break;
         }
     }
 
@@ -1142,14 +1143,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetNetworkEquipment.setSubnetMask(networkDeviceEntity.getSubnetMask());
             assetNetworkEquipment.setExpectBandwidth(networkDeviceEntity.getExpectBandwidth());
             assetNetworkEquipment.setMemo(networkDeviceEntity.getMemo());
-             assetNetworkEquipment.setNcrmSize (networkDeviceEntity.getNcrmSize ());
-             assetNetworkEquipment.setCpu (networkDeviceEntity.getCpuSize ());
-             assetNetworkEquipment.setDramSize (networkDeviceEntity.getDramSize ());
-             assetNetworkEquipment.setFlashSize (networkDeviceEntity.getFlashSize ());
-             assetNetworkEquipment.setRegister (networkDeviceEntity.getRegister ());
-             assetNetworkEquipment.setIsWireless (networkDeviceEntity.getIsWireless ());
+            assetNetworkEquipment.setNcrmSize(networkDeviceEntity.getNcrmSize());
+            assetNetworkEquipment.setCpu(networkDeviceEntity.getCpuSize());
+            assetNetworkEquipment.setDramSize(networkDeviceEntity.getDramSize());
+            assetNetworkEquipment.setFlashSize(networkDeviceEntity.getFlashSize());
+            assetNetworkEquipment.setRegister(networkDeviceEntity.getRegister());
+            assetNetworkEquipment.setIsWireless(networkDeviceEntity.getIsWireless());
             assetNetworkEquipmentDao.insert(assetNetworkEquipment);
-            //// TODO: 2019/1/17 流程
+            // // TODO: 2019/1/17 流程
 
         }
 
@@ -1188,23 +1189,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetSafetyEquipment.setIp(entity.getIp());
             assetSafetyEquipment.setMemo(entity.getMemo());
             assetSafetyEquipmentDao.insert(assetSafetyEquipment);
-            //// TODO: 2019/1/17 流程
+            // // TODO: 2019/1/17 流程
 
         }
 
         return result.getMsg();
     }
 
-
     private void exportToClient(Class clazz, String fileName, String title) {
         ExcelUtils.exportTemplet(clazz, fileName, title);
     }
 
-    private void exportData(Class clazz, String fileName, String title, AssetQuery assetQuery) throws Exception {
+    private void exportData(Class clazz, String fileName,AssetQuery assetQuery, HttpServletResponse response)
+                                                                                                              throws Exception {
         List<Asset> list = assetDao.findListAsset(assetQuery);
-        List<ComputeDeviceEntity> computeDeviceEntities = entityConverter.convert(assetDao.findListAsset(assetQuery),
-            ComputeDeviceEntity.class);
-        ExcelUtils.exportToClient(clazz, fileName, title, findListAsset(assetQuery));
+        DownloadVO downloadVO = new DownloadVO();
+        downloadVO.setDownloadList(list);
+        excelDownloadUtil.excelDownload(response, "资产信息表", downloadVO);
+
     }
 
 }

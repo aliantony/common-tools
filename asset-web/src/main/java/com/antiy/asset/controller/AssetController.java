@@ -1,5 +1,20 @@
 package com.antiy.asset.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.templet.ComputeDeviceEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.AssetEntity;
@@ -14,17 +29,8 @@ import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.ParamterExceptionUtils;
+
 import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 
 /**
  * @author zhangyajun
@@ -146,13 +152,12 @@ public class AssetController {
      * @param assetQuery 封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "根据条件导出硬件信息", notes = "主键封装对象", produces = "application/octet-stream")
+    @ApiOperation(value = "根据条件导出硬件信息", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/file", method = RequestMethod.GET)
-    public void export(@ApiParam(value = "query") AssetQuery assetQuery) throws Exception {
-        List<AssetResponse> list = iAssetService.findListAsset(assetQuery);
-        List entities = BeanConvert.convert(list, AssetEntity.class);
-        ExcelUtils.exportToClient(AssetEntity.class, "硬件信息表.xlsx", "硬件信息", entities);
+    public void export(@ApiParam(value = "query") AssetQuery assetQuery, @ApiParam(value = "类型") Integer type,
+                       HttpServletResponse response) throws Exception {
+        iAssetService.exportData(type, assetQuery, response);
     }
 
     /**
@@ -164,8 +169,8 @@ public class AssetController {
     @ApiOperation(value = "导出模板", notes = "主键封装对象", produces = "application/octet-stream")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
-    public void exportTemplate(@ApiParam("导出的模板类型") @Min(value = 1, message = "软件类型只能为1，2，3，4") @Max(value = 5, message = "软件类型只能为1，2，3，4，5") Integer type)
-                                                                                                                                                           throws Exception {
+    public void exportTemplate(@ApiParam("导出的模板类型") @Min(value = 1, message = "软件类型只能为1，2，3，4，5") @Max(value = 5, message = "软件类型只能为1，2，3，4，5") Integer type)
+                                                                                                                                                             throws Exception {
         ParamterExceptionUtils.isNull(type, "类型不能为空");
         iAssetService.exportTemplate(type);
     }
