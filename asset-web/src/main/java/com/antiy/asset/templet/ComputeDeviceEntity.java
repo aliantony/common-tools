@@ -87,14 +87,14 @@ public class ComputeDeviceEntity {
     private String  buyDate;
 
     /**
-     * 购买时间
-     */
-    @ExcelField(value = "due_time", align = 1, title = "到期时间", isDate = true)
-    private String  dueTime;
-    /**
      * 使用到期时间
      */
-    @ExcelField(value = "warranty", align = 1, title = "保修期")
+    @ExcelField(value = "due_time", align = 1, title = "到期时间", isDate = true)
+    private Long  dueTime;
+    /**
+     * 保修
+     */
+    @ExcelField(value = "warranty", align = 1, title = "保修期",isDate = true)
     private Long    warranty;
 
     /**
