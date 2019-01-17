@@ -114,7 +114,27 @@ public class AssetSoftware extends BaseEntity {
     */
     private Integer status;
 
+    private Long              buyDate;
+    /**
+     * 到期时间
+     */
+    private Long              serviceLife;
 
+    public Long getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(Long buyDate) {
+        this.buyDate = buyDate;
+    }
+
+    public Long getServiceLife() {
+        return serviceLife;
+    }
+
+    public void setServiceLife(Long serviceLife) {
+        this.serviceLife = serviceLife;
+    }
 
     public Integer getSize() {
         return size;

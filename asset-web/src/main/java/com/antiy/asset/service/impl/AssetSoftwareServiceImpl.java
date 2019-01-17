@@ -1,21 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetPortProtocolService;
@@ -44,6 +28,21 @@ import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -121,7 +120,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     public Integer batchSave(List<AssetSoftware> assetSoftwareList) throws Exception {
         int i = 0;
         for (; i < assetSoftwareList.size(); i++) {
-            assetSoftwareDao.insert(assetSoftwareList.get(i));
+            AssetSoftware t = assetSoftwareList.get (i);
+            t.setGmtCreate (System.currentTimeMillis ());
+            t.setSoftwareStatus (3);
+            //// TODO: 2019/1/17 流程
+            assetSoftwareDao.insert(t);
         }
         return i + 1;
     }

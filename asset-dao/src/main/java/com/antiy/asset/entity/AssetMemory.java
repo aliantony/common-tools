@@ -20,9 +20,26 @@ public class AssetMemory extends BaseEntity {
      */
     private Integer capacity;
     /**
+     * 内存品牌
+     */
+    private String brand;
+    /**
+     * 内存序列号
+     */
+    private String serial;
+
+    public Double getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(Double frequency) {
+        this.frequency = frequency;
+    }
+
+    /**
      * 内存主频(MHz)
      */
-    private Integer frequency;
+    private Double frequency;
     /**
      * 插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM
      */
@@ -86,14 +103,6 @@ public class AssetMemory extends BaseEntity {
 
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
-    }
-
-    public Integer getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(Integer frequency) {
-        this.frequency = frequency;
     }
 
     public Integer getSlotType() {
@@ -199,5 +208,22 @@ public class AssetMemory extends BaseEntity {
                + ", warrantyDate=" + warrantyDate + ", telephone=" + telephone + ", gmtCreate=" + gmtCreate
                + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser=" + createUser + ", modifyUser="
                + modifyUser + ", status=" + status + "}";
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 }
