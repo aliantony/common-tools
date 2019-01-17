@@ -33,7 +33,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
@@ -530,14 +529,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetCpuRequest> cpuRequestList = assetPCRequest.getCpu();
         BaseConverter<AssetCpuRequest, AssetCpu> baseConverter = new BaseConverter<>();
         List<AssetCpu> cpu = baseConverter.convert(cpuRequestList, AssetCpu.class);
-        List<AssetHardDisk> hardDisk = new BaseConverter<AssetHardDiskRequest, AssetHardDisk>().convert(
-            assetPCRequest.getHardDisk(), AssetHardDisk.class);
-        List<AssetMemory> memory = new BaseConverter<AssetMemoryRequest, AssetMemory>().convert(
-            assetPCRequest.getMemory(), AssetMemory.class);
-        List<AssetMainborad> mainboard = new BaseConverter<AssetMainboradRequest, AssetMainborad>().convert(
-            assetPCRequest.getMainboard(), AssetMainborad.class);
-        List<AssetNetworkCard> networkCard = new BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>().convert(
-            assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
+        List<AssetHardDisk> hardDisk = new BaseConverter<AssetHardDiskRequest, AssetHardDisk>()
+            .convert(assetPCRequest.getHardDisk(), AssetHardDisk.class);
+        List<AssetMemory> memory = new BaseConverter<AssetMemoryRequest, AssetMemory>()
+            .convert(assetPCRequest.getMemory(), AssetMemory.class);
+        List<AssetMainborad> mainboard = new BaseConverter<AssetMainboradRequest, AssetMainborad>()
+            .convert(assetPCRequest.getMainboard(), AssetMainborad.class);
+        List<AssetNetworkCard> networkCard = new BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>()
+            .convert(assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
 
         Asset asset = requestConverter.convert(assetPCRequest.getAsset(), Asset.class);
         assetDao.insert(asset);
@@ -892,32 +891,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // CPU
         assetOuterResponse.setAssetCpu(BeanConvert.convert(assetCpuDao.getByWhere(param), AssetCpuResponse.class));
         // 网卡
-        assetOuterResponse.setAssetNetworkCard(BeanConvert.convert(assetNetworkCardDao.getByWhere(param),
-            AssetNetworkCardResponse.class));
+        assetOuterResponse.setAssetNetworkCard(
+            BeanConvert.convert(assetNetworkCardDao.getByWhere(param), AssetNetworkCardResponse.class));
         // 硬盘
-        assetOuterResponse.setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param),
-            AssetHardDiskResponse.class));
+        assetOuterResponse
+            .setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param), AssetHardDiskResponse.class));
         // 主板
-        assetOuterResponse.setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param),
-            AssetMainboradResponse.class));
+        assetOuterResponse
+            .setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param), AssetMainboradResponse.class));
         // 内存
-        assetOuterResponse.setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param),
-            AssetMemoryResponse.class));
+        assetOuterResponse
+            .setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param), AssetMemoryResponse.class));
         // 网络设备
         List<AssetNetworkEquipment> assetNetworkEquipmentList = assetNetworkEquipmentDao.getByWhere(param);
         if (assetNetworkEquipmentList != null && !assetNetworkEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetNetworkEquipment(BeanConvert.convertBean(assetNetworkEquipmentList.get(0),
-                AssetNetworkEquipmentResponse.class));
+            assetOuterResponse.setAssetNetworkEquipment(
+                BeanConvert.convertBean(assetNetworkEquipmentList.get(0), AssetNetworkEquipmentResponse.class));
         }
         // 安全设备
         List<AssetSafetyEquipment> assetSafetyEquipmentList = assetSafetyEquipmentDao.getByWhere(param);
         if (assetSafetyEquipmentList != null && !assetSafetyEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetSafetyEquipment(BeanConvert.convertBean(assetSafetyEquipmentList.get(0),
-                AssetSafetyEquipmentResponse.class));
+            assetOuterResponse.setAssetSafetyEquipment(
+                BeanConvert.convertBean(assetSafetyEquipmentList.get(0), AssetSafetyEquipmentResponse.class));
         }
         // 软件
-        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSoftByAssetId(DataTypeUtils
-            .stringToInteger(id));
+        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
+            .getSoftByAssetId(DataTypeUtils.stringToInteger(id));
         assetOuterResponse.setAssetSoftware(BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class));
         return assetOuterResponse;
     }
@@ -1059,6 +1058,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * 1-计算设备 2-网络设备 3-安全设备 4-存储介质 5-服务器 6-外设
      * @param type 导出模板的类型
      */
+
     public void exportTemplate(int type) throws Exception {
         switch (type) {
             case 1:
@@ -1102,15 +1102,169 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public String importPc(MultipartFile file) throws Exception {
-        return null;
+
+        ImportResult<ComputeDeviceEntity> result = ExcelUtils.importExcelFromClient(ComputeDeviceEntity.class, file,
+                0, 1);
+        List<ComputeDeviceEntity> dataList = result.getDataList();
+        for (ComputeDeviceEntity entity : dataList) {
+            if (StringUtils.isBlank (entity.getName ())){
+                continue;
+            }
+            Asset asset = new Asset();
+            asset.setGmtCreate(System.currentTimeMillis());
+            asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setAssetStatus(3);
+            asset.setAssetSource(2);
+            asset.setName(entity.getName ());
+            asset.setManufacturer(entity.getManufacturer());
+            asset.setFirmwareVersion(entity.getFirmwareVersion());
+            asset.setSerial(entity.getSerial());
+            asset.setContactTel(entity.getTelephone());
+            asset.setLocation(entity.getLocation());
+            asset.setHouseLocation(entity.getHouseLocation());
+            asset.setEmail(entity.getEmail());
+            asset.setBuyDate(entity.getBuyDate ());
+            asset.setServiceLife(entity.getDueTime ());
+            asset.setWarranty(entity.getWarranty());
+            asset.setDescrible (entity.getDescription ());
+            asset.setOperationSystem (entity.getOperationSystem ());
+            assetDao.insert(asset);
+            Integer id = asset.getId ();
+            //// TODO: 2019/1/17 流程
+
+
+
+             if (StringUtils.isNotBlank (entity.getMemoryBrand ())){
+             AssetMemory assetMemory = new AssetMemory ();
+             assetMemory.setAssetId (id);
+             assetMemory. setCreateUser(LoginUserUtil.getLoginUser().getId());
+             assetMemory.setGmtCreate (System.currentTimeMillis ());
+             assetMemory.setSerial (entity.getMemorySerial ());
+             assetMemory.setBrand (entity.getMemoryBrand ());
+             assetMemory.setCapacity (entity.getMemoryCapacity ());
+             assetMemory.setFrequency (entity.getMemoryFrequency ());
+             assetMemory.setCapacity (entity.getMemoryCapacity ());
+             assetMemory.setStitch (entity.getStitch ());
+             assetMemory.setIsHeatsink (entity.getHeatsink ());
+                 if (entity.getMemoryNum () != null) {
+                     for (int i = 0; i <entity.getMemoryNum (); i++) {
+                         assetMemoryDao.insert (assetMemory);
+
+                     }
+                 }
+
+             }
+
+
+
+
+
+             if (StringUtils.isNotBlank (entity.getHardDiskBrand ())){
+                AssetHardDisk assetHardDisk = new AssetHardDisk ();
+                assetHardDisk.setAssetId (id);
+                assetHardDisk.setGmtCreate (System.currentTimeMillis ());
+                assetHardDisk. setCreateUser(LoginUserUtil.getLoginUser().getId());
+                assetHardDisk.setSerial (entity.getHardDiskSerial ());
+                assetHardDisk.setBrand (entity.getHardDiskBrand ());
+                assetHardDisk.setModel (entity.getHardDiskModel ());
+                assetHardDisk.setCapacity (entity.getHardDisCapacityl ());
+                assetHardDisk.setBuyDate (entity.getHardDiskBuyDate ());
+                assetHardDisk.setInterfaceType (entity.getHardDiskInterfaceType ());
+                assetHardDisk.setDiskType (entity.getHardDiskType ());
+
+
+                if (entity.getHardDiskNum () != null) {
+
+                    for (int i = 0; i <entity.getHardDiskNum (); i++) {
+                        assetHardDiskDao.insert (assetHardDisk);
+
+                    }
+                }
+
+            }
+
+
+             if (StringUtils.isNotBlank (entity.getMainboradBrand ())){
+             AssetMainborad assetMainborad = new AssetMainborad ();
+             assetMainborad.setAssetId (id);
+             assetMainborad.setGmtCreate (System.currentTimeMillis ());
+             assetMainborad. setCreateUser(LoginUserUtil.getLoginUser().getId());
+             assetMainborad.setSerial (entity.getMainboradSerial ());
+             assetMainborad.setBrand (entity.getMainboradBrand ());
+             assetMainborad.setModel (entity.getMainboradModel ());
+             assetMainborad.setBiosVersion (entity.getMainboradBiosVersion ());
+             assetMainborad.setBiosDate (entity.getMainboradBiosDate ());
+             if (entity.getMainboradNum () != null) {
+             for (int i = 0; i <entity.getMainboradNum (); i++) {
+             assetMainboradDao.insert (assetMainborad);
+
+             }
+             }
+
+             }
+             if (StringUtils.isNotBlank (entity.getCpuBrand ())){
+             AssetCpu assetCpu = new AssetCpu ();
+             assetCpu.setAssetId (id);
+             assetCpu.setGmtCreate (System.currentTimeMillis ());
+                 assetCpu. setCreateUser(LoginUserUtil.getLoginUser().getId());
+             assetCpu.setSerial (entity.getCpuSerial ());
+             assetCpu.setBrand (entity.getCpuBrand ());
+             assetCpu.setModel (entity.getCpuModel ());
+             assetCpu.setMainFrequency (entity.getCpuMainFrequency ());
+             assetCpu.setThreadSize (entity.getCpuThreadSize ());
+             assetCpu.setCoreSize (entity.getCpuCoreSize ());
+             if (entity.getCpuNum () != null) {
+
+             for (int i = 0; i <entity.getCpuNum (); i++) {
+             assetCpuDao.insert (assetCpu);
+
+             }
+             }
+             }
+             if (StringUtils.isNotBlank (entity.getNetworkBrand ())){
+             AssetNetworkCard assetNetworkCard = new AssetNetworkCard ();
+             assetNetworkCard.setAssetId (id);
+                assetNetworkCard. setCreateUser(LoginUserUtil.getLoginUser().getId());
+             assetNetworkCard.setGmtCreate (System.currentTimeMillis ());
+             assetNetworkCard.setSerial (entity.getNetworkSerial ());
+             assetNetworkCard.setBrand (entity.getNetworkBrand ());
+             assetNetworkCard.setModel(entity.getNetworkModel ());
+             assetNetworkCard.setSubnetMask(entity.getNetworkSubnetMask ());
+                assetNetworkCard.setDefaultGateway (entity.getNetworkDefaultGateway ());
+
+             String ip =entity.getNetworkIpAddress ();
+             String mac =entity.getNetworkMacAddress ();
+                if (StringUtils.isNotBlank (ip)&&StringUtils.isNotBlank (mac)&&entity.getNetworkNum ()>0){
+
+                    String[] ips = ip.split (",");
+                    String[] macs = mac.split (",");
+                    for (int i = 0; i <entity.getNetworkNum (); i++) {
+
+
+                        assetNetworkCard.setMacAddress (macs[i]);
+                        assetNetworkCard.setIpAddress (ips[i]);
+                        assetNetworkCardDao.insert (assetNetworkCard);
+                    }
+                }
+
+
+
+
+
+             }
+
+        }
+
+
+        return result.getMsg();
     }
 
     @Override
     public String importNet(MultipartFile file) throws Exception {
-        ImportResult<NetworkDeviceEntity> result = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class, file, 0,
-            1);
-        List<NetworkDeviceEntity> dataList = result.getDataList();
-        for (NetworkDeviceEntity networkDeviceEntity : dataList) {
+        ImportResult<NetworkDeviceEntity> importResult = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class,
+            file, 0, 1);
+        List<NetworkDeviceEntity> entities = importResult.getDataList();
+        for (NetworkDeviceEntity networkDeviceEntity : entities) {
             Asset asset = new Asset();
             AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
             asset.setGmtCreate(System.currentTimeMillis());
@@ -1154,15 +1308,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         }
 
-        return result.getMsg();
+        return importResult.getMsg();
     }
 
     @Override
     public String importSecurity(MultipartFile file) throws Exception {
-        ImportResult<SafetyEquipmentEntiy> result = ExcelUtils.importExcelFromClient(SafetyEquipmentEntiy.class, file,
-            0, 1);
-        List<SafetyEquipmentEntiy> dataList = result.getDataList();
-        for (SafetyEquipmentEntiy entity : dataList) {
+        ImportResult<SafetyEquipmentEntiy> re = ExcelUtils.importExcelFromClient(SafetyEquipmentEntiy.class, file, 0,
+            1);
+        List<SafetyEquipmentEntiy> resultDataList = re.getDataList();
+        for (SafetyEquipmentEntiy entity : resultDataList) {
             Asset asset = new Asset();
             AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
             asset.setGmtCreate(System.currentTimeMillis());
@@ -1193,15 +1347,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         }
 
-        return result.getMsg();
+        return re.getMsg();
     }
 
     private void exportToClient(Class clazz, String fileName, String title) {
         ExcelUtils.exportTemplet(clazz, fileName, title);
     }
 
-    private void exportData(Class clazz, String fileName,AssetQuery assetQuery, HttpServletResponse response)
-                                                                                                              throws Exception {
+    private void exportData(Class clazz, String fileName, AssetQuery assetQuery,
+                            HttpServletResponse response) throws Exception {
         List<Asset> list = assetDao.findListAsset(assetQuery);
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setDownloadList(list);
