@@ -4,6 +4,7 @@ import java.util.*;
 import javax.annotation.Resource;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.vo.enums.AssetCodeEnum;
 import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.utils.LogUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -798,15 +799,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
                     return count;
                 } catch (Exception e) {
+                    //回滚
+                    transactionStatus.setRollbackOnly();
                     LOGGER.error("修改资产失败", e);
                 }
                 return 0;
             }
         });
-        return assetCount;
+        AssetOuterResponse assetOuterResponse = getByAssetId(assetOuterRequest.getAsset().getId());
         // TODO 下发智甲
 
         // TODO 通知工作流
+
+        //TODO 记录资产操作历史
+        return assetCount;
     }
 
     /**

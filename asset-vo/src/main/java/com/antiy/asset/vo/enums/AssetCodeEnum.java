@@ -26,8 +26,14 @@ public enum AssetCodeEnum {
                                                                                                                                                                                                                                                                                                                                                                                                "重要程度");
 
     ;
+    /**
+     * 码表类型
+     */
     private String codeType;
 
+    /**
+     * 码表名称
+     */
     private String codeName;
 
     AssetCodeEnum(String codeType, String codeName) {
