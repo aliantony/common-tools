@@ -83,6 +83,11 @@ public class StorageDeviceEntity {
     @ExcelField(value = "raid_support", align = 1, title = "RAID支持")
     private String  raidSupport;
     /**
+     * high_cache
+     */
+    @ExcelField(value = "high_cache", align = 1, title = "RAID支持")
+    private String  highCache;
+    /**
      * 平均传输率
      */
     @ExcelField(value = "average_transmission_rate ", align = 1, title = "平均传输率")
@@ -297,5 +302,25 @@ public class StorageDeviceEntity {
 
     public void setHouseLocation(String houseLocation) {
         this.houseLocation = houseLocation;
+    }
+
+    public String getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(String orderNum) {
+        this.orderNum = orderNum;
+    }
+
+    public Integer getHardDiskNum() {
+        return hardDiskNum;
+    }
+
+    public String getHighCache() {
+        return highCache;
+    }
+
+    public void setHighCache(String highCache) {
+        this.highCache = highCache;
     }
 }

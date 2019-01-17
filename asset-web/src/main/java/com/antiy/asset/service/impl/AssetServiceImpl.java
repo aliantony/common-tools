@@ -1255,6 +1255,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             file, 0, 1);
         List<NetworkDeviceEntity> entities = importResult.getDataList();
         for (NetworkDeviceEntity networkDeviceEntity : entities) {
+            if (StringUtils.isBlank (networkDeviceEntity.getName ())){
+                continue;
+            }
             Asset asset = new Asset();
             AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
             asset.setGmtCreate(System.currentTimeMillis());
@@ -1307,6 +1310,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             .importExcelFromClient(SafetyEquipmentEntiy.class, file, 0, 1);
         List<SafetyEquipmentEntiy> resultDataList = re.getDataList();
         for (SafetyEquipmentEntiy entity : resultDataList) {
+            if (StringUtils.isBlank (entity.getName ())){
+                continue;
+            }
             Asset asset = new Asset();
             AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
             asset.setGmtCreate(System.currentTimeMillis());
@@ -1333,6 +1339,86 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetSafetyEquipment.setIp(entity.getIp());
             assetSafetyEquipment.setMemo(entity.getMemo());
             assetSafetyEquipmentDao.insert(assetSafetyEquipment);
+            // // TODO: 2019/1/17 流程
+
+        }
+
+        return re.getMsg();
+    }
+
+    @Override
+    public String importStory(MultipartFile file) throws Exception {
+        ImportResult<StorageDeviceEntity> re = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 0,
+                1);
+        List<StorageDeviceEntity> resultDataList = re.getDataList();
+        for (StorageDeviceEntity entity : resultDataList) {
+            Asset asset = new Asset();
+            if (StringUtils.isBlank (entity.getName ())){
+                continue;
+            }
+            AssetStorageMedium assetSafetyEquipment=new AssetStorageMedium ();
+            asset.setGmtCreate(System.currentTimeMillis());
+            asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setAssetStatus(3);
+            asset.setAssetSource(2);
+            asset.setName(entity.getName());
+            asset.setManufacturer(entity.getManufacturer());
+            asset.setFirmwareVersion(entity.getFirmware ());
+            asset.setSerial(entity.getSerial());
+            asset.setContactTel(entity.getTelephone());
+            asset.setLocation(entity.getLocation());
+            asset.setHouseLocation(entity.getHouseLocation ());
+            asset.setEmail(entity.getEmail());
+            asset.setBuyDate(entity.getBuyDate());
+            asset.setServiceLife(entity.getDueDate());
+            asset.setWarranty(entity.getWarranty());
+            asset.setMemo(entity.getMemo());
+            assetDao.insert(asset);
+            assetSafetyEquipment.setAssetId(asset.getId());
+            assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
+            assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetSafetyEquipment.setFirmware (entity.getFirmware ());
+            assetSafetyEquipment.setDiskNumber (entity.getHardDiskNum ());
+            assetSafetyEquipment.setDriverNumber (entity.getDriveNum ());
+            assetSafetyEquipment.setMaximumStorage (entity.getCapacity ());
+            assetSafetyEquipment.setMemo(entity.getMemo());
+            assetSafetyEquipment.setHighCache (entity.getHighCache ());
+            assetSafetyEquipment.setRaidSupport (entity.getRaidSupport ());
+            assetSafetyEquipment.setInnerInterface (entity.getInnerInterface ());
+            assetSafetyEquipment.setOsVersion (entity.getSlotType ());
+            assetSafetyEquipment.setAverageTransferRate (entity.getAverageTransmissionRate ());
+            assetStorageMediumDao.insert(assetSafetyEquipment);
+            // // TODO: 2019/1/17 流程
+
+        }
+
+        return re.getMsg();
+    }
+
+    @Override
+    public String importOhters(MultipartFile file) throws Exception {
+        ImportResult<OtherDeviceEntity> re = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 0,
+                1);
+        List<OtherDeviceEntity> resultDataList = re.getDataList();
+        for (OtherDeviceEntity entity : resultDataList) {
+            if (StringUtils.isBlank (entity.getName ())){
+                continue;
+            }
+            Asset asset = new Asset();
+            asset.setGmtCreate(System.currentTimeMillis());
+            asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setAssetStatus(3);
+            asset.setAssetSource(2);
+            asset.setName(entity.getName());
+            asset.setManufacturer(entity.getManufacturer());
+            asset.setSerial(entity.getSerial());
+            asset.setContactTel(entity.getTelephone());
+            asset.setEmail(entity.getEmail());
+            asset.setBuyDate(entity.getBuyDate());
+            asset.setServiceLife(entity.getDueDate());
+            asset.setWarranty(entity.getWarranty());
+            asset.setMemo(entity.getMemo());
+            assetDao.insert(asset);
             // // TODO: 2019/1/17 流程
 
         }
