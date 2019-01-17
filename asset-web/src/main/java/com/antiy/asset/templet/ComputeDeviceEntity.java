@@ -84,7 +84,7 @@ public class ComputeDeviceEntity {
      * 购买时间
      */
     @ExcelField(value = "buy_date", align = 1, title = "购买时间", isDate = true)
-    private String  buyDate;
+    private Long  buyDate;
 
     /**
      * 使用到期时间
