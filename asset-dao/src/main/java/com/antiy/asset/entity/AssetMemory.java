@@ -47,7 +47,7 @@ public class AssetMemory extends BaseEntity {
     /**
      * 是否带散热片:0-不带，1-带
      */
-    private Boolean isHeatsink;
+    private Integer isHeatsink;
     /**
      * 针脚数
      */
@@ -113,11 +113,11 @@ public class AssetMemory extends BaseEntity {
         this.slotType = slotType;
     }
 
-    public Boolean getHeatsink() {
+    public Integer getIsHeatsink() {
         return isHeatsink;
     }
 
-    public void setHeatsink(Boolean isHeatsink) {
+    public void setIsHeatsink(Integer isHeatsink) {
         this.isHeatsink = isHeatsink;
     }
 

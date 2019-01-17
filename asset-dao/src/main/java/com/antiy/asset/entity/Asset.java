@@ -538,4 +538,12 @@ public class Asset extends BaseEntity {
     public void setCategoryModel(Integer categoryModel) {
         this.categoryModel = categoryModel;
     }
+
+    public Integer getCategoryModel() {
+        return categoryModel;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
 }

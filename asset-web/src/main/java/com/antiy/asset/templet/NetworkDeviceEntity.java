@@ -175,5 +175,251 @@ public class NetworkDeviceEntity {
     @ExcelField(value = "memo", align = 1, title = "描述")
     private String            memo;
 
+    public String getId() {
+        return id;
+    }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAssetGroup() {
+        return assetGroup;
+    }
+
+    public void setAssetGroup(String assetGroup) {
+        this.assetGroup = assetGroup;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getHouseLocation() {
+        return houseLocation;
+    }
+
+    public void setHouseLocation(String houseLocation) {
+        this.houseLocation = houseLocation;
+    }
+
+    public Integer getPortSize() {
+        return portSize;
+    }
+
+    public void setPortSize(Integer portSize) {
+        this.portSize = portSize;
+    }
+
+    public Integer getInterfaceSize() {
+        return interfaceSize;
+    }
+
+    public void setInterfaceSize(Integer interfaceSize) {
+        this.interfaceSize = interfaceSize;
+    }
+
+    public String getIos() {
+        return ios;
+    }
+
+    public void setIos(String ios) {
+        this.ios = ios;
+    }
+
+    public String getFirmwareVersion() {
+        return firmwareVersion;
+    }
+
+    public void setFirmwareVersion(String firmwareVersion) {
+        this.firmwareVersion = firmwareVersion;
+    }
+
+    public Integer getIsWireless() {
+        return isWireless;
+    }
+
+    public void setIsWireless(Integer isWireless) {
+        this.isWireless = isWireless;
+    }
+
+    public String getInnerIp() {
+        return innerIp;
+    }
+
+    public void setInnerIp(String innerIp) {
+        this.innerIp = innerIp;
+    }
+
+    public String getOuterIp() {
+        return outerIp;
+    }
+
+    public void setOuterIp(String outerIp) {
+        this.outerIp = outerIp;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
+    public String getSubnetMask() {
+        return subnetMask;
+    }
+
+    public void setSubnetMask(String subnetMask) {
+        this.subnetMask = subnetMask;
+    }
+
+    public Integer getExpectBandwidth() {
+        return expectBandwidth;
+    }
+
+    public void setExpectBandwidth(Integer expectBandwidth) {
+        this.expectBandwidth = expectBandwidth;
+    }
+
+    public Integer getRegister() {
+        return register;
+    }
+
+    public void setRegister(Integer register) {
+        this.register = register;
+    }
+
+    public Integer getCpuSize() {
+        return cpuSize;
+    }
+
+    public void setCpuSize(Integer cpuSize) {
+        this.cpuSize = cpuSize;
+    }
+
+    public String getCpuVersion() {
+        return cpuVersion;
+    }
+
+    public void setCpuVersion(String cpuVersion) {
+        this.cpuVersion = cpuVersion;
+    }
+
+    public Float getDramSize() {
+        return dramSize;
+    }
+
+    public void setDramSize(Float dramSize) {
+        this.dramSize = dramSize;
+    }
+
+    public Float getFlashSize() {
+        return flashSize;
+    }
+
+    public void setFlashSize(Float flashSize) {
+        this.flashSize = flashSize;
+    }
+
+    public Float getNcrmSize() {
+        return ncrmSize;
+    }
+
+    public void setNcrmSize(Float ncrmSize) {
+        this.ncrmSize = ncrmSize;
+    }
+
+    public Long getButDate() {
+        return butDate;
+    }
+
+    public void setButDate(Long butDate) {
+        this.butDate = butDate;
+    }
+
+    public Long getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Long dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public Long getWarranty() {
+        return warranty;
+    }
+
+    public void setWarranty(Long warranty) {
+        this.warranty = warranty;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 }
