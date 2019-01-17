@@ -71,6 +71,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetSoftwareRelationDao                  assetSoftwareRelationDao;
     @Resource
+    private AssetStorageMediumDao                     assetStorageMediumDao;
+    @Resource
     private BaseConverter<AssetRequest, Asset>        requestConverter;
     @Resource
     private BaseConverter<Asset, AssetResponse>       responseConverter;
@@ -916,6 +918,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOuterResponse.setAssetSafetyEquipment(BeanConvert.convertBean(assetSafetyEquipmentList.get(0),
                 AssetSafetyEquipmentResponse.class));
         }
+        // 存储介质
+        List<AssetStorageMedium> assetStorageMediumList = assetStorageMediumDao.getByWhere(param);
+        if (assetStorageMediumList != null && !assetStorageMediumList.isEmpty()) {
+            assetOuterResponse.setAssetStorageMedium(
+                BeanConvert.convertBean(assetStorageMediumList.get(0), AssetStorageMediumResponse.class));
+        }
         // 软件
         List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSoftByAssetId(DataTypeUtils
             .stringToInteger(id));
@@ -1027,7 +1035,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetSafetyEquipment.setGmtModified(System.currentTimeMillis());
                         assetSafetyEquipmentDao.update(assetSafetyEquipment);
                     }
-                    // 9. 更新资产软件关系信息
+                    // 9. 更新存储介质信息
+                    AssetStorageMediumRequest storageMedium = assetOuterRequest.getAssetStorageMedium();
+                    if (storageMedium != null && StringUtils.isNotBlank(storageMedium.getId())) {
+                        AssetStorageMedium assetStorageMedium = BeanConvert.convertBean(storageMedium,
+                            AssetStorageMedium.class);
+                        assetStorageMedium.setAssetId(asset.getId());
+                        // assetStorageMedium.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                        assetStorageMedium.setGmtModified(System.currentTimeMillis());
+                        assetStorageMediumDao.update(assetStorageMedium);
+                    }
+                    // 10. 更新资产软件关系信息
                     assetSoftwareRelationDao.deleteByAssetId(asset.getId());
                     List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
                     Integer[] assetSoftwareIds = assetOuterRequest.getAssetSoftwareIds();
