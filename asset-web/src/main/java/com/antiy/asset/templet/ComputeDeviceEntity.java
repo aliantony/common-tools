@@ -106,7 +106,7 @@ public class ComputeDeviceEntity {
      * 内存数量
      */
     @ExcelField(value = "memory_num", align = 1, title = "内存数量")
-    private String  memoryNum;
+    private Integer  memoryNum;
     /**
      * 内存品牌
      */
@@ -122,40 +122,36 @@ public class ComputeDeviceEntity {
      * 内存容量
      */
     @ExcelField(value = "memory_capacity", align = 1, title = "内存容量")
-    private String  memoryCapacity;
+    private Integer  memoryCapacity;
 
-    /**
-     * 内存频率
-     */
-    @ExcelField(value = "memory_type", align = 1, title = "内存频率")
-    private Float  memoryType;
+
     /**
      * 内存主频
      */
     @ExcelField(value = "memory_frequency", align = 1, title = "内存主频")
-    private String  memoryFrequency;
+    private Double  memoryFrequency;
 
     /**
      * 内存插槽类型
      */
     @ExcelField(value = "slot_type", align = 1, title = "内存插槽类型", dictType = "slot_type")
-    private String  slotType;
+    private Integer  slotType;
 
     /**
      * 是否带散热
      */
     @ExcelField(value = "cpu_is_heatsink", align = 1, title = "内存是否带散热", dictType = "yesorno")
-    private String  cpuIsHeatsink;
+    private Integer  cpuIsHeatsink;
     /**
      * 针脚数
      */
     @ExcelField(value = "cpu_stitch", align = 1, title = "内存针脚数")
-    private String  cpuStitch;
+    private Integer  cpuStitch;
     /**
      * 硬盘数量
      */
     @ExcelField(value = "hard_disk_num", align = 1, title = "硬盘数量")
-    private String  hardDiskNum;
+    private Integer  hardDiskNum;
     /**
      * 硬盘品牌
      */
@@ -177,17 +173,17 @@ public class ComputeDeviceEntity {
      * 硬盘容量
      */
     @ExcelField(value = "hard_disk_capacity", align = 1, title = "硬盘容量")
-    private String  hardDisCapacityl;
+    private Integer  hardDisCapacityl;
     /**
      * 硬盘接口类型
      */
     @ExcelField(value = "hard_disk_interface_type", align = 1, title = "硬盘接口类型", dictType = "interface_type")
-    private String  hardDiskInterfaceType;
+    private Integer  hardDiskInterfaceType;
     /**
      * 硬盘磁盘类型
      */
     @ExcelField(value = "hard_disk_type", align = 1, title = "硬盘磁盘类型", dictType = "disk_type")
-    private String  hardDiskType;
+    private Integer  hardDiskType;
     /**
      * 硬盘购买时间
      */
@@ -216,13 +212,13 @@ public class ComputeDeviceEntity {
     /**
      * 主板bios日期
      */
-    @ExcelField(value = "mainborad_bios_date", align = 1, title = "主板bios日期")
-    private String  mainboradBiosDate;
+    @ExcelField(value = "mainborad_bios_date", align = 1, title = "主板bios日期",isDate = true)
+    private Long  mainboradBiosDate;
     /**
      * cpu数量
      */
     @ExcelField(value = "cpu_num", align = 1, title = "cpu数量")
-    private String  cpuNum;
+    private Integer  cpuNum;
     /**
      * cpu品牌
      */
@@ -242,22 +238,22 @@ public class ComputeDeviceEntity {
      * cpu主频
      */
     @ExcelField(value = "cpu_main_frequency", align = 1, title = "cpu主频")
-    private String  cpuMainFrequency;
+    private Float  cpuMainFrequency;
     /**
      * cpu线程数
      */
     @ExcelField(value = "cpu_thread_size", align = 1, title = "cpu线程数")
-    private String  cpuThreadSize;
+    private Integer  cpuThreadSize;
     /**
      * cpu核心数
      */
     @ExcelField(value = "cpu_core_size", align = 1, title = "cpu核心数")
-    private String  cpuCoreSize;
+    private Integer  cpuCoreSize;
     /**
      * 网卡数量
      */
     @ExcelField(value = "network_num", align = 1, title = "网卡数量")
-    private String  networkNum;
+    private Integer  networkNum;
     /**
      * 网卡品牌
      */
