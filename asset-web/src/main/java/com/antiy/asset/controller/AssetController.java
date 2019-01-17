@@ -83,7 +83,8 @@ public class AssetController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetRequest asset) throws Exception {
+    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetRequest asset)
+                                                                                                                    throws Exception {
         iAssetService.updateAsset(asset);
         return ActionResponse.success();
     }
@@ -155,9 +156,8 @@ public class AssetController {
     @ApiOperation(value = "根据条件导出硬件信息", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/file", method = RequestMethod.GET)
-    public void export(@ApiParam(value = "query") AssetQuery assetQuery, @ApiParam(value = "类型") Integer type,
-                       HttpServletResponse response) throws Exception {
-        iAssetService.exportData(type, assetQuery, response);
+    public void export(@ApiParam(value = "query") AssetQuery assetQuery, HttpServletResponse response) throws Exception {
+        iAssetService.exportData(assetQuery, response);
     }
 
     /**
@@ -318,11 +318,7 @@ public class AssetController {
     @RequestMapping(value = "/import/net", method = RequestMethod.POST)
     public ActionResponse importNet(@ApiParam(value = "file") MultipartFile file) throws Exception {
 
-
         return ActionResponse.success(iAssetService.importNet(file));
     }
-
-
-
 
 }

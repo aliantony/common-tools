@@ -25,6 +25,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,7 +80,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetUserDao                              assetUserDao;
     @Resource
     private ExcelDownloadUtil                         excelDownloadUtil;
-
+    @Resource
+    private AssetEntityConvert                        assetEntityConvert;
     private static final Logger                       LOGGER = LogUtils.get(AssetServiceImpl.class);
 
     @Override
@@ -1080,24 +1082,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public void exportData(int type, AssetQuery assetQuery, HttpServletResponse response) throws Exception {
-        switch (type) {
-            case 1:
-                exportData(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", assetQuery, response);
-                break;
-            case 2:
-                exportData(NetworkDeviceEntity.class, "网络设备信息模板.xlsx", assetQuery, response);
-                break;
-            case 3:
-                exportData(SafetyEquipmentEntiy.class, "安全设备信息模板.xlsx", assetQuery, response);
-                break;
-            case 4:
-                exportData(StorageDeviceEntity.class, "存储设备信息模板.xlsx", assetQuery, response);
-                break;
-            case 5:
-                exportData(OtherDeviceEntity.class, "其他设备信息模板.xlsx", assetQuery, response);
-                break;
-        }
+    public void exportData(AssetQuery assetQuery, HttpServletResponse response) throws Exception {
+        exportData(ComputeDeviceEntity.class, "资产信息表.xlsx", assetQuery, response);
     }
 
     @Override
@@ -1354,13 +1340,52 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ExcelUtils.exportTemplet(clazz, fileName, title);
     }
 
-    private void exportData(Class clazz, String fileName, AssetQuery assetQuery,
-                            HttpServletResponse response) throws Exception {
+    private void exportData(Class clazz, String fileName, AssetQuery assetQuery, HttpServletResponse response)
+                                                                                                              throws Exception {
         List<Asset> list = assetDao.findListAsset(assetQuery);
-        DownloadVO downloadVO = new DownloadVO();
-        downloadVO.setDownloadList(list);
-        excelDownloadUtil.excelDownload(response, "资产信息表", downloadVO);
+        List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
+        ParamterExceptionUtils.isEmpty(list,"资产数据不能为空");
+        for (int i = 0; i < list.size(); i++) {
+            if (Objects.nonNull(list.get(i).getCategoryModel())) {
+                Asset asset=list.get(i);
+                AssetEntity assetEntity=assetEntities.get(i);
+                AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getById(asset.getCategoryModel());
+                if (Objects.nonNull(assetCategoryModel)) {
+                    assetEntities.get(i).setCategoryModel(assetCategoryModel.getName());
+                }
 
+            }
+        }
+        DownloadVO downloadVO = new DownloadVO();
+        downloadVO.setSheetName("资产信息表");
+        downloadVO.setDownloadList(assetEntities);
+        excelDownloadUtil.excelDownload(response, "资产信息表", downloadVO);
     }
 
+}
+
+@Component
+class AssetEntityConvert extends BaseConverter<Asset, AssetEntity> {
+    private final Logger logger = LogUtils.get();
+
+    @Override
+    protected void convert(Asset asset, AssetEntity assetEntity) {
+        if (Objects.nonNull(asset.getInnet())) {
+            assetEntity.setIsInnet(asset.getInnet() ? "已入网" : "未入网");
+        }
+
+        if (Objects.nonNull(asset.getAssetStatus())) {
+            AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode(asset.getAssetStatus());
+            assetEntity.setAssetStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
+        }
+        if (Objects.nonNull(asset.getAssetSource())) {
+            if (asset.getAssetSource().equals(1)) {
+                assetEntity.setAssetSource("人工上报");
+            }
+            if (asset.getAssetSource().equals(2)) {
+                assetEntity.setAssetSource("自动上报");
+            }
+        }
+        super.convert(asset, assetEntity);
+    }
 }
