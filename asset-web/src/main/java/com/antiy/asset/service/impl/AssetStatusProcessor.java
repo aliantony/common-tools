@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.SchemeDao;
@@ -14,7 +15,6 @@ import com.antiy.asset.service.AbstractProcessor;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.utils.LogUtils;
-import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * @author zhangyajun
@@ -30,7 +30,7 @@ public class AssetStatusProcessor extends AbstractProcessor {
     @Resource
     private AssetDao                             assetDao;
     @Resource
-    private TransactionTemplate transactionTemplate;
+    private TransactionTemplate                  transactionTemplate;
 
     @Override
     public Integer changeStatus(SchemeRequest schemeRequest) {

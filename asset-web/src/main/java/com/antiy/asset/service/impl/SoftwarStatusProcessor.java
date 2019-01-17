@@ -5,11 +5,10 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.dao.AssetSoftwareDao;
 import org.slf4j.Logger;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.service.AbstractProcessor;
@@ -29,9 +28,9 @@ public class SoftwarStatusProcessor extends AbstractProcessor {
     @Resource
     private SchemeDao                            schemeDao;
     @Resource
-    private AssetSoftwareDao assetSoftwareDao;
+    private AssetSoftwareDao                     assetSoftwareDao;
     @Resource
-    private TransactionTemplate transactionTemplate;
+    private TransactionTemplate                  transactionTemplate;
 
     @Override
     public Integer changeStatus(SchemeRequest schemeRequest) {
@@ -49,7 +48,7 @@ public class SoftwarStatusProcessor extends AbstractProcessor {
                 // 开始调用工作流接口,推动流程
                 // TODO 调用工作流end
                 schemeDao.insert(scheme);
-//                row = assetSoftwareDao.changeStatus(map);
+                // row = assetSoftwareDao.changeStatus(map);
             } catch (Exception e) {
                 LOGGER.error("保存信息失败", e);
             }

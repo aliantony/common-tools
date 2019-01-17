@@ -12,7 +12,7 @@ import com.antiy.asset.service.IAssetNetworkCardService;
 import com.antiy.asset.vo.query.AssetNetworkCardQuery;
 import com.antiy.asset.vo.request.AssetNetworkCardRequest;
 import com.antiy.asset.vo.response.AssetNetworkCardResponse;
-import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;

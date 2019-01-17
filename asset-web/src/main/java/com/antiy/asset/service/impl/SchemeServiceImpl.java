@@ -43,10 +43,10 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     public Integer saveScheme(SchemeRequest request) throws Exception {
 
         Integer schemeId = null;
-        if (request.getTopCategory().equals(AssetOperationTableEnum.ASSET.getCode())){
+        if (request.getTopCategory().equals(AssetOperationTableEnum.ASSET.getCode())) {
             AssetStatusProcessor assetStatusProcessor = new AssetStatusProcessor();
-            schemeId =  assetStatusProcessor.changeStatus(request);
-        }else if (request.getTopCategory().equals(AssetOperationTableEnum.SOFTWARE.getCode())){
+            schemeId = assetStatusProcessor.changeStatus(request);
+        } else if (request.getTopCategory().equals(AssetOperationTableEnum.SOFTWARE.getCode())) {
             SoftwarStatusProcessor softwarStatusProcessor = new SoftwarStatusProcessor();
             schemeId = softwarStatusProcessor.changeStatus(request);
         }

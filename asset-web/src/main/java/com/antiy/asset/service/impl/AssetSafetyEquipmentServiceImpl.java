@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetSafetyEquipmentDao;
@@ -13,6 +12,7 @@ import com.antiy.asset.service.IAssetSafetyEquipmentService;
 import com.antiy.asset.vo.query.AssetSafetyEquipmentQuery;
 import com.antiy.asset.vo.request.AssetSafetyEquipmentRequest;
 import com.antiy.asset.vo.response.AssetSafetyEquipmentResponse;
+import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
