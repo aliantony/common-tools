@@ -182,7 +182,7 @@
         update
         <include refid="Table_Name"></include>
         department
-        left join
+        inner join
         <include refid="User_Table_Name"></include>
         user
         on department.id=user.department_id
@@ -199,7 +199,7 @@
         update
         <include refid="Table_Name"></include>
         department
-        left join
+        inner join
         <include refid="User_Table_Name"></include>
         user
         on department.id=user.department_id

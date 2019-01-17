@@ -3,10 +3,12 @@ package com.antiy.asset.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -53,6 +55,8 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     private BaseConverter<Scheme, SchemeResponse> responseConverter;
     @Resource
     private TransactionTemplate                   transactionTemplate;
+    @Resource
+    private SchemeResponseConvert                 schemeResponseConvert;
     private static final Logger                   LOGGER = LogUtils.get(AssetSoftwareServiceImpl.class);
 
     @Override
@@ -116,14 +120,14 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
                 // TODO 调用工作流,推动流程start
                 // 开始调用工作流接口,推动流程
                 // TODO 调用工作流end
-                schemeDao.insert(scheme);
-                row = assetDao.changeStatus(map);
-            } catch (Exception e) {
-                LOGGER.error("保存信息失败", e);
-            }
+            schemeDao.insert(scheme);
+            row = assetDao.changeStatus(map);
+        } catch (Exception e) {
+            LOGGER.error("保存信息失败", e);
+        }
 
-            return row;
-        });
+        return row;
+    })  ;
 
         // 记录操作历史
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
@@ -158,8 +162,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Override
     public List<SchemeResponse> findListScheme(SchemeQuery query) throws Exception {
         List<Scheme> schemeList = schemeDao.findQuery(query);
-        // TODO
-        List<SchemeResponse> schemeResponse = responseConverter.convert(schemeList, SchemeResponse.class);
+        List<SchemeResponse> schemeResponse = schemeResponseConvert.convert(schemeList, SchemeResponse.class);
         return schemeResponse;
     }
 
@@ -172,5 +175,19 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     public PageResult<SchemeResponse> findPageScheme(SchemeQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
             this.findListScheme(query));
+    }
+}
+
+@Component
+class SchemeResponseConvert extends BaseConverter<Scheme, SchemeResponse> {
+    @Override
+    protected void convert(Scheme scheme, SchemeResponse schemeResponse) {
+        if (Objects.nonNull(scheme.getId())) {
+            schemeResponse.setId(scheme.getId().toString());
+        }
+        if (Objects.nonNull(scheme.getAssetId())) {
+            schemeResponse.setAssetId(scheme.getAssetId().toString());
+        }
+        super.convert(scheme, schemeResponse);
     }
 }

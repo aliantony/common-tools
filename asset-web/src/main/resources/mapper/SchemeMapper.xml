@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.Scheme">
         <id column="id" property="id"/>
+        <result column="asset_id" property="assetId"/>
         <result column="type" property="type"/>
         <result column="result" property="result"/>
         <result column="putinto_user_id" property="putintoUserId"/>
@@ -310,12 +311,15 @@
         </if>
     </select>
 
-    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
-        select type, result, content, expecte_start_time, expecte_end_time, putinto_user_id, putinto_user, file_info,memo from
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.SchemeQuery">
+        select id,asset_id,type, result, content, expecte_start_time, expecte_end_time, putinto_user_id, putinto_user, file_info,memo from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" putintoUser != null">
                 and putinto_user like concat('%','${putintoUser}','%')
+            </if>
+            <if test=" assetId != null">
+                and asset_id = #{assetId}
             </if>
             <if test=" type != null">
                 and type = #{type}

@@ -1,11 +1,12 @@
 package com.antiy.asset.service.impl;
 
+import java.io.Serializable;
 import java.util.*;
 import javax.annotation.Resource;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.ExcelUtils;
-import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -70,6 +71,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private BaseConverter<Asset, AssetResponse>       responseConverter;
     @Resource
     private BaseConverter<Asset, ComputeDeviceEntity> entityConverter;
+    @Resource
+    private AssetUserDao                              assetUserDao;
 
     private static final Logger                       LOGGER = LogUtils.get(AssetServiceImpl.class);
 
@@ -872,27 +875,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ExcelUtils.exportToClient(clazz, fileName, title, findListAsset(assetQuery));
     }
 
-    /**
-     * 将ComputeDeviceEntity中的其他数据装填进去
-     * @param list 处理的数据
-     * @return 处理完的数据
-     */
-    private List<ComputeDeviceEntity> handleListComputeData(List<Asset> list) {
-        List<ComputeDeviceEntity> computeDeviceEntities = new ArrayList<>();
-        for (Asset asset : list) {
-            handleComputeData(asset);
-        }
-        return computeDeviceEntities;
-    }
-
-    private List<ComputeDeviceEntity> handleComputeData(Asset asset) {
-        ComputeDeviceEntity computeDeviceEntity=new ComputeDeviceEntity();
-        handleComputeUserData(asset,computeDeviceEntity);
-        return null;
-    }
-
-    private void handleComputeUserData(Asset asset,ComputeDeviceEntity computeDeviceEntity) {
 
 
-    }
+
+
 }

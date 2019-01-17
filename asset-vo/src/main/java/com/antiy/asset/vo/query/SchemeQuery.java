@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
@@ -25,10 +26,23 @@ public class SchemeQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty("实施人")
     private String  putintoUser;
+    /**
+     * 实施人
+     */
+    @ApiModelProperty("资产id")
+    private Integer assetId;
 
     @Override
     public void validate() throws RequestParamValidateException {
 
+    }
+
+    public Integer getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(Integer assetId) {
+        this.assetId = assetId;
     }
 
     public String getPutintoUser() {
