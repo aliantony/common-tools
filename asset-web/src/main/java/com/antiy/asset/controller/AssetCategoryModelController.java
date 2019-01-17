@@ -35,7 +35,7 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
-        return ActionResponse.success(iAssetCategoryModelService.saveAssetCategoryModel(assetCategoryModel));
+        return iAssetCategoryModelService.saveAssetCategoryModel(assetCategoryModel);
     }
 
     /**
@@ -90,6 +90,6 @@ public class AssetCategoryModelController {
     public ActionResponse deleteById(@PathVariable @ApiParam(value = "id") @Encode Integer id,@RequestBody @ApiParam(value = "二次确认") Boolean isConfirm) throws Exception {
         ParamterExceptionUtils.isNull(id,"id不能为空");
         ParamterExceptionUtils.isNull(isConfirm,"二次确认不能为空");
-        return ActionResponse.success(iAssetCategoryModelService.delete(id,isConfirm));
+        return iAssetCategoryModelService.delete(id,isConfirm);
     }
 }

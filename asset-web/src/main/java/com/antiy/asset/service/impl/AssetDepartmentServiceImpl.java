@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.base.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,6 @@ import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
 import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
 
 /**
  * <p> 资产部门信息 服务实现类 </p>
@@ -130,7 +128,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
      * @throws Exception
      */
     @Override
-    public Integer delete(Serializable id, boolean isConfirm) throws Exception {
+    public ActionResponse delete(Serializable id, boolean isConfirm) throws Exception {
         if (isConfirm) {
             return confirmDelete((Integer) id);
         }
@@ -138,22 +136,22 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
 
     }
 
-    Integer confirmDelete(Integer id) throws Exception {
+    ActionResponse confirmDelete(Integer id) throws Exception {
         return deleteAllById(id);
     }
 
-    Integer notConfirmDelete(Integer id) throws Exception {
+    ActionResponse notConfirmDelete(Integer id) throws Exception {
         List<AssetDepartment> list = recursionSearch((Integer) id);
         if (list.size() > 1) {
-            return -1;
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"需要进行二次确认");
         } else {
             AssetUserQuery assetUserQuery = new AssetUserQuery();
             assetUserQuery.setDepartmentId(id);
             Integer count = assetUserDao.findListCount(assetUserQuery);
             if (count > 0) {
-                return -1;
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"需要进行二次确认");
             } else {
-                return deleteById(id);
+                return delete(id);
             }
         }
     }
@@ -176,12 +174,12 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
      * @return 影响的数据库行数
      * @throws Exception
      */
-    public Integer deleteAllById(Serializable id) throws Exception {
+    public ActionResponse deleteAllById(Serializable id) throws Exception {
         List<AssetDepartment> list = recursionSearch((Integer) id);
         if (CollectionUtils.isNotEmpty(list)) {
-            return assetDepartmentDao.delete(list);
+            return ActionResponse.success(assetDepartmentDao.delete(list));
         } else {
-            return 0;
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"该部门不存在");
         }
     }
 
@@ -192,15 +190,15 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
      * @return 影响的数据库行数
      * @throws Exception
      */
-    public Integer deleteById(Serializable id) throws Exception {
+    public ActionResponse delete(Serializable id) throws Exception {
         List<AssetDepartment> list = new ArrayList<>();
         AssetDepartment assetDepartment = new AssetDepartment();
         assetDepartment.setId((Integer) id);
         list.add(assetDepartment);
         if (CollectionUtils.isNotEmpty(list)) {
-            return assetDepartmentDao.delete(list);
+            return ActionResponse.success(assetDepartmentDao.delete(list));
         } else {
-            return 0;
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"该部门不存在");
         }
     }
 }

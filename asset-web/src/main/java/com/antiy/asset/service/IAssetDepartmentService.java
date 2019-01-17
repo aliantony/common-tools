@@ -8,6 +8,7 @@ import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
 import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -73,6 +74,6 @@ public interface IAssetDepartmentService extends IBaseService<AssetDepartment> {
      * @return
      * @throws Exception
      */
-    Integer delete(Serializable id,boolean isConfirm) throws Exception ;
+    ActionResponse delete(Serializable id, boolean isConfirm) throws Exception ;
 
 }
