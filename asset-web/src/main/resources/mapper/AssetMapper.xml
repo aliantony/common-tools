@@ -655,7 +655,7 @@
         <if test=" timeType != null and timeType == 2  and endTime != null">
             and gmt_create &lt;= #{endTime }
         </if>
-        and status =1
+
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.Asset" useGeneratedKeys="true" keyProperty="id">
@@ -825,14 +825,41 @@
         </if>
     </select>
 
-    <select id="findListAsset" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
+    <select id="findListAsset" resultType="com.antiy.asset.entity.Asset" parameterType="com.antiy.asset.vo.query.AssetQuery">
         select * from (SELECT
-        a.*,
+        a.id,
+        a.number,
+        a.name,
+        a.serial,
+        c.name as categoryModelName,
+        a.manufacturer, asset_status AS assetStatus,
+        a.operation_system AS operationSystem,
+        a.system_bit AS systemBit,
+        a.location,
+        a.latitude,
+        a.longitude,
+        a.firmware_version AS firmwareVersion,
+        a.uuid,
+        a.responsible_user_id AS responsibleUserId,
+        a.contact_tel AS contactTel,
+        a.email,
+        a.asset_source AS assetSource,
+        a.importance_degree AS importanceDegree,
+        a. describle,
+        a. parent_id AS parentId,
+        a.tags,
+        a.is_innet AS isInnet,
+        a.first_enter_nett AS firstEnterNett,
+        a.service_life AS serviceLife,
+        a. buy_date AS buyDate,
+        a.warranty,
         GROUP_CONCAT( b.ip_address ) as ip,
         GROUP_CONCAT( b.mac_address ) as mac
         FROM
         asset a
         LEFT JOIN asset_network_card b ON a.id = b.asset_id
+        left join asset_category_model c on a.category_model = c.id
+        where a.status = 1
         GROUP BY
         a.id) asset
         <trim prefix="WHERE" prefixOverrides="AND|OR">

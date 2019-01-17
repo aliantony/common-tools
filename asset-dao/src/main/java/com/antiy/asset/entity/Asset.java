@@ -47,6 +47,10 @@ public class Asset extends BaseEntity {
      */
     private Integer           categoryModel;
     /**
+     * 品类名称
+     */
+    private String           categoryModelName;
+    /**
      * 厂商
      */
     private String            manufacturer;
@@ -496,6 +500,22 @@ public class Asset extends BaseEntity {
         this.status = status;
     }
 
+    public Integer getCategoryModel() {
+        return categoryModel;
+    }
+
+    public String getCategoryModelName() {
+        return categoryModelName;
+    }
+
+    public void setCategoryModelName(String categoryModelName) {
+        this.categoryModelName = categoryModelName;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     @Override
     public String toString() {
         return "Asset{" + ", number=" + number + ", type=" + type + ", name=" + name + ", serial=" + serial
@@ -539,11 +559,5 @@ public class Asset extends BaseEntity {
         this.categoryModel = categoryModel;
     }
 
-    public Integer getCategoryModel() {
-        return categoryModel;
-    }
 
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
 }
