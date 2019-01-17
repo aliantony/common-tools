@@ -47,11 +47,18 @@ public class AssetOuterRequest extends BasicRequest {
      * 软件id列表
      */
     private List<AssetSoftwareRequest>    software;
-
+    /**
+     * 网络设备
+     */
     private AssetNetworkEquipmentRequest  networkEquipment;
-
+    /**
+     * 安全设备
+     */
     private AssetSafetyEquipmentRequest   safetyEquipment;
-
+    /**
+     * 存储介质
+     */
+    private AssetStorageMediumRequest     assetStorageMedium;
     private Integer[]                     assetSoftwareIds;
 
     public AssetRequest getAsset() {
@@ -132,5 +139,13 @@ public class AssetOuterRequest extends BasicRequest {
 
     public void setAssetSoftwareIds(Integer[] assetSoftwareIds) {
         this.assetSoftwareIds = assetSoftwareIds;
+    }
+
+    public AssetStorageMediumRequest getAssetStorageMedium() {
+        return assetStorageMedium;
+    }
+
+    public void setAssetStorageMedium(AssetStorageMediumRequest assetStorageMedium) {
+        this.assetStorageMedium = assetStorageMedium;
     }
 }
