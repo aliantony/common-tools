@@ -7,21 +7,22 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetCategoryModelDao;
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
-import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
-import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
  * <p> 品类型号表 服务实现类 </p>
@@ -30,8 +31,8 @@ import com.antiy.common.utils.ParamterExceptionUtils;
  * @since 2019-01-02
  */
 @Service
-public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel>
-                                           implements IAssetCategoryModelService {
+public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel> implements
+                                                                                      IAssetCategoryModelService {
 
     @Resource
     private AssetCategoryModelDao                                         assetCategoryModelDao;
@@ -42,16 +43,23 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Resource
     private BaseConverter<AssetCategoryModel, AssetCategoryModelResponse> responseConverter;
 
+    /**
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @Override
-    public Integer saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
+    public ActionResponse saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel assetCategoryModel = requestConverter.convert(request, AssetCategoryModel.class);
         if (setParentType(assetCategoryModel)) {
             assetCategoryModel.setGmtCreate(System.currentTimeMillis());
             assetCategoryModel.setStatus(1);
             assetCategoryModelDao.insert(assetCategoryModel);
-            return assetCategoryModel.getId();
+            return ActionResponse.success(assetCategoryModel.getId());
         }
-        return -1;
+//        return -1;
+        return null;
     }
 
     /**

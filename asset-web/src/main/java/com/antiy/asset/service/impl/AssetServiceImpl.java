@@ -824,20 +824,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 exportToClient(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备");
                 break;
             case 2:
-                exportToClient(ComputeDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备");
+                exportToClient(NetworkDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备");
                 break;
             case 3:
                 exportToClient(SafetyEquipment.class, "安全设备信息模板.xlsx", "安全设备");
                 break;
             case 4:
-                exportToClient(HardDiskEntity.class, "存储介质信息模板.xlsx", "存储介质");
+                exportToClient(StorageDeviceEntity.class, "存储设备信息模板.xlsx", "存储设备");
                 break;
             case 5:
-                exportToClient(ServerEntity.class, "服务器信息模板.xlsx", "服务器");
+                exportToClient(OtherDeviceEntity.class, "其他设备信息模板.xlsx", "其他设备");
                 break;
-            case 6:
-                exportToClient(AssetPeripheralEquipmentEntity.class, "外设信息模板.xlsx", "外设");
-                break;
+
         }
     }
 
