@@ -5,13 +5,15 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.utils.LoginUserUtil;
 import org.slf4j.Logger;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.antiy.asset.dao.AssetSoftwareDao;
+import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.service.AbstractProcessor;
+import com.antiy.asset.vo.enums.AssetStatusJumpEnum;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.utils.LogUtils;
@@ -28,7 +30,7 @@ public class SoftwarStatusProcessor extends AbstractProcessor {
     @Resource
     private SchemeDao                            schemeDao;
     @Resource
-    private AssetSoftwareDao                     assetSoftwareDao;
+    private AssetSoftwareRelationDao             assetSoftwareRelationDao;
     @Resource
     private TransactionTemplate                  transactionTemplate;
 
@@ -36,19 +38,19 @@ public class SoftwarStatusProcessor extends AbstractProcessor {
     public Integer changeStatus(SchemeRequest schemeRequest) {
         Scheme scheme = requestConverter.convert(schemeRequest, Scheme.class);
         scheme.setGmtCreate(System.currentTimeMillis());
-
-        // 修改资产状态
+        // 修改软件状态
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("ids", new Object[] { schemeRequest.getAssetId() });
-        map.put("targetStatus", schemeRequest.getTargetStatus());
+        map.put("targetStatus",
+            AssetStatusJumpEnum.getNextStatus(schemeRequest.getAssetStatus(), schemeRequest.getIsAgree()));
+        map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
+        map.put("gmtModified", System.currentTimeMillis());
         Integer count = transactionTemplate.execute(transactionStatus -> {
             int row = 0;
             try {
-                // TODO 调用工作流,推动流程start
-                // 开始调用工作流接口,推动流程
-                // TODO 调用工作流end
                 schemeDao.insert(scheme);
-                // row = assetSoftwareDao.changeStatus(map);
+                super.saveOperationHistory(schemeRequest);
+                row = assetSoftwareRelationDao.changeSoftwareStatus(map);
             } catch (Exception e) {
                 LOGGER.error("保存信息失败", e);
             }

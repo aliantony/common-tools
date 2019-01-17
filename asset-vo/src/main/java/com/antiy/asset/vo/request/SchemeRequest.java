@@ -84,11 +84,6 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     private String  memo;
 
     /**
-     * 目标状态
-     */
-    @ApiModelProperty("目标状态")
-    private Integer targetStatus;
-    /**
      * 同意/拒绝
      */
     @ApiModelProperty("同意/拒绝")
@@ -224,14 +219,6 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
 
     public void setMemo(String memo) {
         this.memo = memo;
-    }
-
-    public Integer getTargetStatus() {
-        return targetStatus;
-    }
-
-    public void setTargetStatus(Integer targetStatus) {
-        this.targetStatus = targetStatus;
     }
 
     public String getContent() {

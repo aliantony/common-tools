@@ -752,9 +752,6 @@
         <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
             #{id}
         </foreach>
-        <if test=" limitStatus != null">
-            and asset_status = #{limitStatus }
-        </if>
     </update>
 
     <select id="checkRepeatAsset" resultType="com.antiy.asset.entity.Asset" parameterType="java.util.List">

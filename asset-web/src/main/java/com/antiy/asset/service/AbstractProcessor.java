@@ -20,17 +20,12 @@ import com.antiy.common.exception.BusinessException;
 public abstract class AbstractProcessor implements Processor {
     @Resource
     private BaseConverter<SchemeRequest, Scheme> requestConverter;
-    // @Resource
-    // private BaseConverter<AssetRequest, Asset> requestConverter;
     @Resource
     private AssetOperationRecordDao              operationRecordDao;
 
     @Override
-    public void saveOperationHistory(SchemeRequest schemeRequest, AssetOperationRecord record) throws Exception {
-
-        // if (basicRequest instanceof SchemeRequest) {
-        // SchemeRequest schemeRequest = (SchemeRequest) basicRequest;
-        // if (schemeRequest.getTopCategory().equals(AssetOperationTableEnum.ASSET.getCode())){
+    public void saveOperationHistory(SchemeRequest schemeRequest) throws Exception {
+        AssetOperationRecord record = new AssetOperationRecord();
         Scheme scheme = requestConverter.convert(schemeRequest, Scheme.class);
         // 判断请求的方案类型
         SchemeTypeEnum codeEnum = EnumUtil.getByCode(SchemeTypeEnum.class, scheme.getType());
@@ -46,7 +41,7 @@ public abstract class AbstractProcessor implements Processor {
             record.setContent(RespBasicCode.PARAMETER_ERROR.getResultDes());
             throw new BusinessException(RespBasicCode.PARAMETER_ERROR.getResultDes());
         }else {
-            record.setContent(codeEnum.getMsg());
+            record.setContent(codeEnum.getMsg() + "配置管理员");
         }
         operationRecordDao.insert(record);
     }

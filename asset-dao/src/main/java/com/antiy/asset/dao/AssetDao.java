@@ -22,7 +22,7 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<Asset> checkRepeatAsset(List<String[]> ipMac);
 
     /**
-     * 批量修改
+     * 批量修改资产状态
      *
      * @param map
      * @return

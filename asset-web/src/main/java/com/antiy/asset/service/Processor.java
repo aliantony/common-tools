@@ -10,7 +10,7 @@ import com.antiy.asset.vo.request.SchemeRequest;
 public interface Processor {
     /**
      * 保存流程操作历史
-     * @param record
+     * @param schemeRequest
      */
-    void saveOperationHistory(SchemeRequest schemeRequest, AssetOperationRecord record) throws Exception;
+    void saveOperationHistory(SchemeRequest schemeRequest) throws Exception;
 }

@@ -31,10 +31,6 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Resource
     private SchemeDao                             schemeDao;
     @Resource
-    private AssetDao                              assetDao;
-    @Resource
-    private AssetOperationRecordDao               operationRecordDao;
-    @Resource
     private BaseConverter<SchemeRequest, Scheme>  requestConverter;
     @Resource
     private BaseConverter<Scheme, SchemeResponse> responseConverter;
