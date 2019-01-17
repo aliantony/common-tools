@@ -7,6 +7,7 @@ import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelResponse;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -24,7 +25,7 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @param request
      * @return
      */
-    Integer saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception;
+    ActionResponse saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception;
 
     /**
      * 修改

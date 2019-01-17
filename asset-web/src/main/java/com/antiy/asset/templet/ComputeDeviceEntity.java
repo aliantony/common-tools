@@ -49,12 +49,6 @@ public class ComputeDeviceEntity {
     private String  email;
 
     /**
-     * 资产组
-     */
-    @ExcelField(value = "asset_group", align = 1, title = "资产组")
-    private String  assetGroup;
-
-    /**
      * 物理位置
      */
     @ExcelField(value = "location", align = 1, title = "物理位置")
@@ -354,13 +348,7 @@ public class ComputeDeviceEntity {
         this.email = email;
     }
 
-    public String getAssetGroup() {
-        return assetGroup;
-    }
 
-    public void setAssetGroup(String assetGroup) {
-        this.assetGroup = assetGroup;
-    }
 
     public String getLocation() {
         return location;

@@ -30,6 +30,11 @@ public class NetworkDeviceEntity {
     /**
      * 使用者
      */
+    @ExcelField(value = "area", align = 1, title = "所属区域")
+    private String            area;
+    /**
+     * 使用者
+     */
     @ExcelField(value = "user", align = 1, title = "使用者")
     private String            user;
 
@@ -60,23 +65,42 @@ public class NetworkDeviceEntity {
      */
     @ExcelField(value = "house_location", align = 1, title = "机房位置")
     private String            houseLocation;
-
+    /**
+     * 端口数目
+     */
+    @ExcelField(value = "port_size", align = 1, title = "端口数目")
+    private Integer            portSize;
     /**
      * 接口数目
      */
     @ExcelField(value = "interface_size", align = 1, title = "接口数目")
     private Integer            interfaceSize;
+    /**
+     * IOS
+     */
+    @ExcelField(value = "IOS", align = 1, title = "IOS")
+    private String            ios;
 
     /**
-     * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
+     * 固件版本
      */
-    @ExcelField(value = "outer_ip", align = 1, title = "外网IP地址")
-    private String            outerIp;
+    @ExcelField(value = "firmware_version", align = 1, title = "固件版本")
+    private String            firmwareVersion;
     /**
-     * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
+     * 是否无线
      */
-    @ExcelField(value = "inner_ip", align = 1, title = "内网IP地址")
+    @ExcelField(value = "is_wireless", align = 1, title = "是否无线",dictType = "yesorno")
+    private Integer            isWireless;
+    /**
+     * 内网IP
+     */
+    @ExcelField(value = "inner_ip", align = 1, title = "内网IP")
     private String            innerIp;
+    /**
+     * 外网IP
+     */
+    @ExcelField(value = "outer_ip", align = 1, title = "外网IP")
+    private String            outerIp;
     /**
      * mac地址
      */
@@ -129,9 +153,24 @@ public class NetworkDeviceEntity {
     @ExcelField(value = "ncrm_size", align = 1, title = "NCRM大小")
     private String            ncrmSize;
     /**
-     * 备注
+     * 购买日期
      */
-    @ExcelField(value = "memo", align = 1, title = "备注")
+    @ExcelField(value = "buy_date", align = 1, title = "购买日期",isDate = true)
+    private Long            butDate;
+    /**
+     * 到期时间
+     */
+    @ExcelField(value = "due_date", align = 1, title = "到期时间",isDate = true)
+    private Long            dueDate;
+    /**
+     * 保修期
+     */
+    @ExcelField(value = "warranty", align = 1, title = "保修期")
+    private String            warranty;
+    /**
+     * 描述
+     */
+    @ExcelField(value = "memo", align = 1, title = "描述")
     private String            memo;
 
 

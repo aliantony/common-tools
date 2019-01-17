@@ -12,10 +12,10 @@ import com.antiy.asset.service.IAssetSafetyEquipmentService;
 import com.antiy.asset.vo.query.AssetSafetyEquipmentQuery;
 import com.antiy.asset.vo.request.AssetSafetyEquipmentRequest;
 import com.antiy.asset.vo.response.AssetSafetyEquipmentResponse;
-import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * <p> 安全设备详情表 服务实现类 </p>

@@ -12,14 +12,12 @@ import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,18 +133,18 @@ public class AssetSoftwareController {
     }
 
     /**
-     * 导入文件
+     * 导入软件excel文件
      *
      * @param multipartFile 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "导入文件", notes = "主键封装对象")
+    @ApiOperation(value = "导入excel文件", notes = "主键封装对象")
     @RequestMapping(value = "/import/file", method = RequestMethod.POST)
     public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws Exception {
-        ImportResult importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class, multipartFile, 1, 0);
-        List<AssetSoftware> list = importResult.getDataList();
-        // List<AssetSoftware> assetSoftwares = BeanConvert.convert(list, AssetSoftware.class);
-        Integer successNum = iAssetSoftwareService.batchSave(list);
+        ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class, multipartFile, 1, 0);
+        List<AssetSoftwareEntity> list = importResult.getDataList();
+         List<AssetSoftware> assetSoftwares = BeanConvert.convert(list, AssetSoftware.class);
+        Integer successNum = iAssetSoftwareService.batchSave(assetSoftwares);
         return ActionResponse.success(successNum);
 
     }
@@ -156,6 +154,19 @@ public class AssetSoftwareController {
         objects.forEach(x -> assetSoftwares.add((AssetSoftware) x));
         return assetSoftwares;
     }
+
+//    /**
+//     * 导入excel文件
+//     *
+//     * @param multipartFile 主键封装对象
+//     * @return actionResponse
+//     */
+//    @ApiOperation(value = "导入excel文件", notes = "主键封装对象")
+//    @RequestMapping(value = "/import/excel", method = RequestMethod.POST)
+//    public ActionResponse importExcel(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws Exception {
+//
+//        return ActionResponse.success();
+//    }
 
     /**
      * 软件资产按二级品类型号统计

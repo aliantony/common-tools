@@ -13,10 +13,10 @@ import com.antiy.asset.service.IAssetMemoryService;
 import com.antiy.asset.vo.query.AssetMemoryQuery;
 import com.antiy.asset.vo.request.AssetMemoryRequest;
 import com.antiy.asset.vo.response.AssetMemoryResponse;
-import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * <p> 内存表 服务实现类 </p>

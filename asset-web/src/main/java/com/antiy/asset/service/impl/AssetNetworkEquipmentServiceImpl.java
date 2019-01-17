@@ -12,10 +12,10 @@ import com.antiy.asset.service.IAssetNetworkEquipmentService;
 import com.antiy.asset.vo.query.AssetNetworkEquipmentQuery;
 import com.antiy.asset.vo.request.AssetNetworkEquipmentRequest;
 import com.antiy.asset.vo.response.AssetNetworkEquipmentResponse;
-import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * <p> 网络设备详情表 服务实现类 </p>

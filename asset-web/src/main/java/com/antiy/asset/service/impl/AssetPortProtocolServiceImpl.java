@@ -12,10 +12,10 @@ import com.antiy.asset.service.IAssetPortProtocolService;
 import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 import com.antiy.asset.vo.request.AssetPortProtocolRequest;
 import com.antiy.asset.vo.response.AssetPortProtocolResponse;
-import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * <p> 端口协议 服务实现类 </p>

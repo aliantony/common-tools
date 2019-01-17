@@ -13,10 +13,10 @@ import com.antiy.asset.service.IAssetLabelRelationService;
 import com.antiy.asset.vo.query.AssetLabelRelationQuery;
 import com.antiy.asset.vo.request.AssetLabelRelationRequest;
 import com.antiy.asset.vo.response.AssetLabelRelationResponse;
-import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * <p> 资产标签关系表 服务实现类 </p>
