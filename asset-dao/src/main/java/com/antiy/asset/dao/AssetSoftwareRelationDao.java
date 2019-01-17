@@ -78,4 +78,11 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer insertBatch(List<AssetSoftwareRelation> assetSoftwareRelationList);
+    /**
+     * 批量修改软件状态
+     *
+     * @param map
+     * @return
+     */
+    Integer changeSoftwareStatus(Map<String, Object> map) throws Exception;
 }

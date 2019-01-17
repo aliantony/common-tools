@@ -1,6 +1,7 @@
 package com.antiy.asset.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
@@ -72,5 +73,11 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @return
      */
     List<String> findOS() throws Exception;
-
+    /**
+     * 批量修改软件状态
+     *
+     * @param map
+     * @return
+     */
+    Integer changeSoftwareStatus(Map<String, Object> map) throws Exception;
 }

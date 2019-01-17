@@ -345,4 +345,18 @@
         <include refid="Table_Name"></include>
         where asset_id = #{id}
     </delete>
+
+    <!--变更软件状态-->
+    <update id="changeSoftwareStatus" parameterType="java.util.Map">
+        update
+        <include refid="Table_Name"></include>
+        set
+        software_status = #{targetStatus},
+        gmt_modified = #{gmtModified},
+        modify_user = #{modifyUser}
+        where `software_id` in
+        <foreach item="softwareId" index="index" collection="ids" open="(" separator="," close=")">
+            #{softwareId}
+        </foreach>
+    </update>
 </mapper>

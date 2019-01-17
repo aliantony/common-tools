@@ -1,6 +1,7 @@
 package com.antiy.asset.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -88,4 +89,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         return assetSoftwareRelationDao.findOS();
     }
 
+    @Override
+    public Integer changeSoftwareStatus(Map<String, Object> map) throws Exception {
+        return assetSoftwareRelationDao.changeSoftwareStatus(map);
+    }
 }
