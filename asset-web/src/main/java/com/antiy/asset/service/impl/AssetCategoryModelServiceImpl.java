@@ -70,6 +70,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         if (assetCategoryModel != null && assetCategoryModel.getParentId() != null) {
             Integer parentId = assetCategoryModel.getParentId();
             AssetCategoryModel parent = assetCategoryModelDao.getById(parentId);
+            ParamterExceptionUtils.isNull(parent,"父资产类型不存在");
             assetCategoryModel.setAssetType(parent.getAssetType());
             return true;
         }

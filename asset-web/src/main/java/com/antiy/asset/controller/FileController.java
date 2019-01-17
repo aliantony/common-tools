@@ -57,7 +57,11 @@ public class FileController {
             List<FileRespVO> fileRespVOS = new ArrayList<>();
             fileList.forEach(tmpFile -> {
                 // 调用上传方法
-                uploadToHdfs(tmpFile, fileRespVOS);
+                try {
+                    uploadToHdfs(tmpFile, fileRespVOS);
+                } catch (Exception e) {
+                    logger.error(e.getMessage());
+                }
             });
             return ActionResponse.success(fileRespVOS);
         }
@@ -73,15 +77,15 @@ public class FileController {
     @ApiOperation(value = "文件下载", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/file/download", method = RequestMethod.GET)
-    public ActionResponse download(@ApiParam(value = "url地址") String url, String fileName,
-                                   HttpServletResponse response) throws Exception {
+    public ActionResponse download(@ApiParam(value = "url地址") String url, String fileName, HttpServletResponse response)
+                                                                                                                        throws Exception {
         ParamterExceptionUtils.isBlank(url, "url地址不能为空");
         ParamterExceptionUtils.isBlank(fileName, "文件名字不能为空");
         // 清空response
         response.reset();
         response.setContentType("application/x-msdownload;");
-        response.setHeader("Content-disposition",
-            "attachment; filename=" + new String(fileName.getBytes(UTF8), "ISO8859-1"));
+        response.setHeader("Content-disposition", "attachment; filename="
+                                                  + new String(fileName.getBytes(UTF8), "ISO8859-1"));
         FileResponse fileResponse = fileUtils.download(url);
         if (fileResponse != null && RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
             InputStream inputStream = (InputStream) fileResponse.getData();
@@ -118,7 +122,7 @@ public class FileController {
      * @param fileRespVOS
      * @return void
      */
-    private void uploadToHdfs(MultipartFile tmpFile, List<FileRespVO> fileRespVOS) {
+    private void uploadToHdfs(MultipartFile tmpFile, List<FileRespVO> fileRespVOS) throws Exception {
         logger.info("单个文件上传开始");
 
         File file = fileUtils.tranferToFile(tmpFile);

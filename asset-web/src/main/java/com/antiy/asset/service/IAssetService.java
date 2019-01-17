@@ -11,6 +11,7 @@ import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -198,9 +199,9 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * 1-计算设备 2-网络设备 3-安全设备 4-存储介质 5-服务器 6-外设
      * @param type 导出模板的类型
-     * @param type 导出模板的条件
+     * @param assetQuery 导出模板的条件
      */
-    void exportData(int type, AssetQuery assetQuery) throws Exception;
+    void exportData(int type, AssetQuery assetQuery, HttpServletResponse servletResponse) throws Exception;
 
     /**
      * 硬件导入PC
