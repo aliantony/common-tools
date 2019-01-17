@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetSafetyEquipmentDao;
@@ -16,6 +15,7 @@ import com.antiy.asset.vo.response.AssetSafetyEquipmentResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * <p> 安全设备详情表 服务实现类 </p>

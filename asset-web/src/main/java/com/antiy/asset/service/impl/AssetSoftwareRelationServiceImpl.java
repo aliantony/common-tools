@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
@@ -18,6 +17,7 @@ import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * <p> 资产软件关系信息 服务实现类 </p>
