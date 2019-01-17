@@ -12,12 +12,12 @@ import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -67,13 +67,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetSoftwareRelationDao                  assetSoftwareRelationDao;
     @Resource
+    private AssetStorageMediumDao                     assetStorageMediumDao;
+    @Resource
     private BaseConverter<AssetRequest, Asset>        requestConverter;
     @Resource
     private BaseConverter<Asset, AssetResponse>       responseConverter;
     @Resource
     private BaseConverter<Asset, ComputeDeviceEntity> entityConverter;
-    @Resource
-    private AssetUserDao                              assetUserDao;
 
     private static final Logger                       LOGGER = LogUtils.get(AssetServiceImpl.class);
 
@@ -909,6 +909,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOuterResponse.setAssetSafetyEquipment(
                 BeanConvert.convertBean(assetSafetyEquipmentList.get(0), AssetSafetyEquipmentResponse.class));
         }
+        // 存储介质
+        List<AssetStorageMedium> assetStorageMediumList = assetStorageMediumDao.getByWhere(param);
+        if (assetStorageMediumList != null && !assetStorageMediumList.isEmpty()) {
+            assetOuterResponse.setAssetStorageMedium(
+                BeanConvert.convertBean(assetStorageMediumList.get(0), AssetStorageMediumResponse.class));
+        }
         // 软件
         List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
             .getSoftByAssetId(DataTypeUtils.stringToInteger(id));
@@ -1020,7 +1026,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetSafetyEquipment.setGmtModified(System.currentTimeMillis());
                         assetSafetyEquipmentDao.update(assetSafetyEquipment);
                     }
-                    // 9. 更新资产软件关系信息
+                    // 9. 更新存储介质信息
+                    AssetStorageMediumRequest storageMedium = assetOuterRequest.getAssetStorageMedium();
+                    if (storageMedium != null && StringUtils.isNotBlank(storageMedium.getId())) {
+                        AssetStorageMedium assetStorageMedium = BeanConvert.convertBean(storageMedium,
+                            AssetStorageMedium.class);
+                        assetStorageMedium.setAssetId(asset.getId());
+                        // assetStorageMedium.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                        assetStorageMedium.setGmtModified(System.currentTimeMillis());
+                        assetStorageMediumDao.update(assetStorageMedium);
+                    }
+                    // 10. 更新资产软件关系信息
                     assetSoftwareRelationDao.deleteByAssetId(asset.getId());
                     List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
                     Integer[] assetSoftwareIds = assetOuterRequest.getAssetSoftwareIds();
@@ -1142,12 +1158,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetNetworkEquipment.setSubnetMask(networkDeviceEntity.getSubnetMask());
             assetNetworkEquipment.setExpectBandwidth(networkDeviceEntity.getExpectBandwidth());
             assetNetworkEquipment.setMemo(networkDeviceEntity.getMemo());
-             assetNetworkEquipment.setNcrmSize (networkDeviceEntity.getNcrmSize ());
-             assetNetworkEquipment.setCpu (networkDeviceEntity.getCpuSize ());
-             assetNetworkEquipment.setDramSize (networkDeviceEntity.getDramSize ());
-             assetNetworkEquipment.setFlashSize (networkDeviceEntity.getFlashSize ());
-             assetNetworkEquipment.setRegister (networkDeviceEntity.getRegister ());
-             assetNetworkEquipment.setIsWireless (networkDeviceEntity.getIsWireless ());
+            assetNetworkEquipment.setNcrmSize(networkDeviceEntity.getNcrmSize());
+            assetNetworkEquipment.setCpu(networkDeviceEntity.getCpuSize());
+            assetNetworkEquipment.setDramSize(networkDeviceEntity.getDramSize());
+            assetNetworkEquipment.setFlashSize(networkDeviceEntity.getFlashSize());
+            assetNetworkEquipment.setRegister(networkDeviceEntity.getRegister());
+            assetNetworkEquipment.setIsWireless(networkDeviceEntity.getIsWireless());
             assetNetworkEquipmentDao.insert(assetNetworkEquipment);
             //// TODO: 2019/1/17 流程
 
@@ -1194,7 +1210,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         return result.getMsg();
     }
-
 
     private void exportToClient(Class clazz, String fileName, String title) {
         ExcelUtils.exportTemplet(clazz, fileName, title);
