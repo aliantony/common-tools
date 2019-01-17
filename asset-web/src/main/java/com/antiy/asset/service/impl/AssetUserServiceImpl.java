@@ -18,6 +18,7 @@ import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p> 资产用户信息 服务实现类 </p>
@@ -38,6 +39,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     private BaseConverter<AssetUser, AssetUserResponse> responseConverter;
 
     @Override
+    @Transactional
     public Integer saveAssetUser(AssetUserRequest request) throws Exception {
         AssetUser assetUser = requestConverter.convert(request, AssetUser.class);
         // assetUser.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -47,6 +49,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     }
 
     @Override
+    @Transactional
     public Integer updateAssetUser(AssetUserRequest request) throws Exception {
         AssetUser assetUser = requestConverter.convert(request, AssetUser.class);
         assetUser.setId(DataTypeUtils.stringToInteger(request.getId()));
@@ -81,6 +84,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     }
 
     @Override
+    @Transactional
     public void importUser(List<AssetUser> assetUserList) {
         assetUserList.stream().forEach(user -> {
             // user.setCreateUser(LoginUserUtil.getLoginUser().getId());
