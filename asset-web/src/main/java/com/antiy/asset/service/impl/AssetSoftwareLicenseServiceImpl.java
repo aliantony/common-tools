@@ -12,10 +12,10 @@ import com.antiy.asset.service.IAssetSoftwareLicenseService;
 import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
 import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
 import com.antiy.asset.vo.response.AssetSoftwareLicenseResponse;
-import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * <p> 软件许可表 服务实现类 </p>
