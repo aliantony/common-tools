@@ -2,11 +2,11 @@ package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
 
-public class SafetyEquipment {
+public class SafetyEquipmentEntiy {
     /**
      * 序号
      */
-    @ExcelField(value = "number", align = 1, title = "编号", type = 0)
+    @ExcelField(value = "number", align = 1, title = "编号", type = 2)
     private String number;
     /**
      * 资产名称
@@ -83,8 +83,8 @@ public class SafetyEquipment {
     /**
      * 保修期
      */
-    @ExcelField(value = "warranty", align = 1, title = "保修期")
-    private String            warranty;
+    @ExcelField(value = "warranty", align = 1, title = "保修期",isDate = true)
+    private Long            warranty;
     /**
      * 描述
      */
@@ -211,11 +211,11 @@ public class SafetyEquipment {
         this.dueDate = dueDate;
     }
 
-    public String getWarranty() {
+    public Long getWarranty() {
         return warranty;
     }
 
-    public void setWarranty(String warranty) {
+    public void setWarranty(Long warranty) {
         this.warranty = warranty;
     }
 
