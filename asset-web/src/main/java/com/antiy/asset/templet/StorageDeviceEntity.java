@@ -9,7 +9,7 @@ public class StorageDeviceEntity  {
     /**
      * 序号
      */
-    @ExcelField(value = "order_num", align = 1, title = "序号")
+    @ExcelField(value = "order_num", align = 1, title = "序号",type = 1)
     private String orderNum;
     /**
      * 资产名称

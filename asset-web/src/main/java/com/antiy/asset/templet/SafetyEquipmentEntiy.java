@@ -6,7 +6,7 @@ public class SafetyEquipmentEntiy {
     /**
      * 序号
      */
-    @ExcelField(value = "number", align = 1, title = "编号", type = 2)
+    @ExcelField(value = "number", align = 1, title = "编号", type = 1)
     private String number;
     /**
      * 资产名称
