@@ -197,11 +197,9 @@ public interface IAssetService extends IBaseService<Asset> {
     void exportTemplate(int type) throws Exception;
 
     /**
-     * 1-计算设备 2-网络设备 3-安全设备 4-存储介质 5-服务器 6-外设
-     * @param type 导出模板的类型
      * @param assetQuery 导出模板的条件
      */
-    void exportData(int type, AssetQuery assetQuery, HttpServletResponse servletResponse) throws Exception;
+    void exportData(AssetQuery assetQuery, HttpServletResponse servletResponse) throws Exception;
 
     /**
      * 硬件导入PC
@@ -221,4 +219,16 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     String importSecurity(MultipartFile file) throws Exception;
+    /**
+     * 硬件导存储设备
+     * @param file
+     * @return
+     */
+    String importStory(MultipartFile file) throws Exception;
+    /**
+     * 硬件其他设备
+     * @param file
+     * @return
+     */
+    String importOhters(MultipartFile file) throws Exception;
 }

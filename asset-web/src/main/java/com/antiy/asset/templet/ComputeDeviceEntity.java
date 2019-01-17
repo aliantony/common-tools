@@ -140,13 +140,13 @@ public class ComputeDeviceEntity {
     /**
      * 是否带散热
      */
-    @ExcelField(value = "cpu_is_heatsink", align = 1, title = "内存是否带散热", dictType = "yesorno")
-    private Integer  cpuIsHeatsink;
+    @ExcelField(value = "heatsink", align = 1, title = "内存是否带散热", dictType = "yesorno")
+    private Integer heatsink;
     /**
      * 针脚数
      */
-    @ExcelField(value = "cpu_stitch", align = 1, title = "内存针脚数")
-    private Integer  cpuStitch;
+    @ExcelField(value = "stitch", align = 1, title = "内存针脚数")
+    private Integer  stitch;
     /**
      * 硬盘数量
      */
@@ -189,6 +189,11 @@ public class ComputeDeviceEntity {
      */
     @ExcelField(value = "hard_disk_buy_date", align = 1, title = "硬盘购买时间", isDate = true)
     private Long    hardDiskBuyDate;
+    /**
+     * 主板数量
+     */
+    @ExcelField(value = "mainborad_num", align = 1, title = "cpu数量")
+    private Integer  mainboradNum;
     /**
      * 主板品牌
      */
@@ -290,5 +295,427 @@ public class ComputeDeviceEntity {
     @ExcelField(value = "network_default_gateway", align = 1, title = "网卡默认网关")
     private String  networkDefaultGateway;
 
+    public Integer getOrderNumber() {
+        return orderNumber;
+    }
 
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getHouseLocation() {
+        return houseLocation;
+    }
+
+    public void setHouseLocation(String houseLocation) {
+        this.houseLocation = houseLocation;
+    }
+
+    public String getFirmwareVersion() {
+        return firmwareVersion;
+    }
+
+    public void setFirmwareVersion(String firmwareVersion) {
+        this.firmwareVersion = firmwareVersion;
+    }
+
+    public String getOperationSystem() {
+        return operationSystem;
+    }
+
+    public void setOperationSystem(String operationSystem) {
+        this.operationSystem = operationSystem;
+    }
+
+    public String getImportanceDegree() {
+        return importanceDegree;
+    }
+
+    public void setImportanceDegree(String importanceDegree) {
+        this.importanceDegree = importanceDegree;
+    }
+
+    public Long getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(Long buyDate) {
+        this.buyDate = buyDate;
+    }
+
+    public Long getDueTime() {
+        return dueTime;
+    }
+
+    public void setDueTime(Long dueTime) {
+        this.dueTime = dueTime;
+    }
+
+    public Long getWarranty() {
+        return warranty;
+    }
+
+    public void setWarranty(Long warranty) {
+        this.warranty = warranty;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Integer getMemoryNum() {
+        return memoryNum;
+    }
+
+    public void setMemoryNum(Integer memoryNum) {
+        this.memoryNum = memoryNum;
+    }
+
+    public String getMemoryBrand() {
+        return memoryBrand;
+    }
+
+    public void setMemoryBrand(String memoryBrand) {
+        this.memoryBrand = memoryBrand;
+    }
+
+    public String getMemorySerial() {
+        return memorySerial;
+    }
+
+    public void setMemorySerial(String memorySerial) {
+        this.memorySerial = memorySerial;
+    }
+
+    public Integer getMemoryCapacity() {
+        return memoryCapacity;
+    }
+
+    public void setMemoryCapacity(Integer memoryCapacity) {
+        this.memoryCapacity = memoryCapacity;
+    }
+
+    public Double getMemoryFrequency() {
+        return memoryFrequency;
+    }
+
+    public void setMemoryFrequency(Double memoryFrequency) {
+        this.memoryFrequency = memoryFrequency;
+    }
+
+    public Integer getSlotType() {
+        return slotType;
+    }
+
+    public void setSlotType(Integer slotType) {
+        this.slotType = slotType;
+    }
+
+    public Integer getHeatsink() {
+        return heatsink;
+    }
+
+    public void setHeatsink(Integer heatsink) {
+        this.heatsink = heatsink;
+    }
+
+    public Integer getStitch() {
+        return stitch;
+    }
+
+    public void setStitch(Integer stitch) {
+        this.stitch = stitch;
+    }
+
+    public Integer getHardDiskNum() {
+        return hardDiskNum;
+    }
+
+    public void setHardDiskNum(Integer hardDiskNum) {
+        this.hardDiskNum = hardDiskNum;
+    }
+
+    public String getHardDiskBrand() {
+        return hardDiskBrand;
+    }
+
+    public void setHardDiskBrand(String hardDiskBrand) {
+        this.hardDiskBrand = hardDiskBrand;
+    }
+
+    public String getHardDiskModel() {
+        return hardDiskModel;
+    }
+
+    public void setHardDiskModel(String hardDiskModel) {
+        this.hardDiskModel = hardDiskModel;
+    }
+
+    public String getHardDiskSerial() {
+        return hardDiskSerial;
+    }
+
+    public void setHardDiskSerial(String hardDiskSerial) {
+        this.hardDiskSerial = hardDiskSerial;
+    }
+
+    public Integer getHardDisCapacityl() {
+        return hardDisCapacityl;
+    }
+
+    public void setHardDisCapacityl(Integer hardDisCapacityl) {
+        this.hardDisCapacityl = hardDisCapacityl;
+    }
+
+    public Integer getHardDiskInterfaceType() {
+        return hardDiskInterfaceType;
+    }
+
+    public void setHardDiskInterfaceType(Integer hardDiskInterfaceType) {
+        this.hardDiskInterfaceType = hardDiskInterfaceType;
+    }
+
+    public Integer getHardDiskType() {
+        return hardDiskType;
+    }
+
+    public void setHardDiskType(Integer hardDiskType) {
+        this.hardDiskType = hardDiskType;
+    }
+
+    public Long getHardDiskBuyDate() {
+        return hardDiskBuyDate;
+    }
+
+    public void setHardDiskBuyDate(Long hardDiskBuyDate) {
+        this.hardDiskBuyDate = hardDiskBuyDate;
+    }
+
+    public Integer getMainboradNum() {
+        return mainboradNum;
+    }
+
+    public void setMainboradNum(Integer mainboradNum) {
+        this.mainboradNum = mainboradNum;
+    }
+
+    public String getMainboradBrand() {
+        return mainboradBrand;
+    }
+
+    public void setMainboradBrand(String mainboradBrand) {
+        this.mainboradBrand = mainboradBrand;
+    }
+
+    public String getMainboradModel() {
+        return mainboradModel;
+    }
+
+    public void setMainboradModel(String mainboradModel) {
+        this.mainboradModel = mainboradModel;
+    }
+
+    public String getMainboradSerial() {
+        return mainboradSerial;
+    }
+
+    public void setMainboradSerial(String mainboradSerial) {
+        this.mainboradSerial = mainboradSerial;
+    }
+
+    public String getMainboradBiosVersion() {
+        return mainboradBiosVersion;
+    }
+
+    public void setMainboradBiosVersion(String mainboradBiosVersion) {
+        this.mainboradBiosVersion = mainboradBiosVersion;
+    }
+
+    public Long getMainboradBiosDate() {
+        return mainboradBiosDate;
+    }
+
+    public void setMainboradBiosDate(Long mainboradBiosDate) {
+        this.mainboradBiosDate = mainboradBiosDate;
+    }
+
+    public Integer getCpuNum() {
+        return cpuNum;
+    }
+
+    public void setCpuNum(Integer cpuNum) {
+        this.cpuNum = cpuNum;
+    }
+
+    public String getCpuBrand() {
+        return cpuBrand;
+    }
+
+    public void setCpuBrand(String cpuBrand) {
+        this.cpuBrand = cpuBrand;
+    }
+
+    public String getCpuModel() {
+        return cpuModel;
+    }
+
+    public void setCpuModel(String cpuModel) {
+        this.cpuModel = cpuModel;
+    }
+
+    public String getCpuSerial() {
+        return cpuSerial;
+    }
+
+    public void setCpuSerial(String cpuSerial) {
+        this.cpuSerial = cpuSerial;
+    }
+
+    public Float getCpuMainFrequency() {
+        return cpuMainFrequency;
+    }
+
+    public void setCpuMainFrequency(Float cpuMainFrequency) {
+        this.cpuMainFrequency = cpuMainFrequency;
+    }
+
+    public Integer getCpuThreadSize() {
+        return cpuThreadSize;
+    }
+
+    public void setCpuThreadSize(Integer cpuThreadSize) {
+        this.cpuThreadSize = cpuThreadSize;
+    }
+
+    public Integer getCpuCoreSize() {
+        return cpuCoreSize;
+    }
+
+    public void setCpuCoreSize(Integer cpuCoreSize) {
+        this.cpuCoreSize = cpuCoreSize;
+    }
+
+    public Integer getNetworkNum() {
+        return networkNum;
+    }
+
+    public void setNetworkNum(Integer networkNum) {
+        this.networkNum = networkNum;
+    }
+
+    public String getNetworkBrand() {
+        return networkBrand;
+    }
+
+    public void setNetworkBrand(String networkBrand) {
+        this.networkBrand = networkBrand;
+    }
+
+    public String getNetworkModel() {
+        return networkModel;
+    }
+
+    public void setNetworkModel(String networkModel) {
+        this.networkModel = networkModel;
+    }
+
+    public String getNetworkSerial() {
+        return networkSerial;
+    }
+
+    public void setNetworkSerial(String networkSerial) {
+        this.networkSerial = networkSerial;
+    }
+
+    public String getNetworkIpAddress() {
+        return networkIpAddress;
+    }
+
+    public void setNetworkIpAddress(String networkIpAddress) {
+        this.networkIpAddress = networkIpAddress;
+    }
+
+    public String getNetworkMacAddress() {
+        return networkMacAddress;
+    }
+
+    public void setNetworkMacAddress(String networkMacAddress) {
+        this.networkMacAddress = networkMacAddress;
+    }
+
+    public String getNetworkSubnetMask() {
+        return networkSubnetMask;
+    }
+
+    public void setNetworkSubnetMask(String networkSubnetMask) {
+        this.networkSubnetMask = networkSubnetMask;
+    }
+
+    public String getNetworkDefaultGateway() {
+        return networkDefaultGateway;
+    }
+
+    public void setNetworkDefaultGateway(String networkDefaultGateway) {
+        this.networkDefaultGateway = networkDefaultGateway;
+    }
 }

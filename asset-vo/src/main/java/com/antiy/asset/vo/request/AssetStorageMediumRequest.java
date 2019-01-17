@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -13,7 +14,9 @@ import com.antiy.common.exception.RequestParamValidateException;
  */
 
 public class AssetStorageMediumRequest extends BasicRequest implements ObjectValidator {
-
+    @Encode
+    @ApiModelProperty(value = "主键")
+    private String  id;
     /**
      * 资产主键
      */
@@ -64,6 +67,14 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      */
     @ApiModelProperty("OS版本")
     private String  osVersion;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Integer getAssetId() {
         return assetId;

@@ -5,98 +5,103 @@ import com.antiy.asset.annotation.ExcelField;
 /**
  * 存储介质
  */
-public class StorageDeviceEntity  {
+public class StorageDeviceEntity {
     /**
      * 序号
      */
-    @ExcelField(value = "order_num", align = 1, title = "序号",type = 1)
-    private String orderNum;
+    @ExcelField(value = "order_num", align = 1, title = "序号", type = 1)
+    private String  orderNum;
     /**
      * 资产名称
      */
     @ExcelField(value = "name", align = 1, title = "资产名称")
-    private String name;
+    private String  name;
     /**
      * 厂商
      */
     @ExcelField(value = "manufacturer", align = 1, title = "厂商")
-    private String manufacturer;
+    private String  manufacturer;
     /**
      * 序列号
      */
     @ExcelField(value = "serial", align = 1, title = "序列号")
-    private String serial;
+    private String  serial;
     /**
      * 归属区域
      */
     @ExcelField(value = "area", align = 1, title = "归属区域")
-    private String area;
+    private String  area;
 
     /**
      * 使用者
      */
     @ExcelField(value = "user", align = 1, title = "使用者")
-    private String user;
+    private String  user;
     /**
      * 联系电话
      */
     @ExcelField(value = "telephone", align = 1, title = "联系电话")
-    private String telephone;
+    private String  telephone;
     /**
      * 邮箱
      */
     @ExcelField(value = "email", align = 1, title = "邮箱")
-    private String email;
+    private String  email;
     /**
      * 资产组
      */
     @ExcelField(value = "asset_group", align = 1, title = "资产组")
-    private String assetGroup;
+    private String  assetGroup;
     /**
      * 物理位置
      */
     @ExcelField(value = "location", align = 1, title = "物理位置")
-    private String location;
+    private String  location;
     /**
      * 机房位置
      */
-    @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
-    private String house_location;
+    @ExcelField( align = 1, title = "机房位置")
+    private String  houseLocation;
     /**
      * 最大存储量
      */
     @ExcelField(value = "capacity", align = 1, title = "最大存储量")
-    private String capacity;
+    private String  capacity;
     /**
      * 单机磁盘数
      */
     @ExcelField(value = "hard_disk_num", align = 1, title = "单机磁盘数")
-    private String hardDiskNum;
+    private Integer hardDiskNum;
     /**
      * 内部接口
      */
     @ExcelField(value = "inner_interface", align = 1, title = "内部接口")
-    private String innerInterface;
+    private String  innerInterface;
     /**
      * RAID支持
      */
     @ExcelField(value = "raid_support", align = 1, title = "RAID支持")
-    private String raidSupport;
+    private String  raidSupport;
+    /**
+     * high_cache
+     */
+    @ExcelField(value = "high_cache", align = 1, title = "RAID支持")
+    private String  highCache;
     /**
      * 平均传输率
      */
     @ExcelField(value = "average_transmission_rate ", align = 1, title = "平均传输率")
-    private String averageTransmissionRate;
+    private String  averageTransmissionRate;
     /**
      * 固件
      */
     @ExcelField(value = "firmware", align = 1, title = "固件")
-    private String firmware ;
+    private String  firmware;
     /**
      * OS版本
      */
     @ExcelField(value = "os_version", align = 1, title = "OS版本")
-    private String slotType;
+    private String  slotType;
     /**
      * 驱动器数量
      */
@@ -105,25 +110,25 @@ public class StorageDeviceEntity  {
     /**
      * 购买时间
      */
-    @ExcelField(value = "buy_date", align = 1, title = "购买时间",isDate = true)
-    private Long buyDate;
+    @ExcelField(value = "buy_date", align = 1, title = "购买时间", isDate = true)
+    private Long    buyDate;
     /**
      * 到期时间
      */
     @ExcelField(value = "due_date", align = 1, title = "到期时间", isDate = true)
-    private Long dueDate;
+    private Long    dueDate;
 
     /**
      * 保修期
      */
-    @ExcelField(value = "warranty", align = 1, title = "保修期")
-    private String warranty;
+    @ExcelField(value = "warranty", align = 1, title = "保修期", isDate = true)
+    private Long    warranty;
 
     /**
      * 描述
      */
     @ExcelField(value = "memo", align = 1, title = "描述")
-    private String memo;
+    private String  memo;
 
     public String getName() {
         return name;
@@ -197,13 +202,7 @@ public class StorageDeviceEntity  {
         this.location = location;
     }
 
-    public String getHouse_location() {
-        return house_location;
-    }
 
-    public void setHouse_location(String house_location) {
-        this.house_location = house_location;
-    }
 
     public String getCapacity() {
         return capacity;
@@ -211,14 +210,6 @@ public class StorageDeviceEntity  {
 
     public void setCapacity(String capacity) {
         this.capacity = capacity;
-    }
-
-    public String getHardDiskNum() {
-        return hardDiskNum;
-    }
-
-    public void setHardDiskNum(String hardDiskNum) {
-        this.hardDiskNum = hardDiskNum;
     }
 
     public String getInnerInterface() {
@@ -285,11 +276,15 @@ public class StorageDeviceEntity  {
         this.dueDate = dueDate;
     }
 
-    public String getWarranty() {
+    public void setHardDiskNum(Integer hardDiskNum) {
+        this.hardDiskNum = hardDiskNum;
+    }
+
+    public Long getWarranty() {
         return warranty;
     }
 
-    public void setWarranty(String warranty) {
+    public void setWarranty(Long warranty) {
         this.warranty = warranty;
     }
 
@@ -299,5 +294,33 @@ public class StorageDeviceEntity  {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getHouseLocation() {
+        return houseLocation;
+    }
+
+    public void setHouseLocation(String houseLocation) {
+        this.houseLocation = houseLocation;
+    }
+
+    public String getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(String orderNum) {
+        this.orderNum = orderNum;
+    }
+
+    public Integer getHardDiskNum() {
+        return hardDiskNum;
+    }
+
+    public String getHighCache() {
+        return highCache;
+    }
+
+    public void setHighCache(String highCache) {
+        this.highCache = highCache;
     }
 }
