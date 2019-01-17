@@ -7,6 +7,7 @@ import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelResponse;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -24,7 +25,7 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @param request
      * @return
      */
-    Integer saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception;
+    ActionResponse saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception;
 
     /**
      * 修改
@@ -32,7 +33,7 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @param request
      * @return
      */
-    Integer updateAssetCategoryModel(AssetCategoryModelRequest request) throws Exception;
+    ActionResponse updateAssetCategoryModel(AssetCategoryModelRequest request) throws Exception;
 
     /**
      * 查询对象集合
@@ -55,7 +56,7 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @param id 删除的id，isConfirm是否已经确认
      * @return -1 表示存在资产，不能删除 -2 表示存在子品类，需要确认 -3 是系统内置品类，不能删除 >=0 表示删除的品类数
      */
-     Integer delete(Serializable id, Boolean isConfirm) throws Exception;
+    ActionResponse delete(Serializable id, Boolean isConfirm) throws Exception;
 
 
 }

@@ -795,6 +795,9 @@
                 #{item}
             </foreach>
         </if>
+        <if test=" categoryModel != null">
+            and category_model =#{categoryModel}
+        </if>
         <if test=" areaIds != null">
             and area_id in
             <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">

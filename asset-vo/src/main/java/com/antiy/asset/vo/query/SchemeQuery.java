@@ -29,19 +29,17 @@ public class SchemeQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 实施人
      */
+    @Encode
     @ApiModelProperty("资产id")
-    private Integer assetId;
+    private String assetId;
 
     @Override
     public void validate() throws RequestParamValidateException {
 
     }
 
-    public Integer getAssetId() {
-        return assetId;
-    }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

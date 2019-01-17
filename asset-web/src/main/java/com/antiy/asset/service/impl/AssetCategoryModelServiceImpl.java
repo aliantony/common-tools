@@ -7,21 +7,22 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.biz.entity.ErrorMessage;
+import com.antiy.common.base.*;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.BusinessExceptionUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetCategoryModelDao;
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
-import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
  * <p> 品类型号表 服务实现类 </p>
@@ -30,8 +31,8 @@ import com.antiy.common.utils.ParamterExceptionUtils;
  * @since 2019-01-02
  */
 @Service
-public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel>
-                                           implements IAssetCategoryModelService {
+public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel> implements
+                                                                                      IAssetCategoryModelService {
 
     @Resource
     private AssetCategoryModelDao                                         assetCategoryModelDao;
@@ -42,16 +43,22 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Resource
     private BaseConverter<AssetCategoryModel, AssetCategoryModelResponse> responseConverter;
 
+    /**
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @Override
-    public Integer saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
+    public ActionResponse saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel assetCategoryModel = requestConverter.convert(request, AssetCategoryModel.class);
         if (setParentType(assetCategoryModel)) {
             assetCategoryModel.setGmtCreate(System.currentTimeMillis());
             assetCategoryModel.setStatus(1);
             assetCategoryModelDao.insert(assetCategoryModel);
-            return assetCategoryModel.getId();
+            return ActionResponse.success(assetCategoryModel.getId());
         }
-        return -1;
+        return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "存在资产，不能删除");
     }
 
     /**
@@ -63,6 +70,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         if (assetCategoryModel != null && assetCategoryModel.getParentId() != null) {
             Integer parentId = assetCategoryModel.getParentId();
             AssetCategoryModel parent = assetCategoryModelDao.getById(parentId);
+            ParamterExceptionUtils.isNull(parent,"父资产类型不存在");
             assetCategoryModel.setAssetType(parent.getAssetType());
             return true;
         }
@@ -70,7 +78,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public Integer updateAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
+    public ActionResponse updateAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel assetCategoryModel = requestConverter.convert(request, AssetCategoryModel.class);
         AssetCategoryModel assetCategoryModelById = assetCategoryModelDao.getById(assetCategoryModel.getId());
         // 判断是不是系统内置
@@ -78,9 +86,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             assetCategoryModel.setStatus(1);
             assetCategoryModel.setParentId(null);
             assetCategoryModel.setAssetType(null);
-            return assetCategoryModelDao.update(assetCategoryModel);
+            return ActionResponse.success(assetCategoryModelDao.update(assetCategoryModel));
         }
-        return 0;
+        return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"系统内置品类不能更新或删除");
     }
 
     /**
@@ -106,7 +114,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query)
+                                                                                                           throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetCategoryModel(query), query.getCurrentPage(),
             this.findListAssetCategoryModel(query));
     }
@@ -115,24 +124,24 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * 删除品类
      *
      * @param id 删除的id，isConfirm是否已经确认
-     * @return -1 表示存在资产，不能删除 -2 表示存在子品类，需要确认 -3 是系统内置品类，不能删除 >=0 表示删除的品类数
+     * @return ActionResponse
      */
-    public Integer delete(Serializable id, Boolean isConfirm) throws Exception {
+    public ActionResponse delete(Serializable id, Boolean isConfirm) throws Exception {
         ParamterExceptionUtils.isNull(isConfirm, "二次确认不能为空");
         ParamterExceptionUtils.isNull(id, "id不能为空");
         AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getById(id);
         // 判断是否自定义品类
         if (!checkIsDefault(assetCategoryModel)) {
-            return -3;
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"系统内置品类不能更新或删除");
         }
         // 是否是确认删除
         if (!isConfirm) {
             List<AssetCategoryModel> list = recursionSearch((Integer) id);
             // 判断是否存在子品类，若不存在判断是否存在资产
             if (list.size() > 1) {
-                return -2;
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"表示存在子品类，需要确认");
             } else {
-                return deleteById(id);
+                return delete(id);
             }
         } else {
             return deleteAllById(id);
@@ -141,24 +150,23 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 
     /**
      * 删除品类,若存在资产则不能删（不进行递归）
-     * @return -1 表示存在资产，不能删除 , 表示删除的品类数
+     * @return ActionResponse
      */
-    @Override
-    public Integer deleteById(Serializable id) throws Exception {
+    public ActionResponse delete(Serializable id) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setCategoryModel((Integer) id);
         Integer count = assetDao.findCountByCategoryModel(assetQuery);
         if (count > 0) {
-            return -1;
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"存在资产，不能删除");
         }
-        return super.deleteById(id);
+        return ActionResponse.success(super.deleteById(id));
     }
 
     /**
      * 删除品类及其子品类,若存在资产则不能删（进行递归）
-     * @return -1 表示存在资产，不能删除 , 表示删除的品类数
+     * @return ActionResponse
      */
-    public Integer deleteAllById(Serializable id) throws Exception {
+    public ActionResponse deleteAllById(Serializable id) throws Exception {
         List<AssetCategoryModel> list = recursionSearch((Integer) id);
         AssetQuery assetQuery = new AssetQuery();
         Integer[] ids = new Integer[list.size()];
@@ -169,12 +177,12 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         Integer i = assetDao.findCountByCategoryModel(assetQuery);
         // 存在资产
         if (i > 0) {
-            return -1;
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"存在资产，不能删除");
         }
         if (CollectionUtils.isNotEmpty(list)) {
-            return assetCategoryModelDao.delete(list);
+            return ActionResponse.success(assetCategoryModelDao.delete(list));
         } else {
-            return 0;
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"品类不存在，删除失败");
         }
     }
 

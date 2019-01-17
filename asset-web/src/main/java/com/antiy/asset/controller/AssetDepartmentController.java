@@ -93,7 +93,7 @@ public class AssetDepartmentController {
                                      @RequestBody @ApiParam(value = "二次确认") Boolean isConfirm) throws Exception {
         ParamterExceptionUtils.isNull(id,"id不能为空");
         ParamterExceptionUtils.isNull(isConfirm,"二次确认不能为空");
-        return ActionResponse.success(iAssetDepartmentService.delete(id,isConfirm));
+        return iAssetDepartmentService.delete(id,isConfirm);
     }
 
     @ApiOperation(value = "通过ID查询所有部门信息及子部门信息", notes = "主键封装对象")

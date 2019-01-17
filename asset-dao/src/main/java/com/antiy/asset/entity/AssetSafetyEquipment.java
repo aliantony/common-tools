@@ -24,6 +24,14 @@ public class AssetSafetyEquipment extends BaseEntity {
      */
     private String  strategy;
     /**
+     * 策略配置
+     */
+    private String  softwareVersion;
+    /**
+     * 策略配置
+     */
+    private String  ip;
+    /**
      * 备注
      */
     private String  memo;
@@ -47,6 +55,22 @@ public class AssetSafetyEquipment extends BaseEntity {
      * 状态,1未删除,0已删除
      */
     private Integer status;
+
+    public String getSoftwareVersion() {
+        return softwareVersion;
+    }
+
+    public void setSoftwareVersion(String softwareVersion) {
+        this.softwareVersion = softwareVersion;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
 
     public Integer getAssetId() {
         return assetId;

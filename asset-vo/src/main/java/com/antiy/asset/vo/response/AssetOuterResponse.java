@@ -1,24 +1,47 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.asset.vo.request.AssetStorageMediumRequest;
+
 import java.util.List;
 
 public class AssetOuterResponse {
 
+    /**
+     * 资产主表
+     */
     private AssetResponse                  asset;
-
+    /**
+     * CPU
+     */
     private List<AssetCpuResponse>         assetCpu;
-
+    /**
+     * 网卡
+     */
     private List<AssetNetworkCardResponse> assetNetworkCard;
-
+    /**
+     * 内存
+     */
     private List<AssetMemoryResponse>      assetMemory;
-
+    /**
+     * 主板
+     */
     private List<AssetMainboradResponse>   assetMainborad;
-
+    /**
+     * 硬盘
+     */
     private List<AssetHardDiskResponse>    assetHardDisk;
-
-    private AssetNetworkEquipmentResponse assetNetworkEquipment;
-
-    private AssetSafetyEquipmentResponse assetSafetyEquipment;
+    /**
+     * 网络设备
+     */
+    private AssetNetworkEquipmentResponse  assetNetworkEquipment;
+    /**
+     * 安全设备
+     */
+    private AssetSafetyEquipmentResponse   assetSafetyEquipment;
+    /**
+     * 存储介质
+     */
+    private AssetStorageMediumResponse      assetStorageMedium;
 
     private List<AssetSoftwareResponse>    assetSoftware;
 
@@ -92,5 +115,13 @@ public class AssetOuterResponse {
 
     public void setAssetSafetyEquipment(AssetSafetyEquipmentResponse assetSafetyEquipment) {
         this.assetSafetyEquipment = assetSafetyEquipment;
+    }
+
+    public AssetStorageMediumResponse getAssetStorageMedium() {
+        return assetStorageMedium;
+    }
+
+    public void setAssetStorageMedium(AssetStorageMediumResponse assetStorageMedium) {
+        this.assetStorageMedium = assetStorageMedium;
     }
 }

@@ -1,19 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
@@ -29,10 +15,27 @@ import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -75,6 +78,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private BaseConverter<Asset, ComputeDeviceEntity> entityConverter;
     @Resource
     private AssetUserDao                              assetUserDao;
+    @Resource
+    private ExcelDownloadUtil                         excelDownloadUtil;
 
     private static final Logger                       LOGGER = LogUtils.get(AssetServiceImpl.class);
 
@@ -525,14 +530,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetCpuRequest> cpuRequestList = assetPCRequest.getCpu();
         BaseConverter<AssetCpuRequest, AssetCpu> baseConverter = new BaseConverter<>();
         List<AssetCpu> cpu = baseConverter.convert(cpuRequestList, AssetCpu.class);
-        List<AssetHardDisk> hardDisk = new BaseConverter<AssetHardDiskRequest, AssetHardDisk>()
-            .convert(assetPCRequest.getHardDisk(), AssetHardDisk.class);
-        List<AssetMemory> memory = new BaseConverter<AssetMemoryRequest, AssetMemory>()
-            .convert(assetPCRequest.getMemory(), AssetMemory.class);
-        List<AssetMainborad> mainboard = new BaseConverter<AssetMainboradRequest, AssetMainborad>()
-            .convert(assetPCRequest.getMainboard(), AssetMainborad.class);
-        List<AssetNetworkCard> networkCard = new BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>()
-            .convert(assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
+        List<AssetHardDisk> hardDisk = new BaseConverter<AssetHardDiskRequest, AssetHardDisk>().convert(
+            assetPCRequest.getHardDisk(), AssetHardDisk.class);
+        List<AssetMemory> memory = new BaseConverter<AssetMemoryRequest, AssetMemory>().convert(
+            assetPCRequest.getMemory(), AssetMemory.class);
+        List<AssetMainborad> mainboard = new BaseConverter<AssetMainboradRequest, AssetMainborad>().convert(
+            assetPCRequest.getMainboard(), AssetMainborad.class);
+        List<AssetNetworkCard> networkCard = new BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>().convert(
+            assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
 
         Asset asset = requestConverter.convert(assetPCRequest.getAsset(), Asset.class);
         assetDao.insert(asset);
@@ -595,6 +600,242 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return aid;
     }
 
+    // @Override
+    // public String importPc(MultipartFile file) throws Exception {
+    // String filePath = System.getProperty("user.dir") + File.separator + "antiy" + File.separator + "ExcelFiles";
+    // InputStream in = null;
+    // OutputStream out = null;
+    // File dir = new File(filePath);
+    // if (!dir.exists())
+    // {
+    // dir.mkdirs();
+    // }
+    // File serverFile = new File(dir.getAbsolutePath() + File.separator + file.getOriginalFilename());
+    // in = file.getInputStream();
+    // out = new FileOutputStream (serverFile);
+    // byte[] b = new byte[1024];
+    // int len = 0;
+    // while ((len = in.read(b)) > 0)
+    // {
+    // out.write(b, 0, len);
+    // }
+    // out.close();
+    // in.close();
+    // List<Map<String, Object>> maps = null;
+    // for (Map<String, Object> map : maps) {
+    // Asset asset = new Asset ();
+    // if (StringUtils.isBlank (map.get ("名称").toString ())||StringUtils.isBlank (map.get ("使用者工号").toString ())){
+    // continue;
+    // }
+    //
+    //
+    // //TODO 查询人员ID
+    // asset.setResponsibleUserId (1);
+    // asset.setManufacturer (map.get("厂商") == null?null:map.get("厂商").toString());
+    // asset.setName (map.get("名称") == null?null:map.get("名称").toString());
+    // asset.setSerial (map.get("序列号") == null?null:map.get("序列号").toString());
+    // asset.setLocation (map.get("物理位置") == null?null:map.get("物理位置").toString());
+    // asset.setHouseLocation (map.get("机房位置") == null?null:map.get("机房位置").toString());
+    // asset.setFirmwareVersion (map.get("固件版本") == null?null:map.get("固件版本").toString());
+    // asset.setOperationSystem (map.get("操作系统") == null?null:map.get("操作系统").toString());
+    // asset.setGmtCreate(System.currentTimeMillis());
+    //
+    // if (map.get("重要程度") != null)
+    // {
+    // switch (map.get("重要程度").toString())
+    // {
+    // case "不重要":
+    // asset.setImportanceDegree (1);
+    // break;
+    // case "一般":
+    // asset.setImportanceDegree (2);
+    // break;
+    // case "重要":
+    // asset.setImportanceDegree (3);
+    // break;
+    // }
+    // }
+    // //TODO 确认品类
+    // asset.setCategoryModel(1);
+    // asset.setAreaId ("1");
+    // // TODO: 2019/1/15 插入调用流程
+    // asset.setAssetStatus (3);
+    // //人工
+    // asset.setAssetSource (2);
+    // assetDao.insert (asset);
+    // Integer id = asset.getId ();
+    //
+    // if (StringUtils.isNotBlank (map.get("内存品牌").toString ())){
+    // AssetMemory assetMemory = new AssetMemory ();
+    // assetMemory.setAssetId (id);
+    // assetMemory.setGmtCreate (System.currentTimeMillis ());
+    // assetMemory.setSerial (map.get("内存序列号") == null?null:map.get("内存序列号").toString());
+    // assetMemory.setBrand (map.get("内存品牌") == null?null:map.get("内存品牌").toString());
+    // assetMemory.setCapacity (map.get("内存容量") == null?null:Integer.parseInt (map.get("内存容量").toString()));
+    // assetMemory.setFrequency (map.get("内存频率") == null?null:Double.parseDouble (map.get("内存频率").toString()));
+    // assetMemory.setCapacity (map.get("内存容量") == null?null:Integer.parseInt (map.get("内存容量").toString()));
+    // assetMemory.setStitch (map.get("内存针脚数") == null?null:Integer.parseInt (map.get("内存针脚数").toString()));
+    // if (map.get("内存是否带散热") != null){
+    // assetMemory.setHeatsink (map.get("内存是否带散热") .equals ("是")?true:false);
+    // }
+    //
+    // if (map.get("内存插槽类型") != null)
+    // {
+    // switch (map.get("内存插槽类型").toString())
+    // {
+    // case "SDRAM":
+    // assetMemory.setSlotType (0);
+    // break;
+    // case "SIMM":
+    // assetMemory.setSlotType (1);
+    // break;
+    // case "DIMM":
+    // assetMemory.setSlotType (2);
+    // break;
+    // case "RIMM":
+    // assetMemory.setSlotType (3);
+    // break;
+    // }
+    // }
+    // if (map.get("内存数量") != null) {
+    // int num = Integer.parseInt (map.get ("内存数量").toString ());
+    // for (int i = 0; i <num; i++) {
+    // assetMemoryDao.insert (assetMemory);
+    //
+    // }
+    // }
+    //
+    // }
+    //
+    //
+    //
+    // if (StringUtils.isNotBlank (map.get("硬盘品牌").toString ())){
+    // AssetHardDisk assetHardDisk = new AssetHardDisk ();
+    // assetHardDisk.setAssetId (id);
+    // assetHardDisk.setGmtCreate (System.currentTimeMillis ());
+    // assetHardDisk.setSerial (map.get("硬盘序列号") == null?null:map.get("硬盘序列号").toString());
+    // assetHardDisk.setBrand (map.get("硬盘品牌") == null?null:map.get("硬盘品牌").toString());
+    // assetHardDisk.setModel (map.get("硬盘型号") == null?null:map.get("硬盘型号").toString());
+    // assetHardDisk.setCapacity (map.get ("硬盘容量") == null ? null : Integer.parseInt (map.get ("硬盘容量").toString ()));
+    //
+    // assetHardDisk.setBuyDate (map.get ("硬盘购买日期") == null ? null : DateUtils.getDateFormat (map.get
+    // ("硬盘购买日期").toString (),"yyyy-MM-dd HH:mm:ss").getTime ());
+    //
+    // if (map.get("硬盘接口类型") != null)
+    // {
+    // switch (map.get("硬盘接口类型").toString())
+    // {
+    // case "SATA":
+    // assetHardDisk.setInterfaceType (1);
+    // break;
+    // case "IDE":
+    // assetHardDisk.setInterfaceType (2);
+    // break;
+    // case "ATA":
+    // assetHardDisk.setInterfaceType (3);
+    // break;
+    // case "SCSI":
+    // assetHardDisk.setInterfaceType (4);
+    // break;
+    // case "光纤":
+    // assetHardDisk.setInterfaceType (5);
+    // break;
+    // }
+    // }
+    // if (map.get("硬盘磁盘类型") != null)
+    // {
+    // switch (map.get("硬盘磁盘类型").toString())
+    // {
+    // case "HDD":
+    // assetHardDisk.setInterfaceType (1);
+    // break;
+    // case "SSD":
+    // assetHardDisk.setInterfaceType (2);
+    // break;
+    // }
+    // }
+    //
+    // if (map.get("硬盘数量") != null) {
+    // int num = Integer.parseInt (map.get ("硬盘数量").toString ());
+    // for (int i = 0; i <num; i++) {
+    // assetHardDiskDao.insert (assetHardDisk);
+    //
+    // }
+    // }
+    //
+    // }
+    //
+    //
+    // if (StringUtils.isNotBlank (map.get("主板品牌").toString ())){
+    // AssetMainborad assetMainborad = new AssetMainborad ();
+    // assetMainborad.setAssetId (id);
+    // assetMainborad.setGmtCreate (System.currentTimeMillis ());
+    // assetMainborad.setSerial (map.get("主板序列号") == null?null:map.get("主板序列号").toString());
+    // assetMainborad.setBrand (map.get("主板品牌") == null?null:map.get("主板品牌").toString());
+    // assetMainborad.setModel (map.get("主板型号") == null?null:map.get("主板型号").toString());
+    // assetMainborad.setBiosVersion (map.get("主板BIOS版本") == null?null:map.get("主板BIOS版本").toString());
+    // assetMainborad.setBiosDate (map.get ("主板日期") == null ? null : DateUtils.getDateFormat (map.get ("主板日期").toString
+    // (),"yyyy-MM-dd HH:mm:ss").getTime ());
+    // if (map.get("主板数量") != null) {
+    // int num = Integer.parseInt (map.get ("硬盘数量").toString ());
+    // for (int i = 0; i <num; i++) {
+    // assetMainboradDao.insert (assetMainborad);
+    //
+    // }
+    // }
+    //
+    // }
+    // if (StringUtils.isNotBlank (map.get("CPU品牌").toString ())){
+    // AssetCpu assetCpu = new AssetCpu ();
+    // assetCpu.setAssetId (id);
+    // assetCpu.setGmtCreate (System.currentTimeMillis ());
+    // assetCpu.setSerial (map.get("CPU序列号") == null?null:map.get("CPU序列号").toString());
+    // assetCpu.setBrand (map.get("CPU品牌") == null?null:map.get("CPU品牌").toString());
+    // assetCpu.setModel (map.get("CPU型号") == null?null:map.get("CPU型号").toString());
+    // assetCpu.setMainFrequency (map.get("CPU主频") == null?null:Float.parseFloat (map.get("CPU主频").toString()));
+    // assetCpu.setThreadSize (map.get("CPU线程数") == null?null:Integer.parseInt (map.get("CPU线程数").toString()));
+    // assetCpu.setCoreSize (map.get("CPU核心数") == null?null:Integer.parseInt (map.get("CPU核心数").toString()));
+    // if (map.get("CPU数量") != null) {
+    // int num = Integer.parseInt (map.get ("硬盘数量").toString ());
+    // for (int i = 0; i <num; i++) {
+    // assetCpuDao.insert (assetCpu);
+    //
+    // }
+    // }
+    // }
+    // if (StringUtils.isNotBlank (map.get("网卡品牌").toString ())){
+    // AssetNetworkCard assetNetworkCard = new AssetNetworkCard ();
+    // assetNetworkCard.setAssetId (id);
+    // assetNetworkCard.setGmtCreate (System.currentTimeMillis ());
+    // assetNetworkCard.setSerial (map.get("网卡序列号") == null?null:map.get("网卡序列号").toString());
+    // assetNetworkCard.setBrand (map.get("网卡品牌") == null?null:map.get("网卡品牌").toString());
+    // assetNetworkCard.setModel (map.get("网卡型号") == null?null:map.get("网卡型号").toString());
+    // assetNetworkCard.setSubnetMask (map.get("网卡子网掩码") == null?null:map.get("网卡子网掩码").toString());
+    // assetNetworkCard.setDefaultGateway (map.get("网卡默认网关") == null?null:map.get("网卡默认网关").toString());
+    //
+    // String ip = map.get ("网卡ip地址") == null ? null : map.get ("网卡ip地址").toString ();
+    // String mac = map.get ("网卡MAC地址") == null ? null : map.get ("网卡MAC地址").toString ();
+    // String[] ips = ip.split (",");
+    // String[] macs = mac.split (",");
+    // if (map.get("网卡数量") != null) {
+    // if (ips.length==macs.length&&macs.length==Integer.parseInt (map.get("网卡数量").toString () )){
+    // int num = Integer.parseInt (map.get ("网卡数量").toString ());
+    // for (int i = 0; i <num; i++) {
+    // assetNetworkCard.setMacAddress (macs[i]);
+    // assetNetworkCard.setIpAddress (ips[i]);
+    // assetNetworkCardDao.insert (assetNetworkCard);
+    //
+    // }
+    // }
+    //
+    // }
+    //
+    // }
+    //
+    // }
+    // return "导入完成";
+    // }
+
     /**
      * 递归查询出品类和其子品类
      *
@@ -651,32 +892,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // CPU
         assetOuterResponse.setAssetCpu(BeanConvert.convert(assetCpuDao.getByWhere(param), AssetCpuResponse.class));
         // 网卡
-        assetOuterResponse.setAssetNetworkCard(
-            BeanConvert.convert(assetNetworkCardDao.getByWhere(param), AssetNetworkCardResponse.class));
+        assetOuterResponse.setAssetNetworkCard(BeanConvert.convert(assetNetworkCardDao.getByWhere(param),
+            AssetNetworkCardResponse.class));
         // 硬盘
-        assetOuterResponse
-            .setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param), AssetHardDiskResponse.class));
+        assetOuterResponse.setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param),
+            AssetHardDiskResponse.class));
         // 主板
-        assetOuterResponse
-            .setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param), AssetMainboradResponse.class));
+        assetOuterResponse.setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param),
+            AssetMainboradResponse.class));
         // 内存
-        assetOuterResponse
-            .setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param), AssetMemoryResponse.class));
+        assetOuterResponse.setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param),
+            AssetMemoryResponse.class));
         // 网络设备
         List<AssetNetworkEquipment> assetNetworkEquipmentList = assetNetworkEquipmentDao.getByWhere(param);
         if (assetNetworkEquipmentList != null && !assetNetworkEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetNetworkEquipment(
-                BeanConvert.convertBean(assetNetworkEquipmentList.get(0), AssetNetworkEquipmentResponse.class));
+            assetOuterResponse.setAssetNetworkEquipment(BeanConvert.convertBean(assetNetworkEquipmentList.get(0),
+                AssetNetworkEquipmentResponse.class));
         }
         // 安全设备
         List<AssetSafetyEquipment> assetSafetyEquipmentList = assetSafetyEquipmentDao.getByWhere(param);
         if (assetSafetyEquipmentList != null && !assetSafetyEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetSafetyEquipment(
-                BeanConvert.convertBean(assetSafetyEquipmentList.get(0), AssetSafetyEquipmentResponse.class));
+            assetOuterResponse.setAssetSafetyEquipment(BeanConvert.convertBean(assetSafetyEquipmentList.get(0),
+                AssetSafetyEquipmentResponse.class));
         }
         // 软件
-        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
-            .getSoftByAssetId(DataTypeUtils.stringToInteger(id));
+        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSoftByAssetId(DataTypeUtils
+            .stringToInteger(id));
         assetOuterResponse.setAssetSoftware(BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class));
         return assetOuterResponse;
     }
@@ -824,57 +1065,148 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 exportToClient(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备");
                 break;
             case 2:
-                exportToClient(ComputeDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备");
+                exportToClient(NetworkDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备");
                 break;
             case 3:
-                exportToClient(SafetyEquipment.class, "安全设备信息模板.xlsx", "安全设备");
+                exportToClient(SafetyEquipmentEntiy.class, "安全设备信息模板.xlsx", "安全设备");
                 break;
             case 4:
-                exportToClient(HardDiskEntity.class, "存储介质信息模板.xlsx", "存储介质");
+                exportToClient(StorageDeviceEntity.class, "存储设备信息模板.xlsx", "存储设备");
                 break;
             case 5:
-                exportToClient(ServerEntity.class, "服务器信息模板.xlsx", "服务器");
-                break;
-            case 6:
-                exportToClient(AssetPeripheralEquipmentEntity.class, "外设信息模板.xlsx", "外设");
+                exportToClient(OtherDeviceEntity.class, "其他设备信息模板.xlsx", "其他设备");
                 break;
         }
     }
 
     @Override
-    public void exportData(int type, AssetQuery assetQuery) throws Exception {
+    public void exportData(int type, AssetQuery assetQuery, HttpServletResponse response) throws Exception {
         switch (type) {
             case 1:
-                exportData(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备", assetQuery);
+                exportData(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", assetQuery, response);
                 break;
-            // 之后会重写
-            // case 2:
-            // exportData(ComputeDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备", assetQuery);
-            // break;
-            // case 3:
-            // exportData(SafetyEquipment.class, "安全设备信息模板.xlsx", "安全设备", assetQuery);
-            // break;
-            // case 4:
-            // exportData(HardDiskEntity.class, "存储介质信息模板.xlsx", "存储介质", assetQuery);
-            // break;
-            // case 5:
-            // exportData(ServerEntity.class, "服务器信息模板.xlsx", "服务器", assetQuery);
-            // break;
-            // case 6:
-            // exportData(AssetPeripheralEquipmentEntity.class, "外设信息模板.xlsx", "外设", assetQuery);
-            // break;
+            case 2:
+                exportData(NetworkDeviceEntity.class, "网络设备信息模板.xlsx", assetQuery, response);
+                break;
+            case 3:
+                exportData(SafetyEquipmentEntiy.class, "安全设备信息模板.xlsx", assetQuery, response);
+                break;
+            case 4:
+                exportData(StorageDeviceEntity.class, "存储设备信息模板.xlsx", assetQuery, response);
+                break;
+            case 5:
+                exportData(OtherDeviceEntity.class, "其他设备信息模板.xlsx", assetQuery, response);
+                break;
         }
+    }
+
+    @Override
+    public String importPc(MultipartFile file) throws Exception {
+        return null;
+    }
+
+    @Override
+    public String importNet(MultipartFile file) throws Exception {
+        ImportResult<NetworkDeviceEntity> result = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class, file, 0,
+            1);
+        List<NetworkDeviceEntity> dataList = result.getDataList();
+        for (NetworkDeviceEntity networkDeviceEntity : dataList) {
+            Asset asset = new Asset();
+            AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
+            asset.setGmtCreate(System.currentTimeMillis());
+            asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setAssetStatus(3);
+            asset.setAssetSource(2);
+            asset.setName(networkDeviceEntity.getName());
+            asset.setManufacturer(networkDeviceEntity.getManufacturer());
+            asset.setFirmwareVersion(networkDeviceEntity.getFirmwareVersion());
+            asset.setSerial(networkDeviceEntity.getSerial());
+            asset.setContactTel(networkDeviceEntity.getTelephone());
+            asset.setLocation(networkDeviceEntity.getLocation());
+            asset.setHouseLocation(networkDeviceEntity.getHouseLocation());
+            asset.setEmail(networkDeviceEntity.getEmail());
+            asset.setBuyDate(networkDeviceEntity.getButDate());
+            asset.setServiceLife(networkDeviceEntity.getDueDate());
+            asset.setWarranty(networkDeviceEntity.getWarranty());
+            asset.setMemo(networkDeviceEntity.getMemo());
+            assetDao.insert(asset);
+            assetNetworkEquipment.setAssetId(asset.getId());
+            assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
+            assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetNetworkEquipment.setInterfaceSize(networkDeviceEntity.getInterfaceSize());
+            assetNetworkEquipment.setPortSize(networkDeviceEntity.getPortSize());
+            assetNetworkEquipment.setIos(networkDeviceEntity.getIos());
+            assetNetworkEquipment.setInnerIp(networkDeviceEntity.getInnerIp());
+            assetNetworkEquipment.setOuterIp(networkDeviceEntity.getOuterIp());
+            assetNetworkEquipment.setMacAddress(networkDeviceEntity.getMac());
+            assetNetworkEquipment.setCpuVersion(networkDeviceEntity.getCpuVersion());
+            assetNetworkEquipment.setSubnetMask(networkDeviceEntity.getSubnetMask());
+            assetNetworkEquipment.setExpectBandwidth(networkDeviceEntity.getExpectBandwidth());
+            assetNetworkEquipment.setMemo(networkDeviceEntity.getMemo());
+            assetNetworkEquipment.setNcrmSize(networkDeviceEntity.getNcrmSize());
+            assetNetworkEquipment.setCpu(networkDeviceEntity.getCpuSize());
+            assetNetworkEquipment.setDramSize(networkDeviceEntity.getDramSize());
+            assetNetworkEquipment.setFlashSize(networkDeviceEntity.getFlashSize());
+            assetNetworkEquipment.setRegister(networkDeviceEntity.getRegister());
+            assetNetworkEquipment.setIsWireless(networkDeviceEntity.getIsWireless());
+            assetNetworkEquipmentDao.insert(assetNetworkEquipment);
+            // // TODO: 2019/1/17 流程
+
+        }
+
+        return result.getMsg();
+    }
+
+    @Override
+    public String importSecurity(MultipartFile file) throws Exception {
+        ImportResult<SafetyEquipmentEntiy> result = ExcelUtils.importExcelFromClient(SafetyEquipmentEntiy.class, file,
+            0, 1);
+        List<SafetyEquipmentEntiy> dataList = result.getDataList();
+        for (SafetyEquipmentEntiy entity : dataList) {
+            Asset asset = new Asset();
+            AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
+            asset.setGmtCreate(System.currentTimeMillis());
+            asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setAssetStatus(3);
+            asset.setAssetSource(2);
+            asset.setName(entity.getName());
+            asset.setManufacturer(entity.getManufacturer());
+            asset.setFirmwareVersion(entity.getFirmwareVersion());
+            asset.setSerial(entity.getSerial());
+            asset.setContactTel(entity.getTelephone());
+            asset.setLocation(entity.getLocation());
+            asset.setHouseLocation(entity.getHouseLocation());
+            asset.setEmail(entity.getEmail());
+            asset.setBuyDate(entity.getBuyDate());
+            asset.setServiceLife(entity.getDueDate());
+            asset.setWarranty(entity.getWarranty());
+            asset.setMemo(entity.getMemo());
+            assetDao.insert(asset);
+            assetSafetyEquipment.setAssetId(asset.getId());
+            assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
+            assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetSafetyEquipment.setSoftwareVersion(entity.getSoftwareVersion());
+            assetSafetyEquipment.setIp(entity.getIp());
+            assetSafetyEquipment.setMemo(entity.getMemo());
+            assetSafetyEquipmentDao.insert(assetSafetyEquipment);
+            // // TODO: 2019/1/17 流程
+
+        }
+
+        return result.getMsg();
     }
 
     private void exportToClient(Class clazz, String fileName, String title) {
         ExcelUtils.exportTemplet(clazz, fileName, title);
     }
 
-    private void exportData(Class clazz, String fileName, String title, AssetQuery assetQuery) throws Exception {
+    private void exportData(Class clazz, String fileName,AssetQuery assetQuery, HttpServletResponse response)
+                                                                                                              throws Exception {
         List<Asset> list = assetDao.findListAsset(assetQuery);
-        List<ComputeDeviceEntity> computeDeviceEntities = entityConverter.convert(assetDao.findListAsset(assetQuery),
-            ComputeDeviceEntity.class);
-        ExcelUtils.exportToClient(clazz, fileName, title, findListAsset(assetQuery));
+        DownloadVO downloadVO = new DownloadVO();
+        downloadVO.setDownloadList(list);
+        excelDownloadUtil.excelDownload(response, "资产信息表", downloadVO);
+
     }
 
 }

@@ -1,15 +1,17 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
+import lombok.Data;
 
 /**
  * 计算设备
  */
+@Data
 public class ComputeDeviceEntity {
     /**
      * 序号
      */
-    @ExcelField(value = "order_number", align = 1, title = "序号")
+    @ExcelField(value = "order_number", align = 1, title = "序号",type =1 )
     private Integer orderNumber;
 
     /**
@@ -49,12 +51,6 @@ public class ComputeDeviceEntity {
     private String  email;
 
     /**
-     * 资产组
-     */
-    @ExcelField(value = "asset_group", align = 1, title = "资产组")
-    private String  assetGroup;
-
-    /**
      * 物理位置
      */
     @ExcelField(value = "location", align = 1, title = "物理位置")
@@ -88,21 +84,21 @@ public class ComputeDeviceEntity {
      * 购买时间
      */
     @ExcelField(value = "buy_date", align = 1, title = "购买时间", isDate = true)
-    private String  buyDate;
-
-    /**
-     * 购买时间
-     */
-    @ExcelField(value = "due_time", align = 1, title = "到期时间", isDate = true)
-    private String  dueTime;
-    /**
-     * 描述
-     */
-    @ExcelField(value = "warranty", align = 1, title = "保修期")
-    private Long    warranty;
+    private Long  buyDate;
 
     /**
      * 使用到期时间
+     */
+    @ExcelField(value = "due_time", align = 1, title = "到期时间", isDate = true)
+    private Long  dueTime;
+    /**
+     * 保修
+     */
+    @ExcelField(value = "warranty", align = 1, title = "保修期",isDate = true)
+    private Long    warranty;
+
+    /**
+     * memo
      */
     @ExcelField(value = "description", align = 1, title = "描述", isDate = true)
     private String  description;
@@ -110,7 +106,7 @@ public class ComputeDeviceEntity {
      * 内存数量
      */
     @ExcelField(value = "memory_num", align = 1, title = "内存数量")
-    private String  memoryNum;
+    private Integer  memoryNum;
     /**
      * 内存品牌
      */
@@ -126,40 +122,36 @@ public class ComputeDeviceEntity {
      * 内存容量
      */
     @ExcelField(value = "memory_capacity", align = 1, title = "内存容量")
-    private String  memoryCapacity;
+    private Integer  memoryCapacity;
 
-    /**
-     * 内存频率
-     */
-    @ExcelField(value = "memory_type", align = 1, title = "内存频率")
-    private String  memoryType;
+
     /**
      * 内存主频
      */
     @ExcelField(value = "memory_frequency", align = 1, title = "内存主频")
-    private String  memoryFrequency;
+    private Double  memoryFrequency;
 
     /**
      * 内存插槽类型
      */
     @ExcelField(value = "slot_type", align = 1, title = "内存插槽类型", dictType = "slot_type")
-    private String  slotType;
+    private Integer  slotType;
 
     /**
      * 是否带散热
      */
     @ExcelField(value = "cpu_is_heatsink", align = 1, title = "内存是否带散热", dictType = "yesorno")
-    private String  cpuIsHeatsink;
+    private Integer  cpuIsHeatsink;
     /**
      * 针脚数
      */
     @ExcelField(value = "cpu_stitch", align = 1, title = "内存针脚数")
-    private String  cpuStitch;
+    private Integer  cpuStitch;
     /**
      * 硬盘数量
      */
     @ExcelField(value = "hard_disk_num", align = 1, title = "硬盘数量")
-    private String  hardDiskNum;
+    private Integer  hardDiskNum;
     /**
      * 硬盘品牌
      */
@@ -181,17 +173,17 @@ public class ComputeDeviceEntity {
      * 硬盘容量
      */
     @ExcelField(value = "hard_disk_capacity", align = 1, title = "硬盘容量")
-    private String  hardDisCapacityl;
+    private Integer  hardDisCapacityl;
     /**
      * 硬盘接口类型
      */
     @ExcelField(value = "hard_disk_interface_type", align = 1, title = "硬盘接口类型", dictType = "interface_type")
-    private String  hardDiskInterfaceType;
+    private Integer  hardDiskInterfaceType;
     /**
      * 硬盘磁盘类型
      */
     @ExcelField(value = "hard_disk_type", align = 1, title = "硬盘磁盘类型", dictType = "disk_type")
-    private String  hardDiskType;
+    private Integer  hardDiskType;
     /**
      * 硬盘购买时间
      */
@@ -220,13 +212,13 @@ public class ComputeDeviceEntity {
     /**
      * 主板bios日期
      */
-    @ExcelField(value = "mainborad_bios_date", align = 1, title = "主板bios日期")
-    private String  mainboradBiosDate;
+    @ExcelField(value = "mainborad_bios_date", align = 1, title = "主板bios日期",isDate = true)
+    private Long  mainboradBiosDate;
     /**
      * cpu数量
      */
     @ExcelField(value = "cpu_num", align = 1, title = "cpu数量")
-    private String  cpuNum;
+    private Integer  cpuNum;
     /**
      * cpu品牌
      */
@@ -246,22 +238,22 @@ public class ComputeDeviceEntity {
      * cpu主频
      */
     @ExcelField(value = "cpu_main_frequency", align = 1, title = "cpu主频")
-    private String  cpuMainFrequency;
+    private Float  cpuMainFrequency;
     /**
      * cpu线程数
      */
     @ExcelField(value = "cpu_thread_size", align = 1, title = "cpu线程数")
-    private String  cpuThreadSize;
+    private Integer  cpuThreadSize;
     /**
      * cpu核心数
      */
     @ExcelField(value = "cpu_core_size", align = 1, title = "cpu核心数")
-    private String  cpuCoreSize;
+    private Integer  cpuCoreSize;
     /**
      * 网卡数量
      */
     @ExcelField(value = "network_num", align = 1, title = "网卡数量")
-    private String  networkNum;
+    private Integer  networkNum;
     /**
      * 网卡品牌
      */
@@ -298,436 +290,5 @@ public class ComputeDeviceEntity {
     @ExcelField(value = "network_default_gateway", align = 1, title = "网卡默认网关")
     private String  networkDefaultGateway;
 
-    public Integer getOrderNumber() {
-        return orderNumber;
-    }
 
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
-
-    public String getSerial() {
-        return serial;
-    }
-
-    public void setSerial(String serial) {
-        this.serial = serial;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getAssetGroup() {
-        return assetGroup;
-    }
-
-    public void setAssetGroup(String assetGroup) {
-        this.assetGroup = assetGroup;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getHouseLocation() {
-        return houseLocation;
-    }
-
-    public void setHouseLocation(String houseLocation) {
-        this.houseLocation = houseLocation;
-    }
-
-    public String getFirmwareVersion() {
-        return firmwareVersion;
-    }
-
-    public void setFirmwareVersion(String firmwareVersion) {
-        this.firmwareVersion = firmwareVersion;
-    }
-
-
-    public String getOperationSystem() {
-        return operationSystem;
-    }
-
-    public void setOperationSystem(String operationSystem) {
-        this.operationSystem = operationSystem;
-    }
-
-    public String getImportanceDegree() {
-        return importanceDegree;
-    }
-
-    public void setImportanceDegree(String importanceDegree) {
-        this.importanceDegree = importanceDegree;
-    }
-
-    public String getBuyDate() {
-        return buyDate;
-    }
-
-    public void setBuyDate(String buyDate) {
-        this.buyDate = buyDate;
-    }
-
-    public String getDueTime() {
-        return dueTime;
-    }
-
-    public void setDueTime(String dueTime) {
-        this.dueTime = dueTime;
-    }
-
-    public Long getWarranty() {
-        return warranty;
-    }
-
-    public void setWarranty(Long warranty) {
-        this.warranty = warranty;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getMemoryNum() {
-        return memoryNum;
-    }
-
-    public void setMemoryNum(String memoryNum) {
-        this.memoryNum = memoryNum;
-    }
-
-    public String getMemoryBrand() {
-        return memoryBrand;
-    }
-
-    public void setMemoryBrand(String memoryBrand) {
-        this.memoryBrand = memoryBrand;
-    }
-
-    public String getMemorySerial() {
-        return memorySerial;
-    }
-
-    public void setMemorySerial(String memorySerial) {
-        this.memorySerial = memorySerial;
-    }
-
-    public String getMemoryCapacity() {
-        return memoryCapacity;
-    }
-
-    public void setMemoryCapacity(String memoryCapacity) {
-        this.memoryCapacity = memoryCapacity;
-    }
-
-    public String getMemoryType() {
-        return memoryType;
-    }
-
-    public void setMemoryType(String memoryType) {
-        this.memoryType = memoryType;
-    }
-
-    public String getMemoryFrequency() {
-        return memoryFrequency;
-    }
-
-    public void setMemoryFrequency(String memoryFrequency) {
-        this.memoryFrequency = memoryFrequency;
-    }
-
-    public String getSlotType() {
-        return slotType;
-    }
-
-    public void setSlotType(String slotType) {
-        this.slotType = slotType;
-    }
-
-    public String getCpuIsHeatsink() {
-        return cpuIsHeatsink;
-    }
-
-    public void setCpuIsHeatsink(String cpuIsHeatsink) {
-        this.cpuIsHeatsink = cpuIsHeatsink;
-    }
-
-    public String getCpuStitch() {
-        return cpuStitch;
-    }
-
-    public void setCpuStitch(String cpuStitch) {
-        this.cpuStitch = cpuStitch;
-    }
-
-    public String getHardDiskNum() {
-        return hardDiskNum;
-    }
-
-    public void setHardDiskNum(String hardDiskNum) {
-        this.hardDiskNum = hardDiskNum;
-    }
-
-    public String getHardDiskBrand() {
-        return hardDiskBrand;
-    }
-
-    public void setHardDiskBrand(String hardDiskBrand) {
-        this.hardDiskBrand = hardDiskBrand;
-    }
-
-    public String getHardDiskModel() {
-        return hardDiskModel;
-    }
-
-    public void setHardDiskModel(String hardDiskModel) {
-        this.hardDiskModel = hardDiskModel;
-    }
-
-    public String getHardDiskSerial() {
-        return hardDiskSerial;
-    }
-
-    public void setHardDiskSerial(String hardDiskSerial) {
-        this.hardDiskSerial = hardDiskSerial;
-    }
-
-    public String getHardDisCapacityl() {
-        return hardDisCapacityl;
-    }
-
-    public void setHardDisCapacityl(String hardDisCapacityl) {
-        this.hardDisCapacityl = hardDisCapacityl;
-    }
-
-    public String getHardDiskInterfaceType() {
-        return hardDiskInterfaceType;
-    }
-
-    public void setHardDiskInterfaceType(String hardDiskInterfaceType) {
-        this.hardDiskInterfaceType = hardDiskInterfaceType;
-    }
-
-    public String getHardDiskType() {
-        return hardDiskType;
-    }
-
-    public void setHardDiskType(String hardDiskType) {
-        this.hardDiskType = hardDiskType;
-    }
-
-    public Long getHardDiskBuyDate() {
-        return hardDiskBuyDate;
-    }
-
-    public void setHardDiskBuyDate(Long hardDiskBuyDate) {
-        this.hardDiskBuyDate = hardDiskBuyDate;
-    }
-
-    public String getMainboradBrand() {
-        return mainboradBrand;
-    }
-
-    public void setMainboradBrand(String mainboradBrand) {
-        this.mainboradBrand = mainboradBrand;
-    }
-
-    public String getMainboradModel() {
-        return mainboradModel;
-    }
-
-    public void setMainboradModel(String mainboradModel) {
-        this.mainboradModel = mainboradModel;
-    }
-
-    public String getMainboradSerial() {
-        return mainboradSerial;
-    }
-
-    public void setMainboradSerial(String mainboradSerial) {
-        this.mainboradSerial = mainboradSerial;
-    }
-
-    public String getMainboradBiosVersion() {
-        return mainboradBiosVersion;
-    }
-
-    public void setMainboradBiosVersion(String mainboradBiosVersion) {
-        this.mainboradBiosVersion = mainboradBiosVersion;
-    }
-
-    public String getMainboradBiosDate() {
-        return mainboradBiosDate;
-    }
-
-    public void setMainboradBiosDate(String mainboradBiosDate) {
-        this.mainboradBiosDate = mainboradBiosDate;
-    }
-
-    public String getCpuNum() {
-        return cpuNum;
-    }
-
-    public void setCpuNum(String cpuNum) {
-        this.cpuNum = cpuNum;
-    }
-
-    public String getCpuBrand() {
-        return cpuBrand;
-    }
-
-    public void setCpuBrand(String cpuBrand) {
-        this.cpuBrand = cpuBrand;
-    }
-
-    public String getCpuModel() {
-        return cpuModel;
-    }
-
-    public void setCpuModel(String cpuModel) {
-        this.cpuModel = cpuModel;
-    }
-
-    public String getCpuSerial() {
-        return cpuSerial;
-    }
-
-    public void setCpuSerial(String cpuSerial) {
-        this.cpuSerial = cpuSerial;
-    }
-
-    public String getCpuMainFrequency() {
-        return cpuMainFrequency;
-    }
-
-    public void setCpuMainFrequency(String cpuMainFrequency) {
-        this.cpuMainFrequency = cpuMainFrequency;
-    }
-
-    public String getCpuThreadSize() {
-        return cpuThreadSize;
-    }
-
-    public void setCpuThreadSize(String cpuThreadSize) {
-        this.cpuThreadSize = cpuThreadSize;
-    }
-
-    public String getCpuCoreSize() {
-        return cpuCoreSize;
-    }
-
-    public void setCpuCoreSize(String cpuCoreSize) {
-        this.cpuCoreSize = cpuCoreSize;
-    }
-
-    public String getNetworkNum() {
-        return networkNum;
-    }
-
-    public void setNetworkNum(String networkNum) {
-        this.networkNum = networkNum;
-    }
-
-    public String getNetworkBrand() {
-        return networkBrand;
-    }
-
-    public void setNetworkBrand(String networkBrand) {
-        this.networkBrand = networkBrand;
-    }
-
-    public String getNetworkModel() {
-        return networkModel;
-    }
-
-    public void setNetworkModel(String networkModel) {
-        this.networkModel = networkModel;
-    }
-
-    public String getNetworkSerial() {
-        return networkSerial;
-    }
-
-    public void setNetworkSerial(String networkSerial) {
-        this.networkSerial = networkSerial;
-    }
-
-    public String getNetworkIpAddress() {
-        return networkIpAddress;
-    }
-
-    public void setNetworkIpAddress(String networkIpAddress) {
-        this.networkIpAddress = networkIpAddress;
-    }
-
-    public String getNetworkMacAddress() {
-        return networkMacAddress;
-    }
-
-    public void setNetworkMacAddress(String networkMacAddress) {
-        this.networkMacAddress = networkMacAddress;
-    }
-
-    public String getNetworkSubnetMask() {
-        return networkSubnetMask;
-    }
-
-    public void setNetworkSubnetMask(String networkSubnetMask) {
-        this.networkSubnetMask = networkSubnetMask;
-    }
-
-    public String getNetworkDefaultGateway() {
-        return networkDefaultGateway;
-    }
-
-    public void setNetworkDefaultGateway(String networkDefaultGateway) {
-        this.networkDefaultGateway = networkDefaultGateway;
-    }
 }
