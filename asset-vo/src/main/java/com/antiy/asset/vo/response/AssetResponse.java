@@ -37,6 +37,10 @@ public class AssetResponse extends BaseResponse {
      */
     private Integer categoryModel;
     /**
+     * 品类名称
+     */
+    private String categoryModelName;
+    /**
      * 厂商
      */
     private String  manufacturer;
@@ -107,6 +111,14 @@ public class AssetResponse extends BaseResponse {
      * 保修期
      */
     private Long    warranty;
+
+    public String getCategoryModelName() {
+        return categoryModelName;
+    }
+
+    public void setCategoryModelName(String categoryModelName) {
+        this.categoryModelName = categoryModelName;
+    }
 
     public String getAssetGroup() {
         return assetGroup;
