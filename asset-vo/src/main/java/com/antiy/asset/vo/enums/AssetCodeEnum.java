@@ -20,14 +20,20 @@ public enum AssetCodeEnum {
                                                                                                                                                                                                                                                                        "删除标识"), AUTHORIZATION("authorization",
                                                                                                                                                                                                                                                                                               "授权"), DISK_TYPE("disk_type",
                                                                                                                                                                                                                                                                                                                "磁盘"), INTERFACE_TYPE("interface_type",
-                                                                                                                                                                                                                                                                                                                                     ""), TRANSFER_TYPE("transfer_type",
+                                                                                                                                                                                                                                                                                                                                     "接口类型"), TRANSFER_TYPE("transfer_type",
                                                                                                                                                                                                                                                                                                                                                         "内存类型"), SLOT_TYPE("slot_type",
                                                                                                                                                                                                                                                                                                                                                                            "插槽类型"), MAJOR_TYPE("major_type",
                                                                                                                                                                                                                                                                                                                                                                                                "重要程度");
 
     ;
+    /**
+     * 码表类型
+     */
     private String codeType;
 
+    /**
+     * 码表名称
+     */
     private String codeName;
 
     AssetCodeEnum(String codeType, String codeName) {
