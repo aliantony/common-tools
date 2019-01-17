@@ -7,21 +7,21 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetCategoryModelDao;
+import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
+import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
  * <p> 品类型号表 服务实现类 </p>
@@ -30,8 +30,8 @@ import com.antiy.common.base.PageResult;
  * @since 2019-01-02
  */
 @Service
-public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel> implements
-                                                                                      IAssetCategoryModelService {
+public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel>
+                                           implements IAssetCategoryModelService {
 
     @Resource
     private AssetCategoryModelDao                                         assetCategoryModelDao;
@@ -106,8 +106,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query)
-                                                                                                           throws Exception {
+    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetCategoryModel(query), query.getCurrentPage(),
             this.findListAssetCategoryModel(query));
     }
@@ -119,8 +118,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @return -1 表示存在资产，不能删除 -2 表示存在子品类，需要确认 -3 是系统内置品类，不能删除 >=0 表示删除的品类数
      */
     public Integer delete(Serializable id, Boolean isConfirm) throws Exception {
-        ParamterExceptionUtils.isNull(isConfirm,"二次确认不能为空");
-        ParamterExceptionUtils.isNull(id,"id不能为空");
+        ParamterExceptionUtils.isNull(isConfirm, "二次确认不能为空");
+        ParamterExceptionUtils.isNull(id, "id不能为空");
         AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getById(id);
         // 判断是否自定义品类
         if (!checkIsDefault(assetCategoryModel)) {

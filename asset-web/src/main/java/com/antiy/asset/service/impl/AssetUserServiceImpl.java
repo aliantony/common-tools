@@ -4,13 +4,14 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.util.DataTypeUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.antiy.asset.convert.UserResponseConverter;
 import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.IAssetUserService;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
 import com.antiy.asset.vo.response.AssetUserResponse;
@@ -38,6 +39,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     private BaseConverter<AssetUser, AssetUserResponse> responseConverter;
 
     @Override
+    @Transactional
     public Integer saveAssetUser(AssetUserRequest request) throws Exception {
         AssetUser assetUser = requestConverter.convert(request, AssetUser.class);
         // assetUser.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -47,6 +49,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     }
 
     @Override
+    @Transactional
     public Integer updateAssetUser(AssetUserRequest request) throws Exception {
         AssetUser assetUser = requestConverter.convert(request, AssetUser.class);
         assetUser.setId(DataTypeUtils.stringToInteger(request.getId()));
@@ -81,6 +84,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     }
 
     @Override
+    @Transactional
     public void importUser(List<AssetUser> assetUserList) {
         assetUserList.stream().forEach(user -> {
             // user.setCreateUser(LoginUserUtil.getLoginUser().getId());

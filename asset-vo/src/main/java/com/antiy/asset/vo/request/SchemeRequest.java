@@ -99,6 +99,20 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      * 方案内容
      */
     private String  content;
+    /**
+     * 硬件或软件
+     */
+    @ApiModelProperty("硬件：ASSET 或软件: SOFTWARE")
+    @NotNull(message = "硬件或软件不能为空")
+    private String  topCategory;
+
+    public String getTopCategory() {
+        return topCategory;
+    }
+
+    public void setTopCategory(String topCategory) {
+        this.topCategory = topCategory;
+    }
 
     public Integer getAssetStatus() {
         return assetStatus;
