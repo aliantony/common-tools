@@ -1,10 +1,12 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
+import lombok.Data;
 
 /**
  * 计算设备
  */
+@Data
 public class ComputeDeviceEntity {
     /**
      * 序号
