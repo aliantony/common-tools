@@ -1,11 +1,12 @@
 package com.antiy.asset.controller;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import com.antiy.biz.file.FileUtils;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
 
@@ -38,6 +40,7 @@ public class FileController {
 
     @Value("${modelName}")
     private String              modelName;
+    private static final String UTF8   = "UTF-8";
 
     /**
      * 保存
@@ -59,6 +62,53 @@ public class FileController {
             return ActionResponse.success(fileRespVOS);
         }
         return ActionResponse.fail(RespBasicCode.ERROR);
+    }
+
+    /**
+     * 文件下载
+     * @param url url地址
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "文件下载", notes = "传入实体对象信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/file/download", method = RequestMethod.GET)
+    public ActionResponse download(@ApiParam(value = "url地址") String url, String fileName,
+                                   HttpServletResponse response) throws Exception {
+        ParamterExceptionUtils.isBlank(url, "url地址不能为空");
+        ParamterExceptionUtils.isBlank(fileName, "文件名字不能为空");
+        // 清空response
+        response.reset();
+        response.setContentType("application/x-msdownload;");
+        response.setHeader("Content-disposition",
+            "attachment; filename=" + new String(fileName.getBytes(UTF8), "ISO8859-1"));
+        FileResponse fileResponse = fileUtils.download(url);
+        if (fileResponse != null && RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
+            InputStream inputStream = (InputStream) fileResponse.getData();
+
+            byte[] buffer = readInputStream(inputStream);
+            if (null != buffer && buffer.length > 0) {
+                // 设置response的Header
+                response.addHeader("Content-Length", "" + buffer.length);
+                OutputStream toClient = response.getOutputStream();
+                response.setContentType("application/octet-stream");
+                toClient.write(buffer);
+                toClient.flush();
+                toClient.close();
+            }
+        }
+        return ActionResponse.success();
+    }
+
+    private byte[] readInputStream(InputStream fis) throws IOException {
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len = 0;
+        while ((len = fis.read(buffer)) != -1) {
+            outStream.write(buffer, 0, len);
+        }
+        fis.close();
+        return outStream.toByteArray();
     }
 
     /**
