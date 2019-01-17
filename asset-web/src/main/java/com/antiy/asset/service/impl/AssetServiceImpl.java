@@ -7,6 +7,7 @@ import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.enums.AssetCodeEnum;
 import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.utils.LogUtils;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -21,13 +22,15 @@ import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.LoginUserUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.BusinessExceptionUtils;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -647,32 +650,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // CPU
         assetOuterResponse.setAssetCpu(BeanConvert.convert(assetCpuDao.getByWhere(param), AssetCpuResponse.class));
         // 网卡
-        assetOuterResponse.setAssetNetworkCard(BeanConvert.convert(assetNetworkCardDao.getByWhere(param),
-            AssetNetworkCardResponse.class));
+        assetOuterResponse.setAssetNetworkCard(
+            BeanConvert.convert(assetNetworkCardDao.getByWhere(param), AssetNetworkCardResponse.class));
         // 硬盘
-        assetOuterResponse.setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param),
-            AssetHardDiskResponse.class));
+        assetOuterResponse
+            .setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param), AssetHardDiskResponse.class));
         // 主板
-        assetOuterResponse.setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param),
-            AssetMainboradResponse.class));
+        assetOuterResponse
+            .setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param), AssetMainboradResponse.class));
         // 内存
-        assetOuterResponse.setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param),
-            AssetMemoryResponse.class));
+        assetOuterResponse
+            .setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param), AssetMemoryResponse.class));
         // 网络设备
         List<AssetNetworkEquipment> assetNetworkEquipmentList = assetNetworkEquipmentDao.getByWhere(param);
         if (assetNetworkEquipmentList != null && !assetNetworkEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetNetworkEquipment(BeanConvert.convertBean(assetNetworkEquipmentList.get(0),
-                AssetNetworkEquipmentResponse.class));
+            assetOuterResponse.setAssetNetworkEquipment(
+                BeanConvert.convertBean(assetNetworkEquipmentList.get(0), AssetNetworkEquipmentResponse.class));
         }
         // 安全设备
         List<AssetSafetyEquipment> assetSafetyEquipmentList = assetSafetyEquipmentDao.getByWhere(param);
         if (assetSafetyEquipmentList != null && !assetSafetyEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetSafetyEquipment(BeanConvert.convertBean(assetSafetyEquipmentList.get(0),
-                AssetSafetyEquipmentResponse.class));
+            assetOuterResponse.setAssetSafetyEquipment(
+                BeanConvert.convertBean(assetSafetyEquipmentList.get(0), AssetSafetyEquipmentResponse.class));
         }
         // 软件
-        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSoftByAssetId(DataTypeUtils
-            .stringToInteger(id));
+        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
+            .getSoftByAssetId(DataTypeUtils.stringToInteger(id));
         assetOuterResponse.setAssetSoftware(BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class));
         return assetOuterResponse;
     }
@@ -784,7 +787,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 9. 更新资产软件关系信息
                     assetSoftwareRelationDao.deleteByAssetId(asset.getId());
                     List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
-                    Integer[]  assetSoftwareIds = assetOuterRequest.getAssetSoftwareIds();
+                    Integer[] assetSoftwareIds = assetOuterRequest.getAssetSoftwareIds();
                     for (int i = 0; i < assetSoftwareIds.length; i++) {
                         AssetSoftwareRelation relation = new AssetSoftwareRelation();
                         relation.setAssetId(asset.getId());
@@ -848,22 +851,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             case 1:
                 exportData(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备", assetQuery);
                 break;
-        // 之后会重写
-        // case 2:
-        // exportData(ComputeDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备", assetQuery);
-        // break;
-        // case 3:
-        // exportData(SafetyEquipment.class, "安全设备信息模板.xlsx", "安全设备", assetQuery);
-        // break;
-        // case 4:
-        // exportData(HardDiskEntity.class, "存储介质信息模板.xlsx", "存储介质", assetQuery);
-        // break;
-        // case 5:
-        // exportData(ServerEntity.class, "服务器信息模板.xlsx", "服务器", assetQuery);
-        // break;
-        // case 6:
-        // exportData(AssetPeripheralEquipmentEntity.class, "外设信息模板.xlsx", "外设", assetQuery);
-        // break;
+            // 之后会重写
+            // case 2:
+            // exportData(ComputeDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备", assetQuery);
+            // break;
+            // case 3:
+            // exportData(SafetyEquipment.class, "安全设备信息模板.xlsx", "安全设备", assetQuery);
+            // break;
+            // case 4:
+            // exportData(HardDiskEntity.class, "存储介质信息模板.xlsx", "存储介质", assetQuery);
+            // break;
+            // case 5:
+            // exportData(ServerEntity.class, "服务器信息模板.xlsx", "服务器", assetQuery);
+            // break;
+            // case 6:
+            // exportData(AssetPeripheralEquipmentEntity.class, "外设信息模板.xlsx", "外设", assetQuery);
+            // break;
         }
     }
 
