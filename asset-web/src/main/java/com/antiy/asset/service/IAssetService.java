@@ -208,4 +208,16 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     String importPc(MultipartFile file) throws Exception;
+    /**
+     * 硬件导入网络设备
+     * @param file
+     * @return
+     */
+    String importNet(MultipartFile file) throws Exception;
+    /**
+     * 硬件导入安全设备
+     * @param file
+     * @return
+     */
+    String importSecurity(MultipartFile file) throws Exception;
 }

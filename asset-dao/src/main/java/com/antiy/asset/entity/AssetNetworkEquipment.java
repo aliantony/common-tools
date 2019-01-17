@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+import lombok.Data;
 
 /**
  * <p> 网络设备详情表 </p>
@@ -8,7 +9,7 @@ import com.antiy.common.base.BaseEntity;
  * @author zhangyajun
  * @since 2018-12-29
  */
-
+@Data
 public class AssetNetworkEquipment extends BaseEntity {
 
     /**
@@ -20,9 +21,27 @@ public class AssetNetworkEquipment extends BaseEntity {
      */
     private Integer interfaceSize;
     /**
+     * 端口数目
+     */
+    private Integer portSize;
+
+    /**
+     * 端口数目
+     */
+    private String ios;
+
+    /**
+     * 端口数目
+     */
+    private String cpuVersion;
+    /**
+     * 端口数目
+     */
+    private Integer cpu;
+    /**
      * 是否无线:0-否,1-是
      */
-    private Boolean isWireless;
+    private Integer isWireless;
     /**
      * 内网IP
      */
@@ -84,157 +103,5 @@ public class AssetNetworkEquipment extends BaseEntity {
      */
     private Integer status;
 
-    public Integer getAssetId() {
-        return assetId;
-    }
 
-    public void setAssetId(Integer assetId) {
-        this.assetId = assetId;
-    }
-
-    public Integer getInterfaceSize() {
-        return interfaceSize;
-    }
-
-    public void setInterfaceSize(Integer interfaceSize) {
-        this.interfaceSize = interfaceSize;
-    }
-
-    public Boolean getWireless() {
-        return isWireless;
-    }
-
-    public void setWireless(Boolean isWireless) {
-        this.isWireless = isWireless;
-    }
-
-    public String getInnerIp() {
-        return innerIp;
-    }
-
-    public void setInnerIp(String innerIp) {
-        this.innerIp = innerIp;
-    }
-
-    public String getOuterIp() {
-        return outerIp;
-    }
-
-    public void setOuterIp(String outerIp) {
-        this.outerIp = outerIp;
-    }
-
-    public String getMacAddress() {
-        return macAddress;
-    }
-
-    public void setMacAddress(String macAddress) {
-        this.macAddress = macAddress;
-    }
-
-    public String getSubnetMask() {
-        return subnetMask;
-    }
-
-    public void setSubnetMask(String subnetMask) {
-        this.subnetMask = subnetMask;
-    }
-
-    public Integer getExpectBandwidth() {
-        return expectBandwidth;
-    }
-
-    public void setExpectBandwidth(Integer expectBandwidth) {
-        this.expectBandwidth = expectBandwidth;
-    }
-
-    public Integer getRegister() {
-        return register;
-    }
-
-    public void setRegister(Integer register) {
-        this.register = register;
-    }
-
-    public Float getDramSize() {
-        return dramSize;
-    }
-
-    public void setDramSize(Float dramSize) {
-        this.dramSize = dramSize;
-    }
-
-    public Float getFlashSize() {
-        return flashSize;
-    }
-
-    public void setFlashSize(Float flashSize) {
-        this.flashSize = flashSize;
-    }
-
-    public Float getNcrmSize() {
-        return ncrmSize;
-    }
-
-    public void setNcrmSize(Float ncrmSize) {
-        this.ncrmSize = ncrmSize;
-    }
-
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
-
-    public Long getGmtModified() {
-        return System.currentTimeMillis();
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "AssetNetworkEquipment{" + ", assetId=" + assetId + ", interfaceSize=" + interfaceSize + ", isWireless="
-               + isWireless + ", innerIp=" + innerIp + ", outerIp=" + outerIp + ", macAddress=" + macAddress
-               + ", subnetMask=" + subnetMask + ", expectBandwidth=" + expectBandwidth + ", register=" + register
-               + ", dramSize=" + dramSize + ", flashSize=" + flashSize + ", ncrmSize=" + ncrmSize + ", createUser="
-               + createUser + ", modifyUser=" + modifyUser + ", gmtCreate=" + gmtCreate + ", memo=" + memo
-               + ", gmtModified=" + gmtModified + ", status=" + status + "}";
-    }
 }

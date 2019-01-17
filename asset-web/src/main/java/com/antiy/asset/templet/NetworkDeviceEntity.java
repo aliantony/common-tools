@@ -1,10 +1,12 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
+import lombok.Data;
 
 /**
  * 网络设备
  */
+@Data
 public class NetworkDeviceEntity {
     private static final long serialVersionUID = 1L;
     /**
@@ -115,19 +117,19 @@ public class NetworkDeviceEntity {
      * 预计带宽
      */
     @ExcelField(value = "expect_bandwidth", align = 1, title = "预计带宽")
-    private String            expectBandwidth;
+    private Integer            expectBandwidth;
 
     /**
      * 配置寄存器
      */
     @ExcelField(value = "register", align = 1, title = "配置寄存器")
-    private String            register;
+    private Integer            register;
 
     /**
      * cpu大小
      */
     @ExcelField(value = "cpu", align = 1, title = "cpu大小")
-    private String            cpuSize;
+    private Integer            cpuSize;
 
     /**
      * cpu版本
@@ -139,19 +141,19 @@ public class NetworkDeviceEntity {
      * dram大小
      */
     @ExcelField(value = "dram_size", align = 1, title = "dram大小")
-    private String            dramSize;
+    private Float            dramSize;
 
     /**
      * flash大小
      */
     @ExcelField(value = "flash_size", align = 1, title = "flash大小")
-    private String            flashSize;
+    private Float            flashSize;
 
     /**
      * NCRM大小
      */
     @ExcelField(value = "ncrm_size", align = 1, title = "NCRM大小")
-    private String            ncrmSize;
+    private Float            ncrmSize;
     /**
      * 购买日期
      */
@@ -165,8 +167,8 @@ public class NetworkDeviceEntity {
     /**
      * 保修期
      */
-    @ExcelField(value = "warranty", align = 1, title = "保修期")
-    private String            warranty;
+    @ExcelField(value = "warranty", align = 1, title = "保修期",isDate = true)
+    private Long            warranty;
     /**
      * 描述
      */

@@ -1,19 +1,5 @@
 package com.antiy.asset.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletResponse;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.templet.ComputeDeviceEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.AssetEntity;
@@ -28,8 +14,17 @@ import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * @author zhangyajun
@@ -82,8 +77,7 @@ public class AssetController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetRequest asset)
-                                                                                                                    throws Exception {
+    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetRequest asset) throws Exception {
         iAssetService.updateAsset(asset);
         return ActionResponse.success();
     }
@@ -295,4 +289,35 @@ public class AssetController {
     public ActionResponse countAssetByManufacturer() throws Exception {
         return ActionResponse.success(iAssetService.countManufacturer());
     }
+
+    /**
+     * 硬件资产-导入计算设备
+     *
+     * @return
+     */
+    @ApiOperation(value = "导入计算设备", notes = "导入EXcel")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/import/pc", method = RequestMethod.POST)
+    public ActionResponse<String> importPc(@ApiParam(value = "file") MultipartFile file) throws Exception {
+
+        return ActionResponse.success(iAssetService.importPc(file));
+    }
+
+    /**
+     * 硬件资产-导入网络设备
+     *
+     * @return
+     */
+    @ApiOperation(value = "导入网络设备", notes = "导入EXcel")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/import/net", method = RequestMethod.POST)
+    public ActionResponse importNet(@ApiParam(value = "file") MultipartFile file) throws Exception {
+
+
+        return ActionResponse.success(iAssetService.importNet(file));
+    }
+
+
+
+
 }
