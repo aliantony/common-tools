@@ -6,6 +6,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * <p> AssetNetworkCardRequest 请求对象 </p>
  *
@@ -29,6 +31,9 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
      * 品牌
      */
     @ApiModelProperty("品牌")
+
+
+    @NotBlank
     private String  brand;
     /**
      * 型号

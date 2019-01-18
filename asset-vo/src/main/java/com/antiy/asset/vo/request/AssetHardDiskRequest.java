@@ -7,6 +7,9 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * <p> AssetHardDiskRequest 请求对象 </p>
  *
@@ -26,6 +29,7 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      * 硬盘品牌
      */
     @ApiModelProperty("硬盘品牌")
+    @NotBlank
     private String  brand;
     /**
      * 硬盘型号
@@ -46,11 +50,13 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      * 容量 (MB)
      */
     @ApiModelProperty("容量 (MB)")
+    @NotNull
     private Integer capacity;
     /**
      * 磁盘类型,1 HDD,2,SSD
      */
     @ApiModelProperty("磁盘类型,1 HDD,2,SSD")
+    @NotNull
     private Integer diskType;
     /**
      * 购买日期

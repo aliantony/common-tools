@@ -7,6 +7,9 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * <p> AssetCpuRequest 请求对象 </p>
  *
@@ -36,6 +39,7 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
      * 品牌
      */
     @ApiModelProperty("品牌")
+    @NotBlank
     private String  brand;
     /**
      * 型号
@@ -46,6 +50,7 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
      * CPU主频
      */
     @ApiModelProperty("CPU主频")
+    @NotNull
     private Float   mainFrequency;
     /**
      * 线程数

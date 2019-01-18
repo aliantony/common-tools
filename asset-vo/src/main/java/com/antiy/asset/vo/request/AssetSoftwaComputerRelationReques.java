@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @Author: why
  * @Date: 2019/1/18
  */
-public class AssetSoftwaComputerReques  extends BasicRequest implements ObjectValidator {
+public class AssetSoftwaComputerRelationReques  extends BasicRequest implements ObjectValidator {
 
     /**
      * 许可密钥
@@ -37,7 +37,7 @@ public class AssetSoftwaComputerReques  extends BasicRequest implements ObjectVa
      * 端口
      */
     @ApiModelProperty("端口")
-    private Integer port;
+    private String port;
     /**
      * 协议
      */
@@ -74,11 +74,11 @@ public class AssetSoftwaComputerReques  extends BasicRequest implements ObjectVa
         this.softwareName = softwareName;
     }
 
-    public Integer getPort() {
+    public String getPort() {
         return port;
     }
 
-    public void setPort(Integer port) {
+    public void setPort(String port) {
         this.port = port;
     }
 

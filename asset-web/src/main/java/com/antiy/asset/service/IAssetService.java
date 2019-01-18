@@ -2,8 +2,8 @@ package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.AssetComputerRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
-import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
@@ -167,8 +167,9 @@ public interface IAssetService extends IBaseService<Asset> {
      * 保存PC
      * @return
      * @throws Exception
+     * @param assetPCRequest
      */
-    Integer saveAssetPC(AssetPCRequest assetPCRequest) throws Exception;
+    Integer saveAssetPC(AssetComputerRequest assetPCRequest) throws Exception;
 
     /**
      * 通过ID列表查询资产列表

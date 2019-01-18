@@ -9,7 +9,6 @@ import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
@@ -25,7 +24,6 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.hadoop.util.hash.Hash;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -537,7 +535,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     @Transactional
-    public Integer saveAssetPC(AssetPCRequest assetPCRequest) throws Exception {
+    public Integer saveAssetPC(AssetComputerRequest assetPCRequest) throws Exception {
         List<AssetCpuRequest> cpuRequestList = assetPCRequest.getCpu();
         BaseConverter<AssetCpuRequest, AssetCpu> baseConverter = new BaseConverter<>();
         List<AssetCpu> cpu = baseConverter.convert(cpuRequestList, AssetCpu.class);
@@ -550,26 +548,42 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetNetworkCard> networkCard = new BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>()
             .convert(assetPCRequest.getNetworkCard(), AssetNetworkCard.class);
 
+
         Asset asset = requestConverter.convert(assetPCRequest.getAsset(), Asset.class);
+        asset.setResponsibleUserId (LoginUserUtil.getLoginUser ().getId ());
+        asset.setAssetSource (2);
+        asset.setAssetStatus (3);
         assetDao.insert(asset);
         Integer aid = asset.getId();
-        String softwareids = assetPCRequest.getSoftwareids();
-        if (StringUtils.isNotBlank(softwareids)) {
-            String[] split = softwareids.split(",");
-            for (String s : split) {
+        List<AssetSoftwaComputerRelationReques> computerReques = assetPCRequest.getComputerReques ();
+        if (computerReques!=null&&computerReques.size ()>0){
+            for (AssetSoftwaComputerRelationReques computerReque : computerReques) {
                 AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                 assetSoftwareRelation.setAssetId(aid);
-                assetSoftwareRelation.setSoftwareId(Integer.parseInt(s));
+                assetSoftwareRelation.setSoftwareId(Integer.parseInt(computerReque.getSoftwareid ()));
+                assetSoftwareRelation.setPort (computerReque.getPort ());
+                assetSoftwareRelation.setProtocol (computerReque.getProtocol ());
+                assetSoftwareRelation.setSoftwareStatus (3);
+                assetSoftwareRelation.setMemo (computerReque.getPortMemo ());
                 assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                 assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetSoftwareRelationDao.insert(assetSoftwareRelation);
+                if (StringUtils.isNotBlank (computerReque.getLicenseSecretKey ())){
+                    AssetSoftwareLicense license = new AssetSoftwareLicense();
+                    license.setSoftwareId (assetSoftwareRelation.getId ());
+                    license.setLicenseSecretKey (computerReque.getLicenseSecretKey ());
+                    license.setGmtCreate(System.currentTimeMillis());
+                    license.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
+                }
             }
         }
+
 
         if (networkCard != null && networkCard.size() > 0) {
             for (AssetNetworkCard assetNetworkCard : networkCard) {
                 assetNetworkCard.setAssetId(aid);
                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
+                assetNetworkCard.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
                 assetNetworkCardDao.insert(assetNetworkCard);
 
             }
