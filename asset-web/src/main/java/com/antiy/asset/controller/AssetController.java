@@ -1,36 +1,29 @@
 package com.antiy.asset.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.templet.ComputeDeviceEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.templet.ImportResult;
-import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
-import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author zhangyajun
@@ -45,7 +38,7 @@ public class AssetController {
     public IAssetService iAssetService;
 
     /**
-     * 保存PC接口
+     * 保存计算机设备接口
      * @param assetPCRequest
      * @return actionResponse
      * @throws Exception
@@ -96,7 +89,7 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
         return ActionResponse.success(iAssetService.findPageAsset(asset));
@@ -109,7 +102,7 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     public ActionResponse queryById(@ApiParam(value = "asset") @PathVariable("id") @Encode String id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
@@ -302,7 +295,7 @@ public class AssetController {
      */
     @ApiOperation(value = "导入计算设备", notes = "导入EXcel")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/import/pc", method = RequestMethod.POST)
+    @RequestMapping(value = "/import/computer", method = RequestMethod.POST)
     public ActionResponse<String> importPc(@ApiParam(value = "file") MultipartFile file) throws Exception {
 
         return ActionResponse.success(iAssetService.importPc(file));
@@ -319,6 +312,42 @@ public class AssetController {
     public ActionResponse importNet(@ApiParam(value = "file") MultipartFile file) throws Exception {
 
         return ActionResponse.success(iAssetService.importNet(file));
+    }
+    /**
+     * 硬件资产-导入安全设备
+     *
+     * @return
+     */
+    @ApiOperation(value = "导入网络设备", notes = "导入EXcel")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/import/safety", method = RequestMethod.POST)
+    public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file) throws Exception {
+
+        return ActionResponse.success(iAssetService.importSecurity (file));
+    }
+    /**
+     * 硬件资产-导入存储设备
+     *
+     * @return
+     */
+    @ApiOperation(value = "导入网络设备", notes = "导入EXcel")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/import/storage", method = RequestMethod.POST)
+    public ActionResponse importStorage(@ApiParam(value = "file") MultipartFile file) throws Exception {
+
+        return ActionResponse.success(iAssetService.importStory (file));
+    }
+    /**
+     * 硬件资产-导入其他设备
+     *
+     * @return
+     */
+    @ApiOperation(value = "导入网络设备", notes = "导入EXcel")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/import/ohters", method = RequestMethod.POST)
+    public ActionResponse importOhters(@ApiParam(value = "file") MultipartFile file) throws Exception {
+
+        return ActionResponse.success(iAssetService.importOhters(file));
     }
 
 }

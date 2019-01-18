@@ -1,5 +1,15 @@
 package com.antiy.asset.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.templet.AssetSoftwareEntity;
@@ -13,15 +23,8 @@ import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -113,8 +116,9 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "导出模板文件", notes = "主键封装对象")
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
-    public void export(@ApiParam(value = "query") AssetSoftwareQuery query, HttpServletResponse response) throws Exception {
-        iAssetSoftwareService.downloadSoftware(query,response);
+    public void export(@ApiParam(value = "query") AssetSoftwareQuery query,
+                       HttpServletResponse response) throws Exception {
+        iAssetSoftwareService.downloadSoftware(query, response);
     }
 
     /**
@@ -141,9 +145,10 @@ public class AssetSoftwareController {
     @ApiOperation(value = "导入excel文件", notes = "主键封装对象")
     @RequestMapping(value = "/import/file", method = RequestMethod.POST)
     public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws Exception {
-        ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class, multipartFile, 1, 0);
+        ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class,
+            multipartFile, 1, 0);
         List<AssetSoftwareEntity> list = importResult.getDataList();
-         List<AssetSoftware> assetSoftwares = BeanConvert.convert(list, AssetSoftware.class);
+        List<AssetSoftware> assetSoftwares = BeanConvert.convert(list, AssetSoftware.class);
         Integer successNum = iAssetSoftwareService.batchSave(assetSoftwares);
         return ActionResponse.success(successNum);
 
@@ -155,18 +160,19 @@ public class AssetSoftwareController {
         return assetSoftwares;
     }
 
-//    /**
-//     * 导入excel文件
-//     *
-//     * @param multipartFile 主键封装对象
-//     * @return actionResponse
-//     */
-//    @ApiOperation(value = "导入excel文件", notes = "主键封装对象")
-//    @RequestMapping(value = "/import/excel", method = RequestMethod.POST)
-//    public ActionResponse importExcel(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws Exception {
-//
-//        return ActionResponse.success();
-//    }
+    // /**
+    // * 导入excel文件
+    // *
+    // * @param multipartFile 主键封装对象
+    // * @return actionResponse
+    // */
+    // @ApiOperation(value = "导入excel文件", notes = "主键封装对象")
+    // @RequestMapping(value = "/import/excel", method = RequestMethod.POST)
+    // public ActionResponse importExcel(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws
+    // Exception {
+    //
+    // return ActionResponse.success();
+    // }
 
     /**
      * 软件资产按二级品类型号统计
@@ -211,7 +217,7 @@ public class AssetSoftwareController {
      * @throws Exception
      */
     @ApiOperation(value = "软件资产厂商查询", notes = "无查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/manufacturer", method = RequestMethod.GET)
     public ActionResponse<List<String>> queryAssetByManufacturer(@ApiParam(value = "manufacturerName") String manufacturerName) throws Exception {
         return ActionResponse.success(iAssetSoftwareService.getManufacturerName(manufacturerName));

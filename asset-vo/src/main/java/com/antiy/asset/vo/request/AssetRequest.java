@@ -7,6 +7,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * <p> AssetRequest 请求对象 </p>
  *
@@ -36,11 +38,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 资产名称
      */
     @ApiModelProperty("资产名称")
+    @NotNull
     private String  name;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
+    @NotNull
     private String  serial;
     /**
      * 品类型号
@@ -92,17 +96,20 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 责任人主键
      */
     @ApiModelProperty("责任人主键")
+    @NotNull
     private Integer responsibleUserId;
 
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
     @ApiModelProperty("上报来源,1-自动上报，2-人工上报")
+    @NotNull
     private Integer assetSource;
     /**
      * 0-不重要(not_major),1- 一般(general),3-重要(major),
      */
     @ApiModelProperty("0-不重要(not_major),1- 一般(general),3-重要(major),")
+    @NotNull
     private Integer importanceDegree;
 
     /**

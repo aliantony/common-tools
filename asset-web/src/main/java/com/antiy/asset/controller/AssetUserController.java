@@ -10,6 +10,7 @@ import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.vo.response.AssetUserResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.encoder.Encode;
 import org.springframework.web.bind.annotation.*;
@@ -55,7 +56,7 @@ public class AssetUserController {
      * @return
      * @throws Exception
      */
-    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
+    @ApiOperation(value = "导入用户信息", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/importUser", method = RequestMethod.POST)
     public void importUser(@RequestBody @PathVariable("file") MultipartFile file) throws Exception {
@@ -71,7 +72,7 @@ public class AssetUserController {
      * @return
      * @throws Exception
      */
-    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
+    @ApiOperation(value = "导出用户模板", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/exportTemplet", method = RequestMethod.GET)
     public void exportTemplet() throws Exception {
@@ -98,7 +99,7 @@ public class AssetUserController {
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetUserResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "assetUser") AssetUserQuery assetUser) throws Exception {
         return ActionResponse.success(iAssetUserService.findPageAssetUser(assetUser));
@@ -111,7 +112,7 @@ public class AssetUserController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetUserResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     public ActionResponse queryById(@PathVariable @ApiParam(value = "id") @Encode String id) throws Exception {
         return ActionResponse.success(iAssetUserService.getById(DataTypeUtils.stringToInteger(id)));

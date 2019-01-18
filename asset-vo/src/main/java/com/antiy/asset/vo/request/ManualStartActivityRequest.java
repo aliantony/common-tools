@@ -1,6 +1,9 @@
 package com.antiy.asset.vo.request;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,25 +20,25 @@ public class ManualStartActivityRequest {
      * 处理人
      */
     @ApiModelProperty(value = "启动人")
-    private String assignee;
+    private String                assignee;
 
     /**
      * 业务Id
      */
     @ApiModelProperty(value = "业务Id")
     @NotBlank(message = "业务Id不能为空")
-    private String bussinessKey;
+    private String                businessId;
 
     /**
      * 表单数据
      */
     @ApiModelProperty(value = "流程表单数据,JSON串")
     @NotBlank(message = "流程处理数据不能为空")
-    private String formData;
+    private String                formData;
 
     @ApiModelProperty(value = "流程定义Id")
-    @NotBlank(message = "流程定义Id不能为空")
-    private String processDefintionKey;
+    @NotNull(message = "流程定义Id不能为空")
+    private AssetActivityTypeEnum processDefintionKey;
 
     public String getAssignee() {
         return assignee;
@@ -45,12 +48,12 @@ public class ManualStartActivityRequest {
         this.assignee = assignee;
     }
 
-    public String getBussinessKey() {
-        return bussinessKey;
+    public String getBusinessId() {
+        return businessId;
     }
 
-    public void setBussinessKey(String bussinessKey) {
-        this.bussinessKey = bussinessKey;
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
     }
 
     public String getFormData() {
@@ -62,10 +65,10 @@ public class ManualStartActivityRequest {
     }
 
     public String getProcessDefintionKey() {
-        return processDefintionKey;
+        return processDefintionKey.getCode();
     }
 
-    public void setProcessDefintionKey(String processDefintionKey) {
+    public void setProcessDefintionKey(AssetActivityTypeEnum processDefintionKey) {
         this.processDefintionKey = processDefintionKey;
     }
 }

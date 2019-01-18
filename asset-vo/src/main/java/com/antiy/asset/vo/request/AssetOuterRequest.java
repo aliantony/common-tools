@@ -18,48 +18,47 @@ public class AssetOuterRequest extends BasicRequest {
     /**
      * 资产主表信息
      */
-    private AssetRequest                  asset;
+    private AssetRequest                       asset;
 
     /**
      * 主板
      */
-    private AssetMainboradRequest         mainboard;
+    private AssetMainboradRequest              mainboard;
 
     /**
      * 内存
      */
-    private List<AssetMemoryRequest>      memory;
+    private List<AssetMemoryRequest>           memory;
 
     /**
      * 硬盘
      */
-    private List<AssetHardDiskRequest>    hardDisk;
+    private List<AssetHardDiskRequest>         hardDisk;
 
     /**
      * cpu
      */
-    private List<AssetCpuRequest>         cpu;
+    private List<AssetCpuRequest>              cpu;
     /**
      * 网卡
      */
-    private List<AssetNetworkCardRequest> networkCard;
-    /**
-     * 软件id列表
-     */
-    private List<AssetSoftwareRequest>    software;
+    private List<AssetNetworkCardRequest>      networkCard;
     /**
      * 网络设备
      */
-    private AssetNetworkEquipmentRequest  networkEquipment;
+    private AssetNetworkEquipmentRequest       networkEquipment;
     /**
      * 安全设备
      */
-    private AssetSafetyEquipmentRequest   safetyEquipment;
+    private AssetSafetyEquipmentRequest        safetyEquipment;
     /**
      * 存储介质
      */
-    private AssetStorageMediumRequest     assetStorageMedium;
-    private Integer[]                     assetSoftwareIds;
+    private AssetStorageMediumRequest          assetStorageMedium;
+    /**
+     * 资产软件关系表
+     */
+    private List<AssetSoftwareRelationRequest> assetSoftwareRelationList;
 
     public AssetRequest getAsset() {
         return asset;
@@ -109,14 +108,6 @@ public class AssetOuterRequest extends BasicRequest {
         this.networkCard = networkCard;
     }
 
-    public List<AssetSoftwareRequest> getSoftware() {
-        return software;
-    }
-
-    public void setSoftware(List<AssetSoftwareRequest> software) {
-        this.software = software;
-    }
-
     public AssetNetworkEquipmentRequest getNetworkEquipment() {
         return networkEquipment;
     }
@@ -133,19 +124,19 @@ public class AssetOuterRequest extends BasicRequest {
         this.safetyEquipment = safetyEquipment;
     }
 
-    public Integer[] getAssetSoftwareIds() {
-        return assetSoftwareIds;
-    }
-
-    public void setAssetSoftwareIds(Integer[] assetSoftwareIds) {
-        this.assetSoftwareIds = assetSoftwareIds;
-    }
-
     public AssetStorageMediumRequest getAssetStorageMedium() {
         return assetStorageMedium;
     }
 
     public void setAssetStorageMedium(AssetStorageMediumRequest assetStorageMedium) {
         this.assetStorageMedium = assetStorageMedium;
+    }
+
+    public List<AssetSoftwareRelationRequest> getAssetSoftwareRelationList() {
+        return assetSoftwareRelationList;
+    }
+
+    public void setAssetSoftwareRelationList(List<AssetSoftwareRelationRequest> assetSoftwareRelationList) {
+        this.assetSoftwareRelationList = assetSoftwareRelationList;
     }
 }

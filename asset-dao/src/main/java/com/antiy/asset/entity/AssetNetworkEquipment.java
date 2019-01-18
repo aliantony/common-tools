@@ -1,7 +1,6 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
-import lombok.Data;
 
 /**
  * <p> 网络设备详情表 </p>
@@ -9,7 +8,7 @@ import lombok.Data;
  * @author zhangyajun
  * @since 2018-12-29
  */
-@Data
+
 public class AssetNetworkEquipment extends BaseEntity {
 
     /**
@@ -28,12 +27,12 @@ public class AssetNetworkEquipment extends BaseEntity {
     /**
      * 端口数目
      */
-    private String ios;
+    private String  ios;
 
     /**
      * 端口数目
      */
-    private String cpuVersion;
+    private String  cpuVersion;
     /**
      * 端口数目
      */
@@ -103,5 +102,179 @@ public class AssetNetworkEquipment extends BaseEntity {
      */
     private Integer status;
 
+    public Integer getAssetId() {
+        return assetId;
+    }
 
+    public void setAssetId(Integer assetId) {
+        this.assetId = assetId;
+    }
+
+    public Integer getInterfaceSize() {
+        return interfaceSize;
+    }
+
+    public void setInterfaceSize(Integer interfaceSize) {
+        this.interfaceSize = interfaceSize;
+    }
+
+    public Integer getPortSize() {
+        return portSize;
+    }
+
+    public void setPortSize(Integer portSize) {
+        this.portSize = portSize;
+    }
+
+    public String getIos() {
+        return ios;
+    }
+
+    public void setIos(String ios) {
+        this.ios = ios;
+    }
+
+    public String getCpuVersion() {
+        return cpuVersion;
+    }
+
+    public void setCpuVersion(String cpuVersion) {
+        this.cpuVersion = cpuVersion;
+    }
+
+    public Integer getCpu() {
+        return cpu;
+    }
+
+    public void setCpu(Integer cpu) {
+        this.cpu = cpu;
+    }
+
+    public Integer getIsWireless() {
+        return isWireless;
+    }
+
+    public void setIsWireless(Integer isWireless) {
+        this.isWireless = isWireless;
+    }
+
+    public String getInnerIp() {
+        return innerIp;
+    }
+
+    public void setInnerIp(String innerIp) {
+        this.innerIp = innerIp;
+    }
+
+    public String getOuterIp() {
+        return outerIp;
+    }
+
+    public void setOuterIp(String outerIp) {
+        this.outerIp = outerIp;
+    }
+
+    public String getMacAddress() {
+        return macAddress;
+    }
+
+    public void setMacAddress(String macAddress) {
+        this.macAddress = macAddress;
+    }
+
+    public String getSubnetMask() {
+        return subnetMask;
+    }
+
+    public void setSubnetMask(String subnetMask) {
+        this.subnetMask = subnetMask;
+    }
+
+    public Integer getExpectBandwidth() {
+        return expectBandwidth;
+    }
+
+    public void setExpectBandwidth(Integer expectBandwidth) {
+        this.expectBandwidth = expectBandwidth;
+    }
+
+    public Integer getRegister() {
+        return register;
+    }
+
+    public void setRegister(Integer register) {
+        this.register = register;
+    }
+
+    public Float getDramSize() {
+        return dramSize;
+    }
+
+    public void setDramSize(Float dramSize) {
+        this.dramSize = dramSize;
+    }
+
+    public Float getFlashSize() {
+        return flashSize;
+    }
+
+    public void setFlashSize(Float flashSize) {
+        this.flashSize = flashSize;
+    }
+
+    public Float getNcrmSize() {
+        return ncrmSize;
+    }
+
+    public void setNcrmSize(Float ncrmSize) {
+        this.ncrmSize = ncrmSize;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
+    }
+
+    public Integer getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(Integer modifyUser) {
+        this.modifyUser = modifyUser;
+    }
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public Long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 }

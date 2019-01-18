@@ -1,8 +1,8 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
-
 import com.antiy.common.base.BaseEntity;
+
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -24,6 +24,8 @@ public class AssetPCRequest extends BaseEntity {
     private List<AssetCpuRequest>         cpu;
 
     private List<AssetNetworkCardRequest> networkCard;
+
+    private List<AssetSoftwaComputerReques> computerReques;
 
     private String                        softwareids;
 

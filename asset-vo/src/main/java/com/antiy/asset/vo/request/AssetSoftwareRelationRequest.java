@@ -39,6 +39,16 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
      */
     @ApiModelProperty("备注")
     private String  memo;
+    /**
+     * 协议
+     */
+    @ApiModelProperty("协议")
+    private String  protocol;
+    /**
+     * 端口
+     */
+    @ApiModelProperty("端口")
+    private String  port;
 
     public String getId() {
         return id;
@@ -78,6 +88,22 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
     }
 
     @Override

@@ -8,6 +8,8 @@
         <result column="asset_id" property="assetId"/>
         <result column="software_id" property="softwareId"/>
         <result column="software_status" property="softwareStatus"/>
+        <result column="protocol" property="protocol"/>
+        <result column="port" property="port"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
@@ -34,6 +36,12 @@
         </if>
         <if test=" softwareStatus != null">
             software_status,
+        </if>
+        <if test=" protocol != null">
+            protocol,
+        </if>
+        <if test=" port != null">
+            port,
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
@@ -65,6 +73,12 @@
         <if test=" softwareStatus != null">
             #{softwareStatus },
         </if>
+        <if test=" port != null">
+            #{port},
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
         </if>
@@ -95,6 +109,12 @@
         <if test=" softwareStatus != null">
             software_status = #{softwareStatus },
         </if>
+        <if test=" protocol != null">
+            protocol = #{protocol },
+        </if>
+        <if test=" port != null">
+            port = #{port},
+        </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
         </if>
@@ -124,6 +144,12 @@
         </if>
         <if test=" softwareStatus != null">
             and software_status = #{softwareStatus }
+        </if>
+        <if test=" protocol != null">
+            and protocol = #{protocol }
+        </if>
+        <if test=" port != null">
+            and port = #{port}
         </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }

@@ -16,10 +16,6 @@ public class ActivityHandleRequest {
     @NotBlank(message = "流程表单数据不能为空")
     private String formData;
 
-    @ApiModelProperty(value = "处理人Id")
-    @NotBlank(message = "处理人Id不能为空")
-    private String assignee;
-
     @ApiModelProperty(value = "任务Id")
     @NotBlank(message = "任务Id不能为空")
     private String taskId;
@@ -30,14 +26,6 @@ public class ActivityHandleRequest {
 
     public void setFormData(String formData) {
         this.formData = formData;
-    }
-
-    public String getAssignee() {
-        return assignee;
-    }
-
-    public void setAssignee(String assignee) {
-        this.assignee = assignee;
     }
 
     public String getTaskId() {

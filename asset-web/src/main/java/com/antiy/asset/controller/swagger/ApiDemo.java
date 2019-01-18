@@ -26,7 +26,7 @@ public class ApiDemo {
     private static final Logger logger = LogUtils.get();
 
     @ApiOperation(value = "API 页面", notes = "接口列表")
-    @RequestMapping(value = "/api", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/v1/asset/api", method = RequestMethod.GET)
     public void api(HttpServletResponse response) throws IOException {
         response.sendRedirect("swagger-ui.html");
     }
