@@ -1,15 +1,5 @@
 package com.antiy.asset.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.templet.AssetSoftwareEntity;
@@ -24,8 +14,14 @@ import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author zhangyajun
@@ -148,7 +144,7 @@ public class AssetSoftwareController {
      * @param multipartFile 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "导入excel文件", notes = "主键封装对象")
+    @ApiOperation(value = "导入软件excel文件", notes = "导入软件excel文件")
     @RequestMapping(value = "/import/file", method = RequestMethod.POST)
     public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws Exception {
         ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class,
@@ -159,26 +155,6 @@ public class AssetSoftwareController {
         return ActionResponse.success(successNum);
 
     }
-
-    private List<AssetSoftware> transferList(List<Object> objects) {
-        List<AssetSoftware> assetSoftwares = new ArrayList<>();
-        objects.forEach(x -> assetSoftwares.add((AssetSoftware) x));
-        return assetSoftwares;
-    }
-
-    // /**
-    // * 导入excel文件
-    // *
-    // * @param multipartFile 主键封装对象
-    // * @return actionResponse
-    // */
-    // @ApiOperation(value = "导入excel文件", notes = "主键封装对象")
-    // @RequestMapping(value = "/import/excel", method = RequestMethod.POST)
-    // public ActionResponse importExcel(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws
-    // Exception {
-    //
-    // return ActionResponse.success();
-    // }
 
     /**
      * 软件资产按二级品类型号统计

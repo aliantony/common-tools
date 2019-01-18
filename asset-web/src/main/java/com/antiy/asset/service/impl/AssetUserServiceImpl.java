@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,15 +39,17 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     private UserResponseConverter                       userResponseConverter;
     @Resource
     private BaseConverter<AssetUser, AssetUserResponse> responseConverter;
+    @Resource
+    private AesEncoder                                  aesEncoder;
 
     @Override
     @Transactional
-    public Integer saveAssetUser(AssetUserRequest request) throws Exception {
+    public String saveAssetUser(AssetUserRequest request) throws Exception {
         AssetUser assetUser = requestConverter.convert(request, AssetUser.class);
         // assetUser.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetUser.setGmtCreate(System.currentTimeMillis());
         assetUserDao.insert(assetUser);
-        return assetUser.getId();
+        return aesEncoder.encode(assetUser.getId().toString(), LoginUserUtil.getLoginUser().getUsername());
     }
 
     @Override
