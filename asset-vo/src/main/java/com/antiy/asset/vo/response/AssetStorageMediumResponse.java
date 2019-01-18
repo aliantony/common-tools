@@ -19,7 +19,7 @@ public class AssetStorageMediumResponse extends BaseEntity {
     /**
      * 最大存储量
      */
-    @ApiModelProperty("")
+    @ApiModelProperty("最大存储量")
     private String  maximumStorage;
     /**
      * 单机磁盘数
