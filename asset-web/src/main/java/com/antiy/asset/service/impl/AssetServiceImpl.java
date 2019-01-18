@@ -89,74 +89,77 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Transactional
     public Integer saveAsset(AssetOuterRequest request) throws Exception {
         Asset asset = requestConverter.convert(request.getAsset(), Asset.class);
-        asset.setResponsibleUserId (LoginUserUtil.getLoginUser ().getId ());
-        asset.setAssetSource (2);
+        asset.setResponsibleUserId(LoginUserUtil.getLoginUser().getId());
+        asset.setAssetSource(2);
         asset.setStatus(AssetStatusEnum.WAIT_SETTING.getCode());
         assetDao.insert(asset);
         Integer aid = asset.getId();
 
-        AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment ();
-        if (safetyEquipmentRequest!=null){
-            AssetSafetyEquipment safetyEquipment = BeanConvert.convertBean (safetyEquipmentRequest, AssetSafetyEquipment.class);
-               safetyEquipment.setAssetId (aid);
-               safetyEquipment.setGmtCreate (System.currentTimeMillis ());
-               safetyEquipment.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
-            assetSafetyEquipmentDao.insert (safetyEquipment);
+        AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
+        if (safetyEquipmentRequest != null) {
+            AssetSafetyEquipment safetyEquipment = BeanConvert.convertBean(safetyEquipmentRequest,
+                AssetSafetyEquipment.class);
+            safetyEquipment.setAssetId(aid);
+            safetyEquipment.setGmtCreate(System.currentTimeMillis());
+            safetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetSafetyEquipmentDao.insert(safetyEquipment);
         }
-        AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment ();
-        if (networkEquipmentRequest!=null){
-            AssetNetworkEquipment assetNetworkEquipment = BeanConvert.convertBean (networkEquipmentRequest, AssetNetworkEquipment.class);
-            assetNetworkEquipment.setAssetId (aid);
-            assetNetworkEquipment.setGmtCreate (System.currentTimeMillis ());
-            assetNetworkEquipment.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
-            assetNetworkEquipmentDao.insert (assetNetworkEquipment);
+        AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
+        if (networkEquipmentRequest != null) {
+            AssetNetworkEquipment assetNetworkEquipment = BeanConvert.convertBean(networkEquipmentRequest,
+                AssetNetworkEquipment.class);
+            assetNetworkEquipment.setAssetId(aid);
+            assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
+            assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetNetworkEquipmentDao.insert(assetNetworkEquipment);
         }
-        AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium ();
-        if (assetStorageMedium!=null){
-            AssetStorageMedium medium = BeanConvert.convertBean (assetStorageMedium, AssetStorageMedium.class);
-            medium.setAssetId (aid);
-            medium.setGmtCreate (System.currentTimeMillis ());
-            medium.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
-            assetStorageMediumDao.insert (medium);
+        AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
+        if (assetStorageMedium != null) {
+            AssetStorageMedium medium = BeanConvert.convertBean(assetStorageMedium, AssetStorageMedium.class);
+            medium.setAssetId(aid);
+            medium.setGmtCreate(System.currentTimeMillis());
+            medium.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetStorageMediumDao.insert(medium);
         }
 
-        List<AssetSoftwareRelationRequest> computerReques = request.getAssetSoftwareRelationList ();
-        if (computerReques!=null&&computerReques.size ()>0){
+        List<AssetSoftwareRelationRequest> computerReques = request.getAssetSoftwareRelationList();
+        if (computerReques != null && computerReques.size() > 0) {
             for (AssetSoftwareRelationRequest computerReque : computerReques) {
                 AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                 assetSoftwareRelation.setAssetId(aid);
-                assetSoftwareRelation.setSoftwareId(computerReque.getSoftwareId ());
-                assetSoftwareRelation.setPort (computerReque.getPort ());
-                assetSoftwareRelation.setProtocol (computerReque.getProtocol ());
-                assetSoftwareRelation.setSoftwareStatus (3);
-                assetSoftwareRelation.setMemo (computerReque.getMemo ());
+                assetSoftwareRelation.setSoftwareId(computerReque.getSoftwareId());
+                assetSoftwareRelation.setPort(computerReque.getPort());
+                assetSoftwareRelation.setProtocol(computerReque.getProtocol());
+                assetSoftwareRelation.setSoftwareStatus(3);
+                assetSoftwareRelation.setMemo(computerReque.getMemo());
                 assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                 assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetSoftwareRelationDao.insert(assetSoftwareRelation);
-                if (StringUtils.isNotBlank (computerReque.getLicenseSecretKey ())){
+                if (StringUtils.isNotBlank(computerReque.getLicenseSecretKey())) {
                     AssetSoftwareLicense license = new AssetSoftwareLicense();
-                    license.setSoftwareId (assetSoftwareRelation.getId ());
-                    license.setLicenseSecretKey (computerReque.getLicenseSecretKey ());
+                    license.setSoftwareId(assetSoftwareRelation.getId());
+                    license.setLicenseSecretKey(computerReque.getLicenseSecretKey());
                     license.setGmtCreate(System.currentTimeMillis());
-                    license.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
+                    license.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 }
             }
         }
 
-        List<AssetNetworkCardRequest> networkCardRequestList = request.getNetworkCard ();
+        List<AssetNetworkCardRequest> networkCardRequestList = request.getNetworkCard();
         if (networkCardRequestList != null && networkCardRequestList.size() > 0) {
-            List<AssetNetworkCard> networkCardList = BeanConvert.convert (networkCardRequestList, AssetNetworkCard.class);
+            List<AssetNetworkCard> networkCardList = BeanConvert
+                .convert(networkCardRequestList, AssetNetworkCard.class);
             for (AssetNetworkCard assetNetworkCard : networkCardList) {
                 assetNetworkCard.setAssetId(aid);
                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
-                assetNetworkCard.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
+                assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetNetworkCardDao.insert(assetNetworkCard);
 
             }
         }
-        List<AssetMainboradRequest> mainboradRequestList = request.getMainboard ();
+        List<AssetMainboradRequest> mainboradRequestList = request.getMainboard();
         if (mainboradRequestList != null && mainboradRequestList.size() > 0) {
-            List<AssetMainborad> mainboradList = BeanConvert.convert (mainboradRequestList, AssetMainborad.class);
+            List<AssetMainborad> mainboradList = BeanConvert.convert(mainboradRequestList, AssetMainborad.class);
             for (AssetMainborad assetMainborad : mainboradList) {
                 assetMainborad.setAssetId(aid);
                 assetMainborad.setGmtCreate(System.currentTimeMillis());
@@ -164,9 +167,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMainboradDao.insert(assetMainborad);
             }
         }
-        List<AssetMemoryRequest> memoryRequestList = request.getMemory ();
+        List<AssetMemoryRequest> memoryRequestList = request.getMemory();
         if (memoryRequestList != null && memoryRequestList.size() > 0) {
-            List<AssetMemory> memoryList = BeanConvert.convert (memoryRequestList, AssetMemory.class);
+            List<AssetMemory> memoryList = BeanConvert.convert(memoryRequestList, AssetMemory.class);
             for (AssetMemory assetMemory : memoryList) {
                 assetMemory.setAssetId(aid);
                 assetMemory.setGmtCreate(System.currentTimeMillis());
@@ -185,9 +188,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             }
         }
-        List<AssetHardDiskRequest> hardDisk = request.getHardDisk ();
+        List<AssetHardDiskRequest> hardDisk = request.getHardDisk();
         if (hardDisk != null && hardDisk.size() > 0) {
-            List<AssetHardDisk> hardDisks = BeanConvert.convert (hardDisk, AssetHardDisk.class);
+            List<AssetHardDisk> hardDisks = BeanConvert.convert(hardDisk, AssetHardDisk.class);
             for (AssetHardDisk assetHardDisk : hardDisks) {
                 assetHardDisk.setAssetId(aid);
                 assetHardDisk.setGmtCreate(System.currentTimeMillis());
@@ -439,7 +442,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetDao.changeStatus(map);
     }
 
-
     // public Integer saveAllAsset(HashMap<String, Object> map) throws Exception {
     // Asset asset = new Asset ();
     // AssetCpu assetCpu = new AssetCpu();
@@ -569,13 +571,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public AssetCountResponse countManufacturer() throws Exception {
         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        List<Map<String, Long>> list = assetDao.countManufacturer(areaIds);
+        List<Map<String, Long>> list = assetDao.countStatus(areaIds);
         if (CollectionUtils.isNotEmpty(list)) {
             Map result = new HashMap();
             for (Map map : list) {
                 result.put(map.get("key"), map.get("value"));
             }
-            AssetCountResponse assetCountResponse=new AssetCountResponse();
+            AssetCountResponse assetCountResponse = new AssetCountResponse();
             assetCountResponse.setMap(result);
             return assetCountResponse;
         }
@@ -589,9 +591,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (CollectionUtils.isNotEmpty(list)) {
             Map<String, Long> result = new HashMap();
             for (Map map : list) {
-                result.put(AssetStatusEnum.getAssetByCode((Integer) map.get("key")) + "", (Long) map.get("value"));
+                AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode((Integer) map.get("key"));
+                result.put(assetStatusEnum == null ? "" : assetStatusEnum.getMsg(), (Long) map.get("value"));
             }
-            AssetCountResponse assetCountResponse=new AssetCountResponse();
+            AssetCountResponse assetCountResponse = new AssetCountResponse();
             assetCountResponse.setMap(result);
             return assetCountResponse;
         }
@@ -600,7 +603,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public AssetCountResponse countCategory() throws Exception {
-        List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         HashMap<String, Object> map = new HashMap();
         map.put("name", "硬件");
         map.put("parentId", 0);
@@ -626,13 +629,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(areaIds.toArray()));
                 result.put(a.getName(), (long) assetDao.findCountByCategoryModel(assetQuery));
             }
-            AssetCountResponse assetCountResponse=new AssetCountResponse();
+            AssetCountResponse assetCountResponse = new AssetCountResponse();
             assetCountResponse.setMap(result);
             return assetCountResponse;
         }
         return null;
     }
-
 
     // @Override
     // public String importPc(MultipartFile file) throws Exception {
@@ -926,38 +928,38 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // CPU
         assetOuterResponse.setAssetCpu(BeanConvert.convert(assetCpuDao.getByWhere(param), AssetCpuResponse.class));
         // 网卡
-        assetOuterResponse.setAssetNetworkCard(
-            BeanConvert.convert(assetNetworkCardDao.getByWhere(param), AssetNetworkCardResponse.class));
+        assetOuterResponse.setAssetNetworkCard(BeanConvert.convert(assetNetworkCardDao.getByWhere(param),
+            AssetNetworkCardResponse.class));
         // 硬盘
-        assetOuterResponse
-            .setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param), AssetHardDiskResponse.class));
+        assetOuterResponse.setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param),
+            AssetHardDiskResponse.class));
         // 主板
-        assetOuterResponse
-            .setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param), AssetMainboradResponse.class));
+        assetOuterResponse.setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param),
+            AssetMainboradResponse.class));
         // 内存
-        assetOuterResponse
-            .setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param), AssetMemoryResponse.class));
+        assetOuterResponse.setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param),
+            AssetMemoryResponse.class));
         // 网络设备
         List<AssetNetworkEquipment> assetNetworkEquipmentList = assetNetworkEquipmentDao.getByWhere(param);
         if (assetNetworkEquipmentList != null && !assetNetworkEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetNetworkEquipment(
-                BeanConvert.convertBean(assetNetworkEquipmentList.get(0), AssetNetworkEquipmentResponse.class));
+            assetOuterResponse.setAssetNetworkEquipment(BeanConvert.convertBean(assetNetworkEquipmentList.get(0),
+                AssetNetworkEquipmentResponse.class));
         }
         // 安全设备
         List<AssetSafetyEquipment> assetSafetyEquipmentList = assetSafetyEquipmentDao.getByWhere(param);
         if (assetSafetyEquipmentList != null && !assetSafetyEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetSafetyEquipment(
-                BeanConvert.convertBean(assetSafetyEquipmentList.get(0), AssetSafetyEquipmentResponse.class));
+            assetOuterResponse.setAssetSafetyEquipment(BeanConvert.convertBean(assetSafetyEquipmentList.get(0),
+                AssetSafetyEquipmentResponse.class));
         }
         // 存储介质
         List<AssetStorageMedium> assetStorageMediumList = assetStorageMediumDao.getByWhere(param);
         if (assetStorageMediumList != null && !assetStorageMediumList.isEmpty()) {
-            assetOuterResponse.setAssetStorageMedium(
-                BeanConvert.convertBean(assetStorageMediumList.get(0), AssetStorageMediumResponse.class));
+            assetOuterResponse.setAssetStorageMedium(BeanConvert.convertBean(assetStorageMediumList.get(0),
+                AssetStorageMediumResponse.class));
         }
         // 软件
-        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
-            .getSoftByAssetId(DataTypeUtils.stringToInteger(id));
+        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSoftByAssetId(DataTypeUtils
+            .stringToInteger(id));
         assetOuterResponse.setAssetSoftware(BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class));
         return assetOuterResponse;
     }
@@ -1090,7 +1092,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetSoftwareRelationList.stream().forEach(relation -> {
                         relation.setAssetId(asset.getId());
                         // TODO 软件状态
-                       // relation.setSoftwareStatus();
+                        // relation.setSoftwareStatus();
                         relation.setGmtCreate(System.currentTimeMillis());
                         // relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     });
@@ -1343,8 +1345,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public String importSecurity(MultipartFile file) throws Exception {
-        ImportResult<SafetyEquipmentEntiy> re = ExcelUtils.importExcelFromClient(SafetyEquipmentEntiy.class, file, 0,
-            1);
+        ImportResult<SafetyEquipmentEntiy> re = ExcelUtils
+            .importExcelFromClient(SafetyEquipmentEntiy.class, file, 0, 1);
         List<SafetyEquipmentEntiy> resultDataList = re.getDataList();
         for (SafetyEquipmentEntiy entity : resultDataList) {
             if (StringUtils.isBlank(entity.getName())) {
@@ -1465,10 +1467,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ExcelUtils.exportTemplet(clazz, fileName, title);
     }
 
-    private void exportData(Class clazz, String fileName, AssetQuery assetQuery,
-                            HttpServletResponse response) throws Exception {
-        assetQuery.setAreaIds(
-            ArrayTypeUtil.ObjectArrayToIntegerArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+    private void exportData(Class clazz, String fileName, AssetQuery assetQuery, HttpServletResponse response)
+                                                                                                              throws Exception {
+        assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(LoginUserUtil.getLoginUser()
+            .getAreaIdsOfCurrentUser().toArray()));
         List<Asset> list = assetDao.findListAsset(assetQuery);
         List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
         ParamterExceptionUtils.isEmpty(list, "资产数据不能为空");
