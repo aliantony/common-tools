@@ -6,6 +6,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * <p> AssetMainboradRequest 请求对象 </p>
  *
@@ -28,6 +30,7 @@ public class AssetMainboradRequest extends BasicRequest implements ObjectValidat
      * 品牌
      */
     @ApiModelProperty("品牌")
+    @NotBlank
     private String  brand;
     /**
      * 型号

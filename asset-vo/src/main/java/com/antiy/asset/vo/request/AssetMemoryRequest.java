@@ -7,6 +7,9 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * <p> AssetMemoryRequest 请求对象 </p>
  *
@@ -23,14 +26,22 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
     @Encode
     private String  assetId;
     /**
+     * 硬盘品牌
+     */
+    @ApiModelProperty("内存品牌")
+    @NotBlank
+    private String  brand;
+    /**
      * 内存容量
      */
     @ApiModelProperty("内存容量")
+    @NotNull
     private Integer capacity;
     /**
      * 内存主频(MHz)
      */
     @ApiModelProperty("内存主频(MHz)")
+    @NotNull
     private Integer frequency;
     /**
      * 插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM
@@ -140,4 +151,11 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
 
     }
 
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
 }

@@ -1,7 +1,11 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BaseEntity;
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -11,23 +15,28 @@ import java.util.List;
  * @since 2018-12-27
  */
 
-public class AssetPCRequest extends BaseEntity {
-
+public class AssetComputerRequest extends BasicRequest implements ObjectValidator {
+    @Valid
+    @ApiModelProperty(value = "资产信息")
     private AssetRequest                  asset;
-
+    @Valid
+    @ApiModelProperty(value = "主板")
     private List<AssetMainboradRequest>   mainboard;
-
+    @Valid
+    @ApiModelProperty(value = "内存")
     private List<AssetMemoryRequest>      memory;
-
+    @Valid
+    @ApiModelProperty(value = "硬盘")
     private List<AssetHardDiskRequest>    hardDisk;
-
+    @Valid
+    @ApiModelProperty(value = "CPU")
     private List<AssetCpuRequest>         cpu;
-
+    @Valid
+    @ApiModelProperty(value = "网卡")
     private List<AssetNetworkCardRequest> networkCard;
-
-    private List<AssetSoftwaComputerReques> computerReques;
-
-    private String                        softwareids;
+    @Valid
+    @ApiModelProperty(value = "关联软件信息")
+    private List<AssetSoftwaComputerRelationReques> computerReques;
 
     public AssetRequest getAsset() {
         return asset;
@@ -77,11 +86,18 @@ public class AssetPCRequest extends BaseEntity {
         this.networkCard = networkCard;
     }
 
-    public String getSoftwareids() {
-        return softwareids;
+
+
+    @Override
+    public void validate() throws RequestParamValidateException {
+
     }
 
-    public void setSoftwareids(String softwareids) {
-        this.softwareids = softwareids;
+    public List<AssetSoftwaComputerRelationReques> getComputerReques() {
+        return computerReques;
+    }
+
+    public void setComputerReques(List<AssetSoftwaComputerRelationReques> computerReques) {
+        this.computerReques = computerReques;
     }
 }

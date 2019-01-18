@@ -6,8 +6,8 @@ import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.AssetComputerRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
-import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
@@ -44,10 +44,10 @@ public class AssetController {
      * @return actionResponse
      * @throws Exception
      */
-    @ApiOperation(value = "保存全部数据总接口", notes = "传入json信息")
+    @ApiOperation(value = "保存计算机设备接口", notes = "传入json信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/save/pc", method = RequestMethod.POST)
-    public ActionResponse saveAssetPC(@RequestBody @ApiParam(value = "assetPc") AssetPCRequest assetPCRequest)
+    @RequestMapping(value = "/save/computer", method = RequestMethod.POST)
+    public ActionResponse saveAssetPC(@RequestBody @ApiParam(value = "computer") AssetComputerRequest assetPCRequest)
                                                                                                               throws Exception {
         iAssetService.saveAssetPC(assetPCRequest);
         return ActionResponse.success();
