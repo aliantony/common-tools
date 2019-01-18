@@ -23,7 +23,7 @@ public abstract class AbstractProcessor implements Processor {
     @Override
     public void process(String assetOperationEnum, Scheme scheme) throws Exception {
         AssetOperationRecordDao assetOperationRecordDao = (AssetOperationRecordDao) SpringUtil
-                .getBean("assetOperationRecordDao");
+            .getBean("assetOperationRecordDao");
         if (assetOperationEnum.equals(AssetOperationTableEnum.ASSET.getCode())) {
             // --------------------------------操作记录start------------------------------
             SchemeTypeEnum codeEnum = EnumUtil.getByCode(SchemeTypeEnum.class, scheme.getType());
@@ -34,13 +34,15 @@ public abstract class AbstractProcessor implements Processor {
             if (scheme.getPutintoUserId() != null) {
                 WorkOrderClientImpl workOrderClient = new WorkOrderClientImpl();
                 WorkOrderVO workOrderVO = new WorkOrderVO();
-                workOrderVO.setName(codeEnum != null?codeEnum.getMsg()+"工单":RespBasicCode.PARAMETER_ERROR.getResultDes());
+                workOrderVO.setName(
+                    codeEnum != null ? codeEnum.getMsg() + "工单" : RespBasicCode.PARAMETER_ERROR.getResultDes());
                 workOrderVO.setWorkLevel(scheme.getOrderLevel());
-                //准入实施
+                // 准入实施
                 workOrderVO.setOrderType(8);
-                //资产管理
+                // 资产管理
                 workOrderVO.setOrderSource(1);
-                workOrderVO.setContent(codeEnum != null?codeEnum.getMsg()+"申请":RespBasicCode.PARAMETER_ERROR.getResultDes());
+                workOrderVO.setContent(
+                    codeEnum != null ? codeEnum.getMsg() + "申请" : RespBasicCode.PARAMETER_ERROR.getResultDes());
                 workOrderVO.setExecuteUserId(scheme.getPutintoUserId());
                 workOrderVO.setExecuteUserName(scheme.getPutintoUser());
                 workOrderVO.setCreateUser(1);
@@ -55,7 +57,8 @@ public abstract class AbstractProcessor implements Processor {
         }
     }
 
-    private void saveOperationRecord(CodeEnum codeEnum, Scheme scheme,AssetOperationRecordDao assetOperationRecordDao) throws Exception {
+    private void saveOperationRecord(CodeEnum codeEnum, Scheme scheme,
+                                     AssetOperationRecordDao assetOperationRecordDao) throws Exception {
         AssetOperationRecord record = new AssetOperationRecord();
         record.setTargetObjectId(scheme.getAssetId());
         record.setTargetType(AssetOperationTableEnum.ASSET.getCode());
@@ -79,26 +82,5 @@ public abstract class AbstractProcessor implements Processor {
         }
     }
 
-    // public AssetOperationRecord saveOperationRecord(Scheme scheme) throws Exception {
-    // AssetOperationRecord record = new AssetOperationRecord();
-    // // 判断请求的方案类型
-    // SchemeTypeEnum codeEnum = EnumUtil.getByCode(SchemeTypeEnum.class, scheme.getType());
-    // record.setTargetObjectId(scheme.getAssetId());
-    // record.setTargetType(AssetOperationTableEnum.ASSET.getCode());
-    // record.setSchemaId(scheme.getId());
-    // record.setGmtCreate(System.currentTimeMillis());
-    // record.setOperateUserId(scheme.getPutintoUserId());
-    // record.setOperateUserName(scheme.getPutintoUser());
-    // // TODO
-    // // record.setCreateUser(LoginUserUtil.getLoginUser().getId());
-    // if (codeEnum == null) {
-    // record.setContent(RespBasicCode.PARAMETER_ERROR.getResultDes());
-    // throw new BusinessException(RespBasicCode.PARAMETER_ERROR.getResultDes());
-    // } else {
-    // record.setContent(codeEnum.getMsg());
-    // }
-    // return record;
-    // }
-
-    public abstract Integer changeStatus(SchemeRequest schemeRequest) throws Exception;
+    public abstract void changeStatus(SchemeRequest schemeRequest) throws Exception;
 }

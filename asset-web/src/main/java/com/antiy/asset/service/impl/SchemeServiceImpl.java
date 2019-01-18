@@ -4,11 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.service.ISchemeService;
@@ -20,6 +17,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * <p> 方案表 服务实现类 </p>
@@ -33,7 +31,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Resource
     private SchemeDao                             schemeDao;
     @Resource
-    private AesEncoder                                    aesEncoder;
+    private AesEncoder                            aesEncoder;
     @Resource
     private BaseConverter<SchemeRequest, Scheme>  requestConverter;
     @Resource
@@ -42,13 +40,11 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Override
     public String saveScheme(SchemeRequest request) throws Exception {
         Scheme scheme = requestConverter.convert(request, Scheme.class);
-        Integer schemeId = null;
         if (request.getTopCategory().equals(AssetOperationTableEnum.ASSET.getCode())) {
             AssetStatusProcessor assetStatusProcessor = new AssetStatusProcessor();
-            schemeId = assetStatusProcessor.changeStatus(request);
+            assetStatusProcessor.changeStatus(request);
         } else if (request.getTopCategory().equals(AssetOperationTableEnum.SOFTWARE.getCode())) {
             SoftwarStatusProcessor softwarStatusProcessor = new SoftwarStatusProcessor();
-            // schemeId = softwarStatusProcessor.changeStatus(request);
         }
         schemeDao.insert(scheme);
         return aesEncoder.decode(scheme.getId().toString(), LoginUserUtil.getLoginUser().getPassword());
