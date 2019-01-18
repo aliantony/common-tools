@@ -38,7 +38,7 @@ public class Scheme extends BaseEntity {
     /**
      * 工单级别(1提示2紧急2重要3次要)
      */
-    private String  orderLevel;
+    private Integer orderLevel;
     /**
      * 预计开始时间
      */
@@ -200,11 +200,11 @@ public class Scheme extends BaseEntity {
         this.assetId = assetId;
     }
 
-    public String getOrderLevel() {
+    public Integer getOrderLevel() {
         return orderLevel;
     }
 
-    public void setOrderLevel(String orderLevel) {
+    public void setOrderLevel(Integer orderLevel) {
         this.orderLevel = orderLevel;
     }
 

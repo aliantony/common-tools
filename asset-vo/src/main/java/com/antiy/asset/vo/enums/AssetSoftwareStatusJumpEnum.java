@@ -7,14 +7,15 @@ package com.antiy.asset.vo.enums;
  * @create 2019-01-15 16:13
  **/
 public enum AssetSoftwareStatusJumpEnum {
-                                 WATI_REGSIST(1, 3,
-                                              2), WAIT_SETTING(3, 4,
-                                                               3), WAIT_VALIDATE(4, 5,
-                                                                                 3), WAIT_NET(5, 6,
-                                                                                              3), WAIT_CHECK(6, 7,
-                                                                                                             5), WAIT_RETIRE(8,
-                                                                                                                             9,
-                                                                                                                             8);
+                                         WATI_REGSIST(1, 3,
+                                                      2), WAIT_SETTING(3, 4,
+                                                                       3), WAIT_VALIDATE(4, 5,
+                                                                                         3), WAIT_NET(5, 6,
+                                                                                                      3), WAIT_CHECK(6,
+                                                                                                                     7,
+                                                                                                                     5), WAIT_RETIRE(8,
+                                                                                                                                     9,
+                                                                                                                                     8);
     // code
     private Integer currentStatus;
 

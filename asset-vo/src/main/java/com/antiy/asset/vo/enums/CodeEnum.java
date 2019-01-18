@@ -7,4 +7,6 @@ package com.antiy.asset.vo.enums;
  **/
 public interface CodeEnum {
     Integer getCode();
+
+    String getMsg();
 }
