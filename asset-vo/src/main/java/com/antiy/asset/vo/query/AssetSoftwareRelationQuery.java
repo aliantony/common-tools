@@ -37,6 +37,16 @@ public class AssetSoftwareRelationQuery extends ObjectQuery implements ObjectVal
      */
     @ApiModelProperty("备注")
     private String  memo;
+    /**
+     * 协议
+     */
+    @ApiModelProperty("协议")
+    private String  protocol;
+    /**
+     * 端口
+     */
+    @ApiModelProperty("端口")
+    private String  port;
 
     public String getAssetId() {
         return assetId;
@@ -68,6 +78,22 @@ public class AssetSoftwareRelationQuery extends ObjectQuery implements ObjectVal
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
     }
 
     @Override
