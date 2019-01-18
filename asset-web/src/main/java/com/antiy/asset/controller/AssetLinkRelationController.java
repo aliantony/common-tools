@@ -23,7 +23,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetLinkRelation", description = "通联关系表")
 @RestController
-@RequestMapping("/api/v1/asset/assetlinkrelation")
+@RequestMapping("/api/v1/asset/linkrelation")
 public class AssetLinkRelationController {
 
     @Resource
@@ -38,7 +38,7 @@ public class AssetLinkRelationController {
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('asset:linkRelation:saveSingle')")
+    @PreAuthorize("hasAuthority('asset:linkrelation:saveSingle')")
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetLinkRelation") AssetLinkRelationRequest assetLinkRelation) throws Exception {
         iAssetLinkRelationService.saveAssetLinkRelation(assetLinkRelation);
         return ActionResponse.success();
@@ -53,7 +53,7 @@ public class AssetLinkRelationController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('asset:linkRelation:updateSingle')")
+    @PreAuthorize("hasAuthority('asset:linkrelation:updateSingle')")
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetLinkRelation") AssetLinkRelationRequest assetLinkRelation) throws Exception {
         iAssetLinkRelationService.updateAssetLinkRelation(assetLinkRelation);
         return ActionResponse.success();
@@ -68,7 +68,7 @@ public class AssetLinkRelationController {
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('asset:linkRelation:queryList')")
+    @PreAuthorize("hasAuthority('asset:linkrelation:queryList')")
     public ActionResponse queryList(@RequestBody @ApiParam(value = "assetLinkRelation") AssetLinkRelationQuery assetLinkRelation) throws Exception {
         return ActionResponse.success(iAssetLinkRelationService.findPageAssetLinkRelation(assetLinkRelation));
     }
@@ -82,7 +82,7 @@ public class AssetLinkRelationController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('asset:linkRelation:queryById')")
+    @PreAuthorize("hasAuthority('asset:linkrelation:queryById')")
     public ActionResponse queryById(@RequestBody @ApiParam(value = "assetLinkRelation") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetLinkRelationService.getById(query.getPrimaryKey()));
@@ -97,7 +97,7 @@ public class AssetLinkRelationController {
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('asset:linkRelation:deleteById')")
+    @PreAuthorize("hasAuthority('asset:linkrelation:deleteById')")
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetLinkRelationService.deleteById(query.getPrimaryKey()));

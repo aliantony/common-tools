@@ -23,7 +23,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetLabelRelation", description = "资产标签关系表")
 @RestController
-@RequestMapping("/api/v1/asset/assetlabelrelation")
+@RequestMapping("/api/v1/asset/labelrelation")
 public class AssetLabelRelationController {
 
     @Resource
@@ -38,7 +38,7 @@ public class AssetLabelRelationController {
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('asset:labelRelation:saveSingle')")
+    @PreAuthorize("hasAuthority('asset:labelrelation:saveSingle')")
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetLabelRelation") AssetLabelRelationRequest assetLabelRelation) throws Exception {
         iAssetLabelRelationService.saveAssetLabelRelation(assetLabelRelation);
         return ActionResponse.success();
@@ -53,7 +53,7 @@ public class AssetLabelRelationController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('asset:labelRelation:updateSingle')")
+    @PreAuthorize("hasAuthority('asset:labelrelation:updateSingle')")
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetLabelRelation") AssetLabelRelationRequest assetLabelRelation) throws Exception {
         iAssetLabelRelationService.updateAssetLabelRelation(assetLabelRelation);
         return ActionResponse.success();
@@ -68,7 +68,7 @@ public class AssetLabelRelationController {
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('asset:labelRelation:queryList')")
+    @PreAuthorize("hasAuthority('asset:labelrelation:queryList')")
     public ActionResponse queryList(@RequestBody @ApiParam(value = "assetLabelRelation") AssetLabelRelationQuery assetLabelRelation) throws Exception {
         return ActionResponse.success(iAssetLabelRelationService.findPageAssetLabelRelation(assetLabelRelation));
     }
@@ -82,7 +82,7 @@ public class AssetLabelRelationController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('asset:labelRelation:queryById')")
+    @PreAuthorize("hasAuthority('asset:labelrelation:queryById')")
     public ActionResponse queryById(@RequestBody @ApiParam(value = "assetLabelRelation") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetLabelRelationService.getById(query.getPrimaryKey()));
@@ -97,7 +97,7 @@ public class AssetLabelRelationController {
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('asset:labelRelation:deleteById')")
+    @PreAuthorize("hasAuthority('asset:labelrelation:deleteById')")
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetLabelRelationService.deleteById(query.getPrimaryKey()));

@@ -22,7 +22,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetSoftwareLicense", description = "软件许可表")
 @RestController
-@RequestMapping("/api/v1/asset/assetsoftwarelicense")
+@RequestMapping("/api/v1/asset/softwarelicense")
 public class AssetSoftwareLicenseController {
     private static final Logger         logger = LogUtils.get();
 
@@ -34,7 +34,7 @@ public class AssetSoftwareLicenseController {
      * @param assetSoftwareLicenseRequest
      * @return actionResponse
      */
-    @PreAuthorize("hasAuthority('asset:softwareLicense:saveSingle')")
+    @PreAuthorize("hasAuthority('asset:softwarelicense:saveSingle')")
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
@@ -48,7 +48,7 @@ public class AssetSoftwareLicenseController {
      * @param assetSoftwareLicenseRequest
      * @return actionResponse
      */
-    @PreAuthorize("hasAuthority('asset:softwareLicense:updateSingle')")
+    @PreAuthorize("hasAuthority('asset:softwarelicense:updateSingle')")
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
@@ -62,7 +62,7 @@ public class AssetSoftwareLicenseController {
      * @param assetSoftwareLicenseQuery
      * @return actionResponse
      */
-    @PreAuthorize("hasAuthority('asset:softwareLicense:queryList')")
+    @PreAuthorize("hasAuthority('asset:softwarelicense:queryList')")
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
@@ -76,7 +76,7 @@ public class AssetSoftwareLicenseController {
      * @param id
      * @return actionResponse
      */
-    @PreAuthorize("hasAuthority('asset:softwareLicense:queryById')")
+    @PreAuthorize("hasAuthority('asset:softwarelicense:queryById')")
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
@@ -91,7 +91,7 @@ public class AssetSoftwareLicenseController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
-    @PreAuthorize("hasAuthority('asset:softwareLicense:deleteById')")
+    @PreAuthorize("hasAuthority('asset:softwarelicense:deleteById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {

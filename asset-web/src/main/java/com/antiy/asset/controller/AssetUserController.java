@@ -32,7 +32,7 @@ import java.util.List;
  */
 @Api(value = "AssetUser", description = "资产用户信息")
 @RestController
-@RequestMapping("/api/v1/asset/assetuser")
+@RequestMapping("/api/v1/asset/user")
 public class AssetUserController {
 
     @Resource

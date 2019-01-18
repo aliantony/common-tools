@@ -19,7 +19,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetMainborad", description = "主板表")
 @RestController
-@RequestMapping("/api/v1/asset/assetmainborad")
+@RequestMapping("/api/v1/asset/mainborad")
 public class AssetMainboradController {
 
     @Resource

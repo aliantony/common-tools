@@ -27,7 +27,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetSoftwareRelation", description = "资产软件关系信息")
 @RestController
-@RequestMapping("/api/v1/asset/assetsoftwarerelation")
+@RequestMapping("/api/v1/asset/softwarerelation")
 public class AssetSoftwareRelationController {
     private static final Logger          logger = LogUtils.get();
 
@@ -41,7 +41,7 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
-    @PreAuthorize("hasAuthority('asset:softwareRelation:saveSingle')")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:saveSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetSoftwareRelation") @RequestBody AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
@@ -56,7 +56,7 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
-    @PreAuthorize("hasAuthority('asset:softwareRelation:updateSingle')")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:updateSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@ApiParam(value = "assetSoftwareRelation") AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
@@ -71,7 +71,7 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
-    @PreAuthorize("hasAuthority('asset:softwareRelation:queryList')")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:queryList')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareRelationResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "assetSoftwareRelation") AssetSoftwareRelationQuery assetSoftwareRelationQuery) throws Exception {
@@ -86,7 +86,7 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @PreAuthorize("hasAuthority('asset:softwareRelation:queryById')")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:queryById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareRelationResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     public ActionResponse queryById(@ApiParam(value = "assetSoftwareRelation") @PathVariable("id") Integer id) throws Exception {
@@ -101,7 +101,7 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
-    @PreAuthorize("hasAuthority('asset:softwareRelation:deleteById')")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:deleteById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {
@@ -116,7 +116,7 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过软件ID统计资产数量", notes = "软件ID")
-    @PreAuthorize("hasAuthority('asset:softwareRelation:countAssetBySoftId')")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:countAssetBySoftId')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/countAssetBySoftId/{id}", method = RequestMethod.GET)
     public ActionResponse countAssetBySoftId(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {
@@ -131,7 +131,7 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "查询硬件资产关联的软件列表", notes = "资产ID")
-    @PreAuthorize("hasAuthority('asset:softwareRelation:getSoftwareByAssetId')")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:getSoftwareByAssetId')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/getSoftwareByAssetId/{assetId}", method = RequestMethod.GET)
     public ActionResponse getSoftwareByAssetId(@ApiParam(value = "assetId") @PathVariable("assetId") @Encode String assetId) throws Exception {
@@ -146,7 +146,7 @@ public class AssetSoftwareRelationController {
      * @return 操作系统名称集合
      */
     @ApiOperation(value = "查询操作系统接口", notes = "无查询条件")
-    @PreAuthorize("hasAuthority('asset:softwareRelation:queryOS')")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:queryOS')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/os", method = RequestMethod.GET)
     public ActionResponse<List<String>> queryOS() throws Exception {
