@@ -23,7 +23,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetPortProtocol", description = "端口协议")
 @RestController
-@RequestMapping("/api/v1/asset/assetportprotocol")
+@RequestMapping("/api/v1/asset/portprotocol")
 public class AssetPortProtocolController {
 
     @Resource
@@ -38,7 +38,7 @@ public class AssetPortProtocolController {
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:assetportprotocol:saveSingle')")
+    @PreAuthorize(value = "hasAuthority('asset:portprotocol:saveSingle')")
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetPortProtocol") AssetPortProtocolRequest assetPortProtocol) throws Exception {
         iAssetPortProtocolService.saveAssetPortProtocol(assetPortProtocol);
         return ActionResponse.success();
@@ -53,7 +53,7 @@ public class AssetPortProtocolController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:assetportprotocol:updateSingle')")
+    @PreAuthorize(value = "hasAuthority('asset:portprotocol:updateSingle')")
     public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "assetPortProtocol") AssetPortProtocolRequest assetPortProtocol) throws Exception {
         iAssetPortProtocolService.updateAssetPortProtocol(assetPortProtocol);
         return ActionResponse.success();
@@ -68,7 +68,7 @@ public class AssetPortProtocolController {
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    @PreAuthorize(value = "hasAuthority('asset:assetportprotocol:queryList')")
+    @PreAuthorize(value = "hasAuthority('asset:portprotocol:queryList')")
     public ActionResponse queryList(@ApiParam(value = "assetPortProtocol") AssetPortProtocolQuery assetPortProtocol) throws Exception {
         return ActionResponse.success(iAssetPortProtocolService.findPageAssetPortProtocol(assetPortProtocol));
     }
@@ -82,7 +82,7 @@ public class AssetPortProtocolController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    @PreAuthorize(value = "hasAuthority('asset:assetportprotocol:queryById')")
+    @PreAuthorize(value = "hasAuthority('asset:portprotocol:queryById')")
     public ActionResponse queryById(@ApiParam(value = "assetPortProtocol") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetPortProtocolService.getById(Integer.parseInt(query.getPrimaryKey())));
@@ -97,7 +97,7 @@ public class AssetPortProtocolController {
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:assetportprotocol:deleteById')")
+    @PreAuthorize(value = "hasAuthority('asset:portprotocol:deleteById')")
     public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetPortProtocolService.deleteById(Integer.parseInt(query.getPrimaryKey())));
