@@ -24,7 +24,7 @@ public interface IAssetUserService extends IBaseService<AssetUser> {
      * @param request
      * @return
      */
-    Integer saveAssetUser(AssetUserRequest request) throws Exception;
+    String saveAssetUser(AssetUserRequest request) throws Exception;
 
     /**
      * 修改
