@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.response.SchemeResponse;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,7 +90,7 @@ public class SchemeController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SchemeResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") @Encode String id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");

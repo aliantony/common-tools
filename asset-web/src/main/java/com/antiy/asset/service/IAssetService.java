@@ -5,6 +5,7 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
+import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.IBaseService;
@@ -144,7 +145,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      * @throws Exception
      */
-    Map<String, Long> countManufacturer() throws Exception;
+    AssetCountResponse countManufacturer() throws Exception;
 
     /**
      * 按状态统计数量
@@ -152,7 +153,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      * @throws Exception
      */
-    Map<String, Long> countStatus() throws Exception;
+    AssetCountResponse countStatus() throws Exception;
 
     /**
      * 按第二级品类统计数量
@@ -160,7 +161,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      * @throws Exception
      */
-    Map<String, Long> countCategory() throws Exception;
+    AssetCountResponse countCategory() throws Exception;
 
     /**
      * 保存PC

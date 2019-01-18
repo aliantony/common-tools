@@ -469,7 +469,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public Map<String, Long> countManufacturer() throws Exception {
+    public AssetCountResponse countManufacturer() throws Exception {
         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<Map<String, Long>> list = assetDao.countManufacturer(areaIds);
         if (CollectionUtils.isNotEmpty(list)) {
@@ -477,13 +477,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (Map map : list) {
                 result.put(map.get("key"), map.get("value"));
             }
-            return result;
+            AssetCountResponse assetCountResponse=new AssetCountResponse();
+            assetCountResponse.setMap(result);
+            return assetCountResponse;
         }
         return null;
     }
 
     @Override
-    public Map<String, Long> countStatus() throws Exception {
+    public AssetCountResponse countStatus() throws Exception {
         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<Map<String, Long>> list = assetDao.countStatus(areaIds);
         if (CollectionUtils.isNotEmpty(list)) {
@@ -491,13 +493,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (Map map : list) {
                 result.put(AssetStatusEnum.getAssetByCode((Integer) map.get("key")) + "", (Long) map.get("value"));
             }
-            return result;
+            AssetCountResponse assetCountResponse=new AssetCountResponse();
+            assetCountResponse.setMap(result);
+            return assetCountResponse;
         }
         return null;
     }
 
     @Override
-    public Map<String, Long> countCategory() throws Exception {
+    public AssetCountResponse countCategory() throws Exception {
         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         HashMap<String, Object> map = new HashMap();
         map.put("name", "硬件");
@@ -524,7 +528,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(areaIds.toArray()));
                 result.put(a.getName(), (long) assetDao.findCountByCategoryModel(assetQuery));
             }
-            return result;
+            AssetCountResponse assetCountResponse=new AssetCountResponse();
+            assetCountResponse.setMap(result);
+            return assetCountResponse;
         }
         return null;
     }
