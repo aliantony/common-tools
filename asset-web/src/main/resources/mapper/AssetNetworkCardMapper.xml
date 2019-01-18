@@ -360,8 +360,7 @@
         subnet_mask,
         gmt_create,
         memo,
-        create_user,
-        status
+        create_user
         )
         values
         <foreach collection="list" item="networkCard" separator=",">
@@ -377,8 +376,7 @@
             #{networkCard.subnetMask},
             #{networkCard.gmtCreate},
             #{networkCard.memo},
-            #{networkCard.createUser},
-            #{networkCard.status}
+            #{networkCard.createUser}
             )
         </foreach>
     </insert>

@@ -997,14 +997,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetNetworkCardDao.insertBatch(assetNetworkCardList);
                     }
                     // 4. 更新主板信息
-                    AssetMainboradRequest assetMainboradRequest = assetOuterRequest.getMainboard();
-                    if (assetNetworkCardRequestList != null) {
-                        AssetMainborad assetMainborad = BeanConvert.convertBean(assetMainboradRequest,
+                    List<AssetMainboradRequest> assetMainboradRequest = assetOuterRequest.getMainboard();
+                    if (assetNetworkCardRequestList != null && !assetMainboradRequest.isEmpty()) {
+                        List<AssetMainborad> assetMainborad = BeanConvert.convert(assetMainboradRequest,
                             AssetMainborad.class);
-                        assetMainborad.setAssetId(asset.getId());
-                        // assetMainborad.setModifyUser(LoginUserUtil.getLoginUser().getId());
-                        assetMainborad.setGmtModified(System.currentTimeMillis());
-                        assetMainboradDao.update(assetMainborad);
+                        for (AssetMainborad mainborad : assetMainborad) {
+                            mainborad.setAssetId(asset.getId());
+                            // mainborad.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                            mainborad.setGmtModified(System.currentTimeMillis());
+                        }
+                        // 先删除再新增
+                        assetMainboradDao.deleteByAssetId(assetMainborad);
+                        assetMainboradDao.insertBatch(assetMainborad);
                     }
                     // 5. 更新内存信息
                     List<AssetMemoryRequest> assetMemoryRequestList = assetOuterRequest.getMemory();

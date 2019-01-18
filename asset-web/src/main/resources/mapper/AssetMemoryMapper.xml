@@ -368,8 +368,7 @@
         telephone,
         gmt_create,
         memo,
-        create_user,
-        status
+        create_user
         )
         values
         <foreach collection="list" item="memory" separator=",">
@@ -386,8 +385,7 @@
             #{memory.telephone},
             #{memory.gmtCreate},
             #{memory.memo},
-            #{memory.createUser},
-            #{memory.status}
+            #{memory.createUser}
             )
         </foreach>
     </insert>

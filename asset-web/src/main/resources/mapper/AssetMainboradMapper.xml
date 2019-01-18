@@ -279,4 +279,45 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <update id="deleteByAssetId" parameterType="java.lang.Integer">
+        update
+        <include refid="Table_Name"></include>
+        set status = 0
+        where asset_id = #{assetId}
+    </update>
+    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetHardDisk" useGeneratedKeys="true"
+            keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        (
+        asset_id,
+        brand,
+        model,
+        serial,
+        bios_version ,
+        bios_date,
+        gmt_create ,
+        gmt_modified,
+        memo,
+        create_user,
+        modify_user
+        )
+        values
+        <foreach collection="list" item="hardDisk" separator=",">
+            (
+            #{asset_id},
+            #{brand},
+            #{model},
+            #{serial},
+            #{bios_version} ,
+            #{bios_date},
+            #{gmt_create },
+            #{gmt_modified},
+            #{memo},
+            #{create_user},
+            #{ modify_user},
+            )
+        </foreach>
+    </insert>
 </mapper>
