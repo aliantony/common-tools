@@ -5,9 +5,7 @@ import java.util.List;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
-import com.antiy.asset.vo.response.AssetGroupResponse;
-import com.antiy.asset.vo.response.GroupValueResponse;
-import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -26,7 +24,7 @@ public interface IAssetGroupService extends IBaseService<AssetGroup> {
      * @param request
      * @return
      */
-    Integer saveAssetGroup(AssetGroupRequest request) throws Exception;
+    String saveAssetGroup(AssetGroupRequest request) throws Exception;
 
     /**
      * 修改
@@ -58,4 +56,12 @@ public interface IAssetGroupService extends IBaseService<AssetGroup> {
      * @return
      */
     List<SelectResponse> queryGroupInfo() throws Exception;
+    /**
+     * 通过id查询资产组
+     *
+     * @param id
+     * @return
+     */
+    AssetGroupResponse findGroupById(String id) throws Exception;
+
 }

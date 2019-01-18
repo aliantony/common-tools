@@ -17,6 +17,8 @@ import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * <p> 资产组表 服务实现类 </p>
@@ -30,6 +32,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Resource
     private AssetGroupDao                                 assetGroupDao;
     @Resource
+    AesEncoder                                            aesEncoder;
+    @Resource
     private BaseConverter<AssetGroupRequest, AssetGroup>  requestConverter;
     @Resource
     private BaseConverter<AssetGroup, AssetGroupResponse> responseConverter;
@@ -37,11 +41,12 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     private AssetGroupResponseConverter                   assetGroupResponseConverter;
 
     @Override
-    public Integer saveAssetGroup(AssetGroupRequest request) throws Exception {
+    public String saveAssetGroup(AssetGroupRequest request) throws Exception {
         AssetGroup assetGroup = requestConverter.convert(request, AssetGroup.class);
         assetGroup.setGmtCreate(System.currentTimeMillis());
         assetGroupDao.insert(assetGroup);
-        return assetGroup.getId();
+        assetGroupDao.insert(assetGroup);
+        return aesEncoder.decode(assetGroup.getId().toString(), LoginUserUtil.getLoginUser().getPassword());
     }
 
     @Override
@@ -73,6 +78,11 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public List<SelectResponse> queryGroupInfo() throws Exception {
         return assetGroupResponseConverter.convert(assetGroupDao.findPulldownGroup(), SelectResponse.class);
+    }
+
+    @Override
+    public AssetGroupResponse findGroupById(String id) throws Exception {
+        return null;
     }
 
 }

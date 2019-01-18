@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.response.AssetGroupResponse;
 import com.antiy.common.encoder.Encode;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,7 @@ public class AssetGroupController {
      * @return actionResponse
      */
     @ApiOperation(value = "保存", notes = "传入实体对象信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetGroup") AssetGroupRequest assetGroup) throws Exception {
         return ActionResponse.success(iAssetGroupService.saveAssetGroup(assetGroup));
@@ -68,7 +69,7 @@ public class AssetGroupController {
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询", notes = "传入查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "assetGroup") AssetGroupQuery assetGroup) throws Exception {
         return ActionResponse.success(iAssetGroupService.findPageAssetGroup(assetGroup));
@@ -81,10 +82,10 @@ public class AssetGroupController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     public ActionResponse queryById(@PathVariable @ApiParam(value = "assetGroup") @Encode String id) throws Exception {
-        return ActionResponse.success(iAssetGroupService.getById(id));
+        return ActionResponse.success(iAssetGroupService.findGroupById(id));
     }
 
     /**
@@ -94,7 +95,7 @@ public class AssetGroupController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@PathVariable @RequestBody @ApiParam(value = "id") @Encode String id) throws Exception {
         return ActionResponse.success(iAssetGroupService.deleteById(id));

@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.response.AssetSafetyEquipmentResponse;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class AssetSafetyEquipmentController {
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSafetyEquipmentRequest.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetSafetyEquipment") @RequestBody AssetSafetyEquipmentRequest assetSafetyEquipmentRequest) throws Exception {
         return ActionResponse
@@ -61,7 +62,7 @@ public class AssetSafetyEquipmentController {
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSafetyEquipmentQuery.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSafetyEquipmentResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "assetSafetyEquipment") AssetSafetyEquipmentQuery assetSafetyEquipmentQuery) throws Exception {
         return ActionResponse
@@ -75,7 +76,7 @@ public class AssetSafetyEquipmentController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSafetyEquipmentResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     public ActionResponse queryById(@ApiParam(value = "assetSafetyEquipment") @PathVariable("id") Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
@@ -89,7 +90,7 @@ public class AssetSafetyEquipmentController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
