@@ -8,6 +8,7 @@ import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.vo.enums.AssetOperationTableEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
@@ -71,6 +72,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetSoftwareRelationDao                  assetSoftwareRelationDao;
     @Resource
     private AssetStorageMediumDao                     assetStorageMediumDao;
+    @Resource
+    private AssetOperationRecordDao                   assetOperationRecordDao;
     @Resource
     private BaseConverter<AssetRequest, Asset>        requestConverter;
     @Resource
@@ -147,8 +150,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         List<AssetNetworkCardRequest> networkCardRequestList = request.getNetworkCard();
         if (networkCardRequestList != null && networkCardRequestList.size() > 0) {
-            List<AssetNetworkCard> networkCardList = BeanConvert
-                .convert(networkCardRequestList, AssetNetworkCard.class);
+            List<AssetNetworkCard> networkCardList = BeanConvert.convert(networkCardRequestList,
+                AssetNetworkCard.class);
             for (AssetNetworkCard assetNetworkCard : networkCardList) {
                 assetNetworkCard.setAssetId(aid);
                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
@@ -603,7 +606,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public AssetCountResponse countCategory() throws Exception {
-         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         HashMap<String, Object> map = new HashMap();
         map.put("name", "硬件");
         map.put("parentId", 0);
@@ -928,38 +931,38 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // CPU
         assetOuterResponse.setAssetCpu(BeanConvert.convert(assetCpuDao.getByWhere(param), AssetCpuResponse.class));
         // 网卡
-        assetOuterResponse.setAssetNetworkCard(BeanConvert.convert(assetNetworkCardDao.getByWhere(param),
-            AssetNetworkCardResponse.class));
+        assetOuterResponse.setAssetNetworkCard(
+            BeanConvert.convert(assetNetworkCardDao.getByWhere(param), AssetNetworkCardResponse.class));
         // 硬盘
-        assetOuterResponse.setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param),
-            AssetHardDiskResponse.class));
+        assetOuterResponse
+            .setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param), AssetHardDiskResponse.class));
         // 主板
-        assetOuterResponse.setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param),
-            AssetMainboradResponse.class));
+        assetOuterResponse
+            .setAssetMainborad(BeanConvert.convert(assetMainboradDao.getByWhere(param), AssetMainboradResponse.class));
         // 内存
-        assetOuterResponse.setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param),
-            AssetMemoryResponse.class));
+        assetOuterResponse
+            .setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param), AssetMemoryResponse.class));
         // 网络设备
         List<AssetNetworkEquipment> assetNetworkEquipmentList = assetNetworkEquipmentDao.getByWhere(param);
         if (assetNetworkEquipmentList != null && !assetNetworkEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetNetworkEquipment(BeanConvert.convertBean(assetNetworkEquipmentList.get(0),
-                AssetNetworkEquipmentResponse.class));
+            assetOuterResponse.setAssetNetworkEquipment(
+                BeanConvert.convertBean(assetNetworkEquipmentList.get(0), AssetNetworkEquipmentResponse.class));
         }
         // 安全设备
         List<AssetSafetyEquipment> assetSafetyEquipmentList = assetSafetyEquipmentDao.getByWhere(param);
         if (assetSafetyEquipmentList != null && !assetSafetyEquipmentList.isEmpty()) {
-            assetOuterResponse.setAssetSafetyEquipment(BeanConvert.convertBean(assetSafetyEquipmentList.get(0),
-                AssetSafetyEquipmentResponse.class));
+            assetOuterResponse.setAssetSafetyEquipment(
+                BeanConvert.convertBean(assetSafetyEquipmentList.get(0), AssetSafetyEquipmentResponse.class));
         }
         // 存储介质
         List<AssetStorageMedium> assetStorageMediumList = assetStorageMediumDao.getByWhere(param);
         if (assetStorageMediumList != null && !assetStorageMediumList.isEmpty()) {
-            assetOuterResponse.setAssetStorageMedium(BeanConvert.convertBean(assetStorageMediumList.get(0),
-                AssetStorageMediumResponse.class));
+            assetOuterResponse.setAssetStorageMedium(
+                BeanConvert.convertBean(assetStorageMediumList.get(0), AssetStorageMediumResponse.class));
         }
         // 软件
-        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSoftByAssetId(DataTypeUtils
-            .stringToInteger(id));
+        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
+            .getSoftByAssetId(DataTypeUtils.stringToInteger(id));
         assetOuterResponse.setAssetSoftware(BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class));
         return assetOuterResponse;
     }
@@ -968,11 +971,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息不能为空");
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
+        Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
-                    Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
                     // 更改资产状态为待配置
                     asset.setStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     // 1. 更新资产主表
@@ -1097,6 +1100,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     });
                     // 批量插入资产软件关系
                     assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
+                    // 记录资产操作流程
+                    AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+                    assetOperationRecord.setTargetObjectId(asset.getId());
+                    assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
+                    assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                    assetOperationRecord.setContent("资产变更");
+                    assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+                    assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+                    assetOperationRecordDao.insert(assetOperationRecord);
                     return count;
                 } catch (Exception e) {
                     LOGGER.error("修改资产失败", e);
@@ -1104,12 +1117,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return 0;
             }
         });
-        return assetCount;
         // TODO 下发智甲
 
         // TODO 通知工作流
 
-        // TODO 变更资产状态->待配置
+        return assetCount;
     }
 
     /**
@@ -1344,8 +1356,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public String importSecurity(MultipartFile file) throws Exception {
-        ImportResult<SafetyEquipmentEntiy> re = ExcelUtils
-            .importExcelFromClient(SafetyEquipmentEntiy.class, file, 0, 1);
+        ImportResult<SafetyEquipmentEntiy> re = ExcelUtils.importExcelFromClient(SafetyEquipmentEntiy.class, file, 0,
+            1);
         List<SafetyEquipmentEntiy> resultDataList = re.getDataList();
         for (SafetyEquipmentEntiy entity : resultDataList) {
             if (StringUtils.isBlank(entity.getName())) {
@@ -1466,10 +1478,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ExcelUtils.exportTemplet(clazz, fileName, title);
     }
 
-    private void exportData(Class clazz, String fileName, AssetQuery assetQuery, HttpServletResponse response)
-                                                                                                              throws Exception {
-        assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(LoginUserUtil.getLoginUser()
-            .getAreaIdsOfCurrentUser().toArray()));
+    private void exportData(Class clazz, String fileName, AssetQuery assetQuery,
+                            HttpServletResponse response) throws Exception {
+        assetQuery.setAreaIds(
+            ArrayTypeUtil.ObjectArrayToIntegerArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         List<Asset> list = assetDao.findListAsset(assetQuery);
         List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
         ParamterExceptionUtils.isEmpty(list, "资产数据不能为空");
