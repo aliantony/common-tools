@@ -24,6 +24,14 @@ public class AssetSoftwareRelation extends BaseEntity {
      */
     private Integer softwareStatus;
     /**
+     * 协议
+     */
+    private String  protocol;
+    /**
+     * 端口
+     */
+    private String  port;
+    /**
      * 创建时间
      */
     private Long    gmtCreate;
@@ -70,6 +78,22 @@ public class AssetSoftwareRelation extends BaseEntity {
 
     public void setSoftwareStatus(Integer softwareStatus) {
         this.softwareStatus = softwareStatus;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
     }
 
     public Long getGmtCreate() {

@@ -16,13 +16,13 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
      */
     @ApiModelProperty("资产主键")
     @Encode
-    private String assetId;
+    private String  assetId;
     /**
      * 软件主键
      */
     @ApiModelProperty("软件主键")
     @Encode
-    private String softwareId;
+    private String  softwareId;
     /**
      * 软件资产状态：1待登记，2不予登记，3待配置，4待验证，5待入网，6已入网，7待退役，8已退役
      */
@@ -33,6 +33,16 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
      */
     @ApiModelProperty("备注")
     private String  memo;
+    /**
+     * 协议
+     */
+    @ApiModelProperty("协议")
+    private String  protocol;
+    /**
+     * 端口
+     */
+    @ApiModelProperty("端口")
+    private String  port;
 
     public String getAssetId() {
         return assetId;
@@ -64,5 +74,21 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
     }
 }
