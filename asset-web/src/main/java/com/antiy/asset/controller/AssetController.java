@@ -38,6 +38,20 @@ public class AssetController {
     @Resource
     public IAssetService iAssetService;
 
+    /**
+     * 保存
+     *
+     * @param asset
+     * @return actionResponse
+     */
+    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/save/single", method = RequestMethod.POST)
+    @PreAuthorize(value = "hasAuthority('asset:asset:saveSingle')")
+    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset) throws Exception {
+        iAssetService.saveAsset(asset);
+        return ActionResponse.success();
+    }
 
     /**
      * 修改
