@@ -32,7 +32,7 @@ public class AssetPortProtocolRequest extends BasicRequest implements ObjectVali
      * 端口
      */
     @ApiModelProperty("端口")
-    private Integer port;
+    private Integer[] port;
     /**
      * 协议
      */
@@ -60,11 +60,11 @@ public class AssetPortProtocolRequest extends BasicRequest implements ObjectVali
         this.id = id;
     }
 
-    public Integer getPort() {
+    public Integer[] getPort() {
         return port;
     }
 
-    public void setPort(Integer port) {
+    public void setPort(Integer[] port) {
         this.port = port;
     }
 

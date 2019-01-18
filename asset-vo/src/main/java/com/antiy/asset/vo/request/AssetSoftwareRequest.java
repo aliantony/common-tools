@@ -151,6 +151,19 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     @Encode
     private String                      assetSoftwareRelationId;
 
+    @ApiModelProperty(value = "流程处理")
+    @NotNull(message = "处理流程不能为空")
+    @Valid
+    private ActivityHandleRequest       request;
+
+    public ActivityHandleRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(ActivityHandleRequest request) {
+        this.request = request;
+    }
+
     public String getAssetSoftwareRelationId() {
         return assetSoftwareRelationId;
     }

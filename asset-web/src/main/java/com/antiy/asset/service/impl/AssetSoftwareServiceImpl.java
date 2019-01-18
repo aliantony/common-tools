@@ -1,7 +1,24 @@
 package com.antiy.asset.service.impl;
 
+import java.util.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetPortProtocolService;
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
 import com.antiy.asset.service.IAssetSoftwareService;
@@ -28,21 +45,6 @@ import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -83,6 +85,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Resource
     private ExcelDownloadUtil                                                excelDownloadUtil;
+
+    @Resource
+    private ActivityClient                                                   activityClient;
     private static final Logger                                              LOGGER = LogUtils
         .get(AssetSoftwareServiceImpl.class);
 
@@ -97,20 +102,20 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
         assetSoftwareDao.insert(assetSoftware);
         Integer sid = assetSoftware.getId();
-//        license.setSoftwareId(sid);
-//        protocol.setAssetSoftId(sid);
-//        assetSoftwareLicenseDao.insert(license);
-//        assetPortProtocolDaoDao.insert(protocol);
-//        if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
-//            String[] assetIds = request.getAssetIds();
-//            for (String s : assetIds) {
-//                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-//                assetSoftwareRelation.setSoftwareId(sid);
-//                assetSoftwareRelation.setAssetId(Integer.parseInt(s));
-//                assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
-//                assetSoftwareRelationDao.insert(assetSoftwareRelation);
-//            }
-//        }
+        // license.setSoftwareId(sid);
+        // protocol.setAssetSoftId(sid);
+        // assetSoftwareLicenseDao.insert(license);
+        // assetPortProtocolDaoDao.insert(protocol);
+        // if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
+        // String[] assetIds = request.getAssetIds();
+        // for (String s : assetIds) {
+        // AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+        // assetSoftwareRelation.setSoftwareId(sid);
+        // assetSoftwareRelation.setAssetId(Integer.parseInt(s));
+        // assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+        // assetSoftwareRelationDao.insert(assetSoftwareRelation);
+        // }
+        // }
         // TODO: 2019/1/14 工作流
         return sid;
     }
@@ -120,9 +125,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     public Integer batchSave(List<AssetSoftware> assetSoftwareList) throws Exception {
         int i = 0;
         for (; i < assetSoftwareList.size(); i++) {
-            AssetSoftware t = assetSoftwareList.get (i);
-            t.setGmtCreate (System.currentTimeMillis ());
-            t.setSoftwareStatus (3);
+            AssetSoftware t = assetSoftwareList.get(i);
+            t.setGmtCreate(System.currentTimeMillis());
+            t.setSoftwareStatus(3);
             //// TODO: 2019/1/17 流程
             assetSoftwareDao.insert(t);
         }
@@ -175,14 +180,20 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                             assetSoftwareRelation.setSoftwareStatus(request.getSoftwareStatus());
                             assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                             assetSoftwareRelationDao.insert(assetSoftwareRelation);
-
                             ParamterExceptionUtils.isNull(assetSoftwareRelation.getId(), "更新软件失败");
-                            // TODO 目前产品端口信息没有关联某一个硬件资产和软件资产，所以目前没有更新单个实例的端口信息
-                            AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>()
-                                .convert(request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
-                            protocol.setAssetSoftId(assetSoftwareRelation.getId());
-                            // 插入端口信息
-                            assetPortProtocolDaoDao.insert(protocol);
+
+                            // 批量插入端口信息
+                            if (ArrayUtils.isNotEmpty(request.getAssetPortProtocolRequest().getPort())) {
+                                AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>()
+                                    .convert(request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
+                                protocol.setAssetSoftId(assetSoftwareRelation.getId());
+                                for (Integer port : request.getAssetPortProtocolRequest().getPort()) {
+                                    protocol.setPort(port);
+                                    // 插入端口信息
+                                    assetPortProtocolDaoDao.insert(protocol);
+                                }
+                            }
+
                         }
                     }
                     return assetSoftwareCount;
@@ -194,6 +205,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         });
 
         // TODO 调用工作流，给配置管理员
+        activityClient.completeTask(request.getRequest());
         return count;
     }
 
