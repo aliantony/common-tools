@@ -42,8 +42,14 @@ public class AssetOuterResponse {
      * 存储介质
      */
     private AssetStorageMediumResponse      assetStorageMedium;
-
+    /**
+     * 软件信息
+     */
     private List<AssetSoftwareResponse>    assetSoftware;
+    /**
+     * 资产软件关系
+     */
+    private List<AssetSoftwareRelationResponse> assetSoftwareRelationList;
 
     public AssetResponse getAsset() {
         return asset;
@@ -123,5 +129,13 @@ public class AssetOuterResponse {
 
     public void setAssetStorageMedium(AssetStorageMediumResponse assetStorageMedium) {
         this.assetStorageMedium = assetStorageMedium;
+    }
+
+    public List<AssetSoftwareRelationResponse> getAssetSoftwareRelationList() {
+        return assetSoftwareRelationList;
+    }
+
+    public void setAssetSoftwareRelationList(List<AssetSoftwareRelationResponse> assetSoftwareRelationList) {
+        this.assetSoftwareRelationList = assetSoftwareRelationList;
     }
 }

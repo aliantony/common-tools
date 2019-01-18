@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetStorageMediumResponse 响应对象 </p>
@@ -13,42 +14,52 @@ public class AssetStorageMediumResponse extends BaseEntity {
     /**
      * 资产主键
      */
+    @ApiModelProperty("资产主键")
     private Integer assetId;
     /**
      * 最大存储量
      */
+    @ApiModelProperty("")
     private String  maximumStorage;
     /**
      * 单机磁盘数
      */
+    @ApiModelProperty("单机磁盘数")
     private Integer diskNumber;
     /**
      * 高速缓存
      */
+    @ApiModelProperty("高速缓存")
     private String  highCache;
     /**
      * 内置接口
      */
+    @ApiModelProperty("内置接口")
     private String  innerInterface;
     /**
      * RAID支持
      */
+    @ApiModelProperty("")
     private String  raidSupport;
     /**
      * 平均传输率
      */
+    @ApiModelProperty("平均传输率")
     private String  averageTransferRate;
     /**
      * 驱动器数量
      */
+    @ApiModelProperty("驱动器数量")
     private Integer driverNumber;
     /**
      * 固件
      */
+    @ApiModelProperty("固件")
     private String  firmware;
     /**
      * OS版本
      */
+    @ApiModelProperty("OS版本")
     private String  osVersion;
 
     public Integer getAssetId() {

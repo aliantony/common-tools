@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetStorageMediumDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetStorageMedium">
+        <id column="id" property="id"/>
+        <result column="asset_id" property="assetId"/>
+        <result column="maximum_storage" property="maximumStorage"/>
+        <result column="disk_number" property="diskNumber"/>
+        <result column="high_cache" property="highCache"/>
+        <result column="inner_interface" property="innerInterface"/>
+        <result column="raid_support" property="raidSupport"/>
+        <result column="average_transfer_rate" property="averageTransferRate"/>
+        <result column="driver_number" property="driverNumber"/>
+        <result column="firmware" property="firmware"/>
+        <result column="os_version" property="osVersion"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="memo" property="memo"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modify_user" property="modifyUser"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, asset_id, maximum_storage, disk_number, high_cache, inner_interface, raid_support, average_transfer_rate, driver_number, firmware, os_version, gmt_create, gmt_modified, memo, create_user, modify_user, status
+    </sql>
+
+    <sql id="Table_Name">
+        asset_storage_medium
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+        <if test=" assetId != null">
+            asset_id,
+        </if>
+        <if test=" maximumStorage != null">
+            maximum_storage,
+        </if>
+        <if test=" diskNumber != null">
+            disk_number,
+        </if>
+        <if test=" highCache != null">
+            high_cache,
+        </if>
+        <if test=" innerInterface != null">
+            inner_interface,
+        </if>
+        <if test=" raidSupport != null">
+            raid_support,
+        </if>
+        <if test=" averageTransferRate != null">
+            average_transfer_rate,
+        </if>
+        <if test=" driverNumber != null">
+            driver_number,
+        </if>
+        <if test=" firmware != null">
+            firmware,
+        </if>
+        <if test=" osVersion != null">
+            os_version,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified,
+        </if>
+        <if test=" memo != null">
+            memo,
+        </if>
+        <if test=" createUser != null">
+            create_user,
+        </if>
+        <if test=" modifyUser != null">
+            modify_user,
+        </if>
+        <if test=" status != null">
+            status,
+        </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+        <if test=" assetId != null">
+            #{assetId },
+        </if>
+        <if test=" maximumStorage != null">
+            #{maximumStorage },
+        </if>
+        <if test=" diskNumber != null">
+            #{diskNumber },
+        </if>
+        <if test=" highCache != null">
+            #{highCache },
+        </if>
+        <if test=" innerInterface != null">
+            #{innerInterface },
+        </if>
+        <if test=" raidSupport != null">
+            #{raidSupport },
+        </if>
+        <if test=" averageTransferRate != null">
+            #{averageTransferRate },
+        </if>
+        <if test=" driverNumber != null">
+            #{driverNumber },
+        </if>
+        <if test=" firmware != null">
+            #{firmware },
+        </if>
+        <if test=" osVersion != null">
+            #{osVersion },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            #{gmtModified },
+        </if>
+        <if test=" memo != null">
+            #{memo },
+        </if>
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            #{modifyUser },
+        </if>
+        <if test=" status != null">
+            #{status },
+        </if>
+    </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" assetId != null">
+            asset_id = #{assetId },
+        </if>
+        <if test=" maximumStorage != null">
+            maximum_storage = #{maximumStorage },
+        </if>
+        <if test=" diskNumber != null">
+            disk_number = #{diskNumber },
+        </if>
+        <if test=" highCache != null">
+            high_cache = #{highCache },
+        </if>
+        <if test=" innerInterface != null">
+            inner_interface = #{innerInterface },
+        </if>
+        <if test=" raidSupport != null">
+            raid_support = #{raidSupport },
+        </if>
+        <if test=" averageTransferRate != null">
+            average_transfer_rate = #{averageTransferRate },
+        </if>
+        <if test=" driverNumber != null">
+            driver_number = #{driverNumber },
+        </if>
+        <if test=" firmware != null">
+            firmware = #{firmware },
+        </if>
+        <if test=" osVersion != null">
+            os_version = #{osVersion },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+        <if test=" memo != null">
+            memo = #{memo },
+        </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            modify_user = #{modifyUser },
+        </if>
+        <if test=" status != null">
+            status = #{status },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+        <if test=" assetId != null">
+            and asset_id = #{assetId }
+        </if>
+        <if test=" maximumStorage != null">
+            and maximum_storage = #{maximumStorage }
+        </if>
+        <if test=" diskNumber != null">
+            and disk_number = #{diskNumber }
+        </if>
+        <if test=" highCache != null">
+            and high_cache = #{highCache }
+        </if>
+        <if test=" innerInterface != null">
+            and inner_interface = #{innerInterface }
+        </if>
+        <if test=" raidSupport != null">
+            and raid_support = #{raidSupport }
+        </if>
+        <if test=" averageTransferRate != null">
+            and average_transfer_rate = #{averageTransferRate }
+        </if>
+        <if test=" driverNumber != null">
+            and driver_number = #{driverNumber }
+        </if>
+        <if test=" firmware != null">
+            and firmware = #{firmware }
+        </if>
+        <if test=" osVersion != null">
+            and os_version = #{osVersion }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+        <if test=" memo != null">
+            and memo = #{memo }
+        </if>
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+        <if test=" modifyUser != null">
+            and modify_user = #{modifyUser }
+        </if>
+        <if test=" status != null">
+            and status = #{status }
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetStorageMedium" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.AssetStorageMedium">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultType="com.antiy.asset.entity.AssetStorageMedium" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
+    <select id="getByWhere" resultType="com.antiy.asset.entity.AssetStorageMedium" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+
+    <select id="getAll" resultType="com.antiy.asset.entity.AssetStorageMedium">
+        select *
+        from
+        <include refid="Table_Name"></include>
+    </select>
+
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1)
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetStorageMedium" parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+</mapper>
