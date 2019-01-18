@@ -6,9 +6,10 @@ import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.AssetComputerRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
-import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
+import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.encoder.Encode;
@@ -43,10 +44,10 @@ public class AssetController {
      * @return actionResponse
      * @throws Exception
      */
-    @ApiOperation(value = "保存全部数据总接口", notes = "传入json信息")
+    @ApiOperation(value = "保存计算机设备接口", notes = "传入json信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/save/pc", method = RequestMethod.POST)
-    public ActionResponse saveAssetPC(@RequestBody @ApiParam(value = "assetPc") AssetPCRequest assetPCRequest)
+    @RequestMapping(value = "/save/computer", method = RequestMethod.POST)
+    public ActionResponse saveAssetPC(@RequestBody @ApiParam(value = "computer") AssetComputerRequest assetPCRequest)
                                                                                                               throws Exception {
         iAssetService.saveAssetPC(assetPCRequest);
         return ActionResponse.success();
@@ -147,7 +148,6 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "根据条件导出硬件信息", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/file", method = RequestMethod.GET)
     public void export(@ApiParam(value = "query") AssetQuery assetQuery, HttpServletResponse response) throws Exception {
         iAssetService.exportData(assetQuery, response);
@@ -160,7 +160,6 @@ public class AssetController {
      * @return actionResponse
      */
     @ApiOperation(value = "导出模板", notes = "主键封装对象", produces = "application/octet-stream")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
     public void exportTemplate(@ApiParam("导出的模板类型") @Min(value = 1, message = "软件类型只能为1，2，3，4，5") @Max(value = 5, message = "软件类型只能为1，2，3，4，5") Integer type)
                                                                                                                                                              throws Exception {
@@ -258,9 +257,9 @@ public class AssetController {
      * @return 品类型号名和该品类型号资产数量的映射
      */
     @ApiOperation(value = "硬件资产按二级品类型号统计接口", notes = "无查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "assetCountResponse"), })
     @RequestMapping(value = "/count/category", method = RequestMethod.GET)
-    public Map<String, Long> countAssetByCategory() throws Exception {
+    public AssetCountResponse countAssetByCategory() throws Exception {
         return iAssetService.countCategory();
     }
 
@@ -270,9 +269,9 @@ public class AssetController {
      * @return 状态名和该状态下资产数量的映射
      */
     @ApiOperation(value = "硬件资产按状态统计接口", notes = "无查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "assetCountResponse"), })
     @RequestMapping(value = "/count/status", method = RequestMethod.GET)
-    public Map<String, Long> countAssetByStatus() throws Exception {
+    public AssetCountResponse countAssetByStatus() throws Exception {
         return iAssetService.countStatus();
     }
 
@@ -282,7 +281,7 @@ public class AssetController {
      * @return 厂商名和该厂商资产数量的映射
      */
     @ApiOperation(value = "硬件资产按厂商统计接口", notes = "无查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "assetCountResponse"), })
     @RequestMapping(value = "/count/manufacturer", method = RequestMethod.GET)
     public ActionResponse countAssetByManufacturer() throws Exception {
         return ActionResponse.success(iAssetService.countManufacturer());

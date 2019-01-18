@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.response.AssetDepartmentResponse;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +60,7 @@ public class AssetDepartmentController {
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetDepartmentResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "assetDepartment") AssetDepartmentQuery assetDepartment) throws Exception {
         return ActionResponse.success(iAssetDepartmentService.findPageAssetDepartment(assetDepartment));
@@ -72,7 +73,7 @@ public class AssetDepartmentController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetDepartmentResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     public ActionResponse queryById(@PathVariable @ApiParam(value = "assetDepartment") @Encode Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id,"id不能为空");
@@ -97,7 +98,7 @@ public class AssetDepartmentController {
     }
 
     @ApiOperation(value = "通过ID查询所有部门信息及子部门信息", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetDepartmentResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/get/{id}", method = RequestMethod.POST)
     public ActionResponse getByID(@PathVariable @ApiParam(value = "id") @Encode Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id,"id不能为空");

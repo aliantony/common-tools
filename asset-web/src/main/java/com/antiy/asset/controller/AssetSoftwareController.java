@@ -19,6 +19,7 @@ import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
+import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.ActionResponse;
@@ -180,9 +181,9 @@ public class AssetSoftwareController {
      * @return 品类型号名和该品类信号型产数量的映射
      */
     @ApiOperation(value = "软件资产按二级品类型号统计接口", notes = "无查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/category", method = RequestMethod.GET)
-    public Map<String, Long> countAssetByCategory() throws Exception {
+    public AssetCountResponse countAssetByCategory() throws Exception {
         return iAssetSoftwareService.countCategory();
     }
 
@@ -192,9 +193,9 @@ public class AssetSoftwareController {
      * @return 状态名和该状态下资产数量的映射
      */
     @ApiOperation(value = "软件资产按状态统计接口", notes = "无查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/status", method = RequestMethod.GET)
-    public Map<String, Long> countAssetByStatus() throws Exception {
+    public AssetCountResponse countAssetByStatus() throws Exception {
         return iAssetSoftwareService.countStatus();
     }
 
@@ -204,9 +205,9 @@ public class AssetSoftwareController {
      * @return 厂商名和该厂商资产数量的映射
      */
     @ApiOperation(value = "软件资产按厂商统计接口", notes = "无查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/manufacturer", method = RequestMethod.GET)
-    public Map<String, Long> countAssetByManufacturer() throws Exception {
+    public AssetCountResponse countAssetByManufacturer() throws Exception {
         return iAssetSoftwareService.countManufacturer();
     }
 

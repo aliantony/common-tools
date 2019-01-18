@@ -9,6 +9,7 @@ import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
+import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.IBaseService;
@@ -76,7 +77,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @return
      * @throws Exception
      */
-    Map<String, Long> countManufacturer() throws Exception;
+    AssetCountResponse countManufacturer() throws Exception;
 
     /**
      * 按状态统计数量
@@ -84,7 +85,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @return
      * @throws Exception
      */
-    Map<String, Long> countStatus() throws Exception;
+    AssetCountResponse countStatus() throws Exception;
 
     /**
      * 按第二级品类统计数量
@@ -92,7 +93,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @return
      * @throws Exception
      */
-    Map<String, Long> countCategory() throws Exception;
+    AssetCountResponse countCategory() throws Exception;
 
     /**
      * 软件详情查询

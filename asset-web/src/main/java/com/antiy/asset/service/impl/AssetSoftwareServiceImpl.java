@@ -32,10 +32,7 @@ import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetPortProtocolRequest;
 import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
-import com.antiy.asset.vo.response.AssetPortProtocolResponse;
-import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
-import com.antiy.asset.vo.response.AssetSoftwareLicenseResponse;
-import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.Constants;
@@ -306,29 +303,33 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    public Map<String, Long> countManufacturer() throws Exception {
+    public AssetCountResponse countManufacturer() throws Exception {
         List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<Map<String, Long>> list = assetSoftwareDao.countManufacturer(ids);
         Map result = new HashMap();
         for (Map map : list) {
             result.put(map.get("key"), map.get("value"));
         }
-        return result;
+        AssetCountResponse assetCountResponse=new AssetCountResponse();
+        assetCountResponse.setMap(result);
+        return assetCountResponse;
     }
 
     @Override
-    public Map<String, Long> countStatus() throws Exception {
+    public AssetCountResponse countStatus() throws Exception {
         List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<Map<String, Long>> list = assetSoftwareDao.countStatus(ids);
         Map<String, Long> result = new HashMap();
         for (Map map : list) {
             result.put(AssetStatusEnum.getAssetByCode((Integer) map.get("key")) + "", (Long) map.get("value"));
         }
-        return result;
+        AssetCountResponse assetCountResponse=new AssetCountResponse();
+        assetCountResponse.setMap(result);
+        return assetCountResponse;
     }
 
     @Override
-    public Map<String, Long> countCategory() throws Exception {
+    public AssetCountResponse countCategory() throws Exception {
         List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         HashMap<String, Object> map = new HashMap();
         map.put("name", "软件");
@@ -352,7 +353,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 Long sum = assetSoftwareDao.findCountByCategoryModel(assetSoftwareQuery);
                 result.put(a.getName(), sum);
             }
-            return result;
+            AssetCountResponse assetCountResponse=new AssetCountResponse();
+            assetCountResponse.setMap(result);
+            return assetCountResponse;
         }
         return null;
     }
