@@ -323,8 +323,7 @@
         core_size,
         gmt_create,
         memo,
-        create_user,
-        status
+        create_user
         )
         values
         <foreach collection="list" item="cpu" separator=",">
@@ -338,8 +337,7 @@
             #{cpu.coreSize},
             #{cpu.gmtCreate},
             #{cpu.memo},
-            #{cpu.createUser},
-            #{cpu.status}
+            #{cpu.createUser}
             )
         </foreach>
     </insert>

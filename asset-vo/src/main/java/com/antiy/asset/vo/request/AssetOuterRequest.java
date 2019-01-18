@@ -23,7 +23,7 @@ public class AssetOuterRequest extends BasicRequest {
     /**
      * 主板
      */
-    private AssetMainboradRequest              mainboard;
+    private List<AssetMainboradRequest>              mainboard;
 
     /**
      * 内存
@@ -68,11 +68,11 @@ public class AssetOuterRequest extends BasicRequest {
         this.asset = asset;
     }
 
-    public AssetMainboradRequest getMainboard() {
+    public List<AssetMainboradRequest> getMainboard() {
         return mainboard;
     }
 
-    public void setMainboard(AssetMainboradRequest mainboard) {
+    public void setMainboard(List<AssetMainboradRequest> mainboard) {
         this.mainboard = mainboard;
     }
 

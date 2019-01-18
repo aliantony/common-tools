@@ -173,7 +173,7 @@ public class ExportExcel {
                     .createExplicitListConstraint(
                         CodeUtils.getCodeArray(((ExcelField) annotationList.get(i)[0]).dictType()));
                 // 设置区域边界
-                CellRangeAddressList addressList = new CellRangeAddressList(2, 100000, i, i);
+                CellRangeAddressList addressList = new CellRangeAddressList(1, 100000, i, i);
                 XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(dvConstraint,
                     addressList);
                 // 输入非法数据时，弹窗警告框
