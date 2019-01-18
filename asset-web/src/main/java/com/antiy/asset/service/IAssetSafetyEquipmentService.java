@@ -23,7 +23,7 @@ public interface IAssetSafetyEquipmentService extends IBaseService<AssetSafetyEq
      * @param request
      * @return
      */
-    Integer saveAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception;
+    String saveAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception;
 
     /**
      * 修改
@@ -49,4 +49,11 @@ public interface IAssetSafetyEquipmentService extends IBaseService<AssetSafetyEq
      */
     PageResult<AssetSafetyEquipmentResponse> findPageAssetSafetyEquipment(AssetSafetyEquipmentQuery query) throws Exception;
 
+    /**
+     * 通过id查询方案
+     *
+     * @param id
+     * @return
+     */
+    AssetSafetyEquipmentResponse findSafetyEquipmentById(String id) throws Exception;
 }
