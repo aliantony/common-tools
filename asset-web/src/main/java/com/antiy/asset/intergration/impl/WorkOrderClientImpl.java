@@ -2,6 +2,7 @@ package com.antiy.asset.intergration.impl;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.enums.AssetLogOperationType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,7 @@ public class WorkOrderClientImpl implements WorkOrderClient {
     private BaseClient baseClient;
 
     @Override
-    @AssetLog(description = "创建工单")
+    @AssetLog(description = "创建工单",operationType = AssetLogOperationType.CREATE)
     public ActionResponse createWorkOrder(WorkOrderVO workOrderVO) {
         return (ActionResponse) baseClient.post(workOrderVO, new ParameterizedTypeReference<ActionResponse>() {
         }, createWorkOrderUrl);

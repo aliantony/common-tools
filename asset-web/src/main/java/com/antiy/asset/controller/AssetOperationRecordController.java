@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +19,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetSoftware", description = "资产操作记录")
 @RestController
-@RequestMapping("/api/v1/asset/assetoperationrecord")
+@RequestMapping("/api/v1/asset/operationrecord")
 public class AssetOperationRecordController {
 
     @Resource
@@ -33,6 +34,7 @@ public class AssetOperationRecordController {
     @ApiOperation(value = "查找资产操作历史", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:operationrecord:queryList')")
     public ActionResponse queryList(@ApiParam(value = "assetSoftware") AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
         return ActionResponse
             .success(assetOperationRecordService.findAssetOperationRecordByAssetId(assetOperationRecordQuery));

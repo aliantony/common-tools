@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,6 +36,7 @@ public class TopologyController {
      * @return actionResponse
      */
     @ApiOperation(value = "查询网络拓扑初始化信息", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:topology:queryTopologyInit')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = TopologyResponse.class) })
     @RequestMapping(value = "/query/init", method = RequestMethod.GET)
     public ActionResponse queryTopologyInit() throws Exception {
@@ -48,6 +50,7 @@ public class TopologyController {
      * @return
      */
     @ApiOperation(value = "保存网络拓扑信息", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:topology:saveTopology')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class) })
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public ActionResponse saveTopology(@RequestBody @ApiParam(value = "网络拓扑保存信息") TopologyRequest topologyRequest) throws Exception {
@@ -60,6 +63,7 @@ public class TopologyController {
      * @return
      */
     @ApiOperation(value = "查询网络拓扑信息", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:topology:queryTopology')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class) })
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public ActionResponse<String> queryTopology(String topologyType) throws Exception {

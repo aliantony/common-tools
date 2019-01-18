@@ -35,15 +35,20 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
     @ApiModelProperty("软件资产状态：1待登记，2不予登记，3待配置，4待验证，5待入网，6已入网，7待退役，8已退役")
     private Integer softwareStatus;
     /**
-     * 备注
+     * 端口描述
      */
-    @ApiModelProperty("备注")
+    @ApiModelProperty("端口描述")
     private String  memo;
     /**
      * 协议
      */
     @ApiModelProperty("协议")
     private String  protocol;
+    /**
+     * 许可密钥
+     */
+    @ApiModelProperty("许可密钥")
+    private String licenseSecretKey;
     /**
      * 端口
      */
@@ -111,4 +116,11 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
 
     }
 
+    public String getLicenseSecretKey() {
+        return licenseSecretKey;
+    }
+
+    public void setLicenseSecretKey(String licenseSecretKey) {
+        this.licenseSecretKey = licenseSecretKey;
+    }
 }

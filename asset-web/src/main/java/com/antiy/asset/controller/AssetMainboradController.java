@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.IAssetMainboradService;
@@ -33,6 +34,7 @@ public class AssetMainboradController {
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('asset:mainborad:saveSingle')")
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetMainborad") AssetMainboradRequest assetMainborad) throws Exception {
         iAssetMainboradService.saveAssetMainborad(assetMainborad);
         return ActionResponse.success();
@@ -47,6 +49,7 @@ public class AssetMainboradController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('asset:mainborad:updateSingle')")
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetMainborad") AssetMainboradRequest assetMainborad) throws Exception {
         iAssetMainboradService.updateAssetMainborad(assetMainborad);
         return ActionResponse.success();
@@ -61,6 +64,7 @@ public class AssetMainboradController {
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('asset:mainborad:queryList')")
     public ActionResponse queryList(@ApiParam(value = "assetMainborad") AssetMainboradQuery assetMainborad) throws Exception {
         return ActionResponse.success(iAssetMainboradService.findPageAssetMainborad(assetMainborad));
     }
@@ -74,6 +78,7 @@ public class AssetMainboradController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('asset:mainborad:queryById')")
     public ActionResponse queryById(@ApiParam(value = "assetMainborad") @PathVariable("id") Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetMainboradService.getById(id));
@@ -88,6 +93,7 @@ public class AssetMainboradController {
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('asset:mainborad:deleteById')")
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") @PathVariable("id") Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetMainboradService.deleteById(id));

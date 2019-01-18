@@ -20,34 +20,32 @@ import com.antiy.common.utils.SpringUtil;
  **/
 public abstract class AbstractProcessor implements Processor {
 
-    private AssetOperationRecordDao assetOperationRecordDao = (AssetOperationRecordDao) SpringUtil
-        .getBean("assetOperationRecordDao");
-
     @Override
     public void process(String assetOperationEnum, Scheme scheme) throws Exception {
+        AssetOperationRecordDao assetOperationRecordDao = (AssetOperationRecordDao) SpringUtil
+                .getBean("assetOperationRecordDao");
         if (assetOperationEnum.equals(AssetOperationTableEnum.ASSET.getCode())) {
             // --------------------------------操作记录start------------------------------
             SchemeTypeEnum codeEnum = EnumUtil.getByCode(SchemeTypeEnum.class, scheme.getType());
-            saveOperationRecord(codeEnum, scheme);
+            saveOperationRecord(codeEnum, scheme, assetOperationRecordDao);
             // --------------------------------操作记录end--------------------------------
 
             // --------------------------------工单start------------------------------
             if (scheme.getPutintoUserId() != null) {
                 WorkOrderClientImpl workOrderClient = new WorkOrderClientImpl();
                 WorkOrderVO workOrderVO = new WorkOrderVO();
-                workOrderVO.setName("准入实施工单");
+                workOrderVO.setName(codeEnum != null?codeEnum.getMsg()+"工单":RespBasicCode.PARAMETER_ERROR.getResultDes());
                 workOrderVO.setWorkLevel(scheme.getOrderLevel());
                 //准入实施
                 workOrderVO.setOrderType(8);
                 //资产管理
                 workOrderVO.setOrderSource(1);
-                workOrderVO.setContent("入网申请");
+                workOrderVO.setContent(codeEnum != null?codeEnum.getMsg()+"申请":RespBasicCode.PARAMETER_ERROR.getResultDes());
                 workOrderVO.setExecuteUserId(scheme.getPutintoUserId());
                 workOrderVO.setExecuteUserName(scheme.getPutintoUser());
                 workOrderVO.setCreateUser(1);
                 workOrderVO.setStartTime(scheme.getExpecteStartTime());
                 workOrderVO.setEndTime(scheme.getExpecteEndTime());
-                // TODO 附件
                 workOrderClient.createWorkOrder(workOrderVO);
             }
             // --------------------------------工单end--------------------------------
@@ -57,7 +55,7 @@ public abstract class AbstractProcessor implements Processor {
         }
     }
 
-    private void saveOperationRecord(CodeEnum codeEnum, Scheme scheme) throws Exception {
+    private void saveOperationRecord(CodeEnum codeEnum, Scheme scheme,AssetOperationRecordDao assetOperationRecordDao) throws Exception {
         AssetOperationRecord record = new AssetOperationRecord();
         record.setTargetObjectId(scheme.getAssetId());
         record.setTargetType(AssetOperationTableEnum.ASSET.getCode());
