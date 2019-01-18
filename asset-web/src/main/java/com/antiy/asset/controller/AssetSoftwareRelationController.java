@@ -4,17 +4,18 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.entity.AssetSoftware;
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.response.AssetSoftwareResponse;
-import com.antiy.common.encoder.Encode;
 import org.slf4j.Logger;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.IAssetSoftwareRelationService;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
+import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
@@ -40,6 +41,7 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:softwareRelation:saveSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetSoftwareRelation") @RequestBody AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
@@ -54,6 +56,7 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:softwareRelation:updateSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@ApiParam(value = "assetSoftwareRelation") AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
@@ -68,7 +71,8 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @PreAuthorize("hasAuthority('asset:softwareRelation:queryList')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareRelationResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "assetSoftwareRelation") AssetSoftwareRelationQuery assetSoftwareRelationQuery) throws Exception {
         return ActionResponse
@@ -82,7 +86,8 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @PreAuthorize("hasAuthority('asset:softwareRelation:queryById')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareRelationResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     public ActionResponse queryById(@ApiParam(value = "assetSoftwareRelation") @PathVariable("id") Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
@@ -96,6 +101,7 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
+    @PreAuthorize("hasAuthority('asset:softwareRelation:deleteById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {
@@ -110,6 +116,7 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过软件ID统计资产数量", notes = "软件ID")
+    @PreAuthorize("hasAuthority('asset:softwareRelation:countAssetBySoftId')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/countAssetBySoftId/{id}", method = RequestMethod.GET)
     public ActionResponse countAssetBySoftId(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {
@@ -124,6 +131,7 @@ public class AssetSoftwareRelationController {
      * @return actionResponse
      */
     @ApiOperation(value = "查询硬件资产关联的软件列表", notes = "资产ID")
+    @PreAuthorize("hasAuthority('asset:softwareRelation:getSoftwareByAssetId')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/getSoftwareByAssetId/{assetId}", method = RequestMethod.GET)
     public ActionResponse getSoftwareByAssetId(@ApiParam(value = "assetId") @PathVariable("assetId") @Encode String assetId) throws Exception {
@@ -138,7 +146,8 @@ public class AssetSoftwareRelationController {
      * @return 操作系统名称集合
      */
     @ApiOperation(value = "查询操作系统接口", notes = "无查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @PreAuthorize("hasAuthority('asset:softwareRelation:queryOS')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/os", method = RequestMethod.GET)
     public ActionResponse<List<String>> queryOS() throws Exception {
         return ActionResponse.success(iAssetSoftwareRelationService.findOS());

@@ -13,6 +13,7 @@ import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.response.AssetUserResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.encoder.Encode;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.IAssetUserService;
@@ -44,6 +45,7 @@ public class AssetUserController {
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:user:saveSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetUser") AssetUserRequest assetUser) throws Exception {
@@ -57,6 +59,7 @@ public class AssetUserController {
      * @throws Exception
      */
     @ApiOperation(value = "导入用户信息", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:user:importUser')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/importUser", method = RequestMethod.POST)
     public void importUser(@RequestBody @PathVariable("file") MultipartFile file) throws Exception {
@@ -73,6 +76,7 @@ public class AssetUserController {
      * @throws Exception
      */
     @ApiOperation(value = "导出用户模板", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:user:exportTemplet')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/exportTemplet", method = RequestMethod.GET)
     public void exportTemplet() throws Exception {
@@ -86,6 +90,7 @@ public class AssetUserController {
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:user:updateSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetUser") AssetUserRequest assetUser) throws Exception {
@@ -99,6 +104,7 @@ public class AssetUserController {
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
+    @PreAuthorize("hasAuthority('asset:user:queryList')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetUserResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "assetUser") AssetUserQuery assetUser) throws Exception {
@@ -112,6 +118,7 @@ public class AssetUserController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
+    @PreAuthorize("hasAuthority('asset:user:queryById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetUserResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     public ActionResponse queryById(@PathVariable @ApiParam(value = "id") @Encode String id) throws Exception {
@@ -125,6 +132,7 @@ public class AssetUserController {
      * @return actionResponse
      */
     @ApiOperation(value = "注销用户", notes = "主键封装对象")
+    @PreAuthorize("hasAuthority('asset:user:cancelUser')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/cancel/{id}", method = RequestMethod.POST)
     public ActionResponse cancelUser(@PathVariable @RequestBody @ApiParam(value = "id") @Encode String id) throws Exception {
@@ -137,6 +145,7 @@ public class AssetUserController {
      * @return 用户名集合
      */
     @ApiOperation(value = "查询下拉项的资产使用者信息", notes = "无查询条件")
+    @PreAuthorize("hasAuthority('asset:user:queryUserInAsset')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/userInAsset", method = RequestMethod.GET)
     public ActionResponse queryUserInAsset() throws Exception {
