@@ -8,10 +8,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import com.antiy.common.utils.LogUtils;
 import com.google.gson.Gson;
 
 /**
@@ -21,9 +21,9 @@ import com.google.gson.Gson;
 @Component
 @Order(1)
 public class AssetLogAop {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AssetLogAop.class);
+    private Logger            logger = LogUtils.get(this.getClass());
 
-    private static final Gson   gson   = new Gson();
+    private static final Gson gson   = new Gson();
 
     @Around("@annotation(com.antiy.asset.aop.AssetLog)")
     public Object aroundCmerchantLog(ProceedingJoinPoint point) throws Throwable {
@@ -43,12 +43,12 @@ public class AssetLogAop {
             watch.stop();
             time = watch.getTime();
         } catch (Exception e) {
-            LOGGER.error("调用的className为:{},调用方法{},请求参数为:{},返回结果为:{},日志描述:{},日志操作操作类型:{},花费的时间:{}. 发生异常", className,
+            logger.error("调用的className为:{},调用方法{},请求参数为:{},返回结果为:{},日志描述:{},日志操作操作类型:{},花费的时间:{}. 发生异常", className,
                 methodName, gson.toJson(params == null ? "" : params), "", assetLog.description(),
                 assetLog.operationType(), time, e);
             throw e;
         }
-        LOGGER.info("调用的className为:{},调用方法{},请求参数为:{},返回结果为:{},日志描述:{},日志操作操作类型:{},花费的时间:{}.", className, methodName,
+        logger.info("调用的className为:{},调用方法{},请求参数为:{},返回结果为:{},日志描述:{},日志操作操作类型:{},花费的时间:{}.", className, methodName,
             gson.toJson(params == null ? "" : params), gson.toJson(returnObj == null ? "" : returnObj),
             assetLog.description(), assetLog.operationType(), time);
         return returnObj;
