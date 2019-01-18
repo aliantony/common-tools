@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetDao;
@@ -18,6 +19,7 @@ import com.antiy.asset.vo.response.SchemeResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.encoder.AesEncoder;
 
 /**
  * <p> 方案表 服务实现类 </p>
@@ -31,22 +33,29 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Resource
     private SchemeDao                             schemeDao;
     @Resource
+    AesEncoder                                    aesEncoder;
+    @Resource
+    private AssetOperationRecordDao               assetOperationRecordDao;
+    @Resource
+    private AssetDao                              assetDao;
+    @Resource
     private BaseConverter<SchemeRequest, Scheme>  requestConverter;
     @Resource
     private BaseConverter<Scheme, SchemeResponse> responseConverter;
 
     @Override
-    public Integer saveScheme(SchemeRequest request) throws Exception {
-
+    public String saveScheme(SchemeRequest request) throws Exception {
+        Scheme scheme = requestConverter.convert(request, Scheme.class);
         Integer schemeId = null;
         if (request.getTopCategory().equals(AssetOperationTableEnum.ASSET.getCode())) {
             AssetStatusProcessor assetStatusProcessor = new AssetStatusProcessor();
             schemeId = assetStatusProcessor.changeStatus(request);
         } else if (request.getTopCategory().equals(AssetOperationTableEnum.SOFTWARE.getCode())) {
             SoftwarStatusProcessor softwarStatusProcessor = new SoftwarStatusProcessor();
-            schemeId = softwarStatusProcessor.changeStatus(request);
+            // schemeId = softwarStatusProcessor.changeStatus(request);
         }
-        return schemeId;
+        schemeDao.insert(scheme);
+        return aesEncoder.decode(scheme.getId().toString(), LoginUserUtil.getLoginUser().getPassword());
     }
 
     @Override
@@ -66,7 +75,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     }
 
     @Override
-    public SchemeResponse findSchemeById(Integer id) throws Exception {
+    public SchemeResponse findSchemeById(String id) throws Exception {
         return responseConverter.convert(super.getById(id), SchemeResponse.class);
     }
 

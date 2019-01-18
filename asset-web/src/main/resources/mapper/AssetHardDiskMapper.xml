@@ -376,8 +376,7 @@
         buy_date,
         gmt_create,
         memo,
-        create_user,
-        status
+        create_user
         )
         values
         <foreach collection="list" item="hardDisk" separator=",">
@@ -392,8 +391,7 @@
             #{hardDisk.buyDate},
             #{hardDisk.gmtCreate},
             #{hardDisk.memo},
-            #{hardDisk.createUser},
-            #{hardDisk.status}
+            #{hardDisk.createUser}
             )
         </foreach>
     </insert>

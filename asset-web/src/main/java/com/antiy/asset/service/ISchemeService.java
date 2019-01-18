@@ -23,7 +23,7 @@ public interface ISchemeService extends IBaseService<Scheme> {
      * @param request
      * @return
      */
-    Integer saveScheme(SchemeRequest request) throws Exception;
+    String saveScheme(SchemeRequest request) throws Exception;
 
     /**
      * 修改
@@ -55,6 +55,6 @@ public interface ISchemeService extends IBaseService<Scheme> {
      * @param id
      * @return
      */
-    SchemeResponse findSchemeById(Integer id) throws Exception;
+    SchemeResponse findSchemeById(String id) throws Exception;
 
 }

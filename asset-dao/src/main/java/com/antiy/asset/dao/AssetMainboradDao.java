@@ -17,4 +17,25 @@ import java.util.List;
 public interface AssetMainboradDao extends IBaseDao<AssetMainborad> {
 
     List<AssetMainborad> findListAssetMainborad(AssetMainboradQuery query) throws Exception;
+
+    /**
+     * 批量更新
+     * @param assetMainborad
+     * @return
+     */
+    Integer updateBatch(List<AssetMainborad> assetMainborad);
+
+    /**
+     * 批量插入
+     * @param assetMainborad
+     * @return
+     */
+    Integer insertBatch(List<AssetMainborad> assetMainborad);
+
+    /**
+     * 根据资产id删除主板
+     * @param assetMainborad
+     * @return
+     */
+    Integer deleteByAssetId(List<AssetMainborad> assetMainborad);
 }

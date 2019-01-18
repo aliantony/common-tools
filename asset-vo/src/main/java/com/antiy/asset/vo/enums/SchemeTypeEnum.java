@@ -33,7 +33,7 @@ public enum SchemeTypeEnum implements CodeEnum {
     public void setCode(Integer code) {
         this.code = code;
     }
-
+    @Override
     public String getMsg() {
         return msg;
     }

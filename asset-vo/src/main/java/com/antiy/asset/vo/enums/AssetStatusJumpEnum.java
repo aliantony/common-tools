@@ -65,4 +65,8 @@ public enum AssetStatusJumpEnum {
     public void setRefuseStatus(Integer refuseStatus) {
         this.refuseStatus = refuseStatus;
     }
+
+    public Integer getCode() {
+        return null;
+    }
 }
