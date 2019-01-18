@@ -37,7 +37,7 @@ public class AssetController {
     public IAssetService iAssetService;
 
     /**
-     * 保存PC接口
+     * 保存计算机设备接口
      * @param assetPCRequest
      * @return actionResponse
      * @throws Exception
