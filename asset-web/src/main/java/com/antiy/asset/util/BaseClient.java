@@ -1,4 +1,4 @@
-package com.antiy.asset.intergration;
+package com.antiy.asset.util;
 
 import javax.annotation.Resource;
 

@@ -24,7 +24,7 @@ public class ManualStartActivityRequest {
      */
     @ApiModelProperty(value = "业务Id")
     @NotBlank(message = "业务Id不能为空")
-    private String bussinessKey;
+    private String businessId;
 
     /**
      * 表单数据
@@ -45,12 +45,12 @@ public class ManualStartActivityRequest {
         this.assignee = assignee;
     }
 
-    public String getBussinessKey() {
-        return bussinessKey;
+    public String getBusinessId() {
+        return businessId;
     }
 
-    public void setBussinessKey(String bussinessKey) {
-        this.bussinessKey = bussinessKey;
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
     }
 
     public String getFormData() {
