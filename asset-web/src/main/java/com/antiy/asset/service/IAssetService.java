@@ -2,9 +2,10 @@ package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.AssetComputerRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
-import com.antiy.asset.vo.request.AssetPCRequest;
 import com.antiy.asset.vo.request.AssetRequest;
+import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.IBaseService;
@@ -144,7 +145,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      * @throws Exception
      */
-    Map<String, Long> countManufacturer() throws Exception;
+    AssetCountResponse countManufacturer() throws Exception;
 
     /**
      * 按状态统计数量
@@ -152,7 +153,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      * @throws Exception
      */
-    Map<String, Long> countStatus() throws Exception;
+    AssetCountResponse countStatus() throws Exception;
 
     /**
      * 按第二级品类统计数量
@@ -160,14 +161,15 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      * @throws Exception
      */
-    Map<String, Long> countCategory() throws Exception;
+    AssetCountResponse countCategory() throws Exception;
 
     /**
      * 保存PC
      * @return
      * @throws Exception
+     * @param assetPCRequest
      */
-    Integer saveAssetPC(AssetPCRequest assetPCRequest) throws Exception;
+    Integer saveAssetPC(AssetComputerRequest assetPCRequest) throws Exception;
 
     /**
      * 通过ID列表查询资产列表

@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.response.SchemeResponse;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.*;
 

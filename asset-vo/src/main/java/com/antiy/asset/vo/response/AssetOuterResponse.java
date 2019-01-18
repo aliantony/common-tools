@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.asset.vo.request.AssetStorageMediumRequest;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
@@ -9,46 +10,57 @@ public class AssetOuterResponse {
     /**
      * 资产主表
      */
+    @ApiModelProperty("资产主表")
     private AssetResponse                  asset;
     /**
      * CPU
      */
+    @ApiModelProperty("CPU")
     private List<AssetCpuResponse>         assetCpu;
     /**
      * 网卡
      */
+    @ApiModelProperty("网卡")
     private List<AssetNetworkCardResponse> assetNetworkCard;
     /**
      * 内存
      */
+    @ApiModelProperty("内存")
     private List<AssetMemoryResponse>      assetMemory;
     /**
      * 主板
      */
+    @ApiModelProperty("主板")
     private List<AssetMainboradResponse>   assetMainborad;
     /**
      * 硬盘
      */
+    @ApiModelProperty("硬盘")
     private List<AssetHardDiskResponse>    assetHardDisk;
     /**
      * 网络设备
      */
+    @ApiModelProperty("网络设备")
     private AssetNetworkEquipmentResponse  assetNetworkEquipment;
     /**
      * 安全设备
      */
+    @ApiModelProperty("安全设备")
     private AssetSafetyEquipmentResponse   assetSafetyEquipment;
     /**
      * 存储介质
      */
+    @ApiModelProperty("存储介质")
     private AssetStorageMediumResponse      assetStorageMedium;
     /**
      * 软件信息
      */
+    @ApiModelProperty("软件信息")
     private List<AssetSoftwareResponse>    assetSoftware;
     /**
      * 资产软件关系
      */
+    @ApiModelProperty("资产软件关系")
     private List<AssetSoftwareRelationResponse> assetSoftwareRelationList;
 
     public AssetResponse getAsset() {

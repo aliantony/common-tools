@@ -108,7 +108,7 @@ public class AssetGroupController {
      * @return 资产组名称集合
      */
     @ApiOperation(value = "查询下拉项的资产组信息", notes = "无查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/groupInfo", method = RequestMethod.GET)
     public ActionResponse<List<SelectResponse>> queryGroupInfo() throws Exception {
         return ActionResponse.success(iAssetGroupService.queryGroupInfo());
