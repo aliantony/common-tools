@@ -2,7 +2,6 @@ package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.AssetComputerRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
@@ -13,9 +12,7 @@ import com.antiy.common.base.PageResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p> 资产主表 服务类 </p>
@@ -31,7 +28,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @param request
      * @return
      */
-    Integer saveAsset(AssetRequest request) throws Exception;
+    Integer saveAsset(AssetOuterRequest request) throws Exception;
 
     /**
      * 修改
@@ -92,13 +89,6 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     Integer changeStatusById(String id, Integer targetStatus) throws Exception;
 
-    /**
-     * 保存全部信息
-     *
-     * @param map
-     * @return
-     */
-    Integer saveAllAsset(HashMap<String, Object> map) throws Exception;
 
     /**
      * 批量保存
@@ -163,13 +153,6 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     AssetCountResponse countCategory() throws Exception;
 
-    /**
-     * 保存PC
-     * @return
-     * @throws Exception
-     * @param assetPCRequest
-     */
-    Integer saveAssetPC(AssetComputerRequest assetPCRequest) throws Exception;
 
     /**
      * 通过ID列表查询资产列表

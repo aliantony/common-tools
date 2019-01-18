@@ -6,7 +6,6 @@ import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.AssetComputerRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
@@ -24,7 +23,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author zhangyajun
@@ -38,20 +36,6 @@ public class AssetController {
     @Resource
     public IAssetService iAssetService;
 
-    /**
-     * 保存计算机设备接口
-     * @param assetPCRequest
-     * @return actionResponse
-     * @throws Exception
-     */
-    @ApiOperation(value = "保存计算机设备接口", notes = "传入json信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/save/computer", method = RequestMethod.POST)
-    public ActionResponse saveAssetPC(@RequestBody @ApiParam(value = "computer") AssetComputerRequest assetPCRequest)
-                                                                                                              throws Exception {
-        iAssetService.saveAssetPC(assetPCRequest);
-        return ActionResponse.success();
-    }
 
     /**
      * 保存
@@ -62,10 +46,9 @@ public class AssetController {
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetRequest asset)
+    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset)
                                                                                                                   throws Exception {
-        iAssetService.saveAsset(asset);
-        return ActionResponse.success();
+        return ActionResponse.success(iAssetService.saveAsset(asset));
     }
 
     /**
