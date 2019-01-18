@@ -97,20 +97,20 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
         assetSoftwareDao.insert(assetSoftware);
         Integer sid = assetSoftware.getId();
-        license.setSoftwareId(sid);
-        protocol.setAssetSoftId(sid);
-        assetSoftwareLicenseDao.insert(license);
-        assetPortProtocolDaoDao.insert(protocol);
-        if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
-            String[] assetIds = request.getAssetIds();
-            for (String s : assetIds) {
-                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-                assetSoftwareRelation.setSoftwareId(sid);
-                assetSoftwareRelation.setAssetId(Integer.parseInt(s));
-                assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
-                assetSoftwareRelationDao.insert(assetSoftwareRelation);
-            }
-        }
+//        license.setSoftwareId(sid);
+//        protocol.setAssetSoftId(sid);
+//        assetSoftwareLicenseDao.insert(license);
+//        assetPortProtocolDaoDao.insert(protocol);
+//        if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
+//            String[] assetIds = request.getAssetIds();
+//            for (String s : assetIds) {
+//                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+//                assetSoftwareRelation.setSoftwareId(sid);
+//                assetSoftwareRelation.setAssetId(Integer.parseInt(s));
+//                assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+//                assetSoftwareRelationDao.insert(assetSoftwareRelation);
+//            }
+//        }
         // TODO: 2019/1/14 工作流
         return sid;
     }
