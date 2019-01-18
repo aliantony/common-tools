@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +49,7 @@ public class FileController {
      * @return actionResponse
      */
     @ApiOperation(value = "文件上传接口", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:file:upload')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/file/upload", method = RequestMethod.POST, consumes = "multipart/*", headers = "content-type=multipart/form-data")
     public ActionResponse upload(@ApiParam(value = "fileList") List<MultipartFile> fileList) throws Exception {
@@ -75,6 +77,7 @@ public class FileController {
      * @throws Exception
      */
     @ApiOperation(value = "文件下载", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:file:download')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/file/download", method = RequestMethod.GET)
     public ActionResponse download(@ApiParam(value = "url地址") String url, String fileName, HttpServletResponse response)
