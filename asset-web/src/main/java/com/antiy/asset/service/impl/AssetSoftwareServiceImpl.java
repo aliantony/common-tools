@@ -305,7 +305,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public AssetCountResponse countManufacturer() throws Exception {
         List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        List<Map<String, Long>> list = assetSoftwareDao.countManufacturer(ids);
+        List<Map<String, Long>> list = assetSoftwareDao.countManufacturer(null);
         Map result = new HashMap();
         for (Map map : list) {
             result.put(map.get("key"), map.get("value"));
@@ -318,10 +318,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public AssetCountResponse countStatus() throws Exception {
         List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        List<Map<String, Long>> list = assetSoftwareDao.countStatus(ids);
+        List<Map<String, Long>> list = assetSoftwareDao.countStatus(null);
         Map<String, Long> result = new HashMap();
         for (Map map : list) {
-            result.put(AssetStatusEnum.getAssetByCode((Integer) map.get("key")) + "", (Long) map.get("value"));
+            AssetStatusEnum assetStatusEnum=AssetStatusEnum.getAssetByCode((Integer) map.get("key"));
+            result.put(assetStatusEnum==null?"":assetStatusEnum.getMsg(), (Long) map.get("value"));
         }
         AssetCountResponse assetCountResponse=new AssetCountResponse();
         assetCountResponse.setMap(result);
