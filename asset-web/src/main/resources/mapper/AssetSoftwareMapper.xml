@@ -413,8 +413,8 @@
             <if test=" categoryModel != null">
                 and category_model = #{categoryModel }
             </if>
-            <if test=" name != null">
-                and name = #{name }
+            <if test=" name != null and name != '' ">
+                and name like #{name }
             </if>
             <if test=" version != null">
                 and version = #{version }
