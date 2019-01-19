@@ -24,7 +24,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "Scheme", description = "方案表")
 @RestController
-@RequestMapping("/api/v1/asset/scheme")
+@RequestMapping("/api/v1/asset/semche")
 public class SchemeController {
     private static final Logger logger = LogUtils.get();
 
@@ -59,7 +59,7 @@ public class SchemeController {
         return ActionResponse.success(iSchemeService.updateScheme(schemeRequest));
     }
 
-    /**
+    /**user/query/list
      * 批量查询
      *
      * @param schemeQuery

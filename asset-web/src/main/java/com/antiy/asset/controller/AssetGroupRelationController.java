@@ -38,7 +38,7 @@ public class AssetGroupRelationController {
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    @PreAuthorize(value="hasAuthority('asset:groupRelation:saveSingle')")
+    @PreAuthorize(value="hasAuthority('asset:grouprelation:saveSingle')")
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetGroupRelation") AssetGroupRelationRequest assetGroupRelation) throws Exception {
         iAssetGroupRelationService.saveAssetGroupRelation(assetGroupRelation);
         return ActionResponse.success();
@@ -53,7 +53,7 @@ public class AssetGroupRelationController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.PUT)
-    @PreAuthorize(value="hasAuthority('asset:groupRelation:updateSingle')")
+    @PreAuthorize(value="hasAuthority('asset:grouprelation:updateSingle')")
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetGroupRelation") AssetGroupRelationRequest assetGroupRelation) throws Exception {
         iAssetGroupRelationService.updateAssetGroupRelation(assetGroupRelation);
         return ActionResponse.success();
@@ -68,7 +68,7 @@ public class AssetGroupRelationController {
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    @PreAuthorize(value="hasAuthority('asset:groupRelation:queryList')")
+    @PreAuthorize(value="hasAuthority('asset:grouprelation:queryList')")
     public ActionResponse queryList(@RequestBody @ApiParam(value = "assetGroupRelation") AssetGroupRelationQuery assetGroupRelation) throws Exception {
         return ActionResponse.success(iAssetGroupRelationService.findPageAssetGroupRelation(assetGroupRelation));
     }
@@ -82,7 +82,7 @@ public class AssetGroupRelationController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    @PreAuthorize(value="hasAuthority('asset:groupRelation:queryById')")
+    @PreAuthorize(value="hasAuthority('asset:grouprelation:queryById')")
     public ActionResponse queryById(@RequestBody @ApiParam(value = "assetGroupRelation") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetGroupRelationService.getById(query.getPrimaryKey()));
@@ -97,7 +97,7 @@ public class AssetGroupRelationController {
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.DELETE)
-    @PreAuthorize(value="hasAuthority('asset:groupRelation:deleteById')")
+    @PreAuthorize(value="hasAuthority('asset:grouprelation:deleteById')")
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetGroupRelationService.deleteById(query.getPrimaryKey()));

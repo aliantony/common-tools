@@ -41,7 +41,7 @@ public class AssetController {
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:asset:saveSingle')")
+//    @PreAuthorize(value = "hasAuthority('asset:asset:saveSingle')")
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset) throws Exception {
         iAssetService.saveAsset(asset);
         return ActionResponse.success();
@@ -56,7 +56,7 @@ public class AssetController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:asset:updateSingle')")
+//    @PreAuthorize(value = "hasAuthority('asset:asset:updateSingle')")
     public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetRequest asset) throws Exception {
         iAssetService.updateAsset(asset);
         return ActionResponse.success();
@@ -71,7 +71,7 @@ public class AssetController {
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
+//    @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
     public ActionResponse queryList(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
@@ -85,7 +85,7 @@ public class AssetController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
-    @PreAuthorize(value = "hasAuthority('asset:asset:queryById')")
+//    @PreAuthorize(value = "hasAuthority('asset:asset:queryById')")
     public ActionResponse queryById(@ApiParam(value = "asset") @PathVariable("id") @Encode String id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetService.getByAssetId(id));
@@ -100,7 +100,7 @@ public class AssetController {
     @ApiOperation(value = "资产变更", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/change/asset", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:asset:changeAsset')")
+//    @PreAuthorize(value = "hasAuthority('asset:asset:changeAsset')")
     public ActionResponse updateSingle(@RequestBody(required = false) AssetOuterRequest assetOuterRequest) throws Exception {
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息b不能为空");
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
@@ -117,7 +117,7 @@ public class AssetController {
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:asset:deleteById')")
+//    @PreAuthorize(value = "hasAuthority('asset:asset:deleteById')")
     public ActionResponse deleteById(@ApiParam(value = "query") @PathVariable("id") @Encode String id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetService.deleteById(id));
