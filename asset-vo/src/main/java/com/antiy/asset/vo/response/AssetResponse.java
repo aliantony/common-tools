@@ -2,6 +2,8 @@ package com.antiy.asset.vo.response;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.List;
+
 /**
  * <p> AssetResponse 响应对象 </p>
  *
@@ -26,6 +28,11 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("资产组")
     private String  assetGroup;
     /**
+     * 资产组列表
+     */
+    @ApiModelProperty("资产组列表")
+    private List<AssetGroupResponse> assetGroups;
+    /**
      * ip
      */
     @ApiModelProperty("ip")
@@ -49,7 +56,7 @@ public class AssetResponse extends BaseResponse {
      * 品类名称
      */
     @ApiModelProperty("品类名称")
-    private String categoryModelName;
+    private String  categoryModelName;
     /**
      * 厂商
      */
@@ -68,7 +75,7 @@ public class AssetResponse extends BaseResponse {
     /**
      * 系统位数
      */
-    @ApiModelProperty("")
+    @ApiModelProperty("系统位数")
     private Integer systemBit;
 
     /**
@@ -84,7 +91,7 @@ public class AssetResponse extends BaseResponse {
     /**
      * 责任人主键
      */
-    @ApiModelProperty("")
+    @ApiModelProperty("责任人主键")
     private Integer responsibleUserId;
     /**
      * 联系电话
@@ -138,6 +145,19 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("保修期")
     private Long    warranty;
+    /**
+     * 资产准入状态
+     */
+    @ApiModelProperty("资产准入状态")
+    private Integer assetdmittanceStatus;
+
+    public Integer getAssetdmittanceStatus() {
+        return assetdmittanceStatus;
+    }
+
+    public void setAssetdmittanceStatus(Integer assetdmittanceStatus) {
+        this.assetdmittanceStatus = assetdmittanceStatus;
+    }
 
     public String getCategoryModelName() {
         return categoryModelName;
@@ -339,4 +359,11 @@ public class AssetResponse extends BaseResponse {
         this.warranty = warranty;
     }
 
+    public List<AssetGroupResponse> getAssetGroups() {
+        return assetGroups;
+    }
+
+    public void setAssetGroups(List<AssetGroupResponse> assetGroups) {
+        this.assetGroups = assetGroups;
+    }
 }

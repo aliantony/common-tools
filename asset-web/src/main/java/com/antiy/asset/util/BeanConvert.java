@@ -122,7 +122,7 @@ public class BeanConvert {
             copier.copy(o, o2, new Converter() {
                 @Override
                 public Object convert(Object o, Class aClass, Object o1) {
-                    if (rule.contains(o1)) {
+                    if ( o != null && rule.contains(o1)) {
                         return o.toString();
                     }
                     return o;

@@ -251,4 +251,16 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+
+    <select id="queryByAssetId" parameterType="java.lang.Integer" resultType="com.antiy.asset.entity.AssetGroup">
+        select
+            b.id,
+            b.name
+        from
+            asset_group_relation a
+            left join asset_group b on a.asset_group_id = b.id
+        where
+            asset_id = #{id}
+            and b.status = 1
+    </select>
 </mapper>

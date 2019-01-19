@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> 资产主表 </p>
@@ -49,7 +50,7 @@ public class Asset extends BaseEntity {
     /**
      * 品类名称
      */
-    private String           categoryModelName;
+    private String            categoryModelName;
     /**
      * 厂商
      */
@@ -191,6 +192,10 @@ public class Asset extends BaseEntity {
      * mac
      */
     private String            mac;
+    /**
+     * 资产准入状态
+     */
+    private Integer           assetdmittanceStatus;
 
     public String getAssetGroups() {
         return assetGroups;
@@ -559,5 +564,11 @@ public class Asset extends BaseEntity {
         this.categoryModel = categoryModel;
     }
 
+    public Integer getAssetdmittanceStatus() {
+        return assetdmittanceStatus;
+    }
 
+    public void setAssetdmittanceStatus(Integer assetdmittanceStatus) {
+        this.assetdmittanceStatus = assetdmittanceStatus;
+    }
 }

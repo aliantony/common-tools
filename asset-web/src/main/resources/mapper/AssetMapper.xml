@@ -628,6 +628,9 @@
                 #{item}
             </foreach>
         </if>
+        <if test=" admittanceStatus != null">
+            and admittance_status = #{admittanceStatus}
+        </if>
         <if test=" manufacturer != null">
             and manufacturer = #{manufacturer}
         </if>

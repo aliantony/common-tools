@@ -129,6 +129,12 @@ public class AssetQuery extends ObjectQuery {
     @ApiModelProperty(value = "软件资产Id")
     private String        softwareId;
 
+    /**
+     * 资产准入状态
+     */
+    @ApiModelProperty("资产准入状态")
+    private Integer admittanceStatus;
+
     public String getSoftwareId() {
         return softwareId;
     }
@@ -303,5 +309,13 @@ public class AssetQuery extends ObjectQuery {
 
     public void setTimeType(Integer timeType) {
         this.timeType = timeType;
+    }
+
+    public Integer getAdmittanceStatus() {
+        return admittanceStatus;
+    }
+
+    public void setAdmittanceStatus(Integer admittanceStatus) {
+        this.admittanceStatus = admittanceStatus;
     }
 }

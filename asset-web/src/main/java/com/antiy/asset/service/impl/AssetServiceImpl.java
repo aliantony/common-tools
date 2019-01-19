@@ -84,6 +84,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetUserDao                              assetUserDao;
     @Resource
+    private AssetGroupRelationDao                     assetGroupRelationDaoDao;
+    @Resource
     private ExcelDownloadUtil                         excelDownloadUtil;
     @Resource
     private AssetEntityConvert                        assetEntityConvert;
@@ -956,8 +958,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<Asset> assetList = assetDao.findListAsset(assetQuery);
         BusinessExceptionUtils.isEmpty(assetList, "资产不存在");
         Asset asset = assetList.get(0);
+        // 查询资产组
         param.put("assetId", asset.getId());
-        assetOuterResponse.setAsset(BeanConvert.convertBean(asset, AssetResponse.class));
+        AssetResponse assetResponse = BeanConvert.convertBean(asset, AssetResponse.class);
+        assetResponse.setAssetGroups(BeanConvert.convert(assetGroupRelationDaoDao.queryByAssetId(asset.getId()), AssetGroupResponse.class));
+        assetOuterResponse.setAsset(assetResponse);
         // CPU
         assetOuterResponse.setAssetCpu(BeanConvert.convert(assetCpuDao.getByWhere(param), AssetCpuResponse.class));
         // 网卡
@@ -1225,7 +1230,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setServiceLife(entity.getDueTime());
             asset.setWarranty(entity.getWarranty());
             asset.setDescrible(entity.getDescription());
-            asset.setMemo (entity.getDescription ());
+            asset.setMemo(entity.getDescription());
             asset.setOperationSystem(entity.getOperationSystem());
             assetDao.insert(asset);
             Integer id = asset.getId();
