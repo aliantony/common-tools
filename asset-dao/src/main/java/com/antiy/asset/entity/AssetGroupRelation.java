@@ -38,6 +38,10 @@ public class AssetGroupRelation extends BaseEntity {
      */
     private Integer           createUser;
     /**
+     * 创建人名字
+     */
+    private String            createUserName;
+    /**
      * 修改人
      */
     private Integer           modifyUser;
@@ -104,6 +108,14 @@ public class AssetGroupRelation extends BaseEntity {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getCreateUserName() {
+        return createUserName;
+    }
+
+    public void setCreateUserName(String createUserName) {
+        this.createUserName = createUserName;
     }
 
     @Override
