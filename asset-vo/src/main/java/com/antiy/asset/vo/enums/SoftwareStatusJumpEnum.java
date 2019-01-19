@@ -4,7 +4,7 @@ package com.antiy.asset.vo.enums;
  * 软件状态跃迁
  *
  * @author zhangyajun
- * @create 2019-01-15 16:13
+ * @create 2019-01-19 10:29
  **/
 public enum SoftwareStatusJumpEnum {
                                     WATI_REGSIST(1, 3, 2), WAIT_ANALYZE(3, 4, 1);
