@@ -1,12 +1,7 @@
 package com.antiy.asset.controller;
 
-import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.templet.AssetEntity;
-import com.antiy.asset.templet.ImportResult;
-import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.AssetComputerRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
@@ -23,7 +18,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -157,28 +151,6 @@ public class AssetController {
         iAssetService.exportTemplate(type);
     }
 
-    /**
-     * 导入文件
-     *
-     * @param multipartFile
-     * @return actionResponse
-     */
-    @ApiOperation(value = "导入文件", notes = "主键封装对象")
-    @RequestMapping(value = "/import/file", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:asset:exportFile')")
-    public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws Exception {
-        ImportResult<Asset> importResult = ExcelUtils.importExcelFromClient(AssetEntity.class, multipartFile, 1, 0);
-        List<Asset> list = importResult.getDataList();
-        // List<Object> asset = BeanConvert.convert(list, Asset.class);
-        Integer successNum = iAssetService.batchSave(list);
-        return ActionResponse.success(successNum);
-    }
-
-    private List<Asset> transferList(List<Object> objects) {
-        List<Asset> assets = new ArrayList<>();
-        objects.forEach(x -> assets.add((Asset) x));
-        return assets;
-    }
 
     /**
      * 批量修改资产状态
