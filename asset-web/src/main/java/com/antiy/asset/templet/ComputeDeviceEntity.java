@@ -27,6 +27,11 @@ public class ComputeDeviceEntity {
     private String  manufacturer;
 
     /**
+     * 资产组
+     */
+    @ExcelField(value = "asset_group", align = 1, title = "资产组",type =1)
+    private String            assetGroup;
+    /**
      * 序列号
      */
     @ExcelField(value = "serial", align = 1, title = "序列号")
@@ -35,19 +40,19 @@ public class ComputeDeviceEntity {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者")
+    @ExcelField(value = "user", align = 1, title = "使用者",type =1)
     private String  user;
 
     /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话")
+    @ExcelField(value = "telephone", align = 1, title = "联系电话",type =1)
     private String  telephone;
 
     /**
      * 邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱")
+    @ExcelField(value = "email", align = 1, title = "邮箱",type =1)
     private String  email;
 
     /**
@@ -294,6 +299,14 @@ public class ComputeDeviceEntity {
      */
     @ExcelField(value = "network_default_gateway", align = 1, title = "网卡默认网关")
     private String  networkDefaultGateway;
+
+    public String getAssetGroup() {
+        return assetGroup;
+    }
+
+    public void setAssetGroup(String assetGroup) {
+        this.assetGroup = assetGroup;
+    }
 
     public Integer getOrderNumber() {
         return orderNumber;
