@@ -263,7 +263,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/computer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importPc')")
-    public ActionResponse<String> importPc(@ApiParam(value = "file") MultipartFile file) throws Exception {
+    public ActionResponse importPc(@ApiParam(value = "file") MultipartFile file) throws Exception {
 
         return ActionResponse.success(iAssetService.importPc(file));
     }

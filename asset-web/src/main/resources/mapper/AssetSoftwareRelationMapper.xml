@@ -10,6 +10,7 @@
         <result column="software_status" property="softwareStatus"/>
         <result column="protocol" property="protocol"/>
         <result column="port" property="port"/>
+        <result column="install_type" property="installType"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
@@ -298,7 +299,7 @@
         WHERE
             asset_id = #{assetId}
             and asoft.id is not null
-            AND asoftrel.software_status = 1
+            AND asoftrel.status = 1
     </select>
 
     <select id="countAssetBySoftId" resultType="int" parameterType="int">
@@ -385,4 +386,22 @@
             #{softwareId}
         </foreach>
     </update>
+
+    <select id="getReleationByAssetId" resultType="com.antiy.asset.entity.AssetSoftwareRelation" parameterType="java.lang.Integer">
+        select
+            a.id,
+            a.asset_id as assetId,
+            a.software_id as softwareId,
+            a.port,
+            a.protocol,
+            a.software_status as softwarestatus,
+            b.license_secret_key as licenseSecretKey,
+            a.memo
+        from
+            asset_software_relation a left join asset_software_license b on a.id = b.software_id
+        where
+	        a.asset_id = #{id}
+	        and a.status = 1
+	        and b.status = 1
+    </select>
 </mapper>

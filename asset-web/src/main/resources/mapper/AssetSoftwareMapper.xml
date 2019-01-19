@@ -485,12 +485,17 @@
             </if>
         </where>
     </select>
-    <select id="countManufacturer" resultMap="ManufacturerResultMap">
-        select manufacturer, count(manufacturer) num from
-        <include refid="Table_Name"></include>
-        where status=1
+    <select id="countManufacturer" resultMap="ManufacturerResultMap" parameterType="java.util.List">
+        select t3.manufacturer, count(t3.manufacturer) num from asset t1 inner join asset_software_relation t2 on
+        t1.id=t2.asset_id
+        inner join asset_software t3 on t3.id = t2.software_id
+        and t3.software_status != 8
+        and t2.status =1
+        and t1.status =1
+        and t1.asset_status!=8
+        where
         <if test="areaIds != null and areaIds.size() > 0">
-            and area_id in
+            t1.area_id in
             <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
                 #{areaId}
             </foreach>
@@ -498,39 +503,47 @@
         GROUP BY manufacturer
     </select>
 
-    <select id="countStatus" resultMap="StatusResultMap">
-        select software_status, count(software_status) num from
-        <include refid="Table_Name"></include>
-        where status=1
+    <select id="countStatus" resultMap="StatusResultMap" parameterType="java.util.List">
+        select t3.software_status, count(t3.software_status) num from asset t1 inner join asset_software_relation t2 on
+        t1.id=t2.asset_id
+        inner join asset_software t3 on t3.id = t2.software_id
+        and t3.software_status != 8
+        and t2.status =1
+        and t1.status =1
+        and t1.asset_status!=8
+        where
         <if test="areaIds != null and areaIds.size() > 0">
-            and area_id in
+            t1.area_id in
             <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
                 #{areaId}
             </foreach>
         </if>
         GROUP BY software_status
-
     </select>
 
     <select id="findCountByCategoryModel" resultType="java.lang.Long"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select count(1) count
-        from
-        <include refid="Table_Name"></include>
+        from asset t1 inner join asset_software_relation t2 on
+        t1.id=t2.asset_id
+        inner join asset_software t3 on t3.id = t2.software_id
+        and t3.software_status != 8
+        and t2.status =1
+        and t1.status =1
+        and t1.asset_status!=8
         where 1 = 1
         <if test=" categoryModels != null ">
-            and category_model in
+            and t3.category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
         </if>
         <if test=" areaIds != null ">
-            and area_id in
+            and t1.area_id in
             <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
         </if>
-        and status=1
     </select>
 
 </mapper>

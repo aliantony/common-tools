@@ -1,11 +1,15 @@
 package com.antiy.asset.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
+import com.antiy.common.encoder.Encode;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.cglib.core.Converter;
 
 /**
  * Bean转换
@@ -96,7 +100,15 @@ public class BeanConvert {
         if (target == null || target.isEmpty()) {
             return null;
         }
-        BeanCopier copier = BeanCopier.create(target.get(0).getClass(), c2, false);
+        BeanCopier copier = BeanCopier.create(target.get(0).getClass(), c2, true);
+        Field[] fields = c2.getDeclaredFields();
+        List<String> rule = Lists.newArrayList();
+        Arrays.asList(fields).stream().forEach(field -> {
+            Encode encode = field.getAnnotation(Encode.class);
+            if (encode != null) {
+                rule.add("set" + StringUtils.capitalize(field.getName()));
+            }
+        });
         List<T> list = Lists.newArrayList();
         T o2 = null;
         for (Object o : target) {
@@ -107,7 +119,15 @@ public class BeanConvert {
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-            copier.copy(o, o2, null);
+            copier.copy(o, o2, new Converter() {
+                @Override
+                public Object convert(Object o, Class aClass, Object o1) {
+                    if ( o != null && rule.contains(o1)) {
+                        return o.toString();
+                    }
+                    return o;
+                }
+            });
             list.add(o2);
         }
         return list;

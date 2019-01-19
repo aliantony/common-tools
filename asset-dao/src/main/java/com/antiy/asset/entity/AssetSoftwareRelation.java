@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> 资产软件关系信息 </p>
@@ -31,6 +32,14 @@ public class AssetSoftwareRelation extends BaseEntity {
      * 端口
      */
     private String  port;
+    /**
+     * 许可密钥
+     */
+    private String licenseSecretKey;
+    /**
+     * 安装方式1人工2自动
+     */
+    private Integer installType;
     /**
      * 创建时间
      */
@@ -92,6 +101,14 @@ public class AssetSoftwareRelation extends BaseEntity {
         return port;
     }
 
+    public Integer getInstallType() {
+        return installType;
+    }
+
+    public void setInstallType(Integer installType) {
+        this.installType = installType;
+    }
+
     public void setPort(String port) {
         this.port = port;
     }
@@ -142,6 +159,14 @@ public class AssetSoftwareRelation extends BaseEntity {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getLicenseSecretKey() {
+        return licenseSecretKey;
+    }
+
+    public void setLicenseSecretKey(String licenseSecretKey) {
+        this.licenseSecretKey = licenseSecretKey;
     }
 
     @Override

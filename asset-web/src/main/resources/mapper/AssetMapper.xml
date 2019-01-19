@@ -628,6 +628,9 @@
                 #{item}
             </foreach>
         </if>
+        <if test=" admittanceStatus != null">
+            and admittance_status = #{admittanceStatus}
+        </if>
         <if test=" manufacturer != null">
             and manufacturer = #{manufacturer}
         </if>
@@ -781,7 +784,7 @@
     <select id="pulldownManufacturer" resultType="string">
         select distinct manufacturer from
         <include refid="Table_Name"></include>
-        status = 1
+        where status = 1
     </select>
 
     <select id="findCountByCategoryModel" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
@@ -867,7 +870,7 @@
         </if>
     </select>
 
-    <select id="countManufacturer" resultMap="ManufacturerResultMap">
+    <select id="countManufacturer" resultMap="ManufacturerResultMap"  parameterType="java.util.List" >
         select manufacturer, count(manufacturer) num from
         <include refid="Table_Name"></include>
         where status=1
@@ -880,7 +883,7 @@
         GROUP BY manufacturer
     </select>
 
-    <select id="countStatus" resultMap="StatusResultMap">
+    <select id="countStatus" resultMap="StatusResultMap"  parameterType="java.util.List">
         select asset_status, count(asset_status) num from
         <include refid="Table_Name"></include>
         where status=1

@@ -48,12 +48,17 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
      * 许可密钥
      */
     @ApiModelProperty("许可密钥")
-    private String licenseSecretKey;
+    private String  licenseSecretKey;
     /**
      * 端口
      */
     @ApiModelProperty("端口")
     private String  port;
+    /**
+     * 安装方式1人工2自动
+     */
+    @ApiModelProperty("安装方式")
+    private Integer installType;
 
     public String getId() {
         return id;
@@ -109,6 +114,14 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
 
     public void setPort(String port) {
         this.port = port;
+    }
+
+    public Integer getInstallType() {
+        return installType;
+    }
+
+    public void setInstallType(Integer installType) {
+        this.installType = installType;
     }
 
     @Override

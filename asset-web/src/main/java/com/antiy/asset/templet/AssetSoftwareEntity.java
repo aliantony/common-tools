@@ -26,7 +26,7 @@ public class AssetSoftwareEntity {
     /**
      * 序列号
      */
-    @ExcelField(value = "serial", align = 1, title = "序列号", type = 1)
+    @ExcelField(value = "serial", align = 1, title = "序列号", type = 0)
     private String            serial;
 
     /**
@@ -42,7 +42,7 @@ public class AssetSoftwareEntity {
     private String            operationSystem;
 
     /**
-     * 软件品类
+     * 软件品类 // TODO: 2019/1/19  码表
      */
     @ExcelField(value = "category", align = 1, title = "软件品类", type = 1)
     private Integer           category;

@@ -40,12 +40,12 @@ public class StorageDeviceEntity {
     /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话",type = 1)
+    @ExcelField(value = "telephone", align = 1, title = "联系电话",type = 0)
     private String  telephone;
     /**
      * 邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱",type = 1)
+    @ExcelField(value = "email", align = 1, title = "邮箱",type = 0)
     private String  email;
     /**
      * 资产组
@@ -85,7 +85,7 @@ public class StorageDeviceEntity {
     /**
      * high_cache
      */
-    @ExcelField(value = "high_cache", align = 1, title = "RAID支持")
+    @ExcelField(value = "high_cache", align = 1, title = "高速缓存")
     private String  highCache;
     /**
      * 平均传输率
@@ -95,7 +95,7 @@ public class StorageDeviceEntity {
     /**
      * 固件
      */
-    @ExcelField(value = "firmware", align = 1, title = "固件")
+    @ExcelField(value = "firmware", align = 1, title = "固件版本")
     private String  firmware;
     /**
      * OS版本

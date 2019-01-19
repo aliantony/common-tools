@@ -85,4 +85,11 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer changeSoftwareStatus(Map<String, Object> map) throws Exception;
+
+    /**
+     * 查询资产软件关系表
+     * @param id
+     * @return
+     */
+    List<AssetSoftwareRelation> getReleationByAssetId(Integer id);
 }

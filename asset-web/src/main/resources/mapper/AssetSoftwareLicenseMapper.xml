@@ -302,4 +302,10 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <delete id="deleteByAssetId" parameterType="java.lang.Integer">
+        delete from
+            asset_software_license a
+        where
+            exists ( select 1 from asset_software_relation b where b.id = a.software_id and b.asset_id = 2 )
+    </delete>
 </mapper>

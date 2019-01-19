@@ -26,7 +26,7 @@ public class AssetMemoryResponse extends BaseResponse {
      * 内存主频(MHz)
      */
     @ApiModelProperty("内存主频(MHz)")
-    private Integer frequency;
+    private Double frequency;
     /**
      * 插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM
      */
@@ -69,11 +69,11 @@ public class AssetMemoryResponse extends BaseResponse {
         this.capacity = capacity;
     }
 
-    public Integer getFrequency() {
+    public Double getFrequency() {
         return frequency;
     }
 
-    public void setFrequency(Integer frequency) {
+    public void setFrequency(Double frequency) {
         this.frequency = frequency;
     }
 
