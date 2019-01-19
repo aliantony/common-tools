@@ -45,7 +45,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         AssetGroup assetGroup = requestConverter.convert(request, AssetGroup.class);
         assetGroup.setGmtCreate(System.currentTimeMillis());
         assetGroupDao.insert(assetGroup);
-        assetGroupDao.insert(assetGroup);
         return aesEncoder.decode(assetGroup.getId().toString(), LoginUserUtil.getLoginUser().getPassword());
     }
 
