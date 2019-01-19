@@ -7,6 +7,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * <p> AssetSoftwareRelationRequest 请求对象 </p>
  *
@@ -58,6 +60,7 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
      * 安装方式1人工2自动
      */
     @ApiModelProperty("安装方式")
+    @NotNull
     private Integer installType;
 
     public String getId() {

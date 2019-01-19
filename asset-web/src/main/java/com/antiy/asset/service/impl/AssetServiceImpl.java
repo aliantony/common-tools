@@ -157,7 +157,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         medium.setCreateUser(LoginUserUtil.getLoginUser().getId());
                         assetStorageMediumDao.insert(medium);
                     }
-
+                        //软件关联表
                     List<AssetSoftwareRelationRequest> computerReques = request.getAssetSoftwareRelationList();
                     if (computerReques != null && computerReques.size() > 0) {
                         for (AssetSoftwareRelationRequest computerReque : computerReques) {
@@ -170,6 +170,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetSoftwareRelation.setMemo(computerReque.getMemo());
                             assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                             assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            assetSoftwareRelation.setInstallType (computerReque.getInstallType ());
                             assetSoftwareRelationDao.insert(assetSoftwareRelation);
                             if (StringUtils.isNotBlank(computerReque.getLicenseSecretKey())) {
                                 AssetSoftwareLicense license = new AssetSoftwareLicense();
