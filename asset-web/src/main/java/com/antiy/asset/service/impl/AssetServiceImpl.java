@@ -93,19 +93,40 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private static final Logger                       LOGGER = LogUtils.get(AssetServiceImpl.class);
 
     @Override
-    @Transactional
     public Integer saveAsset(AssetOuterRequest request) throws Exception {
 
         Integer num = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
-                    Asset asset = requestConverter.convert(request.getAsset(), Asset.class);
+
+                    AssetRequest requestAsset = request.getAsset ();
+                    List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroup ();
+                    Asset asset = requestConverter.convert(requestAsset, Asset.class);
+                    if (assetGroup!=null&&!assetGroup.isEmpty ()){
+                        StringBuilder stringBuilder = new StringBuilder ();
+                        assetGroup.forEach (assetGroupRequest ->{asset.setAssetGroup (stringBuilder.append (assetGroupRequest.getName ()).append (",").substring (0,stringBuilder.length ()-1));} );
+
+                    }
+
                     asset.setResponsibleUserId(LoginUserUtil.getLoginUser().getId());
+                    asset.setCreateUser (LoginUserUtil.getLoginUser().getId());
                     asset.setAssetSource(2);
+                    asset.setGmtCreate (System.currentTimeMillis ());
                     asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
 
                     assetDao.insert(asset);
+                    if (assetGroup!=null&&!assetGroup.isEmpty ()){
+
+                        for (AssetGroupRequest assetGroupRequest : assetGroup) {
+                            AssetGroupRelation assetGroupRelation = new AssetGroupRelation ();
+                            assetGroupRelation.setAssetGroupId (Integer.parseInt (assetGroupRequest.getId ()));
+                            assetGroupRelation.setAssetId (asset.getId ());
+                            assetGroupRelation.setGmtCreate (System.currentTimeMillis ());
+                            assetGroupRelation.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
+                            assetGroupRelationDao.insert (assetGroupRelation);
+                        }
+                    }
 
                     Integer aid = asset.getId();
 

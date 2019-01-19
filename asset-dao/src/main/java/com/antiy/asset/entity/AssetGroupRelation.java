@@ -112,4 +112,8 @@ public class AssetGroupRelation extends BaseEntity {
                + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser=" + createUser
                + ", modifyUser=" + modifyUser + ", status=" + status + "}";
     }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
 }
