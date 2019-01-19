@@ -1172,7 +1172,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * 1-计算设备 2-网络设备 3-安全设备 4-存储设备 5-其他设备
      * @param type 导出模板的类型
      */
-
+@Override
     public void exportTemplate(int type) throws Exception {
         switch (type) {
             case 1:
@@ -1227,6 +1227,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setDescrible(entity.getDescription());
             asset.setMemo (entity.getDescription ());
             asset.setOperationSystem(entity.getOperationSystem());
+            asset.setContactTel (entity.getTelephone ());
+            asset.setEmail (entity.getEmail ());
             assetDao.insert(asset);
             Integer id = asset.getId();
             // // TODO: 2019/1/17 流程
@@ -1382,6 +1384,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setServiceLife(networkDeviceEntity.getDueDate());
             asset.setWarranty(networkDeviceEntity.getWarranty());
             asset.setMemo(networkDeviceEntity.getMemo());
+            asset.setContactTel (networkDeviceEntity.getTelephone ());
+            asset.setEmail (networkDeviceEntity.getEmail ());
             assetDao.insert(asset);
             assetNetworkEquipment.setAssetId(asset.getId());
             assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
@@ -1447,6 +1451,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setServiceLife(entity.getDueDate());
             asset.setWarranty(entity.getWarranty());
             asset.setMemo(entity.getMemo());
+            asset.setContactTel (entity.getTelephone ());
+            asset.setEmail (entity.getEmail ());
             assetDao.insert(asset);
             assetSafetyEquipment.setAssetId(asset.getId());
             assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
@@ -1497,6 +1503,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setServiceLife(entity.getDueDate());
             asset.setWarranty(entity.getWarranty());
             asset.setMemo(entity.getMemo());
+            asset.setContactTel (entity.getTelephone ());
+            asset.setEmail (entity.getEmail ());
             assetDao.insert(asset);
             assetSafetyEquipment.setAssetId(asset.getId());
             assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
@@ -1550,6 +1558,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setServiceLife(entity.getDueDate());
             asset.setWarranty(entity.getWarranty());
             asset.setMemo(entity.getMemo());
+            asset.setContactTel (entity.getTelephone ());
+            asset.setEmail (entity.getEmail ());
             assetDao.insert(asset);
             // // TODO: 2019/1/17 流程
             // 记录资产操作流程
