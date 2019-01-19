@@ -2,9 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.response.SchemeResponse;
 import org.slf4j.Logger;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.ISchemeService;
@@ -38,7 +36,7 @@ public class SchemeController {
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
-    @PreAuthorize("hasAuthority('asset:scheme:saveSingle')")
+    // @PreAuthorize("hasAuthority('asset:scheme:saveSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "scheme") @RequestBody SchemeRequest schemeRequest) throws Exception {
@@ -52,21 +50,21 @@ public class SchemeController {
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
-    @PreAuthorize("hasAuthority('asset:scheme:updateSingle')")
+    // @PreAuthorize("hasAuthority('asset:scheme:updateSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@ApiParam(value = "scheme") SchemeRequest schemeRequest) throws Exception {
         return ActionResponse.success(iSchemeService.updateScheme(schemeRequest));
     }
 
-    /**user/query/list
-     * 批量查询
+    /**
+     * user/query/list 批量查询
      *
      * @param schemeQuery
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
-    @PreAuthorize("hasAuthority('asset:scheme:queryList')")
+    // @PreAuthorize("hasAuthority('asset:scheme:queryList')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SchemeResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "scheme") SchemeQuery schemeQuery) throws Exception {
@@ -80,7 +78,7 @@ public class SchemeController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @PreAuthorize("hasAuthority('asset:scheme:queryById')")
+    // @PreAuthorize("hasAuthority('asset:scheme:queryById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SchemeResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     public ActionResponse queryById(@ApiParam(value = "scheme") @PathVariable("id") @Encode String id) throws Exception {
@@ -95,7 +93,7 @@ public class SchemeController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
-    @PreAuthorize("hasAuthority('asset:scheme:deleteById')")
+    // @PreAuthorize("hasAuthority('asset:scheme:deleteById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") @Encode String id) throws Exception {
