@@ -43,6 +43,16 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
      */
     @ApiModelProperty("端口")
     private String  port;
+    /**
+     * 许可密钥
+     */
+    @ApiModelProperty("许可密钥")
+    private String  licenseSecretKey;
+    /**
+     * 安装方式
+     */
+    @ApiModelProperty("安装方式")
+    private String  installType;
 
     public String getAssetId() {
         return assetId;
@@ -90,5 +100,21 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
 
     public void setPort(String port) {
         this.port = port;
+    }
+
+    public String getInstallType() {
+        return installType;
+    }
+
+    public void setInstallType(String installType) {
+        this.installType = installType;
+    }
+
+    public String getLicenseSecretKey() {
+        return licenseSecretKey;
+    }
+
+    public void setLicenseSecretKey(String licenseSecretKey) {
+        this.licenseSecretKey = licenseSecretKey;
     }
 }

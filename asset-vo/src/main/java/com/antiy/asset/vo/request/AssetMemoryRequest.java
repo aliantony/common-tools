@@ -42,7 +42,7 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("内存主频(MHz)")
     @NotNull
-    private Integer frequency;
+    private Double frequency;
     /**
      * 插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM
      */
@@ -90,11 +90,11 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
         this.capacity = capacity;
     }
 
-    public Integer getFrequency() {
+    public Double getFrequency() {
         return frequency;
     }
 
-    public void setFrequency(Integer frequency) {
+    public void setFrequency(Double frequency) {
         this.frequency = frequency;
     }
 
