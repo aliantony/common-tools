@@ -92,7 +92,7 @@ public class ExcelUtils {
         ImportExcel ie;
         ImportResult ir = new ImportResult();
         try {
-            ie = new ImportExcel(multipartFile, 1, 0);
+            ie = new ImportExcel(multipartFile, headerNum, sheetIndex);
             ir.setDataList(ie.getDataList(clazz));
             ir.setMsg(ie.getResultMsg());
         } catch (IllegalAccessException e) {

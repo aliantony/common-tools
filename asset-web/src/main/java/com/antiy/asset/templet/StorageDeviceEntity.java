@@ -85,7 +85,7 @@ public class StorageDeviceEntity {
     /**
      * high_cache
      */
-    @ExcelField(value = "high_cache", align = 1, title = "RAID支持")
+    @ExcelField(value = "high_cache", align = 1, title = "高速缓存")
     private String  highCache;
     /**
      * 平均传输率
@@ -95,7 +95,7 @@ public class StorageDeviceEntity {
     /**
      * 固件
      */
-    @ExcelField(value = "firmware", align = 1, title = "固件")
+    @ExcelField(value = "firmware", align = 1, title = "固件版本")
     private String  firmware;
     /**
      * OS版本

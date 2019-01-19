@@ -485,7 +485,7 @@
             </if>
         </where>
     </select>
-    <select id="countManufacturer" resultMap="ManufacturerResultMap">
+    <select id="countManufacturer" resultMap="ManufacturerResultMap" parameterType="java.util.List">
         select manufacturer, count(manufacturer) num from
         <include refid="Table_Name"></include>
         where status=1
@@ -498,7 +498,7 @@
         GROUP BY manufacturer
     </select>
 
-    <select id="countStatus" resultMap="StatusResultMap">
+    <select id="countStatus" resultMap="StatusResultMap" parameterType="java.util.List">
         select software_status, count(software_status) num from
         <include refid="Table_Name"></include>
         where status=1

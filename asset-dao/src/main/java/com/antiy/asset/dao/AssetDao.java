@@ -8,6 +8,7 @@ import com.antiy.asset.entity.Topology;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -73,14 +74,14 @@ public interface AssetDao extends IBaseDao<Asset> {
      *
      * @return
      */
-    List<Map<String, Long>> countManufacturer(List<Integer> areaIds);
+    List<Map<String, Long>> countManufacturer(@Param("areaIds") List<Integer> areaIds);
 
     /**
      * 统计状态数量
      *
      * @return
      */
-    List<Map<String, Long>> countStatus(List<Integer> areaIds);
+    List<Map<String, Long>> countStatus(@Param("areaIds")List<Integer> areaIds);
 
     /**
      * 通过ID列表查询资产列表

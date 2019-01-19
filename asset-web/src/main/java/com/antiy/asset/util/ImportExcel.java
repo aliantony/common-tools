@@ -156,7 +156,7 @@ public class ImportExcel {
         }
         this.sheet = this.wb.getSheetAt(sheetIndex);
         this.headerNum = headerNum;
-        this.lastRowNum = this.sheet.getLastRowNum() + headerNum;
+        this.lastRowNum = this.sheet.getLastRowNum() + headerNum + 1;
         log.debug("Initialize success.");
     }
 
@@ -278,7 +278,7 @@ public class ImportExcel {
      * @return
      */
     public <T> List<T> getDataList(Class<T> clazz) throws IllegalAccessException, InstantiationException,
-                                                   NoSuchMethodException, InvocationTargetException {
+                                                  NoSuchMethodException, InvocationTargetException {
         initAnnotationList(clazz);
         List<T> dataList = new ArrayList<>();
         for (int i = getDataRownum(); i < lastRowNum; i++) {
@@ -326,8 +326,8 @@ public class ImportExcel {
                                     failNums++;
                                     sb.append("数据格式错误,第").append(dataRow.getRowNum()).append("行，第").append(column)
                                         .append(column).append("列").append(ef.title()).append(val).append("\n");
-                                    log.error("数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title() + " "
-                                              + val);
+                                    log.error("数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title()
+                                              + " " + val);
                                     break;
                                 }
                             }
@@ -344,8 +344,7 @@ public class ImportExcel {
                             failNums++;
                             sb.append("数据格式错误,第").append(dataRow.getRowNum()).append("行，第").append(column)
                                 .append(column).append("列").append(ef.title()).append(val).append("\n");
-                            log.error(
-                                "数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列：" + ef.title() + " " + val);
+                            log.error("数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列：" + ef.title() + " " + val);
                             break;
                         }
                     } else if (valType == Double.class) {
