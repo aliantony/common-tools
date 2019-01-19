@@ -292,4 +292,33 @@
             asset_id = #{id}
             and b.status = 1
     </select>
+    <update id="deleteByAssetId" parameterType="java.lang.Integer">
+        update
+        <include refid="Table_Name"></include>
+        set status = 0
+        where asset_id = #{assetId}
+    </update>
+    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetGroupRelation" useGeneratedKeys="true"
+            keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        (
+        asset_group_id,
+        asset_id,
+        gmt_create,
+        memo,
+        create_user
+        )
+        values
+        <foreach collection="list" item="gorup" separator=",">
+            (
+            #{gorup.asset_group_id},
+            #{gorup.aasset_id},
+            #{gorup.agmt_create},
+            #{gorup.amemo},
+            #{gorup.acreate_user}
+            )
+        </foreach>
+    </insert>
 </mapper>

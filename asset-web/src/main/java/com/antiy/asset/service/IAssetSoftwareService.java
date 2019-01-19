@@ -110,4 +110,10 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @throws Exception
      */
     void downloadSoftware(AssetSoftwareQuery query, HttpServletResponse response) throws Exception;
+
+    /**
+     * 导出
+     * @throws Exception
+     */
+    void exportTemplate() throws Exception;
 }

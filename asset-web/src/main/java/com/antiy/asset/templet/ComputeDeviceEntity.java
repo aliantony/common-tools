@@ -197,7 +197,7 @@ public class ComputeDeviceEntity {
     /**
      * 主板数量
      */
-    @ExcelField(value = "mainborad_num", align = 1, title = "cpu数量")
+    @ExcelField(value = "mainborad_num", align = 1, title = "主板数量")
     private Integer  mainboradNum;
     /**
      * 主板品牌

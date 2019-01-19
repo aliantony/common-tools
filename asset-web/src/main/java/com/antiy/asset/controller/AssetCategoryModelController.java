@@ -52,7 +52,7 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     @PreAuthorize(value="hasAuthority('asset:categorymodel:updateSingle')")
     public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
-        return ActionResponse.success(iAssetCategoryModelService.updateAssetCategoryModel(assetCategoryModel));
+        return iAssetCategoryModelService.updateAssetCategoryModel(assetCategoryModel);
     }
 
     /**

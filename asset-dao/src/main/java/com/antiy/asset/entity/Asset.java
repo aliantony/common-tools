@@ -1,7 +1,6 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> 资产主表 </p>
@@ -179,10 +178,6 @@ public class Asset extends BaseEntity {
      * 状态,1未删除,0已删除
      */
     private Integer           status;
-    /**
-     * 资产组
-     */
-    private String            assetGroups;
 
     /**
      * ip
@@ -197,13 +192,6 @@ public class Asset extends BaseEntity {
      */
     private Integer           assetdmittanceStatus;
 
-    public String getAssetGroups() {
-        return assetGroups;
-    }
-
-    public void setAssetGroups(String assetGroups) {
-        this.assetGroups = assetGroups;
-    }
 
     public String getIp() {
         return ip;
