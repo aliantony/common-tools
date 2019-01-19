@@ -46,13 +46,13 @@ public class ComputeDeviceEntity {
     /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话",type =1)
+    @ExcelField(value = "telephone", align = 1, title = "联系电话",type =0)
     private String  telephone;
 
     /**
      * 邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱",type =1)
+    @ExcelField(value = "email", align = 1, title = "邮箱",type =0)
     private String  email;
 
     /**
