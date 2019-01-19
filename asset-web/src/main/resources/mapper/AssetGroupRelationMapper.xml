@@ -173,6 +173,12 @@
         where id = #{id}
     </delete>
 
+    <delete id="deleteByAssetGroupId" parameterType="java.lang.Integer">
+        delete from
+        <include refid="Table_Name"></include>
+        where asset_group_id = #{assetGroupId}
+    </delete>
+
     <select id="getByWhere" resultType="com.antiy.asset.entity.AssetGroupRelation" parameterType="java.util.Map">
         select
         <include refid="Base_Column_List"/>
@@ -311,13 +317,13 @@
         create_user
         )
         values
-        <foreach collection="list" item="gorup" separator=",">
+        <foreach collection="list" item="group" separator=",">
             (
-            #{gorup.asset_group_id},
-            #{gorup.aasset_id},
-            #{gorup.agmt_create},
-            #{gorup.amemo},
-            #{gorup.acreate_user}
+            #{group.assetGroupId},
+            #{group.assetId},
+            #{group.gmtCreate},
+            #{group.memo},
+            #{group.createUser}
             )
         </foreach>
     </insert>

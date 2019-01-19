@@ -7,6 +7,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.List;
+
 /**
  * <p> AssetGroupRequest 请求对象 </p>
  *
@@ -32,6 +34,28 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("资产组名称")
     private String name;
+    /**
+     * 资产组ID数组
+     */
+    @ApiModelProperty("资产组ID数组")
+    @Encode
+    private List<String> assetIdList;
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public List<String> getAssetIdList() {
+        return assetIdList;
+    }
+
+    public void setAssetIdList(List<String> assetIdList) {
+        this.assetIdList = assetIdList;
+    }
 
     public String getId() {
         return id;
