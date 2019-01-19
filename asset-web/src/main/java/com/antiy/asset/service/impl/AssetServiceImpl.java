@@ -23,7 +23,6 @@ import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -1226,6 +1225,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setServiceLife(entity.getDueTime());
             asset.setWarranty(entity.getWarranty());
             asset.setDescrible(entity.getDescription());
+            asset.setMemo (entity.getDescription ());
             asset.setOperationSystem(entity.getOperationSystem());
             assetDao.insert(asset);
             Integer id = asset.getId();
