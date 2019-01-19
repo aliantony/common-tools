@@ -10,97 +10,95 @@ import com.antiy.common.base.BaseEntity;
  */
 
 public class AssetNetworkEquipment extends BaseEntity {
-
     /**
-     * 资产主键
+     *  资产主键
      */
     private Integer assetId;
     /**
-     * 接口数目
+     *  接口数目
      */
     private Integer interfaceSize;
     /**
-     * 端口数目
-     */
-    private Integer portSize;
-
-    /**
-     * 端口数目
-     */
-    private String  ios;
-
-    /**
-     * 端口数目
-     */
-    private String  cpuVersion;
-    /**
-     * 端口数目
-     */
-    private Integer cpu;
-    /**
-     * 是否无线:0-否,1-是
+     *  是否无线:0-否,1-是
      */
     private Integer isWireless;
     /**
-     * 内网IP
+     *  端口数目
      */
-    private String  innerIp;
+    private Integer portSize;
     /**
-     * 外网IP
+     *  cpu版本
      */
-    private String  outerIp;
+    private String cpuVersion;
     /**
-     * MAC地址
+     *  cpu大小
      */
-    private String  macAddress;
+    private Integer cpu;
     /**
-     * 子网掩码
+     *  ios
      */
-    private String  subnetMask;
+    private String ios;
     /**
-     * 预计带宽(M)
+     *  内网IP
+     */
+    private String innerIp;
+    /**
+     *  外网IP
+     */
+    private String outerIp;
+    /**
+     *  MAC地址
+     */
+    private String macAddress;
+    /**
+     *  子网掩码
+     */
+    private String subnetMask;
+    /**
+     *  预计带宽(M)
      */
     private Integer expectBandwidth;
     /**
-     * 配置寄存器(GB)
+     *  配置寄存器(GB)
      */
     private Integer register;
     /**
-     * DRAM大小
+     *  DRAM大小
      */
-    private Float   dramSize;
+    private Float dramSize;
     /**
-     * FLASH大小
+     *  FLASH大小
      */
-    private Float   flashSize;
+    private Float flashSize;
     /**
-     * NCRM大小
+     *  NCRM大小
      */
-    private Float   ncrmSize;
+    private Float ncrmSize;
     /**
-     * 创建人
+     *  创建人
      */
     private Integer createUser;
     /**
-     * 修改人
+     *  修改人
      */
     private Integer modifyUser;
     /**
-     * 创建时间
+     *  创建时间
      */
-    private Long    gmtCreate;
+    private Long gmtCreate;
     /**
-     * 备注
+     *  备注
      */
-    private String  memo;
+    private String memo;
     /**
-     * 更新时间
+     *  更新时间
      */
-    private Long    gmtModified;
+    private Long gmtModified;
     /**
-     * 状态,1未删除,0已删除
+     *  状态,0 未删除,1已删除
      */
     private Integer status;
+
 
     public Integer getAssetId() {
         return assetId;

@@ -171,22 +171,16 @@
         and status = 1
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetCpu">
-        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
+
+    <insert id="insert"   parameterType="com.antiy.asset.entity.AssetCpu" useGeneratedKeys="true" keyProperty="id" >
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <include refid="IF_Base_Column_List"></include>
         </trim>
-        values (
-
-        <trim prefix="(" suffix=")" suffixOverrides=",">
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
             <include refid="IF_Value_Column_List"></include>
         </trim>
-
-        )
     </insert>
 
     <update id="update" parameterType="com.antiy.asset.entity.AssetCpu">
