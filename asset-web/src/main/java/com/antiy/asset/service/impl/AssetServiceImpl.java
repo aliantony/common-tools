@@ -997,7 +997,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOuterResponse.setAssetSoftware(BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class));
 
         // 资产软件关系列表
-        List<AssetSoftwareRelation> assetSoftwareRelationList = assetSoftwareRelationDao.getReleationByAssetId(asset.getId());
+        List<AssetSoftwareRelation> assetSoftwareRelationList = assetSoftwareRelationDao
+            .getReleationByAssetId(asset.getId());
         assetOuterResponse.setAssetSoftwareRelationList(
             BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class));
         return assetOuterResponse;
@@ -1123,20 +1124,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 10. 更新资产软件关系信息
                     // 删除已有资产软件关系
                     assetSoftwareRelationDao.deleteByAssetId(asset.getId());
-                    List<AssetSoftwareLicense> assetSoftwareLicenseList = Lists.newArrayList();
+                    // 删除软件许可
+                    assetSoftwareLicenseDao.deleteByAssetId(asset.getId());
                     List<AssetSoftwareRelation> assetSoftwareRelationList = BeanConvert
                         .convert(assetOuterRequest.getAssetSoftwareRelationList(), AssetSoftwareRelation.class);
                     assetSoftwareRelationList.stream().forEach(relation -> {
-
                         relation.setAssetId(asset.getId());
                         relation.setGmtCreate(System.currentTimeMillis());
                         // relation.setSoftwareStatus();
                         // relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                         try {
+                            // 插入资产软件关系
                             assetSoftwareRelationDao.insert(relation);
                             AssetSoftwareLicense assetSoftwareLicense = new AssetSoftwareLicense();
                             assetSoftwareLicense.setLicenseSecretKey(relation.getLicenseSecretKey());
                             assetSoftwareLicense.setSoftwareId(relation.getId());
+                            // 插入资产软件许可
                             assetSoftwareLicenseDao.insert(assetSoftwareLicense);
                         } catch (Exception e) {
                             e.printStackTrace();

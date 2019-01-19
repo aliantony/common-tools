@@ -13,4 +13,5 @@ import com.antiy.common.base.IBaseDao;
  */
 public interface AssetSoftwareLicenseDao extends IBaseDao<AssetSoftwareLicense> {
 
+    void deleteByAssetId(Integer id);
 }
