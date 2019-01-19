@@ -26,22 +26,22 @@ public class OtherDeviceEntity {
     /**
      * 所属区域
      */
-    @ExcelField(value = "area", align = 1, title = "所属区域")
+    @ExcelField(value = "area", align = 1, title = "所属区域",type = 1)
     private String area;
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者")
+    @ExcelField(value = "user", align = 1, title = "使用者",type = 1)
     private String user;
     /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话")
+    @ExcelField(value = "telephone", align = 1, title = "联系电话",type = 1)
     private String telephone;
     /**
      * 使用者邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱")
+    @ExcelField(value = "email", align = 1, title = "邮箱",type = 1)
     private String email;
 
     /**
