@@ -8,6 +8,7 @@
         <result column="purpose" property="purpose"/>
         <result column="important_degree" property="importantDegree"/>
         <result column="name" property="name"/>
+        <result column="username" property="createUserName"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
@@ -150,7 +151,7 @@
 
     </sql>
     <sql id="Page_List">
-        <if test="pageSize !=-1">
+        <if test="pageSize != -1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </sql>
@@ -216,30 +217,43 @@
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1) count
         from
-        <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
-            </trim>
-        </where>
+        <include refid="Table_Name"></include> agroup
+        LEFT JOIN sys_user suser ON suser.id = agroup.create_user
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" name != null and name != '' ">
+                and agroup.name like #{name}"%"
+            </if>
+            <if test=" memo != null and memo != '' ">
+                and agroup.memo like #{memo}"%"
+            </if>
+            <if test=" createUserName != null and createUserName != '' ">
+                and suser.username like #{createUserName}"%"
+            </if>
+        </trim>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetGroup"
+    <select id="findQuery" resultMap="BaseResultMap"
             parameterType="com.antiy.common.base.ObjectQuery">
-        select
-        <include refid="Base_Column_List"/>
+        select agroup.name,suser.username,agroup.memo,agroup.gmt_create
         from
-        <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
-            </trim>
-        </where>
+        <include refid="Table_Name"></include> agroup
+        LEFT JOIN sys_user suser ON suser.id = agroup.create_user
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" name != null and name != '' ">
+                and agroup.name like #{name}"%"
+            </if>
+            <if test=" memo != null and memo != '' ">
+                and agroup.memo like #{memo}"%"
+            </if>
+            <if test=" createUserName != null and createUserName != '' ">
+                and suser.username like #{createUserName}"%"
+            </if>
+        </trim>
         <include refid="Page_List"></include>
     </select>
 
 
-    <select id="findListAssetGroup" resultType="com.antiy.asset.entity.AssetGroup"
+    <select id="findListAssetGroup" resultType="string"
             parameterType="com.antiy.asset.vo.query.AssetGroupQuery">
         select
         <include refid="Base_Column_List"/>

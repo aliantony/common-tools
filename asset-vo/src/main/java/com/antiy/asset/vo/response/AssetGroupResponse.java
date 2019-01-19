@@ -1,8 +1,6 @@
 package com.antiy.asset.vo.response;
 
-import com.antiy.common.encoder.Encode;
-
-import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 
 /**
  * <p> AssetGroupResponse 响应对象 </p>
@@ -13,36 +11,27 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetGroupResponse extends BaseResponse {
     /**
-     * 用途
-     */
-    @ApiModelProperty("用途")
-    private String  purpose;
-    /**
-     * 重要程度(0-不重要(not_major),1- 一般(general),3-重要(major),)
-     */
-    @ApiModelProperty("重要程度(0-不重要(not_major),1- 一般(general),3-重要(major),)")
-    private Integer importantDegree;
-    /**
      * 资产组名称
      */
-    @ApiModelProperty("资产组名称")
-    private String  name;
+    private String name;
+    /**
+     * 创建时间
+     */
+    private Long   gmtCreate;
+    /**
+     * 备注
+     */
+    private String memo;
 
-    public String getPurpose() {
-        return purpose;
-    }
+    /**
+     * 创建人名字
+     */
+    private String createUserName;
 
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
-    }
-
-    public Integer getImportantDegree() {
-        return importantDegree;
-    }
-
-    public void setImportantDegree(Integer importantDegree) {
-        this.importantDegree = importantDegree;
-    }
+    /**
+     * 资产信息
+     */
+    List<String>    assetList;
 
     public String getName() {
         return name;
@@ -52,5 +41,35 @@ public class AssetGroupResponse extends BaseResponse {
         this.name = name;
     }
 
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
 
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getCreateUserName() {
+        return createUserName;
+    }
+
+    public void setCreateUserName(String createUserName) {
+        this.createUserName = createUserName;
+    }
+
+    public List<String> getAssetList() {
+        return assetList;
+    }
+
+    public void setAssetList(List<String> assetList) {
+        this.assetList = assetList;
+    }
 }

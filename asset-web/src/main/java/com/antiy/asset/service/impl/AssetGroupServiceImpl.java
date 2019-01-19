@@ -7,7 +7,9 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.convert.AssetGroupResponseConverter;
+import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetGroupDao;
+import com.antiy.asset.dao.AssetGroupRelationDao;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.vo.query.AssetGroupQuery;
@@ -31,6 +33,10 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Resource
     private AssetGroupDao                                 assetGroupDao;
+    @Resource
+    private AssetDao                                      assetDao;
+    @Resource
+    private AssetGroupRelationDao                         assetGroupRelationDao;
     @Resource
     AesEncoder                                            aesEncoder;
     @Resource
@@ -56,16 +62,17 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public List<AssetGroupResponse> findListAssetGroup(AssetGroupQuery query) throws Exception {
-        List<AssetGroup> assetGroup = assetGroupDao.findListAssetGroup(query);
-        return convert(assetGroup);
+        List<AssetGroup> assetGroupList = assetGroupDao.findQuery(query);
+        for (AssetGroup assetGroup : assetGroupList) {
+            AssetGroupResponse assetGroupResponse = responseConverter.convert(assetGroup, AssetGroupResponse.class);
+            List<String> assetList = assetGroupRelationDao.findAssetByAssetGroupId(assetGroup.getId());
+            assetGroupResponse.setAssetList(assetList);
+        }
+        return responseConverter.convert(assetGroupList, AssetGroupResponse.class);
     }
 
     public Integer findCountAssetGroup(AssetGroupQuery query) throws Exception {
         return assetGroupDao.findCount(query);
-    }
-
-    private List<AssetGroupResponse> convert(List<AssetGroup> assetGroups) {
-        return responseConverter.convert(assetGroups, AssetGroupResponse.class);
     }
 
     @Override

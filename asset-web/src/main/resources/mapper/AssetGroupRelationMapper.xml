@@ -131,6 +131,11 @@
             and status = #{status }
         </if>
     </sql>
+    <sql id="Page_List">
+        <if test="pageSize != -1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetGroupRelation">
         insert into
@@ -191,26 +196,50 @@
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1) count
         from
-        <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
-            </trim>
-        </where>
+        <include refid="Table_Name"></include> agrelation
+        LEFT JOIN asset_group agroup ON agroup.id = agrelation.asset_group_id
+        LEFT JOIN sys_user suser ON suser.id = agrelation.create_user
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" name != null and name != '' ">
+                and agroup.name like #{name}"%"
+            </if>
+            <if test=" memo != null and memo != '' ">
+                and agroup.memo like #{memo}"%"
+            </if>
+            <if test=" createUserName != null and createUserName != '' ">
+                and suser.username like #{createUserName}"%"
+            </if>
+        </trim>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetGroupRelation"
+    <select id="findQuery" resultMap="BaseResultMap"
             parameterType="com.antiy.common.base.ObjectQuery">
-        select * from
-        <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
-            </trim>
-        </where>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
+        select agroup.name,suser.username,agroup.memo,agroup.gmt_create
+        from
+        <include refid="Table_Name"></include> agrelation
+        LEFT JOIN asset_group agroup ON agroup.id = agrelation.asset_group_id
+        LEFT JOIN sys_user suser ON suser.id = agrelation.create_user
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" name != null and name != '' ">
+                and agroup.name like #{name}"%"
+            </if>
+            <if test=" memo != null and memo != '' ">
+                and agroup.memo like #{memo}"%"
+            </if>
+            <if test=" createUserName != null and createUserName != '' ">
+                and suser.username like #{createUserName}"%"
+            </if>
+        </trim>
+        <include refid="Page_List"></include>
+    </select>
+
+    <select id="findAssetByAssetGroupId" resultType="Asset"
+            parameterType="int">
+        select asset.id,asset.name
+        from
+        <include refid="Table_Name"></include> agrelation
+        LEFT JOIN asset ON asset.id = agrelation.asset_id
+        where agrelation.asset_group_id = #{assetGroupId}
     </select>
 
 
