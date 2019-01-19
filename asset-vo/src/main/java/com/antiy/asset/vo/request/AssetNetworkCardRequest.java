@@ -31,8 +31,6 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
      * 品牌
      */
     @ApiModelProperty("品牌")
-
-
     @NotBlank
     private String  brand;
     /**
@@ -143,13 +141,6 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
         this.defaultGateway = defaultGateway;
     }
 
-    public String getnetworkAddress() {
-        return networkAddress;
-    }
-
-    public void setnetworkAddress(String networkAddress) {
-        this.networkAddress = networkAddress;
-    }
 
     public String getSubnetMask() {
         return subnetMask;

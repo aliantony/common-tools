@@ -224,7 +224,7 @@
         <trim prefix="SET" suffixOverrides=",">
             <include refid="Set_Column_List"></include>
         </trim>
-        where id = #{id}
+        where id = #{id} and status=1
     </update>
 
     <!-- 根据主键查询 -->
@@ -233,7 +233,7 @@
         <include refid="Base_Column_List"/>
         from
         <include refid="Table_Name"></include>
-        where id = #{id}
+        where id = #{id} and status=1
     </select>
 
 
@@ -241,7 +241,7 @@
         update
         <include refid="Table_Name"></include>
         set status = 0
-        where id = #{id}
+        where id = #{id} and status=1
     </update>
 
     <update id="delete">
@@ -256,6 +256,7 @@
         <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
             #{item.id}
         </foreach>
+        and status=1
     </update>
 
     <select id="getByWhere" resultType="com.antiy.asset.entity.AssetCategoryModel" parameterType="java.util.Map">

@@ -113,14 +113,12 @@ public class AssetSoftwareController {
     /**
      * 导出模板文件
      *
-     * @param query 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "导出模板文件", notes = "主键封装对象")
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
-    public void export(@ApiParam(value = "query") AssetSoftwareQuery query,
-                       HttpServletResponse response) throws Exception {
-        iAssetSoftwareService.downloadSoftware(query, response);
+    public void export() throws Exception {
+        iAssetSoftwareService.exportTemplate();
     }
 
     /**
