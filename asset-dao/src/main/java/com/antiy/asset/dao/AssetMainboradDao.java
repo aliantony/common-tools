@@ -34,8 +34,8 @@ public interface AssetMainboradDao extends IBaseDao<AssetMainborad> {
 
     /**
      * 根据资产id删除主板
-     * @param assetMainborad
+     * @param assetId
      * @return
      */
-    Integer deleteByAssetId(List<AssetMainborad> assetMainborad);
+    Integer deleteByAssetId(Integer assetId);
 }

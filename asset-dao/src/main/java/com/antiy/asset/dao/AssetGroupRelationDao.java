@@ -26,4 +26,18 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @return
      */
     List<AssetGroup> queryByAssetId(Integer id);
+
+    /**
+     * 删除资产的资产组关系
+     * @param id
+     * @return
+     */
+    Integer deleteByAssetId(Integer id);
+
+    /**
+     * 插入资产
+     * @param assetGroupRelations
+     * @return
+     */
+    Integer insertBatch(List<AssetGroupRelation> assetGroupRelations);
 }
