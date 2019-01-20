@@ -7,9 +7,9 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.antiy.asset.convert.AssetGroupRequestConverter;
 import com.antiy.asset.convert.AssetGroupResponseConverter;
 import com.antiy.asset.convert.IDRequestConverter;
-import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.dao.AssetGroupRelationDao;
 import com.antiy.asset.entity.AssetGroup;
@@ -37,13 +37,11 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Resource
     private AssetGroupDao                                 assetGroupDao;
     @Resource
-    private AssetDao                                      assetDao;
-    @Resource
     private AssetGroupRelationDao                         assetGroupRelationDao;
     @Resource
-    AesEncoder                                            aesEncoder;
+    private AesEncoder                                    aesEncoder;
     @Resource
-    private BaseConverter<AssetGroupRequest, AssetGroup>  requestConverter;
+    private AssetGroupRequestConverter                    assetGroupRequestConverter;
     @Resource
     private BaseConverter<AssetGroup, AssetGroupResponse> responseConverter;
     @Resource
@@ -53,7 +51,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public String saveAssetGroup(AssetGroupRequest request) throws Exception {
-        AssetGroup assetGroup = requestConverter.convert(request, AssetGroup.class);
+        AssetGroup assetGroup = assetGroupRequestConverter.convert(request, AssetGroup.class);
         assetGroup.setGmtCreate(System.currentTimeMillis());
         assetGroupDao.insert(assetGroup);
         return aesEncoder.decode(assetGroup.getId().toString(), LoginUserUtil.getLoginUser().getPassword());
@@ -61,7 +59,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public Integer updateAssetGroup(AssetGroupRequest request) throws Exception {
-        AssetGroup assetGroup = requestConverter.convert(request, AssetGroup.class);
+        AssetGroup assetGroup = assetGroupRequestConverter.convert(request, AssetGroup.class);
         List<Integer> assetIdList = idRequestConverter.convert(request.getAssetIdList(), Integer.class);
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
         assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());

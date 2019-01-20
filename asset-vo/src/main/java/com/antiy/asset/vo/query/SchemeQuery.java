@@ -38,6 +38,9 @@ public class SchemeQuery extends ObjectQuery implements ObjectValidator {
 
     }
 
+    public String getAssetId() {
+        return assetId;
+    }
 
     public void setAssetId(String assetId) {
         this.assetId = assetId;

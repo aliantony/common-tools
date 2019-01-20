@@ -1,9 +1,13 @@
 package com.antiy.asset.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.utils.LogUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.SchemeDao;
@@ -35,7 +39,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Resource
     private BaseConverter<SchemeRequest, Scheme>  requestConverter;
     @Resource
-    private BaseConverter<Scheme, SchemeResponse> responseConverter;
+    private SchemeResponseConverter responseConverter;
 
     @Override
     public String saveScheme(SchemeRequest request) throws Exception {
@@ -73,5 +77,21 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     public PageResult<SchemeResponse> findPageScheme(SchemeQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
             this.findListScheme(query));
+    }
+}
+
+@Component
+class SchemeResponseConverter extends BaseConverter<Scheme, SchemeResponse> {
+    Logger logger = LogUtils.get(SchemeResponseConverter.class);
+
+    @Override
+    protected void convert(Scheme scheme, SchemeResponse schemeResponse) {
+        try {
+            schemeResponse.setId(Objects.toString(scheme.getId()));
+            schemeResponse.setAssetId(Objects.toString(scheme.getAssetId()));
+        } catch (Exception e) {
+            logger.error("String转Integer出错");
+        }
+        super.convert(scheme, schemeResponse);
     }
 }

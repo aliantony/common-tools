@@ -801,6 +801,12 @@
         <if test=" categoryModel != null">
             and category_model =#{categoryModel}
         </if>
+        <if test=" assetStatusList != null">
+            and asset_status in
+            <foreach collection="assetStatusList" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
         <if test=" areaIds != null">
             and area_id in
             <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
@@ -825,7 +831,8 @@
         </if>
     </select>
 
-    <select id="findListAsset" resultType="com.antiy.asset.entity.Asset" parameterType="com.antiy.asset.vo.query.AssetQuery">
+    <select id="findListAsset" resultType="com.antiy.asset.entity.Asset"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
         select * from (SELECT
         a.id,
         a.asset_group as assetGroup,
@@ -873,10 +880,12 @@
         </if>
     </select>
 
-    <select id="countManufacturer" resultMap="ManufacturerResultMap"  parameterType="java.util.List" >
+    <select id="countManufacturer" resultMap="ManufacturerResultMap" parameterType="java.util.List">
         select manufacturer, count(manufacturer) num from
         <include refid="Table_Name"></include>
         where status=1
+        and
+        asset_status!=8
         <if test="areaIds != null and areaIds.size() > 0">
             and area_id in
             <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
@@ -886,7 +895,7 @@
         GROUP BY manufacturer
     </select>
 
-    <select id="countStatus" resultMap="StatusResultMap"  parameterType="java.util.List">
+    <select id="countStatus" resultMap="StatusResultMap" parameterType="java.util.List">
         select asset_status, count(asset_status) num from
         <include refid="Table_Name"></include>
         where status=1

@@ -146,7 +146,7 @@
             AND status = #{status }
         </if>
         <if test=" status == null">
-            AND status = 0
+            AND status = 1
         </if>
 
     </sql>
