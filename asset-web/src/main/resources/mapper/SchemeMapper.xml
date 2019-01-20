@@ -304,6 +304,9 @@
             <if test=" type != null">
                 and type = #{type}
             </if>
+            <if test=" assetId != null">
+                and asset_id = #{assetId}
+            </if>
             and status = 1
         </trim>
         <if test="pageSize !=-1">

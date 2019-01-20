@@ -26,7 +26,7 @@ public interface IAssetDepartmentService extends IBaseService<AssetDepartment> {
      * @param request
      * @return
      */
-    Integer saveAssetDepartment(AssetDepartmentRequest request) throws Exception;
+    ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception;
 
     /**
      * 修改

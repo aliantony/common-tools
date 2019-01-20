@@ -39,7 +39,7 @@ public class AssetDepartmentController {
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     @PreAuthorize(value="hasAuthority('asset:department:saveSingle')")
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentRequest assetDepartment) throws Exception {
-        return ActionResponse.success(iAssetDepartmentService.saveAssetDepartment(assetDepartment));
+        return iAssetDepartmentService.saveAssetDepartment(assetDepartment);
     }
 
     /**

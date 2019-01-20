@@ -8,7 +8,11 @@ import java.util.Objects;
 import javax.annotation.Resource;
 
 import com.antiy.common.base.*;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetDepartmentDao;
@@ -41,12 +45,16 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     private AssetUserDao                                            assetUserDao;
 
     @Override
-    public Integer saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
+    public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
+        AssetDepartment parent = assetDepartmentDao.getById(assetDepartment.getId());
+        if (Objects.isNull(parent)) {
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "父级部门不存在");
+        }
         assetDepartment.setStatus(1);
         assetDepartment.setGmtCreate(System.currentTimeMillis());
         assetDepartmentDao.insert(assetDepartment);
-        return assetDepartment.getId();
+        return ActionResponse.success(assetDepartment.getId());
     }
 
     @Override
@@ -143,13 +151,13 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     ActionResponse notConfirmDelete(Integer id) throws Exception {
         List<AssetDepartment> list = recursionSearch((Integer) id);
         if (list.size() > 1) {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"需要进行二次确认");
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "需要进行二次确认");
         } else {
             AssetUserQuery assetUserQuery = new AssetUserQuery();
             assetUserQuery.setDepartmentId(id);
             Integer count = assetUserDao.findListCount(assetUserQuery);
             if (count > 0) {
-                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"需要进行二次确认");
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "需要进行二次确认");
             } else {
                 return delete(id);
             }
@@ -162,8 +170,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         query.setStatus(1);
         List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
         NodeUtilsConverter nodeResponseNodeUtilsConverter = new NodeUtilsConverter<>();
-        List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeResponseNodeUtilsConverter
-            .columnToNode(assetDepartment, AssetDepartmentNodeResponse.class);
+        List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeResponseNodeUtilsConverter.columnToNode(
+            assetDepartment, AssetDepartmentNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
 
@@ -179,7 +187,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         if (CollectionUtils.isNotEmpty(list)) {
             return ActionResponse.success(assetDepartmentDao.delete(list));
         } else {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"该部门不存在");
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该部门不存在");
         }
     }
 
@@ -198,7 +206,22 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         if (CollectionUtils.isNotEmpty(list)) {
             return ActionResponse.success(assetDepartmentDao.delete(list));
         } else {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"该部门不存在");
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该部门不存在");
         }
+    }
+}
+
+@Component
+class DepartmentRequestConvert extends BaseConverter<AssetDepartmentRequest, AssetDepartment> {
+    Logger logger = LogUtils.get(DepartmentRequestConvert.class);
+
+    @Override
+    protected void convert(AssetDepartmentRequest assetDepartmentRequest, AssetDepartment assetDepartment) {
+        try {
+            assetDepartment.setId(Integer.parseInt(assetDepartmentRequest.getId()));
+        } catch (Exception e) {
+            logger.error("String转Integer出错");
+        }
+        super.convert(assetDepartmentRequest, assetDepartment);
     }
 }
