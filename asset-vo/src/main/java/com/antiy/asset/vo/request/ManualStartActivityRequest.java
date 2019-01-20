@@ -38,7 +38,7 @@ public class ManualStartActivityRequest {
 
     @ApiModelProperty(value = "流程定义Id")
     @NotNull(message = "流程定义Id不能为空")
-    private AssetActivityTypeEnum processDefintionKey;
+    private String processDefinitionKey;
 
     public String getAssignee() {
         return assignee;
@@ -64,11 +64,11 @@ public class ManualStartActivityRequest {
         this.formData = formData;
     }
 
-    public String getProcessDefintionKey() {
-        return processDefintionKey.getCode();
+    public String getProcessDefinitionKey() {
+        return processDefinitionKey;
     }
 
-    public void setProcessDefintionKey(AssetActivityTypeEnum processDefintionKey) {
-        this.processDefintionKey = processDefintionKey;
+    public void setProcessDefinitionKey(String processDefinitionKey) {
+        this.processDefinitionKey = processDefinitionKey;
     }
 }

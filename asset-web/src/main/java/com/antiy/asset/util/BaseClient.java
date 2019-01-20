@@ -2,12 +2,14 @@ package com.antiy.asset.util;
 
 import javax.annotation.Resource;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import java.nio.charset.Charset;
+import java.util.Map;
 
 /**
  * @auther: zhangbing
@@ -28,8 +30,13 @@ public class BaseClient<T> {
      * @return
      */
     public T get(Object params, ParameterizedTypeReference<T> parameterizedTypeReference, String url) {
-        ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, parameterizedTypeReference,
-            params);
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.parseMediaType("application/json;charset=UTF-8");
+        headers.setContentType(type);
+        HttpEntity<String> entity = new HttpEntity(JSONObject.toJSONString(params),headers);
+        ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, parameterizedTypeReference);
+       /* ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, parameterizedTypeReference,
+            params);*/
         return responseEntity.getBody();
     }
 
@@ -41,8 +48,13 @@ public class BaseClient<T> {
      * @return
      */
     public T post(Object params, ParameterizedTypeReference<T> parameterizedTypeReference, String url) {
-        ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(null), parameterizedTypeReference,
-            params);
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.parseMediaType("application/json;charset=UTF-8");
+        headers.setContentType(type);
+        HttpEntity<String> entity = new HttpEntity(JSONObject.toJSONString(params),headers);
+        ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, parameterizedTypeReference);
+       /* ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(headers), parameterizedTypeReference,
+               JSONObject.toJSONString(params));*/
         return responseEntity.getBody();
     }
 }

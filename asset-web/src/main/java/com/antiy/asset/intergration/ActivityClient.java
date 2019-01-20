@@ -24,4 +24,5 @@ public interface ActivityClient {
      * @return
      */
     ActionResponse completeTask(ActivityHandleRequest request);
+
 }
