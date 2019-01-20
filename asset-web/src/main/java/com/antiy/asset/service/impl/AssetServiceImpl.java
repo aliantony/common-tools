@@ -1,11 +1,13 @@
 package com.antiy.asset.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
+import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.enums.AssetOperationTableEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -1042,7 +1044,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public Integer changeAsset(AssetOuterRequest assetOuterRequest, Integer userId) throws Exception {
+    public Integer changeAsset(AssetOuterRequest assetOuterRequest, Integer configBaselineUserId) throws Exception {
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息不能为空");
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
@@ -1216,9 +1218,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // TODO 下发智甲
 
         // TODO 通知工作流
+        Map<String, Object> formData = new HashMap();
+        formData.put("configBaselineUserId", configBaselineUserId);
+        formData.put("discard", 0);
         ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
         manualStartActivityRequest.setBusinessId(asset.getId().toString());
-        manualStartActivityRequest.setAssignee(userId.toString());
+        manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+       // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId());
+        manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
         activityClient.manualStartProcess(manualStartActivityRequest);
         return assetCount;
     }

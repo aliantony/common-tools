@@ -622,7 +622,7 @@
                 #{assetStatus}
             </foreach>
         </if>
-        <if test=" categoryModels != null and categoryModels.size() > 0">
+        <if test=" categoryModels != null and categoryModels.length > 0">
             and category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
@@ -835,33 +835,34 @@
             parameterType="com.antiy.asset.vo.query.AssetQuery">
         select * from (SELECT
         a.id,
-        a.asset_group as assetGroup,
-        a.admittance_status as admittanceStatus,
+        a.area_id,
+        a.asset_group,
+        a.category_model,
+        a.admittance_status,
         a.number,
         a.name,
         a.serial,
-        a.category_model as categoryModel,
         c.name as categoryModelName,
-        a.manufacturer, asset_status AS assetStatus,
-        a.operation_system AS operationSystem,
-        a.system_bit AS systemBit,
+        a.manufacturer, asset_status,
+        a.operation_system,
+        a.system_bit,
         a.location,
         a.latitude,
         a.longitude,
-        a.firmware_version AS firmwareVersion,
+        a.firmware_version,
         a.uuid,
-        a.responsible_user_id AS responsibleUserId,
-        a.contact_tel AS contactTel,
+        a.responsible_user_id,
+        a.contact_tel,
         a.email,
-        a.asset_source AS assetSource,
-        a.importance_degree AS importanceDegree,
+        a.asset_source,
+        a.importance_degree,
         a. describle,
-        a. parent_id AS parentId,
+        a. parent_id,
         a.tags,
-        a.is_innet AS isInnet,
-        a.first_enter_nett AS firstEnterNett,
-        a.service_life AS serviceLife,
-        a. buy_date AS buyDate,
+        a.is_innet,
+        a.first_enter_nett,
+        a.service_life,
+        a. buy_date,
         a.warranty,
         GROUP_CONCAT( b.ip_address ) as ip,
         GROUP_CONCAT( b.mac_address ) as mac
