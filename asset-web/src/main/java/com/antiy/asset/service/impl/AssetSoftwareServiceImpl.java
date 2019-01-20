@@ -5,11 +5,16 @@ import java.util.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.templet.AssetEntity;
+import com.antiy.asset.templet.ComputeDeviceEntity;
+import com.antiy.asset.templet.ExportSoftwareEntity;
+import com.antiy.asset.vo.query.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,10 +32,6 @@ import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetPortProtocolQuery;
-import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
-import com.antiy.asset.vo.query.AssetSoftwareQuery;
-import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetPortProtocolRequest;
 import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
@@ -87,17 +88,21 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Resource
     private ActivityClient                                                   activityClient;
+
+    @Resource
+    private SoftwareEntityConvert                                            softwareEntityConvert;
+
     private static final Logger                                              LOGGER = LogUtils
-        .get(AssetSoftwareServiceImpl.class);
+                                                                                        .get(AssetSoftwareServiceImpl.class);
 
     @Transactional
     @Override
     public Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
         AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
-        AssetSoftwareLicense license = new BaseConverter<AssetSoftwareLicenseRequest, AssetSoftwareLicense>()
-            .convert(request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
-        AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>()
-            .convert(request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
+        AssetSoftwareLicense license = new BaseConverter<AssetSoftwareLicenseRequest, AssetSoftwareLicense>().convert(
+            request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
+        AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>().convert(
+            request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
 
         assetSoftwareDao.insert(assetSoftware);
         Integer sid = assetSoftware.getId();
@@ -127,7 +132,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             AssetSoftware t = assetSoftwareList.get(i);
             t.setGmtCreate(System.currentTimeMillis());
             t.setSoftwareStatus(3);
-            //// TODO: 2019/1/17 流程
+            // // TODO: 2019/1/17 流程
             assetSoftwareDao.insert(t);
         }
         return i + 1;
@@ -155,8 +160,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     if (StringUtils.isNotBlank(request.getAssetSoftwareRelationId())
                         && request.getSoftwareStatus() != null) {
                         AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-                        assetSoftwareRelation
-                            .setId(DataTypeUtils.stringToInteger(request.getAssetSoftwareRelationId()));
+                        assetSoftwareRelation.setId(DataTypeUtils.stringToInteger(request.getAssetSoftwareRelationId()));
                         assetSoftwareRelation.setSoftwareStatus(request.getSoftwareStatus());
                         assetSoftwareRelationDao.update(assetSoftwareRelation);
                     } else if (ArrayUtils.isNotEmpty(request.getAssetIds())) { // 更新一批实例
@@ -213,8 +217,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param request
      */
     private void updateLicense(AssetSoftwareRequest request) throws Exception {
-        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter
-            .convert(request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
+        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter.convert(
+            request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
         assetSoftwareLicense.setSoftwareId(DataTypeUtils.stringToInteger(request.getId()));
         assetSoftwareLicenseDao.update(assetSoftwareLicense);
     }
@@ -246,9 +250,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             protected void convert(AssetSoftware assetSoftware, AssetSoftwareResponse assetSoftwareResponse) {
                 super.convert(assetSoftware, assetSoftwareResponse);
                 if (MapUtils.isNotEmpty(finalSoftAssetCount)) {
-                    assetSoftwareResponse.setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null
-                        ? finalSoftAssetCount.get(assetSoftware.getId()).intValue()
-                        : 0);
+                    assetSoftwareResponse
+                        .setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null ? finalSoftAssetCount
+                            .get(assetSoftware.getId()).intValue() : 0);
                 }
             }
         };
@@ -407,6 +411,25 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    public void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
+        exportData(AssetSoftwareEntity.class, "软件信息表", assetSoftwareQuery, response);
+    }
+
+    private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,
+                            AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
+        assetSoftwareQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(LoginUserUtil.getLoginUser()
+            .getAreaIdsOfCurrentUser().toArray()));
+        assetSoftwareQuery.setQueryAssetCount(true);
+        List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery);
+        ParamterExceptionUtils.isEmpty(list, "资产数据不能为空");
+        DownloadVO downloadVO = new DownloadVO();
+        downloadVO.setSheetName("资产信息表");
+        List<ExportSoftwareEntity> softwareEntities = softwareEntityConvert.convert(list, ExportSoftwareEntity.class);
+        downloadVO.setDownloadList(softwareEntities);
+        excelDownloadUtil.excelDownload(response, s, downloadVO);
+    }
+
+    @Override
     public Integer changeStatusById(Map<String, Object> map) throws Exception {
         return assetSoftwareDao.changeStatusById(map);
     }
@@ -414,6 +437,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public void exportTemplate() throws Exception {
         exportToClient(AssetSoftwareEntity.class, "软件信息模板.xlsx", "软件信息");
+    }
+
+    @Override
+    public List<String> pulldownManufacturer() {
+        return assetSoftwareDao.pulldownManufacturer();
     }
 
     private void exportToClient(Class clazz, String fileName, String title) {
@@ -435,8 +463,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param assetSoftwareDetailResponse
      * @throws Exception
      */
-    private void querySoftwarePort(SoftwareQuery softwareQuery,
-                                   AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+    private void querySoftwarePort(SoftwareQuery softwareQuery, AssetSoftwareDetailResponse assetSoftwareDetailResponse)
+                                                                                                                        throws Exception {
         AssetPortProtocolQuery assetPortProtocolQuery = new AssetPortProtocolQuery();
         assetPortProtocolQuery.setAssetSoftId(softwareQuery.getPrimaryKey());
         assetPortProtocolQuery.setPageSize(Constants.MAX_PAGESIZE);
@@ -461,4 +489,20 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareDetailResponse.setSoftwareLicense(assetSoftwareLicenseResponses);
     }
 
+}
+
+@Component
+class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportSoftwareEntity> {
+    @Override
+    protected void convert(AssetSoftwareResponse assetSoftware, ExportSoftwareEntity exportSoftwareEntity) {
+        exportSoftwareEntity.setCategoryName(assetSoftware.getCategoryModelName());
+        if (Objects.nonNull(assetSoftware.getSoftwareStatus())) {
+            AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode(assetSoftware.getSoftwareStatus());
+            exportSoftwareEntity.setStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
+        }
+        if (Objects.nonNull(assetSoftware.getStringId())) {
+            exportSoftwareEntity.setId(Integer.parseInt(assetSoftware.getStringId()));
+        }
+        super.convert(assetSoftware, exportSoftwareEntity);
+    }
 }
