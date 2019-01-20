@@ -62,12 +62,12 @@ public interface IAssetGroupRelationService extends IBaseService<AssetGroupRelat
      * @param query
      * @return
      */
-    List<AssetGroupRelationResponse> findAssetDetailByAssetGroupId(AssetGroupRelationQuery query);
+    List<AssetGroupRelationResponse> findAssetDetailByAssetGroupId(AssetGroupRelationQuery query) throws Exception;
 
     /**
      * 通过资产组ID统计资产信息
      * @param query
      * @return
      */
-    Integer findCountDetailByGroupId(AssetGroupRelationQuery query);
+    Integer findCountDetailByGroupId(AssetGroupRelationQuery query) throws Exception;
 }

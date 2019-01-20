@@ -7,23 +7,16 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.antiy.asset.convert.AssetGroupRequestConverter;
-import com.antiy.asset.convert.AssetGroupToSelectResponseConverter;
-import com.antiy.asset.convert.IDRequestConverter;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.dao.AssetGroupRelationDao;
-import com.antiy.asset.dao.AssetNetworkCardDao;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetGroupRelation;
-import com.antiy.asset.entity.AssetNetworkCard;
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
-import com.antiy.asset.vo.response.AssetNetworkCardResponse;
 import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
@@ -38,27 +31,15 @@ import com.antiy.common.encoder.AesEncoder;
 public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implements IAssetGroupService {
 
     @Resource
-    private AssetGroupDao                                             assetGroupDao;
+    private AssetGroupDao         assetGroupDao;
     @Resource
-    private AssetGroupRelationDao                                     assetGroupRelationDao;
+    private AssetGroupRelationDao assetGroupRelationDao;
     @Resource
-    private AesEncoder                                                aesEncoder;
-    @Resource
-    private AssetGroupRequestConverter                                assetGroupRequestConverter;
-    @Resource
-    private BaseConverter<AssetGroup, AssetGroupResponse>             responseConverter;
-    @Resource
-    private AssetGroupToSelectResponseConverter                       assetGroupToSelectResponseConverter;
-    @Resource
-    private IDRequestConverter                                        idRequestConverter;
-    @Resource
-    private BaseConverter<AssetNetworkCard, AssetNetworkCardResponse> assetNetworkCardToResponseConverter;
-    @Resource
-    private AssetNetworkCardDao                                       assetNetworkCardDao;
+    private AesEncoder            aesEncoder;
 
     @Override
     public String saveAssetGroup(AssetGroupRequest request) throws Exception {
-        AssetGroup assetGroup = (AssetGroup)BeanConvert.convert(request, AssetGroup.class);
+        AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
         // assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
         assetGroupDao.insert(assetGroup);
@@ -105,7 +86,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public List<SelectResponse> queryGroupInfo() throws Exception {
-        return assetGroupToSelectResponseConverter.convert(assetGroupDao.findPulldownGroup(), SelectResponse.class);
+        return BeanConvert.convert(assetGroupDao.findPulldownGroup(), SelectResponse.class);
     }
 
     @Override
