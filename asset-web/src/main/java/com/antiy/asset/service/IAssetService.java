@@ -173,8 +173,9 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * 资产变更
      * @param assetOuterRequest 资产信息
+     * @param userId 配置管理员ID
      */
-    Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception;
+    Integer changeAsset(AssetOuterRequest assetOuterRequest, Integer userId) throws Exception;
     /**
      * 1-计算设备 2-网络设备 3-安全设备 4-存储介质 5-服务器 6-外设
      * @param type 导出模板的类型

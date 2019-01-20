@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.antiy.biz.enums.ModuleEnum;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,6 @@ import com.antiy.biz.entity.Code;
 import com.antiy.biz.entity.CodeType;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.SpringUtil;
 
 @Component

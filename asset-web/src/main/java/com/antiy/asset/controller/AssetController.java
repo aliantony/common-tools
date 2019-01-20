@@ -1,9 +1,12 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
+import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.common.base.ActionResponse;
@@ -30,7 +33,9 @@ import java.util.List;
 public class AssetController {
 
     @Resource
-    public IAssetService iAssetService;
+    public IAssetService   iAssetService;
+    @Resource
+    private ActivityClient activityClient;
 
     /**
      * 保存
@@ -42,8 +47,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:saveSingle')")
-    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset)
-                                                                                                                       throws Exception {
+    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset) throws Exception {
         iAssetService.saveAsset(asset);
         return ActionResponse.success();
     }
@@ -103,11 +107,9 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/change/asset", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:changeAsset')")
-    public ActionResponse updateSingle(@RequestBody(required = false) AssetOuterRequest assetOuterRequest)
-                                                                                                          throws Exception {
-        ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息b不能为空");
+    public ActionResponse updateSingle(@RequestBody(required = false) AssetOuterRequest assetOuterRequest) throws Exception {
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
-        iAssetService.changeAsset(assetOuterRequest);
+        iAssetService.changeAsset(assetOuterRequest, DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getId()));
         return ActionResponse.success();
     }
 

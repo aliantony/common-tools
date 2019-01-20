@@ -28,11 +28,6 @@ public class AssetQuery extends ObjectQuery {
     private String        multipleQuery;
 
     /**
-     * 资产类型:1台式办公机,2便携式办公机,3服务器虚拟终,4移动设备,4ATM机,5工控上位机,6路由器,7交换机,8防火墙,9IDS,10IPS,
-     */
-    @ApiModelProperty("资产类型:1台式办公机,2便携式办公机,3服务器虚拟终,4移动设备,4ATM机,5工控上位机,6路由器,7交换机,8防火墙,9IDS,10IPS,")
-    private Integer       type;
-    /**
      * 资产名称
      */
     @ApiModelProperty("资产名称")
@@ -121,9 +116,8 @@ public class AssetQuery extends ObjectQuery {
     /**
      * 首次发现时间还是首次入网时间（1：发现。2：入网）
      */
+    @ApiModelProperty("首次发现时间还是首次入网时间（1：发现。2：入网）")
     private Integer       timeType;
-
-    private Integer       status;
 
     @Encode
     @ApiModelProperty(value = "软件资产Id")
@@ -149,22 +143,6 @@ public class AssetQuery extends ObjectQuery {
 
     public void setIds(String[] ids) {
         this.ids = ids;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public String getName() {

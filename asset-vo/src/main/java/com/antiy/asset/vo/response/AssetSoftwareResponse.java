@@ -32,11 +32,7 @@ public class AssetSoftwareResponse extends BaseResponse {
      */
     @ApiModelProperty(value = "软件品类名字")
     private String  categoryModelName;
-    /**
-     * 软件型号
-     */
-    @ApiModelProperty("软件型号")
-    private Integer model;
+
     /**
      * 软件名称
      */
@@ -171,14 +167,6 @@ public class AssetSoftwareResponse extends BaseResponse {
 
     public void setCategoryModel(Integer categoryModel) {
         this.categoryModel = categoryModel;
-    }
-
-    public Integer getModel() {
-        return model;
-    }
-
-    public void setModel(Integer model) {
-        this.model = model;
     }
 
     public String getName() {

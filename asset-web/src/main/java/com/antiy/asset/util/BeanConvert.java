@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
+import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
 import com.antiy.common.encoder.Encode;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -96,7 +97,7 @@ public class BeanConvert {
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    public static <T>  List<T> convert(List<?> target, Class<T> c2) {
+    public static <T> List<T> convert(List<?> target, Class<T> c2) {
         if (target == null || target.isEmpty()) {
             return null;
         }
@@ -122,8 +123,12 @@ public class BeanConvert {
             copier.copy(o, o2, new Converter() {
                 @Override
                 public Object convert(Object o, Class aClass, Object o1) {
-                    if ( o != null && rule.contains(o1)) {
-                        return o.toString();
+                    if (o != null && rule.contains(o1)) {
+                        if (String.class.equals(aClass)) {
+                            return o.toString();
+                        } else if (Integer.class.equals(aClass)) {
+                            Integer.parseInt(o.toString());
+                        }
                     }
                     return o;
                 }

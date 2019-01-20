@@ -828,9 +828,12 @@
     <select id="findListAsset" resultType="com.antiy.asset.entity.Asset" parameterType="com.antiy.asset.vo.query.AssetQuery">
         select * from (SELECT
         a.id,
+        a.asset_group as assetGroup,
+        a.admittance_status as admittanceStatus,
         a.number,
         a.name,
         a.serial,
+        a.category_model as categoryModel,
         c.name as categoryModelName,
         a.manufacturer, asset_status AS assetStatus,
         a.operation_system AS operationSystem,

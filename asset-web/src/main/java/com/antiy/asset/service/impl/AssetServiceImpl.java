@@ -2,12 +2,10 @@ package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.*;
-import com.antiy.asset.util.ArrayTypeUtil;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.*;
 import com.antiy.asset.vo.enums.AssetOperationTableEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -90,6 +88,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private ExcelDownloadUtil                         excelDownloadUtil;
     @Resource
     private AssetEntityConvert                        assetEntityConvert;
+    @Resource
+    private ActivityClient                            activityClient;
     private static final Logger                       LOGGER = LogUtils.get(AssetServiceImpl.class);
 
     @Override
@@ -1033,7 +1033,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
+    public Integer changeAsset(AssetOuterRequest assetOuterRequest, Integer userId) throws Exception {
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息不能为空");
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
@@ -1207,7 +1207,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // TODO 下发智甲
 
         // TODO 通知工作流
-
+        ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+        manualStartActivityRequest.setBusinessId(asset.getId().toString());
+        manualStartActivityRequest.setAssignee(userId.toString());
+        activityClient.manualStartProcess(manualStartActivityRequest);
         return assetCount;
     }
 
