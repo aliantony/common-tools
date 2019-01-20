@@ -1,6 +1,7 @@
 package com.antiy.asset.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +21,8 @@ import org.springframework.cglib.core.Converter;
  * @date 2018/12/20
  */
 public class BeanConvert {
+    private static final String SETTER_PREFIX = "set";
+    private static final String GETTER_PREFIX = "get";
 
     public static Object convert(Object o1, Class<?> clazz) throws IllegalAccessException, InstantiationException {
         Field[] fields = o1.getClass().getDeclaredFields();
@@ -77,14 +80,7 @@ public class BeanConvert {
             return null;
         }
         BeanCopier copier = BeanCopier.create(target.getClass(), c2, true);
-        Field[] fields = c2.getDeclaredFields();
-        List<String> rule = Lists.newArrayList();
-        Arrays.asList(fields).stream().forEach(field -> {
-            Encode encode = field.getAnnotation(Encode.class);
-            if (encode != null) {
-                rule.add("set" + StringUtils.capitalize(field.getName()));
-            }
-        });
+        List<String> rule = getRules(target.getClass().getDeclaredFields(), c2.getDeclaredFields());
         T o2 = null;
         try {
             o2 = c2.newInstance();
@@ -111,14 +107,7 @@ public class BeanConvert {
             return null;
         }
         BeanCopier copier = BeanCopier.create(target.get(0).getClass(), c2, true);
-        Field[] fields = c2.getDeclaredFields();
-        List<String> rule = Lists.newArrayList();
-        Arrays.asList(fields).stream().forEach(field -> {
-            Encode encode = field.getAnnotation(Encode.class);
-            if (encode != null) {
-                rule.add("set" + StringUtils.capitalize(field.getName()));
-            }
-        });
+        List<String> rule = getRules(target.getClass().getDeclaredFields(), c2.getDeclaredFields());
         List<T> list = Lists.newArrayList();
         T o2 = null;
         for (Object o : target) {
@@ -143,11 +132,35 @@ public class BeanConvert {
                     if (String.class.equals(aClass)) {
                         return o.toString();
                     } else if (Integer.class.equals(aClass)) {
-                        Integer.parseInt(o.toString());
+                        return Integer.parseInt(o.toString());
                     }
                 }
                 return o;
             }
         });
+    }
+
+    public static List<String> getRules(Field[] f1, Field[] f2) {
+        if (f1 == null && f2 == null) {
+            return Lists.newArrayList();
+        }
+        List<String> rule = Lists.newArrayList();
+        Arrays.asList(f1).stream().forEach(field -> {
+            Encode encode = field.getAnnotation(Encode.class);
+            if (encode != null) {
+                if (!rule.contains(SETTER_PREFIX + StringUtils.capitalize(field.getName()))) {
+                    rule.add(SETTER_PREFIX + StringUtils.capitalize(field.getName()));
+                }
+            }
+        });
+        Arrays.asList(f2).stream().forEach(field -> {
+            Encode encode = field.getAnnotation(Encode.class);
+            if (encode != null) {
+                if (!rule.contains(SETTER_PREFIX + StringUtils.capitalize(field.getName()))) {
+                    rule.add(SETTER_PREFIX + StringUtils.capitalize(field.getName()));
+                }
+            }
+        });
+        return rule;
     }
 }
