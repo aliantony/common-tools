@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.antiy.asset.convert.AssetGroupRelationQueryToDetailQueryConverter;
 import com.antiy.asset.dao.AssetGroupRelationDao;
 import com.antiy.asset.dao.AssetNetworkCardDao;
 import com.antiy.asset.entity.AssetGroupRelation;
@@ -33,13 +32,11 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
                                            implements IAssetGroupRelationService {
 
     @Resource
-    private AesEncoder                                    aesEncoder;
+    private AesEncoder            aesEncoder;
     @Resource
-    private AssetGroupRelationDao                         assetGroupRelationDao;
+    private AssetGroupRelationDao assetGroupRelationDao;
     @Resource
-    private AssetGroupRelationQueryToDetailQueryConverter assetGroupRelationQueryToDetailQueryConverter;
-    @Resource
-    private AssetNetworkCardDao                           assetNetworkCardDao;
+    private AssetNetworkCardDao   assetNetworkCardDao;
 
     @Override
     public Integer saveAssetGroupRelation(AssetGroupRelationRequest request) throws Exception {
@@ -74,7 +71,7 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
 
     @Override
     public List<AssetGroupRelationResponse> findAssetDetailByAssetGroupId(AssetGroupRelationQuery query) throws Exception {
-        AssetGroupRelationDetailQuery assetGroupRelationDetailQuery = assetGroupRelationQueryToDetailQueryConverter
+        AssetGroupRelationDetailQuery assetGroupRelationDetailQuery = (AssetGroupRelationDetailQuery) BeanConvert
             .convert(query, AssetGroupRelationDetailQuery.class);
         assetGroupRelationDetailQuery.setAssetGroupId(assetGroupRelationDetailQuery.getAssetGroupId());
 
