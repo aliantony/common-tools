@@ -75,7 +75,15 @@ public class BeanConvert {
         if (target == null) {
             return null;
         }
-        BeanCopier copier = BeanCopier.create(target.getClass(), c2, false);
+        BeanCopier copier = BeanCopier.create(target.getClass(), c2, true);
+        Field[] fields = c2.getDeclaredFields();
+        List<String> rule = Lists.newArrayList();
+        Arrays.asList(fields).stream().forEach(field -> {
+            Encode encode = field.getAnnotation(Encode.class);
+            if (encode != null) {
+                rule.add("set" + StringUtils.capitalize(field.getName()));
+            }
+        });
         T o2 = null;
         try {
             o2 = c2.newInstance();
@@ -84,7 +92,19 @@ public class BeanConvert {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        copier.copy(target, o2, null);
+        copier.copy(target, o2,  new Converter() {
+            @Override
+            public Object convert(Object o, Class aClass, Object o1) {
+                if (o != null && rule.contains(o1)) {
+                    if (String.class.equals(aClass)) {
+                        return o.toString();
+                    } else if (Integer.class.equals(aClass)) {
+                        Integer.parseInt(o.toString());
+                    }
+                }
+                return o;
+            }
+        });
         return o2;
     }
 
