@@ -215,7 +215,7 @@
 
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-        select count(1) count
+        select count(1)
         from
         <include refid="Table_Name"></include> agroup
         LEFT JOIN sys_user suser ON suser.id = agroup.create_user
@@ -234,7 +234,7 @@
 
     <select id="findQuery" resultMap="BaseResultMap"
             parameterType="com.antiy.common.base.ObjectQuery">
-        select agroup.name,suser.username,agroup.memo,agroup.gmt_create
+        select agroup.id, agroup.name,suser.username,agroup.memo,agroup.gmt_create
         from
         <include refid="Table_Name"></include> agroup
         LEFT JOIN sys_user suser ON suser.id = agroup.create_user
@@ -271,5 +271,11 @@
         where
         status = 1
     </select>
-    
+    <select id="findAssetByAssetGroupId" resultType="Asset"
+            parameterType="int">
+        select
+        from
+        <include refid="Table_Name"></include>
+        where asset_group_id = #{assetGroupId}
+    </select>
 </mapper>

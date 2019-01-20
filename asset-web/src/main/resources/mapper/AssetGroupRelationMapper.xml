@@ -200,7 +200,7 @@
 
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-        select count(1) count
+        select count(1)
         from
         <include refid="Table_Name"></include> agrelation
         LEFT JOIN asset_group agroup ON agroup.id = agrelation.asset_group_id
@@ -238,17 +238,6 @@
         </trim>
         <include refid="Page_List"></include>
     </select>
-
-    <select id="findAssetByAssetGroupId" resultType="Asset"
-            parameterType="int">
-        select asset.id,asset.name
-        from
-        <include refid="Table_Name"></include> agrelation
-        LEFT JOIN asset ON asset.id = agrelation.asset_id
-        where agrelation.asset_group_id = #{assetGroupId}
-    </select>
-
-
     <select id="findListAssetGroupRelation" resultType="com.antiy.asset.entity.AssetGroupRelation"
             parameterType="com.antiy.asset.vo.query.AssetGroupRelationQuery">
         select * from
@@ -327,4 +316,31 @@
             )
         </foreach>
     </insert>
+    <select id="findAssetDetailByAssetGroupId" resultMap="BaseResultMap"
+            parameterType="com.antiy.asset.vo.query.AssetGroupRelationQuery">
+        select asset.id,asset.number,asset.asset_status as assetStatus, asset.name,asset.manufacturer,asset.gmt_modified as gmtModified, agroup.name as assetGroupName
+        from
+        <include refid="Table_Name"></include> agrelation
+        LEFT JOIN asset ON asset.id = agrelation.asset_id
+        LEFT JOIN asset_group agroup ON agroup.id = agrelation.asset_group_id
+        LEFT JOIN asset_network_equipment anequip ON anequip.id = asset.id
+        where agrelation.asset_group_id = #{assetGroupId}
+        <include refid="Page_List"></include>
+    </select>
+    <select id="findCountDetailByGroupId" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1)
+        from
+        <include refid="Table_Name"></include> agrelation
+        LEFT JOIN asset ON asset.id = agrelation.asset_id
+        LEFT JOIN asset_group agroup ON agroup.id = agrelation.asset_group_id
+        LEFT JOIN asset_network_equipment anequip ON anequip.id = asset.id
+        where agrelation.asset_group_id = #{assetGroupId}
+    </select>
+    <select id="findAssetNameByAssetGroupId" resultType="string" parameterType="int">
+        select asset.name
+        from
+        <include refid="Table_Name"></include> agrelation
+        LEFT JOIN asset ON asset.id = agrelation.asset_id
+        where agrelation.asset_group_id = #{assetGroupId}
+    </select>
 </mapper>
