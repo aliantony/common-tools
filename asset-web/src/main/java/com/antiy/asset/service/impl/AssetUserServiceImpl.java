@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.stereotype.Service;
@@ -35,8 +36,6 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     private AssetUserDao                                assetUserDao;
     @Resource
     private BaseConverter<AssetUserRequest, AssetUser>  requestConverter;
-    @Resource
-    private UserResponseConverter                       userResponseConverter;
     @Resource
     private BaseConverter<AssetUser, AssetUserResponse> responseConverter;
     @Resource
@@ -84,7 +83,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
 
     @Override
     public List<SelectResponse> queryUserInAsset() throws Exception {
-        return userResponseConverter.convert(assetUserDao.findUserInAsset(), SelectResponse.class);
+        return BeanConvert.convert(assetUserDao.findUserInAsset(), SelectResponse.class);
     }
 
     @Override
