@@ -9,6 +9,7 @@ import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
 import com.antiy.common.encoder.Encode;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.core.Converter;
 
@@ -92,19 +93,7 @@ public class BeanConvert {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        copier.copy(target, o2,  new Converter() {
-            @Override
-            public Object convert(Object o, Class aClass, Object o1) {
-                if (o != null && rule.contains(o1)) {
-                    if (String.class.equals(aClass)) {
-                        return o.toString();
-                    } else if (Integer.class.equals(aClass)) {
-                        Integer.parseInt(o.toString());
-                    }
-                }
-                return o;
-            }
-        });
+        copy(copier, target, o2, rule);
         return o2;
     }
 
@@ -140,21 +129,25 @@ public class BeanConvert {
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-            copier.copy(o, o2, new Converter() {
-                @Override
-                public Object convert(Object o, Class aClass, Object o1) {
-                    if (o != null && rule.contains(o1)) {
-                        if (String.class.equals(aClass)) {
-                            return o.toString();
-                        } else if (Integer.class.equals(aClass)) {
-                            Integer.parseInt(o.toString());
-                        }
-                    }
-                    return o;
-                }
-            });
+            copy(copier, o, o2, rule);
             list.add(o2);
         }
         return list;
+    }
+
+    private static void copy(BeanCopier copier, Object o, Object o2 , List<String> rule) {
+        copier.copy(o, o2, new Converter() {
+            @Override
+            public Object convert(Object o, Class aClass, Object o1) {
+                if (o != null && rule.contains(o1)) {
+                    if (String.class.equals(aClass)) {
+                        return o.toString();
+                    } else if (Integer.class.equals(aClass)) {
+                        Integer.parseInt(o.toString());
+                    }
+                }
+                return o;
+            }
+        });
     }
 }
