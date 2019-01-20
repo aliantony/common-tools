@@ -8,22 +8,25 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.convert.AssetGroupRequestConverter;
-import com.antiy.asset.convert.AssetGroupResponseConverter;
+import com.antiy.asset.convert.AssetGroupToSelectResponseConverter;
 import com.antiy.asset.convert.IDRequestConverter;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.dao.AssetGroupRelationDao;
+import com.antiy.asset.dao.AssetNetworkCardDao;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetGroupRelation;
+import com.antiy.asset.entity.AssetNetworkCard;
 import com.antiy.asset.service.IAssetGroupService;
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
+import com.antiy.asset.vo.response.AssetNetworkCardResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * <p> 资产组表 服务实现类 </p>
@@ -35,31 +38,38 @@ import com.antiy.common.utils.LoginUserUtil;
 public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implements IAssetGroupService {
 
     @Resource
-    private AssetGroupDao                                 assetGroupDao;
+    private AssetGroupDao                                             assetGroupDao;
     @Resource
-    private AssetGroupRelationDao                         assetGroupRelationDao;
+    private AssetGroupRelationDao                                     assetGroupRelationDao;
     @Resource
-    private AesEncoder                                    aesEncoder;
+    private AesEncoder                                                aesEncoder;
     @Resource
-    private AssetGroupRequestConverter                    assetGroupRequestConverter;
+    private AssetGroupRequestConverter                                assetGroupRequestConverter;
     @Resource
-    private BaseConverter<AssetGroup, AssetGroupResponse> responseConverter;
+    private BaseConverter<AssetGroup, AssetGroupResponse>             responseConverter;
     @Resource
-    private AssetGroupResponseConverter                   assetGroupResponseConverter;
+    private AssetGroupToSelectResponseConverter                       assetGroupToSelectResponseConverter;
     @Resource
-    private IDRequestConverter                            idRequestConverter;
+    private IDRequestConverter                                        idRequestConverter;
+    @Resource
+    private BaseConverter<AssetNetworkCard, AssetNetworkCardResponse> assetNetworkCardToResponseConverter;
+    @Resource
+    private AssetNetworkCardDao                                       assetNetworkCardDao;
 
     @Override
     public String saveAssetGroup(AssetGroupRequest request) throws Exception {
-        AssetGroup assetGroup = assetGroupRequestConverter.convert(request, AssetGroup.class);
+        AssetGroup assetGroup = (AssetGroup)BeanConvert.convert(request, AssetGroup.class);
+        // assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
         assetGroupDao.insert(assetGroup);
-        return aesEncoder.decode(assetGroup.getId().toString(), LoginUserUtil.getLoginUser().getPassword());
+        // return aesEncoder.decode(assetGroup.getId().toString(), LoginUserUtil.getLoginUser().getPassword());
+        // TODO 解密id
+        return assetGroup.getId().toString();
     }
 
     @Override
     public Integer updateAssetGroup(AssetGroupRequest request) throws Exception {
-        AssetGroup assetGroup = assetGroupRequestConverter.convert(request, AssetGroup.class);
+        AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
         List<Integer> assetIdList = idRequestConverter.convert(request.getAssetIdList(), Integer.class);
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
         assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
@@ -78,32 +88,29 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public List<AssetGroupResponse> findListAssetGroup(AssetGroupQuery query) throws Exception {
         List<AssetGroup> assetGroupList = assetGroupDao.findQuery(query);
-        for (AssetGroup assetGroup : assetGroupList) {
-            AssetGroupResponse assetGroupResponse = responseConverter.convert(assetGroup, AssetGroupResponse.class);
-            List<String> assetList = assetGroupRelationDao.findAssetByAssetGroupId(assetGroup.getId());
+        List<AssetGroupResponse> assetResponseList = BeanConvert.convert(assetGroupList, AssetGroupResponse.class);
+        for (AssetGroupResponse assetGroupResponse : assetResponseList) {
+            List<String> assetList = assetGroupRelationDao
+                .findAssetNameByAssetGroupId(Integer.valueOf(assetGroupResponse.getId()));
             assetGroupResponse.setAssetList(assetList);
         }
-        return responseConverter.convert(assetGroupList, AssetGroupResponse.class);
-    }
-
-    public Integer findCountAssetGroup(AssetGroupQuery query) throws Exception {
-        return assetGroupDao.findCount(query);
+        return assetResponseList;
     }
 
     @Override
     public PageResult<AssetGroupResponse> findPageAssetGroup(AssetGroupQuery query) throws Exception {
-        return new PageResult<>(query.getPageSize(), this.findCountAssetGroup(query), query.getCurrentPage(),
+        return new PageResult<AssetGroupResponse>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
             this.findListAssetGroup(query));
     }
 
     @Override
     public List<SelectResponse> queryGroupInfo() throws Exception {
-        return assetGroupResponseConverter.convert(assetGroupDao.findPulldownGroup(), SelectResponse.class);
+        return assetGroupToSelectResponseConverter.convert(assetGroupDao.findPulldownGroup(), SelectResponse.class);
     }
 
     @Override
     public AssetGroupResponse findGroupById(String id) throws Exception {
-        return null;
+        return (AssetGroupResponse) BeanConvert.convert(assetGroupDao.getById(Integer.valueOf(id)),
+            AssetGroupResponse.class);
     }
-
 }

@@ -4,22 +4,19 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.response.AssetGroupResponse;
-import com.antiy.common.encoder.Encode;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.query.AssetGroupQuery;
-import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.response.AssetGroupDetailResponse;
-import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.AssetGroupResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.encoder.Encode;
 
 import io.swagger.annotations.*;
 
@@ -46,7 +43,7 @@ public class AssetGroupController {
     @ApiOperation(value = "保存", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    @PreAuthorize(value="hasAuthority('asset:group:saveSingle')")
+    @PreAuthorize(value = "hasAuthority('asset:group:saveSingle')")
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetGroup") AssetGroupRequest assetGroup) throws Exception {
         return ActionResponse.success(iAssetGroupService.saveAssetGroup(assetGroup));
     }
@@ -60,7 +57,7 @@ public class AssetGroupController {
     @ApiOperation(value = "修改", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    @PreAuthorize(value="hasAuthority('asset:group:updateSingle')")
+    @PreAuthorize(value = "hasAuthority('asset:group:updateSingle')")
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetGroup") AssetGroupRequest assetGroup) throws Exception {
         return ActionResponse.success(iAssetGroupService.updateAssetGroup(assetGroup));
     }
@@ -74,7 +71,7 @@ public class AssetGroupController {
     @ApiOperation(value = "批量查询", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    @PreAuthorize(value="hasAuthority('asset:group:queryList')")
+    @PreAuthorize(value = "hasAuthority('asset:group:queryList')")
     public ActionResponse queryList(@ApiParam(value = "assetGroup") AssetGroupQuery assetGroup) throws Exception {
         return ActionResponse.success(iAssetGroupService.findPageAssetGroup(assetGroup));
     }
@@ -88,7 +85,7 @@ public class AssetGroupController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
-    @PreAuthorize(value="hasAuthority('asset:group:queryById')")
+    @PreAuthorize(value = "hasAuthority('asset:group:queryById')")
     public ActionResponse queryById(@PathVariable @ApiParam(value = "assetGroup") @Encode String id) throws Exception {
         return ActionResponse.success(iAssetGroupService.findGroupById(id));
     }
@@ -102,7 +99,7 @@ public class AssetGroupController {
     @ApiOperation(value = "通过ID删除", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    @PreAuthorize(value="hasAuthority('asset:group:deleteById')")
+    @PreAuthorize(value = "hasAuthority('asset:group:deleteById')")
     public ActionResponse deleteById(@PathVariable @RequestBody @ApiParam(value = "id") @Encode String id) throws Exception {
         return ActionResponse.success(iAssetGroupService.deleteById(id));
     }
@@ -116,7 +113,7 @@ public class AssetGroupController {
     @ApiOperation(value = "查询下拉项的资产组信息", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/groupInfo", method = RequestMethod.GET)
-    @PreAuthorize(value="hasAuthority('asset:group:queryGroupInfo')")
+    @PreAuthorize(value = "hasAuthority('asset:group:queryGroupInfo')")
     public ActionResponse<List<SelectResponse>> queryGroupInfo() throws Exception {
         return ActionResponse.success(iAssetGroupService.queryGroupInfo());
     }
@@ -129,21 +126,9 @@ public class AssetGroupController {
      */
     @ApiOperation(value = "通过资产组ID查询资产组详情", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupDetailResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/assetByGroupId/{id}", method = RequestMethod.GET)
-    @PreAuthorize(value="hasAuthority('asset:group:queryAssetByGroupId')")
-    public ActionResponse<AssetGroupDetailResponse> queryAssetByGroupId(@ApiParam(value = "资产组ID") @PathVariable Integer id) throws Exception {
-        AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setAssetGroup(id);
-        AssetGroup assetGroup = iAssetGroupService.getById(id);
-        PageResult<AssetResponse> pageResult = iAssetService.findPageAsset(assetQuery);
-        int assetSize = pageResult.getItems().size();
-        AssetGroupDetailResponse assetGroupDetailResponse = null;
-        if (assetSize > 0) {
-            assetGroupDetailResponse = new AssetGroupDetailResponse();
-            assetGroupDetailResponse.setAssetGroupName(assetGroup.getName());
-            assetGroupDetailResponse.setAssetGroupMemo(assetGroup.getMemo());
-            assetGroupDetailResponse.setAssetResponseList(pageResult.getItems());
-        }
-        return ActionResponse.success(assetGroupDetailResponse);
+    @RequestMapping(value = "/query/assetByAssetGroupId", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:group:queryAssetByGroupId')")
+    public ActionResponse<PageResult<AssetGroupResponse>> queryAssetByGroupId(@ApiParam(value = "query") @PathVariable AssetGroupQuery query) throws Exception {
+        return ActionResponse.success(iAssetGroupService.findPageAssetGroup(query));
     }
 }

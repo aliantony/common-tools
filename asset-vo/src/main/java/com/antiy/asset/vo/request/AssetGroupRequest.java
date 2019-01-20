@@ -7,6 +7,7 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -33,6 +34,7 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
      * 资产组名称
      */
     @ApiModelProperty("资产组名称")
+    @NotBlank(message = "资产组名称不能为空")
     private String name;
     /**
      * 资产组ID数组
