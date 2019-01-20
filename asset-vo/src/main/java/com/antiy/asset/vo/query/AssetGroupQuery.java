@@ -21,11 +21,6 @@ public class AssetGroupQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("资产组名称")
     private String name;
     /**
-     * 创建时间
-     */
-    @ApiModelProperty("创建时间")
-    private Long   gmtCreate;
-    /**
      * 备注
      */
     @ApiModelProperty("备注")
@@ -42,14 +37,6 @@ public class AssetGroupQuery extends ObjectQuery implements ObjectValidator {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
     }
 
     public String getMemo() {

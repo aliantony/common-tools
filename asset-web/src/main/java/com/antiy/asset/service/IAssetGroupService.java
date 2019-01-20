@@ -63,5 +63,4 @@ public interface IAssetGroupService extends IBaseService<AssetGroup> {
      * @return
      */
     AssetGroupResponse findGroupById(String id) throws Exception;
-
 }

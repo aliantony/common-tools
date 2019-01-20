@@ -1,5 +1,6 @@
 package com.antiy.asset.dao;
 
+import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.vo.query.AssetGroupRelationQuery;
@@ -26,15 +27,12 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @return
      */
     List<AssetGroup> queryByAssetId(Integer id);
-
     /**
-     * 通过资产组ID查询资产信息
-     * @param id
+     * 通过资产组ID查询资产组详情
+     * @param query
      * @return
      */
-    List<String> findAssetByAssetGroupId(Integer id);
-
-
+    List<AssetGroupRelation> findAssetDetailByAssetGroupId(AssetGroupRelationQuery query);
     /**
      * 删除资产的资产组关系
      * @param id
@@ -54,4 +52,17 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @return
      */
     Integer insertBatch(List<AssetGroupRelation> assetGroupRelations);
+    /**
+     * 通过资产组ID查询资产组详情
+     * @param id
+     * @return
+     */
+    List<String> findAssetNameByAssetGroupId(Integer id);
+
+    /**
+     * 通过资产组ID查询资产组详情
+     * @param id
+     * @return
+     */
+    Integer findCountDetailByGroupId(Integer id) throws Exception;
 }

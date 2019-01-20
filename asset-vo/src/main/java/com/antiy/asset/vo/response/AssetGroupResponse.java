@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
+
 import java.util.List;
 
 /**
@@ -10,6 +12,11 @@ import java.util.List;
  */
 
 public class AssetGroupResponse extends BaseResponse {
+    /**
+     * 资产组ID
+     */
+    @Encode
+    private String id;
     /**
      * 资产组名称
      */
@@ -67,6 +74,14 @@ public class AssetGroupResponse extends BaseResponse {
 
     public List<String> getAssetList() {
         return assetList;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setAssetList(List<String> assetList) {

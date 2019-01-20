@@ -21,4 +21,6 @@ public interface AssetNetworkCardDao extends IBaseDao<AssetNetworkCard> {
     Integer insertBatch(List<AssetNetworkCard> assetNetworkCardList);
 
     Integer deleteByAssetId(Integer id);
+
+    List<AssetNetworkCard> findNetworkCardByAssetId(Integer id);
 }

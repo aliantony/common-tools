@@ -49,4 +49,25 @@ public interface IAssetGroupRelationService extends IBaseService<AssetGroupRelat
      */
     PageResult<AssetGroupRelationResponse> findPageAssetGroupRelation(AssetGroupRelationQuery query) throws Exception;
 
+    /**
+     * 资产组详情查询
+     *
+     * @param query
+     * @return
+     */
+    PageResult<AssetGroupRelationResponse> findPageAssetByAssetGroupId(AssetGroupRelationQuery query) throws Exception;
+
+    /**
+     * 通过资产组ID查询资产信息
+     * @param query
+     * @return
+     */
+    List<AssetGroupRelationResponse> findAssetDetailByAssetGroupId(AssetGroupRelationQuery query) throws Exception;
+
+    /**
+     * 通过资产组ID统计资产信息
+     * @param query
+     * @return
+     */
+    Integer findCountDetailByGroupId(AssetGroupRelationQuery query) throws Exception;
 }
