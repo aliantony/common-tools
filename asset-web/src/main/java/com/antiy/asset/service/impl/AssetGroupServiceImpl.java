@@ -70,7 +70,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public Integer updateAssetGroup(AssetGroupRequest request) throws Exception {
         AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
-        List<Integer> assetIdList = idRequestConverter.convert(request.getAssetIdList(), Integer.class);
+        List<Integer> assetIdList = BeanConvert.convert(request.getAssetIdList(), Integer.class);
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
         assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
         for (Integer assetId : assetIdList) {
