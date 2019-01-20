@@ -101,7 +101,7 @@ public class AssetGroupController {
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:group:deleteById')")
     public ActionResponse deleteById(@PathVariable @RequestBody @ApiParam(value = "id") @Encode String id) throws Exception {
-        return ActionResponse.success(iAssetGroupService.deleteById(id));
+        return ActionResponse.success(iAssetGroupService.deleteById(Integer.valueOf(id)));
     }
 
     /**
