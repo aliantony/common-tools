@@ -171,7 +171,7 @@
         delete from
         <include refid="Table_Name"></include>
         where id = #{id}
-    </delete>`
+    </delete>
 
     <delete id="deleteByAssetGroupId" parameterType="java.lang.Integer">
         delete from
