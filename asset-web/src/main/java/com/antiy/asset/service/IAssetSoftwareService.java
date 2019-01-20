@@ -6,12 +6,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -110,17 +112,22 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @throws Exception
      */
     void downloadSoftware(AssetSoftwareQuery query, HttpServletResponse response) throws Exception;
+
     /**
      * 通过ID修改软件状态
      *
      * @param map
      * @return
      */
-    Integer changeStatusById(Map<String,Object> map ) throws Exception;
+    Integer changeStatusById(Map<String, Object> map) throws Exception;
 
     /**
      * 导出
      * @throws Exception
      */
     void exportTemplate() throws Exception;
+
+    List<String> pulldownManufacturer();
+
+    void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception;
 }

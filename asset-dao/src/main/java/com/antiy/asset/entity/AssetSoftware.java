@@ -33,6 +33,7 @@ public class AssetSoftware extends BaseEntity {
     *  软件名称
     */
     private String name;
+
     /**
     *  上传的软件名称
     */
@@ -357,7 +358,6 @@ public class AssetSoftware extends BaseEntity {
     public void setStatus(Integer status) {
     this.status = status;
     }
-
 
     @Override
     public String toString() {

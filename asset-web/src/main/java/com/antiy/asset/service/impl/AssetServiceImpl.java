@@ -1672,9 +1672,7 @@ class AssetEntityConvert extends BaseConverter<Asset, AssetEntity> {
             AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode(asset.getAssetStatus());
             assetEntity.setAssetStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
         }
-        if (Objects.nonNull(asset.getCategoryModelName())) {
             assetEntity.setCategoryModel(asset.getCategoryModelName());
-        }
         if (Objects.nonNull(asset.getAssetSource())) {
             if (asset.getAssetSource().equals(1)) {
                 assetEntity.setAssetSource("人工上报");

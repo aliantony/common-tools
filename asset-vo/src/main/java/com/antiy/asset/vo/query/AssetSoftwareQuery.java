@@ -6,6 +6,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.List;
+
 /**
  * <p> AssetSoftware 查询条件 </p>
  *
@@ -19,87 +21,96 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
      */
     @ApiModelProperty("操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)")
-    private String    operationSystem;
+    private String        operationSystem;
     /**
      * 软件品类
      */
     @ApiModelProperty("软件品类")
-    private Integer   categoryModel;
-
+    private Integer       categoryModel;
+    @ApiModelProperty("综合查询")
+    private String        multipleQuery;
     @ApiModelProperty("软件品类型号列表")
-    private Integer[] categoryModels;
+    private Integer[]     categoryModels;
 
     @ApiModelProperty("区域id列表")
-    private Integer[] areaIds;
+    private Integer[]     areaIds;
     /**
      * 软件名称
      */
     @ApiModelProperty("软件名称")
-    private String    name;
+    private String        name;
 
     /**
      * 版本
      */
     @ApiModelProperty("版本")
-    private String    version;
+    private String        version;
     /**
      * 厂商
      */
     @ApiModelProperty("厂商")
-    private String    manufacturer;
+    private String        manufacturer;
 
     /**
      * 软件标签
      */
     @ApiModelProperty("软件标签")
-    private Integer   softwareLabel;
+    private Integer       softwareLabel;
     /**
      * 1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
      */
     @ApiModelProperty("1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役")
-    private Integer   softwareStatus;
+    private Integer       softwareStatus;
+
+    @ApiModelProperty("1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役")
+    private List<Integer> softwareStatusList;
+
     /**
      * 0-免费软件，1-商业软件
      */
     @ApiModelProperty("0-免费软件，1-商业软件")
-    private Integer   authorization;
+    private Integer       authorization;
     /**
      * 上报来源:1-自动上报，2-人工上报
      */
     @ApiModelProperty("上报来源:1-自动上报，2-人工上报")
-    private Integer   reportSource;
+    private Integer       reportSource;
     /**
      * 端口
      */
     @ApiModelProperty("端口")
-    private String    port;
+    private String        port;
     /**
      * 语言
      */
     @ApiModelProperty("语言")
-    private String    language;
+    private String        language;
     /**
      * 发布时间
      */
     @ApiModelProperty("发布时间")
-    private Long      releaseTime;
+    private Long          releaseTime;
+    @ApiModelProperty("开始时间")
+    private Long          beginTime;
+    @ApiModelProperty("结束时间")
+    private Long          endTime;
     /**
      * 发布者
      */
     @ApiModelProperty("发布者")
-    private String    publisher;
+    private String        publisher;
 
     /**
      * 状态,0 未删除,1已删除
      */
     @ApiModelProperty("状态,0 未删除,1已删除")
-    private Integer   status;
+    private Integer       status;
 
     @ApiModelProperty(value = "是否查询关联资产数量")
-    private Boolean   queryAssetCount = false;
+    private Boolean       queryAssetCount = false;
 
     @ApiModelProperty(value = "资产组")
-    private String    assetGroup;
+    private String        assetGroup;
 
     public String getAssetGroup() {
         return assetGroup;
@@ -243,6 +254,22 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
 
     public void setAreaIds(Integer[] areaIds) {
         this.areaIds = areaIds;
+    }
+
+    public List<Integer> getSoftwareStatusList() {
+        return softwareStatusList;
+    }
+
+    public void setSoftwareStatusList(List<Integer> softwareStatusList) {
+        this.softwareStatusList = softwareStatusList;
+    }
+
+    public String getMultipleQuery() {
+        return multipleQuery;
+    }
+
+    public void setMultipleQuery(String multipleQuery) {
+        this.multipleQuery = multipleQuery;
     }
 
     @Override

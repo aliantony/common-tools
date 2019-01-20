@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.antiy.common.enums.ModuleEnum;
+import com.antiy.biz.enums.ModuleEnum;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
@@ -29,16 +29,14 @@ public class CodeUtils {
                 RedisUtil redisUtil = SpringUtil.getBean(RedisUtil.class);
                 List<CodeType> codeTypeList = redisUtil.getObjectsByKeyword(key, CodeType.class);
                 for (CodeType codeType : codeTypeList) {
-                    if (codeType.getId() <= 996 && codeType.getId() >= 982) {
-                        String ke = RedisKeyUtil.getKeyWhenHandleObjectList(ModuleEnum.COMMON.getType(), "codeTypeId",
-                            codeType.getId().toString(), Code.class);
-                        List<Code> list = redisUtil.getObjectList(ke, Code.class);
-                        code = new HashMap<>(16);
-                        for (Code cod : list) {
-                            code.put(cod.getCode(), cod.getValue());
-                        }
-                        codeMap.put(codeType.getCode(), code);
+                    String ke = RedisKeyUtil.getKeyWhenHandleObjectList(ModuleEnum.COMMON.getType(), "codeTypeId",
+                        codeType.getId().toString(), Code.class);
+                    List<Code> list = redisUtil.getObjectList(ke, Code.class);
+                    code = new HashMap<>(16);
+                    for (Code cod : list) {
+                        code.put(cod.getCode(), cod.getValue());
                     }
+                    codeMap.put(codeType.getCode(), code);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

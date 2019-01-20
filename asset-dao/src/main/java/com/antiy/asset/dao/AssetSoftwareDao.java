@@ -3,6 +3,7 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.antiy.asset.vo.query.AssetQuery;
 import javafx.beans.binding.ObjectExpression;
 import org.apache.ibatis.annotations.Param;
 
@@ -52,5 +53,9 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
      * @param map
      * @return
      */
-    Integer changeStatusById(Map<String, Object> map ) throws Exception;
+    Integer changeStatusById(Map<String, Object> map) throws Exception;
+
+    List<String> pulldownManufacturer();
+
+    Integer findCount(AssetSoftwareQuery assetSoftwareQuery);
 }
