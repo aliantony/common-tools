@@ -28,11 +28,25 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
     List<AssetGroup> queryByAssetId(Integer id);
 
     /**
+     * 通过资产组ID查询资产信息
+     * @param id
+     * @return
+     */
+    List<String> findAssetByAssetGroupId(Integer id);
+
+
+    /**
      * 删除资产的资产组关系
      * @param id
      * @return
      */
     Integer deleteByAssetId(Integer id);
+    /**
+     * 通过资产组ID删除关系
+     * @param id
+     * @return
+     */
+    Integer deleteByAssetGroupId(Integer id);
 
     /**
      * 插入资产

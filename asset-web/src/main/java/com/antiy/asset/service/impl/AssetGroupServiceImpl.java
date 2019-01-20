@@ -1,14 +1,19 @@
 package com.antiy.asset.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.antiy.asset.convert.AssetGroupRequestConverter;
 import com.antiy.asset.convert.AssetGroupResponseConverter;
+import com.antiy.asset.convert.IDRequestConverter;
 import com.antiy.asset.dao.AssetGroupDao;
+import com.antiy.asset.dao.AssetGroupRelationDao;
 import com.antiy.asset.entity.AssetGroup;
+import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
@@ -32,17 +37,21 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Resource
     private AssetGroupDao                                 assetGroupDao;
     @Resource
-    AesEncoder                                            aesEncoder;
+    private AssetGroupRelationDao                         assetGroupRelationDao;
     @Resource
-    private BaseConverter<AssetGroupRequest, AssetGroup>  requestConverter;
+    private AesEncoder                                    aesEncoder;
+    @Resource
+    private AssetGroupRequestConverter                    assetGroupRequestConverter;
     @Resource
     private BaseConverter<AssetGroup, AssetGroupResponse> responseConverter;
     @Resource
     private AssetGroupResponseConverter                   assetGroupResponseConverter;
+    @Resource
+    private IDRequestConverter                            idRequestConverter;
 
     @Override
     public String saveAssetGroup(AssetGroupRequest request) throws Exception {
-        AssetGroup assetGroup = requestConverter.convert(request, AssetGroup.class);
+        AssetGroup assetGroup = assetGroupRequestConverter.convert(request, AssetGroup.class);
         assetGroup.setGmtCreate(System.currentTimeMillis());
         assetGroupDao.insert(assetGroup);
         return aesEncoder.decode(assetGroup.getId().toString(), LoginUserUtil.getLoginUser().getPassword());
@@ -50,22 +59,35 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public Integer updateAssetGroup(AssetGroupRequest request) throws Exception {
-        AssetGroup assetGroup = requestConverter.convert(request, AssetGroup.class);
-        return assetGroupDao.update(assetGroup);
+        AssetGroup assetGroup = assetGroupRequestConverter.convert(request, AssetGroup.class);
+        List<Integer> assetIdList = idRequestConverter.convert(request.getAssetIdList(), Integer.class);
+        List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
+        assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
+        for (Integer assetId : assetIdList) {
+            AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
+            assetGroupRelation.setAssetGroupId(assetGroup.getId());
+            assetGroupRelation.setAssetId(assetId);
+            assetGroupRelation.setGmtCreate(System.currentTimeMillis());
+            // TODO 创建人
+            // assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetGroupRelationList.add(assetGroupRelation);
+        }
+        return assetGroupRelationDao.insertBatch(assetGroupRelationList);
     }
 
     @Override
     public List<AssetGroupResponse> findListAssetGroup(AssetGroupQuery query) throws Exception {
-        List<AssetGroup> assetGroup = assetGroupDao.findListAssetGroup(query);
-        return convert(assetGroup);
+        List<AssetGroup> assetGroupList = assetGroupDao.findQuery(query);
+        for (AssetGroup assetGroup : assetGroupList) {
+            AssetGroupResponse assetGroupResponse = responseConverter.convert(assetGroup, AssetGroupResponse.class);
+            List<String> assetList = assetGroupRelationDao.findAssetByAssetGroupId(assetGroup.getId());
+            assetGroupResponse.setAssetList(assetList);
+        }
+        return responseConverter.convert(assetGroupList, AssetGroupResponse.class);
     }
 
     public Integer findCountAssetGroup(AssetGroupQuery query) throws Exception {
         return assetGroupDao.findCount(query);
-    }
-
-    private List<AssetGroupResponse> convert(List<AssetGroup> assetGroups) {
-        return responseConverter.convert(assetGroups, AssetGroupResponse.class);
     }
 
     @Override

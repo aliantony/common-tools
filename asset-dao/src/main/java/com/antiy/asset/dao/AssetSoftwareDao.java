@@ -3,6 +3,7 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
+import javafx.beans.binding.ObjectExpression;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.AssetSoftware;
@@ -44,4 +45,12 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
     List<Map<String, Long>> countStatus(@Param("areaIds") List<Integer> areaIds);
 
     Long findCountByCategoryModel(AssetSoftwareQuery assetSoftwareQuery);
+
+    /**
+     * 通过ID修改软件状态
+     *
+     * @param map
+     * @return
+     */
+    Integer changeStatusById(Map<String, Object> map ) throws Exception;
 }

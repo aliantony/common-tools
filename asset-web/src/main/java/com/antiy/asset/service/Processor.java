@@ -1,7 +1,7 @@
 package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Scheme;
-import com.antiy.asset.vo.enums.CodeEnum;
+import com.antiy.asset.vo.request.SchemeRequest;
 
 /**
  * @author zhangyajun
@@ -14,5 +14,5 @@ public interface Processor {
      */
     // AssetOperationRecord saveOperationRecord(Scheme scheme) throws Exception;
 
-    void process(String assetOperationEnum, Scheme scheme) throws Exception;
+    void process(String assetOperationEnum, SchemeRequest schemeRequest, Scheme scheme) throws Exception;
 }

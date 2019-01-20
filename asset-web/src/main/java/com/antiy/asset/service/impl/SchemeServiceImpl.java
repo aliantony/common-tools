@@ -46,11 +46,11 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         Scheme scheme = requestConverter.convert(request, Scheme.class);
         if (request.getTopCategory().equals(AssetOperationTableEnum.ASSET.getCode())) {
             AssetStatusProcessor assetStatusProcessor = new AssetStatusProcessor();
-            assetStatusProcessor.changeStatus(request);
+            assetStatusProcessor.changeStatus(request, scheme);
         } else if (request.getTopCategory().equals(AssetOperationTableEnum.SOFTWARE.getCode())) {
-            SoftwarStatusProcessor softwarStatusProcessor = new SoftwarStatusProcessor();
+            SoftwareStatusProcessor softwareStatusProcessor = new SoftwareStatusProcessor();
+            softwareStatusProcessor.changeStatus(request, scheme);
         }
-        schemeDao.insert(scheme);
         return aesEncoder.decode(scheme.getId().toString(), LoginUserUtil.getLoginUser().getPassword());
     }
 
@@ -65,8 +65,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     @Override
     public List<SchemeResponse> findListScheme(SchemeQuery query) throws Exception {
         List<Scheme> schemeList = schemeDao.findQuery(query);
-        List<SchemeResponse> schemeResponse = responseConverter.convert(schemeList, SchemeResponse.class);
-        return schemeResponse;
+        return responseConverter.convert(schemeList, SchemeResponse.class);
     }
 
     @Override

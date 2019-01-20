@@ -26,6 +26,10 @@ public class AssetGroup extends BaseEntity {
      */
     private String            name;
     /**
+     * 创建人名字
+     */
+    private String createUserName;
+    /**
      * 创建时间
      */
     private Long              gmtCreate;
@@ -49,6 +53,18 @@ public class AssetGroup extends BaseEntity {
      * 状态,1未删除,0已删除
      */
     private Integer           status;
+
+    public String getCreateUserName() {
+        return createUserName;
+    }
+
+    public void setCreateUserName(String createUserName) {
+        this.createUserName = createUserName;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
 
     public String getPurpose() {
         return purpose;

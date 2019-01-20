@@ -65,6 +65,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetSafetyEquipmentDao                   assetSafetyEquipmentDao;
     @Resource
     private AssetSoftwareDao                          assetSoftwareDao;
+    @Resource
     private AssetSoftwareLicenseDao                   assetSoftwareLicenseDao;
     @Resource
     private AssetCategoryModelDao                     assetCategoryModelDao;

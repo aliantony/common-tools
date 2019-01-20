@@ -5,8 +5,6 @@ import java.util.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
-import com.antiy.asset.templet.AssetSoftwareEntity;
-import com.antiy.asset.util.ExcelUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -24,8 +22,10 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetPortProtocolService;
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
 import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.templet.AssetSoftwareEntity;
 import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
@@ -88,16 +88,16 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Resource
     private ActivityClient                                                   activityClient;
     private static final Logger                                              LOGGER = LogUtils
-                                                                                        .get(AssetSoftwareServiceImpl.class);
+        .get(AssetSoftwareServiceImpl.class);
 
     @Transactional
     @Override
     public Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
         AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
-        AssetSoftwareLicense license = new BaseConverter<AssetSoftwareLicenseRequest, AssetSoftwareLicense>().convert(
-            request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
-        AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>().convert(
-            request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
+        AssetSoftwareLicense license = new BaseConverter<AssetSoftwareLicenseRequest, AssetSoftwareLicense>()
+            .convert(request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
+        AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>()
+            .convert(request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
 
         assetSoftwareDao.insert(assetSoftware);
         Integer sid = assetSoftware.getId();
@@ -127,7 +127,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             AssetSoftware t = assetSoftwareList.get(i);
             t.setGmtCreate(System.currentTimeMillis());
             t.setSoftwareStatus(3);
-            // // TODO: 2019/1/17 流程
+            //// TODO: 2019/1/17 流程
             assetSoftwareDao.insert(t);
         }
         return i + 1;
@@ -155,7 +155,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     if (StringUtils.isNotBlank(request.getAssetSoftwareRelationId())
                         && request.getSoftwareStatus() != null) {
                         AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-                        assetSoftwareRelation.setId(DataTypeUtils.stringToInteger(request.getAssetSoftwareRelationId()));
+                        assetSoftwareRelation
+                            .setId(DataTypeUtils.stringToInteger(request.getAssetSoftwareRelationId()));
                         assetSoftwareRelation.setSoftwareStatus(request.getSoftwareStatus());
                         assetSoftwareRelationDao.update(assetSoftwareRelation);
                     } else if (ArrayUtils.isNotEmpty(request.getAssetIds())) { // 更新一批实例
@@ -212,8 +213,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param request
      */
     private void updateLicense(AssetSoftwareRequest request) throws Exception {
-        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter.convert(
-            request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
+        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter
+            .convert(request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
         assetSoftwareLicense.setSoftwareId(DataTypeUtils.stringToInteger(request.getId()));
         assetSoftwareLicenseDao.update(assetSoftwareLicense);
     }
@@ -245,9 +246,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             protected void convert(AssetSoftware assetSoftware, AssetSoftwareResponse assetSoftwareResponse) {
                 super.convert(assetSoftware, assetSoftwareResponse);
                 if (MapUtils.isNotEmpty(finalSoftAssetCount)) {
-                    assetSoftwareResponse
-                        .setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null ? finalSoftAssetCount
-                            .get(assetSoftware.getId()).intValue() : 0);
+                    assetSoftwareResponse.setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null
+                        ? finalSoftAssetCount.get(assetSoftware.getId()).intValue()
+                        : 0);
                 }
             }
         };
@@ -406,6 +407,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    public Integer changeStatusById(Map<String, Object> map) throws Exception {
+        return assetSoftwareDao.changeStatusById(map);
+    }
+
+    @Override
     public void exportTemplate() throws Exception {
         exportToClient(AssetSoftwareEntity.class, "软件信息模板.xlsx", "软件信息");
     }
@@ -429,8 +435,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param assetSoftwareDetailResponse
      * @throws Exception
      */
-    private void querySoftwarePort(SoftwareQuery softwareQuery, AssetSoftwareDetailResponse assetSoftwareDetailResponse)
-                                                                                                                        throws Exception {
+    private void querySoftwarePort(SoftwareQuery softwareQuery,
+                                   AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
         AssetPortProtocolQuery assetPortProtocolQuery = new AssetPortProtocolQuery();
         assetPortProtocolQuery.setAssetSoftId(softwareQuery.getPrimaryKey());
         assetPortProtocolQuery.setPageSize(Constants.MAX_PAGESIZE);

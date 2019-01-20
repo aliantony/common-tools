@@ -24,5 +24,4 @@ public interface AssetGroupDao extends IBaseDao<AssetGroup> {
      * @return
      */
     List<AssetGroup> findPulldownGroup() throws Exception;
-
 }

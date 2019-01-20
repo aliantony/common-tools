@@ -110,6 +110,13 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @throws Exception
      */
     void downloadSoftware(AssetSoftwareQuery query, HttpServletResponse response) throws Exception;
+    /**
+     * 通过ID修改软件状态
+     *
+     * @param map
+     * @return
+     */
+    Integer changeStatusById(Map<String,Object> map ) throws Exception;
 
     /**
      * 导出
