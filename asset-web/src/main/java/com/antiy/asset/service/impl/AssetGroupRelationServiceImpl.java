@@ -8,19 +8,16 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.convert.AssetGroupRelationQueryToDetailQueryConverter;
-import com.antiy.asset.convert.AssetGroupRelationToResponseConverter;
-import com.antiy.asset.convert.IDRequestConverter;
 import com.antiy.asset.dao.AssetGroupRelationDao;
 import com.antiy.asset.dao.AssetNetworkCardDao;
 import com.antiy.asset.entity.AssetGroupRelation;
-import com.antiy.asset.entity.AssetNetworkCard;
 import com.antiy.asset.service.IAssetGroupRelationService;
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.AssetGroupRelationDetailQuery;
 import com.antiy.asset.vo.query.AssetGroupRelationQuery;
 import com.antiy.asset.vo.request.AssetGroupRelationRequest;
 import com.antiy.asset.vo.response.AssetGroupRelationResponse;
 import com.antiy.asset.vo.response.AssetNetworkCardResponse;
-import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
@@ -36,33 +33,25 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
                                            implements IAssetGroupRelationService {
 
     @Resource
-    private AesEncoder                                                    aesEncoder;
+    private AesEncoder                                    aesEncoder;
     @Resource
-    private AssetGroupRelationDao                                         assetGroupRelationDao;
+    private AssetGroupRelationDao                         assetGroupRelationDao;
     @Resource
-    private BaseConverter<AssetGroupRelationRequest, AssetGroupRelation>  requestConverter;
+    private AssetGroupRelationQueryToDetailQueryConverter assetGroupRelationQueryToDetailQueryConverter;
     @Resource
-    private AssetGroupRelationQueryToDetailQueryConverter                 assetGroupRelationQueryToDetailQueryConverter;
-    @Resource
-    private BaseConverter<AssetGroupRelation, AssetGroupRelationResponse> responseConverter;
-    @Resource
-    private AssetGroupRelationToResponseConverter                         assetGroupRelationToResponseConverter;
-    @Resource
-    private BaseConverter<AssetNetworkCard, AssetNetworkCardResponse>     assetNetworkCardToResponseConverter;
-    @Resource
-    private AssetNetworkCardDao                                           assetNetworkCardDao;
-    @Resource
-    private IDRequestConverter                                            idRequestConverter;
+    private AssetNetworkCardDao                           assetNetworkCardDao;
 
     @Override
     public Integer saveAssetGroupRelation(AssetGroupRelationRequest request) throws Exception {
-        AssetGroupRelation assetGroupRelation = requestConverter.convert(request, AssetGroupRelation.class);
+        AssetGroupRelation assetGroupRelation = (AssetGroupRelation) BeanConvert.convert(request,
+            AssetGroupRelation.class);
         return assetGroupRelationDao.insert(assetGroupRelation);
     }
 
     @Override
     public Integer updateAssetGroupRelation(AssetGroupRelationRequest request) throws Exception {
-        AssetGroupRelation assetGroupRelation = requestConverter.convert(request, AssetGroupRelation.class);
+        AssetGroupRelation assetGroupRelation = (AssetGroupRelation) BeanConvert.convert(request,
+            AssetGroupRelation.class);
         return assetGroupRelationDao.update(assetGroupRelation);
     }
 
@@ -84,16 +73,16 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
     }
 
     @Override
-    public List<AssetGroupRelationResponse> findAssetDetailByAssetGroupId(AssetGroupRelationQuery query) {
+    public List<AssetGroupRelationResponse> findAssetDetailByAssetGroupId(AssetGroupRelationQuery query) throws Exception {
         AssetGroupRelationDetailQuery assetGroupRelationDetailQuery = assetGroupRelationQueryToDetailQueryConverter
             .convert(query, AssetGroupRelationDetailQuery.class);
         assetGroupRelationDetailQuery.setAssetGroupId(assetGroupRelationDetailQuery.getAssetGroupId());
 
         List<AssetGroupRelation> assetGroupRelationList = assetGroupRelationDao.findAssetDetailByAssetGroupId(query);
-        List<AssetGroupRelationResponse> assetGroupRelationResponseList = assetGroupRelationToResponseConverter
-            .convert(assetGroupRelationList, AssetGroupRelationResponse.class);
+        List<AssetGroupRelationResponse> assetGroupRelationResponseList = BeanConvert.convert(assetGroupRelationList,
+            AssetGroupRelationResponse.class);
         for (AssetGroupRelationResponse assetGroupRelationResponse : assetGroupRelationResponseList) {
-            List<AssetNetworkCardResponse> assetNetworkCardResponseList = assetNetworkCardToResponseConverter.convert(
+            List<AssetNetworkCardResponse> assetNetworkCardResponseList = BeanConvert.convert(
                 assetNetworkCardDao.findNetworkCardByAssetId(Integer.valueOf(assetGroupRelationResponse.getStringId())),
                 AssetNetworkCardResponse.class);
             assetGroupRelationResponse.setNetworkCardResponseList(assetNetworkCardResponseList);
@@ -109,7 +98,8 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
     }
 
     @Override
-    public Integer findCountDetailByGroupId(AssetGroupRelationQuery query) {
-        return assetGroupRelationDao.findCountDetailByGroupId(idRequestConverter.convert(query.getAssetGroupId(),Integer.class));
+    public Integer findCountDetailByGroupId(AssetGroupRelationQuery query) throws Exception {
+        return assetGroupRelationDao
+            .findCountDetailByGroupId((Integer) BeanConvert.convert(query.getAssetGroupId(), Integer.class));
     }
 }
