@@ -9,6 +9,7 @@ import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -131,4 +132,12 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
     List<AssetSoftwareResponse> findInstallList(AssetSoftwareQuery softwareQuery) throws Exception;
 
     PageResult<AssetSoftwareResponse> findPageInstallList(AssetSoftwareQuery softwareQuery) throws Exception;
+
+
+    /**
+     * 导入
+     * @param file
+     * @return
+     */
+    String importExcel(MultipartFile file) throws Exception;
 }

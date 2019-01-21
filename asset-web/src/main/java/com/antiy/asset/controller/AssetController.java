@@ -273,9 +273,9 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/computer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importPc')")
-    public ActionResponse importPc(@ApiParam(value = "file") MultipartFile file) throws Exception {
+    public ActionResponse importPc(@ApiParam(value = "file") MultipartFile file,@ApiParam(value = "areaId") String areaId) throws Exception {
 
-        return ActionResponse.success(iAssetService.importPc(file));
+        return ActionResponse.success(iAssetService.importPc(file,areaId));
     }
 
     /**
@@ -287,9 +287,9 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/net", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importNet')")
-    public ActionResponse importNet(@ApiParam(value = "file") MultipartFile file) throws Exception {
+    public ActionResponse importNet(@ApiParam(value = "file") MultipartFile file,@ApiParam(value = "areaId") String areaId) throws Exception {
 
-        return ActionResponse.success(iAssetService.importNet(file));
+        return ActionResponse.success(iAssetService.importNet(file,areaId));
     }
 
     /**
@@ -301,9 +301,9 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/safety", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importSafety')")
-    public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file) throws Exception {
+    public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file,@ApiParam(value = "areaId") String areaId) throws Exception {
 
-        return ActionResponse.success(iAssetService.importSecurity(file));
+        return ActionResponse.success(iAssetService.importSecurity(file,areaId));
     }
 
     /**
@@ -315,9 +315,9 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/storage", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importStorage')")
-    public ActionResponse importStorage(@ApiParam(value = "file") MultipartFile file) throws Exception {
+    public ActionResponse importStorage(@ApiParam(value = "file") MultipartFile file,@ApiParam(value = "areaId") String areaId) throws Exception {
 
-        return ActionResponse.success(iAssetService.importStory(file));
+        return ActionResponse.success(iAssetService.importStory(file,areaId));
     }
 
     /**
@@ -329,9 +329,9 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/ohters", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importOhters')")
-    public ActionResponse importOhters(@ApiParam(value = "file") MultipartFile file) throws Exception {
+    public ActionResponse importOhters(@ApiParam(value = "file") MultipartFile file,@ApiParam(value = "areaId") String areaId) throws Exception {
 
-        return ActionResponse.success(iAssetService.importOhters(file));
+        return ActionResponse.success(iAssetService.importOhters(file,areaId));
     }
 
     @ApiOperation(value = "启动流程", notes = "启动流程")

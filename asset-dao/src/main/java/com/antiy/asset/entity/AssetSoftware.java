@@ -33,6 +33,10 @@ public class AssetSoftware extends BaseEntity {
     *  软件名称
     */
     private String name;
+    /**
+    *  序列号
+    */
+    private String serial;
 
     /**
     *  上传的软件名称
@@ -399,5 +403,13 @@ public class AssetSoftware extends BaseEntity {
                         ", modifyUser=" + modifyUser +
                         ", status=" + status +
             "}";
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
     }
 }

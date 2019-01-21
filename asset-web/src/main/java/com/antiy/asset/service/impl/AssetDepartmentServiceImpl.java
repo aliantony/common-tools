@@ -59,8 +59,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
 
     @Override
     public Integer updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
-        ParamterExceptionUtils.isNull(request,"请求不能为空");
-        ParamterExceptionUtils.isNull(request.getId(),"主键不能为空");
+        ParamterExceptionUtils.isNull(request, "请求不能为空");
+        ParamterExceptionUtils.isNull(request.getId(), "主键不能为空");
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
         assetDepartment.setParentId(null);
         assetDepartment.setStatus(1);
@@ -76,10 +76,6 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
 
     private List<AssetDepartmentResponse> convert(List<AssetDepartment> list) {
         return responseConverter.convert(list, AssetDepartmentResponse.class);
-    }
-
-    private AssetDepartmentResponse convert(AssetDepartment assetDepartment) {
-        return responseConverter.convert(assetDepartment, AssetDepartmentResponse.class);
     }
 
     @Override
@@ -128,42 +124,6 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     public PageResult<AssetDepartmentResponse> findPageAssetDepartment(AssetDepartmentQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetDepartment(query), query.getCurrentPage(),
             this.findListAssetDepartment(query));
-    }
-
-    /**
-     *
-     * @param id
-     * @param isConfirm 是否二次确认删除
-     * @return -1表示存在子部门或人员，需要确认，>0表示影响的部门数和人数
-     * @throws Exception
-     */
-    @Override
-    public ActionResponse delete(Serializable id, boolean isConfirm) throws Exception {
-        if (isConfirm) {
-            return confirmDelete((Integer) id);
-        }
-        return notConfirmDelete((Integer) id);
-
-    }
-
-    ActionResponse confirmDelete(Integer id) throws Exception {
-        return deleteAllById(id);
-    }
-
-    ActionResponse notConfirmDelete(Integer id) throws Exception {
-        List<AssetDepartment> list = recursionSearch((Integer) id);
-        if (list.size() > 1) {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "需要进行二次确认");
-        } else {
-            AssetUserQuery assetUserQuery = new AssetUserQuery();
-            assetUserQuery.setDepartmentId(id);
-            Integer count = assetUserDao.findListCount(assetUserQuery);
-            if (count > 0) {
-                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "需要进行二次确认");
-            } else {
-                return delete(id);
-            }
-        }
     }
 
     @Override

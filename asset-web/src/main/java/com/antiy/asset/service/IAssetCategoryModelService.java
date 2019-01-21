@@ -6,6 +6,7 @@ import java.util.List;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
+import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.asset.vo.response.AssetCategoryModelResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
@@ -50,13 +51,19 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @return
      */
     PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
+
     /**
      * 删除品类
      *
      * @param id 删除的id，isConfirm是否已经确认
-     * @return -1 表示存在资产，不能删除 -2 表示存在子品类，需要确认 -3 是系统内置品类，不能删除 >=0 表示删除的品类数
      */
-    ActionResponse delete(Serializable id, Boolean isConfirm) throws Exception;
+    ActionResponse delete(Serializable id) throws Exception;
 
+    /**
+     * 查询品类树
+     *
+     * @return
+     */
+    AssetCategoryModelNodeResponse queryCategoryNode()  throws Exception;
 
 }
