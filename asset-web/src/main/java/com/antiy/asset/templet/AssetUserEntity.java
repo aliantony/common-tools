@@ -4,6 +4,12 @@ import com.antiy.asset.annotation.ExcelField;
 
 public class AssetUserEntity {
 
+
+    /**
+     * 序号
+     */
+    @ExcelField(value = "order_number", align = 1, title = "序号" )
+    private Integer orderNumber;
     /**
      * 姓名
      */
@@ -114,5 +120,13 @@ public class AssetUserEntity {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Integer getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
     }
 }

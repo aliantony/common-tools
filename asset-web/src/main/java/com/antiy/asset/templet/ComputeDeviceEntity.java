@@ -11,7 +11,7 @@ public class ComputeDeviceEntity {
     /**
      * 序号
      */
-    @ExcelField(value = "order_number", align = 1, title = "序号",type =1 )
+    @ExcelField(value = "order_number", align = 1, title = "序号" )
     private Integer orderNumber;
 
     /**

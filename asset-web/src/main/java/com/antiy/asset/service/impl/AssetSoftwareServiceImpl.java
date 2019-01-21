@@ -9,6 +9,7 @@ import com.antiy.asset.service.IAssetSoftwareLicenseService;
 import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.templet.AssetSoftwareEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
+import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
@@ -46,6 +47,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -470,6 +472,69 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     public PageResult<AssetSoftwareResponse> findPageInstallList(AssetSoftwareQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountInstall(query), query.getCurrentPage(),
                 this.findInstallList(query));
+    }
+
+    @Override
+    public String importExcel(MultipartFile file) throws Exception {
+        ImportResult<AssetSoftwareEntity> re = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class, file, 0, 0);
+        List<AssetSoftwareEntity> resultDataList = re.getDataList();
+        int success=0;
+//        int repeat=0;
+        int error=0;
+        StringBuilder builder = new StringBuilder ();
+        for (AssetSoftwareEntity entity : resultDataList) {
+            if (StringUtils.isBlank(entity.getName())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("软件名称为空");
+                continue;
+            }
+            if (StringUtils.isBlank(entity.getVersion ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("软件版本");
+                continue;
+            }
+            AssetSoftware asset = new AssetSoftware();
+            asset.setGmtCreate(System.currentTimeMillis());
+            asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            //可分析
+            asset.setSoftwareStatus (2);
+            asset.setName(entity.getName());
+            asset.setVersion (entity.getVersion ());
+            asset.setManufacturer(entity.getManufacturer());
+            asset.setOperationSystem (entity.getOperationSystem ());
+            asset.setSerial(entity.getSerial());
+            asset.setBuyDate(entity.getBuyDate());
+            asset.setServiceLife(entity.getServiceLife ());
+            asset.setAuthorization (entity.getAuthorization ());
+            asset.setMemo(entity.getDescription ());
+            asset.setCategoryModel (entity.getCategory ());
+            asset.setSize (entity.getSize ());
+
+
+            assetSoftwareDao.insert(asset);
+            // // TODO: 2019/1/17 流程
+            // 记录资产操作流程
+            AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+            assetOperationRecord.setTargetObjectId(asset.getId());
+            assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
+            assetOperationRecord.setTargetStatus(AssetStatusEnum.ANALYZE.getCode());
+            assetOperationRecord.setContent("登记软件资产");
+            assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+            assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+            assetOperationRecordDao.insert(assetOperationRecord);
+            success++;
+        }
+
+        String res = "导入成功" + success + "条";
+//        res += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
+        res += error > 0 ? ", " + error + "条数据导入失败" : "";
+        StringBuilder stringBuilder = new StringBuilder ();
+        if (error>0){
+            stringBuilder.append (re).append ("其中").append (builder);
+        }
+
+        return stringBuilder.toString ();
     }
 
     private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,

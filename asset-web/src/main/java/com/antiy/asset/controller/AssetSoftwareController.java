@@ -164,6 +164,21 @@ public class AssetSoftwareController {
     }
 
     /**
+     * 导入软件excel文件
+     *
+     * @param multipartFile 主键封装对象
+     * @return actionResponse
+     */
+    @ApiOperation(value = "导入软件excel文件", notes = "导入软件excel文件")
+    @RequestMapping(value = "/import/file", method = RequestMethod.POST)
+    public ActionResponse exportFile1(@ApiParam(value = "multipartFile") MultipartFile multipartFile) throws Exception {
+
+
+        return ActionResponse.success(iAssetSoftwareService.importExcel(multipartFile));
+
+    }
+
+    /**
      * 软件资产按二级品类型号统计
      *
      * @return 品类型号名和该品类信号型产数量的映射

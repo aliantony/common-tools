@@ -12,7 +12,11 @@ import com.antiy.asset.annotation.ExcelField;
 public class AssetSoftwareEntity {
 
     private static final long serialVersionUID = 1L;
-
+    /**
+     * 序号
+     */
+    @ExcelField(value = "order_number", align = 1, title = "序号" )
+    private Integer orderNumber;
     /**
      * 软件名称
      */
@@ -197,4 +201,11 @@ public class AssetSoftwareEntity {
     }
 
 
+    public Integer getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
+    }
 }
