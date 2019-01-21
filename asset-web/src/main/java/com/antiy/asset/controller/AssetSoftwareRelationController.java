@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.entity.AssetSoftwareRelation;
+import com.antiy.asset.entity.AssetSoftwareRelationMapper;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -44,9 +46,10 @@ public class AssetSoftwareRelationController {
     @PreAuthorize("hasAuthority('asset:softwarerelation:saveSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@ApiParam(value = "assetSoftwareRelation") @RequestBody AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
-        return ActionResponse
-            .success(iAssetSoftwareRelationService.saveAssetSoftwareRelation(assetSoftwareRelationRequest));
+    public ActionResponse saveSingle(@ApiParam(value = "assetSoftwareRelation") @RequestBody AssetSoftwareRelationRequest assetSoftwareRelationRequest)
+                                                                                                                                                       throws Exception {
+        return ActionResponse.success(iAssetSoftwareRelationService
+            .saveAssetSoftwareRelation(assetSoftwareRelationRequest));
     }
 
     /**
@@ -59,7 +62,8 @@ public class AssetSoftwareRelationController {
     @PreAuthorize("hasAuthority('asset:softwarerelation:updateSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetSoftwareRelation") AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
+    public ActionResponse updateSingle(@ApiParam(value = "assetSoftwareRelation") AssetSoftwareRelationRequest assetSoftwareRelationRequest)
+                                                                                                                                            throws Exception {
         iAssetSoftwareRelationService.updateAssetSoftwareRelation(assetSoftwareRelationRequest);
         return ActionResponse.success();
     }
@@ -74,9 +78,10 @@ public class AssetSoftwareRelationController {
     @PreAuthorize("hasAuthority('asset:softwarerelation:queryList')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareRelationResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@ApiParam(value = "assetSoftwareRelation") AssetSoftwareRelationQuery assetSoftwareRelationQuery) throws Exception {
-        return ActionResponse
-            .success(iAssetSoftwareRelationService.findPageAssetSoftwareRelation(assetSoftwareRelationQuery));
+    public ActionResponse queryList(@ApiParam(value = "assetSoftwareRelation") AssetSoftwareRelationQuery assetSoftwareRelationQuery)
+                                                                                                                                     throws Exception {
+        return ActionResponse.success(iAssetSoftwareRelationService
+            .findPageAssetSoftwareRelation(assetSoftwareRelationQuery));
     }
 
     /**
@@ -89,7 +94,8 @@ public class AssetSoftwareRelationController {
     @PreAuthorize("hasAuthority('asset:softwarerelation:queryById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareRelationResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "assetSoftwareRelation") @PathVariable("id") Integer id) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetSoftwareRelation") @PathVariable("id") Integer id)
+                                                                                                              throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetSoftwareRelationService.getById(id));
     }
@@ -134,10 +140,11 @@ public class AssetSoftwareRelationController {
     @PreAuthorize("hasAuthority('asset:softwarerelation:getSoftwareByAssetId')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/getSoftwareByAssetId/{assetId}", method = RequestMethod.GET)
-    public ActionResponse getSoftwareByAssetId(@ApiParam(value = "assetId") @PathVariable("assetId") @Encode String assetId) throws Exception {
+    public ActionResponse getSoftwareByAssetId(@ApiParam(value = "assetId") @PathVariable("assetId") @Encode String assetId)
+                                                                                                                            throws Exception {
         ParamterExceptionUtils.isNull(assetId, "资产ID不能为空");
-        return ActionResponse
-            .success(iAssetSoftwareRelationService.getSoftByAssetId(DataTypeUtils.stringToInteger(assetId)));
+        return ActionResponse.success(iAssetSoftwareRelationService.getSoftByAssetId(DataTypeUtils
+            .stringToInteger(assetId)));
     }
 
     /**
@@ -151,5 +158,19 @@ public class AssetSoftwareRelationController {
     @RequestMapping(value = "/query/os", method = RequestMethod.GET)
     public ActionResponse<List<String>> queryOS() throws Exception {
         return ActionResponse.success(iAssetSoftwareRelationService.findOS());
+    }
+
+    /**
+     * 查询下拉项的资产操作系统信息
+     *
+     * @return 操作系统名称集合
+     */
+    @ApiOperation(value = "通过软件id查询安装信息", notes = "无查询条件")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:getInfoBySoftwareId')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/info/{id}", method = RequestMethod.GET)
+    public ActionResponse<List<AssetSoftwareRelationMapper>> getInfoBySoftwareId(@PathVariable String id) throws Exception {
+        ParamterExceptionUtils.isNull(id, "软件id不能为空");
+        return ActionResponse.success(iAssetSoftwareRelationService.getInfoBySoftwareId(Integer.parseInt(id)));
     }
 }

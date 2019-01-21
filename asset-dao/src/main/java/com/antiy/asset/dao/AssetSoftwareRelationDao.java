@@ -3,6 +3,7 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.antiy.asset.entity.AssetSoftwareRelationMapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.AssetSoftware;
@@ -26,6 +27,13 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      */
     List<AssetSoftware> getSoftByAssetId(Integer assetId);
 
+    /**
+     * 通过软件ID查询安装信息
+     *
+     * @param softwareId
+     * @return
+     */
+    List<AssetSoftwareRelationMapper> getInfoBySoftwareId(Integer softwareId);
     /**
      * 通过软件ID统计资产数量
      *

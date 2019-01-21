@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.antiy.asset.entity.AssetSoftwareRelation;
+import com.antiy.asset.entity.AssetSoftwareRelationMapper;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.IBaseService;
@@ -41,7 +43,8 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @param query
      * @return
      */
-    List<AssetSoftwareRelationResponse> findListAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception;
+    List<AssetSoftwareRelationResponse> findListAssetSoftwareRelation(AssetSoftwareRelationQuery query)
+                                                                                                       throws Exception;
 
     /**
      * 批量查询
@@ -49,7 +52,8 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @param query
      * @return
      */
-    PageResult<AssetSoftwareRelationResponse> findPageAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception;
+    PageResult<AssetSoftwareRelationResponse> findPageAssetSoftwareRelation(AssetSoftwareRelationQuery query)
+                                                                                                             throws Exception;
 
     /**
      * 通过资产ID查询关联软件信息
@@ -58,6 +62,14 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @return
      */
     List<AssetSoftwareResponse> getSoftByAssetId(Integer assetId);
+
+    /**
+     * 根据软件主键查询资产安装信息
+     *
+     * @param softwareId
+     * @return
+     */
+    List<AssetSoftwareRelationMapper> getInfoBySoftwareId(Integer softwareId);
 
     /**
      * 通过软件ID统计资产数量
@@ -73,6 +85,7 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @return
      */
     List<String> findOS() throws Exception;
+
     /**
      * 批量修改软件状态
      *
