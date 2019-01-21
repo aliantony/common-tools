@@ -15,9 +15,11 @@ import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -242,7 +244,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetHardDiskDao.insert(assetHardDisk);
                         }
                     }
-
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(asset.getId());
@@ -253,7 +254,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
                     assetOperationRecord.setGmtCreate(System.currentTimeMillis());
                     assetOperationRecordDao.insert(assetOperationRecord);
-
                     return aid;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1224,7 +1224,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
         manualStartActivityRequest.setBusinessId(asset.getId().toString());
         manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-       // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId());
+        // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId());
         manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
         activityClient.manualStartProcess(manualStartActivityRequest);
         return assetCount;
