@@ -11,6 +11,8 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LoginUserUtil;
 
 /**
+ * 操作流程和创建工单通用对象
+ * 
  * @author zhangyajun
  * @create 2019-01-16 17:43
  **/
@@ -20,22 +22,23 @@ public class OperationWOProcessor {
                                        CodeEnum codeEnum) {
         Integer appointUser = LoginUserUtil.getLoginUser().getId();
         // 指定操作员不是自己时，创建工单
-         if (appointUser != null && !schemeRequest.getPutintoUserId().equals(appointUser)) {
-        WorkOrderVO workOrderVO = new WorkOrderVO();
-        workOrderVO.setName(codeEnum != null ? codeEnum.getMsg() + "工单" : RespBasicCode.PARAMETER_ERROR.getResultDes());
-        workOrderVO.setWorkLevel(schemeRequest.getOrderLevel());
-        // 准入实施
-        workOrderVO.setOrderType("8");
-        // 资产管理
-        workOrderVO.setOrderSource("1");
-        workOrderVO
-            .setContent(codeEnum != null ? codeEnum.getMsg() + "申请" : RespBasicCode.PARAMETER_ERROR.getResultDes());
-        workOrderVO.setExecuteUserId(schemeRequest.getPutintoUserId());
-        workOrderVO.setExecuteUserName(schemeRequest.getPutintoUser());
-        workOrderVO.setStartTime(schemeRequest.getExpecteStartTime().toString());
-        workOrderVO.setEndTime(schemeRequest.getExpecteEndTime().toString());
-        workOrderClient.createWorkOrder(workOrderVO);
-         }
+        if (appointUser != null && !schemeRequest.getPutintoUserId().equals(appointUser)) {
+            WorkOrderVO workOrderVO = new WorkOrderVO();
+            workOrderVO
+                .setName(codeEnum != null ? codeEnum.getMsg() + "工单" : RespBasicCode.PARAMETER_ERROR.getResultDes());
+            workOrderVO.setWorkLevel(schemeRequest.getOrderLevel());
+            // 准入实施
+            workOrderVO.setOrderType("8");
+            // 资产管理
+            workOrderVO.setOrderSource("1");
+            workOrderVO
+                .setContent(codeEnum != null ? codeEnum.getMsg() + "申请" : RespBasicCode.PARAMETER_ERROR.getResultDes());
+            workOrderVO.setExecuteUserId(schemeRequest.getPutintoUserId());
+            workOrderVO.setExecuteUserName(schemeRequest.getPutintoUser());
+            workOrderVO.setStartTime(schemeRequest.getExpecteStartTime().toString());
+            workOrderVO.setEndTime(schemeRequest.getExpecteEndTime().toString());
+            workOrderClient.createWorkOrder(workOrderVO);
+        }
     }
 
     public static void saveOperationRecord(CodeEnum codeEnum, AssetOperationRecord assetOperationRecord,
