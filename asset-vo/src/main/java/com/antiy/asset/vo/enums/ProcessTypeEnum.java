@@ -19,13 +19,14 @@ public enum ProcessTypeEnum implements CodeEnum {
 
     @Override
     public Integer getCode() {
-        return null;
+        return code;
     }
 
     public void setCode(Integer code) {
         this.code = code;
     }
 
+    @Override
     public String getMsg() {
         return msg;
     }
