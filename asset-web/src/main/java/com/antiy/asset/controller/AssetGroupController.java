@@ -128,7 +128,7 @@ public class AssetGroupController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/assetByAssetGroupId", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:group:queryAssetByGroupId')")
-    public ActionResponse<PageResult<AssetGroupResponse>> queryAssetByGroupId(@ApiParam(value = "query") @PathVariable AssetGroupQuery query) throws Exception {
+    public ActionResponse<PageResult<AssetGroupResponse>> queryAssetByGroupId(@ApiParam(value = "query") AssetGroupQuery query) throws Exception {
         return ActionResponse.success(iAssetGroupService.findPageAssetGroup(query));
     }
 }
