@@ -107,6 +107,10 @@ public class AssetDepartment extends BaseEntity {
         this.status = status;
     }
 
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     @Override
     public String toString() {
         return "AssetDepartment{" + "name='" + name + '\'' + ", parentId=" + parentId + ", gmtCreate=" + gmtCreate

@@ -39,6 +39,9 @@ public class AssetDepartmentController {
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     @PreAuthorize(value="hasAuthority('asset:department:saveSingle')")
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentRequest assetDepartment) throws Exception {
+        ParamterExceptionUtils.isNull(assetDepartment,"请求不能为空");
+        ParamterExceptionUtils.isNull(assetDepartment.getName(),"部门名不能为空");
+        ParamterExceptionUtils.isNull(assetDepartment.getParentId(),"父级部门不能为空");
         return iAssetDepartmentService.saveAssetDepartment(assetDepartment);
     }
 
@@ -53,6 +56,8 @@ public class AssetDepartmentController {
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     @PreAuthorize(value="hasAuthority('asset:department:updateSingle')")
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentRequest assetDepartment) throws Exception {
+        ParamterExceptionUtils.isNull(assetDepartment,"请求不能为空");
+        ParamterExceptionUtils.isNull(assetDepartment.getId(),"部门名不能为空");
         return ActionResponse.success(iAssetDepartmentService.updateAssetDepartment(assetDepartment));
     }
 

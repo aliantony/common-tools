@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.templet.ComputeDeviceEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
+import com.antiy.asset.vo.enums.SoftwareStatusEnum;
 import com.antiy.asset.vo.query.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -497,7 +498,7 @@ class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportS
     protected void convert(AssetSoftwareResponse assetSoftware, ExportSoftwareEntity exportSoftwareEntity) {
         exportSoftwareEntity.setCategoryName(assetSoftware.getCategoryModelName());
         if (Objects.nonNull(assetSoftware.getSoftwareStatus())) {
-            AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode(assetSoftware.getSoftwareStatus());
+            AssetStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode(assetSoftware.getSoftwareStatus());
             exportSoftwareEntity.setStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
         }
         if (Objects.nonNull(assetSoftware.getStringId())) {
