@@ -190,31 +190,36 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * 硬件导入PC
      * @param file
+     * @param areaId
      * @return
      */
-    String importPc(MultipartFile file) throws Exception;
+    String importPc(MultipartFile file, String areaId) throws Exception;
     /**
      * 硬件导入网络设备
      * @param file
+     * @param areaId
      * @return
      */
-    String importNet(MultipartFile file) throws Exception;
+    String importNet(MultipartFile file, String areaId) throws Exception;
     /**
      * 硬件导入安全设备
      * @param file
+     * @param areaId
      * @return
      */
-    String importSecurity(MultipartFile file) throws Exception;
+    String importSecurity(MultipartFile file, String areaId) throws Exception;
     /**
      * 硬件导存储设备
      * @param file
+     * @param areaId
      * @return
      */
-    String importStory(MultipartFile file) throws Exception;
+    String importStory(MultipartFile file, String areaId) throws Exception;
     /**
      * 硬件其他设备
      * @param file
+     * @param areaId
      * @return
      */
-    String importOhters(MultipartFile file) throws Exception;
+    String importOhters(MultipartFile file, String areaId) throws Exception;
 }

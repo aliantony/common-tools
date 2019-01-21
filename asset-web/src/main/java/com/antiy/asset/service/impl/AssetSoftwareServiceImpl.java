@@ -495,6 +495,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             }
             AssetSoftware asset = new AssetSoftware();
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtCreate(System.currentTimeMillis());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             //可分析
             asset.setSoftwareStatus (2);

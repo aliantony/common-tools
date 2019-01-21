@@ -1272,7 +1272,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public String importPc(MultipartFile file) throws Exception {
+    public String importPc(MultipartFile file, String areaId) throws Exception {
         ImportResult<ComputeDeviceEntity> result = ExcelUtils.importExcelFromClient(ComputeDeviceEntity.class, file, 0,
             0);
         int success=0;
@@ -1444,7 +1444,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public String importNet(MultipartFile file) throws Exception {
+    public String importNet(MultipartFile file, String areaId) throws Exception {
         ImportResult<NetworkDeviceEntity> importResult = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class,
             file, 0, 0);
         int success=0;
@@ -1526,7 +1526,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public String importSecurity(MultipartFile file) throws Exception {
+    public String importSecurity(MultipartFile file, String areaId) throws Exception {
         ImportResult<SafetyEquipmentEntiy> result = ExcelUtils
             .importExcelFromClient(SafetyEquipmentEntiy.class, file, 0, 0);
         int success=0;
@@ -1595,7 +1595,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public String importStory(MultipartFile file) throws Exception {
+    public String importStory(MultipartFile file, String areaId) throws Exception {
         ImportResult<StorageDeviceEntity> re = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 0, 0);
         List<StorageDeviceEntity> resultDataList = re.getDataList();
         int success=0;
@@ -1668,7 +1668,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public String importOhters(MultipartFile file) throws Exception {
+    public String importOhters(MultipartFile file, String areaId) throws Exception {
         ImportResult<OtherDeviceEntity> re = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 0, 0);
         List<OtherDeviceEntity> resultDataList = re.getDataList();
         int success=0;
