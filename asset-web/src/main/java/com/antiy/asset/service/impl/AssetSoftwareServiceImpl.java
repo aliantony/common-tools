@@ -137,7 +137,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(sid);
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
-                    assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                    assetOperationRecord.setTargetStatus(AssetStatusEnum.ANALYZE.getCode());
                     assetOperationRecord.setContent("登记软件资产");
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
