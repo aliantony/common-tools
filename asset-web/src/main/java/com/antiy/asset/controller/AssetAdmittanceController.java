@@ -34,25 +34,6 @@ public class AssetAdmittanceController {
     public IAssetService assetService;
 
     /**
-     * 更改资产准入状态
-     * @param assetRequest
-     * @return
-     * @throws Exception
-     */
-    @ApiOperation(value = "更改资产准入状态", notes = "传入实体对象信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    @PreAuthorize(value="hasAuthority('asset:admittance:changeStatus')")
-    public ActionResponse changeStatus(@RequestBody(required = false) @ApiParam(value = "asset") AssetRequest assetRequest) throws Exception {
-        Asset asset = new Asset();
-        asset.setId(DataTypeUtils.stringToInteger(assetRequest.getId()));
-        asset.setAssetdmittanceStatus(assetRequest.getAdmittanceStatus());
-        assetService.update(asset);
-        return ActionResponse.success();
-    }
-
-
-    /**
      * 批量查询
      *
      * @param asset
@@ -66,4 +47,19 @@ public class AssetAdmittanceController {
         return ActionResponse.success(assetService.findPageAsset(asset));
     }
 
+    /**
+     * 准入管理
+     *
+     * @return
+     */
+    @ApiOperation(value = "准入管理", notes = "准入管理")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/access/anagement", method = RequestMethod.POST)
+    @PreAuthorize(value = "hasAuthority('asset:asset:accessManagement ')")
+    public ActionResponse importOhters(@ApiParam(value = "assetRequest") @RequestBody @Encode String assetId, Integer status) throws Exception {
+        Asset asset = new Asset();
+        asset.setId(DataTypeUtils.stringToInteger(assetId));
+        asset.setAdmittanceStatus(status);
+        return ActionResponse.success(assetService.update(asset));
+    }
 }

@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
@@ -20,13 +21,15 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
      * 主键
      */
     @ApiModelProperty("主键")
+    @Encode
     private String  id;
 
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer assetId;
+    @Encode
+    private String assetId;
     /**
      * 品牌
      */
@@ -85,11 +88,11 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
         this.networkAddress = networkAddress;
     }
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

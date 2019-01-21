@@ -584,4 +584,42 @@
         select distinct manufacturer from asset_software
         where status = 1
     </select>
+
+    <select id="findInstallList" resultType="com.antiy.asset.entity.AssetSoftware"
+            parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
+        select
+        a.id,
+        a.name,
+        a.version,
+        a.manufacturer,
+        a.software_status as softwareStatus,
+        a.release_time as releaseTime,
+        b.software_id,
+        count( b.software_id ) as assetCount
+        from
+        asset_software a
+        left join asset_software_relation b on a.id = b.software_id
+        where 1 = 1
+        <if test=" categoryModel != null">
+            and category_model = #{categoryModel }
+        </if>
+        <if test=" softwareStatus != null">
+            and software_status = #{softwareStatus }
+        </if>
+        <if test=" authorization != null">
+            and authorization = #{authorization }
+        </if>
+        <if test=" reportSource != null">
+            and report_source = #{reportSource }
+        </if>
+        <if test=" beginTime != null">
+            and release_time &gt;= #{beginTime }
+        </if>
+        <if test=" endTime != null">
+            and release_time &lt;= #{endTime }
+        </if>
+        and a.status = 1
+        group by
+        a.id
+    </select>
 </mapper>

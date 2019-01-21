@@ -130,4 +130,8 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
     List<String> pulldownManufacturer();
 
     void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception;
+
+    List<AssetSoftwareResponse> findInstallList(AssetSoftwareQuery softwareQuery) throws Exception;
+
+    PageResult<AssetSoftwareResponse> findPageInstallList(AssetSoftwareQuery softwareQuery) throws Exception;
 }

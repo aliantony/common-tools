@@ -41,6 +41,10 @@ public class AssetSoftwareRelation extends BaseEntity {
      */
     private Integer installType;
     /**
+     * 安装状态0失败、1成功，2安装中
+     */
+    private Integer installStatus;
+    /**
      * 创建时间
      */
     private Long    gmtCreate;
@@ -167,6 +171,14 @@ public class AssetSoftwareRelation extends BaseEntity {
 
     public void setLicenseSecretKey(String licenseSecretKey) {
         this.licenseSecretKey = licenseSecretKey;
+    }
+
+    public Integer getInstallStatus() {
+        return installStatus;
+    }
+
+    public void setInstallStatus(Integer installStatus) {
+        this.installStatus = installStatus;
     }
 
     @Override

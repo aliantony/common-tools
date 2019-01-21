@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.templet.ComputeDeviceEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
 import com.antiy.asset.vo.query.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -414,6 +415,21 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
         exportData(AssetSoftwareEntity.class, "软件信息表", assetSoftwareQuery, response);
+    }
+
+    @Override
+    public List<AssetSoftwareResponse> findInstallList(AssetSoftwareQuery softwareQuery)  throws Exception{
+        List<AssetSoftware> assetSoftwareList = assetSoftwareDao.findInstallList(softwareQuery);
+        List<AssetSoftwareResponse> assetSoftwareResponseList = BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class);
+        return assetSoftwareResponseList;
+    }
+    public Integer findCountInstall(AssetSoftwareQuery query) throws Exception {
+        return assetSoftwareDao.findCount(query);
+    }
+    @Override
+    public PageResult<AssetSoftwareResponse> findPageInstallList(AssetSoftwareQuery query) throws Exception {
+        return new PageResult<>(query.getPageSize(), this.findCountInstall(query), query.getCurrentPage(),
+                this.findInstallList(query));
     }
 
     private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,
