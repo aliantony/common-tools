@@ -42,9 +42,9 @@ public class AssetSoftwareEntity {
     private String            operationSystem;
 
     /**
-     * 软件品类 // TODO: 2019/1/19  码表
+     * 软件品类
      */
-    @ExcelField(value = "category", align = 1, title = "软件品类", type = 1)
+    @ExcelField(value = "category", align = 1, title = "软件品类", type = 0,dictType = "software_category")
     private Integer           category;
 
     /**

@@ -6,6 +6,7 @@ import java.util.List;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
+import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.asset.vo.response.AssetCategoryModelResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
@@ -50,6 +51,7 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @return
      */
     PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
+
     /**
      * 删除品类
      *
@@ -58,5 +60,11 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      */
     ActionResponse delete(Serializable id, Boolean isConfirm) throws Exception;
 
+    /**
+     * 查询品类树
+     *
+     * @return
+     */
+    AssetCategoryModelNodeResponse queryCategoryNode()  throws Exception;
 
 }

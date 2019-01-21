@@ -104,4 +104,17 @@ public class AssetCategoryModelController {
         ParamterExceptionUtils.isNull(isConfirm,"二次确认不能为空");
         return iAssetCategoryModelService.delete(id,isConfirm);
     }
+
+    /**
+     * 品类树查询
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/node", method = RequestMethod.GET)
+    @PreAuthorize(value="hasAuthority('asset:categorymodel:queryCategoryNode')")
+    public ActionResponse queryCategoryNode() throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.queryCategoryNode());
+    }
 }

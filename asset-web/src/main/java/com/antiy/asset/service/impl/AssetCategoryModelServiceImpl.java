@@ -10,7 +10,9 @@ import javax.annotation.Resource;
 import com.antiy.asset.convert.CategoryRequestConvert;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.util.NodeUtilsConverter;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.biz.entity.ErrorMessage;
 import com.antiy.common.base.*;
 import com.antiy.common.exception.BusinessException;
@@ -37,15 +39,15 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                                                                                       IAssetCategoryModelService {
 
     @Resource
-    private AssetCategoryModelDao                                         assetCategoryModelDao;
+    private AssetCategoryModelDao   assetCategoryModelDao;
     @Resource
-    private AssetDao                                                      assetDao;
+    private AssetDao                assetDao;
     @Resource
-    private CategoryRequestConvert                                        requestConverter;
+    private CategoryRequestConvert  requestConverter;
     @Resource
-    private BaseConverter<AssetCategoryModel, AssetCategoryModelResponse> responseConverter;
+    private CategoryResponseConvert responseConverter;
     @Resource
-    private CategoryRequestConvert                                        categoryRequestConvert;
+    private CategoryRequestConvert  categoryRequestConvert;
 
     /**
      *
@@ -158,6 +160,16 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         }
     }
 
+    @Override
+    public AssetCategoryModelNodeResponse queryCategoryNode() throws Exception {
+        AssetCategoryModelQuery query = new AssetCategoryModelQuery();
+        List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
+        NodeUtilsConverter nodeResponseNodeUtilsConverter = new NodeUtilsConverter<>();
+        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeResponseNodeUtilsConverter
+            .columnToNode(assetCategoryModels, AssetCategoryModelNodeResponse.class);
+        return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
+    }
+
     /**
      * 删除品类,若存在资产则不能删（不进行递归）
      * @return ActionResponse
@@ -227,5 +239,14 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                 recursion(result, list, assetCategoryModel.getId());
             }
         }
+    }
+}
+
+@Component
+class CategoryResponseConvert extends BaseConverter<AssetCategoryModel, AssetCategoryModelResponse> {
+    @Override
+    protected void convert(AssetCategoryModel assetCategoryModel, AssetCategoryModelResponse assetCategoryModelResponse) {
+        assetCategoryModelResponse.setParentId(Objects.toString(assetCategoryModel.getParentId()));
+        super.convert(assetCategoryModel, assetCategoryModelResponse);
     }
 }
