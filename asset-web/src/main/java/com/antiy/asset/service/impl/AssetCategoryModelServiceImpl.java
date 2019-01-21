@@ -77,7 +77,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         if (assetCategoryModel != null && assetCategoryModel.getParentId() != null) {
             Integer parentId = assetCategoryModel.getParentId();
             AssetCategoryModel parent = assetCategoryModelDao.getById(parentId);
-            ParamterExceptionUtils.isNull(parent, "父类型不存在");
+            BusinessExceptionUtils.isNull(parent, "父类型不存在");
             assetCategoryModel.setAssetType(parent.getAssetType());
             return true;
         }
@@ -104,7 +104,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @return
      */
     private Boolean checkIsDefault(AssetCategoryModel assetCategoryModel) {
-        ParamterExceptionUtils.isNull(assetCategoryModel, "该类型不存在");
+        BusinessExceptionUtils.isNull(assetCategoryModel, "该类型不存在");
         if (assetCategoryModel.getIsDefault() != null) {
             return Objects.equals(assetCategoryModel.getIsDefault(), 1);
         }

@@ -1647,9 +1647,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                                                                                               throws Exception {
         assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(LoginUserUtil.getLoginUser()
             .getAreaIdsOfCurrentUser().toArray()));
-        List<Asset> list = assetDao.findListAsset(assetQuery);
+        List<AssetResponse> list = this.findListAsset(assetQuery);
         List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
-        ParamterExceptionUtils.isEmpty(list, "资产数据不能为空");
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setSheetName("资产信息表");
         downloadVO.setDownloadList(assetEntities);
@@ -1659,11 +1658,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 }
 
 @Component
-class AssetEntityConvert extends BaseConverter<Asset, AssetEntity> {
+class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
     private final Logger logger = LogUtils.get();
 
     @Override
-    protected void convert(Asset asset, AssetEntity assetEntity) {
+    protected void convert(AssetResponse asset, AssetEntity assetEntity) {
         if (Objects.nonNull(asset.getInnet())) {
             assetEntity.setIsInnet(asset.getInnet() ? "已入网" : "未入网");
         }
@@ -1672,7 +1671,7 @@ class AssetEntityConvert extends BaseConverter<Asset, AssetEntity> {
             AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode(asset.getAssetStatus());
             assetEntity.setAssetStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
         }
-            assetEntity.setCategoryModel(asset.getCategoryModelName());
+        assetEntity.setCategoryModel(asset.getCategoryModelName());
         if (Objects.nonNull(asset.getAssetSource())) {
             if (asset.getAssetSource().equals(1)) {
                 assetEntity.setAssetSource("人工上报");
