@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.templet.ComputeDeviceEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.vo.enums.SoftwareStatusEnum;
 import com.antiy.asset.vo.query.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -415,6 +417,21 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         exportData(AssetSoftwareEntity.class, "软件信息表", assetSoftwareQuery, response);
     }
 
+    @Override
+    public List<AssetSoftwareResponse> findInstallList(AssetSoftwareQuery softwareQuery)  throws Exception{
+        List<AssetSoftware> assetSoftwareList = assetSoftwareDao.findInstallList(softwareQuery);
+        List<AssetSoftwareResponse> assetSoftwareResponseList = BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class);
+        return assetSoftwareResponseList;
+    }
+    public Integer findCountInstall(AssetSoftwareQuery query) throws Exception {
+        return assetSoftwareDao.findCount(query);
+    }
+    @Override
+    public PageResult<AssetSoftwareResponse> findPageInstallList(AssetSoftwareQuery query) throws Exception {
+        return new PageResult<>(query.getPageSize(), this.findCountInstall(query), query.getCurrentPage(),
+                this.findInstallList(query));
+    }
+
     private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,
                             AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
         assetSoftwareQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(LoginUserUtil.getLoginUser()
@@ -497,7 +514,7 @@ class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportS
     protected void convert(AssetSoftwareResponse assetSoftware, ExportSoftwareEntity exportSoftwareEntity) {
         exportSoftwareEntity.setCategoryName(assetSoftware.getCategoryModelName());
         if (Objects.nonNull(assetSoftware.getSoftwareStatus())) {
-            AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode(assetSoftware.getSoftwareStatus());
+            AssetStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode(assetSoftware.getSoftwareStatus());
             exportSoftwareEntity.setStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
         }
         if (Objects.nonNull(assetSoftware.getStringId())) {

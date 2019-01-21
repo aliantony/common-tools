@@ -228,4 +228,18 @@ public class AssetSoftwareController {
         ParamterExceptionUtils.isBlank(softwareQuery.getPrimaryKey(), "软件资产Id不能为空");
         return ActionResponse.success(iAssetSoftwareService.querySoftWareDetail(softwareQuery));
     }
+
+    /**
+     * 软件安装列表查询
+     * @param softwareQuery
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "软件安装列表查询", notes = "软件安装列表查询")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/install", method = RequestMethod.GET)
+    public ActionResponse queryInstallList(@ApiParam(value = "softwareQuery") AssetSoftwareQuery softwareQuery)
+            throws Exception {
+        return ActionResponse.success(iAssetSoftwareService.findPageInstallList(softwareQuery));
+    }
 }

@@ -62,9 +62,22 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
     @ApiModelProperty("安装方式")
     @NotNull
     private Integer installType;
-
+    /**
+     * 安装状态0失败、1成功，2安装中
+     */
+    @ApiModelProperty("安装方式")
+    @NotNull
+    private Integer installStatus;
     public String getId() {
         return id;
+    }
+
+    public Integer getInstallStatus() {
+        return installStatus;
+    }
+
+    public void setInstallStatus(Integer installStatus) {
+        this.installStatus = installStatus;
     }
 
     public void setId(String id) {

@@ -3,6 +3,8 @@ package com.antiy.asset.vo.response;
 import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * <p> AssetSoftwareRelationResponse 响应对象 </p>
  *
@@ -53,6 +55,11 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
      */
     @ApiModelProperty("安装方式")
     private String  installType;
+    /**
+     * 安装状态0失败、1成功，2安装中
+     */
+    @ApiModelProperty("安装方式")
+    private Integer installStatus;
 
     public String getAssetId() {
         return assetId;
@@ -116,5 +123,13 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
 
     public void setLicenseSecretKey(String licenseSecretKey) {
         this.licenseSecretKey = licenseSecretKey;
+    }
+
+    public Integer getInstallStatus() {
+        return installStatus;
+    }
+
+    public void setInstallStatus(Integer installStatus) {
+        this.installStatus = installStatus;
     }
 }

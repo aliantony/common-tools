@@ -38,6 +38,9 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     @PreAuthorize(value="hasAuthority('asset:categorymodel:saveSingle')")
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
+        ParamterExceptionUtils.isNull(assetCategoryModel,"请求不能为空");
+        ParamterExceptionUtils.isNull(assetCategoryModel.getName(),"品类名不能为空");
+        ParamterExceptionUtils.isNull(assetCategoryModel.getParentId(),"父品类不能为空");
         return iAssetCategoryModelService.saveAssetCategoryModel(assetCategoryModel);
     }
 
@@ -52,6 +55,8 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     @PreAuthorize(value="hasAuthority('asset:categorymodel:updateSingle')")
     public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
+        ParamterExceptionUtils.isNull(assetCategoryModel,"请求不能为空");
+        ParamterExceptionUtils.isNull(assetCategoryModel.getId(),"id不能为空");
         return iAssetCategoryModelService.updateAssetCategoryModel(assetCategoryModel);
     }
 

@@ -11,6 +11,7 @@
         <result column="protocol" property="protocol"/>
         <result column="port" property="port"/>
         <result column="install_type" property="installType"/>
+        <result column="install_status" property="installStatus"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
@@ -20,7 +21,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id AS assetId, software_id AS softwareId, software_status AS softwareStatus, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
+        id, asset_id AS assetId, software_id AS softwareId, software_status AS softwareStatus,protocol, port, install_type as installType, install_status as installStatus, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
 
     <sql id="Table_Name">
@@ -43,6 +44,12 @@
         </if>
         <if test=" port != null">
             port,
+        </if>
+        <if test=" install_type != null">
+            install_type,
+        </if>
+        <if test=" install_status != null">
+            install_status,
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
@@ -76,6 +83,12 @@
         </if>
         <if test=" port != null">
             #{port},
+        </if>
+        <if test=" install_type != null">
+            #{install_type},
+        </if>
+        <if test=" install_status != null">
+            #{install_status},
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
@@ -116,6 +129,12 @@
         <if test=" port != null">
             port = #{port},
         </if>
+        <if test=" install_type != null">
+            install_type = #{install_type},
+        </if>
+        <if test=" install_status != null">
+            install_status = #{install_status},
+        </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
         </if>
@@ -151,6 +170,12 @@
         </if>
         <if test=" port != null">
             and port = #{port}
+        </if>
+        <if test=" install_type != null">
+            and install_type = #{installType }
+        </if>
+        <if test=" install_status != null">
+            and install_status = #{installStatus}
         </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }

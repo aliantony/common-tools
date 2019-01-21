@@ -59,10 +59,12 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
 
     @Override
     public Integer updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
+        ParamterExceptionUtils.isNull(request,"请求不能为空");
+        ParamterExceptionUtils.isNull(request.getId(),"主键不能为空");
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
         assetDepartment.setParentId(null);
         assetDepartment.setStatus(1);
-        assetDepartment.setGmtCreate(System.currentTimeMillis());
+        assetDepartment.setGmtModified(System.currentTimeMillis());
         return assetDepartmentDao.update(assetDepartment);
     }
 
