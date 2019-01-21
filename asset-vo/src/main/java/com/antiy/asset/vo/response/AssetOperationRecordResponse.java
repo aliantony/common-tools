@@ -41,7 +41,7 @@ public class AssetOperationRecordResponse extends BaseResponse {
     /**
      * 方案表ID
      */
-    private Integer schemaId;
+    private Integer schemeId;
     /**
      * 创建时间
      */
@@ -107,12 +107,12 @@ public class AssetOperationRecordResponse extends BaseResponse {
         this.operateUserId = operateUserId;
     }
 
-    public Integer getSchemaId() {
-        return schemaId;
+    public Integer getSchemeId() {
+        return schemeId;
     }
 
-    public void setSchemaId(Integer schemaId) {
-        this.schemaId = schemaId;
+    public void setSchemeId(Integer schemeId) {
+        this.schemeId = schemeId;
     }
 
     public Long getGmtCreate() {

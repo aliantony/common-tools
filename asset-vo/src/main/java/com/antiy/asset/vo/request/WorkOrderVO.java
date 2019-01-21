@@ -2,12 +2,7 @@ package com.antiy.asset.vo.request;
 
 import java.util.List;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
 import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
@@ -22,66 +17,74 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class WorkOrderVO extends BasicRequest implements ObjectValidator {
 
-    /** 工单名称 */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 工单名称
+     */
     @ApiModelProperty("工单名称")
-    @NotBlank(message = "用户名不能为空")
-    private String        name;
+    private String            name;
 
-    /** 1.紧急，2.重要，3.次要，4.提示 */
+    /**
+     * 1.紧急，2.重要，3.次要，4.提示
+     */
     @ApiModelProperty("1.紧急，2.重要，3.次要，4.提示")
-    @NotNull(message = "工单等级不能为空")
-    private Integer       workLevel;
+    private String            workLevel;
 
-    /** 1巡检，2预警，3重保，4应急，5清查,6基准配置，7基准验证，8准入实施，9其他 */
+    /**
+     * 1巡检，2预警，3重保，4应急，5清查,6基准配置，7基准验证，8准入实施，9其他
+     */
     @ApiModelProperty("1巡检，2预警，3重保，4应急，5清查,6基准配置，7基准验证，8准入实施，9其他")
-    @NotNull(message = "工单类型不能为空")
-    private Integer       orderType;
+    private String            orderType;
 
-    /** 1资产管理，2配置管理，3漏洞管理，4.补丁管理，5日志管理6.告警管理，7日常安全管理，8安全设备管理，9系统管理，10其他 */
+    /**
+     * 1资产管理，2配置管理，3漏洞管理，4.补丁管理，5日志管理6.告警管理，7日常安全管理，8安全设备管理，9系统管理，10其他
+     */
     @ApiModelProperty("1资产管理，2配置管理，3漏洞管理，4.补丁管理，5日志管理6.告警管理，7日常安全管理，8安全设备管理，9系统管理，10其他")
-    @NotNull(message = "工单来源不能为空")
-    private Integer       orderSource;
+    private String            orderSource;
 
-    /** 工单内容 */
+    /**
+     * 工单内容
+     */
     @ApiModelProperty("工单内容")
-    @NotEmpty(message = "工单内容不能为空")
-    private String        content;
+    private String            content;
 
-    /** 执行人id */
+    /**
+     * 执行人id
+     */
     @ApiModelProperty("执行人id")
-    @NotNull(message = "工单执行人不能为空")
-    private Integer       executeUserId;
-
-    /** 执行人姓名 */
+    private String            executeUserId;
+    /**
+     * 执行人姓名
+     */
     @ApiModelProperty("执行人姓名")
-    @NotNull(message = "执行人姓名不能为空")
-    private String        executeUserName;
-    /** 创建人 */
-    @ApiModelProperty("创建人")
-    private Integer       createUser;
+    private String            executeUserName;
 
-    /** 工单开始时间 */
+    /**
+     * 工单开始时间
+     */
     @ApiModelProperty("工单开始时间")
-    @NotNull(message = "工单开始时间不能为空")
-    private Long          startTime;
+    /** 正则表达式范围2001-09-09 09:46:40 12:00:00 ----> 2128-06-11 16:53:19 1000000000000-4999999999999 */
+    private String            startTime;
 
-    /** 工单结束时间 */
+    /**
+     * 工单结束时间
+     */
     @ApiModelProperty("工单结束时间")
-    @NotNull(message = "工单结束时间不能为空")
-    private Long          endTime;
+    /** 正则表达式范围2001-09-09 09:46:40 12:00:00 ----> 2128-06-11 16:53:19 1000000000000-4999999999999 */
+    private String            endTime;
 
-    /** 工单附件id */
-    @ApiModelProperty("多个工单附件id,Json数组,上传调用工单接口")
-    @Encode
-    private List<Integer> workOrderAttachments;
+    /**
+     * 工单附件id
+     */
+    @ApiModelProperty("多个工单附件id,Json数组")
+    private List<Integer>     workOrderAttachments;
 
-    public Integer getOrderSource() {
-        return orderSource;
-    }
-
-    public void setOrderSource(Integer orderSource) {
-        this.orderSource = orderSource;
-    }
+    /**
+     * 与工单绑定的相关告警来源id
+     */
+    @ApiModelProperty("与工单绑定的相关告警来源id")
+    private String            relatedSourceId;
 
     public String getName() {
         return name;
@@ -92,19 +95,28 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
     }
 
     public Integer getWorkLevel() {
-        return workLevel;
+
+        return Integer.valueOf(workLevel);
     }
 
-    public void setWorkLevel(Integer workLevel) {
+    public void setWorkLevel(String workLevel) {
         this.workLevel = workLevel;
     }
 
     public Integer getOrderType() {
-        return orderType;
+        return Integer.valueOf(orderType);
     }
 
-    public void setOrderType(Integer orderType) {
+    public void setOrderType(String orderType) {
         this.orderType = orderType;
+    }
+
+    public Integer getOrderSource() {
+        return Integer.valueOf(orderSource);
+    }
+
+    public void setOrderSource(String orderSource) {
+        this.orderSource = orderSource;
     }
 
     public String getContent() {
@@ -116,18 +128,18 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
     }
 
     public Long getStartTime() {
-        return startTime;
+        return Long.valueOf(startTime);
     }
 
-    public void setStartTime(Long startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
     public Long getEndTime() {
-        return endTime;
+        return Long.valueOf(endTime);
     }
 
-    public void setEndTime(Long endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 
@@ -140,11 +152,20 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
     }
 
     public Integer getExecuteUserId() {
-        return executeUserId;
+        // 如果解密失败返回null处理
+        return null != executeUserId ? Integer.valueOf(executeUserId) : null;
     }
 
-    public void setExecuteUserId(Integer executeUserId) {
+    public void setExecuteUserId(String executeUserId) {
         this.executeUserId = executeUserId;
+    }
+
+    public Integer getRelatedSourceId() {
+        return Integer.valueOf(relatedSourceId);
+    }
+
+    public void setRelatedSourceId(String relatedSourceId) {
+        this.relatedSourceId = relatedSourceId;
     }
 
     public String getExecuteUserName() {
@@ -155,18 +176,19 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
         this.executeUserName = executeUserName;
     }
 
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
     @Override
     public void validate() throws RequestParamValidateException {
         if (null != startTime && null != endTime) {
-            ParamterExceptionUtils.isTrue(startTime <= endTime ? true : false, "结束时间不能早于开始时间");
+            ParamterExceptionUtils.isTrue(getStartTime() < getEndTime() ? true : false, "任务预计开始时间不能晚于或等于任务预计结束时间");
         }
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "WorkOrderVO{" + "name='" + name + '\'' + ", workLevel=" + workLevel + ", orderType="
+               + orderType + ", orderSource=" + orderSource + ", content='" + content + '\'' + ", executeUserId="
+               + executeUserId + ", executeUserName='" + executeUserName + '\'' + ", startTime=" + startTime
+               + ", endTime=" + endTime + ", workOrderAttachments=" + workOrderAttachments + ", relatedSourceId="
+               + relatedSourceId + '}';
     }
 }

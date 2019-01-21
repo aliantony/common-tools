@@ -1,6 +1,5 @@
 package com.antiy.asset.service;
 
-import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.vo.request.SchemeRequest;
 
 /**
@@ -9,10 +8,8 @@ import com.antiy.asset.vo.request.SchemeRequest;
  **/
 public interface Processor {
     /**
-     * 保存流程操作历史
-     * @param scheme
+     * 统一处理流程操作历史和工单
+     * @param schemeRequest
      */
-    // AssetOperationRecord saveOperationRecord(Scheme scheme) throws Exception;
-
-    void process(String assetOperationEnum, SchemeRequest schemeRequest, Scheme scheme) throws Exception;
+    Integer process(SchemeRequest schemeRequest) throws Exception;
 }
