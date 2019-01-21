@@ -61,6 +61,8 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
     @ApiModelProperty("安装方式")
     private Integer installStatus;
 
+
+
     public String getAssetId() {
         return assetId;
     }
@@ -132,4 +134,5 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
     public void setInstallStatus(Integer installStatus) {
         this.installStatus = installStatus;
     }
+
 }

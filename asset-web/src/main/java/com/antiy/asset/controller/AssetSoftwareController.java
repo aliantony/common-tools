@@ -11,7 +11,6 @@ import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
-import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
@@ -45,10 +44,10 @@ public class AssetSoftwareController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:saveSingle')")
-    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware)
+    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware,Integer configBaselineUserId)
                                                                                                                                           throws Exception {
-        iAssetSoftwareService.saveAssetSoftware(assetSoftware);
-        return ActionResponse.success();
+
+        return ActionResponse.success(iAssetSoftwareService.saveAssetSoftware(assetSoftware,configBaselineUserId));
     }
 
     /**
@@ -172,8 +171,8 @@ public class AssetSoftwareController {
     @ApiOperation(value = "软件资产按二级品类型号统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/category", method = RequestMethod.GET)
-    public AssetCountResponse countAssetByCategory() throws Exception {
-        return iAssetSoftwareService.countCategory();
+    public ActionResponse countAssetByCategory() throws Exception {
+        return ActionResponse.success(iAssetSoftwareService.countCategory());
     }
 
     /**
@@ -184,8 +183,8 @@ public class AssetSoftwareController {
     @ApiOperation(value = "软件资产按状态统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/status", method = RequestMethod.GET)
-    public AssetCountResponse countAssetByStatus() throws Exception {
-        return iAssetSoftwareService.countStatus();
+    public ActionResponse countAssetByStatus() throws Exception {
+        return ActionResponse.success(iAssetSoftwareService.countStatus());
     }
 
     /**
@@ -196,8 +195,8 @@ public class AssetSoftwareController {
     @ApiOperation(value = "软件资产按厂商统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/manufacturer", method = RequestMethod.GET)
-    public AssetCountResponse countAssetByManufacturer() throws Exception {
-        return iAssetSoftwareService.countManufacturer();
+    public ActionResponse countAssetByManufacturer() throws Exception {
+        return ActionResponse.success(iAssetSoftwareService.countManufacturer());
     }
 
     /**

@@ -13,6 +13,7 @@ import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
@@ -51,10 +52,10 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public Integer updateAssetGroup(AssetGroupRequest request) throws Exception {
         AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
-        List<Integer> assetIdList = BeanConvert.convert(request.getAssetIdList(), Integer.class);
+        Integer[] assetIdArr =DataTypeUtils.stringArrayToIntegerArray(request.getAssetIds());
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
         assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
-        for (Integer assetId : assetIdList) {
+        for (Integer assetId : assetIdArr) {
             AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
             assetGroupRelation.setAssetGroupId(assetGroup.getId());
             assetGroupRelation.setAssetId(assetId);

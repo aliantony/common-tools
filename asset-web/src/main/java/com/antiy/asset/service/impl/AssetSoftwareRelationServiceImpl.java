@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.entity.AssetSoftwareRelationMapper;
+import com.antiy.asset.vo.response.AssetResponse;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
@@ -77,6 +79,11 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<AssetSoftwareResponse> assetSoftwareRelationResponse = responseSoftConverter
             .convert(assetSoftwareRelationList, AssetSoftwareResponse.class);
         return assetSoftwareRelationResponse;
+    }
+
+    @Override
+    public List<AssetSoftwareRelationMapper> getInfoBySoftwareId(Integer softwareId) {
+        return assetSoftwareRelationDao.getInfoBySoftwareId(softwareId);
     }
 
     @Override

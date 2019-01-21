@@ -1,16 +1,40 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import com.antiy.asset.templet.AssetEntity;
-import com.antiy.asset.templet.ComputeDeviceEntity;
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.service.IAssetPortProtocolService;
+import com.antiy.asset.service.IAssetSoftwareLicenseService;
+import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.templet.AssetSoftwareEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
+import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
+import com.antiy.asset.vo.enums.AssetOperationTableEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
-import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.query.AssetPortProtocolQuery;
+import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
+import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.query.SoftwareQuery;
+import com.antiy.asset.vo.request.AssetPortProtocolRequest;
+import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
+import com.antiy.asset.vo.request.AssetSoftwareRequest;
+import com.antiy.asset.vo.request.ManualStartActivityRequest;
+import com.antiy.asset.vo.response.*;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.Constants;
+import com.antiy.common.base.PageResult;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -23,30 +47,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.service.IAssetPortProtocolService;
-import com.antiy.asset.service.IAssetSoftwareLicenseService;
-import com.antiy.asset.service.IAssetSoftwareService;
-import com.antiy.asset.templet.AssetSoftwareEntity;
-import com.antiy.asset.util.ArrayTypeUtil;
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.request.AssetPortProtocolRequest;
-import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
-import com.antiy.asset.vo.request.AssetSoftwareRequest;
-import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.Constants;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.download.DownloadVO;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.antiy.common.utils.ParamterExceptionUtils;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -67,6 +70,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private AssetPortProtocolDao                                             assetPortProtocolDaoDao;
     @Resource
     private AssetCategoryModelDao                                            assetCategoryModelDao;
+    @Resource
+    private AssetOperationRecordDao                                            assetOperationRecordDao;
     @Resource
     private BaseConverter<AssetSoftwareRequest, AssetSoftware>               requestConverter;
 
@@ -97,33 +102,68 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private static final Logger                                              LOGGER = LogUtils
                                                                                         .get(AssetSoftwareServiceImpl.class);
 
-    @Transactional
-    @Override
-    public Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
-        AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
-        AssetSoftwareLicense license = new BaseConverter<AssetSoftwareLicenseRequest, AssetSoftwareLicense>().convert(
-            request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
-        AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>().convert(
-            request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
 
-        assetSoftwareDao.insert(assetSoftware);
-        Integer sid = assetSoftware.getId();
-        // license.setSoftwareId(sid);
-        // protocol.setAssetSoftId(sid);
-        // assetSoftwareLicenseDao.insert(license);
-        // assetPortProtocolDaoDao.insert(protocol);
-        // if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
-        // String[] assetIds = request.getAssetIds();
-        // for (String s : assetIds) {
-        // AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-        // assetSoftwareRelation.setSoftwareId(sid);
-        // assetSoftwareRelation.setAssetId(Integer.parseInt(s));
-        // assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
-        // assetSoftwareRelationDao.insert(assetSoftwareRelation);
-        // }
-        // }
-        // TODO: 2019/1/14 工作流
-        return sid;
+    @Override
+    public Integer saveAssetSoftware(AssetSoftwareRequest request,Integer configBaselineUserId) throws Exception {
+        Integer num = transactionTemplate.execute(new TransactionCallback<Integer>() {
+            @Override
+            public Integer doInTransaction(TransactionStatus transactionStatus) {
+                try {
+                    AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
+//        AssetSoftwareLicense license = new BaseConverter<AssetSoftwareLicenseRequest, AssetSoftwareLicense>().convert(
+//            request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
+//        AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>().convert(
+//            request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
+//         license.setSoftwareId(sid);
+//         protocol.setAssetSoftId(sid);
+//         assetSoftwareLicenseDao.insert(license);
+//         assetPortProtocolDaoDao.insert(protocol);
+
+                    assetSoftwareDao.insert(assetSoftware);
+                    Integer sid = assetSoftware.getId();
+                    if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
+                        String[] assetIds = request.getAssetIds();
+                        for (String s : assetIds) {
+                            AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                            assetSoftwareRelation.setSoftwareId(sid);
+                            assetSoftwareRelation.setAssetId(Integer.parseInt(s));
+                            assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+                            assetSoftwareRelationDao.insert(assetSoftwareRelation);
+                        }
+                    }
+                    // 记录资产操作流程
+                    AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+                    assetOperationRecord.setTargetObjectId(sid);
+                    assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
+                    assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                    assetOperationRecord.setContent("登记软件资产");
+                    assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+                    assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+                    assetOperationRecordDao.insert(assetOperationRecord);
+                    return sid;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return 0;
+                }
+            }
+        });
+
+        //  开启流程
+        if (num!=null&&num>0){
+            Map<String, Object> formData = new HashMap();
+            formData.put("configBaselineUserId", configBaselineUserId);
+            formData.put("discard", 0);
+            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+            manualStartActivityRequest.setBusinessId(num.toString());
+            manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+            // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId());
+            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
+            activityClient.manualStartProcess(manualStartActivityRequest);
+        }
+
+        return num;
+
     }
 
     @Override

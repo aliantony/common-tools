@@ -1,16 +1,34 @@
 package com.antiy.asset.entity;
 
-import com.antiy.common.base.BaseEntity;
-import io.swagger.annotations.ApiModelProperty;
+public class AssetSoftwareRelationMapper {
 
-/**
- * <p> 资产软件关系信息 </p>
- *
- * @author zhangyajun
- * @since 2018-12-29
- */
+    /**
+     * 资产名称
+     */
+    private String  assetName;
 
-public class AssetSoftwareRelation extends BaseEntity {
+    /**
+     * 资产编号
+     */
+    private String  assetNumber;
+
+    /**
+     * 资产品类型号名
+     */
+    private String  categoryModelName;
+    /**
+     * 资产厂商
+     */
+    private String  manufacturer;
+    /**
+     * 资产IP
+     */
+    private String  ip;
+
+    /**
+     * 资产mac
+     */
+    private String  mac;
 
     /**
      * 资产主键
@@ -37,14 +55,22 @@ public class AssetSoftwareRelation extends BaseEntity {
      * 许可密钥
      */
     private String  licenseSecretKey;
+
     /**
      * 安装方式1人工2自动
      */
     private Integer installType;
+
     /**
      * 安装状态0失败、1成功，2安装中
      */
     private Integer installStatus;
+
+    /**
+     * 责任人姓名
+     */
+    private String  userName;
+
     /**
      * 创建时间
      */
@@ -69,6 +95,54 @@ public class AssetSoftwareRelation extends BaseEntity {
      * 状态,1未删除,0已删除
      */
     private Integer status;
+
+    public String getAssetName() {
+        return assetName;
+    }
+
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
+    }
+
+    public String getAssetNumber() {
+        return assetNumber;
+    }
+
+    public void setAssetNumber(String assetNumber) {
+        this.assetNumber = assetNumber;
+    }
+
+    public String getCategoryModelName() {
+        return categoryModelName;
+    }
+
+    public void setCategoryModelName(String categoryModelName) {
+        this.categoryModelName = categoryModelName;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
 
     public Integer getAssetId() {
         return assetId;
@@ -106,6 +180,18 @@ public class AssetSoftwareRelation extends BaseEntity {
         return port;
     }
 
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    public String getLicenseSecretKey() {
+        return licenseSecretKey;
+    }
+
+    public void setLicenseSecretKey(String licenseSecretKey) {
+        this.licenseSecretKey = licenseSecretKey;
+    }
+
     public Integer getInstallType() {
         return installType;
     }
@@ -114,8 +200,12 @@ public class AssetSoftwareRelation extends BaseEntity {
         this.installType = installType;
     }
 
-    public void setPort(String port) {
-        this.port = port;
+    public Integer getInstallStatus() {
+        return installStatus;
+    }
+
+    public void setInstallStatus(Integer installStatus) {
+        this.installStatus = installStatus;
     }
 
     public Long getGmtCreate() {
@@ -126,12 +216,12 @@ public class AssetSoftwareRelation extends BaseEntity {
         this.gmtCreate = gmtCreate;
     }
 
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
+    public Long getGmtModified() {
+        return gmtModified;
     }
 
-    public Long getGmtModified() {
-        return System.currentTimeMillis();
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
     public String getMemo() {
@@ -166,26 +256,11 @@ public class AssetSoftwareRelation extends BaseEntity {
         this.status = status;
     }
 
-    public String getLicenseSecretKey() {
-        return licenseSecretKey;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setLicenseSecretKey(String licenseSecretKey) {
-        this.licenseSecretKey = licenseSecretKey;
-    }
-
-    public Integer getInstallStatus() {
-        return installStatus;
-    }
-
-    public void setInstallStatus(Integer installStatus) {
-        this.installStatus = installStatus;
-    }
-
-    @Override
-    public String toString() {
-        return "AssetSoftwareRelation{" + ", assetId=" + assetId + ", softwareId=" + softwareId + ", softwareStatus="
-               + softwareStatus + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo
-               + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status + "}";
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
