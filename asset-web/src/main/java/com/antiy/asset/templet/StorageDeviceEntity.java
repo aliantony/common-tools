@@ -9,8 +9,8 @@ public class StorageDeviceEntity {
     /**
      * 序号
      */
-    @ExcelField(value = "order_num", align = 1, title = "序号", type = 1)
-    private String  orderNum;
+    @ExcelField(value = "order_number", align = 1, title = "序号" )
+    private Integer orderNumber;
     /**
      * 资产名称
      */
@@ -304,13 +304,7 @@ public class StorageDeviceEntity {
         this.houseLocation = houseLocation;
     }
 
-    public String getOrderNum() {
-        return orderNum;
-    }
 
-    public void setOrderNum(String orderNum) {
-        this.orderNum = orderNum;
-    }
 
     public Integer getHardDiskNum() {
         return hardDiskNum;
@@ -322,5 +316,13 @@ public class StorageDeviceEntity {
 
     public void setHighCache(String highCache) {
         this.highCache = highCache;
+    }
+
+    public Integer getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
     }
 }

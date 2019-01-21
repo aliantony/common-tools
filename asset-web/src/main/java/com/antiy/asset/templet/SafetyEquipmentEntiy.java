@@ -6,8 +6,8 @@ public class SafetyEquipmentEntiy {
     /**
      * 序号
      */
-    @ExcelField(value = "number", align = 1, title = "编号", type = 1)
-    private String number;
+    @ExcelField(value = "order_number", align = 1, title = "序号" )
+    private Integer orderNumber;
     /**
      * 资产名称
      */
@@ -91,13 +91,7 @@ public class SafetyEquipmentEntiy {
     @ExcelField(value = "memo", align = 1, title = "描述")
     private String            memo;
 
-    public String getNumber() {
-        return number;
-    }
 
-    public void setNumber(String number) {
-        this.number = number;
-    }
 
     public String getName() {
         return name;
@@ -225,5 +219,13 @@ public class SafetyEquipmentEntiy {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public Integer getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
     }
 }
