@@ -57,12 +57,12 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("软件标签")
     private Integer       softwareLabel;
     /**
-     * 1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
+     * 1待登记2待分析3可安装4已退役5不予登记
      */
-    @ApiModelProperty("1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役")
+    @ApiModelProperty("1待登记2待分析3可安装4已退役5不予登记")
     private Integer       softwareStatus;
 
-    @ApiModelProperty("1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役")
+    @ApiModelProperty("1待登记2待分析3可安装4已退役5不予登记")
     private List<Integer> softwareStatusList;
 
     /**

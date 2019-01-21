@@ -1,21 +1,18 @@
 package com.antiy.asset.service;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
 import com.antiy.asset.entity.AssetSoftware;
-import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
-import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p> 软件信息表 服务类 </p>
@@ -31,7 +28,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @param request
      * @return
      */
-    Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception;
+    Integer saveAssetSoftware(AssetSoftwareRequest request,Integer configBaselineUserId) throws Exception;
 
     /**
      * 批量保存

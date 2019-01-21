@@ -2,7 +2,6 @@ package com.antiy.asset.controller;
 
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
@@ -49,9 +48,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:saveSingle')")
-    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset)
-                                                                                                                       throws Exception {
-        iAssetService.saveAsset(asset);
+    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset, Integer configBaselineUserId) throws Exception {
+        iAssetService.saveAsset(asset,configBaselineUserId);
         return ActionResponse.success();
     }
 
