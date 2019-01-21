@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.base.BusinessData;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -113,6 +114,20 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
                         OperationWOProcessor.saveOperationRecord(assetFlowEnum, assetOperationRecord,
                             assetOperationRecordDao, schemeRequest.getTopCategory());
                         // --------------------------------操作记录end--------------------------------
+
+                        BusinessData businessData = new BusinessData();
+                        // 事件名 在这可以写登记资产
+                        businessData.setIncident(assetFlowEnum.getMsg());
+                        // 操作的业务阶段
+                        businessData.setBusinessPhase(assetFlowEnum.getCode());
+                        // 操作的资产id
+                        businessData.setManageObjId(scheme.getAssetId());
+                        // 模块id ModuleEnum
+                        businessData.setModuleId(1);
+                        // 附加信息
+                        businessData.setInformation(schemeRequest.getMemo());
+                        LogUtils.recordOperLog(businessData);
+
 
                         // --------------------------------工单start------------------------------
                         // 目前只有待入网操作时，才有工单，其它以消息告知为准
