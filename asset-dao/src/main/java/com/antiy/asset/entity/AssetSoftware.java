@@ -120,6 +120,18 @@ public class AssetSoftware extends BaseEntity {
      * 到期时间
      */
     private Long              serviceLife;
+    /**
+     * 资产数量
+     */
+    private Integer assetCount;
+
+    public Integer getAssetCount() {
+        return assetCount;
+    }
+
+    public void setAssetCount(Integer assetCount) {
+        this.assetCount = assetCount;
+    }
 
     public Long getBuyDate() {
         return buyDate;

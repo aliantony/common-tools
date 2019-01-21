@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.BeanConvert;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetNetworkCardDao;
@@ -35,7 +36,7 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
 
     @Override
     public Integer saveAssetNetworkCard(AssetNetworkCardRequest request) throws Exception {
-        AssetNetworkCard assetNetworkCard = requestConverter.convert(request, AssetNetworkCard.class);
+        AssetNetworkCard assetNetworkCard = BeanConvert.convertBean(request, AssetNetworkCard.class);
         assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetNetworkCard.setGmtCreate(System.currentTimeMillis());
         assetNetworkCardDao.insert(assetNetworkCard);
@@ -44,7 +45,7 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
 
     @Override
     public Integer updateAssetNetworkCard(AssetNetworkCardRequest request) throws Exception {
-        AssetNetworkCard assetNetworkCard = requestConverter.convert(request, AssetNetworkCard.class);
+        AssetNetworkCard assetNetworkCard = BeanConvert.convertBean(request, AssetNetworkCard.class);
         assetNetworkCard.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetNetworkCard.setGmtModified(System.currentTimeMillis());
         return assetNetworkCardDao.update(assetNetworkCard);

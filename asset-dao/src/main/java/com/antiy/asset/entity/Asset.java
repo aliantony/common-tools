@@ -190,7 +190,7 @@ public class Asset extends BaseEntity {
     /**
      * 资产准入状态
      */
-    private Integer           assetdmittanceStatus;
+    private Integer           admittanceStatus;
 
 
     public String getIp() {
@@ -552,11 +552,11 @@ public class Asset extends BaseEntity {
         this.categoryModel = categoryModel;
     }
 
-    public Integer getAssetdmittanceStatus() {
-        return assetdmittanceStatus;
+    public Integer getAdmittanceStatus() {
+        return admittanceStatus;
     }
 
-    public void setAssetdmittanceStatus(Integer assetdmittanceStatus) {
-        this.assetdmittanceStatus = assetdmittanceStatus;
+    public void setAdmittanceStatus(Integer admittanceStatus) {
+        this.admittanceStatus = admittanceStatus;
     }
 }

@@ -3,6 +3,7 @@ package com.antiy.asset.util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -144,16 +145,10 @@ public class BeanConvert {
         if (f1 == null && f2 == null) {
             return Lists.newArrayList();
         }
+        List<Field> fs = new ArrayList(Arrays.asList(f1));
+        fs.addAll(Arrays.asList(f2));
         List<String> rule = Lists.newArrayList();
-        Arrays.asList(f1).stream().forEach(field -> {
-            Encode encode = field.getAnnotation(Encode.class);
-            if (encode != null) {
-                if (!rule.contains(SETTER_PREFIX + StringUtils.capitalize(field.getName()))) {
-                    rule.add(SETTER_PREFIX + StringUtils.capitalize(field.getName()));
-                }
-            }
-        });
-        Arrays.asList(f2).stream().forEach(field -> {
+        fs.forEach(field -> {
             Encode encode = field.getAnnotation(Encode.class);
             if (encode != null) {
                 if (!rule.contains(SETTER_PREFIX + StringUtils.capitalize(field.getName()))) {

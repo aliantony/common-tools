@@ -282,6 +282,9 @@
     </sql>
 
     <sql id="Set_Column_List">
+        <if test=" admittanceStatus != null">
+            admittance_status = #{admittanceStatus},
+        </if>
         <if test=" assetGroup != null">
             asset_group = #{assetGroup },
         </if>
