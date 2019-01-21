@@ -6,7 +6,6 @@
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetSoftware">
         <id column="id" property="id"/>
         <result column="size" property="size"/>
-        <result column="serial" property="serial"/>
         <result column="operation_system" property="operationSystem"/>
         <result column="category_model" property="categoryModel"/>
         <result column="category_model_name" property="categoryModelName"/>
@@ -108,9 +107,6 @@
         <if test=" gmtCreate != null">
             gmt_create,
         </if>
-        <if test=" serial != null">
-            serial,
-        </if>
         <if test=" gmtModified != null">
             gmt_modified,
         </if>
@@ -182,9 +178,6 @@
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
-        </if>
-        <if test=" serial != null">
-            #{serial},
         </if>
         <if test=" memo != null">
             #{memo },
@@ -261,9 +254,6 @@
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
         </if>
-        <if test=" serial != null">
-            serial=#{serial},
-        </if>
         <if test=" memo != null">
             memo = #{memo },
         </if>
@@ -323,9 +313,6 @@
         </if>
         <if test=" status != null">
             and status = #{status }
-        </if>
-        <if test=" serial != null">
-            and serial=#{serial},
         </if>
     </sql>
 
@@ -441,7 +428,6 @@
             <if test=" multipleQuery != null">
                 and (
                 name LIKE CONCAT('%',#{multipleQuery},'%')
-                or serial LIKE CONCAT('%',#{multipleQuery},'%')
                 or id LIKE CONCAT('%',#{multipleQuery},'%')
                 )
             </if>
@@ -492,7 +478,6 @@
             <if test=" multipleQuery != null">
                 and (
                 a.name LIKE CONCAT('%',#{multipleQuery},'%')
-                or serial LIKE CONCAT('%',#{multipleQuery},'%')
                 or a.id LIKE CONCAT('%',#{multipleQuery},'%')
                 )
             </if>

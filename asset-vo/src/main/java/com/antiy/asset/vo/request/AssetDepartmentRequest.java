@@ -21,7 +21,6 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
     /**
      * id
      */
-    @NotNull(message = "id不能为空")
     @ApiModelProperty("主键")
     @Encode
     private String  id;
@@ -29,13 +28,11 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
     /**
      * 部门名
      */
-    @NotNull(message = "部门名不能为空")
     @ApiModelProperty("部门名")
     private String  name;
     /**
      * 上级部门
      */
-    @NotNull(message = "上级部门不能为空")
     @ApiModelProperty("上级部门")
     private Integer parentId;
     /**

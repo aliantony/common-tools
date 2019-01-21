@@ -136,11 +136,7 @@ public class AssetSoftwareResponse extends BaseResponse {
      */
     @ApiModelProperty(value = "关联 硬件资产数")
     private Integer assetCount;
-    /**
-     * 软件序列号
-     */
-    @ApiModelProperty(value = "软件序列号")
-    private String  serial;
+
 
 
     public Integer getAssetCount() {
@@ -337,13 +333,6 @@ public class AssetSoftwareResponse extends BaseResponse {
         this.status = status;
     }
 
-    public String getSerial() {
-        return serial;
-    }
-
-    public void setSerial(String serial) {
-        this.serial = serial;
-    }
 
 
 }
