@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -58,10 +59,12 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
 
     @Override
     public Integer updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
+        ParamterExceptionUtils.isNull(request,"请求不能为空");
+        ParamterExceptionUtils.isNull(request.getId(),"主键不能为空");
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
         assetDepartment.setParentId(null);
         assetDepartment.setStatus(1);
-        assetDepartment.setGmtCreate(System.currentTimeMillis());
+        assetDepartment.setGmtModified(System.currentTimeMillis());
         return assetDepartmentDao.update(assetDepartment);
     }
 

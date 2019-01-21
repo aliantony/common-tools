@@ -8,11 +8,7 @@ import org.apache.commons.lang.StringUtils;
  * @Description:
  */
 public enum SoftwareStatusEnum {
-    WATI_REGSIST(1, "待登记"),
-    NOT_REGSIST(2, "不予登记"),
-    WAIT_ANALYZE(3, "待分析"),
-    ALLOW_INSTALL(4, "可安装"),
-    RETIRE(5, "已退役");
+    WATI_REGSIST(1, "待登记"), NOT_REGSIST(2, "不予登记"), WAIT_ANALYZE(3, "待分析"), ALLOW_INSTALL(4, "可安装"), RETIRE(5, "已退役");
 
     SoftwareStatusEnum(Integer code, String msg) {
         this.code = code;
@@ -23,7 +19,7 @@ public enum SoftwareStatusEnum {
     private Integer code;
 
     // msg
-    private String msg;
+    private String  msg;
 
     /**
      * 通过code获取枚举
@@ -35,6 +31,17 @@ public enum SoftwareStatusEnum {
         if (StringUtils.isNotBlank(name)) {
             for (SoftwareStatusEnum softwareType : SoftwareStatusEnum.values()) {
                 if (softwareType.name().equals(name)) {
+                    return softwareType;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static AssetStatusEnum getAssetByCode(Integer code) {
+        if (code != null) {
+            for (AssetStatusEnum softwareType : AssetStatusEnum.values()) {
+                if (softwareType.getCode().equals(code)) {
                     return softwareType;
                 }
             }
