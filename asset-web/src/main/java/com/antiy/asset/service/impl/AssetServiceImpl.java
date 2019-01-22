@@ -1304,8 +1304,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setEmail(entity.getEmail());
             assetDao.insert(asset);
             Integer id = asset.getId();
-            // // TODO: 2019/1/17 流程
-
             if (StringUtils.isNotBlank(entity.getMemoryBrand())) {
                 AssetMemory assetMemory = new AssetMemory();
                 assetMemory.setAssetId(id);
@@ -1424,6 +1422,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
             assetOperationRecordDao.insert(assetOperationRecord);
+
+            //  流程
+            // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
+
+            Map<String, Object> formData = new HashMap();
+//            formData.put("configBaselineUserId", configBaselineUserId);
+            formData.put("discard", 0);
+            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+            manualStartActivityRequest.setBusinessId(asset.getId ().toString());
+            manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+            manualStartActivityRequest.setAssignee (LoginUserUtil.getLoginUser ().getName ());
+            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
+            activityClient.manualStartProcess (manualStartActivityRequest);
             success++;
         }
 
@@ -1506,7 +1517,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
             assetOperationRecordDao.insert(assetOperationRecord);
-            // // TODO: 2019/1/17 流程
+            //  流程
+            // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
+
+            Map<String, Object> formData = new HashMap();
+//            formData.put("configBaselineUserId", configBaselineUserId);
+            formData.put("discard", 0);
+            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+            manualStartActivityRequest.setBusinessId(asset.getId ().toString());
+            manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+            manualStartActivityRequest.setAssignee (LoginUserUtil.getLoginUser ().getName ());
+            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
+            activityClient.manualStartProcess (manualStartActivityRequest);
 
             success++;
         }
@@ -1567,7 +1589,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetSafetyEquipment.setIp(entity.getIp());
             assetSafetyEquipment.setMemo(entity.getMemo());
             assetSafetyEquipmentDao.insert(assetSafetyEquipment);
-            // // TODO: 2019/1/17 流程
             // 记录资产操作流程
             AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
             assetOperationRecord.setTargetObjectId(asset.getId());
@@ -1578,6 +1599,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
             assetOperationRecordDao.insert(assetOperationRecord);
+            //  流程
+            // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
+
+            Map<String, Object> formData = new HashMap();
+//            formData.put("configBaselineUserId", configBaselineUserId);
+            formData.put("discard", 0);
+            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+            manualStartActivityRequest.setBusinessId(asset.getId ().toString());
+            manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+            manualStartActivityRequest.setAssignee (LoginUserUtil.getLoginUser ().getName ());
+            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
+            activityClient.manualStartProcess (manualStartActivityRequest);
             success++;
         }
 
@@ -1644,7 +1677,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetSafetyEquipment.setOsVersion(entity.getSlotType());
             assetSafetyEquipment.setAverageTransferRate(entity.getAverageTransmissionRate());
             assetStorageMediumDao.insert(assetSafetyEquipment);
-            // // TODO: 2019/1/17 流程
             // 记录资产操作流程
             AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
             assetOperationRecord.setTargetObjectId(asset.getId());
@@ -1654,6 +1686,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+            //  流程
+            // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
+
+            Map<String, Object> formData = new HashMap();
+//            formData.put("configBaselineUserId", configBaselineUserId);
+            formData.put("discard", 0);
+            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+            manualStartActivityRequest.setBusinessId(asset.getId ().toString());
+            manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+            manualStartActivityRequest.setAssignee (LoginUserUtil.getLoginUser ().getName ());
+            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
+            activityClient.manualStartProcess (manualStartActivityRequest);
             success++;
         }
 
@@ -1712,6 +1756,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
             assetOperationRecordDao.insert(assetOperationRecord);
+            //  流程
+            // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
+
+            Map<String, Object> formData = new HashMap();
+//            formData.put("configBaselineUserId", configBaselineUserId);
+            formData.put("discard", 0);
+            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+            manualStartActivityRequest.setBusinessId(asset.getId ().toString());
+            manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+            manualStartActivityRequest.setAssignee (LoginUserUtil.getLoginUser ().getName ());
+            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
+            activityClient.manualStartProcess (manualStartActivityRequest);
             success++;
         }
 
