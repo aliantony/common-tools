@@ -69,6 +69,12 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
     @ApiModelProperty("安装方式")
     @NotNull
     private Integer installStatus;
+    /**
+     * 安装时间
+     */
+    @ApiModelProperty("安装时间")
+    @NotNull
+    private Integer installTime;
 
     public String getId() {
         return id;
@@ -140,6 +146,14 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
 
     public void setInstallType(Integer installType) {
         this.installType = installType;
+    }
+
+    public Integer getInstallTime() {
+        return installTime;
+    }
+
+    public void setInstallTime(Integer installTime) {
+        this.installTime = installTime;
     }
 
     @Override
