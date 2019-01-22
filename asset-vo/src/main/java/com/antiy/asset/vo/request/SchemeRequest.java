@@ -114,6 +114,18 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     @NotBlank(message = "业务Id不能为空")
     private String  businessId;
 
+    @ApiModelProperty("任务Id不能为空")
+    @NotBlank(message = "任务Id不能为空")
+    private String                taskId;
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
     public String getBusinessId() {
         return businessId;
     }
