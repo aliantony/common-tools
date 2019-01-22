@@ -34,7 +34,7 @@ public interface IAssetDepartmentService extends IBaseService<AssetDepartment> {
      * @param request
      * @return
      */
-    Integer updateAssetDepartment(AssetDepartmentRequest request) throws Exception;
+    ActionResponse updateAssetDepartment(AssetDepartmentRequest request) throws Exception;
 
     /**
      * 查询对象集合

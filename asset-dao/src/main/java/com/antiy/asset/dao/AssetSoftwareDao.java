@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import javafx.beans.binding.ObjectExpression;
 import org.apache.ibatis.annotations.Param;
@@ -61,4 +62,10 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
     Integer findCount(AssetSoftwareQuery assetSoftwareQuery);
 
     List<AssetSoftware> findInstallList(AssetSoftwareQuery softwareQuery);
+
+    List<AssetSoftwareInstallResponse> findAssetInstallList(AssetSoftwareQuery softwareQuery);
+
+    Integer findAssetInstallCount(AssetSoftwareQuery softwareQuery);
+
+    Integer findCountInstall(AssetSoftwareQuery query);
 }

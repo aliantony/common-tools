@@ -17,7 +17,7 @@ import com.antiy.common.utils.LogUtils;
  */
 public class NodeUtilsConverter<S, T> extends BaseConverter<S, T> {
     private static final String PARTNER_COLUMN       = "parentId";
-    private static final String ID_COLUMN            = "id";
+    private static final String ID_COLUMN            = "stringId";
     private static final String CHILDREN_NODE_COLUMN = "childrenNode";
     private static final String PARENT_ID_VALUE      = "0";
     private static final Logger logger               = LogUtils.get();

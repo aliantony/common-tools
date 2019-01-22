@@ -9,6 +9,7 @@ import java.util.Objects;
 import javax.annotation.Resource;
 
 import com.antiy.asset.convert.CategoryRequestConvert;
+import com.antiy.asset.convert.NodeConverter;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.util.NodeUtilsConverter;
@@ -60,12 +61,10 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Override
     public ActionResponse saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel assetCategoryModel = requestConverter.convert(request, AssetCategoryModel.class);
-        AssetCategoryModelQuery assetCategoryModelQuery = new AssetCategoryModelQuery();
-        assetCategoryModelQuery.setName(request.getName());
-        int i = assetCategoryModelDao.findCount(assetCategoryModelQuery);
-        if (i >= 1) {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "不能存在同名品类");
+        if (checkNameRepeat(request)) {
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该品类名已存在");
         }
+        setParentType(assetCategoryModel);
         assetCategoryModel.setGmtCreate(System.currentTimeMillis());
         assetCategoryModel.setStatus(1);
         assetCategoryModelDao.insert(assetCategoryModel);
@@ -74,9 +73,33 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         return ActionResponse.success(assetCategoryModel.getId());
     }
 
+    Boolean checkNameRepeat(AssetCategoryModelRequest request) throws Exception {
+        if (Objects.nonNull(request.getName())) {
+            AssetCategoryModelQuery assetCategoryModelQuery = new AssetCategoryModelQuery();
+            assetCategoryModelQuery.setName(request.getName());
+            return assetCategoryModelDao.findCount(assetCategoryModelQuery) >= 1;
+        }
+        return false;
+    }
+
+    /**
+     * 设置资产类型与父品类的资产类型一致
+     * @param assetCategoryModel
+     * @return
+     */
+    private void setParentType(AssetCategoryModel assetCategoryModel) throws Exception {
+        Integer parentId = assetCategoryModel.getParentId();
+        AssetCategoryModel parent = assetCategoryModelDao.getById(parentId);
+        BusinessExceptionUtils.isNull(parent, "父类型不存在");
+        assetCategoryModel.setAssetType(parent.getAssetType());
+    }
+
     @Override
     public ActionResponse updateAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel assetCategoryModel = categoryRequestConvert.convert(request, AssetCategoryModel.class);
+        if (checkNameRepeat(request)) {
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该品类名已存在");
+        }
         AssetCategoryModel assetCategoryModelById = assetCategoryModelDao.getById(assetCategoryModel.getId());
         // 判断是不是系统内置
         if (checkIsDefault(assetCategoryModelById)) {
@@ -123,7 +146,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     /**
      * 删除品类
      *
-     * @param id 删除的id，isConfirm是否已经确认
      * @return ActionResponse
      */
     public ActionResponse delete(Serializable id) throws Exception {
@@ -139,9 +161,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public AssetCategoryModelNodeResponse queryCategoryNode() throws Exception {
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
-        NodeUtilsConverter nodeResponseNodeUtilsConverter = new NodeUtilsConverter<>();
-        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeResponseNodeUtilsConverter
-            .columnToNode(assetCategoryModels, AssetCategoryModelNodeResponse.class);
+        NodeConverter nodeConverter = new NodeConverter();
+        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(
+            assetCategoryModels, AssetCategoryModelNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
 
