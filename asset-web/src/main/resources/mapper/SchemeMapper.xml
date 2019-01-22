@@ -14,6 +14,7 @@
         <result column="expecte_start_time" property="expecteStartTime"/>
         <result column="expecte_end_time" property="expecteEndTime"/>
         <result column="order_level" property="orderLevel"/>
+        <result column="baseline_analyze_info" property="baselineAnalyzeInfo"/>
         <result column="file_info" property="fileInfo"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
@@ -25,7 +26,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, type, result, putinto_user_id, putinto_time, putinto_user, file_info, order_level , expecte_start_time, expecte_end_time, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_id, type, result, putinto_user_id, putinto_time, putinto_user, file_info, order_level ,baseline_analyze_info , expecte_start_time, expecte_end_time, gmt_create, gmt_modified, memo, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -106,6 +107,9 @@
         <if test=" orderLevel != null">
             #{orderLevel },
         </if>
+        <if test=" baselineAnalyzeInfo != null">
+            #{baselineAnalyzeInfo },
+        </if>
         <if test=" fileInfo != null">
             #{fileInfo },
         </if>
@@ -156,6 +160,9 @@
         </if>
         <if test=" orderLevel != null">
             order_level = #{orderLevel },
+        </if>
+        <if test=" baselineAnalyzeInfo != null">
+            baseline_analyze_info = #{baselineAnalyzeInfo },
         </if>
         <if test=" fileInfo != null">
             file_info = #{fileInfo },
