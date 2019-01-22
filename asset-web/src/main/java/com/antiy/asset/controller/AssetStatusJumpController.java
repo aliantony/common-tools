@@ -37,7 +37,7 @@ public class AssetStatusJumpController {
     @ApiOperation(value = "硬件状态跃迁", notes = "传入实体对象信息")
     @PreAuthorize("hasAuthority('asset:scheme:saveSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/hardware", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public ActionResponse hardwareStatusJump(@ApiParam(value = "assetStatusReqeust") @RequestBody(required = false) AssetStatusReqeust assetStatusReqeust) throws Exception {
         if (assetStatusReqeust.getSoftware()) {
             return AssetStatusChangeFactory.createHuman(AssetStatusChangeProcessImpl.class)
