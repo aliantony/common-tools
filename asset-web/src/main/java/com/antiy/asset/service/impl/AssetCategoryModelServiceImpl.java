@@ -9,6 +9,7 @@ import java.util.Objects;
 import javax.annotation.Resource;
 
 import com.antiy.asset.convert.CategoryRequestConvert;
+import com.antiy.asset.convert.NodeConverter;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.util.NodeUtilsConverter;
@@ -123,7 +124,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     /**
      * 删除品类
      *
-     * @param id 删除的id，isConfirm是否已经确认
      * @return ActionResponse
      */
     public ActionResponse delete(Serializable id) throws Exception {
@@ -139,8 +139,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public AssetCategoryModelNodeResponse queryCategoryNode() throws Exception {
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
-        NodeUtilsConverter nodeResponseNodeUtilsConverter = new NodeUtilsConverter<>();
-        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeResponseNodeUtilsConverter
+        NodeConverter nodeConverter=new NodeConverter();
+        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter
             .columnToNode(assetCategoryModels, AssetCategoryModelNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
