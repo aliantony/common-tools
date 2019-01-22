@@ -7,9 +7,9 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.convert.NodeConverter;
 import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -19,9 +19,7 @@ import com.antiy.asset.dao.AssetDepartmentDao;
 import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.AssetDepartment;
 import com.antiy.asset.service.IAssetDepartmentService;
-import com.antiy.asset.util.NodeUtilsConverter;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
-import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
 import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
@@ -47,7 +45,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Override
     public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
-        AssetDepartment parent = assetDepartmentDao.getById(assetDepartment.getId());
+        AssetDepartment parent = assetDepartmentDao.getById(assetDepartment.getParentId());
         if (Objects.isNull(parent)) {
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "父级部门不存在");
         }
@@ -59,8 +57,6 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
 
     @Override
     public Integer updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
-        ParamterExceptionUtils.isNull(request, "请求不能为空");
-        ParamterExceptionUtils.isNull(request.getId(), "主键不能为空");
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
         assetDepartment.setParentId(null);
         assetDepartment.setStatus(1);
@@ -131,8 +127,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         AssetDepartmentQuery query = new AssetDepartmentQuery();
         query.setStatus(1);
         List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
-        NodeUtilsConverter nodeResponseNodeUtilsConverter = new NodeUtilsConverter<>();
-        List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeResponseNodeUtilsConverter.columnToNode(
+        NodeConverter nodeConverter=new NodeConverter();
+        List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(
             assetDepartment, AssetDepartmentNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
