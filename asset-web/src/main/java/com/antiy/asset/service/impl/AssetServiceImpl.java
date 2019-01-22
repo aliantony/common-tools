@@ -16,6 +16,7 @@ import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -99,7 +100,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private static final Logger                       LOGGER = LogUtils.get(AssetServiceImpl.class);
 
     @Override
-    public Integer saveAsset(AssetOuterRequest request,Integer configBaselineUserId) throws Exception {
+    public Integer saveAsset(AssetOuterRequest request, ManualStartActivityRequest activityRequest) throws Exception {
 
         Integer num = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
@@ -262,17 +263,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         });
+        //启动流程
+        ActionResponse actionResponse = activityClient.manualStartProcess (activityRequest);
 
-        // TODO: 2019/1/18 开启流程
-        Map<String, Object> formData = new HashMap();
-        formData.put("configBaselineUserId", configBaselineUserId);
-        formData.put("discard", 0);
-        ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-        manualStartActivityRequest.setBusinessId(num.toString());
-        manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-        // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId());
-        manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
-        activityClient.manualStartProcess(manualStartActivityRequest);
 
         return num;
     }
@@ -1290,6 +1283,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (areaId);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setResponsibleUserId (LoginUserUtil.getLoginUser().getId());
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setName(entity.getName());
@@ -1464,6 +1458,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (areaId);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setResponsibleUserId (LoginUserUtil.getLoginUser().getId());
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setName(networkDeviceEntity.getName());
@@ -1547,6 +1542,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (areaId);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setResponsibleUserId (LoginUserUtil.getLoginUser().getId());
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setName(entity.getName());
@@ -1616,6 +1612,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (areaId);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setResponsibleUserId (LoginUserUtil.getLoginUser().getId());
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setName(entity.getName());
@@ -1689,6 +1686,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (areaId);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setResponsibleUserId (LoginUserUtil.getLoginUser().getId());
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setName(entity.getName());

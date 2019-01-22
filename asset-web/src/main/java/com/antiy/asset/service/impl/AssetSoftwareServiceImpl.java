@@ -22,12 +22,12 @@ import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
-import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.request.AssetPortProtocolRequest;
+import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
+import com.antiy.asset.vo.request.AssetSoftwareRequest;
+import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.Constants;
-import com.antiy.common.base.PageResult;
+import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.utils.LogUtils;
@@ -35,7 +35,6 @@ import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -103,7 +102,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         .get(AssetSoftwareServiceImpl.class);
 
     @Override
-    public Integer saveAssetSoftware(AssetSoftwareRequest request, Integer configBaselineUserId) throws Exception {
+    public Integer saveAssetSoftware(AssetSoftwareRequest request,ManualStartActivityRequest activityRequest) throws Exception {
         Integer num = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -152,15 +151,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
         // 开启流程
         if (num != null && num > 0) {
-            Map<String, Object> formData = new HashMap();
-            formData.put("configBaselineUserId", configBaselineUserId);
-            formData.put("discard", 0);
-            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-            manualStartActivityRequest.setBusinessId(num.toString());
-            manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-            // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId());
-            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
-            activityClient.manualStartProcess(manualStartActivityRequest);
+            // 启动流程
+            ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
         }
 
         return num;
@@ -479,6 +471,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             AssetSoftwareInstallResponse.class);
     }
 
+    public Integer findAssetInstallCount(AssetSoftwareQuery query) throws Exception {
+        return assetSoftwareDao.findAssetInstallCount(query);
+    }
+
+
     @Override
     public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery)  throws Exception {
         return new PageResult<>(softwareQuery.getPageSize(), this.findAssetInstallCount(softwareQuery),
@@ -486,11 +483,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
 
+
     public Integer findCountInstall(AssetSoftwareQuery query) throws Exception {
         return assetSoftwareDao.findCount(query);
-    }
-    public Integer findAssetInstallCount(AssetSoftwareQuery query) throws Exception {
-        return assetSoftwareDao.findAssetInstallCount(query);
     }
 
     @Override
@@ -500,7 +495,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    public String importExcel(MultipartFile file) throws Exception {
+    public String importExcel(MultipartFile file, String areaId) throws Exception {
         ImportResult<AssetSoftwareEntity> re = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class, file, 0, 0);
         List<AssetSoftwareEntity> resultDataList = re.getDataList();
         int success = 0;
@@ -537,7 +532,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             asset.setSize(entity.getSize());
 
             assetSoftwareDao.insert(asset);
-            // // TODO: 2019/1/17 流程
             // 记录资产操作流程
             AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
             assetOperationRecord.setTargetObjectId(asset.getId());
@@ -548,6 +542,19 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
             assetOperationRecordDao.insert(assetOperationRecord);
+
+
+            //// TODO: 2019/1/22 根据区域ID 查询全部的分析人员
+
+            Map<String, Object> formData = new HashMap();
+//            formData.put("analyzeBaselineUserId", analyzeBaselineUserId);
+            formData.put("discard", 0);
+            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+            manualStartActivityRequest.setBusinessId(asset.getId ().toString());
+            manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+            manualStartActivityRequest.setAssignee (LoginUserUtil.getLoginUser ().getName ());
+            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
+            activityClient.manualStartProcess (manualStartActivityRequest);
             success++;
         }
 
