@@ -22,10 +22,7 @@ import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
-import com.antiy.asset.vo.request.AssetPortProtocolRequest;
-import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
-import com.antiy.asset.vo.request.AssetSoftwareRequest;
-import com.antiy.asset.vo.request.ManualStartActivityRequest;
+import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
@@ -38,6 +35,7 @@ import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -486,6 +484,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return new PageResult<>(softwareQuery.getPageSize(), this.findAssetInstallCount(softwareQuery),
             softwareQuery.getCurrentPage(), this.findAssetInstallList(softwareQuery));
     }
+
 
     public Integer findCountInstall(AssetSoftwareQuery query) throws Exception {
         return assetSoftwareDao.findCount(query);

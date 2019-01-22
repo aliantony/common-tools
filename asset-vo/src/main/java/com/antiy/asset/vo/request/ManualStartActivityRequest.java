@@ -40,6 +40,7 @@ public class ManualStartActivityRequest {
     @NotNull(message = "流程定义Id不能为空")
     private String processDefinitionKey;
 
+
     public String getAssignee() {
         return assignee;
     }

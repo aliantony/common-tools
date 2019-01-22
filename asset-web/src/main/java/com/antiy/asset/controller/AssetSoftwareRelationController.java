@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.entity.AssetSoftwareRelationMapper;
+import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -172,5 +173,32 @@ public class AssetSoftwareRelationController {
     public ActionResponse<List<AssetSoftwareRelationMapper>> getInfoBySoftwareId(@PathVariable String id) throws Exception {
         ParamterExceptionUtils.isNull(id, "软件id不能为空");
         return ActionResponse.success(iAssetSoftwareRelationService.getInfoBySoftwareId(Integer.parseInt(id)));
+    }
+
+    /**
+     * 自动安装软件
+     * @param assetSoftwareRelationList
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "自动安装软件", notes = "安装软件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/install/auto", method = RequestMethod.POST)
+    public ActionResponse installAauto(@ApiParam(value = "softwareQuery") List<AssetSoftwareRelationRequest> assetSoftwareRelationList) throws Exception {
+        return ActionResponse.success();
+    }
+
+    /**
+     * 人工安装软件
+     * @param assetSoftwareRelationList
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "手动安装软件", notes = "安装软件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/software/artificial", method = RequestMethod.POST)
+    public ActionResponse installArtificial(@ApiParam(value = "softwareQuery") List<AssetSoftwareRelationRequest> assetSoftwareRelationList) throws Exception {
+        iAssetSoftwareRelationService.installArtificial(assetSoftwareRelationList);
+        return ActionResponse.success();
     }
 }

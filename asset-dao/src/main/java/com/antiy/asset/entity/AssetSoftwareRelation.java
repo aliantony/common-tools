@@ -69,6 +69,18 @@ public class AssetSoftwareRelation extends BaseEntity {
      * 状态,1未删除,0已删除
      */
     private Integer status;
+    /**
+     * 安装时间
+     */
+    private Integer installTime;
+    /**
+     * 责任人主键
+     */
+    private Integer userId;
+    /**
+     * 责任人
+     */
+    private String  userName;
 
     public Integer getAssetId() {
         return assetId;
@@ -180,6 +192,30 @@ public class AssetSoftwareRelation extends BaseEntity {
 
     public void setInstallStatus(Integer installStatus) {
         this.installStatus = installStatus;
+    }
+
+    public Integer getInstallTime() {
+        return installTime;
+    }
+
+    public void setInstallTime(Integer installTime) {
+        this.installTime = installTime;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @Override
