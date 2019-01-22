@@ -2,9 +2,12 @@ package com.antiy.asset.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.base.BaseConverter;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetGroupDao;
@@ -38,6 +41,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     private AssetGroupRelationDao assetGroupRelationDao;
     @Resource
     private AesEncoder            aesEncoder;
+    @Resource
+    SelectConvert                 selectConvert;
 
     @Override
     public String saveAssetGroup(AssetGroupRequest request) throws Exception {
@@ -73,8 +78,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         List<AssetGroup> assetGroupList = assetGroupDao.findQuery(query);
         List<AssetGroupResponse> assetResponseList = BeanConvert.convert(assetGroupList, AssetGroupResponse.class);
         for (AssetGroupResponse assetGroupResponse : assetResponseList) {
-            List<String> assetList = assetGroupRelationDao
-                .findAssetNameByAssetGroupId(Integer.valueOf(assetGroupResponse.getId()));
+            List<String> assetList = assetGroupRelationDao.findAssetNameByAssetGroupId(Integer
+                .valueOf(assetGroupResponse.getId()));
             assetGroupResponse.setAssetList(assetList);
         }
         return assetResponseList;
@@ -88,12 +93,21 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public List<SelectResponse> queryGroupInfo() throws Exception {
-        return BeanConvert.convert(assetGroupDao.findPulldownGroup(), SelectResponse.class);
+        return selectConvert.convert(assetGroupDao.findPulldownGroup(), SelectResponse.class);
     }
 
     @Override
     public AssetGroupResponse findGroupById(String id) throws Exception {
         return (AssetGroupResponse) BeanConvert.convert(assetGroupDao.getById(Integer.valueOf(id)),
             AssetGroupResponse.class);
+    }
+}
+@Component
+class SelectConvert extends BaseConverter<AssetGroup, SelectResponse> {
+    @Override
+    protected void convert(AssetGroup assetGroup, SelectResponse selectResponse) {
+        selectResponse.setValue(assetGroup.getName());
+        selectResponse.setId(Objects.toString(assetGroup.getId()));
+        super.convert(assetGroup, selectResponse);
     }
 }
