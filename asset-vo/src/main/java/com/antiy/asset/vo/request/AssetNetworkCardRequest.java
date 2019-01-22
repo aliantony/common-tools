@@ -1,13 +1,13 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.NotBlank;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.NotBlank;
 
 /**
  * <p> AssetNetworkCardRequest 请求对象 </p>
@@ -22,7 +22,7 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
      */
     @ApiModelProperty("主键")
     @Encode
-    private String  id;
+    private String id;
 
     /**
      * 资产主键
@@ -35,42 +35,42 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
      */
     @ApiModelProperty("品牌")
     @NotBlank
-    private String  brand;
+    private String brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
-    private String  model;
+    private String model;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    private String  serial;
+    private String serial;
     /**
      * IP地址
      */
     @ApiModelProperty("IP地址")
-    private String  ipAddress;
+    private String ipAddress;
     /**
      * MAC地址
      */
     @ApiModelProperty("MAC地址")
-    private String  macAddress;
+    private String macAddress;
     /**
      * 默认网关
      */
     @ApiModelProperty("默认网关")
-    private String  defaultGateway;
+    private String defaultGateway;
     /**
      * 网络地址
      */
     @ApiModelProperty("网络地址")
-    private String  networkAddress;
+    private String networkAddress;
     /**
      * 子网掩码
      */
     @ApiModelProperty("子网掩码")
-    private String  subnetMask;
+    private String subnetMask;
 
     public String getId() {
         return id;
@@ -143,7 +143,6 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
     public void setDefaultGateway(String defaultGateway) {
         this.defaultGateway = defaultGateway;
     }
-
 
     public String getSubnetMask() {
         return subnetMask;

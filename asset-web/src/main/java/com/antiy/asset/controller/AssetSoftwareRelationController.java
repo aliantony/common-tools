@@ -161,19 +161,6 @@ public class AssetSoftwareRelationController {
         return ActionResponse.success(iAssetSoftwareRelationService.findOS());
     }
 
-    /**
-     * 查询下拉项的资产操作系统信息
-     *
-     * @return 操作系统名称集合
-     */
-    @ApiOperation(value = "通过软件id查询安装信息", notes = "无查询条件")
-    @PreAuthorize("hasAuthority('asset:softwarerelation:getInfoBySoftwareId')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/info/{id}", method = RequestMethod.GET)
-    public ActionResponse<List<AssetSoftwareRelationMapper>> getInfoBySoftwareId(@PathVariable String id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "软件id不能为空");
-        return ActionResponse.success(iAssetSoftwareRelationService.getInfoBySoftwareId(Integer.parseInt(id)));
-    }
 
     /**
      * 自动安装软件

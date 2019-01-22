@@ -65,15 +65,15 @@ public class AssetSoftwareResponse extends BaseResponse {
     private String  description;
 
     /**
-     * 1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
+     * 软件状态：1待登记2待分析3可安装4已退役5不予登记
      */
-    @ApiModelProperty("1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役")
+    @ApiModelProperty("软件状态：1待登记2待分析3可安装4已退役5不予登记")
     private Integer softwareStatus;
 
     /**
      * 0-免费软件，1-商业软件
      */
-    @ApiModelProperty("0-免费软件，1-商业软件")
+    @ApiModelProperty("1-免费软件，2-商业软件")
     private Integer authorization;
     /**
      * 上报来源:1-自动上报，2-人工上报
@@ -137,8 +137,6 @@ public class AssetSoftwareResponse extends BaseResponse {
     @ApiModelProperty(value = "关联 硬件资产数")
     private Integer assetCount;
 
-
-
     public Integer getAssetCount() {
         return assetCount;
     }
@@ -170,8 +168,6 @@ public class AssetSoftwareResponse extends BaseResponse {
     public void setCategoryModel(Integer categoryModel) {
         this.categoryModel = categoryModel;
     }
-
-
 
     public String getName() {
         return name;
@@ -332,7 +328,5 @@ public class AssetSoftwareResponse extends BaseResponse {
     public void setStatus(Integer status) {
         this.status = status;
     }
-
-
 
 }

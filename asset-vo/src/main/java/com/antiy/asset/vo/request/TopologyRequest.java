@@ -1,12 +1,13 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.asset.vo.enums.TopologyTypeEnum;
-import com.antiy.common.base.BasicRequest;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.antiy.asset.vo.enums.TopologyTypeEnum;
+import com.antiy.common.base.BasicRequest;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @Auther: zhangbing
@@ -19,8 +20,8 @@ public class TopologyRequest extends BasicRequest {
     @NotBlank(message = "网络拓扑保存不能为空")
     private String           dataJson;
 
-    /**·
-     * 拓扑类型
+    /**
+     * · 拓扑类型
      */
     @ApiModelProperty(value = "拓扑类型", allowableValues = "PHYSICS(物理拓扑),LOGIC(逻辑拓扑),CONNECT(通联关系)")
     @NotNull(message = "拓扑类型不能为空")

@@ -1,17 +1,15 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
  * <p> AssetCategoryModelRequest 请求对象 </p>
@@ -35,8 +33,8 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
     @ApiModelProperty("名称")
     private String  name;
 
-    @Max(value = 2,message = "资产类型只能为1或2")
-    @Min(value = 1,message = "资产类型只能为1或2")
+    @Max(value = 2, message = "资产类型只能为1或2")
+    @Min(value = 1, message = "资产类型只能为1或2")
     @ApiModelProperty("资产类型:1软件，2硬件")
     private Integer assetType;
     /**
@@ -49,8 +47,8 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
     /**
      * 是否系统默认：0系统1自定义
      */
-    @Max(value = 1,message = "isDefault只能为0和1")
-    @Min(value = 0,message = "isDefault只能为0和1")
+    @Max(value = 1, message = "isDefault只能为0和1")
+    @Min(value = 0, message = "isDefault只能为0和1")
     @ApiModelProperty("是否是系统默认")
     private Integer isDefault;
     /**

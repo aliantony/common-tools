@@ -1,12 +1,14 @@
 package com.antiy.asset.vo.request;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.Valid;
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -18,22 +20,22 @@ import java.util.List;
 public class AssetComputerRequest extends BasicRequest implements ObjectValidator {
     @Valid
     @ApiModelProperty(value = "资产信息")
-    private AssetRequest                  asset;
+    private AssetRequest                            asset;
     @Valid
     @ApiModelProperty(value = "主板")
-    private List<AssetMainboradRequest>   mainboard;
+    private List<AssetMainboradRequest>             mainboard;
     @Valid
     @ApiModelProperty(value = "内存")
-    private List<AssetMemoryRequest>      memory;
+    private List<AssetMemoryRequest>                memory;
     @Valid
     @ApiModelProperty(value = "硬盘")
-    private List<AssetHardDiskRequest>    hardDisk;
+    private List<AssetHardDiskRequest>              hardDisk;
     @Valid
     @ApiModelProperty(value = "CPU")
-    private List<AssetCpuRequest>         cpu;
+    private List<AssetCpuRequest>                   cpu;
     @Valid
     @ApiModelProperty(value = "网卡")
-    private List<AssetNetworkCardRequest> networkCard;
+    private List<AssetNetworkCardRequest>           networkCard;
     @Valid
     @ApiModelProperty(value = "关联软件信息")
     private List<AssetSoftwaComputerRelationReques> computerReques;
@@ -85,8 +87,6 @@ public class AssetComputerRequest extends BasicRequest implements ObjectValidato
     public void setNetworkCard(List<AssetNetworkCardRequest> networkCard) {
         this.networkCard = networkCard;
     }
-
-
 
     @Override
     public void validate() throws RequestParamValidateException {

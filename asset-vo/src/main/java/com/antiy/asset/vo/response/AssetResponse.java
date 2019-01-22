@@ -1,8 +1,8 @@
 package com.antiy.asset.vo.response;
 
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.List;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -16,17 +16,17 @@ public class AssetResponse extends BaseResponse {
      * 资产编号
      */
     @ApiModelProperty("资产编号")
-    private String  number;
+    private String                   number;
     /**
      * 资产名称
      */
     @ApiModelProperty("资产名称")
-    private String  name;
+    private String                   name;
     /**
      * 资产组
      */
     @ApiModelProperty("资产组")
-    private String  assetGroup;
+    private String                   assetGroup;
     /**
      * 资产组列表
      */
@@ -36,120 +36,120 @@ public class AssetResponse extends BaseResponse {
      * ip
      */
     @ApiModelProperty("ip")
-    private String  ip;
+    private String                   ip;
     /**
      * mac
      */
     @ApiModelProperty("mac")
-    private String  mac;
+    private String                   mac;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    private String  serial;
+    private String                   serial;
     /**
      * 品类
      */
     @ApiModelProperty("品类")
-    private Integer categoryModel;
+    private Integer                  categoryModel;
     /**
      * 品类名称
      */
     @ApiModelProperty("品类名称")
-    private String  categoryModelName;
+    private String                   categoryModelName;
     /**
      * 厂商
      */
     @ApiModelProperty("厂商")
-    private String  manufacturer;
+    private String                   manufacturer;
     /**
-     * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
+     * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
     @ApiModelProperty("资产状态")
-    private Integer assetStatus;
+    private Integer                  assetStatus;
     /**
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
-    private String  operationSystem;
+    private String                   operationSystem;
     /**
      * 系统位数
      */
     @ApiModelProperty("系统位数")
-    private Integer systemBit;
+    private Integer                  systemBit;
 
     /**
      * 固件版本
      */
     @ApiModelProperty("固件版本")
-    private String  firmwareVersion;
+    private String                   firmwareVersion;
     /**
      * 设备uuid
      */
     @ApiModelProperty("设备uuid")
-    private String  uuid;
+    private String                   uuid;
     /**
      * 责任人主键
      */
     @ApiModelProperty("责任人主键")
-    private Integer responsibleUserId;
+    private Integer                  responsibleUserId;
     /**
      * 联系电话
      */
     @ApiModelProperty("联系电话")
-    private String  contactTel;
+    private String                   contactTel;
     /**
      * 邮箱
      */
     @ApiModelProperty("邮箱")
-    private String  email;
+    private String                   email;
 
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
     @ApiModelProperty("上报来源")
-    private Integer assetSource;
+    private Integer                  assetSource;
     /**
-     * 0-不重要(not_major),1- 一般(general),3-重要(major),
+     * 1核心2重要3一般
      */
-    @ApiModelProperty("重要程度0-不重要(not_major),1- 一般(general),3-重要(major)")
-    private Integer importanceDegree;
+    @ApiModelProperty("1核心2重要3一般")
+    private Integer                  importanceDegree;
 
     /**
      * 父类资源Id
      */
     @ApiModelProperty("父类资源Id")
-    private Integer parentId;
+    private Integer                  parentId;
     /**
      * 所属标签
      */
     @ApiModelProperty("")
-    private String  tags;
+    private String                   tags;
     /**
      * 是否入网,0表示未入网,1表示入网
      */
     @ApiModelProperty("是否入网")
-    private Boolean isInnet;
+    private Boolean                  isInnet;
     /**
      * 使用到期时间
      */
     @ApiModelProperty("使用到期时间")
-    private Long    serviceLife;
+    private Long                     serviceLife;
     /**
      * 制造日期
      */
     @ApiModelProperty("制造日期")
-    private Long    buyDate;
+    private Long                     buyDate;
     /**
      * 保修期
      */
     @ApiModelProperty("保修期")
-    private Long    warranty;
+    private Long                     warranty;
     /**
      * 资产准入状态
      */
-    @ApiModelProperty("资产准入状态")
-    private Integer admittanceStatus;
+    @ApiModelProperty("资产准入状态:待设置，2已允许，3已禁止")
+    private Integer                  admittanceStatus;
 
     public Integer getAdmittanceStatus() {
         return admittanceStatus;

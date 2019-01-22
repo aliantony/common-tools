@@ -1,8 +1,8 @@
 package com.antiy.asset.vo.response;
 
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.List;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetGroupRelationResponse 响应对象 </p>
@@ -11,34 +11,34 @@ import java.util.List;
  * @since 2018-12-27
  */
 
-public class AssetGroupRelationResponse extends BaseResponse{
+public class AssetGroupRelationResponse extends BaseResponse {
     /**
      * 资产ID
      */
     @ApiModelProperty("资产ID")
-    private String assetId;
+    private String                         assetId;
 
     /**
      * 网卡信息
      */
     @ApiModelProperty("资产名称")
-    private String assetName;
+    private String                         assetName;
 
     /**
      * 资产编号
      */
     @ApiModelProperty("资产编号")
-    private String  number;
+    private String                         number;
     /**
      * 厂商
      */
     @ApiModelProperty("厂商")
-    private String  manufacturer;
+    private String                         manufacturer;
     /**
      * 品类型号
      */
     @ApiModelProperty("品类型号")
-    private String  categoryModelName;
+    private String                         categoryModelName;
     /**
      * 网卡信息
      */
@@ -48,17 +48,17 @@ public class AssetGroupRelationResponse extends BaseResponse{
      * 资产组名称
      */
     @ApiModelProperty("资产组名称")
-    private String  assetGroupName;
+    private String                         assetGroupName;
     /**
      * 资产状态名称
      */
     @ApiModelProperty("资产状态名称")
-    private String assetStatusName;
+    private String                         assetStatusName;
     /**
      * 首次发现时间
      */
     @ApiModelProperty("首次发现时间")
-    private Long gmtCreate;
+    private Long                           gmtCreate;
 
     public String getAssetId() {
         return assetId;

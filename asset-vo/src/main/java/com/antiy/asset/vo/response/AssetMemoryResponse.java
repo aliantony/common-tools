@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -16,7 +17,7 @@ public class AssetMemoryResponse extends BaseResponse {
      */
     @ApiModelProperty("资产主键")
     @Encode
-    private String assetId;
+    private String  assetId;
     /**
      * 内存容量
      */
@@ -26,11 +27,11 @@ public class AssetMemoryResponse extends BaseResponse {
      * 内存主频(MHz)
      */
     @ApiModelProperty("内存主频(MHz)")
-    private Double frequency;
+    private Double  frequency;
     /**
-     * 插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM
+     * 插槽类型:1-SDRAM,2-SIMM,3-DIMM,4-RIMM
      */
-    @ApiModelProperty("插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM")
+    @ApiModelProperty("插槽类型:1-SDRAM,2-SIMM,3-DIMM,4-RIMM")
     private Integer slotType;
     /**
      * 是否带散热片:0-不带，1-带

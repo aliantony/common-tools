@@ -2,8 +2,6 @@ package com.antiy.asset.vo.response;
 
 import com.antiy.common.encoder.Encode;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -53,7 +51,7 @@ public class SchemeResponse {
     @ApiModelProperty("方案来源")
     private Integer schemeSource;
     /**
-     * 工单级别(1提示2紧急2重要3次要)
+     * 工单级别(1提示2紧急3重要4次要)
      */
     private String  orderLevel;
     /**

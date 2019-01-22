@@ -51,8 +51,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:saveSingle')")
-    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset, Integer configBaselineUserId) throws Exception {
-        iAssetService.saveAsset(asset,configBaselineUserId);
+    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset, ManualStartActivityRequest activityRequest) throws Exception {
+        iAssetService.saveAsset(asset,activityRequest);
         return ActionResponse.success();
     }
 

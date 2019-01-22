@@ -1,8 +1,8 @@
 package com.antiy.asset.vo.response;
 
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.List;
+
+import io.swagger.annotations.ApiModelProperty;
 
 public class AssetCategoryModelNodeResponse extends AssetCategoryModelResponse {
     @ApiModelProperty(value = "子节点")

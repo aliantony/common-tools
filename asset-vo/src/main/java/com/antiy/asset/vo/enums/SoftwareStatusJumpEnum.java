@@ -7,46 +7,41 @@ package com.antiy.asset.vo.enums;
  * @create 2019-01-19 10:29
  **/
 public enum SoftwareStatusJumpEnum {
-    WATI_REGSIST(SoftwareStatusEnum.WATI_REGSIST.getCode(), SoftwareStatusEnum.WAIT_ANALYZE.getCode(), SoftwareStatusEnum.NOT_REGSIST.getCode()),
-    WAIT_ANALYZE(SoftwareStatusEnum.WAIT_ANALYZE.getCode(), SoftwareStatusEnum.ALLOW_INSTALL.getCode(),SoftwareStatusEnum.WATI_REGSIST.getCode());
+    WATI_REGSIST(SoftwareStatusEnum.WATI_REGSIST, SoftwareStatusEnum.WAIT_ANALYZE, SoftwareStatusEnum.NOT_REGSIST),
+    WAIT_ANALYZE(SoftwareStatusEnum.WAIT_ANALYZE, SoftwareStatusEnum.ALLOW_INSTALL,SoftwareStatusEnum.WATI_REGSIST);
+
     // code
-    private Integer currentStatus;
+    private SoftwareStatusEnum currentStatus;
 
     // msg
-    private Integer agreeStatus;
+    private SoftwareStatusEnum agreeStatus;
 
-    private Integer refuseStatus;
+    private SoftwareStatusEnum refuseStatus;
 
-    SoftwareStatusJumpEnum(Integer currentStatus, Integer agreeStatus, Integer refuseStatus) {
+    SoftwareStatusJumpEnum(SoftwareStatusEnum currentStatus, SoftwareStatusEnum agreeStatus, SoftwareStatusEnum refuseStatus) {
         this.currentStatus = currentStatus;
         this.agreeStatus = agreeStatus;
         this.refuseStatus = refuseStatus;
     }
 
-    public static Integer getNextStatus(Integer currentStatus, Integer isAgree) {
+    public static SoftwareStatusEnum getNextStatus(SoftwareStatusEnum currentStatus, Boolean isAgree) {
         for (SoftwareStatusJumpEnum statusJumpEnum : SoftwareStatusJumpEnum.values()) {
             if (statusJumpEnum.currentStatus.equals(currentStatus)) {
-                if (isAgree.equals(ProcessTypeEnum.YES.getCode())) {
-                    return statusJumpEnum.getAgreeStatus();
-                } else {
-                    return statusJumpEnum.getRefuseStatus();
-                }
+                return isAgree ? statusJumpEnum.agreeStatus : statusJumpEnum.refuseStatus;
             }
         }
-        return -1;
+        return null;
     }
 
-    public Integer getCurrentStatus() {
+    public SoftwareStatusEnum getCurrentStatus() {
         return currentStatus;
     }
 
-
-    public Integer getAgreeStatus() {
+    public SoftwareStatusEnum getAgreeStatus() {
         return agreeStatus;
     }
 
-
-    public Integer getRefuseStatus() {
+    public SoftwareStatusEnum getRefuseStatus() {
         return refuseStatus;
     }
 }

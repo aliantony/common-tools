@@ -8,13 +8,12 @@ import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * @Filename: AssetSoftwaComputerReques
- * Description:
+ * @Filename: AssetSoftwaComputerReques Description:
  * @Version: 1.0
  * @Author: why
  * @Date: 2019/1/18
  */
-public class AssetSoftwaComputerRelationReques  extends BasicRequest implements ObjectValidator {
+public class AssetSoftwaComputerRelationReques extends BasicRequest implements ObjectValidator {
 
     /**
      * 许可密钥
@@ -42,10 +41,9 @@ public class AssetSoftwaComputerRelationReques  extends BasicRequest implements 
      * 协议
      */
     @ApiModelProperty("协议")
-    private String  protocol;
+    private String protocol;
     /**
-    /**
-     * 许可密钥
+     * /** 许可密钥
      */
     @ApiModelProperty("端口描述")
     private String portMemo;

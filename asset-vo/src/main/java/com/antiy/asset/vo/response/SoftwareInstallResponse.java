@@ -6,7 +6,7 @@ public class SoftwareInstallResponse {
     /**
      * 软件信息
      */
-    private AssetSoftwareResponse assetSoftware;
+    private AssetSoftwareResponse              assetSoftware;
     /**
      * 软件关联的资产
      */

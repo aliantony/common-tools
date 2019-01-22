@@ -1,14 +1,14 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * <p> AssetMemoryRequest 请求对象 </p>
@@ -42,11 +42,11 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("内存主频(MHz)")
     @NotNull
-    private Double frequency;
+    private Double  frequency;
     /**
-     * 插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM
+     * 插槽类型:1-SDRAM,2-SIMM,3-DIMM,4-RIMM
      */
-    @ApiModelProperty("插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM")
+    @ApiModelProperty("插槽类型:1-SDRAM,2-SIMM,3-DIMM,4-RIMM")
     private Integer slotType;
     /**
      * 是否带散热片:0-不带，1-带

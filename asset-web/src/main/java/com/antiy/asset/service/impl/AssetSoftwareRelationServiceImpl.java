@@ -82,10 +82,6 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         return assetSoftwareRelationResponse;
     }
 
-    @Override
-    public List<AssetSoftwareRelationMapper> getInfoBySoftwareId(Integer softwareId) {
-        return assetSoftwareRelationDao.getInfoBySoftwareId(softwareId);
-    }
 
     @Override
     public Integer countAssetBySoftId(Integer id) {
