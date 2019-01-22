@@ -98,6 +98,12 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty(value = "资产组")
     private String                      assetGroup;
+
+    /**
+     * 序列号
+     */
+    @ApiModelProperty(value = "序列号")
+    private String                      serial;
     /**
      * 软件标签
      */

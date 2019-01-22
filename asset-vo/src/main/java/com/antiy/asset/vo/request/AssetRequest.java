@@ -7,6 +7,7 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -44,6 +45,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 邮箱
      */
     @ApiModelProperty("邮箱")
+    @Email
     private String                  email;
     /**
      * 资产编号

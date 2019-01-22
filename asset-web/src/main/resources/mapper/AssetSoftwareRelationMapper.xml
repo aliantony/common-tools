@@ -329,38 +329,6 @@
     </select>
 
 
-    <!-- 根据软件主键查询资产安装信息 -->
-    <select id="getInfoBySoftwareId" resultType="com.antiy.asset.entity.AssetSoftwareRelationMapper"
-            parameterType="java.lang.Integer">
-        select * from (SELECT
-        a.id as assetId,
-        a.number as assetNumber,
-        a.name as assetName,
-        c.name as categoryModelName,
-        a.manufacturer as manufacturer,
-        d.install_status as installStatus,
-        d.install_Type as installType,
-        d.software_id as softwareId,
-        d.software_status as softwareStatus,
-        d.port,
-        d.protocol,
-        d.memo,
-        e.name as userName,
-        GROUP_CONCAT( b.ip_address ) as ip,
-        GROUP_CONCAT( b.mac_address ) as mac
-        FROM
-        asset a
-        left JOIN asset_network_card b ON a.id = b.asset_id
-        left join asset_category_model c on a.category_model = c.id
-        left JOIN asset_software_relation d ON a.id = d.asset_id
-        left join asset_user e on a.responsible_user_id = e.id
-        where a.status = 1
-        and d.status=1
-        and d.software_id=#{softwareId}
-        and a.id is not null
-        GROUP BY
-        a.id) asset
-    </select>
 
     <select id="countAssetBySoftId" resultType="int" parameterType="int">
         SELECT
@@ -465,4 +433,11 @@
 	        and a.status = 1
 	        and b.status = 1
     </select>
+
+    <update id="installArtificial" parameterType="com.antiy.asset.entity.AssetSoftwareRelation">
+        update
+        asset_software_relation
+        set install_status = #{item.installStatus}, install_time = #{installTime}
+        where id = #{id}
+    </update>
 </mapper>

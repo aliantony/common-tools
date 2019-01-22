@@ -33,7 +33,11 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     private String        multipleQuery;
     @ApiModelProperty("软件品类型号列表")
     private Integer[]     categoryModels;
-
+    /**
+     * 序列号
+     */
+    @ApiModelProperty(value = "序列号")
+    private String                      serial;
     @ApiModelProperty("区域id列表")
     private Integer[]     areaIds;
     /**
@@ -118,8 +122,6 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty(value = "资产组")
     private String        assetGroup;
-    @ApiModelProperty(value = "硬件序列号")
-    private String        serial;
     @ApiModelProperty(value = "硬件编号")
     private String        number;
     @ApiModelProperty(value = "资产id")
@@ -344,6 +346,8 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     public void setMultipleQuery(String multipleQuery) {
         this.multipleQuery = multipleQuery;
     }
+
+
 
     @Override
     public void validate() throws RequestParamValidateException {

@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.antiy.asset.entity.AssetSoftwareRelationMapper;
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.response.AssetResponse;
 import org.springframework.stereotype.Service;
 
@@ -81,10 +82,6 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         return assetSoftwareRelationResponse;
     }
 
-    @Override
-    public List<AssetSoftwareRelationMapper> getInfoBySoftwareId(Integer softwareId) {
-        return assetSoftwareRelationDao.getInfoBySoftwareId(softwareId);
-    }
 
     @Override
     public Integer countAssetBySoftId(Integer id) {
@@ -99,5 +96,13 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     public Integer changeSoftwareStatus(Map<String, Object> map) throws Exception {
         return assetSoftwareRelationDao.changeSoftwareStatus(map);
+    }
+
+
+    @Override
+    public Integer installArtificial(List<AssetSoftwareRelationRequest> assetSoftwareRelationList) {
+        List<AssetSoftwareRelation> assetSoftwareRelation = BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRelation.class);
+        assetSoftwareRelationDao.installArtificial(assetSoftwareRelation);
+        return null;
     }
 }

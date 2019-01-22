@@ -63,13 +63,7 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      */
     List<AssetSoftwareResponse> getSoftByAssetId(Integer assetId);
 
-    /**
-     * 根据软件主键查询资产安装信息
-     *
-     * @param softwareId
-     * @return
-     */
-    List<AssetSoftwareRelationMapper> getInfoBySoftwareId(Integer softwareId);
+
 
     /**
      * 通过软件ID统计资产数量
@@ -93,4 +87,6 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @return
      */
     Integer changeSoftwareStatus(Map<String, Object> map) throws Exception;
+
+    Integer installArtificial(List<AssetSoftwareRelationRequest> assetSoftwareRelationList);
 }
