@@ -18,6 +18,7 @@
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
+        <result column="scheme_source" property="schemeSource"/>
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
@@ -315,7 +316,9 @@
     </select>
 
     <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.SchemeQuery">
-        select id,asset_id,type, result, content, expecte_start_time, expecte_end_time, putinto_user_id, putinto_user, file_info,memo from
+        select id,asset_id,type, result, content, expecte_start_time,
+        expecte_end_time,expecte_start_time,scheme_source,putinto_time,order_level,putinto_user_id, putinto_user,
+        file_info,memo from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" putintoUser != null">

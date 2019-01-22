@@ -52,6 +52,10 @@ public class Scheme extends BaseEntity {
      */
     private String  fileInfo;
     /**
+     * 方案来源
+     */
+    private Integer schemeSource;
+    /**
      * 创建时间
      */
     private Long    gmtCreate;
@@ -230,6 +234,14 @@ public class Scheme extends BaseEntity {
 
     public void setFileInfo(String fileInfo) {
         this.fileInfo = fileInfo;
+    }
+
+    public Integer getSchemeSource() {
+        return schemeSource;
+    }
+
+    public void setSchemeSource(Integer schemeSource) {
+        this.schemeSource = schemeSource;
     }
 
     @Override
