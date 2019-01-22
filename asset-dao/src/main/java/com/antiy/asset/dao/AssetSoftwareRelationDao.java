@@ -102,4 +102,6 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
     List<AssetSoftwareRelation> getReleationByAssetId(Integer id);
 
     Integer installArtificial(List<AssetSoftwareRelation> assetSoftwareRelation);
+
+    Integer installAauto(List<AssetSoftwareRelation> assetSoftwareRelation);
 }
