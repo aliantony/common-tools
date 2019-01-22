@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.util.CodeUtils;
+import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.common.base.BusinessData;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -93,54 +93,64 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
                 map.put("gmtModified", System.currentTimeMillis());
                 return transactionTemplate.execute(transactionStatus -> {
                     try {
-                        // --------------------------------调用工作流start------------------------------
-                    ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-                    manualStartActivityRequest.setBusinessId(schemeRequest.getBusinessId());
-                    manualStartActivityRequest.setFormData(JSONObject.toJSONString(schemeRequest));
-                    // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId());
-                    manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE
-                        .getCode());
-                    activityClient.manualStartProcess(manualStartActivityRequest);
-                    // --------------------------------调用工作流end------------------------------
-                    schemeDao.insert(scheme);
-                    assetDao.changeStatus(map);
-                    // --------------------------------操作记录start------------------------------
-                    AssetFlowEnum assetFlowEnum = EnumUtil.getByCode(AssetFlowEnum.class,
-                        schemeRequest.getAssetStatus());
-                    AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-                    assetOperationRecord.setTargetType(schemeRequest.getTopCategory());
-                    assetOperationRecord.setTargetStatus(targetStatus);
-                    assetOperationRecord.setTargetObjectId(scheme.getAssetId());
-                    assetOperationRecord.setSchemeId(scheme.getId());
-                    OperationWOProcessor.saveOperationRecord(assetFlowEnum, assetOperationRecord,
-                        assetOperationRecordDao, schemeRequest.getTopCategory());
-                    // --------------------------------操作记录end--------------------------------
 
-                    BusinessData businessData = new BusinessData();
-                    // 事件名 在这可以写登记资产
-                    businessData.setIncident(assetFlowEnum.getMsg());
-                    // 操作的业务阶段
-                    businessData.setBusinessPhase(assetFlowEnum.getCode());
-                    // 操作的资产id
-                    businessData.setManageObjId(scheme.getAssetId());
-                    // 模块id ModuleEnum
-                    businessData.setModuleId(1);
-                    // 附加信息
-                    businessData.setInformation(schemeRequest.getMemo());
-                    LogUtils.recordOperLog(businessData);
+                        schemeDao.insert(scheme);
+                        assetDao.changeStatus(map);
+                        if (assetStatus.equals(AssetStatusEnum.NET_IN.getCode()) && targetStatus.equals(AssetStatusEnum.WAIT_RETIRE.getCode())){
+                            //启动待退役流程
+                            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+                            manualStartActivityRequest.setBusinessId(scheme.getAssetId().toString());
+                            manualStartActivityRequest.setFormData(JSONObject.toJSONString(schemeRequest));
+                            manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
+                            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_RETIRE.getCode());
+                            activityClient.manualStartProcess(manualStartActivityRequest);
+                        }else {
+                            // --------------------------------调用工作流start------------------------------
+                            ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
+                            activityHandleRequest.setTaskId(schemeRequest.getTaskId());
+                            activityHandleRequest.setFormData(JSONObject.toJSONString(schemeRequest));
+                            activityClient.completeTask(activityHandleRequest);
+                            // --------------------------------调用工作流end------------------------------
+                        }
 
-                    // --------------------------------工单start------------------------------
-                    // 目前只有待入网操作时，才有工单，其它以消息告知为准
-                    if (assetStatus.equals(AssetStatusEnum.WAIT_NET.getCode())) {
-                        OperationWOProcessor.createWordOrder(workOrderClient, schemeRequest,
-                            EnumUtil.getByCode(AssetFlowEnum.class, schemeRequest.getAssetStatus()));
+                        // --------------------------------操作记录start------------------------------
+                        AssetFlowEnum assetFlowEnum = EnumUtil.getByCode(AssetFlowEnum.class,
+                            schemeRequest.getAssetStatus());
+                        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+                        assetOperationRecord.setTargetType(schemeRequest.getTopCategory());
+                        assetOperationRecord.setTargetStatus(targetStatus);
+                        assetOperationRecord.setTargetObjectId(scheme.getAssetId());
+                        assetOperationRecord.setSchemeId(scheme.getId());
+                        OperationWOProcessor.saveOperationRecord(assetFlowEnum, assetOperationRecord,
+                            assetOperationRecordDao, schemeRequest.getTopCategory());
+                        // --------------------------------操作记录end--------------------------------
+
+                        BusinessData businessData = new BusinessData();
+                        // 事件名 在这可以写登记资产
+                        businessData.setIncident(assetFlowEnum.getMsg());
+                        // 操作的业务阶段
+                        businessData.setBusinessPhase(assetFlowEnum.getCode());
+                        // 操作的资产id
+                        businessData.setManageObjId(scheme.getAssetId());
+                        // 模块id ModuleEnum
+                        businessData.setModuleId(1);
+                        // 附加信息
+                        businessData.setInformation(schemeRequest.getMemo());
+                        LogUtils.recordOperLog(businessData);
+
+
+                        // --------------------------------工单start------------------------------
+                        // 目前只有待入网操作时，才有工单
+                        if (assetStatus.equals(AssetStatusEnum.WAIT_NET.getCode())) {
+                            OperationWOProcessor.createWordOrder(workOrderClient, schemeRequest,
+                                EnumUtil.getByCode(AssetFlowEnum.class, schemeRequest.getAssetStatus()));
+                        }
+                        // --------------------------------工单end--------------------------------
+                    } catch (Exception e) {
+                        LOGGER.error("保存信息失败", e);
                     }
-                    // --------------------------------工单end--------------------------------
-                } catch (Exception e) {
-                    LOGGER.error("保存信息失败", e);
-                }
-                return scheme.getId().toString();
-            })  ;
+                    return scheme.getId().toString();
+                });
             } else {
                 throw new BusinessException("修改状态失败：无法获取下一个状态");
             }
@@ -186,12 +196,7 @@ class SchemeResponseConverter extends BaseConverter<Scheme, SchemeResponse> {
         try {
             schemeResponse.setId(Objects.toString(scheme.getId()));
             schemeResponse.setAssetId(Objects.toString(scheme.getAssetId()));
-            if (Objects.nonNull(scheme.getOrderLevel())) {
-                schemeResponse.setOrderLevel(CodeUtils.getCodeArray("scheme_source")[scheme.getOrderLevel()]);
-            }
-        } catch (IndexOutOfBoundsException e) {
-            logger.error("数组越界，方案来源不存在");
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("String转Integer出错");
         }
         super.convert(scheme, schemeResponse);

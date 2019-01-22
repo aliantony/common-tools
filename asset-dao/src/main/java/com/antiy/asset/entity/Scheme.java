@@ -36,6 +36,10 @@ public class Scheme extends BaseEntity {
      */
     private String  putintoUser;
     /**
+     * 基准分析信息
+     */
+    private String  baselineAnalyzeInfo;
+    /**
      * 工单级别(1提示2紧急2重要3次要)
      */
     private Integer orderLevel;
@@ -83,6 +87,14 @@ public class Scheme extends BaseEntity {
      * 方案内容
      */
     private String  content;
+
+    public String getBaselineAnalyzeInfo() {
+        return baselineAnalyzeInfo;
+    }
+
+    public void setBaselineAnalyzeInfo(String baselineAnalyzeInfo) {
+        this.baselineAnalyzeInfo = baselineAnalyzeInfo;
+    }
 
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
