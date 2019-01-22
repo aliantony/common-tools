@@ -40,23 +40,13 @@ public enum SoftwareStatusJumpEnum {
         return currentStatus;
     }
 
-    public void setCurrentStatus(Integer currentStatus) {
-        this.currentStatus = currentStatus;
-    }
 
     public Integer getAgreeStatus() {
         return agreeStatus;
     }
 
-    public void setAgreeStatus(Integer agreeStatus) {
-        this.agreeStatus = agreeStatus;
-    }
 
     public Integer getRefuseStatus() {
         return refuseStatus;
-    }
-
-    public void setRefuseStatus(Integer refuseStatus) {
-        this.refuseStatus = refuseStatus;
     }
 }
