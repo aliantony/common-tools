@@ -197,7 +197,7 @@ public class AssetSoftwareRelationController {
     @ApiOperation(value = "手动安装软件", notes = "安装软件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/software/artificial", method = RequestMethod.POST)
-    public ActionResponse installArtificial(@ApiParam(value = "softwareQuery") List<AssetSoftwareRelationRequest> assetSoftwareRelationList) throws Exception {
+    public ActionResponse installArtificial(@ApiParam(value = "softwareQuery") @RequestBody List<AssetSoftwareRelationRequest> assetSoftwareRelationList) throws Exception {
         iAssetSoftwareRelationService.installArtificial(assetSoftwareRelationList);
         return ActionResponse.success();
     }

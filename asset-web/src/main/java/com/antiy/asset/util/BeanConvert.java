@@ -108,7 +108,7 @@ public class BeanConvert {
             return null;
         }
         BeanCopier copier = BeanCopier.create(target.get(0).getClass(), c2, true);
-        List<String> rule = getRules(target.getClass().getDeclaredFields(), c2.getDeclaredFields());
+        List<String> rule = getRules(target.get(0).getClass().getDeclaredFields(), c2.getDeclaredFields());
         List<T> list = Lists.newArrayList();
         T o2 = null;
         for (Object o : target) {
@@ -133,6 +133,7 @@ public class BeanConvert {
                     if (String.class.equals(aClass)) {
                         return o.toString();
                     } else if (Integer.class.equals(aClass)) {
+                        System.out.println("------------"+o.toString());
                         return Integer.parseInt(o.toString());
                     }
                 }
@@ -148,7 +149,7 @@ public class BeanConvert {
         List<Field> fs = new ArrayList(Arrays.asList(f1));
         fs.addAll(Arrays.asList(f2));
         List<String> rule = Lists.newArrayList();
-        fs.forEach(field -> {
+        fs.stream().forEach(field -> {
             Encode encode = field.getAnnotation(Encode.class);
             if (encode != null) {
                 if (!rule.contains(SETTER_PREFIX + StringUtils.capitalize(field.getName()))) {

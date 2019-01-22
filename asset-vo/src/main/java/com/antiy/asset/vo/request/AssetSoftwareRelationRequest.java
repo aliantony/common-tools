@@ -30,6 +30,7 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
      * 软件主键
      */
     @ApiModelProperty("软件主键")
+    @Encode
     private Integer softwareId;
     /**
      * 软件资产状态：1待登记，2不予登记，3待配置，4待验证，5待入网，6已入网，7待退役，8已退役
