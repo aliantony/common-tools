@@ -29,7 +29,7 @@ public class AssetSoftwareLicenseResponse extends BaseResponse {
      */
     @ApiModelProperty("软件主键")
     @Encode
-    private String softwareId;
+    private String  softwareId;
     /**
      * 购买日期
      */

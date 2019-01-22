@@ -21,13 +21,13 @@ public class AssetPortProtocolRequest extends BasicRequest implements ObjectVali
      */
     @ApiModelProperty("资产软件关系表主键")
     @Encode
-    private String  assetSoftId;
+    private String    assetSoftId;
     /**
      * id
      */
     @ApiModelProperty("id")
     @Encode
-    private String  id;
+    private String    id;
     /**
      * 端口
      */
@@ -37,12 +37,12 @@ public class AssetPortProtocolRequest extends BasicRequest implements ObjectVali
      * 协议
      */
     @ApiModelProperty("协议")
-    private String  protocol;
+    private String    protocol;
     /**
      * 描述
      */
     @ApiModelProperty("描述")
-    private String  description;
+    private String    description;
 
     public String getAssetSoftId() {
         return assetSoftId;

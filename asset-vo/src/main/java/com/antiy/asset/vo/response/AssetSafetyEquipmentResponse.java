@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -16,7 +17,7 @@ public class AssetSafetyEquipmentResponse extends BaseResponse {
      */
     @ApiModelProperty("资产主键")
     @Encode
-    private String assetId;
+    private String  assetId;
     /**
      * 特征库配置
      */

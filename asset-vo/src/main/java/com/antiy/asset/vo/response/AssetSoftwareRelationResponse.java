@@ -1,9 +1,8 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.encoder.Encode;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetSoftwareRelationResponse 响应对象 </p>
@@ -26,9 +25,9 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
     @Encode
     private String  softwareId;
     /**
-     * 软件资产状态：1待登记，2不予登记，3待配置，4待验证，5待入网，6已入网，7待退役，8已退役
+     * 软件资产状态：1待登记2待分析3可安装4已退役5不予登记
      */
-    @ApiModelProperty("软件资产状态：1待登记，2不予登记，3待配置，4待验证，5待入网，6已入网，7待退役，8已退役")
+    @ApiModelProperty("软件资产状态：1待登记2待分析3可安装4已退役5不予登记")
     private Integer softwareStatus;
     /**
      * 备注

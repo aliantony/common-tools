@@ -1,15 +1,16 @@
 package com.antiy.asset.vo.request;
 
+import java.util.List;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -86,9 +87,9 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty("厂商")
     private String                  manufacturer;
     /**
-     * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
+     * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
-    @ApiModelProperty("资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役")
+    @ApiModelProperty("资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役")
     private Integer                 assetStatus;
     /**
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
@@ -169,7 +170,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     /**
      * 资产准入状态
      */
-    @ApiModelProperty("资产准入状态")
+    @ApiModelProperty("资产准入状态:待设置，2已允许，3已禁止")
     private Integer                 admittanceStatus;
 
     public String getNumber() {

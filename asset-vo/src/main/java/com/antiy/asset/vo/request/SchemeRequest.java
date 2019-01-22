@@ -69,7 +69,7 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty("方案来源")
     private Integer schemeSource;
     /**
-     * 工单级别(1提示2紧急2重要3次要)
+     * 工单级别(1提示2紧急3重要4次要)
      */
     private String  orderLevel;
     /**
@@ -116,7 +116,7 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
 
     @ApiModelProperty("任务Id不能为空")
     @NotBlank(message = "任务Id不能为空")
-    private String                taskId;
+    private String  taskId;
 
     public String getTaskId() {
         return taskId;

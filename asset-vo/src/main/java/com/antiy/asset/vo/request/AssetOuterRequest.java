@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.antiy.common.base.BasicRequest;
 
-import javax.validation.Valid;
-
 /**
  * <p> AssetRequest 请求对象 </p>
  *
@@ -23,7 +21,7 @@ public class AssetOuterRequest extends BasicRequest {
     /**
      * 主板
      */
-    private List<AssetMainboradRequest>              mainboard;
+    private List<AssetMainboradRequest>        mainboard;
 
     /**
      * 内存

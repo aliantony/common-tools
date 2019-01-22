@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -22,27 +23,27 @@ public class AssetMainboradResponse extends BaseResponse {
      * 品牌
      */
     @ApiModelProperty("品牌")
-    private String  brand;
+    private String brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
-    private String  model;
+    private String model;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    private String  serial;
+    private String serial;
     /**
      * BIOS版本
      */
     @ApiModelProperty("BIOS版本")
-    private String  biosVersion;
+    private String biosVersion;
     /**
      * BIOS日期
      */
     @ApiModelProperty("BIOS日期")
-    private Long    biosDate;
+    private Long   biosDate;
 
     public String getAssetId() {
         return assetId;

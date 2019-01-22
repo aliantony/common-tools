@@ -1,8 +1,8 @@
 package com.antiy.asset.vo.response;
 
-import com.antiy.common.encoder.Encode;
-
 import java.util.List;
+
+import com.antiy.common.encoder.Encode;
 
 /**
  * <p> AssetGroupResponse 响应对象 </p>
@@ -38,7 +38,7 @@ public class AssetGroupResponse extends BaseResponse {
     /**
      * 资产信息
      */
-    List<String>    assetList;
+    List<String>   assetList;
 
     public String getName() {
         return name;

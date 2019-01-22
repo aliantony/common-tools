@@ -1,13 +1,13 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.NotNull;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * <p> AssetSoftwareRelationRequest 请求对象 </p>
@@ -32,9 +32,9 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
     @ApiModelProperty("软件主键")
     private Integer softwareId;
     /**
-     * 软件资产状态：1待登记，2不予登记，3待配置，4待验证，5待入网，6已入网，7待退役，8已退役
+     * 软件资产状态：1待登记2待分析3可安装4已退役5不予登记
      */
-    @ApiModelProperty("软件资产状态：1待登记，2不予登记，3待配置，4待验证，5待入网，6已入网，7待退役，8已退役")
+    @ApiModelProperty("软件资产状态：1待登记2待分析3可安装4已退役5不予登记")
     private Integer softwareStatus;
     /**
      * 端口描述
@@ -68,6 +68,7 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
     @ApiModelProperty("安装方式")
     @NotNull
     private Integer installStatus;
+
     public String getId() {
         return id;
     }

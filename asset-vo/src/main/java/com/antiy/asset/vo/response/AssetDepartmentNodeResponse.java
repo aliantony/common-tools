@@ -1,9 +1,9 @@
 package com.antiy.asset.vo.response;
 
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.util.List;
 
 /**
  * @Auther: zhangbing

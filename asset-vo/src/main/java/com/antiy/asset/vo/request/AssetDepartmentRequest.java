@@ -7,8 +7,6 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * <p> AssetDepartmentRequest 请求对象 </p>
  *

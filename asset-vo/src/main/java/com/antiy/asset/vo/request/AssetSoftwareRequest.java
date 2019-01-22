@@ -22,8 +22,6 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "软件请求")
 public class AssetSoftwareRequest extends BasicRequest implements ObjectValidator {
 
-    private static final long           serialVersionUID = 1L;
-
     @Valid
     @ApiModelProperty(value = "软件license")
     private AssetSoftwareLicenseRequest softwareLicenseRequest;
@@ -111,9 +109,9 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     @Encode
     private String                      softwareLabel;
     /**
-     * 1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
+     * 软件状态：1待登记2待分析3可安装4已退役5不予登记
      */
-    @ApiModelProperty(value = "软件状态")
+    @ApiModelProperty(value = "软件状态：1待登记2待分析3可安装4已退役5不予登记")
     private Integer                     softwareStatus;
     /**
      * 0-免费软件，1-商业软件
