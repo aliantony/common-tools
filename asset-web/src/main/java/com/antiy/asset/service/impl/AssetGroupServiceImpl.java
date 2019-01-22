@@ -21,6 +21,7 @@ import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * <p> 资产组表 服务实现类 </p>
@@ -52,7 +53,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public Integer updateAssetGroup(AssetGroupRequest request) throws Exception {
         AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
-        Integer[] assetIdArr =DataTypeUtils.stringArrayToIntegerArray(request.getAssetIds());
+        Integer[] assetIdArr = DataTypeUtils.stringArrayToIntegerArray(request.getAssetIds());
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
         assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
         for (Integer assetId : assetIdArr) {
@@ -61,7 +62,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             assetGroupRelation.setAssetId(assetId);
             assetGroupRelation.setGmtCreate(System.currentTimeMillis());
             // TODO 创建人
-            // assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetGroupRelationList.add(assetGroupRelation);
         }
         return assetGroupRelationDao.insertBatch(assetGroupRelationList);

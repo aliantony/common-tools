@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.antiy.common.base.BasicRequest;
@@ -26,29 +27,32 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      */
     @Encode
     @ApiModelProperty("资产主键")
+    @NotBlank(message = "资产主键不能为空")
     private String  assetId;
     /**
      * 资产主键
      */
     @ApiModelProperty("资产状态")
+    @NotNull(message = "资产状态不能为空")
     private Integer assetStatus;
 
     /**
      * 类型（1.准入实施、2.效果检查、3.制定待退役方案、4.验证退役方案、5.实施退役方案）
      */
-    @ApiModelProperty("类型（1.准入实施、2.效果检查、3.制定待退役方案、4.验证退役方案、5.实施退役方案）")
+    @ApiModelProperty("类型（1.准入实施、2.效果检查、3.制定待退役方案、4.实施退役方案）")
     @NotNull(message = "类型不能为空")
     private Integer type;
     /**
      * 结果
      */
     @ApiModelProperty("结果")
+    @NotNull(message = "结果不能为空")
     private Integer result;
     /**
      * 实施用户主键
      */
     @ApiModelProperty("实施用户主键")
-    private Integer putintoUserId;
+    private String  putintoUserId;
     /**
      * 实施时间
      */
@@ -62,7 +66,7 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     /**
      * 工单级别(1提示2紧急2重要3次要)
      */
-    private Integer orderLevel;
+    private String  orderLevel;
     /**
      * 预计开始时间
      */
@@ -100,6 +104,18 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty("硬件：ASSET 或软件: SOFTWARE")
     @NotNull(message = "硬件或软件不能为空")
     private String  topCategory;
+
+    @ApiModelProperty("业务Id不能为空")
+    @NotBlank(message = "业务Id不能为空")
+    private String                businessId;
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
 
     public String getTopCategory() {
         return topCategory;
@@ -141,11 +157,11 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
         this.assetId = assetId;
     }
 
-    public Integer getOrderLevel() {
+    public String getOrderLevel() {
         return orderLevel;
     }
 
-    public void setOrderLevel(Integer orderLevel) {
+    public void setOrderLevel(String orderLevel) {
         this.orderLevel = orderLevel;
     }
 
@@ -181,11 +197,11 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
         this.result = result;
     }
 
-    public Integer getPutintoUserId() {
+    public String getPutintoUserId() {
         return putintoUserId;
     }
 
-    public void setPutintoUserId(Integer putintoUserId) {
+    public void setPutintoUserId(String putintoUserId) {
         this.putintoUserId = putintoUserId;
     }
 

@@ -12,9 +12,11 @@ public enum AssetStatusJumpEnum {
                                                                3), WAIT_VALIDATE(4, 5,
                                                                                  3), WAIT_NET(5, 6,
                                                                                               3), WAIT_CHECK(6, 7,
-                                                                                                             5), WAIT_RETIRE(8,
-                                                                                                                             9,
-                                                                                                                             8);
+                                                                                                             5), NET_IN(7,
+                                                                                                                        8,
+                                                                                                                        7), WAIT_RETIRE(8,
+                                                                                                                                        9,
+                                                                                                                                        8);
     // code
     private Integer currentStatus;
 

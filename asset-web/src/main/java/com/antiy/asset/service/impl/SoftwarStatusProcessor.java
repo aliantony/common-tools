@@ -1,20 +1,13 @@
 package com.antiy.asset.service.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
-import com.antiy.common.utils.LoginUserUtil;
 import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.Scheme;
-import com.antiy.asset.service.AbstractProcessor;
-import com.antiy.asset.vo.enums.AssetStatusJumpEnum;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.utils.LogUtils;
