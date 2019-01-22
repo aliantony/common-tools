@@ -21,7 +21,7 @@ public class SchemeResponse {
      */
     @Encode
     @ApiModelProperty("资产id")
-    private String assetId;
+    private String  assetId;
     /**
      * 类型（1.准入实施、2.效果检查、3.制定待退役方案、4.验证退役方案、5.实施退役方案）
      */
@@ -47,6 +47,11 @@ public class SchemeResponse {
      */
     @ApiModelProperty("实施人")
     private String  putintoUser;
+    /**
+     * 方案来源
+     */
+    @ApiModelProperty("方案来源")
+    private Integer schemeSource;
     /**
      * 工单级别(1提示2紧急2重要3次要)
      */
@@ -74,7 +79,7 @@ public class SchemeResponse {
     /**
      * 方案内容
      */
-    private String content;
+    private String  content;
 
     public String getContent() {
         return content;
@@ -178,5 +183,13 @@ public class SchemeResponse {
 
     public void setAssetId(String assetId) {
         this.assetId = assetId;
+    }
+
+    public Integer getSchemeSource() {
+        return schemeSource;
+    }
+
+    public void setSchemeSource(Integer schemeSource) {
+        this.schemeSource = schemeSource;
     }
 }

@@ -14,17 +14,19 @@
         <result column="expecte_start_time" property="expecteStartTime"/>
         <result column="expecte_end_time" property="expecteEndTime"/>
         <result column="order_level" property="orderLevel"/>
+        <result column="baseline_analyze_info" property="baselineAnalyzeInfo"/>
         <result column="file_info" property="fileInfo"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
+        <result column="scheme_source" property="schemeSource"/>
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, type, result, putinto_user_id, putinto_time, putinto_user, file_info, order_level , expecte_start_time, expecte_end_time, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_id, type, result, putinto_user_id, putinto_time, putinto_user, file_info, order_level ,baseline_analyze_info , expecte_start_time, expecte_end_time, gmt_create, gmt_modified, memo, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -105,6 +107,9 @@
         <if test=" orderLevel != null">
             #{orderLevel },
         </if>
+        <if test=" baselineAnalyzeInfo != null">
+            #{baselineAnalyzeInfo },
+        </if>
         <if test=" fileInfo != null">
             #{fileInfo },
         </if>
@@ -155,6 +160,9 @@
         </if>
         <if test=" orderLevel != null">
             order_level = #{orderLevel },
+        </if>
+        <if test=" baselineAnalyzeInfo != null">
+            baseline_analyze_info = #{baselineAnalyzeInfo },
         </if>
         <if test=" fileInfo != null">
             file_info = #{fileInfo },
@@ -315,7 +323,9 @@
     </select>
 
     <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.SchemeQuery">
-        select id,asset_id,type, result, content, expecte_start_time, expecte_end_time, putinto_user_id, putinto_user, file_info,memo from
+        select id,asset_id,type, result, content, expecte_start_time,
+        expecte_end_time,expecte_start_time,scheme_source,putinto_time,order_level,putinto_user_id, putinto_user,
+        file_info,memo from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" putintoUser != null">

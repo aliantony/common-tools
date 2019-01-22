@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.common.base.BusinessData;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -92,17 +93,26 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
                 map.put("gmtModified", System.currentTimeMillis());
                 return transactionTemplate.execute(transactionStatus -> {
                     try {
-                        // --------------------------------调用工作流start------------------------------
-                        ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-                        manualStartActivityRequest.setBusinessId(schemeRequest.getBusinessId());
-                        manualStartActivityRequest.setFormData(JSONObject.toJSONString(schemeRequest));
-                        // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId());
-                        manualStartActivityRequest
-                            .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
-                        activityClient.manualStartProcess(manualStartActivityRequest);
-                        // --------------------------------调用工作流end------------------------------
+
                         schemeDao.insert(scheme);
                         assetDao.changeStatus(map);
+                        if (assetStatus.equals(AssetStatusEnum.NET_IN.getCode()) && targetStatus.equals(AssetStatusEnum.WAIT_RETIRE.getCode())){
+                            //启动待退役流程
+                            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+                            manualStartActivityRequest.setBusinessId(scheme.getAssetId().toString());
+                            manualStartActivityRequest.setFormData(JSONObject.toJSONString(schemeRequest));
+                            manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
+                            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_RETIRE.getCode());
+                            activityClient.manualStartProcess(manualStartActivityRequest);
+                        }else {
+                            // --------------------------------调用工作流start------------------------------
+                            ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
+                            activityHandleRequest.setTaskId(schemeRequest.getTaskId());
+                            activityHandleRequest.setFormData(JSONObject.toJSONString(schemeRequest));
+                            activityClient.completeTask(activityHandleRequest);
+                            // --------------------------------调用工作流end------------------------------
+                        }
+
                         // --------------------------------操作记录start------------------------------
                         AssetFlowEnum assetFlowEnum = EnumUtil.getByCode(AssetFlowEnum.class,
                             schemeRequest.getAssetStatus());
@@ -130,7 +140,7 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
 
 
                         // --------------------------------工单start------------------------------
-                        // 目前只有待入网操作时，才有工单，其它以消息告知为准
+                        // 目前只有待入网操作时，才有工单
                         if (assetStatus.equals(AssetStatusEnum.WAIT_NET.getCode())) {
                             OperationWOProcessor.createWordOrder(workOrderClient, schemeRequest,
                                 EnumUtil.getByCode(AssetFlowEnum.class, schemeRequest.getAssetStatus()));

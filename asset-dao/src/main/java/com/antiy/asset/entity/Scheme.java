@@ -36,6 +36,10 @@ public class Scheme extends BaseEntity {
      */
     private String  putintoUser;
     /**
+     * 基准分析信息
+     */
+    private String  baselineAnalyzeInfo;
+    /**
      * 工单级别(1提示2紧急2重要3次要)
      */
     private Integer orderLevel;
@@ -51,6 +55,10 @@ public class Scheme extends BaseEntity {
      * 附件路径
      */
     private String  fileInfo;
+    /**
+     * 方案来源
+     */
+    private Integer schemeSource;
     /**
      * 创建时间
      */
@@ -79,6 +87,14 @@ public class Scheme extends BaseEntity {
      * 方案内容
      */
     private String  content;
+
+    public String getBaselineAnalyzeInfo() {
+        return baselineAnalyzeInfo;
+    }
+
+    public void setBaselineAnalyzeInfo(String baselineAnalyzeInfo) {
+        this.baselineAnalyzeInfo = baselineAnalyzeInfo;
+    }
 
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
@@ -230,6 +246,14 @@ public class Scheme extends BaseEntity {
 
     public void setFileInfo(String fileInfo) {
         this.fileInfo = fileInfo;
+    }
+
+    public Integer getSchemeSource() {
+        return schemeSource;
+    }
+
+    public void setSchemeSource(Integer schemeSource) {
+        this.schemeSource = schemeSource;
     }
 
     @Override

@@ -46,6 +46,9 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
         AssetDepartment parent = assetDepartmentDao.getById(assetDepartment.getParentId());
+        if (checkNameRepeat(request)) {
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该品类名已存在");
+        }
         if (Objects.isNull(parent)) {
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "父级部门不存在");
         }
@@ -55,13 +58,25 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         return ActionResponse.success(assetDepartment.getId());
     }
 
+    boolean checkNameRepeat(AssetDepartmentRequest request) throws Exception {
+        if (Objects.nonNull(request.getName())) {
+            AssetDepartmentQuery assetDepartmentQuery = new AssetDepartmentQuery();
+            assetDepartmentQuery.setName(request.getName());
+            return assetDepartmentDao.findCount(assetDepartmentQuery) >= 1;
+        }
+        return false;
+    }
+
     @Override
-    public Integer updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
+    public ActionResponse updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
+        if (checkNameRepeat(request)) {
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该品类名已存在");
+        }
         assetDepartment.setParentId(null);
         assetDepartment.setStatus(1);
         assetDepartment.setGmtModified(System.currentTimeMillis());
-        return assetDepartmentDao.update(assetDepartment);
+        return ActionResponse.success(assetDepartmentDao.update(assetDepartment));
     }
 
     @Override
@@ -127,9 +142,9 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         AssetDepartmentQuery query = new AssetDepartmentQuery();
         query.setStatus(1);
         List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
-        NodeConverter nodeConverter=new NodeConverter();
-        List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(
-            assetDepartment, AssetDepartmentNodeResponse.class);
+        NodeConverter nodeConverter = new NodeConverter();
+        List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(assetDepartment,
+            AssetDepartmentNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
 
