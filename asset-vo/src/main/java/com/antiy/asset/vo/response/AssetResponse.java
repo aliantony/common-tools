@@ -110,9 +110,9 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("上报来源")
     private Integer assetSource;
     /**
-     * 0-不重要(not_major),1- 一般(general),3-重要(major),
+     * 1核心2重要3一般
      */
-    @ApiModelProperty("重要程度0-不重要(not_major),1- 一般(general),3-重要(major)")
+    @ApiModelProperty("1核心2重要3一般")
     private Integer importanceDegree;
 
     /**

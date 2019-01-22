@@ -128,9 +128,9 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     @NotNull
     private Integer                 assetSource;
     /**
-     * 0-不重要(not_major),1- 一般(general),3-重要(major),
+     * 1核心2重要3一般
      */
-    @ApiModelProperty("0-不重要(not_major),1- 一般(general),3-重要(major),")
+    @ApiModelProperty("1核心2重要3一般")
     @NotNull
     private Integer                 importanceDegree;
 
