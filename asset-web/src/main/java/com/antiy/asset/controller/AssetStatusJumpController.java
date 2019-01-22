@@ -40,10 +40,10 @@ public class AssetStatusJumpController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ActionResponse hardwareStatusJump(@ApiParam(value = "assetStatusReqeust") @RequestBody(required = false) AssetStatusReqeust assetStatusReqeust) throws Exception {
         if (assetStatusReqeust.getSoftware()) {
-            return AssetStatusChangeFactory.createHuman(AssetStatusChangeProcessImpl.class)
+            return AssetStatusChangeFactory.getStatusChangeProcess(SoftWareStatusChangeProcessImpl.class)
                 .changeStatus(assetStatusReqeust);
         } else {
-            return AssetStatusChangeFactory.createHuman(SoftWareStatusChangeProcessImpl.class)
+            return AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeProcessImpl.class)
                 .changeStatus(assetStatusReqeust);
         }
     }

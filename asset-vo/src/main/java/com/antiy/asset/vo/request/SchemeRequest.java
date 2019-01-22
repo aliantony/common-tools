@@ -56,12 +56,6 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty(value = "方案内容")
     private String  content;
-    /**
-     * 硬件或软件
-     */
-    @ApiModelProperty("硬件：ASSET 或软件: SOFTWARE")
-    @NotNull(message = "硬件或软件不能为空")
-    private String  topCategory;
 
     @ApiModelProperty(value = "方案文件,JSON串")
     private String  fileInfo;
@@ -83,14 +77,6 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
 
     public void setFileInfo(String fileInfo) {
         this.fileInfo = fileInfo;
-    }
-
-    public String getTopCategory() {
-        return topCategory;
-    }
-
-    public void setTopCategory(String topCategory) {
-        this.topCategory = topCategory;
     }
 
     public String getId() {

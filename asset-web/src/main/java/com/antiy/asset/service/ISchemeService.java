@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.vo.query.SchemeQuery;
+import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.asset.vo.response.SchemeResponse;
 import com.antiy.common.base.IBaseService;
@@ -20,10 +21,10 @@ public interface ISchemeService extends IBaseService<Scheme> {
     /**
      * 保存
      *
-     * @param request
+     * @param assetStatusReqeust
      * @return
      */
-    String saveScheme(SchemeRequest request) throws Exception;
+    String saveScheme(AssetStatusReqeust assetStatusReqeust) throws Exception;
 
     /**
      * 修改

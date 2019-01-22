@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.convert.SchemeRequestToSchemeConverter;
 import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.AssetOperationRecord;
@@ -9,9 +10,13 @@ import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.WorkOrderClient;
 import com.antiy.asset.service.IAssetStatusChangeProcessService;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.EnumUtil;
+import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * @auther: zhangbing
@@ -21,16 +26,19 @@ import com.antiy.common.base.RespBasicCode;
 public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStatusChangeProcessService {
 
     @Resource
-    private AssetOperationRecordDao assetOperationRecordDao;
+    private AssetOperationRecordDao      assetOperationRecordDao;
 
     @Resource
-    private SchemeDao               schemeDao;
+    private SchemeDao                    schemeDao;
 
     @Resource
-    private ActivityClient          activityClient;
+    private SchemeRequestToSchemeConverter schemeRequestToSchemeConverter;
 
     @Resource
-    private WorkOrderClient         workOrderClient;
+    private ActivityClient               activityClient;
+
+    @Resource
+    private WorkOrderClient              workOrderClient;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
@@ -70,7 +78,16 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      * @return
      */
     private AssetOperationRecord convertAssetOperationRecord(AssetStatusReqeust assetStatusReqeust) {
-        return new AssetOperationRecord();
+        AssetFlowEnum assetFlowEnum = EnumUtil.getByCode(AssetFlowEnum.class,
+            assetStatusReqeust.getAssetStatus().getCode());
+        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+        assetOperationRecord.setTargetObjectId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
+        assetOperationRecord.setContent(assetFlowEnum != null ? assetFlowEnum.getMsg() : "参数异常");
+        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+        assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
+        assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getUsername());
+        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        return assetOperationRecord;
     }
 
     /**
@@ -79,6 +96,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      * @return
      */
     private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) {
-        return new Scheme();
+        Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
+        scheme.setAssetId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
+        return scheme;
     }
 }

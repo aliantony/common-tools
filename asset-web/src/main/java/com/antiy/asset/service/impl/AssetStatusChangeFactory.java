@@ -10,7 +10,7 @@ import com.antiy.common.utils.SpringUtil;
  * @create 2019-01-22 18:55
  **/
 public class AssetStatusChangeFactory {
-    public static <T extends AbstractAssetStatusChangeProcessImpl> T createHuman(Class<T> c) {
+    public static <T extends AbstractAssetStatusChangeProcessImpl> T getStatusChangeProcess(Class<T> c) {
         AbstractAssetStatusChangeProcessImpl statusChangeProcess = null;
         try {
             statusChangeProcess = (AbstractAssetStatusChangeProcessImpl) SpringUtil

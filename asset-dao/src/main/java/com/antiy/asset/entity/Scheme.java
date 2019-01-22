@@ -36,10 +36,6 @@ public class Scheme extends BaseEntity {
      */
     private String  putintoUser;
     /**
-     * 基准分析信息
-     */
-    private String  baselineAnalyzeInfo;
-    /**
      * 工单级别(1提示2紧急2重要3次要)
      */
     private Integer orderLevel;
@@ -59,6 +55,10 @@ public class Scheme extends BaseEntity {
      * 方案来源
      */
     private Integer schemeSource;
+    /**
+     * 扩展字段,JSON串,基准分析才有
+     */
+    private String  extension;
     /**
      * 创建时间
      */
@@ -88,12 +88,12 @@ public class Scheme extends BaseEntity {
      */
     private String  content;
 
-    public String getBaselineAnalyzeInfo() {
-        return baselineAnalyzeInfo;
+    public String getExtension() {
+        return extension;
     }
 
-    public void setBaselineAnalyzeInfo(String baselineAnalyzeInfo) {
-        this.baselineAnalyzeInfo = baselineAnalyzeInfo;
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     public void setGmtModified(Long gmtModified) {
@@ -106,14 +106,6 @@ public class Scheme extends BaseEntity {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public Integer getAssetd() {
-        return assetId;
-    }
-
-    public void setAssetd(Integer assetId) {
-        this.assetId = assetId;
     }
 
     public Integer getType() {
