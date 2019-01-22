@@ -102,7 +102,12 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     public Integer installArtificial(List<AssetSoftwareRelationRequest> assetSoftwareRelationList) {
         List<AssetSoftwareRelation> assetSoftwareRelation = BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRelation.class);
-        assetSoftwareRelationDao.installArtificial(assetSoftwareRelation);
-        return null;
+        return assetSoftwareRelationDao.installArtificial(assetSoftwareRelation);
+    }
+
+    @Override
+    public Integer installAauto(List<AssetSoftwareRelationRequest> assetSoftwareRelationList) {
+        List<AssetSoftwareRelation> assetSoftwareRelation = BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRelation.class);
+        return assetSoftwareRelationDao.installAauto(assetSoftwareRelation);
     }
 }

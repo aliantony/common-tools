@@ -423,6 +423,14 @@
             where id = #{item.id}
         </foreach>
     </update>
+    <update id="installAauto" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";" index="index">
+            update
+            asset_software_relation
+            set install_status = #{item.installStatus}
+            where id = #{item.id}
+        </foreach>
+    </update>
 
     <select id="getReleationByAssetId" resultType="com.antiy.asset.entity.AssetSoftwareRelation"
             parameterType="java.lang.Integer">
