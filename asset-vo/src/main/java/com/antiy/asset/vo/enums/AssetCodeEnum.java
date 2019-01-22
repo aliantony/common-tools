@@ -45,15 +45,9 @@ public enum AssetCodeEnum {
         return codeType;
     }
 
-    public void setCodeType(String codeType) {
-        this.codeType = codeType;
-    }
 
     public String getCodeName() {
         return codeName;
     }
 
-    public void setCodeName(String codeName) {
-        this.codeName = codeName;
-    }
 }
