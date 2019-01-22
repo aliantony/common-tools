@@ -172,6 +172,7 @@ public class AssetSoftwareRelationController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/install/auto", method = RequestMethod.POST)
     public ActionResponse installAauto(@ApiParam(value = "softwareQuery") List<AssetSoftwareRelationRequest> assetSoftwareRelationList) throws Exception {
+        iAssetSoftwareRelationService.installAauto(assetSoftwareRelationList);
         return ActionResponse.success();
     }
 

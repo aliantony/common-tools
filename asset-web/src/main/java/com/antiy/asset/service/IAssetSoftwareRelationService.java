@@ -88,5 +88,17 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      */
     Integer changeSoftwareStatus(Map<String, Object> map) throws Exception;
 
+    /**
+     * 人工安装软件
+     * @param assetSoftwareRelationList
+     * @return
+     */
     Integer installArtificial(List<AssetSoftwareRelationRequest> assetSoftwareRelationList);
+
+    /**
+     * 自动安装软件
+     * @param assetSoftwareRelationList
+     * @return
+     */
+    Integer installAauto(List<AssetSoftwareRelationRequest> assetSoftwareRelationList);
 }
