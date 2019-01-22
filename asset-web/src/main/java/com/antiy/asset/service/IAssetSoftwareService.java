@@ -6,6 +6,7 @@ import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
+import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -29,7 +30,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @param request
      * @return
      */
-    Integer saveAssetSoftware(AssetSoftwareRequest request,Integer configBaselineUserId) throws Exception;
+    Integer saveAssetSoftware(AssetSoftwareRequest request, Integer configBaselineUserId) throws Exception;
 
     /**
      * 批量保存
@@ -129,10 +130,8 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
 
     void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception;
 
-    List<AssetSoftwareResponse> findInstallList(AssetSoftwareQuery softwareQuery) throws Exception;
 
     PageResult<AssetSoftwareResponse> findPageInstallList(AssetSoftwareQuery softwareQuery) throws Exception;
-
 
     /**
      * 导入
@@ -140,4 +139,12 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @return
      */
     String importExcel(MultipartFile file) throws Exception;
+
+    List<AssetSoftwareResponse> findInstallList(AssetSoftwareQuery softwareQuery) throws Exception;
+
+    PageResult<AssetSoftwareResponse> findPageInstall(AssetSoftwareQuery softwareQuery) throws Exception;
+
+    List<AssetSoftwareInstallResponse> findAssetInstallList(AssetSoftwareQuery softwareQuery) throws Exception;
+
+    PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery) throws Exception;
 }

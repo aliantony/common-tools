@@ -15,6 +15,7 @@
         <result column="asset_groups" property="assetGroups"/>
         <result column="ip" property="ip"/>
         <result column="mac" property="mac"/>
+        <result column="admittance_status" property="admittanceStatus"/>
         <result column="serial" property="serial"/>
         <result column="category_model" property="categoryModel"/>
         <result column="manufacturer" property="manufacturer"/>
@@ -834,7 +835,7 @@
         </if>
     </select>
 
-    <select id="findListAsset" resultType="com.antiy.asset.entity.Asset"
+    <select id="findListAsset" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
         select * from (SELECT
         a.id,

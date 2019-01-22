@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
@@ -16,7 +17,8 @@ import java.util.List;
  */
 
 public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
-
+    @Encode
+    private String        id;
     /**
      * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
      */
@@ -101,6 +103,11 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     private String        publisher;
 
     /**
+     * 安装方式
+     */
+    @ApiModelProperty("安装方式")
+    private Integer       installType;
+    /**
      * 状态,0 未删除,1已删除
      */
     @ApiModelProperty("状态,0 未删除,1已删除")
@@ -111,6 +118,72 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty(value = "资产组")
     private String        assetGroup;
+    @ApiModelProperty(value = "硬件序列号")
+    private String        serial;
+    @ApiModelProperty(value = "硬件编号")
+    private String        number;
+    @ApiModelProperty(value = "资产id")
+    private String        assetId;
+
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Integer getInstallType() {
+        return installType;
+    }
+
+    public void setInstallType(Integer installType) {
+        this.installType = installType;
+    }
+
+    @Override
+    public Long getBeginTime() {
+        return beginTime;
+    }
+
+    @Override
+    public void setBeginTime(Long beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    @Override
+    public Long getEndTime() {
+        return endTime;
+    }
+
+    @Override
+    public void setEndTime(Long endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
 
     public String getAssetGroup() {
         return assetGroup;

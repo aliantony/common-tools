@@ -1,11 +1,19 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.templet.AssetSoftwareEntity;
+import com.antiy.asset.templet.ImportResult;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
+import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.asset.vo.response.SoftwareInstallResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
@@ -41,10 +49,9 @@ public class AssetSoftwareController {
     @PreAuthorize(value = "hasAuthority('asset:software:saveSingle')")
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware,
                                      Integer configBaselineUserId) throws Exception {
-
         return ActionResponse.success(iAssetSoftwareService.saveAssetSoftware(assetSoftware, configBaselineUserId));
-    }
 
+    }
     /**
      * 修改
      *
@@ -52,7 +59,7 @@ public class AssetSoftwareController {
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse")})
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:updateSingle')")
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware) throws Exception {
@@ -159,8 +166,8 @@ public class AssetSoftwareController {
     @ApiOperation(value = "软件资产按二级品类型号统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/category", method = RequestMethod.GET)
-    public ActionResponse countAssetByCategory() throws Exception {
-        return ActionResponse.success(iAssetSoftwareService.countCategory());
+    public AssetCountResponse countAssetByCategory() throws Exception {
+        return iAssetSoftwareService.countCategory();
     }
 
     /**
@@ -171,8 +178,8 @@ public class AssetSoftwareController {
     @ApiOperation(value = "软件资产按状态统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/status", method = RequestMethod.GET)
-    public ActionResponse countAssetByStatus() throws Exception {
-        return ActionResponse.success(iAssetSoftwareService.countStatus());
+    public AssetCountResponse countAssetByStatus() throws Exception {
+        return iAssetSoftwareService.countStatus();
     }
 
     /**
@@ -183,8 +190,8 @@ public class AssetSoftwareController {
     @ApiOperation(value = "软件资产按厂商统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/manufacturer", method = RequestMethod.GET)
-    public ActionResponse countAssetByManufacturer() throws Exception {
-        return ActionResponse.success(iAssetSoftwareService.countManufacturer());
+    public AssetCountResponse countAssetByManufacturer() throws Exception {
+        return iAssetSoftwareService.countManufacturer();
     }
 
     /**
@@ -224,6 +231,40 @@ public class AssetSoftwareController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/install", method = RequestMethod.GET)
     public ActionResponse queryInstallList(@ApiParam(value = "softwareQuery") AssetSoftwareQuery softwareQuery) throws Exception {
-        return ActionResponse.success(iAssetSoftwareService.findPageInstallList(softwareQuery));
+        return ActionResponse.success(iAssetSoftwareService.findPageInstall(softwareQuery));
     }
+
+    /**
+     * 软件对应的硬件安装列表查询
+     * @param softwareQuery
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "软件对应的硬件安装列表查询", notes = "软件安装列表查询")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/assetinstall", method = RequestMethod.GET)
+    public ActionResponse queryAssetInstallList(@ApiParam(value = "softwareQuery") AssetSoftwareQuery softwareQuery) throws Exception {
+        return ActionResponse.success(iAssetSoftwareService.findPageAssetInstall(softwareQuery));
+    }
+
+    /**
+     * 自动安装、人工安装进度
+     * @param softwareQuery
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "自动安装、人工安装进度", notes = "自动安装、人工安装进度")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/installSchedule", method = RequestMethod.GET)
+    public ActionResponse queryInstallSchedule(@ApiParam(value = "softwareQuery") AssetSoftwareQuery softwareQuery) throws Exception {
+        ParamterExceptionUtils.isBlank(softwareQuery.getId(), "软件ID不能为空");
+        SoftwareInstallResponse softwareInstallResponse = new SoftwareInstallResponse();
+        softwareInstallResponse.setAssetSoftware(
+            BeanConvert.convertBean(iAssetSoftwareService.getById(DataTypeUtils.stringToInteger(softwareQuery.getId())),
+                AssetSoftwareResponse.class));
+        softwareInstallResponse
+            .setAssetSoftwareInstallResponseList(iAssetSoftwareService.findAssetInstallList(softwareQuery));
+        return ActionResponse.success(softwareInstallResponse);
+    }
+
 }

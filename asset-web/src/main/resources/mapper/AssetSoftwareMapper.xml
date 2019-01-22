@@ -585,6 +585,41 @@
         where status = 1
     </select>
 
+    <select id="findCountInstall" resultType="java.lang.Integer"
+            parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
+        select
+        count(1) as count
+        from
+        asset_software a
+        left join asset_software_relation b on a.id = b.software_id
+        where 1 = 1
+        <if test=" multipleQuery != null">
+            and a.name LIKE CONCAT('%',#{multipleQuery},'%')
+        </if>
+        <if test=" categoryModel != null">
+            and category_model = #{categoryModel }
+        </if>
+        <if test=" softwareStatus != null">
+            and software_status in
+            <foreach collection="softwareStatusList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" authorization != null">
+            and authorization = #{authorization }
+        </if>
+        <if test=" reportSource != null">
+            and report_source = #{reportSource }
+        </if>
+        <if test=" beginTime != null">
+            and release_time &gt;= #{beginTime }
+        </if>
+        <if test=" endTime != null">
+            and release_time &lt;= #{endTime }
+        </if>
+        and a.status = 1
+        and b.id is not null
+    </select>
     <select id="findInstallList" resultType="com.antiy.asset.entity.AssetSoftware"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select
@@ -600,11 +635,17 @@
         asset_software a
         left join asset_software_relation b on a.id = b.software_id
         where 1 = 1
+        <if test=" multipleQuery != null">
+            and a.name LIKE CONCAT('%',#{multipleQuery},'%')
+        </if>
         <if test=" categoryModel != null">
             and category_model = #{categoryModel }
         </if>
         <if test=" softwareStatus != null">
-            and software_status = #{softwareStatus }
+            and software_status in
+            <foreach collection="softwareStatusList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
         </if>
         <if test=" authorization != null">
             and authorization = #{authorization }
@@ -618,7 +659,68 @@
         <if test=" endTime != null">
             and release_time &lt;= #{endTime }
         </if>
+        and b.id is not null
         and a.status = 1
+        group by
+        a.id
+    </select>
+    <select id="findAssetInstallCount" parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery"
+            resultType="java.lang.Integer">
+        select
+        count(1) as count
+        from
+        asset a
+        left join asset_network_card b on a.id = b.asset_id
+        left join asset_software_relation c on a.id = c.asset_id
+        where 1 = 1
+        and c.software_id = #{id}
+        and c.id is not null
+        <if test=" multipleQuery != null">
+            and (a.name LIKE CONCAT('%',#{multipleQuery},'%')
+            or a.number LIKE CONCAT('%',#{multipleQuery},'%')
+            or a.serial LIKE CONCAT('%',#{multipleQuery},'%'))
+        </if>
+        <if test=" installType != null">
+            and c.install_type = #{installType}
+        </if>
+    </select>
+    <select id="findAssetInstallList" parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery"
+            resultType="com.antiy.asset.entity.AssetSoftwareInstall">
+        select
+        c.id,
+        c.asset_id as assetId,
+        c.software_id as softwareId,
+        a.number,
+        a.name,
+        d.id as userId,
+        d.name as userName,
+        group_concat( b.ip_address ) as ip,
+        group_concat( b.mac_address ) as mac,
+        a.serial,
+        a.category_model as categoryModel,
+        a.manufacturer,
+        c.install_type as installType,
+        c.install_status as installStatus,
+        c.install_time as installTime
+        from
+        asset a
+        left join asset_network_card b on a.id = b.asset_id
+        left join asset_software_relation c on a.id = c.asset_id
+        left join asset_user d on a.responsible_user_id = d.id
+        where 1 = 1
+        and c.software_id = #{id}
+        <if test=" multipleQuery != null">
+            and (a.name LIKE CONCAT('%',#{multipleQuery},'%')
+            or a.number LIKE CONCAT('%',#{multipleQuery},'%')
+            or a.serial LIKE CONCAT('%',#{multipleQuery},'%'))
+        </if>
+        <if test=" installType != null">
+            and c.install_type = #{installType}
+        </if>
+        <if test=" assetId != null">
+            and a.asset_id = #{assetId}
+        </if>
+        and c.id is not null
         group by
         a.id
     </select>
