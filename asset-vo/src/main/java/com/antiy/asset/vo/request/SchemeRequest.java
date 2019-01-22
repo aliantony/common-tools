@@ -1,6 +1,5 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.antiy.common.base.BasicRequest;
@@ -23,35 +22,18 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty(value = "主键")
     private String  id;
     /**
-     * 资产主键
-     */
-    @Encode
-    @ApiModelProperty("资产主键")
-    @NotBlank(message = "资产主键不能为空")
-    private String  assetId;
-    /**
-     * 资产主键
-     */
-    @ApiModelProperty("资产状态")
-    @NotNull(message = "资产状态不能为空")
-    private Integer assetStatus;
-
-    /**
      * 类型（1.准入实施、2.效果检查、3.制定待退役方案、4.验证退役方案、5.实施退役方案）
      */
     @ApiModelProperty("类型（1.准入实施、2.效果检查、3.制定待退役方案、4.实施退役方案）")
     @NotNull(message = "类型不能为空")
     private Integer type;
-    /**
-     * 结果
-     */
-    @ApiModelProperty("结果")
-    @NotNull(message = "结果不能为空")
-    private Integer result;
+
     /**
      * 实施用户主键
      */
     @ApiModelProperty("实施用户主键")
+    @NotNull(message = "实施用户不能为空")
+    @Encode
     private String  putintoUserId;
     /**
      * 实施时间
@@ -68,40 +50,11 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("方案来源")
     private Integer schemeSource;
-    /**
-     * 工单级别(1提示2紧急3重要4次要)
-     */
-    private String  orderLevel;
-    /**
-     * 预计开始时间
-     */
-    private Long    expecteStartTime;
-    /**
-     * 预计结束时间
-     */
-    private Long    expecteEndTime;
-    /**
-     * 附件路径
-     */
-    @ApiModelProperty("附件路径")
-    private String  fileInfo;
-
-    /**
-     * 备注
-     */
-    @ApiModelProperty("备注")
-    private String  memo;
-
-    /**
-     * 同意/拒绝
-     */
-    @ApiModelProperty("同意/拒绝")
-    @NotNull(message = "同意或拒绝不能为空")
-    private Integer isAgree;
 
     /**
      * 方案内容
      */
+    @ApiModelProperty(value = "方案内容")
     private String  content;
     /**
      * 硬件或软件
@@ -110,28 +63,26 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     @NotNull(message = "硬件或软件不能为空")
     private String  topCategory;
 
-    @ApiModelProperty("业务Id不能为空")
-    @NotBlank(message = "业务Id不能为空")
-    private String  businessId;
+    @ApiModelProperty(value = "方案文件,JSON串")
+    private String  fileInfo;
 
-    @ApiModelProperty("任务Id不能为空")
-    @NotBlank(message = "任务Id不能为空")
-    private String  taskId;
+    @ApiModelProperty(value = "扩展字段,JSON串,基准分析才有")
+    private String  extension;
 
-    public String getTaskId() {
-        return taskId;
+    public String getExtension() {
+        return extension;
     }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
-    public String getBusinessId() {
-        return businessId;
+    public String getFileInfo() {
+        return fileInfo;
     }
 
-    public void setBusinessId(String businessId) {
-        this.businessId = businessId;
+    public void setFileInfo(String fileInfo) {
+        this.fileInfo = fileInfo;
     }
 
     public String getTopCategory() {
@@ -142,22 +93,6 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
         this.topCategory = topCategory;
     }
 
-    public Integer getAssetStatus() {
-        return assetStatus;
-    }
-
-    public void setAssetStatus(Integer assetStatus) {
-        this.assetStatus = assetStatus;
-    }
-
-    public Integer getIsAgree() {
-        return isAgree;
-    }
-
-    public void setIsAgree(Integer isAgree) {
-        this.isAgree = isAgree;
-    }
-
     public String getId() {
         return id;
     }
@@ -166,52 +101,12 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
         this.id = id;
     }
 
-    public String getAssetId() {
-        return assetId;
-    }
-
-    public void setAssetId(String assetId) {
-        this.assetId = assetId;
-    }
-
-    public String getOrderLevel() {
-        return orderLevel;
-    }
-
-    public void setOrderLevel(String orderLevel) {
-        this.orderLevel = orderLevel;
-    }
-
-    public Long getExpecteStartTime() {
-        return expecteStartTime;
-    }
-
-    public void setExpecteStartTime(Long expecteStartTime) {
-        this.expecteStartTime = expecteStartTime;
-    }
-
-    public Long getExpecteEndTime() {
-        return expecteEndTime;
-    }
-
-    public void setExpecteEndTime(Long expecteEndTime) {
-        this.expecteEndTime = expecteEndTime;
-    }
-
     public Integer getType() {
         return type;
     }
 
     public void setType(Integer type) {
         this.type = type;
-    }
-
-    public Integer getResult() {
-        return result;
-    }
-
-    public void setResult(Integer result) {
-        this.result = result;
     }
 
     public String getPutintoUserId() {
@@ -236,22 +131,6 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
 
     public void setPutintoUser(String putintoUser) {
         this.putintoUser = putintoUser;
-    }
-
-    public String getFileInfo() {
-        return fileInfo;
-    }
-
-    public void setFileInfo(String fileInfo) {
-        this.fileInfo = fileInfo;
-    }
-
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
     }
 
     public String getContent() {
