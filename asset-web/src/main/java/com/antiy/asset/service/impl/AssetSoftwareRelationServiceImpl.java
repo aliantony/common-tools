@@ -82,7 +82,6 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         return assetSoftwareRelationResponse;
     }
 
-
     @Override
     public Integer countAssetBySoftId(Integer id) {
         return assetSoftwareRelationDao.countAssetBySoftId(id);
@@ -98,16 +97,18 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         return assetSoftwareRelationDao.changeSoftwareStatus(map);
     }
 
-
     @Override
     public Integer installArtificial(List<AssetSoftwareRelationRequest> assetSoftwareRelationList) {
-        List<AssetSoftwareRelation> assetSoftwareRelation = BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRelation.class);
+        List<AssetSoftwareRelation> assetSoftwareRelation = BeanConvert.convert(assetSoftwareRelationList,
+            AssetSoftwareRelation.class);
         return assetSoftwareRelationDao.installArtificial(assetSoftwareRelation);
     }
 
     @Override
     public Integer installAauto(List<AssetSoftwareRelationRequest> assetSoftwareRelationList) {
-        List<AssetSoftwareRelation> assetSoftwareRelation = BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRelation.class);
+        List<AssetSoftwareRelation> assetSoftwareRelation = BeanConvert.convert(assetSoftwareRelationList,
+            AssetSoftwareRelation.class);
+        // TODO 下发智甲安装
         return assetSoftwareRelationDao.installAauto(assetSoftwareRelation);
     }
 }
