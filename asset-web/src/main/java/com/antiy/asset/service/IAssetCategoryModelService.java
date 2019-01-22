@@ -56,9 +56,8 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * 删除品类
      *
      * @param id 删除的id，isConfirm是否已经确认
-     * @return -1 表示存在资产，不能删除 -2 表示存在子品类，需要确认 -3 是系统内置品类，不能删除 >=0 表示删除的品类数
      */
-    ActionResponse delete(Serializable id, Boolean isConfirm) throws Exception;
+    ActionResponse delete(Serializable id) throws Exception;
 
     /**
      * 查询品类树

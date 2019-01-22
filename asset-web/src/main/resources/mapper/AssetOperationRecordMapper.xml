@@ -41,8 +41,8 @@
         <if test=" operateUserName != null">
             operate_user_name,
         </if>
-        <if test=" schemaId != null">
-            schema_id,
+        <if test=" schemeId != null">
+            scheme_id,
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
@@ -68,8 +68,8 @@
         <if test=" operateUserName != null">
             #{operateUserName },
         </if>
-        <if test=" schemaId != null">
-            #{schemaId },
+        <if test=" schemeId != null">
+            #{schemeId },
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
@@ -95,8 +95,8 @@
         <if test=" operateUserName != null">
             operate_user_name = #{operateUserName },
         </if>
-        <if test=" schemaId != null">
-            schema_id = #{schemaId },
+        <if test=" schemeId != null">
+            scheme_id = #{schemeId },
         </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
@@ -122,8 +122,8 @@
         <if test=" operateUserName != null">
             and operate_user_name = #{operateUserName }
         </if>
-        <if test=" schemaId != null">
-            and schema_id = #{schemaId }
+        <if test=" schemeId != null">
+            and scheme_id = #{schemeId }
         </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }
@@ -227,7 +227,7 @@
             c.result
         FROM
             asset_operation_record a
-          LEFT JOIN scheme c ON a.schema_id = c.id
+          LEFT JOIN scheme c ON a.scheme_id = c.id
           where c.status = 1
           AND a.target_object_id = #{targetObjectId}
           AND a.target_type = #{targetType.code}

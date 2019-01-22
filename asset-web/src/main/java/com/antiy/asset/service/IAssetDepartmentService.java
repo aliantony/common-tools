@@ -68,12 +68,6 @@ public interface IAssetDepartmentService extends IBaseService<AssetDepartment> {
      */
     AssetDepartmentNodeResponse findDepartmentNode() throws Exception;
 
-    /**
-     * 删除部门
-     *
-     * @return
-     * @throws Exception
-     */
-    ActionResponse delete(Serializable id, boolean isConfirm) throws Exception ;
+    ActionResponse deleteAllById(Serializable id) throws Exception;
 
 }

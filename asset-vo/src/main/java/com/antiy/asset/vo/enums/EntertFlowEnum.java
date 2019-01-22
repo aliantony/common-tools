@@ -1,21 +1,25 @@
 package com.antiy.asset.vo.enums;
 
 /**
- * @author zhangyajun
- * @create 2019-01-15 16:13
- **/
-public enum ProcessTypeEnum implements CodeEnum {
-                                                 YES(1, "同意"), NO(0, "拒绝");
+ * 准入流程枚举
+ *
+ * @Auther: zhangyajun
+ * @Date: 2019/1/14 11:36
+ * @Description:
+ */
+public enum EntertFlowEnum implements CodeEnum {
+    ENTER_MANAGE(1,"准入管理");
+
+    EntertFlowEnum(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
     // code
     private Integer code;
 
     // msg
     private String  msg;
-
-    ProcessTypeEnum(Integer code, String msg) {
-        this.code = code;
-        this.msg = msg;
-    }
 
     @Override
     public Integer getCode() {

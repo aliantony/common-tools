@@ -69,7 +69,7 @@ public class AssetGroupRelationController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     @PreAuthorize(value="hasAuthority('asset:grouprelation:queryList')")
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetGroupRelation") AssetGroupRelationQuery assetGroupRelation) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetGroupRelation") AssetGroupRelationQuery assetGroupRelation) throws Exception {
         return ActionResponse.success(iAssetGroupRelationService.findPageAssetGroupRelation(assetGroupRelation));
     }
 
