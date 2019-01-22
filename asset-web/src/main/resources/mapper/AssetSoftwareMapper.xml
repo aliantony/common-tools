@@ -23,6 +23,7 @@
         <result column="language" property="language"/>
         <result column="release_time" property="releaseTime"/>
         <result column="publisher" property="publisher"/>
+        <result column="serial" property="serial"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="memo" property="memo"/>
         <result column="gmt_modified" property="gmtModified"/>
@@ -41,7 +42,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, size, operation_system, category_model, name, upload_software_name, path, version, manufacturer, description, asset_group, software_label, software_status, authorization, report_source, port, language, release_time, publisher, gmt_create, memo, gmt_modified, create_user, modify_user, status
+        id, size, operation_system, category_model, name, upload_software_name, path, version, manufacturer, description, asset_group, software_label, software_status, authorization, report_source, port, language, release_time, publisher,serial, gmt_create, memo, gmt_modified, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -103,6 +104,9 @@
         </if>
         <if test=" publisher != null">
             publisher,
+        </if>
+        <if test=" serial != null">
+            serial,
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
@@ -175,6 +179,9 @@
         </if>
         <if test=" publisher != null">
             #{publisher },
+        </if>
+        <if test=" serial != null">
+            #{serial},
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
@@ -251,6 +258,9 @@
         <if test=" publisher != null">
             publisher = #{publisher },
         </if>
+        <if test=" serial != null">
+            serial=#{serial},
+        </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
         </if>
@@ -314,16 +324,14 @@
         <if test=" status != null">
             and status = #{status }
         </if>
+        <if test=" serial != null">
+            and serial=#{serial},
+        </if>
     </sql>
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
-        <!--<if test=" areaIds != null">-->
-        <!--and area_id in-->
-        <!--<foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">-->
-        <!--#{item}-->
-        <!--</foreach>-->
-        <!--</if>-->
+
         <if test="softwareStatusList != null and softwareStatusList.size() > 0">
             and software_status in
             <foreach item="softwareStatus" collection="softwareStatusList" open="(" separator="," close=")">
@@ -420,6 +428,7 @@
     </select>
 
 
+
     <select id="findCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select count(1) count from
         <include refid="Table_Name"></include>
@@ -428,6 +437,7 @@
             <if test=" multipleQuery != null">
                 and (
                 name LIKE CONCAT('%',#{multipleQuery},'%')
+                or serial LIKE CONCAT('%',#{multipleQuery},'%')
                 or id LIKE CONCAT('%',#{multipleQuery},'%')
                 )
             </if>
@@ -478,6 +488,7 @@
             <if test=" multipleQuery != null">
                 and (
                 a.name LIKE CONCAT('%',#{multipleQuery},'%')
+                or a.serial LIKE CONCAT('%',#{multipleQuery},'%')
                 or a.id LIKE CONCAT('%',#{multipleQuery},'%')
                 )
             </if>
@@ -499,10 +510,10 @@
         select distinct(t3.manufacturer) from asset t1 inner join asset_software_relation t2 on t1.id=t2.asset_id
         inner join asset_software t3 on t3.id = t2.software_id
         <where>
-            and t3.software_status != 8
+            and t3.software_status != 5
             and t2.status =1
             and t1.status =1
-            and t1.asset_status!=8
+            and t1.asset_status!=5
             <choose>
                 <when test="manufacturerName != null and manufacturerName != ''">
                     and t3.manufacturer like CONCAT('%',#{manufacturerName},'%')
@@ -520,66 +531,27 @@
             </if>
         </where>
     </select>
-    <select id="countManufacturer" resultMap="ManufacturerResultMap" parameterType="java.util.List">
-        select t3.manufacturer, count(t3.manufacturer) num from asset t1 inner join asset_software_relation t2 on
-        t1.id=t2.asset_id
-        inner join asset_software t3 on t3.id = t2.software_id
-        and t3.software_status != 8
-        and t2.status =1
-        and t1.status =1
-        and t1.asset_status!=8
-        where
-        <if test="areaIds != null and areaIds.size() > 0">
-            t1.area_id in
-            <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
-                #{areaId}
-            </foreach>
-        </if>
-        GROUP BY manufacturer
+
+    <select id="countManufacturer" resultMap="ManufacturerResultMap">
+        select manufacturer, count(manufacturer) num from asset_software where software_status != 4  and status =1 GROUP BY manufacturer
     </select>
 
-    <select id="countStatus" resultMap="StatusResultMap" parameterType="java.util.List">
-        select t3.software_status, count(t3.software_status) num from asset t1 inner join asset_software_relation t2 on
-        t1.id=t2.asset_id
-        inner join asset_software t3 on t3.id = t2.software_id
-        and t3.software_status != 8
-        and t2.status =1
-        and t1.status =1
-        and t1.asset_status!=8
-        where
-        <if test="areaIds != null and areaIds.size() > 0">
-            t1.area_id in
-            <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
-                #{areaId}
-            </foreach>
-        </if>
-        GROUP BY software_status
+    <select id="countStatus" resultMap="StatusResultMap">
+        select software_status, count(software_status) num from asset_software  where software_status != 4 and status =1 GROUP BY software_status
     </select>
 
     <select id="findCountByCategoryModel" resultType="java.lang.Long"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select count(1) count
-        from asset t1 inner join asset_software_relation t2 on
-        t1.id=t2.asset_id
-        inner join asset_software t3 on t3.id = t2.software_id
-        and t3.software_status != 8
-        and t2.status =1
-        and t1.status =1
-        and t1.asset_status!=8
-        where 1 = 1
+        from asset t1 where status =1 and asset_status!=4
         <if test=" categoryModels != null ">
-            and t3.category_model in
+            and category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
         </if>
-        <if test=" areaIds != null ">
-            and t1.area_id in
-            <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-        </if>
     </select>
+
     <select id="pulldownManufacturer" resultType="java.lang.String">
         select distinct manufacturer from asset_software
         where status = 1
