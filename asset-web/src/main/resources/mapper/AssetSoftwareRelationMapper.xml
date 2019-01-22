@@ -465,4 +465,11 @@
 	        and a.status = 1
 	        and b.status = 1
     </select>
+
+    <update id="installArtificial" parameterType="com.antiy.asset.entity.AssetSoftwareRelation">
+        update
+        asset_software_relation
+        set install_status = #{item.installStatus}, install_time = #{installTime}
+        where id = #{id}
+    </update>
 </mapper>
