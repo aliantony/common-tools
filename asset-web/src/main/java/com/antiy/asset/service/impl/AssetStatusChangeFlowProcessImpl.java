@@ -17,12 +17,12 @@ import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LoginUserUtil;
 
 /**
- * @auther: zhangbing
- * @date: 2019/1/22 15:38
+ * @auther: zhangyajun
+ * @date: 2019/1/23 15:38
  * @description:
  */
 @Service
-public class AssetStatusChangeProcessImpl extends AbstractAssetStatusChangeProcessImpl {
+public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeProcessImpl {
 
     @Resource
     AssetDao   assetDao;
@@ -40,8 +40,20 @@ public class AssetStatusChangeProcessImpl extends AbstractAssetStatusChangeProce
         asset.setId(1);
         asset.setGmtModified(System.currentTimeMillis());
         asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
+
+        // 判断资产变更流程中的的分析信息中是否影响基准
+        Map<String, Boolean> analyzeInfo = (Map<String, Boolean>) JSONArray
+            .parse(assetStatusReqeust.getSchemeRequest().getExtension());
+        // 如果影响，直接修改资产状态为待配置
+        if (analyzeInfo.get("baseline")) {
+            asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+            assetDao.update(asset);
+        } else {
+            asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+            assetDao.update(asset);
+        }
+
         // 更新软件资产状态
-        assetDao.update(asset);
         return ActionResponse.success();
     }
 }

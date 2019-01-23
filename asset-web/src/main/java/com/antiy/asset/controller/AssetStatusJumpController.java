@@ -1,5 +1,6 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,5 +47,20 @@ public class AssetStatusJumpController {
             return AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeProcessImpl.class)
                 .changeStatus(assetStatusReqeust);
         }
+    }
+
+    /**
+     * 资产状态变更
+     *
+     * @param assetStatusReqeust
+     * @return actionResponse
+     */
+    @ApiOperation(value = "资产状态变更", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:statusjump:changeFlow')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/changeFlow", method = RequestMethod.POST)
+    public ActionResponse changeFlow(@ApiParam(value = "assetStatusReqeust") @RequestBody(required = false) AssetStatusReqeust assetStatusReqeust) throws Exception {
+            return AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeFlowProcessImpl.class)
+                    .changeStatus(assetStatusReqeust);
     }
 }

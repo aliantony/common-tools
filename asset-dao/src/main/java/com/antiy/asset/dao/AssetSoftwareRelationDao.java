@@ -41,7 +41,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      *
      * @return
      */
-    List<String> findOS() throws Exception;
+    List<String> findOS(@Param(value = "areaIds") List<Integer> areaIds) throws Exception;
 
     /**
      * 查询软件关联的硬件
@@ -57,7 +57,6 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer deleteSoftwareRelAsset(@Param("assetId") Integer assetId, @Param("softwareId") Integer softwareId);
-
 
     /**
      * 获取关联表的Id 列表

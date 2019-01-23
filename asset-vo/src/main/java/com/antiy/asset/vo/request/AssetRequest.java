@@ -31,7 +31,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 资产zu
      */
     @ApiModelProperty("资产组")
-    private List<AssetGroupRequest> assetGroup;
+    private List<AssetGroupRequest> assetGroups;
     /**
      * 机房位置
      */
@@ -80,6 +80,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 行政区划主键ID
      */
     @ApiModelProperty("行政区id")
+    @Encode
     private Integer                 areaId;
     /**
      * 厂商
@@ -365,14 +366,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.id = id;
     }
 
-    public List<AssetGroupRequest> getAssetGroup() {
-        return assetGroup;
-    }
-
-    public void setAssetGroup(List<AssetGroupRequest> assetGroup) {
-        this.assetGroup = assetGroup;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -396,6 +389,15 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     public void setHouseLocation(String houseLocation) {
         this.houseLocation = houseLocation;
     }
+
+    public List<AssetGroupRequest> getAssetGroups() {
+        return assetGroups;
+    }
+
+    public void setAssetGroups(List<AssetGroupRequest> assetGroups) {
+        this.assetGroups = assetGroups;
+    }
+
     @Override
     public void validate() throws RequestParamValidateException {
 

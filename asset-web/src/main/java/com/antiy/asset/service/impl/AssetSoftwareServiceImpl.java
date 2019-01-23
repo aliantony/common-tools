@@ -160,7 +160,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             // 启动流程
             ManualStartActivityRequest activityRequest = request.getActivityRequest();
             activityRequest.setBusinessId(String.valueOf(num));
-            activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
+            activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
             ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
             if (null==actionResponse||!actionResponse.isSuccess ()){
                 throw  new BusinessException ("软件资产登记流程失败",new Throwable ());

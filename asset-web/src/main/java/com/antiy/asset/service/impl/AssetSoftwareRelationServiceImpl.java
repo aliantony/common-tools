@@ -1,5 +1,15 @@
 package com.antiy.asset.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import com.antiy.asset.entity.AssetSoftwareRelationMapper;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.vo.response.AssetResponse;
+import org.springframework.stereotype.Service;
+
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareRelation;
@@ -85,7 +95,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     @Override
     public List<String> findOS() throws Exception {
-        return assetSoftwareRelationDao.findOS();
+        return assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
     }
 
     @Override

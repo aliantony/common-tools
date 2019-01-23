@@ -102,17 +102,15 @@ public class AssetController {
      * 资产变更
      * @author lvliang
      * @param assetOuterRequest 资产信息
-     * @param configBaselineUserId 配置管理员
      * @return actionResponse
      */
     @ApiOperation(value = "资产变更", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/change/asset", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:changeAsset')")
-    public ActionResponse updateSingle(@RequestBody(required = false) AssetOuterRequest assetOuterRequest,
-                                       Integer configBaselineUserId) throws Exception {
+    public ActionResponse updateSingle(@RequestBody(required = false) AssetOuterRequest assetOuterRequest) throws Exception {
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
-        iAssetService.changeAsset(assetOuterRequest, configBaselineUserId);
+        iAssetService.changeAsset(assetOuterRequest);
         return ActionResponse.success();
     }
 

@@ -182,6 +182,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Override
     public AssetCategoryModelNodeResponse queryCategoryNode() throws Exception {
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
+        query.setPageSize(-1);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         NodeConverter nodeConverter = new NodeConverter();
         List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(
