@@ -16,6 +16,7 @@ import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -262,12 +263,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         });
 
-//        if (num != null && num > 0) {
-        // 启动流程
-//        ManualStartActivityRequest activityRequest = request.getActivityRequest ();
-//        activityRequest.setBusinessId (String.valueOf (num));
-//            ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
-//        }
+        if (num != null && num > 0) {
+//         启动流程
+        ManualStartActivityRequest activityRequest = request.getActivityRequest ();
+        activityRequest.setBusinessId (String.valueOf (num));
+        activityRequest.setProcessDefinitionKey (AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode ());
+            ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
+        }
 
 
         return num;

@@ -99,11 +99,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private SoftwareEntityConvert                                            softwareEntityConvert;
 
     private static final Logger                                              LOGGER = LogUtils
-                                                                                        .get(AssetSoftwareServiceImpl.class);
+        .get(AssetSoftwareServiceImpl.class);
 
     @Override
-    public Integer saveAssetSoftware(AssetSoftwareRequest request)
-                                                                                                              throws Exception {
+    public Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
         Integer num = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -119,10 +118,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // protocol.setAssetSoftId(sid);
                     // assetSoftwareLicenseDao.insert(license);
                     // assetPortProtocolDaoDao.insert(protocol);
-                    assetSoftware.setSoftwareStatus (AssetStatusEnum.ANALYZE.getCode ());
-                    assetSoftware.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
-                    assetSoftware.setGmtCreate (System.currentTimeMillis ());
-                    assetSoftware.setReportSource (2);
+                    assetSoftware.setSoftwareStatus(AssetStatusEnum.ANALYZE.getCode());
+                    assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetSoftware.setGmtCreate(System.currentTimeMillis());
+                    assetSoftware.setReportSource(2);
                     assetSoftwareDao.insert(assetSoftware);
                     Integer sid = assetSoftware.getId();
                     if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
@@ -132,8 +131,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                             assetSoftwareRelation.setSoftwareId(sid);
                             assetSoftwareRelation.setAssetId(Integer.parseInt(s));
                             assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
-                            assetSoftwareRelation.setSoftwareStatus (AssetStatusEnum.ANALYZE.getCode ());
-                            assetSoftwareRelation.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
+                            assetSoftwareRelation.setSoftwareStatus(AssetStatusEnum.ANALYZE.getCode());
+                            assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                             assetSoftwareRelationDao.insert(assetSoftwareRelation);
                         }
                     }
@@ -155,13 +154,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             }
         });
 
-        // 开启流程
-//        if (num != null && num > 0) {
-          // 启动流程
-//        ManualStartActivityRequest activityRequest = request.getActivityRequest ();
-//        activityRequest.setBusinessId (String.valueOf (num));
-//            ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
-//        }
+        if (num != null && num > 0) {
+            // 启动流程
+            ManualStartActivityRequest activityRequest = request.getActivityRequest();
+            activityRequest.setBusinessId(String.valueOf(num));
+            activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
+            ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
+        }
 
         return num;
 
@@ -203,7 +202,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     if (StringUtils.isNotBlank(request.getAssetSoftwareRelationId())
                         && request.getSoftwareStatus() != null) {
                         AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-                        assetSoftwareRelation.setId(DataTypeUtils.stringToInteger(request.getAssetSoftwareRelationId()));
+                        assetSoftwareRelation
+                            .setId(DataTypeUtils.stringToInteger(request.getAssetSoftwareRelationId()));
                         assetSoftwareRelation.setSoftwareStatus(request.getSoftwareStatus());
                         assetSoftwareRelationDao.update(assetSoftwareRelation);
                     } else if (ArrayUtils.isNotEmpty(request.getAssetIds())) { // 更新一批实例
@@ -260,8 +260,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param request
      */
     private void updateLicense(AssetSoftwareRequest request) throws Exception {
-        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter.convert(
-            request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
+        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter
+            .convert(request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
         assetSoftwareLicense.setSoftwareId(DataTypeUtils.stringToInteger(request.getId()));
         assetSoftwareLicenseDao.update(assetSoftwareLicense);
     }
@@ -293,9 +293,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             protected void convert(AssetSoftware assetSoftware, AssetSoftwareResponse assetSoftwareResponse) {
                 super.convert(assetSoftware, assetSoftwareResponse);
                 if (MapUtils.isNotEmpty(finalSoftAssetCount)) {
-                    assetSoftwareResponse
-                        .setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null ? finalSoftAssetCount
-                            .get(assetSoftware.getId()).intValue() : 0);
+                    assetSoftwareResponse.setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null
+                        ? finalSoftAssetCount.get(assetSoftware.getId()).intValue()
+                        : 0);
                 }
             }
         };
@@ -500,8 +500,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery)
-                                                                                                          throws Exception {
+    public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery) throws Exception {
         return new PageResult<>(softwareQuery.getPageSize(), this.findAssetInstallCount(softwareQuery),
             softwareQuery.getCurrentPage(), this.findAssetInstallList(softwareQuery));
     }
@@ -592,8 +591,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,
                             AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
-        assetSoftwareQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(LoginUserUtil.getLoginUser()
-            .getAreaIdsOfCurrentUser().toArray()));
+        assetSoftwareQuery.setAreaIds(
+            ArrayTypeUtil.ObjectArrayToIntegerArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         assetSoftwareQuery.setQueryAssetCount(true);
         List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery);
         ParamterExceptionUtils.isEmpty(list, "资产数据不能为空");
@@ -638,8 +637,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param assetSoftwareDetailResponse
      * @throws Exception
      */
-    private void querySoftwarePort(SoftwareQuery softwareQuery, AssetSoftwareDetailResponse assetSoftwareDetailResponse)
-                                                                                                                        throws Exception {
+    private void querySoftwarePort(SoftwareQuery softwareQuery,
+                                   AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
         AssetPortProtocolQuery assetPortProtocolQuery = new AssetPortProtocolQuery();
         assetPortProtocolQuery.setAssetSoftId(softwareQuery.getPrimaryKey());
         assetPortProtocolQuery.setPageSize(Constants.MAX_PAGESIZE);

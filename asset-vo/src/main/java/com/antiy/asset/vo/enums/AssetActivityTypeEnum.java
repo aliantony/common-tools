@@ -6,7 +6,7 @@ package com.antiy.asset.vo.enums;
  * @description: 资产流程引擎类型
  */
 public enum AssetActivityTypeEnum {
-     HARDWARE_ADMITTANCE("hardwareAdmittance","硬件入网(手动)"),
+    HARDWARE_ADMITTANCE("hardwareAdmittance","硬件入网(手动)"),
     SOFTWARE_ADMITTANCE("softwareAdmittance","软件入网(手动)"),
     HARDWARE_CHANGE("hardwareChange","硬件变更(手动)"),
     HARDWARE_RETIRE("hardwareRetire","硬件退役"),
