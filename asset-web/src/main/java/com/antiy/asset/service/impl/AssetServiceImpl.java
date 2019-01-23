@@ -180,7 +180,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         for (AssetSoftwareRelationRequest computerReque : computerReques) {
                             AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                             assetSoftwareRelation.setAssetId(aid);
-                            assetSoftwareRelation.setSoftwareId(computerReque.getSoftwareId());
+                            assetSoftwareRelation.setSoftwareId(Integer.parseInt (computerReque.getSoftwareId()));
                             assetSoftwareRelation.setPort(computerReque.getPort());
                             assetSoftwareRelation.setProtocol(computerReque.getProtocol());
                             assetSoftwareRelation.setSoftwareStatus(3);
@@ -273,9 +273,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
                     assetOperationRecord.setGmtCreate(System.currentTimeMillis());
                     assetOperationRecordDao.insert(assetOperationRecord);
+                    LogHandle.log(asset, AssetEventEnum.ASSET_INSERT.getName(), AssetEventEnum.ASSET_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.info(logger, AssetEventEnum .ASSET_INSERT.getName() + " {}", asset.toString());
                     return aid;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                   logger.warn ("登记硬件资产失败");
+                   e.printStackTrace ();
                     return 0;
                 }
             }
@@ -1139,7 +1142,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                         // 先删除再新增
                         LogHandle.log(asset.getId(), AssetEventEnum.ASSET_CPU_DELETE.getName(), AssetEventEnum.ASSET_CPU_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                        LogUtils.info(logger, AssetEventEnum .ASSET_CPU_DELETE.getName() + " {}", asset.getId().toString());
+                        LogUtils.info(logger, AssetEventEnum .ASSET_CPU_DELETE.getName() + " {}", asset.getStringId());
                         assetCpuDao.deleteByAssetId(asset.getId());
 
                         LogHandle.log(assetCpuList, AssetEventEnum.ASSET_CPU_INSERT.getName(), AssetEventEnum.ASSET_CPU_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
@@ -1149,7 +1152,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 3. 更新网卡信息
                     // 先删除再新增
                     LogHandle.log(asset.getId(), AssetEventEnum.ASSET_NETWORK_DELETE.getName(), AssetEventEnum.ASSET_NETWORK_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                    LogUtils.info(logger, AssetEventEnum .ASSET_NETWORK_DELETE.getName() + " {}", asset.getId().toString());
+                    LogUtils.info(logger, AssetEventEnum .ASSET_NETWORK_DELETE.getName() + " {}", asset.getStringId());
                     assetNetworkCardDao.deleteByAssetId(asset.getId());
                     List<AssetNetworkCardRequest> assetNetworkCardRequestList = assetOuterRequest.getNetworkCard();
                     if (assetNetworkCardRequestList != null && !assetNetworkCardRequestList.isEmpty()) {
@@ -1168,7 +1171,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 4. 更新主板信息
                     // 先删除再新增
                     LogHandle.log(asset.getId(), AssetEventEnum.ASSET_MAINBORAD_DELETE.getName(), AssetEventEnum.ASSET_MAINBORAD_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                    LogUtils.info(logger, AssetEventEnum .ASSET_MAINBORAD_DELETE.getName() + " {}", asset.getId().toString());
+                    LogUtils.info(logger, AssetEventEnum .ASSET_MAINBORAD_DELETE.getName() + " {}", asset.getStringId());
                     assetMainboradDao.deleteByAssetId(asset.getId());
                     List<AssetMainboradRequest> assetMainboradRequest = assetOuterRequest.getMainboard();
                     if (assetNetworkCardRequestList != null && !assetMainboradRequest.isEmpty()) {
@@ -1187,7 +1190,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     List<AssetMemoryRequest> assetMemoryRequestList = assetOuterRequest.getMemory();
                     // 先删除再新增
                     LogHandle.log(asset.getId(), AssetEventEnum.ASSET_MEMORY_DELETE.getName(), AssetEventEnum.ASSET_MEMORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                    LogUtils.info(logger, AssetEventEnum .ASSET_MEMORY_DELETE.getName() + " {}", asset.getId().toString());
+                    LogUtils.info(logger, AssetEventEnum .ASSET_MEMORY_DELETE.getName() + " {}", asset.getStringId());
                     assetMemoryDao.deleteByAssetId(asset.getId());
                     if (assetMemoryRequestList != null && !assetMemoryRequestList.isEmpty()) {
                         List<AssetMemory> assetMemoryList = BeanConvert.convert(assetMemoryRequestList,
@@ -1205,7 +1208,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 6. 更新硬盘信息
                     // 先删除再新增
                     LogHandle.log(asset.getId(), AssetEventEnum.ASSET_DISK_DELETE.getName(), AssetEventEnum.ASSET_DISK_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                    LogUtils.info(logger, AssetEventEnum .ASSET_DISK_DELETE.getName() + " {}", asset.getId().toString());
+                    LogUtils.info(logger, AssetEventEnum .ASSET_DISK_DELETE.getName() + " {}", asset.getStringId());
                     assetHardDiskDao.deleteByAssetId(asset.getId());
                     List<AssetHardDiskRequest> assetHardDiskRequestList = assetOuterRequest.getHardDisk();
                     if (assetHardDiskRequestList != null && !assetHardDiskRequestList.isEmpty()) {
@@ -1224,7 +1227,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     // 7. 更新网络设备信息
                     LogHandle.log(asset.getId(), AssetEventEnum.ASSET_NETWORK_DETAIL_DELETE.getName(), AssetEventEnum.ASSET_NETWORK_DETAIL_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                    LogUtils.info(logger, AssetEventEnum .ASSET_NETWORK_DETAIL_DELETE.getName() + " {}", asset.getId().toString());
+                    LogUtils.info(logger, AssetEventEnum .ASSET_NETWORK_DETAIL_DELETE.getName() + " {}", asset.getStringId());
                     AssetNetworkEquipmentRequest networkEquipment = assetOuterRequest.getNetworkEquipment();
                     if (networkEquipment != null && StringUtils.isNotBlank(networkEquipment.getId())) {
                         AssetNetworkEquipment assetNetworkEquipment = BeanConvert.convertBean(networkEquipment,

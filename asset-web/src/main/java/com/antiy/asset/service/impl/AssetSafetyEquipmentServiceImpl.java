@@ -51,7 +51,7 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
         assetSafetyEquipmentDao.insert(assetSafetyEquipment);
         LogHandle.log(request, AssetEventEnum.ASSET_INSERT.getName(), AssetEventEnum.ASSET_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", request.toString());
-        return aesEncoder.decode(assetSafetyEquipment.getId().toString(),LoginUserUtil.getLoginUser().getUsername());
+        return aesEncoder.decode(assetSafetyEquipment.getStringId(),LoginUserUtil.getLoginUser().getUsername());
     }
 
     @Override

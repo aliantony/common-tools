@@ -129,7 +129,7 @@ public class AssetResponse extends BaseResponse {
      * 是否入网,0表示未入网,1表示入网
      */
     @ApiModelProperty("是否入网")
-    private Boolean                  isInnet;
+    private Integer                  isInnet;
     /**
      * 使用到期时间
      */
@@ -154,14 +154,13 @@ public class AssetResponse extends BaseResponse {
      * 创建时间
      */
     @ApiModelProperty("首次发现时间")
-    private Long              gmtCreate;
+    private Long                     gmtCreate;
 
     /**
      * 首次入网时间
      */
     @ApiModelProperty("首次入网时间")
-    private Long              firstEnterNett;
-
+    private Long                     firstEnterNett;
 
     public Integer getAdmittanceStatus() {
         return admittanceStatus;
@@ -339,12 +338,12 @@ public class AssetResponse extends BaseResponse {
         this.tags = tags;
     }
 
-    public Boolean getInnet() {
+    public Integer getIsInnet() {
         return isInnet;
     }
 
-    public void setInnet(Boolean innet) {
-        isInnet = innet;
+    public void setIsInnet(Integer isInnet) {
+        this.isInnet = isInnet;
     }
 
     public Long getServiceLife() {

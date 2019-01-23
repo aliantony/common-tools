@@ -60,7 +60,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         LogHandle.log(assetUser.toString(), AssetEventEnum.ASSET_USER_INSERT.getName(),
             AssetEventEnum.ASSET_USER_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_INSERT.getName() + " {}", assetUser.toString());
-        return aesEncoder.encode(assetUser.getId().toString(), LoginUserUtil.getLoginUser().getUsername());
+        return aesEncoder.encode(assetUser.getStringId(), LoginUserUtil.getLoginUser().getUsername());
     }
 
     @Override

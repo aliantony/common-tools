@@ -56,7 +56,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         // assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
         int result = assetGroupDao.insert(assetGroup);
-        // return aesEncoder.decode(assetGroup.getId().toString(), LoginUserUtil.getLoginUser().getUsername());
+        // return aesEncoder.decode(assetGroup.getStringId(), LoginUserUtil.getLoginUser().getUsername());
         // TODO 解密id
 
         if (!Objects.equals(0, result)) { // 写入业务日志
@@ -64,7 +64,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}", assetGroup.toString());
         }
-        return assetGroup.getId().toString();
+        return assetGroup.getStringId();
     }
 
     @Override

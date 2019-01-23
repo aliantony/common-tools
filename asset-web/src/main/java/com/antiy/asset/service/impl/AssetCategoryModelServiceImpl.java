@@ -170,6 +170,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      *
      * @return ActionResponse
      */
+    @Override
     public ActionResponse delete(Serializable id) throws Exception {
         AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getById(id);
         // 判断是否自定义品类
