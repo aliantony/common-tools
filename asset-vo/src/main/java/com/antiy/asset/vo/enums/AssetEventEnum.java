@@ -37,6 +37,15 @@ public enum AssetEventEnum {
     ASSET_MAINBORAD_DELETE(29,"资产主板删除"),
     ASSET_MAINBORAD_UPDATE(30,"资产主板修改"),
     ASSET_MAINBORAD_INSERT(31,"资产主板新增"),
+    ASSET_MEMORY_DELETE(32,"资产内存删除"),
+    ASSET_MEMORY_UPDATE(33,"资产内存修改"),
+    ASSET_MEMORY_INSERT(34,"资产内存新增"),
+    ASSET_NETWORK_DELETE(35,"资产网卡删除"),
+    ASSET_NETWORK_UPDATE(36,"资产网卡修改"),
+    ASSET_NETWORK_INSERT(37,"资产网卡新增"),
+    ASSET_NETWORK_DETAIL_DELETE(38,"资产网络设备详情删除"),
+    ASSET_NETWORK_DETAIL_UPDATE(39,"资产网络设备详情修改"),
+    ASSET_NETWORK_DETAIL_INSERT(40,"资产网络设备详情新增"),
     ;
 
 
