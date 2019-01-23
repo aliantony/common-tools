@@ -868,6 +868,7 @@
         a.service_life,
         a. buy_date,
         a.warranty,
+        a.gmt_create,
         GROUP_CONCAT( b.ip_address ) as ip,
         GROUP_CONCAT( b.mac_address ) as mac
         FROM
