@@ -4,7 +4,6 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
-import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -27,10 +26,9 @@ public interface IAssetService extends IBaseService<Asset> {
      * 保存
      *
      * @param request
-     * @param configBaselineUserId
      * @return
      */
-    Integer saveAsset(AssetOuterRequest request, ManualStartActivityRequest configBaselineUserId) throws Exception;
+    Integer saveAsset(AssetOuterRequest request) throws Exception;
 
     /**
      * 修改

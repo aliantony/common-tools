@@ -20,7 +20,7 @@ import javax.validation.constraints.Size;
  */
 @ApiModel(value = "软件请求")
 public class AssetSoftwareRequest extends BasicRequest implements ObjectValidator {
-    @ApiModelProperty(value = "流程数据")
+    @ApiModelProperty(value = "登记流程数据")
     ManualStartActivityRequest activityRequest;
     @Valid
     @ApiModelProperty(value = "软件license")
