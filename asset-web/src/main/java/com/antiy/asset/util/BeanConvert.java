@@ -125,15 +125,14 @@ public class BeanConvert {
         return list;
     }
 
-    private static void copy(BeanCopier copier, Object o, Object o2 , List<String> rule) {
+    private static void copy(BeanCopier copier, Object o, Object o2, List<String> rule) {
         copier.copy(o, o2, new Converter() {
             @Override
             public Object convert(Object o, Class aClass, Object o1) {
                 if (o != null && rule.contains(o1)) {
                     if (String.class.equals(aClass)) {
-                        return o.toString();
+                        return String.valueOf(o);
                     } else if (Integer.class.equals(aClass)) {
-                        System.out.println("------------"+o.toString());
                         return Integer.parseInt(o.toString());
                     }
                 }
