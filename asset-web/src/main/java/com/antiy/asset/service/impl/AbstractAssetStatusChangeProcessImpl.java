@@ -97,7 +97,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
 
         //TODO 获取用户密码失败，待与用户小组调试
 //        assetOperationRecord.setTargetObjectId(DataTypeUtils.stringToInteger(
-//            aesEncoder.decode(assetStatusReqeust.getAssetId(), LoginUserUtil.getLoginUser().getPassword())));
+//            aesEncoder.decode(assetStatusReqeust.getAssetId(), LoginUserUtil.getLoginUser().getUsername())));
         assetOperationRecord.setTargetObjectId(3);
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
@@ -113,6 +113,11 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      */
     private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) {
         Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
+        scheme.setExpecteStartTime(assetStatusReqeust.getWorkOrderVO().getStartTime());
+        scheme.setExpecteEndTime(assetStatusReqeust.getWorkOrderVO().getEndTime());
+        scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
+        scheme.setPutintoUserId(assetStatusReqeust.getWorkOrderVO().getExecuteUserId());
+        scheme.setPutintoUser(assetStatusReqeust.getWorkOrderVO().getExecuteUserName());
         scheme.setAssetId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
         return scheme;
     }

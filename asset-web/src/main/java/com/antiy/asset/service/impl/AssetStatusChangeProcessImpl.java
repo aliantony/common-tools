@@ -42,7 +42,7 @@ public class AssetStatusChangeProcessImpl extends AbstractAssetStatusChangeProce
             assetStatusReqeust.getAgree());
         Asset asset = new Asset();
         //TODO 获取用户密码失败，待与用户小组调试
-//        asset.setId(DataTypeUtils.stringToInteger(aesEncoder.decode(assetStatusReqeust.getAssetId(),LoginUserUtil.getLoginUser().getPassword())));
+//        asset.setId(DataTypeUtils.stringToInteger(aesEncoder.decode(assetStatusReqeust.getAssetId(),LoginUserUtil.getLoginUser().getUsername())));
         asset.setId(1);
         asset.setGmtModified(System.currentTimeMillis());
         asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
