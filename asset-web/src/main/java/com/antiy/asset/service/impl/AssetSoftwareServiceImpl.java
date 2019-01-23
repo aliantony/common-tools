@@ -583,7 +583,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             // formData.put("analyzeBaselineUserId", analyzeBaselineUserId);
             formData.put("discard", 0);
             ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-            manualStartActivityRequest.setBusinessId(asset.getId().toString());
+            manualStartActivityRequest.setBusinessId(asset.getStringId());
             manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
             manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getName());
             manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());

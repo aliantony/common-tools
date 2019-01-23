@@ -133,16 +133,14 @@ public class NodeUtilsConverter<S, T> extends BaseConverter<S, T> {
                 String id = objToString(ReflectionUtils.invokeGetterMethod(t, idColumn));
                 String partnerId = objToString(ReflectionUtils.invokeGetterMethod(s, parentColumn));
 
-                // 判断T的chlidrenList是否为null如果为空，则初始化
-                Object obj = ReflectionUtils.invokeGetterMethod(t, childrenNodeColumn);
-                if (obj == null) {
-                    ReflectionUtils.setFieldValue(t, childrenNodeColumn, new ArrayList<>());
-                    obj = ReflectionUtils.invokeGetterMethod(t, childrenNodeColumn);
-                }
-
                 // 反射调用并且设置值。
-                List<T> source = (List) obj;
+                List<T> source = (List<T>) ReflectionUtils.invokeGetterMethod(t, childrenNodeColumn);
                 if (StringUtils.isNotBlank(id) && id.equals(partnerId)) {
+                    // 判断T的chlidrenList是否为null如果为空，则初始化
+                    if (source == null) {
+                        ReflectionUtils.setFieldValue(t, childrenNodeColumn, new ArrayList<>());
+                        source = (List<T>) ReflectionUtils.invokeGetterMethod(t, childrenNodeColumn);
+                    }
                     source.add(this.convert(s, clazz));
                     ReflectionUtils.setFieldValue(t, childrenNodeColumn, source);
                     iterator.remove();

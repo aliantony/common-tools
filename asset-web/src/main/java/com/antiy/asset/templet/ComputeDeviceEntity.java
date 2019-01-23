@@ -13,7 +13,11 @@ public class ComputeDeviceEntity {
      */
     @ExcelField(value = "order_number", align = 1, title = "序号" )
     private Integer orderNumber;
-
+    /**
+     * 资产编号
+     */
+    @ExcelField(value = "number", align = 1, title = "资产编号")
+    private String                  number;
     /**
      * 资产名称
      */
@@ -730,5 +734,13 @@ public class ComputeDeviceEntity {
 
     public void setNetworkDefaultGateway(String networkDefaultGateway) {
         this.networkDefaultGateway = networkDefaultGateway;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 }

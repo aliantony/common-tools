@@ -28,7 +28,7 @@ public class AssetGroup extends BaseEntity {
     /**
      * 创建人名字
      */
-    private String createUserName;
+    private String            createUserName;
     /**
      * 创建时间
      */
