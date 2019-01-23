@@ -15,6 +15,11 @@ public class NetworkDeviceEntity {
     @ExcelField(value = "order_number", align = 1, title = "序号")
     private Integer orderNumber;
     /**
+     * 资产编号
+     */
+    @ExcelField(value = "number", align = 1, title = "资产编号")
+    private String                  number;
+    /**
      * 资产名称
      */
     @ExcelField(value = "name", align = 1, title = "名称")
@@ -421,5 +426,13 @@ public class NetworkDeviceEntity {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 }
