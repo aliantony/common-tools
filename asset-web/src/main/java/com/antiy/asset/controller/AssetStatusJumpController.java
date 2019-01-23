@@ -35,7 +35,7 @@ public class AssetStatusJumpController {
      * @return actionResponse
      */
     @ApiOperation(value = "资产状态跃迁", notes = "传入实体对象信息")
-    @PreAuthorize("hasAuthority('asset:scheme:saveSingle')")
+    @PreAuthorize("hasAuthority('asset:statusjump')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ActionResponse statusJump(@ApiParam(value = "assetStatusReqeust") @RequestBody(required = false) AssetStatusReqeust assetStatusReqeust) throws Exception {
