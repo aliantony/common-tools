@@ -161,6 +161,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     public AssetDepartmentNodeResponse findDepartmentNode() throws Exception {
         AssetDepartmentQuery query = new AssetDepartmentQuery();
         query.setStatus(1);
+        query.setPageSize(-1);
         List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
         NodeConverter nodeConverter = new NodeConverter();
         List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(assetDepartment,
