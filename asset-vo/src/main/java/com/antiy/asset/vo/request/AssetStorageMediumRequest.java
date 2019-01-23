@@ -22,7 +22,8 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer assetId;
+    @Encode
+    private String assetId;
     /**
      * 最大存储量
      */
@@ -77,11 +78,11 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
         this.id = id;
     }
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

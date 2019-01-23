@@ -25,6 +25,7 @@ import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -161,6 +162,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             activityRequest.setBusinessId(String.valueOf(num));
             activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
             ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
+            if (null==actionResponse||!actionResponse.isSuccess ()){
+                throw  new BusinessException ("软件资产登记流程失败",new Throwable ());
+            }
         }
 
         return num;
