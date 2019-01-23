@@ -8,7 +8,11 @@ import java.util.Objects;
 import javax.annotation.Resource;
 
 import com.antiy.asset.convert.NodeConverter;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.common.base.*;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -23,6 +27,8 @@ import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
 import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 资产部门信息 服务实现类 </p>
@@ -54,7 +60,14 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         }
         assetDepartment.setStatus(1);
         assetDepartment.setGmtCreate(System.currentTimeMillis());
-        assetDepartmentDao.insert(assetDepartment);
+        Integer result = assetDepartmentDao.insert(assetDepartment);
+        if (result != null && !Objects.equals(result, 0)) {
+            // 写入业务日志
+            // todo business phase
+            LogHandle.log(assetDepartment.toString(), AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName(),
+                AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName() + " {}", assetDepartment.toString());
+        }
         return ActionResponse.success(assetDepartment.getId());
     }
 
@@ -76,7 +89,14 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         assetDepartment.setParentId(null);
         assetDepartment.setStatus(1);
         assetDepartment.setGmtModified(System.currentTimeMillis());
-        return ActionResponse.success(assetDepartmentDao.update(assetDepartment));
+        Integer result = assetDepartmentDao.update(assetDepartment);
+        if (!Objects.equals(result, 0)) {
+            // 写入业务日志
+            LogHandle.log(assetDepartment.toString(), AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName(),
+                AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName() + " {}", assetDepartment.toString());
+        }
+        return ActionResponse.success(result);
     }
 
     @Override
@@ -177,7 +197,15 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         assetDepartment.setId((Integer) id);
         list.add(assetDepartment);
         if (CollectionUtils.isNotEmpty(list)) {
-            return ActionResponse.success(assetDepartmentDao.delete(list));
+            Integer result = assetDepartmentDao.delete(list);
+            if (!Objects.equals(result, 0)) {
+                // 写入业务日志
+                // todo business phase
+                LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
+                    AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
+            }
+            return ActionResponse.success(result);
         } else {
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该部门不存在");
         }

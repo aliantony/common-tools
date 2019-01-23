@@ -12,13 +12,17 @@ import com.antiy.asset.convert.CategoryRequestConvert;
 import com.antiy.asset.convert.NodeConverter;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.util.NodeUtilsConverter;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.biz.entity.ErrorMessage;
 import com.antiy.common.base.*;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.BusinessExceptionUtils;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.hadoop.util.hash.Hash;
@@ -30,6 +34,8 @@ import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelResponse;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 品类型号表 服务实现类 </p>
@@ -67,10 +73,18 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         setParentType(assetCategoryModel);
         assetCategoryModel.setGmtCreate(System.currentTimeMillis());
         assetCategoryModel.setStatus(1);
-        assetCategoryModelDao.insert(assetCategoryModel);
+        Integer result = assetCategoryModelDao.insert(assetCategoryModel);
         // 新增的均为非系统内置的
         assetCategoryModel.setIsDefault(1);
+        if (!Objects.equals(0, result)) {
+            // 写入业务日志
+            LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_INSERT.getName(),
+                AssetEventEnum.ASSET_CATEGORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils
+                .info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}", assetCategoryModel.toString());
+        }
         return ActionResponse.success(assetCategoryModel.getId());
+
     }
 
     Boolean checkNameRepeat(AssetCategoryModelRequest request) throws Exception {
@@ -106,7 +120,15 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             assetCategoryModel.setStatus(1);
             assetCategoryModel.setParentId(null);
             assetCategoryModel.setAssetType(null);
-            return ActionResponse.success(assetCategoryModelDao.update(assetCategoryModel));
+            Integer result = assetCategoryModelDao.update(assetCategoryModel);
+            if (!Objects.equals(0, result)) {
+                // 写入业务日志
+                LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(),
+                    AssetEventEnum.ASSET_CATEGORY_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+                LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_UPDATE.getName() + " {}",
+                    assetCategoryModel.toString());
+            }
+            return ActionResponse.success(result);
         }
         return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "系统内置品类不能更新或删除");
     }
@@ -185,7 +207,14 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "存在资产，不能删除");
         }
         if (CollectionUtils.isNotEmpty(list)) {
-            return ActionResponse.success(assetCategoryModelDao.delete(list));
+            Integer result = assetCategoryModelDao.delete(list);
+            if (!Objects.equals(0, result)) {
+                // 写入业务日志
+                LogHandle.log(list.toString(), AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
+                    AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", list.toString());
+            }
+            return ActionResponse.success(result);
         } else {
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "品类不存在，删除失败");
         }
