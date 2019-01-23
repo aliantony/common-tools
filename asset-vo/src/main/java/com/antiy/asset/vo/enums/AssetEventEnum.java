@@ -46,6 +46,20 @@ public enum AssetEventEnum {
     ASSET_NETWORK_DETAIL_DELETE(38,"资产网络设备详情删除"),
     ASSET_NETWORK_DETAIL_UPDATE(39,"资产网络设备详情修改"),
     ASSET_NETWORK_DETAIL_INSERT(40,"资产网络设备详情新增"),
+    ASSET_PORT_DELETE(41,"资产端口删除"),
+    ASSET_PORT_UPDATE(42,"资产端口修改"),
+    ASSET_PORT_INSERT(43,"资产端口新增"),
+    ASSET_SAFE_DETAIL_DELETE(44,"资产安全设备删除"),
+    ASSET_SAFE_DETAIL_UPDATE(45,"资产安全设备修改"),
+    ASSET_SAFE_DETAIL_INSERT(46,"资产安全设备新增"),
+    SOFT_DELETE(47,"软件资产删除"),
+    SOFT_UPDATE(48,"软件资产修改"),
+    SOFT_INSERT(49,"软件资产新增"),
+    SOFT_EXPORT(50,"软件资产导入"),
+    SOFT_INSTALL(51,"软件资产安装"),
+    SOFT_LICENSE_DELETE(52,"软件资产许可删除"),
+    SOFT_LICENSE_UPDATE(53,"软件资产许可修改"),
+    SOFT_LICENSE_INSERT(54,"软件资产许可新增"),
     ;
 
 
