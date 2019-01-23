@@ -57,20 +57,21 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         Scheme scheme = convertScheme(assetStatusReqeust);
         schemeDao.insert(scheme);
 
-        //写入业务日志
-        //todo  EventEnum.ANALYSIS_MODIFY.getName()
-        LogHandle.log(scheme.toString(),"",1, ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, "" + " {}", scheme.toString());
+        // 写入业务日志
+        LogHandle.log(scheme.toString(), AssetEventEnum.ASSET_SCHEME_INSERT.getName(),
+            AssetEventEnum.ASSET_SCHEME_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme.toString());
 
         // 2.保存流程
         AssetOperationRecord assetOperationRecord = convertAssetOperationRecord(assetStatusReqeust);
         assetOperationRecord.setSchemeId(scheme.getId());
         assetOperationRecordDao.insert(assetOperationRecord);
 
-        //写入业务日志
-        //todo  EventEnum.ANALYSIS_MODIFY.getName()
-        LogHandle.log(scheme.toString(),"",1, ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, "" + " {}", scheme.toString());
+        // 写入业务日志
+        LogHandle.log(assetOperationRecord.toString(), AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(),
+            AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
+            assetOperationRecord.toString());
 
         // 3.调用流程引擎
         if (null != assetStatusReqeust.getActivityHandleRequest()) {
@@ -101,18 +102,20 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     private AssetOperationRecord convertAssetOperationRecord(AssetStatusReqeust assetStatusReqeust) {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         if (assetStatusReqeust.getSoftware()) {
-            SoftwareFlowEnum softwareFlowEnum = EnumUtil.getByCode(SoftwareFlowEnum.class,
-                assetStatusReqeust.getAssetStatus().getCode());
-            assetOperationRecord.setContent(softwareFlowEnum != null ? softwareFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
+            SoftwareFlowEnum softwareFlowEnum = EnumUtil.getByCode(SoftwareFlowEnum.class, assetStatusReqeust
+                .getAssetStatus().getCode());
+            assetOperationRecord.setContent(softwareFlowEnum != null ? softwareFlowEnum.getMsg()
+                : RespBasicCode.PARAMETER_ERROR.getResultCode());
         } else {
-            AssetFlowEnum assetFlowEnum = EnumUtil.getByCode(AssetFlowEnum.class,
-                assetStatusReqeust.getAssetStatus().getCode());
-            assetOperationRecord.setContent(assetFlowEnum != null ? assetFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
+            AssetFlowEnum assetFlowEnum = EnumUtil.getByCode(AssetFlowEnum.class, assetStatusReqeust.getAssetStatus()
+                .getCode());
+            assetOperationRecord.setContent(assetFlowEnum != null ? assetFlowEnum.getMsg()
+                : RespBasicCode.PARAMETER_ERROR.getResultCode());
         }
 
-        //TODO 获取用户密码失败，待与用户小组调试
-//        assetOperationRecord.setTargetObjectId(DataTypeUtils.stringToInteger(
-//            aesEncoder.decode(assetStatusReqeust.getAssetId(), LoginUserUtil.getLoginUser().getUsername())));
+        // TODO 获取用户密码失败，待与用户小组调试
+        // assetOperationRecord.setTargetObjectId(DataTypeUtils.stringToInteger(
+        // aesEncoder.decode(assetStatusReqeust.getAssetId(), LoginUserUtil.getLoginUser().getUsername())));
         assetOperationRecord.setTargetObjectId(3);
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
