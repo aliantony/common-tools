@@ -27,13 +27,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      */
     List<AssetSoftware> getSoftByAssetId(Integer assetId);
 
-    /**
-     * 通过软件ID查询安装信息
-     *
-     * @param softwareId
-     * @return
-     */
-    List<AssetSoftwareRelationMapper> getInfoBySoftwareId(Integer softwareId);
+
     /**
      * 通过软件ID统计资产数量
      *
