@@ -35,6 +35,10 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
     @Valid
     private ActivityHandleRequest activityHandleRequest;
 
+    @ApiModelProperty(value = "资产变更流程信息")
+    @Valid
+    ManualStartActivityRequest manualStartActivityRequest;
+
     /**
      * 同意/拒绝
      */
@@ -58,6 +62,28 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("硬件资产当前状态")
     private AssetStatusEnum       assetStatus;
+
+    /**
+     * 是否资产变更流程
+     */
+    @ApiModelProperty("是否资产变更流程")
+    private Boolean       changeFlow;
+
+    public ManualStartActivityRequest getManualStartActivityRequest() {
+        return manualStartActivityRequest;
+    }
+
+    public void setManualStartActivityRequest(ManualStartActivityRequest manualStartActivityRequest) {
+        this.manualStartActivityRequest = manualStartActivityRequest;
+    }
+
+    public Boolean getChangeFlow() {
+        return changeFlow;
+    }
+
+    public void setChangeFlow(Boolean changeFlow) {
+        this.changeFlow = changeFlow;
+    }
 
     @ApiModelProperty(value = "软件资产当前状态")
     private SoftwareStatusEnum    softwareStatusEnum;

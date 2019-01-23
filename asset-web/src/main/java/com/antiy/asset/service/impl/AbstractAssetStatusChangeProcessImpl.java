@@ -76,7 +76,15 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
 
         // 3.调用流程引擎
         if (null != assetStatusReqeust.getActivityHandleRequest()) {
-            ActionResponse actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
+            ActionResponse actionResponse;
+            if (assetStatusReqeust.getChangeFlow()) {
+                // 启动流程
+                actionResponse = activityClient.manualStartProcess(assetStatusReqeust.getManualStartActivityRequest());
+            } else {
+                // 完成流程
+                actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
+            }
+
             // 如果流程引擎为空,直接返回错误信息
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
