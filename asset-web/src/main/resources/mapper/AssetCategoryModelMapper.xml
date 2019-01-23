@@ -197,10 +197,10 @@
             and parent_id = #{parentId }
         </if>
         <if test=" status != null">
-            status = #{status },
+            status = #{status }
         </if>
-        <if test=" status == null">
-            status = 1,
+        <if test="status == null">
+            status = 1
         </if>
 
     </sql>
