@@ -1,5 +1,15 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.antiy.asset.convert.UserSelectResponseConverter;
 import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.IAssetUserService;
@@ -18,13 +28,6 @@ import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.List;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 资产用户信息 服务实现类 </p>
@@ -42,6 +45,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Resource
     private BaseConverter<AssetUser, AssetUserResponse> responseConverter;
     @Resource
+    private UserSelectResponseConverter                 userSelectResponseConverter;
+    @Resource
     private AesEncoder                                  aesEncoder;
 
     @Override
@@ -53,7 +58,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         assetUserDao.insert(assetUser);
         // 写入业务日志
         LogHandle.log(assetUser.toString(), AssetEventEnum.ASSET_USER_INSERT.getName(),
-                AssetEventEnum.ASSET_USER_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            AssetEventEnum.ASSET_USER_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_INSERT.getName() + " {}", assetUser.toString());
         return aesEncoder.encode(assetUser.getId().toString(), LoginUserUtil.getLoginUser().getUsername());
     }
@@ -67,7 +72,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         assetUser.setGmtCreate(System.currentTimeMillis());
         // 写入业务日志
         LogHandle.log(assetUser.toString(), AssetEventEnum.ASSET_USER_UPDATE.getName(),
-                AssetEventEnum.ASSET_USER_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+            AssetEventEnum.ASSET_USER_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_UPDATE.getName() + " {}", assetUser.toString());
         return assetUserDao.update(assetUser);
     }
@@ -94,7 +99,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
 
     @Override
     public List<SelectResponse> queryUserInAsset() throws Exception {
-        return BeanConvert.convert(assetUserDao.findUserInAsset(), SelectResponse.class);
+        return userSelectResponseConverter.convert(assetUserDao.findUserInAsset(), SelectResponse.class);
     }
 
     @Override

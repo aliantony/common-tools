@@ -8,11 +8,12 @@ package com.antiy.asset.vo.enums;
  * @Description:
  */
 public enum SoftwareFlowEnum implements CodeEnum {
-    SOFTWARE_REGISTER("软件资产登记"),
-    SOFTWARE_BASELINE_ANALYZE("软件基准分析"),
-    SOFTWARE_INSTALL("软件安装");
+    SOFTWARE_REGISTER(SoftwareStatusEnum.WATI_REGSIST.getCode(),"软件资产登记"),
+    SOFTWARE_BASELINE_ANALYZE(SoftwareStatusEnum.WAIT_ANALYZE.getCode(),"软件基准分析"),
+    SOFTWARE_INSTALL(SoftwareStatusEnum.ALLOW_INSTALL.getCode(),"软件安装");
 
-    SoftwareFlowEnum(String msg) {
+    SoftwareFlowEnum(Integer code, String msg) {
+        this.code = code;
         this.msg = msg;
     }
 

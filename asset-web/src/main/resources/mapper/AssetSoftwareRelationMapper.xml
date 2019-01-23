@@ -350,14 +350,16 @@
 
     <select id="findOS" resultType="string" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT DISTINCT
-            asoft.operation_system
+            operation_system
         FROM
-            asset_software_relation asr
-            LEFT JOIN asset_software asoft ON asoft.id = asr.software_id
-            LEFT JOIN asset ON asset.id = asr.asset_id
+            asset
         WHERE
-            asoft.operation_system IS NOT NULL
-            AND asset.STATUS = 1
+            operation_system IS NOT NULL
+            AND STATUS = 1
+            and area_id in
+        <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 
 

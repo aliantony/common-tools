@@ -60,7 +60,7 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty(value = "方案文件,JSON串")
     private String  fileInfo;
 
-    @ApiModelProperty(value = "扩展字段,JSON串,基准分析才有")
+    @ApiModelProperty(value = "扩展字段,JSON串,基准分析才有 {baseline:true,implement:true}")
     private String  extension;
 
     public String getExtension() {
