@@ -88,11 +88,11 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         if (assetStatusReqeust.getSoftware()) {
             SoftwareFlowEnum softwareFlowEnum = EnumUtil.getByCode(SoftwareFlowEnum.class,
                 assetStatusReqeust.getAssetStatus().getCode());
-            assetOperationRecord.setContent(softwareFlowEnum != null ? softwareFlowEnum.getMsg() : "参数异常");
+            assetOperationRecord.setContent(softwareFlowEnum != null ? softwareFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
         } else {
             AssetFlowEnum assetFlowEnum = EnumUtil.getByCode(AssetFlowEnum.class,
                 assetStatusReqeust.getAssetStatus().getCode());
-            assetOperationRecord.setContent(assetFlowEnum != null ? assetFlowEnum.getMsg() : "参数异常");
+            assetOperationRecord.setContent(assetFlowEnum != null ? assetFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
         }
 
         //TODO 获取用户密码失败，待与用户小组调试
