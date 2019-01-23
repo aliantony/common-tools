@@ -14,8 +14,8 @@
         <result column="expecte_start_time" property="expecteStartTime"/>
         <result column="expecte_end_time" property="expecteEndTime"/>
         <result column="order_level" property="orderLevel"/>
-        <result column="baseline_analyze_info" property="baselineAnalyzeInfo"/>
         <result column="file_info" property="fileInfo"/>
+        <result column="extension" property="extension"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
@@ -26,7 +26,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, type, result, putinto_user_id, putinto_time, putinto_user, file_info, order_level ,baseline_analyze_info , expecte_start_time, expecte_end_time, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_id, type, result, putinto_user_id, putinto_time, putinto_user, file_info, extension, order_level , expecte_start_time, expecte_end_time, gmt_create, gmt_modified, memo, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -55,6 +55,9 @@
         </if>
         <if test=" fileInfo != null">
             file_info,
+        </if>
+        <if test=" extension != null">
+            extension,
         </if>
         <if test=" orderLevel != null">
             order_level,
@@ -107,11 +110,11 @@
         <if test=" orderLevel != null">
             #{orderLevel },
         </if>
-        <if test=" baselineAnalyzeInfo != null">
-            #{baselineAnalyzeInfo },
-        </if>
         <if test=" fileInfo != null">
             #{fileInfo },
+        </if>
+        <if test=" extension != null">
+            #{extension },
         </if>
         <if test=" expecteStartTime != null">
             #{expecteStartTime },
@@ -161,11 +164,11 @@
         <if test=" orderLevel != null">
             order_level = #{orderLevel },
         </if>
-        <if test=" baselineAnalyzeInfo != null">
-            baseline_analyze_info = #{baselineAnalyzeInfo },
-        </if>
         <if test=" fileInfo != null">
             file_info = #{fileInfo },
+        </if>
+        <if test=" extension != null">
+            extension = #{extension },
         </if>
         <if test=" expecteStartTime != null">
             expecte_start_time = #{expecteStartTime },
@@ -217,6 +220,9 @@
         </if>
         <if test=" fileInfo != null">
             and file_info = #{fileInfo }
+        </if>
+        <if test=" extension != null">
+            and extension = #{extension }
         </if>
         <if test=" expecteStartTime != null">
             and expecte_start_time = #{expecteStartTime }

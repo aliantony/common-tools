@@ -1,8 +1,10 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
-
 import com.antiy.common.base.BasicRequest;
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -16,6 +18,7 @@ public class AssetOuterRequest extends BasicRequest {
     /**
      * 资产主表信息
      */
+    @Valid()
     private AssetRequest                       asset;
 
     /**
@@ -57,6 +60,16 @@ public class AssetOuterRequest extends BasicRequest {
      * 资产软件关系表
      */
     private List<AssetSoftwareRelationRequest> assetSoftwareRelationList;
+    @ApiModelProperty(value = "流程数据")
+    ManualStartActivityRequest activityRequest;
+
+    public ManualStartActivityRequest getActivityRequest() {
+        return activityRequest;
+    }
+
+    public void setActivityRequest(ManualStartActivityRequest activityRequest) {
+        this.activityRequest = activityRequest;
+    }
 
     public AssetRequest getAsset() {
         return asset;

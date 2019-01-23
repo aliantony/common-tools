@@ -6,7 +6,6 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
-import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
@@ -40,14 +39,13 @@ public class AssetSoftwareController {
      * @param assetSoftware
      * @return actionResponse
      */
-    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse")})
+    @ApiOperation(value = "软件资产登记接口", notes = "传入登记信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse") })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:saveSingle')")
-    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware,
-                                     ManualStartActivityRequest activityRequest) throws Exception {
+    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware) throws Exception {
 
-        return ActionResponse.success(iAssetSoftwareService.saveAssetSoftware(assetSoftware, activityRequest));
+        return ActionResponse.success(iAssetSoftwareService.saveAssetSoftware(assetSoftware));
     }
 
     /**
@@ -57,7 +55,7 @@ public class AssetSoftwareController {
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse")})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse") })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:updateSingle')")
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware) throws Exception {
@@ -150,9 +148,10 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "导入软件excel文件", notes = "导入软件excel文件")
     @RequestMapping(value = "/import/file", method = RequestMethod.POST)
-    public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile,@ApiParam(value = "areaId") String areaId) throws Exception {
+    public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile,
+                                     @ApiParam(value = "areaId") String areaId) throws Exception {
 
-        return ActionResponse.success(iAssetSoftwareService.importExcel(multipartFile,areaId));
+        return ActionResponse.success(iAssetSoftwareService.importExcel(multipartFile, areaId));
 
     }
 

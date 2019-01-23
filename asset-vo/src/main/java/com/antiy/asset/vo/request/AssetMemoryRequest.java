@@ -73,6 +73,10 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("联系电话")
     private String  telephone;
+    /**
+     * 备注
+     */
+    private String  memo;
 
     public String getAssetId() {
         return assetId;
@@ -146,6 +150,14 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
         this.telephone = telephone;
     }
 
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
     @Override
     public void validate() throws RequestParamValidateException {
 
@@ -157,5 +169,12 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetMemory{" + ", assetId=" + assetId + ", capacity=" + capacity + ", frequency=" + frequency
+                + ", slotType=" + slotType + ", isHeatsink=" + isHeatsink + ", stitch=" + stitch + ", buyDate=" + buyDate
+                + ", warrantyDate=" + warrantyDate + ", telephone=" + telephone + ", memo=" + memo + "}";
     }
 }

@@ -12,13 +12,19 @@ import com.antiy.asset.intergration.WorkOrderClient;
 import com.antiy.asset.service.IAssetStatusChangeProcessService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.EnumUtil;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.SoftwareFlowEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * @auther: zhangbing
@@ -51,10 +57,20 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         Scheme scheme = convertScheme(assetStatusReqeust);
         schemeDao.insert(scheme);
 
+        //写入业务日志
+        //todo  EventEnum.ANALYSIS_MODIFY.getName()
+        LogHandle.log(scheme.toString(),"",1, ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, "" + " {}", scheme.toString());
+
         // 2.保存流程
         AssetOperationRecord assetOperationRecord = convertAssetOperationRecord(assetStatusReqeust);
         assetOperationRecord.setSchemeId(scheme.getId());
         assetOperationRecordDao.insert(assetOperationRecord);
+
+        //写入业务日志
+        //todo  EventEnum.ANALYSIS_MODIFY.getName()
+        LogHandle.log(scheme.toString(),"",1, ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, "" + " {}", scheme.toString());
 
         // 3.调用流程引擎
         if (null != assetStatusReqeust.getActivityHandleRequest()) {
@@ -64,7 +80,6 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
         }
-
         // 4.调用工单系统
         if (null != assetStatusReqeust.getWorkOrderVO()) {
             ActionResponse actionResponse = workOrderClient.createWorkOrder(assetStatusReqeust.getWorkOrderVO());

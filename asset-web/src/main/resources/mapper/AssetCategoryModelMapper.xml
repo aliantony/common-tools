@@ -196,8 +196,12 @@
         <if test=" parentId != null">
             and parent_id = #{parentId }
         </if>
-
-        and status = 1
+        <if test=" status != null">
+            status = #{status },
+        </if>
+        <if test=" status == null">
+            status = 1,
+        </if>
 
     </sql>
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetCategoryModel" useGeneratedKeys="true"
@@ -322,7 +326,12 @@
             <if test=" parentId != null">
                 and parent_id = #{parentId }
             </if>
-            and status =1
+            <if test=" status != null">
+                status = #{status },
+            </if>
+            <if test=" status == null">
+                status = 1,
+            </if>
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}

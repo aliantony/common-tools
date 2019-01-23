@@ -73,6 +73,18 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty("累计小时")
     private Integer cumulativeHour;
+    /**
+     * 备注
+     */
+    private String  memo;
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
     public String getAssetId() {
         return assetId;
@@ -157,6 +169,14 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
     @Override
     public void validate() throws RequestParamValidateException {
 
+    }
+
+    @Override
+    public String toString() {
+        return "AssetHardDisk{" + ", assetId=" + assetId + ", brand=" + brand + ", model=" + model + ", serial="
+               + serial + ", interfaceType=" + interfaceType + ", capacity=" + capacity + ", diskType=" + diskType
+               + ", buyDate=" + buyDate + ", useTimes=" + useTimes + ", cumulativeHour=" + cumulativeHour + ", memo="
+               + memo + "}";
     }
 
 }
