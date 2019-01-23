@@ -84,9 +84,9 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     @PreAuthorize(value="hasAuthority('asset:categorymodel:queryById')")
-    public ActionResponse queryById(@PathVariable  @ApiParam(value = "assetCategoryModel") @Encode Integer id) throws Exception {
+    public ActionResponse queryById(@PathVariable  @ApiParam(value = "assetCategoryModel") @Encode String id) throws Exception {
         ParamterExceptionUtils.isNull(id,"id不能为空");
-        return ActionResponse.success(iAssetCategoryModelService.getById(id));
+        return ActionResponse.success(iAssetCategoryModelService.getById(Integer.parseInt(id)));
     }
 
     /**
@@ -99,9 +99,9 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     @PreAuthorize(value="hasAuthority('asset:categorymodel:deleteById')")
-    public ActionResponse deleteById(@PathVariable @ApiParam(value = "id") @Encode Integer id) throws Exception {
+    public ActionResponse deleteById(@PathVariable @ApiParam(value = "id") @Encode String id) throws Exception {
         ParamterExceptionUtils.isNull(id,"id不能为空");
-        return iAssetCategoryModelService.delete(id);
+        return iAssetCategoryModelService.delete(Integer.parseInt(id));
     }
 
     /**

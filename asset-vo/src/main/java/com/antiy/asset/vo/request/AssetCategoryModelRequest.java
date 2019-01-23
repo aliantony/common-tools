@@ -40,6 +40,7 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
     /**
      * 父ID
      */
+    @Encode
     @ApiModelProperty("父ID")
     @NotNull(message = "父ID不能为空")
     private Integer parentId;

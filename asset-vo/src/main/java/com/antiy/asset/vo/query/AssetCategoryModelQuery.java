@@ -26,6 +26,7 @@ public class AssetCategoryModelQuery extends ObjectQuery implements ObjectValida
     /**
      * 品类型号id列表
      */
+    @Encode
     @ApiModelProperty("ids")
     private String[] ids;
 

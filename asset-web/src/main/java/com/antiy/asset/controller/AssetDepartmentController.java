@@ -88,10 +88,10 @@ public class AssetDepartmentController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetDepartmentResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:department:queryById')")
-    public ActionResponse queryById(@PathVariable @ApiParam(value = "assetDepartment") @Encode Integer id)
+    public ActionResponse queryById(@PathVariable @ApiParam(value = "assetDepartment") @Encode String id)
                                                                                                           throws Exception {
         ParamterExceptionUtils.isNull(id, "id不能为空");
-        return ActionResponse.success(iAssetDepartmentService.getById(id));
+        return ActionResponse.success(iAssetDepartmentService.getById(Integer.parseInt(id)));
 
     }
 
@@ -105,18 +105,18 @@ public class AssetDepartmentController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:department:deleteById')")
-    public ActionResponse deleteById(@PathVariable @ApiParam(value = "id") Integer id) throws Exception {
+    public ActionResponse deleteById(@PathVariable @ApiParam(value = "id")@Encode String id) throws Exception {
         ParamterExceptionUtils.isNull(id, "id不能为空");
-        return iAssetDepartmentService.deleteAllById(id);
+        return iAssetDepartmentService.deleteAllById(Integer.parseInt(id));
     }
 
     @ApiOperation(value = "通过ID查询所有部门信息及子部门信息", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetDepartmentResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/get/{id}", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:department:getByID')")
-    public ActionResponse getByID(@PathVariable @ApiParam(value = "id") @Encode Integer id) throws Exception {
+    public ActionResponse getByID(@PathVariable @ApiParam(value = "id") @Encode String id) throws Exception {
         ParamterExceptionUtils.isNull(id, "id不能为空");
-        return ActionResponse.success(iAssetDepartmentService.findAssetDepartmentById(id));
+        return ActionResponse.success(iAssetDepartmentService.findAssetDepartmentById(Integer.parseInt(id)));
     }
 
     /**
