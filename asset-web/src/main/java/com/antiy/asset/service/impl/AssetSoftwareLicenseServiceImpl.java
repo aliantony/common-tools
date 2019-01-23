@@ -4,6 +4,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetSoftwareLicenseDao;
@@ -33,13 +38,15 @@ public class AssetSoftwareLicenseServiceImpl extends BaseServiceImpl<AssetSoftwa
     private BaseConverter<AssetSoftwareLicenseRequest, AssetSoftwareLicense>  requestConverter;
     @Resource
     private BaseConverter<AssetSoftwareLicense, AssetSoftwareLicenseResponse> responseConverter;
-
+    private static final Logger logger = LogUtils.get(AssetServiceImpl.class);
     @Override
     public Integer saveAssetSoftwareLicense(AssetSoftwareLicenseRequest request) throws Exception {
         AssetSoftwareLicense assetSoftwareLicense = requestConverter.convert(request, AssetSoftwareLicense.class);
         assetSoftwareLicense.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetSoftwareLicense.setGmtCreate(System.currentTimeMillis());
         assetSoftwareLicenseDao.insert(assetSoftwareLicense);
+        LogHandle.log(request, AssetEventEnum.ASSET_MODIFY.getName(), AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum .ASSET_MODIFY.getName() + " {}", request.toString());
         return assetSoftwareLicense.getId();
     }
 

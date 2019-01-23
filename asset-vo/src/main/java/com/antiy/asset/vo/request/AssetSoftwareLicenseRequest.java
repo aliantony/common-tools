@@ -91,6 +91,18 @@ public class AssetSoftwareLicenseRequest extends BasicRequest implements ObjectV
     }
 
     @Override
+    public String toString() {
+        return "AssetSoftwareLicenseRequest{" +
+                "id='" + id + '\'' +
+                ", softwareId='" + softwareId + '\'' +
+                ", buyDate=" + buyDate +
+                ", expiryDate=" + expiryDate +
+                ", licenseSecretKey='" + licenseSecretKey + '\'' +
+                ", memo='" + memo + '\'' +
+                '}';
+    }
+
+    @Override
     public void validate() throws RequestParamValidateException {
         // ParamterExceptionUtils.isNull(expiryDate, "有效期限不能为空");
         // ParamterExceptionUtils.isNull(buyDate,"购买日期不能为空");

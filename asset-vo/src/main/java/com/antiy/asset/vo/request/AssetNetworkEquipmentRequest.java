@@ -190,6 +190,25 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
     }
 
     @Override
+    public String toString() {
+        return "AssetNetworkEquipmentRequest{" +
+                "id='" + id + '\'' +
+                ", assetId='" + assetId + '\'' +
+                ", interfaceSize=" + interfaceSize +
+                ", isWireless=" + isWireless +
+                ", innerIp='" + innerIp + '\'' +
+                ", outerIp='" + outerIp + '\'' +
+                ", macAddress='" + macAddress + '\'' +
+                ", subnetMask='" + subnetMask + '\'' +
+                ", expectBandwidth=" + expectBandwidth +
+                ", register=" + register +
+                ", dramSize=" + dramSize +
+                ", flashSize=" + flashSize +
+                ", ncrmSize=" + ncrmSize +
+                '}';
+    }
+
+    @Override
     public void validate() throws RequestParamValidateException {
 
     }

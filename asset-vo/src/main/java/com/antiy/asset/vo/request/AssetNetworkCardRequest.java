@@ -157,4 +157,19 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
 
     }
 
+    @Override
+    public String toString() {
+        return "AssetNetworkCardRequest{" +
+                "id='" + id + '\'' +
+                ", assetId='" + assetId + '\'' +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", serial='" + serial + '\'' +
+                ", ipAddress='" + ipAddress + '\'' +
+                ", macAddress='" + macAddress + '\'' +
+                ", defaultGateway='" + defaultGateway + '\'' +
+                ", networkAddress='" + networkAddress + '\'' +
+                ", subnetMask='" + subnetMask + '\'' +
+                '}';
+    }
 }
