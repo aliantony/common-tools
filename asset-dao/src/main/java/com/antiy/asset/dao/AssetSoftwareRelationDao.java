@@ -3,11 +3,13 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.antiy.asset.entity.AssetSoftwareRelationMapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.common.base.IBaseDao;
+import org.springframework.security.core.parameters.P;
 
 /**
  * <p> 资产软件关系信息 Mapper 接口 </p>
@@ -24,6 +26,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     List<AssetSoftware> getSoftByAssetId(Integer assetId);
+
 
     /**
      * 通过软件ID统计资产数量
@@ -76,7 +79,6 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer insertBatch(List<AssetSoftwareRelation> assetSoftwareRelationList);
-
     /**
      * 批量修改软件状态
      *
