@@ -1,17 +1,16 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -21,7 +20,8 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(value = "软件请求")
 public class AssetSoftwareRequest extends BasicRequest implements ObjectValidator {
-
+    @ApiModelProperty(value = "登记流程数据")
+    ManualStartActivityRequest activityRequest;
     @Valid
     @ApiModelProperty(value = "软件license")
     private AssetSoftwareLicenseRequest softwareLicenseRequest;
@@ -347,6 +347,13 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     @Override
     public void validate() throws RequestParamValidateException {
 
+    }
+    public ManualStartActivityRequest getActivityRequest() {
+        return activityRequest;
+    }
+
+    public void setActivityRequest(ManualStartActivityRequest activityRequest) {
+        this.activityRequest = activityRequest;
     }
 
     public AssetSoftwareLicenseRequest getSoftwareLicenseRequest() {

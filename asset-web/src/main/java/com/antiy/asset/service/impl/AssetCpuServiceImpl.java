@@ -1,9 +1,14 @@
 package com.antiy.asset.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetCpuDao;
@@ -15,6 +20,8 @@ import com.antiy.asset.vo.response.AssetCpuResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 处理器表 服务实现类 </p>
@@ -35,13 +42,26 @@ public class AssetCpuServiceImpl extends BaseServiceImpl<AssetCpu> implements IA
     @Override
     public Integer saveAssetCpu(AssetCpuRequest request) throws Exception {
         AssetCpu assetCpu = requestConverter.convert(request, AssetCpu.class);
-        assetCpuDao.insert(assetCpu);
+        Integer result = assetCpuDao.insert(assetCpu);
+        if (!Objects.equals(result, 0)) {
+            // 写入业务日志
+            LogHandle
+                .log(assetCpu.toString(), AssetEventEnum.ASSET_CPU_INSERT.getName(), AssetEventEnum.ASSET_CPU_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_CPU_INSERT.getName() + " {}", assetCpu.toString());
+        }
         return assetCpu.getId();
     }
 
     @Override
     public Integer updateAssetCpu(AssetCpuRequest request) throws Exception {
         AssetCpu assetCpu = requestConverter.convert(request, AssetCpu.class);
+        Integer result = assetCpuDao.update(assetCpu);
+        if ( Objects.equals(result, 0)) {
+            // 写入业务日志
+            LogHandle
+                .log(assetCpu.toString(), AssetEventEnum.ASSET_CPU_UPDATE.getName(), AssetEventEnum.ASSET_CPU_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_CPU_UPDATE.getName() + " {}", assetCpu.toString());
+        }
         return assetCpuDao.update(assetCpu);
     }
 

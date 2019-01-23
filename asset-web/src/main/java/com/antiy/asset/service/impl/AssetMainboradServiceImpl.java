@@ -1,9 +1,16 @@
 package com.antiy.asset.service.impl;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetMainboradDao;
@@ -25,6 +32,7 @@ import com.antiy.common.utils.LoginUserUtil;
  */
 @Service
 public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> implements IAssetMainboradService {
+    private Logger logger = LogUtils.get(this.getClass());
 
     @Resource
     private AssetMainboradDao                                     assetMainboradDao;
@@ -39,6 +47,8 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
         assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetMainborad.setGmtCreate(System.currentTimeMillis());
         assetMainboradDao.insert(assetMainborad);
+        LogHandle.log(request, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(), AssetEventEnum.ASSET_MAINBORAD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName() + " {}", request.toString());
         return assetMainborad.getId();
     }
 
@@ -47,6 +57,8 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
         AssetMainborad assetMainborad = requestConverter.convert(request, AssetMainborad.class);
         assetMainborad.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetMainborad.setGmtModified(System.currentTimeMillis());
+        LogHandle.log(request, AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName(), AssetEventEnum.ASSET_MAINBORAD_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName() + " {}", request.toString());
         return assetMainboradDao.update(assetMainborad);
     }
 
@@ -67,5 +79,12 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
     public PageResult<AssetMainboradResponse> findPageAssetMainborad(AssetMainboradQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetMainborad(query), query.getCurrentPage(),
             this.findListAssetMainborad(query));
+    }
+
+    @Override
+    public Integer deleteById(Serializable id) throws Exception {
+        LogHandle.log(id, AssetEventEnum.ASSET_MAINBORAD_DELETE.getName(), AssetEventEnum.ASSET_MAINBORAD_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_DELETE.getName() + " {}", id);
+        return super.deleteById(id);
     }
 }

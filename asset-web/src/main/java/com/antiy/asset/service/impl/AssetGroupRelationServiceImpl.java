@@ -2,9 +2,14 @@ package com.antiy.asset.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetGroupRelationDao;
@@ -21,6 +26,8 @@ import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
 /**
  * <p> 资产与资产组关系表 服务实现类 </p>
  *
@@ -28,8 +35,8 @@ import com.antiy.common.encoder.AesEncoder;
  * @since 2019-01-02
  */
 @Service
-public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRelation>
-                                           implements IAssetGroupRelationService {
+public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRelation> implements
+                                                                                      IAssetGroupRelationService {
 
     @Resource
     private AesEncoder            aesEncoder;
@@ -42,14 +49,30 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
     public Integer saveAssetGroupRelation(AssetGroupRelationRequest request) throws Exception {
         AssetGroupRelation assetGroupRelation = (AssetGroupRelation) BeanConvert.convert(request,
             AssetGroupRelation.class);
-        return assetGroupRelationDao.insert(assetGroupRelation);
+        Integer result = assetGroupRelationDao.insert(assetGroupRelation);
+        if (!Objects.equals(result, 0)) {
+            // 写入业务日志
+            LogHandle.log(assetGroupRelation.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),  AssetEventEnum.ASSET_GROUP_RELATION_UPDATE.getStatus(),
+                ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}",
+                assetGroupRelation.toString());
+        }
+        return result;
     }
 
     @Override
     public Integer updateAssetGroupRelation(AssetGroupRelationRequest request) throws Exception {
         AssetGroupRelation assetGroupRelation = (AssetGroupRelation) BeanConvert.convert(request,
             AssetGroupRelation.class);
-        return assetGroupRelationDao.update(assetGroupRelation);
+        Integer result = assetGroupRelationDao.update(assetGroupRelation);
+        if (!Objects.equals(0, result)) {
+            // 写入业务日志
+            LogHandle.log(assetGroupRelation.toString(), AssetEventEnum.ASSET_GROUP_RELATION_UPDATE.getName(),  AssetEventEnum.ASSET_GROUP_RELATION_UPDATE.getStatus(),
+                    ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_UPDATE.getName() + " {}",
+                    assetGroupRelation.toString());
+        }
+        return result;
     }
 
     @Override
@@ -64,13 +87,15 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
     }
 
     @Override
-    public PageResult<AssetGroupRelationResponse> findPageAssetGroupRelation(AssetGroupRelationQuery query) throws Exception {
+    public PageResult<AssetGroupRelationResponse> findPageAssetGroupRelation(AssetGroupRelationQuery query)
+                                                                                                           throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetGroupRelation(query), query.getCurrentPage(),
             this.findListAssetGroupRelation(query));
     }
 
     @Override
-    public List<AssetGroupRelationResponse> findAssetDetailByAssetGroupId(AssetGroupRelationQuery query) throws Exception {
+    public List<AssetGroupRelationResponse> findAssetDetailByAssetGroupId(AssetGroupRelationQuery query)
+                                                                                                        throws Exception {
         AssetGroupRelationDetailQuery assetGroupRelationDetailQuery = (AssetGroupRelationDetailQuery) BeanConvert
             .convert(query, AssetGroupRelationDetailQuery.class);
         assetGroupRelationDetailQuery.setAssetGroupId(assetGroupRelationDetailQuery.getAssetGroupId());
@@ -79,9 +104,9 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
         List<AssetGroupRelationResponse> assetGroupRelationResponseList = BeanConvert.convert(assetGroupRelationList,
             AssetGroupRelationResponse.class);
         for (AssetGroupRelationResponse assetGroupRelationResponse : assetGroupRelationResponseList) {
-            List<AssetNetworkCardResponse> assetNetworkCardResponseList = BeanConvert.convert(
-                assetNetworkCardDao.findNetworkCardByAssetId(Integer.valueOf(assetGroupRelationResponse.getStringId())),
-                AssetNetworkCardResponse.class);
+            List<AssetNetworkCardResponse> assetNetworkCardResponseList = BeanConvert
+                .convert(assetNetworkCardDao.findNetworkCardByAssetId(Integer.valueOf(assetGroupRelationResponse
+                    .getStringId())), AssetNetworkCardResponse.class);
             assetGroupRelationResponse.setNetworkCardResponseList(assetNetworkCardResponseList);
         }
 
@@ -89,14 +114,15 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
     }
 
     @Override
-    public PageResult<AssetGroupRelationResponse> findPageAssetByAssetGroupId(AssetGroupRelationQuery query) throws Exception {
+    public PageResult<AssetGroupRelationResponse> findPageAssetByAssetGroupId(AssetGroupRelationQuery query)
+                                                                                                            throws Exception {
         return new PageResult<AssetGroupRelationResponse>(query.getPageSize(), this.findCountDetailByGroupId(query),
             query.getCurrentPage(), this.findAssetDetailByAssetGroupId(query));
     }
 
     @Override
     public Integer findCountDetailByGroupId(AssetGroupRelationQuery query) throws Exception {
-        return assetGroupRelationDao
-            .findCountDetailByGroupId((Integer) BeanConvert.convert(query.getAssetGroupId(), Integer.class));
+        return assetGroupRelationDao.findCountDetailByGroupId((Integer) BeanConvert.convert(query.getAssetGroupId(),
+            Integer.class));
     }
 }

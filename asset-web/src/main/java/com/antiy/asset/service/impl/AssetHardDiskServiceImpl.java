@@ -1,10 +1,16 @@
 package com.antiy.asset.service.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetHardDiskDao;
@@ -25,6 +31,7 @@ import com.antiy.common.base.PageResult;
  */
 @Service
 public class AssetHardDiskServiceImpl extends BaseServiceImpl<AssetHardDisk> implements IAssetHardDiskService {
+    private Logger logger = LogUtils.get(this.getClass());
 
     @Resource
     private AssetHardDiskDao                                   assetHardDiskDao;
@@ -34,12 +41,16 @@ public class AssetHardDiskServiceImpl extends BaseServiceImpl<AssetHardDisk> imp
     @Override
     public Integer saveAssetHardDisk(AssetHardDiskRequest request) throws Exception {
         AssetHardDisk assetHardDisk = requestConverter.convert(request, AssetHardDisk.class);
+        LogHandle.log(request, AssetEventEnum.ASSET_DISK_INSERT.getName(), AssetEventEnum.ASSET_DISK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_DISK_INSERT.getName() + " {}", request.toString());
         return assetHardDiskDao.insert(assetHardDisk);
     }
 
     @Override
     public Integer updateAssetHardDisk(AssetHardDiskRequest request) throws Exception {
         AssetHardDisk assetHardDisk = requestConverter.convert(request, AssetHardDisk.class);
+        LogHandle.log(request, AssetEventEnum.ASSET_DISK_INSERT.getName(), AssetEventEnum.ASSET_DISK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_DISK_INSERT.getName() + " {}", request.toString());
         return assetHardDiskDao.update(assetHardDisk);
     }
 
@@ -58,5 +69,11 @@ public class AssetHardDiskServiceImpl extends BaseServiceImpl<AssetHardDisk> imp
     public PageResult<AssetHardDiskResponse> findPageAssetHardDisk(AssetHardDiskQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetHardDisk(query), query.getCurrentPage(),
             this.findListAssetHardDisk(query));
+    }
+    @Override
+    public Integer deleteById(Serializable id) throws Exception {
+        LogHandle.log(id, AssetEventEnum.ASSET_DISK_DELETE.getName(), AssetEventEnum.ASSET_DISK_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_DISK_DELETE.getName() + " {}", id);
+        return super.deleteById(id);
     }
 }

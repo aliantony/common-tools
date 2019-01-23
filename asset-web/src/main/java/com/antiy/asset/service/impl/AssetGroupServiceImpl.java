@@ -6,7 +6,11 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.common.base.BaseConverter;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +29,8 @@ import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LoginUserUtil;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 资产组表 服务实现类 </p>
@@ -49,9 +55,15 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
         // assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
-        assetGroupDao.insert(assetGroup);
+        int result = assetGroupDao.insert(assetGroup);
         // return aesEncoder.decode(assetGroup.getId().toString(), LoginUserUtil.getLoginUser().getUsername());
         // TODO 解密id
+
+        if (!Objects.equals(0, result)) { // 写入业务日志
+            LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_INSERT.getName(), AssetEventEnum.ASSET_GROUP_INSERT.getStatus(),
+                ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}", assetGroup.toString());
+        }
         return assetGroup.getId().toString();
     }
 
@@ -60,7 +72,15 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
         Integer[] assetIdArr = DataTypeUtils.stringArrayToIntegerArray(request.getAssetIds());
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
-        assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
+
+        Integer delResult = assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
+        if (!Objects.equals(0, delResult)) {
+            // 写入业务日志
+            LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(), AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getStatus(),
+                    ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}",assetGroup.toString());
+        }
+
         for (Integer assetId : assetIdArr) {
             AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
             assetGroupRelation.setAssetGroupId(assetGroup.getId());
@@ -70,7 +90,15 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetGroupRelationList.add(assetGroupRelation);
         }
-        return assetGroupRelationDao.insertBatch(assetGroupRelationList);
+
+        Integer result= assetGroupRelationDao.insertBatch(assetGroupRelationList);
+        if (!Objects.equals(0, result)) {
+            // 写入业务日志
+            LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(),
+                    ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}",assetGroup.toString());
+        }
+        return result;
     }
 
     @Override
@@ -102,6 +130,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             AssetGroupResponse.class);
     }
 }
+
 @Component
 class SelectConvert extends BaseConverter<AssetGroup, SelectResponse> {
     @Override

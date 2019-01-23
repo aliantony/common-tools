@@ -16,7 +16,6 @@ import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
@@ -100,7 +99,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private static final Logger                       LOGGER = LogUtils.get(AssetServiceImpl.class);
 
     @Override
-    public Integer saveAsset(AssetOuterRequest request, ManualStartActivityRequest activityRequest) throws Exception {
+    public Integer saveAsset(AssetOuterRequest request) throws Exception {
 
         Integer num = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
@@ -258,13 +257,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return aid;
                 } catch (Exception e) {
-                    e.printStackTrace();
                     return 0;
                 }
             }
         });
-        //启动流程
-        ActionResponse actionResponse = activityClient.manualStartProcess (activityRequest);
+
+//        if (num != null && num > 0) {
+        // 启动流程
+//        ManualStartActivityRequest activityRequest = request.getActivityRequest ();
+//        activityRequest.setBusinessId (String.valueOf (num));
+//            ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
+//        }
 
 
         return num;
@@ -1442,7 +1445,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             //  流程
             // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
-
+            
             Map<String, Object> formData = new HashMap();
 //            formData.put("configBaselineUserId", configBaselineUserId);
             formData.put("discard", 0);

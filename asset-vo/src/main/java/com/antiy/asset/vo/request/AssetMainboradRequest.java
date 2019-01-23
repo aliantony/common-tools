@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -52,6 +53,11 @@ public class AssetMainboradRequest extends BasicRequest implements ObjectValidat
      */
     @ApiModelProperty("BIOS日期")
     private Long    biosDate;
+
+    /**
+     *  备注
+     */
+    private String memo;
 
     public String getId() {
         return id;
@@ -109,9 +115,30 @@ public class AssetMainboradRequest extends BasicRequest implements ObjectValidat
         this.biosDate = biosDate;
     }
 
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
     @Override
     public void validate() throws RequestParamValidateException {
 
+    }
+
+    @Override
+    public String toString() {
+        return "AssetMainborad{" +
+                ", assetId=" + assetId +
+                ", brand=" + brand +
+                ", model=" + model +
+                ", serial=" + serial +
+                ", biosVersion=" + biosVersion +
+                ", biosDate=" + biosDate +
+                ", memo=" + memo +
+                "}";
     }
 
 }

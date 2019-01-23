@@ -1,7 +1,6 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> 资产软件关系信息 </p>
@@ -22,7 +21,7 @@ public class AssetSoftwareRelation extends BaseEntity {
      */
     private Integer softwareId;
     /**
-     * 软件资产状态：1待登记，2不予登记，3待配置，4待验证，5待入网，6已入网，7待退役，8已退役
+     * 软件资产状态：1待登记2待分析3可安装4已退役5不予登记
      */
     private Integer softwareStatus;
     /**

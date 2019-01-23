@@ -102,7 +102,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                                                                                         .get(AssetSoftwareServiceImpl.class);
 
     @Override
-    public Integer saveAssetSoftware(AssetSoftwareRequest request, ManualStartActivityRequest activityRequest)
+    public Integer saveAssetSoftware(AssetSoftwareRequest request)
                                                                                                               throws Exception {
         Integer num = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
@@ -119,7 +119,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // protocol.setAssetSoftId(sid);
                     // assetSoftwareLicenseDao.insert(license);
                     // assetPortProtocolDaoDao.insert(protocol);
-
+                    assetSoftware.setSoftwareStatus (AssetStatusEnum.ANALYZE.getCode ());
+                    assetSoftware.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
+                    assetSoftware.setGmtCreate (System.currentTimeMillis ());
+                    assetSoftware.setReportSource (2);
                     assetSoftwareDao.insert(assetSoftware);
                     Integer sid = assetSoftware.getId();
                     if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
@@ -129,6 +132,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                             assetSoftwareRelation.setSoftwareId(sid);
                             assetSoftwareRelation.setAssetId(Integer.parseInt(s));
                             assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+                            assetSoftwareRelation.setSoftwareStatus (AssetStatusEnum.ANALYZE.getCode ());
+                            assetSoftwareRelation.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
                             assetSoftwareRelationDao.insert(assetSoftwareRelation);
                         }
                     }
@@ -151,10 +156,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         });
 
         // 开启流程
-        if (num != null && num > 0) {
-            // 启动流程
-            ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
-        }
+//        if (num != null && num > 0) {
+          // 启动流程
+//        ManualStartActivityRequest activityRequest = request.getActivityRequest ();
+//        activityRequest.setBusinessId (String.valueOf (num));
+//            ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
+//        }
 
         return num;
 
