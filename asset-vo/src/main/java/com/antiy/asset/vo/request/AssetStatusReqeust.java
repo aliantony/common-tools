@@ -37,7 +37,7 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
 
     @ApiModelProperty(value = "资产变更流程信息")
     @Valid
-    ManualStartActivityRequest manualStartActivityRequest;
+    private ManualStartActivityRequest manualStartActivityRequest;
 
     /**
      * 同意/拒绝
