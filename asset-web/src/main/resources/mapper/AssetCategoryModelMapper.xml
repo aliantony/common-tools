@@ -327,10 +327,10 @@
                 and parent_id = #{parentId }
             </if>
             <if test=" status != null">
-                status = #{status },
+                status = #{status }
             </if>
             <if test=" status == null">
-                status = 1,
+                status = 1
             </if>
         </trim>
         <if test="pageSize !=-1">
