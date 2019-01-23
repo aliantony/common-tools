@@ -1,5 +1,7 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
 import javax.annotation.Resource;
 
 import com.antiy.asset.convert.SchemeRequestToSchemeConverter;
@@ -23,8 +25,6 @@ import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * @auther: zhangbing
@@ -77,7 +77,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         if (null != assetStatusReqeust.getActivityHandleRequest()) {
             ActionResponse actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
             // 如果流程引擎为空,直接返回错误信息
-            if (null == actionResponse || !actionResponse.isSuccess()) {
+            if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
         }
@@ -85,7 +86,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         if (null != assetStatusReqeust.getWorkOrderVO()) {
             ActionResponse actionResponse = workOrderClient.createWorkOrder(assetStatusReqeust.getWorkOrderVO());
             // 如果流程引擎为空,直接返回错误信息
-            if (null == actionResponse || !actionResponse.isSuccess()) {
+            if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
         }
@@ -102,15 +104,15 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     private AssetOperationRecord convertAssetOperationRecord(AssetStatusReqeust assetStatusReqeust) {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         if (assetStatusReqeust.getSoftware()) {
-            SoftwareFlowEnum softwareFlowEnum = EnumUtil.getByCode(SoftwareFlowEnum.class, assetStatusReqeust
-                .getAssetStatus().getCode());
-            assetOperationRecord.setContent(softwareFlowEnum != null ? softwareFlowEnum.getMsg()
-                : RespBasicCode.PARAMETER_ERROR.getResultCode());
+            SoftwareFlowEnum softwareFlowEnum = EnumUtil.getByCode(SoftwareFlowEnum.class,
+                assetStatusReqeust.getAssetStatus().getCode());
+            assetOperationRecord.setContent(
+                softwareFlowEnum != null ? softwareFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
         } else {
-            AssetFlowEnum assetFlowEnum = EnumUtil.getByCode(AssetFlowEnum.class, assetStatusReqeust.getAssetStatus()
-                .getCode());
-            assetOperationRecord.setContent(assetFlowEnum != null ? assetFlowEnum.getMsg()
-                : RespBasicCode.PARAMETER_ERROR.getResultCode());
+            AssetFlowEnum assetFlowEnum = EnumUtil.getByCode(AssetFlowEnum.class,
+                assetStatusReqeust.getAssetStatus().getCode());
+            assetOperationRecord.setContent(
+                assetFlowEnum != null ? assetFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
         }
 
         // TODO 获取用户密码失败，待与用户小组调试
