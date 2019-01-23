@@ -30,7 +30,7 @@ public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangePr
         // 软件表详情操作
         AssetSoftware assetSoftware = new AssetSoftware();
         //TODO 获取用户密码失败，待与用户小组调试
-//        assetSoftware.setId(DataTypeUtils.stringToInteger(aesEncoder.decode(assetStatusReqeust.getAssetId(),LoginUserUtil.getLoginUser().getPassword())));
+//        assetSoftware.setId(DataTypeUtils.stringToInteger(aesEncoder.decode(assetStatusReqeust.getAssetId(),LoginUserUtil.getLoginUser().getUsername())));
         assetSoftware.setId(3);
         assetSoftware.setGmtModified(System.currentTimeMillis());
         assetSoftware.setModifyUser(LoginUserUtil.getLoginUser().getId());

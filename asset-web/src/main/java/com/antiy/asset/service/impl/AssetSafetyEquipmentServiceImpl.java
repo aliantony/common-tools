@@ -43,7 +43,7 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
         assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
         assetSafetyEquipmentDao.insert(assetSafetyEquipment);
-        return aesEncoder.decode(assetSafetyEquipment.getId().toString(),LoginUserUtil.getLoginUser().getPassword());
+        return aesEncoder.decode(assetSafetyEquipment.getId().toString(),LoginUserUtil.getLoginUser().getUsername());
     }
 
     @Override

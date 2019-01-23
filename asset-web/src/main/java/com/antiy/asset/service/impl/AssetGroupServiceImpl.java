@@ -50,7 +50,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         // assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
         assetGroupDao.insert(assetGroup);
-        // return aesEncoder.decode(assetGroup.getId().toString(), LoginUserUtil.getLoginUser().getPassword());
+        // return aesEncoder.decode(assetGroup.getId().toString(), LoginUserUtil.getLoginUser().getUsername());
         // TODO 解密id
         return assetGroup.getId().toString();
     }
