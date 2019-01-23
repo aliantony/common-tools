@@ -4,7 +4,6 @@ import static com.antiy.biz.file.FileHelper.logger;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.convert.SchemeRequestToSchemeConverter;
 import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.AssetOperationRecord;
@@ -19,7 +18,9 @@ import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.SoftwareFlowEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
+import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
@@ -34,21 +35,21 @@ import com.antiy.common.utils.LoginUserUtil;
 public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStatusChangeProcessService {
 
     @Resource
-    private AssetOperationRecordDao        assetOperationRecordDao;
+    private AssetOperationRecordDao              assetOperationRecordDao;
 
     @Resource
-    private SchemeDao                      schemeDao;
+    private SchemeDao                            schemeDao;
     @Resource
-    private AesEncoder                     aesEncoder;
+    private AesEncoder                           aesEncoder;
 
     @Resource
-    private SchemeRequestToSchemeConverter schemeRequestToSchemeConverter;
+    private BaseConverter<SchemeRequest, Scheme> schemeRequestToSchemeConverter;
 
     @Resource
-    private ActivityClient                 activityClient;
+    private ActivityClient                       activityClient;
 
     @Resource
-    private WorkOrderClient                workOrderClient;
+    private WorkOrderClient                      workOrderClient;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
@@ -138,6 +139,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
         scheme.setPutintoUserId(assetStatusReqeust.getWorkOrderVO().getExecuteUserId());
         scheme.setPutintoUser(assetStatusReqeust.getWorkOrderVO().getExecuteUserName());
+        // TODO 资产ID解密
         scheme.setAssetId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
         return scheme;
     }

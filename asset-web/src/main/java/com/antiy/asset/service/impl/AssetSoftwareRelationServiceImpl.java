@@ -8,13 +8,13 @@ import javax.annotation.Resource;
 import com.antiy.asset.entity.AssetSoftwareRelationMapper;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.common.utils.LogUtils;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
@@ -23,6 +23,11 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.LoginUserUtil;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p> 资产软件关系信息 服务实现类 </p>

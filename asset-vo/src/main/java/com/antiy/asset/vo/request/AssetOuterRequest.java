@@ -150,4 +150,20 @@ public class AssetOuterRequest extends BasicRequest {
     public void setAssetSoftwareRelationList(List<AssetSoftwareRelationRequest> assetSoftwareRelationList) {
         this.assetSoftwareRelationList = assetSoftwareRelationList;
     }
+
+    @Override
+    public String toString() {
+        return "AssetOuterRequest{" +
+                "asset=" + asset +
+                ", mainboard=" + mainboard.toString() +
+                ", memory=" + memory.toString() +
+                ", hardDisk=" + hardDisk.toString() +
+                ", cpu=" + cpu.toString() +
+                ", networkCard=" + networkCard.toString() +
+                ", networkEquipment=" + networkEquipment.toString() +
+                ", safetyEquipment=" + safetyEquipment.toString() +
+                ", assetStorageMedium=" + assetStorageMedium.toString() +
+                ", assetSoftwareRelationList=" + assetSoftwareRelationList.toString() +
+                '}';
+    }
 }

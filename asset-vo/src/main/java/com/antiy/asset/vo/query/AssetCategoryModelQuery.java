@@ -51,6 +51,9 @@ public class AssetCategoryModelQuery extends ObjectQuery implements ObjectValida
     @Encode
     private String   parentId;
 
+    @ApiModelProperty("status")
+    private Integer  status;
+
     public String getId() {
         return id;
     }
@@ -93,6 +96,18 @@ public class AssetCategoryModelQuery extends ObjectQuery implements ObjectValida
 
     public void setAssetType(Integer assetType) {
         this.assetType = assetType;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Override

@@ -107,14 +107,14 @@
         <if test=" putintoUser != null">
             #{putintoUser },
         </if>
-        <if test=" orderLevel != null">
-            #{orderLevel },
-        </if>
         <if test=" fileInfo != null">
             #{fileInfo },
         </if>
         <if test=" extension != null">
             #{extension },
+        </if>
+        <if test=" orderLevel != null">
+            #{orderLevel },
         </if>
         <if test=" expecteStartTime != null">
             #{expecteStartTime },
@@ -215,14 +215,14 @@
         <if test=" putintoUser != null">
             and putinto_user = #{putintoUser }
         </if>
+        <if test=" extension != null">
+            and extension = #{extension }
+        </if>
         <if test="orderLevel != null">
             and order_level = #{orderLevel }
         </if>
         <if test=" fileInfo != null">
             and file_info = #{fileInfo }
-        </if>
-        <if test=" extension != null">
-            and extension = #{extension }
         </if>
         <if test=" expecteStartTime != null">
             and expecte_start_time = #{expecteStartTime }

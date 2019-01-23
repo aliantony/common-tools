@@ -82,6 +82,17 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
     }
 
     @Override
+    public String toString() {
+        return "AssetSafetyEquipmentRequest{" +
+                "id='" + id + '\'' +
+                ", assetId='" + assetId + '\'' +
+                ", featureLibrary='" + featureLibrary + '\'' +
+                ", strategy='" + strategy + '\'' +
+                ", memo='" + memo + '\'' +
+                '}';
+    }
+
+    @Override
     public void validate() throws RequestParamValidateException {
 
     }

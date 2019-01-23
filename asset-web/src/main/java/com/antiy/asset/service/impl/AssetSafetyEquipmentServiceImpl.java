@@ -4,6 +4,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetSafetyEquipmentDao;
@@ -36,13 +42,15 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
     private BaseConverter<AssetSafetyEquipmentRequest, AssetSafetyEquipment>  requestConverter;
     @Resource
     private BaseConverter<AssetSafetyEquipment, AssetSafetyEquipmentResponse> responseConverter;
-
+    private Logger logger = LogUtils.get(this.getClass());
     @Override
     public String saveAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception {
         AssetSafetyEquipment assetSafetyEquipment = requestConverter.convert(request, AssetSafetyEquipment.class);
         assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
         assetSafetyEquipmentDao.insert(assetSafetyEquipment);
+        LogHandle.log(request, AssetEventEnum.ASSET_INSERT.getName(), AssetEventEnum.ASSET_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", request.toString());
         return aesEncoder.decode(assetSafetyEquipment.getId().toString(),LoginUserUtil.getLoginUser().getUsername());
     }
 
@@ -50,6 +58,8 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
     public Integer updateAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception {
         AssetSafetyEquipment assetSafetyEquipment = requestConverter.convert(request, AssetSafetyEquipment.class);
         assetSafetyEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        LogHandle.log(request, AssetEventEnum.ASSET_MODIFY.getName(), AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", request.toString());
         return assetSafetyEquipmentDao.update(assetSafetyEquipment);
     }
 

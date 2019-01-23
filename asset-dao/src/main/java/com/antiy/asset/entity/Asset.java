@@ -111,7 +111,7 @@ public class Asset extends BaseEntity {
      */
     private Integer           assetSource;
     /**
-     * 0-不重要(not_major),1- 一般(general),3-重要(major),
+     * 资产重要程度：1核心2重要3一般
      */
     private Integer           importanceDegree;
     /**
@@ -137,7 +137,7 @@ public class Asset extends BaseEntity {
     /**
      * 是否入网,0表示未入网,1表示入网
      */
-    private Boolean           isInnet;
+    private Integer           isInnet;
     /**
      * 首次入网时间
      */
@@ -191,7 +191,6 @@ public class Asset extends BaseEntity {
      * 资产准入状态
      */
     private Integer           admittanceStatus;
-
 
     public String getIp() {
         return ip;
@@ -409,11 +408,11 @@ public class Asset extends BaseEntity {
         this.tags = tags;
     }
 
-    public Boolean getInnet() {
+    public Integer getInnet() {
         return isInnet;
     }
 
-    public void setInnet(Boolean isInnet) {
+    public void setInnet(Integer isInnet) {
         this.isInnet = isInnet;
     }
 

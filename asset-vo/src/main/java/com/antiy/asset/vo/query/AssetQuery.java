@@ -128,6 +128,18 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("资产准入状态")
     private Integer admittanceStatus;
+    /**
+     * 创建时间
+     */
+    private Long              gmtCreate;
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
 
     public String getSoftwareId() {
         return softwareId;
