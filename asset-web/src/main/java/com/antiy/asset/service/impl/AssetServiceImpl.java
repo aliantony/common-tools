@@ -107,7 +107,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 try {
 
                     AssetRequest requestAsset = request.getAsset();
-                    List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroup();
+                    List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
                     Asset asset = requestConverter.convert(requestAsset, Asset.class);
                     if (assetGroup != null && !assetGroup.isEmpty()) {
                         StringBuilder stringBuilder = new StringBuilder();
@@ -1090,7 +1090,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public Integer changeAsset(AssetOuterRequest assetOuterRequest, Integer configBaselineUserId) throws Exception {
+    public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息不能为空");
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
@@ -1098,10 +1098,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
-                    // 更改资产状态为待配置
-                    asset.setStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                    List<AssetGroupRequest> assetGroup = assetOuterRequest.getAsset().getAssetGroups();
+                    if (assetGroup != null && !assetGroup.isEmpty()) {
+                        StringBuilder stringBuilder = new StringBuilder();
+                        assetGroup.forEach(assetGroupRequest -> {
+                            asset.setAssetGroup(stringBuilder.append(assetGroupRequest.getName()).append(",")
+                                    .substring(0, stringBuilder.length() - 1));
+                        });
+                        asset.setAssetGroup(stringBuilder.toString());
+                    }
                     StringBuffer stringBuffer = new StringBuffer();
-                    List<AssetGroupRequest> assetGroups = assetOuterRequest.getAsset().getAssetGroup();
+                    List<AssetGroupRequest> assetGroups = assetOuterRequest.getAsset().getAssetGroups();
                     List<AssetGroupRelation> assetGroupRelations = Lists.newArrayList();
                     for (AssetGroupRequest assetGroupRequest : assetGroups) {
                         stringBuffer.append(assetGroupRequest.getName()).append(",");
@@ -1294,16 +1301,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return 0;
             }
         });
+        // 状态变更
+        /*AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeProcessImpl.class)
+                .changeStatus(assetStatusReqeust);*/
         // TODO 下发智甲
 
         // TODO 通知工作流
-        Map<String, Object> formData = new HashMap();
-        formData.put("configBaselineUserId", configBaselineUserId);
-        formData.put("discard", 0);
-        ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-        manualStartActivityRequest.setBusinessId(asset.getId().toString());
-        manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-        // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId());
+        ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
         manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
         activityClient.manualStartProcess(manualStartActivityRequest);
         return assetCount;
