@@ -4,6 +4,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetNetworkEquipmentDao;
@@ -33,12 +39,14 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
     private BaseConverter<AssetNetworkEquipmentRequest, AssetNetworkEquipment>  requestConverter;
     @Resource
     private BaseConverter<AssetNetworkEquipment, AssetNetworkEquipmentResponse> responseConverter;
-
+    private Logger logger = LogUtils.get(this.getClass());
     @Override
     public Integer saveAssetNetworkEquipment(AssetNetworkEquipmentRequest request) throws Exception {
         AssetNetworkEquipment assetNetworkEquipment = requestConverter.convert(request, AssetNetworkEquipment.class);
         assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetNetworkEquipmentDao.insert(assetNetworkEquipment);
+        LogHandle.log(request, AssetEventEnum.ASSET_INSERT.getName(),  AssetEventEnum.ASSET_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger,  AssetEventEnum.ASSET_INSERT.getName() + " {}", request.toString());
         return assetNetworkEquipment.getId();
     }
 
@@ -47,6 +55,8 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
         AssetNetworkEquipment assetNetworkEquipment = requestConverter.convert(request, AssetNetworkEquipment.class);
         assetNetworkEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetNetworkEquipment.setGmtModified(System.currentTimeMillis());
+        LogHandle.log(request, AssetEventEnum.ASSET_MODIFY.getName(), AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", request.toString());
         return assetNetworkEquipmentDao.update(assetNetworkEquipment);
     }
 
