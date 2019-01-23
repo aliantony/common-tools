@@ -78,7 +78,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         if (null != assetStatusReqeust.getActivityHandleRequest()) {
             ActionResponse actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
             // 如果流程引擎为空,直接返回错误信息
-            if (null == actionResponse || !actionResponse.isSuccess()) {
+            if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
         }
@@ -86,7 +87,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         if (null != assetStatusReqeust.getWorkOrderVO()) {
             ActionResponse actionResponse = workOrderClient.createWorkOrder(assetStatusReqeust.getWorkOrderVO());
             // 如果流程引擎为空,直接返回错误信息
-            if (null == actionResponse || !actionResponse.isSuccess()) {
+            if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
         }
