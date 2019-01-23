@@ -13,9 +13,11 @@ import com.antiy.asset.service.IAssetStatusChangeProcessService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
+import com.antiy.asset.vo.enums.SoftwareFlowEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LoginUserUtil;
 
 /**
@@ -26,19 +28,21 @@ import com.antiy.common.utils.LoginUserUtil;
 public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStatusChangeProcessService {
 
     @Resource
-    private AssetOperationRecordDao      assetOperationRecordDao;
+    private AssetOperationRecordDao        assetOperationRecordDao;
 
     @Resource
-    private SchemeDao                    schemeDao;
+    private SchemeDao                      schemeDao;
+    @Resource
+    private AesEncoder                     aesEncoder;
 
     @Resource
     private SchemeRequestToSchemeConverter schemeRequestToSchemeConverter;
 
     @Resource
-    private ActivityClient               activityClient;
+    private ActivityClient                 activityClient;
 
     @Resource
-    private WorkOrderClient              workOrderClient;
+    private WorkOrderClient                workOrderClient;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
@@ -74,15 +78,27 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
 
     /**
      * 转换流程
+     *
+     *
      * @param assetStatusReqeust
      * @return
      */
     private AssetOperationRecord convertAssetOperationRecord(AssetStatusReqeust assetStatusReqeust) {
-        AssetFlowEnum assetFlowEnum = EnumUtil.getByCode(AssetFlowEnum.class,
-            assetStatusReqeust.getAssetStatus().getCode());
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        assetOperationRecord.setTargetObjectId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
-        assetOperationRecord.setContent(assetFlowEnum != null ? assetFlowEnum.getMsg() : "参数异常");
+        if (assetStatusReqeust.getSoftware()) {
+            SoftwareFlowEnum softwareFlowEnum = EnumUtil.getByCode(SoftwareFlowEnum.class,
+                assetStatusReqeust.getAssetStatus().getCode());
+            assetOperationRecord.setContent(softwareFlowEnum != null ? softwareFlowEnum.getMsg() : "参数异常");
+        } else {
+            AssetFlowEnum assetFlowEnum = EnumUtil.getByCode(AssetFlowEnum.class,
+                assetStatusReqeust.getAssetStatus().getCode());
+            assetOperationRecord.setContent(assetFlowEnum != null ? assetFlowEnum.getMsg() : "参数异常");
+        }
+
+        //TODO 获取用户密码失败，待与用户小组调试
+//        assetOperationRecord.setTargetObjectId(DataTypeUtils.stringToInteger(
+//            aesEncoder.decode(assetStatusReqeust.getAssetId(), LoginUserUtil.getLoginUser().getPassword())));
+        assetOperationRecord.setTargetObjectId(3);
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getUsername());
