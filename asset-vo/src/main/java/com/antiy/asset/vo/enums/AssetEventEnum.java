@@ -70,7 +70,10 @@ public enum AssetEventEnum {
     ASSET_SCHEME_DELETE(62,"资产方案删除"),
     ASSET_SCHEME_UPDATE(63,"资产方案修改"),
     ASSET_SCHEME_INSERT(64,"资产方案新增"),
-    ASSET_OPERATION_RECORD_INSERT(65,"历史纪录新增"),
+    ASSET_STORAGE_INSERT(65,"存储介质新增"),
+    ASSET_STORAGE_UPDATE(66,"存储介质修改"),
+    ASSET_STORAGE_DELETE(67,"存储介质删除"),
+    ASSET_OPERATION_RECORD_INSERT(68,"历史纪录新增"),
     ;
 
 
