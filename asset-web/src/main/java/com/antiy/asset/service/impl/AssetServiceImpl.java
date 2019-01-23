@@ -258,7 +258,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return aid;
                 } catch (Exception e) {
-                    e.printStackTrace();
                     return 0;
                 }
             }
@@ -1442,7 +1441,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             //  流程
             // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
-
+            
             Map<String, Object> formData = new HashMap();
 //            formData.put("configBaselineUserId", configBaselineUserId);
             formData.put("discard", 0);

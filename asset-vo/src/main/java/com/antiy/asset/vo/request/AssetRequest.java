@@ -365,11 +365,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.id = id;
     }
 
-    @Override
-    public void validate() throws RequestParamValidateException {
-
-    }
-
     public List<AssetGroupRequest> getAssetGroup() {
         return assetGroup;
     }
@@ -400,5 +395,9 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
 
     public void setHouseLocation(String houseLocation) {
         this.houseLocation = houseLocation;
+    }
+    @Override
+    public void validate() throws RequestParamValidateException {
+
     }
 }

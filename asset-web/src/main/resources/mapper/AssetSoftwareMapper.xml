@@ -50,6 +50,7 @@
     </sql>
 
 
+
     <sql id="IF_Base_Column_List">
         <if test=" size != null">
             size,
@@ -96,6 +97,12 @@
         <if test=" port != null">
             port,
         </if>
+        <if test=" serviceLife != null">
+            service_life,
+        </if>
+        <if test=" buyDate != null">
+            buy_date,
+        </if>
         <if test=" language != null">
             language,
         </if>
@@ -105,11 +112,11 @@
         <if test=" publisher != null">
             publisher,
         </if>
-        <if test=" serial != null">
-            serial,
-        </if>
         <if test=" gmtCreate != null">
             gmt_create,
+        </if>
+        <if test=" memo != null">
+            memo,
         </if>
         <if test=" gmtModified != null">
             gmt_modified,
@@ -122,6 +129,9 @@
         </if>
         <if test=" status != null">
             status,
+        </if>
+        <if test=" serial != null">
+            serial,
         </if>
     </sql>
 
@@ -171,6 +181,12 @@
         <if test=" port != null">
             #{port },
         </if>
+        <if test=" serviceLife != null">
+            #{serviceLife },
+        </if>
+        <if test=" buyDate != null">
+            #{buyDate },
+        </if>
         <if test=" language != null">
             #{language },
         </if>
@@ -179,9 +195,6 @@
         </if>
         <if test=" publisher != null">
             #{publisher },
-        </if>
-        <if test=" serial != null">
-            #{serial},
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
@@ -200,6 +213,9 @@
         </if>
         <if test=" status != null">
             #{status },
+        </if>
+        <if test=" serial != null">
+            #{serial },
         </if>
     </sql>
 
@@ -249,6 +265,12 @@
         <if test=" port != null">
             port = #{port },
         </if>
+        <if test=" serviceLife != null">
+            service_life = #{serviceLife },
+        </if>
+        <if test=" buyDate != null">
+            buy_date = #{buyDate },
+        </if>
         <if test=" language != null">
             language = #{language },
         </if>
@@ -257,9 +279,6 @@
         </if>
         <if test=" publisher != null">
             publisher = #{publisher },
-        </if>
-        <if test=" serial != null">
-            serial=#{serial},
         </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
@@ -273,8 +292,14 @@
         <if test=" createUser != null">
             create_user = #{createUser },
         </if>
+        <if test=" modifyUser != null">
+            modify_user = #{modifyUser },
+        </if>
         <if test=" status != null">
             status = #{status },
+        </if>
+        <if test=" serial != null">
+            serial = #{serial },
         </if>
     </sql>
 
