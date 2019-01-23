@@ -45,8 +45,6 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     private BaseConverter<AssetDepartmentRequest, AssetDepartment>  requestConverter;
     @Resource
     private BaseConverter<AssetDepartment, AssetDepartmentResponse> responseConverter;
-    @Resource
-    private AssetUserDao                                            assetUserDao;
 
     @Override
     public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
@@ -176,6 +174,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
      * @return 影响的数据库行数
      * @throws Exception
      */
+    @Override
     public ActionResponse deleteAllById(Serializable id) throws Exception {
         List<AssetDepartment> list = recursionSearch((Integer) id);
         if (CollectionUtils.isNotEmpty(list)) {
