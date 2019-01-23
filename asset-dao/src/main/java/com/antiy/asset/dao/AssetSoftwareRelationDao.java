@@ -3,13 +3,11 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.antiy.asset.entity.AssetSoftwareRelationMapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.common.base.IBaseDao;
-import org.springframework.security.core.parameters.P;
 
 /**
  * <p> 资产软件关系信息 Mapper 接口 </p>
@@ -28,13 +26,6 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
     List<AssetSoftware> getSoftByAssetId(Integer assetId);
 
     /**
-     * 通过软件ID查询安装信息
-     *
-     * @param softwareId
-     * @return
-     */
-    List<AssetSoftwareRelationMapper> getInfoBySoftwareId(Integer softwareId);
-    /**
      * 通过软件ID统计资产数量
      *
      * @param id
@@ -47,7 +38,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      *
      * @return
      */
-    List<String> findOS() throws Exception;
+    List<String> findOS(@Param(value = "areaIds") List<Integer> areaIds) throws Exception;
 
     /**
      * 查询软件关联的硬件
@@ -63,7 +54,6 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer deleteSoftwareRelAsset(@Param("assetId") Integer assetId, @Param("softwareId") Integer softwareId);
-
 
     /**
      * 获取关联表的Id 列表
@@ -86,6 +76,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer insertBatch(List<AssetSoftwareRelation> assetSoftwareRelationList);
+
     /**
      * 批量修改软件状态
      *
