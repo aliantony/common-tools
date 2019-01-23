@@ -180,7 +180,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         for (AssetSoftwareRelationRequest computerReque : computerReques) {
                             AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                             assetSoftwareRelation.setAssetId(aid);
-                            assetSoftwareRelation.setSoftwareId(computerReque.getSoftwareId());
+                            assetSoftwareRelation.setSoftwareId(Integer.parseInt (computerReque.getSoftwareId()));
                             assetSoftwareRelation.setPort(computerReque.getPort());
                             assetSoftwareRelation.setProtocol(computerReque.getProtocol());
                             assetSoftwareRelation.setSoftwareStatus(3);
@@ -273,9 +273,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
                     assetOperationRecord.setGmtCreate(System.currentTimeMillis());
                     assetOperationRecordDao.insert(assetOperationRecord);
+                    LogHandle.log(asset, AssetEventEnum.ASSET_INSERT.getName(), AssetEventEnum.ASSET_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.info(logger, AssetEventEnum .ASSET_INSERT.getName() + " {}", asset.toString());
                     return aid;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                   logger.warn ("登记硬件资产失败");
+                   e.printStackTrace ();
                     return 0;
                 }
             }
