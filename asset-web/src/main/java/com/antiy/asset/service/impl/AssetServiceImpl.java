@@ -6,11 +6,9 @@ import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.*;
-import com.antiy.asset.util.ArrayTypeUtil;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.*;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetOperationTableEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -22,6 +20,7 @@ import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -97,7 +96,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetEntityConvert                        assetEntityConvert;
     @Resource
     private ActivityClient                            activityClient;
-    private static final Logger                       LOGGER = LogUtils.get(AssetServiceImpl.class);
+    private static final Logger                       logger = LogUtils.get(AssetServiceImpl.class);
 
     @Override
     public Integer saveAsset(AssetOuterRequest request) throws Exception {
@@ -134,6 +133,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetGroupRelation.setAssetId(asset.getId());
                             assetGroupRelation.setGmtCreate(System.currentTimeMillis());
                             assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            LogHandle.log(assetGroupRequest, AssetEventEnum.ASSET_GROUP_INSERT.getName(), AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.info(logger, AssetEventEnum .ASSET_GROUP_INSERT.getName() + " {}", assetGroupRequest.toString());
                             assetGroupRelationDao.insert(assetGroupRelation);
                         }
                     }
@@ -147,6 +148,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         safetyEquipment.setAssetId(aid);
                         safetyEquipment.setGmtCreate(System.currentTimeMillis());
                         safetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        LogHandle.log(safetyEquipmentRequest, AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getName(), AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum .ASSET_SAFE_DETAIL_INSERT.getName() + " {}", safetyEquipmentRequest.toString());
                         assetSafetyEquipmentDao.insert(safetyEquipment);
                     }
                     AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
@@ -156,6 +159,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetNetworkEquipment.setAssetId(aid);
                         assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
                         assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        LogHandle.log(networkEquipmentRequest, AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getName(), AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum .ASSET_NETWORK_DETAIL_INSERT.getName() + " {}", networkEquipmentRequest.toString());
                         assetNetworkEquipmentDao.insert(assetNetworkEquipment);
                     }
                     AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
@@ -165,6 +170,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         medium.setAssetId(aid);
                         medium.setGmtCreate(System.currentTimeMillis());
                         medium.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        LogHandle.log(assetStorageMedium, AssetEventEnum.ASSET_STORAGE_INSERT.getName(), AssetEventEnum.ASSET_STORAGE_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum .ASSET_STORAGE_INSERT.getName() + " {}", assetStorageMedium.toString());
                         assetStorageMediumDao.insert(medium);
                     }
                     // 软件关联表
@@ -200,6 +207,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetNetworkCard.setAssetId(aid);
                             assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                             assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            LogHandle.log(assetNetworkCard, AssetEventEnum.ASSET_NETWORK_INSERT.getName(), AssetEventEnum.ASSET_NETWORK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.info(logger, AssetEventEnum .ASSET_NETWORK_INSERT.getName() + " {}", assetNetworkCard.toString());
                             assetNetworkCardDao.insert(assetNetworkCard);
 
                         }
@@ -212,6 +221,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetMainborad.setAssetId(aid);
                             assetMainborad.setGmtCreate(System.currentTimeMillis());
                             assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            LogHandle.log(assetMainborad, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(), AssetEventEnum.ASSET_MAINBORAD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.info(logger, AssetEventEnum .ASSET_MAINBORAD_INSERT.getName() + " {}", assetMainborad.toString());
                             assetMainboradDao.insert(assetMainborad);
                         }
                     }
@@ -222,6 +233,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetMemory.setAssetId(aid);
                             assetMemory.setGmtCreate(System.currentTimeMillis());
                             assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            LogHandle.log(assetMemory, AssetEventEnum.ASSET_MEMORY_INSERT.getName(), AssetEventEnum.ASSET_MEMORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.info(logger, AssetEventEnum .ASSET_MEMORY_INSERT.getName() + " {}", assetMemory.toString());
                             assetMemoryDao.insert(assetMemory);
                         }
                     }
@@ -232,6 +245,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetCpu.setAssetId(aid);
                             assetCpu.setGmtCreate(System.currentTimeMillis());
                             assetCpu.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            LogHandle.log(assetCpu, AssetEventEnum.ASSET_CPU_INSERT.getName(), AssetEventEnum.ASSET_CPU_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.info(logger, AssetEventEnum .ASSET_CPU_INSERT.getName() + " {}", assetCpu.toString());
                             assetCpuDao.insert(assetCpu);
 
                         }
@@ -243,6 +258,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetHardDisk.setAssetId(aid);
                             assetHardDisk.setGmtCreate(System.currentTimeMillis());
                             assetHardDisk.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            LogHandle.log(assetHardDisk, AssetEventEnum.ASSET_DISK_INSERT.getName(), AssetEventEnum.ASSET_DISK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.info(logger, AssetEventEnum .ASSET_DISK_INSERT.getName() + " {}", assetHardDisk.toString());
                             assetHardDiskDao.insert(assetHardDisk);
                         }
                     }
@@ -258,10 +275,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return aid;
                 } catch (Exception e) {
+                    e.printStackTrace();
                     return 0;
                 }
             }
         });
+        //启动流程
+        //ActionResponse actionResponse = activityClient.manualStartProcess (activityRequest);
 
         if (num != null && num > 0) {
 //         启动流程
@@ -1094,8 +1114,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetGroupRelationDao.deleteByAssetId(asset.getId());
                     assetGroupRelationDao.insertBatch(assetGroupRelations);
                     asset.setAssetGroup(stringBuffer.toString());
+
                     // 1. 更新资产主表
+                    LogHandle.log(asset, AssetEventEnum.ASSET_MODIFY.getName(), AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.info(logger, AssetEventEnum .ASSET_MODIFY.getName() + " {}", asset.toString());
                     int count = assetDao.update(asset);
+
                     // 2. 更新cpu信息
                     List<AssetCpuRequest> assetCpuRequestList = assetOuterRequest.getCpu();
                     if (assetCpuRequestList != null && !assetCpuRequestList.isEmpty()) {
@@ -1107,11 +1131,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetCpu.setGmtModified(System.currentTimeMillis());
                         }
                         // 先删除再新增
+                        LogHandle.log(asset.getId(), AssetEventEnum.ASSET_CPU_DELETE.getName(), AssetEventEnum.ASSET_CPU_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum .ASSET_CPU_DELETE.getName() + " {}", asset.getId().toString());
                         assetCpuDao.deleteByAssetId(asset.getId());
+
+                        LogHandle.log(assetCpuList, AssetEventEnum.ASSET_CPU_INSERT.getName(), AssetEventEnum.ASSET_CPU_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum .ASSET_CPU_INSERT.getName() + " {}", assetCpuList.toString());
                         assetCpuDao.insertBatch(assetCpuList);
                     }
                     // 3. 更新网卡信息
                     // 先删除再新增
+                    LogHandle.log(asset.getId(), AssetEventEnum.ASSET_NETWORK_DELETE.getName(), AssetEventEnum.ASSET_NETWORK_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.info(logger, AssetEventEnum .ASSET_NETWORK_DELETE.getName() + " {}", asset.getId().toString());
                     assetNetworkCardDao.deleteByAssetId(asset.getId());
                     List<AssetNetworkCardRequest> assetNetworkCardRequestList = assetOuterRequest.getNetworkCard();
                     if (assetNetworkCardRequestList != null && !assetNetworkCardRequestList.isEmpty()) {
@@ -1123,10 +1154,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             // assetNetworkCard.setModifyUser(LoginUserUtil.getLoginUser().getId());
                             assetNetworkCard.setGmtModified(System.currentTimeMillis());
                         }
+                        LogHandle.log(assetNetworkCardList, AssetEventEnum.ASSET_NETWORK_INSERT.getName(), AssetEventEnum.ASSET_NETWORK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum .ASSET_NETWORK_INSERT.getName() + " {}", assetNetworkCardList.toString());
                         assetNetworkCardDao.insertBatch(assetNetworkCardList);
                     }
                     // 4. 更新主板信息
                     // 先删除再新增
+                    LogHandle.log(asset.getId(), AssetEventEnum.ASSET_MAINBORAD_DELETE.getName(), AssetEventEnum.ASSET_MAINBORAD_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.info(logger, AssetEventEnum .ASSET_MAINBORAD_DELETE.getName() + " {}", asset.getId().toString());
                     assetMainboradDao.deleteByAssetId(asset.getId());
                     List<AssetMainboradRequest> assetMainboradRequest = assetOuterRequest.getMainboard();
                     if (assetNetworkCardRequestList != null && !assetMainboradRequest.isEmpty()) {
@@ -1137,11 +1172,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             // mainborad.setModifyUser(LoginUserUtil.getLoginUser().getId());
                             mainborad.setGmtModified(System.currentTimeMillis());
                         }
+                        LogHandle.log(assetMainborad, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(), AssetEventEnum.ASSET_MAINBORAD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum .ASSET_MAINBORAD_INSERT.getName() + " {}", assetMainborad.toString());
                         assetMainboradDao.insertBatch(assetMainborad);
                     }
                     // 5. 更新内存信息
                     List<AssetMemoryRequest> assetMemoryRequestList = assetOuterRequest.getMemory();
                     // 先删除再新增
+                    LogHandle.log(asset.getId(), AssetEventEnum.ASSET_MEMORY_DELETE.getName(), AssetEventEnum.ASSET_MEMORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.info(logger, AssetEventEnum .ASSET_MEMORY_DELETE.getName() + " {}", asset.getId().toString());
                     assetMemoryDao.deleteByAssetId(asset.getId());
                     if (assetMemoryRequestList != null && !assetMemoryRequestList.isEmpty()) {
                         List<AssetMemory> assetMemoryList = BeanConvert.convert(assetMemoryRequestList,
@@ -1152,10 +1191,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             // asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                             assetMemory.setGmtModified(System.currentTimeMillis());
                         }
+                        LogHandle.log(assetMemoryList, AssetEventEnum.ASSET_MEMORY_INSERT.getName(), AssetEventEnum.ASSET_MEMORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum .ASSET_MEMORY_INSERT.getName() + " {}", assetMemoryList.toString());
                         assetMemoryDao.insertBatch(assetMemoryList);
                     }
                     // 6. 更新硬盘信息
                     // 先删除再新增
+                    LogHandle.log(asset.getId(), AssetEventEnum.ASSET_DISK_DELETE.getName(), AssetEventEnum.ASSET_DISK_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.info(logger, AssetEventEnum .ASSET_DISK_DELETE.getName() + " {}", asset.getId().toString());
                     assetHardDiskDao.deleteByAssetId(asset.getId());
                     List<AssetHardDiskRequest> assetHardDiskRequestList = assetOuterRequest.getHardDisk();
                     if (assetHardDiskRequestList != null && !assetHardDiskRequestList.isEmpty()) {
@@ -1168,9 +1211,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             // assetHardDisk.setModifyUser(LoginUserUtil.getLoginUser().getId());
                             assetHardDisk.setGmtModified(System.currentTimeMillis());
                         }
+                        LogHandle.log(assetHardDiskList, AssetEventEnum.ASSET_DISK_INSERT.getName(), AssetEventEnum.ASSET_DISK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum .ASSET_DISK_INSERT.getName() + " {}", assetHardDiskList.toString());
                         assetHardDiskDao.insertBacth(assetHardDiskList);
                     }
                     // 7. 更新网络设备信息
+                    LogHandle.log(asset.getId(), AssetEventEnum.ASSET_NETWORK_DETAIL_DELETE.getName(), AssetEventEnum.ASSET_NETWORK_DETAIL_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.info(logger, AssetEventEnum .ASSET_NETWORK_DETAIL_DELETE.getName() + " {}", asset.getId().toString());
                     AssetNetworkEquipmentRequest networkEquipment = assetOuterRequest.getNetworkEquipment();
                     if (networkEquipment != null && StringUtils.isNotBlank(networkEquipment.getId())) {
                         AssetNetworkEquipment assetNetworkEquipment = BeanConvert.convertBean(networkEquipment,
@@ -1178,6 +1225,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetNetworkEquipment.setAssetId(asset.getId());
                         // assetNetworkEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         assetNetworkEquipment.setGmtModified(System.currentTimeMillis());
+                        LogHandle.log(assetNetworkEquipment, AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getName(), AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum .ASSET_NETWORK_DETAIL_INSERT.getName() + " {}", assetNetworkEquipment.toString());
                         assetNetworkEquipmentDao.update(assetNetworkEquipment);
                     }
                     // 8. 更新安全设备信息
@@ -1188,6 +1237,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetSafetyEquipment.setAssetId(asset.getId());
                         // assetSafetyEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         assetSafetyEquipment.setGmtModified(System.currentTimeMillis());
+                        LogHandle.log(assetSafetyEquipment, AssetEventEnum.ASSET_SAFE_DETAIL_UPDATE.getName(), AssetEventEnum.ASSET_SAFE_DETAIL_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum .ASSET_SAFE_DETAIL_UPDATE.getName() + " {}", assetSafetyEquipment.toString());
                         assetSafetyEquipmentDao.update(assetSafetyEquipment);
                     }
                     // 9. 更新存储介质信息
@@ -1198,6 +1249,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetStorageMedium.setAssetId(asset.getId());
                         // assetStorageMedium.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         assetStorageMedium.setGmtModified(System.currentTimeMillis());
+                        LogHandle.log(assetStorageMedium, AssetEventEnum.ASSET_STORAGE_UPDATE.getName(), AssetEventEnum.ASSET_STORAGE_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum .ASSET_STORAGE_UPDATE.getName() + " {}", assetStorageMedium.toString());
                         assetStorageMediumDao.update(assetStorageMedium);
                     }
                     // 10. 更新资产软件关系信息
@@ -1236,7 +1289,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return count;
                 } catch (Exception e) {
-                    LOGGER.error("修改资产失败", e);
+                    logger.error("修改资产失败", e);
                 }
                 return 0;
             }
@@ -1447,7 +1500,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             //  流程
             // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
-            
+
             Map<String, Object> formData = new HashMap();
 //            formData.put("configBaselineUserId", configBaselineUserId);
             formData.put("discard", 0);

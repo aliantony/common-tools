@@ -150,6 +150,18 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("资产准入状态:待设置，2已允许，3已禁止")
     private Integer                  admittanceStatus;
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("首次发现时间")
+    private Long              gmtCreate;
+
+    /**
+     * 首次入网时间
+     */
+    @ApiModelProperty("首次入网时间")
+    private Long              firstEnterNett;
+
 
     public Integer getAdmittanceStatus() {
         return admittanceStatus;
@@ -365,5 +377,21 @@ public class AssetResponse extends BaseResponse {
 
     public void setAssetGroups(List<AssetGroupResponse> assetGroups) {
         this.assetGroups = assetGroups;
+    }
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Long getFirstEnterNett() {
+        return firstEnterNett;
+    }
+
+    public void setFirstEnterNett(Long firstEnterNett) {
+        this.firstEnterNett = firstEnterNett;
     }
 }
