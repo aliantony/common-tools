@@ -1889,7 +1889,7 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
     @Override
     protected void convert(AssetResponse asset, AssetEntity assetEntity) {
         if (Objects.nonNull(asset.getInnet())) {
-            assetEntity.setIsInnet(asset.getInnet() ? "已入网" : "未入网");
+            assetEntity.setIsInnet(asset.getInnet() == 1? "已入网" : "未入网");
         }
 
         if (Objects.nonNull(asset.getAssetStatus())) {

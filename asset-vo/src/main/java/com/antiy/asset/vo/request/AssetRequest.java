@@ -155,7 +155,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 是否入网,0表示未入网,1表示入网
      */
     @ApiModelProperty("是否入网,0表示未入网,1表示入网")
-    private Boolean                 isInnet;
+    private Integer                 isInnet;
     /**
      * 使用到期时间
      */
@@ -331,12 +331,12 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.tags = tags;
     }
 
-    public Boolean getInnet() {
+    public Integer getIsInnet() {
         return isInnet;
     }
 
-    public void setInnet(Boolean innet) {
-        isInnet = innet;
+    public void setIsInnet(Integer isInnet) {
+        this.isInnet = isInnet;
     }
 
     public Long getServiceLife() {
