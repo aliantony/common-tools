@@ -44,11 +44,11 @@ public class AssetGroup extends BaseEntity {
     /**
      * 创建人
      */
-    private String           createUser;
+    private Integer           createUser;
     /**
      * 修改人
      */
-    private String           modifyUser;
+    private Integer           modifyUser;
     /**
      * 状态,1未删除,0已删除
      */
@@ -110,19 +110,19 @@ public class AssetGroup extends BaseEntity {
         this.memo = memo;
     }
 
-    public String getCreateUser() {
+    public Integer getCreateUser() {
         return createUser;
     }
 
-    public void setCreateUser(String createUser) {
+    public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
     }
 
-    public String getModifyUser() {
+    public Integer getModifyUser() {
         return modifyUser;
     }
 
-    public void setModifyUser(String modifyUser) {
+    public void setModifyUser(Integer modifyUser) {
         this.modifyUser = modifyUser;
     }
 

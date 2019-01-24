@@ -62,8 +62,7 @@ public class AssetDepartmentQuery extends ObjectQuery implements ObjectValidator
      * 修改人
      */
     @ApiModelProperty("修改人")
-    @Encode
-    private String modifyUser;
+    private Integer modifyUser;
     /**
      * 状态,1未删除,0已删除
      */
@@ -142,11 +141,11 @@ public class AssetDepartmentQuery extends ObjectQuery implements ObjectValidator
         this.createUser = createUser;
     }
 
-    public String getModifyUser() {
+    public Integer getModifyUser() {
         return modifyUser;
     }
 
-    public void setModifyUser(String modifyUser) {
+    public void setModifyUser(Integer modifyUser) {
         this.modifyUser = modifyUser;
     }
 
