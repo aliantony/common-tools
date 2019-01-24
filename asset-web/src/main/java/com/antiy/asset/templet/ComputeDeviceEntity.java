@@ -109,7 +109,7 @@ public class ComputeDeviceEntity {
     /**
      * memo
      */
-    @ExcelField(value = "description", align = 1, title = "描述", isDate = true)
+    @ExcelField(value = "description", align = 1, title = "描述")
     private String  description;
     /**
      * 内存数量
