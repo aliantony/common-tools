@@ -25,7 +25,6 @@ import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -100,40 +99,42 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         .get(AssetSoftwareServiceImpl.class);
 
     @Override
-    public Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
+    public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
         Integer num = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
                     AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
-                    // AssetSoftwareLicense license = new BaseConverter<AssetSoftwareLicenseRequest,
-                    // AssetSoftwareLicense>().convert(
-                    // request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
-                    // AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest,
-                    // AssetPortProtocol>().convert(
-                    // request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
-                    // license.setSoftwareId(sid);
-                    // protocol.setAssetSoftId(sid);
-                    // assetSoftwareLicenseDao.insert(license);
-                    // assetPortProtocolDaoDao.insert(protocol);
+
+
+                    AssetSoftwareLicense license = BeanConvert.convertBean (request.getSoftwareLicenseRequest (), AssetSoftwareLicense.class);
+
+
                     assetSoftware.setSoftwareStatus(AssetStatusEnum.ANALYZE.getCode());
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
                     assetSoftware.setReportSource(2);
                     assetSoftwareDao.insert(assetSoftware);
-                    String sid = assetSoftware.getStringId();
-                    if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
-                        String[] assetIds = request.getAssetIds();
-                        for (String s : assetIds) {
-                            AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-                            assetSoftwareRelation.setSoftwareId(sid);
-                            assetSoftwareRelation.setAssetId(s);
-                            assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
-                            assetSoftwareRelation.setSoftwareStatus(AssetStatusEnum.ANALYZE.getCode());
-                            assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                            assetSoftwareRelationDao.insert(assetSoftwareRelation);
-                        }
-                    }
+                    license.setSoftwareId(assetSoftware.getId ());
+                    license.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    license.setGmtCreate(System.currentTimeMillis());
+                    license.setExpiryDate (assetSoftware.getServiceLife ());
+                    license.setBuyDate (assetSoftware.getBuyDate ());
+                    assetSoftwareLicenseDao.insert(license);
+
+                    String sid = String.valueOf (assetSoftware.getId ());
+//                    if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
+//                        String[] assetIds = request.getAssetIds();
+//                        for (String s : assetIds) {
+//                            AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+//                            assetSoftwareRelation.setSoftwareId(sid);
+//                            assetSoftwareRelation.setAssetId(s);
+//                            assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+//                            assetSoftwareRelation.setSoftwareStatus(AssetStatusEnum.ANALYZE.getCode());
+//                            assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+//                            assetSoftwareRelationDao.insert(assetSoftwareRelation);
+//                        }
+//                    }
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(sid);
@@ -163,11 +164,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
             ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
             if (null==actionResponse||! RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())){
-                throw  new BusinessException ("软件资产登记流程失败",new Throwable ());
+
             }
         }
 
-        return num;
+        return ActionResponse.success (num);
 
     }
 

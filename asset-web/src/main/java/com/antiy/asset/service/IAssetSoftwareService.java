@@ -8,6 +8,7 @@ import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +31,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @param request
      * @return
      */
-    Integer saveAssetSoftware(AssetSoftwareRequest request) throws Exception;
+    ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception;
 
     /**
      * 批量保存

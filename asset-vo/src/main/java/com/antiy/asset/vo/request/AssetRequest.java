@@ -1,16 +1,14 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -108,6 +106,11 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("物理位置")
     private String                  location;
+    /**
+     * 安装方式
+     */
+    @ApiModelProperty("安装方式1人工2自动")
+    private Integer                  installType;
 
     /**
      * 固件版本
@@ -408,6 +411,15 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
 
     }
 
+    public Integer getInstallType() {
+        return installType;
+    }
+
+    public void setInstallType(Integer installType) {
+        this.installType = installType;
+    }
+
+
     @Override
     public String toString() {
         return "AssetRequest{" +
@@ -427,6 +439,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
                 ", operationSystem='" + operationSystem + '\'' +
                 ", systemBit=" + systemBit +
                 ", location='" + location + '\'' +
+                ", installType=" + installType +
                 ", firmwareVersion='" + firmwareVersion + '\'' +
                 ", uuid='" + uuid + '\'' +
                 ", responsibleUserId='" + responsibleUserId + '\'' +

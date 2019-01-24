@@ -406,7 +406,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
                 ", releaseTime=" + releaseTime +
                 ", publisher='" + publisher + '\'' +
                 ", memo='" + memo + '\'' +
-                ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\'' +
+                ", assetSoftwareRelationId='" + "assetSoftwareRelationId" + '\'' +
                 ", request=" + request +
                 '}';
     }
