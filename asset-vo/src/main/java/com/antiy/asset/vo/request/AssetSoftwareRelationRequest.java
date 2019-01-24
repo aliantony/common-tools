@@ -61,13 +61,13 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
      * 安装方式1人工2自动
      */
     @ApiModelProperty("安装方式")
-    @NotNull
+//    @NotNull
     private Integer installType;
     /**
      * 安装状态0失败、1成功，2安装中
      */
     @ApiModelProperty("安装方式")
-    @NotNull
+//    @NotNull
     private Integer installStatus;
     /**
      * 安装时间

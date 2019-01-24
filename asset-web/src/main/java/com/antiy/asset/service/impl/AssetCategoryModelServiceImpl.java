@@ -2,31 +2,24 @@ package com.antiy.asset.service.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Resource;
 
 import com.antiy.asset.convert.CategoryRequestConvert;
-import com.antiy.asset.convert.NodeConverter;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.util.NodeUtilsConverter;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
-import com.antiy.biz.entity.ErrorMessage;
 import com.antiy.common.base.*;
 import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.hadoop.util.hash.Hash;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -104,7 +97,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      */
     private void setParentType(AssetCategoryModel assetCategoryModel) throws Exception {
         String parentId = assetCategoryModel.getParentId();
-        AssetCategoryModel parent = assetCategoryModelDao.getById(parentId);
+        AssetCategoryModel parent = assetCategoryModelDao.getById(Integer.parseInt(parentId));
         BusinessExceptionUtils.isNull(parent, "父类型不存在");
         assetCategoryModel.setAssetType(parent.getAssetType());
     }
@@ -186,7 +179,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
         query.setPageSize(-1);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
-        NodeConverter nodeConverter = new NodeConverter();
+        NodeUtilsConverter nodeConverter = new NodeUtilsConverter();
         List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(
             assetCategoryModels, AssetCategoryModelNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
@@ -199,9 +192,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public ActionResponse deleteAllById(Serializable id) throws Exception {
         List<AssetCategoryModel> list = recursionSearch((Integer) id);
         AssetQuery assetQuery = new AssetQuery();
-        Integer[] ids = new Integer[list.size()];
+        String[] ids = new String[list.size()];
         for (int i = 0; i < list.size(); i++) {
-            ids[i] = list.get(i).getId();
+            ids[i] = Objects.toString(list.get(i).getId());
         }
         assetQuery.setCategoryModels(ids);
         Integer i = assetDao.findCountByCategoryModel(assetQuery);

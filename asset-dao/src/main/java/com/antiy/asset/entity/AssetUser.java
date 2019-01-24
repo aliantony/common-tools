@@ -26,6 +26,10 @@ public class AssetUser extends BaseEntity {
     @Encode
     private String  departmentId;
     /**
+     * 部门名
+     */
+    private String  departmentName;
+    /**
      * 电子邮箱
      */
     private String  email;
@@ -65,6 +69,14 @@ public class AssetUser extends BaseEntity {
      * 状态,1未删除,0已删除
      */
     private Integer status;
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
 
     public String getName() {
         return name;

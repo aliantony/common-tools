@@ -2,12 +2,13 @@ package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
-import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,7 +30,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @param request
      * @return
      */
-    Integer saveAsset(AssetOuterRequest request) throws Exception;
+    ActionResponse saveAsset(AssetOuterRequest request) throws Exception;
 
     /**
      * 修改
@@ -193,33 +194,33 @@ public interface IAssetService extends IBaseService<Asset> {
      * @param areaId
      * @return
      */
-    String importPc(MultipartFile file, String areaId) throws Exception;
+    String importPc(MultipartFile file, AssetImportRequest areaId) throws Exception;
     /**
      * 硬件导入网络设备
      * @param file
      * @param areaId
      * @return
      */
-    String importNet(MultipartFile file, String areaId) throws Exception;
+    String importNet(MultipartFile file, AssetImportRequest areaId) throws Exception;
     /**
      * 硬件导入安全设备
      * @param file
      * @param areaId
      * @return
      */
-    String importSecurity(MultipartFile file, String areaId) throws Exception;
+    String importSecurity(MultipartFile file, AssetImportRequest areaId) throws Exception;
     /**
      * 硬件导存储设备
      * @param file
      * @param areaId
      * @return
      */
-    String importStory(MultipartFile file, String areaId) throws Exception;
+    String importStory(MultipartFile file, AssetImportRequest areaId) throws Exception;
     /**
      * 硬件其他设备
      * @param file
      * @param areaId
      * @return
      */
-    String importOhters(MultipartFile file, String areaId) throws Exception;
+    String importOhters(MultipartFile file, AssetImportRequest areaId) throws Exception;
 }

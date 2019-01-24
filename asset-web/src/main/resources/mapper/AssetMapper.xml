@@ -7,29 +7,40 @@
         <result column="name" property="name"/>
         <result column="type" property="type"/>
     </resultMap>
+
+    <resultMap id="ManufacturerResultMap" type="java.util.HashMap">
+        <result property="key" column="manufacturer"/>
+        <result property="value" column="num"/>
+    </resultMap>
+    <resultMap id="StatusResultMap" type="java.util.HashMap">
+        <result property="key" column="asset_status"/>
+        <result property="value" column="num"/>
+    </resultMap>
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.Asset">
         <id column="id" property="id"/>
-        <result column="area_id" property="areaId"/>
+        <result column="asset_group" property="assetGroup"/>
         <result column="number" property="number"/>
         <result column="name" property="name"/>
-        <result column="asset_groups" property="assetGroups"/>
-        <result column="ip" property="ip"/>
-        <result column="mac" property="mac"/>
-        <result column="admittance_status" property="admittanceStatus"/>
-        <result column="serial" property="serial"/>
-        <result column="category_model" property="categoryModel"/>
         <result column="category_model_name" property="categoryModelName"/>
+        <result column="ethernet_port" property="ethernetPort"/>
+        <result column="serial_port" property="serialPort"/>
+        <result column="install_type" property="installType"/>
+        <result column="serial" property="serial"/>
+        <result column="area_id" property="areaId"/>
+        <result column="category_model" property="categoryModel"/>
         <result column="manufacturer" property="manufacturer"/>
         <result column="asset_status" property="assetStatus"/>
+        <result column="admittance_status" property="admittanceStatus"/>
         <result column="operation_system" property="operationSystem"/>
         <result column="system_bit" property="systemBit"/>
+        <result column="responsible_user_id" property="responsibleUserId"/>
         <result column="location" property="location"/>
         <result column="latitude" property="latitude"/>
         <result column="longitude" property="longitude"/>
+        <result column="house_location" property="houseLocation"/>
         <result column="firmware_version" property="firmwareVersion"/>
         <result column="uuid" property="uuid"/>
-        <result column="responsible_user_id" property="responsibleUserId"/>
         <result column="contact_tel" property="contactTel"/>
         <result column="email" property="email"/>
         <result column="asset_source" property="assetSource"/>
@@ -37,8 +48,8 @@
         <result column="describle" property="describle"/>
         <result column="parent_id" property="parentId"/>
         <result column="tags" property="tags"/>
-        <result column="is_innet" property="isInnet"/>
         <result column="first_enter_nett" property="firstEnterNett"/>
+        <result column="is_innet" property="isInnet"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
         <result column="warranty" property="warranty"/>
@@ -49,17 +60,9 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
     </resultMap>
-    <resultMap id="ManufacturerResultMap" type="java.util.HashMap">
-        <result property="key" column="manufacturer"/>
-        <result property="value" column="num"/>
-    </resultMap>
-    <resultMap id="StatusResultMap" type="java.util.HashMap">
-        <result property="key" column="asset_status"/>
-        <result property="value" column="num"/>
-    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, number,  name, serial, category_model as categoryModel, manufacturer, asset_status AS assetStatus, operation_system AS operationSystem, system_bit AS systemBit, location, latitude, longitude, firmware_version AS firmwareVersion, uuid, responsible_user_id AS responsibleUserId, contact_tel AS contactTel, email, asset_source AS assetSource, importance_degree AS importanceDegree, describle, parent_id AS parentId, tags, is_innet AS isInnet, first_enter_nett AS firstEnterNett, service_life AS serviceLife, buy_date AS buyDate, warranty, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser, modify_user AS modifyUser
+        id, asset_group, number, name, ethernet_port, serial_port, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, system_bit, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, contact_tel, email, asset_source, importance_degree, describle, parent_id, tags, first_enter_nett, is_innet, service_life, buy_date, warranty, gmt_create, gmt_modified, memo, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -77,6 +80,15 @@
         <if test=" name != null">
             name,
         </if>
+        <if test=" ethernetPort != null">
+            ethernet_port,
+        </if>
+        <if test=" serialPort != null">
+            serial_port,
+        </if>
+        <if test=" installType != null">
+            install_type,
+        </if>
         <if test=" serial != null">
             serial,
         </if>
@@ -92,11 +104,17 @@
         <if test=" assetStatus != null">
             asset_status,
         </if>
+        <if test=" admittanceStatus != null">
+            admittance_status,
+        </if>
         <if test=" operationSystem != null">
             operation_system,
         </if>
         <if test=" systemBit != null">
             system_bit,
+        </if>
+        <if test=" responsibleUserId != null">
+            responsible_user_id,
         </if>
         <if test=" location != null">
             location,
@@ -115,9 +133,6 @@
         </if>
         <if test=" uuid != null">
             uuid,
-        </if>
-        <if test=" responsibleUserId != null">
-            responsible_user_id,
         </if>
         <if test=" contactTel != null">
             contact_tel,
@@ -175,7 +190,6 @@
         </if>
     </sql>
 
-
     <sql id="IF_Value_Column_List">
         <if test=" assetGroup != null">
             #{assetGroup },
@@ -185,6 +199,15 @@
         </if>
         <if test=" name != null">
             #{name },
+        </if>
+        <if test=" ethernetPort != null">
+            #{ethernetPort },
+        </if>
+        <if test=" serialPort != null">
+            #{serialPort },
+        </if>
+        <if test=" installType != null">
+            #{installType },
         </if>
         <if test=" serial != null">
             #{serial },
@@ -201,11 +224,17 @@
         <if test=" assetStatus != null">
             #{assetStatus },
         </if>
+        <if test=" admittanceStatus != null">
+            #{admittanceStatus },
+        </if>
         <if test=" operationSystem != null">
             #{operationSystem },
         </if>
         <if test=" systemBit != null">
             #{systemBit },
+        </if>
+        <if test=" responsibleUserId != null">
+            #{responsibleUserId },
         </if>
         <if test=" location != null">
             #{location },
@@ -224,9 +253,6 @@
         </if>
         <if test=" uuid != null">
             #{uuid },
-        </if>
-        <if test=" responsibleUserId != null">
-            #{responsibleUserId },
         </if>
         <if test=" contactTel != null">
             #{contactTel },
@@ -285,9 +311,6 @@
     </sql>
 
     <sql id="Set_Column_List">
-        <if test=" admittanceStatus != null">
-            admittance_status = #{admittanceStatus},
-        </if>
         <if test=" assetGroup != null">
             asset_group = #{assetGroup },
         </if>
@@ -296,6 +319,15 @@
         </if>
         <if test=" name != null">
             name = #{name },
+        </if>
+        <if test=" ethernetPort != null">
+            ethernet_port = #{ethernetPort },
+        </if>
+        <if test=" serialPort != null">
+            serial_port = #{serialPort },
+        </if>
+        <if test=" installType != null">
+            install_type = #{installType },
         </if>
         <if test=" serial != null">
             serial = #{serial },
@@ -312,11 +344,17 @@
         <if test=" assetStatus != null">
             asset_status = #{assetStatus },
         </if>
+        <if test=" admittanceStatus != null">
+            admittance_status = #{admittanceStatus },
+        </if>
         <if test=" operationSystem != null">
             operation_system = #{operationSystem },
         </if>
         <if test=" systemBit != null">
             system_bit = #{systemBit },
+        </if>
+        <if test=" responsibleUserId != null">
+            responsible_user_id = #{responsibleUserId },
         </if>
         <if test=" location != null">
             location = #{location },
@@ -335,9 +373,6 @@
         </if>
         <if test=" uuid != null">
             uuid = #{uuid },
-        </if>
-        <if test=" responsibleUserId != null">
-            responsible_user_id = #{responsibleUserId },
         </if>
         <if test=" contactTel != null">
             contact_tel = #{contactTel },
@@ -637,6 +672,9 @@
         <if test=" admittanceStatus != null">
             and admittance_status = #{admittanceStatus}
         </if>
+        <if test=" number != null">
+            and number = #{number}
+        </if>
         <if test=" manufacturer != null">
             and manufacturer = #{manufacturer}
         </if>
@@ -839,7 +877,7 @@
 
     <select id="findListAsset" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select * from (SELECT
+        select * from (select
         a.id,
         a.area_id,
         a.asset_group,
@@ -871,15 +909,15 @@
         a. buy_date,
         a.warranty,
         a.gmt_create,
-        GROUP_CONCAT( b.ip_address ) as ip,
-        GROUP_CONCAT( b.mac_address ) as mac
-        FROM
+        group_concat( b.ip_address ) as ip,
+        group_concat( b.mac_address ) as mac
+        from
         asset a
-        LEFT JOIN asset_network_card b ON a.id = b.asset_id
+        left join asset_network_card b on a.id = b.asset_id
         left join asset_category_model c on a.category_model = c.id
         where a.status = 1
-        GROUP BY
-        a.id) asset
+        group by a.id
+        order by a.gmt_create desc) asset
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <include refid="Multiple_Query"></include>
         </trim>
@@ -914,5 +952,19 @@
             </foreach>
         </if>
         GROUP BY asset_status
+    </select>
+
+    <select id="queryAssetByIds" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+
+        select
+        *
+        from
+        asset
+        where
+         id in
+         <foreach collection="array" open="(" close=")" separator="," item="item" index="index">
+             #{item}
+         </foreach>
+        and status = 1
     </select>
 </mapper>

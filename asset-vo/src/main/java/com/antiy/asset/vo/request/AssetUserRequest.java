@@ -38,6 +38,11 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
     @Encode
     private String departmentId;
     /**
+     * 部门名
+     */
+    @ApiModelProperty("部门名")
+    private String departmentName;
+    /**
      * 电子邮箱
      */
     @ApiModelProperty("电子邮箱")
@@ -62,6 +67,14 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("住址")
     private String address;
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
 
     public String getId() {
         return id;

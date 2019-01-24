@@ -79,7 +79,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
 
     @Override
     public List<AssetUserResponse> findListAssetUser(AssetUserQuery query) throws Exception {
-        List<AssetUser> assetUser = assetUserDao.findListAssetUser(query);
+        List<AssetUser> assetUser = assetUserDao.queryUserList(query);
         return convert(assetUser);
     }
 

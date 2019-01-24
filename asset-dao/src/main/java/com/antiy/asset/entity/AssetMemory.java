@@ -20,6 +20,10 @@ public class AssetMemory extends BaseEntity {
      */
     private Integer capacity;
     /**
+     * 内存类型：1未知，2-ddr2,3-ddr3,4-ddr4
+     */
+    private Integer transferType;
+    /**
      * 内存品牌
      */
     private String  brand;
@@ -224,5 +228,13 @@ public class AssetMemory extends BaseEntity {
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    public Integer getTransferType() {
+        return transferType;
+    }
+
+    public void setTransferType(Integer transferType) {
+        this.transferType = transferType;
     }
 }

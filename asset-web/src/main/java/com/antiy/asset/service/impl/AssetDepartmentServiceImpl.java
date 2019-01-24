@@ -7,9 +7,8 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.convert.NodeConverter;
-import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.NodeUtilsConverter;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.common.base.*;
 import com.antiy.common.enums.ModuleEnum;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetDepartmentDao;
-import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.AssetDepartment;
 import com.antiy.asset.service.IAssetDepartmentService;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
@@ -160,7 +158,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         query.setStatus(1);
         query.setPageSize(-1);
         List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
-        NodeConverter nodeConverter = new NodeConverter();
+        NodeUtilsConverter nodeConverter = new NodeUtilsConverter();
         List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(assetDepartment,
             AssetDepartmentNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
