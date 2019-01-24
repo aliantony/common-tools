@@ -30,6 +30,11 @@ public class AssetUserResponse extends BaseResponse {
     @Encode
     private String  departmentId;
     /**
+     * 部门名
+     */
+    @ApiModelProperty("部门名")
+    private String departmentName;
+    /**
      * 电子邮箱
      */
     @ApiModelProperty("电子邮箱")
@@ -79,6 +84,14 @@ public class AssetUserResponse extends BaseResponse {
      */
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
 
     public String getName() {
         return name;

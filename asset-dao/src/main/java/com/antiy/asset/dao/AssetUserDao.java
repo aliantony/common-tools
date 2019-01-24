@@ -28,4 +28,6 @@ public interface AssetUserDao extends IBaseDao<AssetUser> {
     Integer findListCount(AssetUserQuery objectQuery) throws Exception;
 
     void insertBatch(List<AssetUser> assetUserList);
+
+    List<AssetUser> queryUserList(AssetUserQuery query);
 }

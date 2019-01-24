@@ -337,4 +337,17 @@
             )
         </foreach>
     </insert>
+
+    <select id="queryUserList" resultType="com.antiy.asset.entity.AssetUser">
+        select a.id, a.name, a.department_id AS departmentId,
+        b.name as departmentName,
+        a.email, a.qq, a.weixin, a.mobile, a.address, a.create_user AS createUser, a.modify_user AS modifyUser,
+        a.gmt_create AS gmtCreate, a.gmt_modified AS gmtModified, a.status,a.memo
+        from asset_user a left join asset_department b on a.department_id = b.id
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <include refid="Where_Column_List"></include>
+            and a.status = 1
+        </trim>
+        <include refid="Page_List"></include>
+    </select>
 </mapper>
