@@ -14,7 +14,7 @@ public class AssetNetworkCard extends BaseEntity {
     /**
      * 资产主键
      */
-    private Integer assetId;
+    private String  assetId;
     /**
      * 品牌
      */
@@ -80,11 +80,11 @@ public class AssetNetworkCard extends BaseEntity {
         this.networkAddress = networkAddress;
     }
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

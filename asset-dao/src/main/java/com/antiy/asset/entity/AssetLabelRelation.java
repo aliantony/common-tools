@@ -14,11 +14,11 @@ public class AssetLabelRelation extends BaseEntity {
     /**
      * 资产主键
      */
-    private Integer assetId;
+    private String  assetId;
     /**
      * 标签主键
      */
-    private Integer assetLabelId;
+    private String  assetLabelId;
     /**
      * 创建时间
      */
@@ -44,19 +44,19 @@ public class AssetLabelRelation extends BaseEntity {
      */
     private Integer status;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 
-    public Integer getAssetLabelId() {
+    public String getAssetLabelId() {
         return assetLabelId;
     }
 
-    public void setAssetLabelId(Integer assetLabelId) {
+    public void setAssetLabelId(String assetLabelId) {
         this.assetLabelId = assetLabelId;
     }
 

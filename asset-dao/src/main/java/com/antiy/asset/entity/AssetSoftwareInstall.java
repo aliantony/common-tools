@@ -1,26 +1,22 @@
 package com.antiy.asset.entity;
 
-import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 public class AssetSoftwareInstall {
     /**
      * 主键
      */
-    @ApiModelProperty("主键")
-    @Encode
+
     private String  id;
     /**
      * 资产ID
      */
-    @ApiModelProperty("资产ID")
-    @Encode
+
     private String  assetId;
     /**
      * 软件ID
      */
-    @ApiModelProperty("软件ID")
-    @Encode
+
     private String  softwareId;
     /**
      * 资产编号
@@ -79,18 +75,18 @@ public class AssetSoftwareInstall {
      * 责任人主键
      */
     @ApiModelProperty("责任人主键")
-    private Integer userId;
+    private String userId;
     /**
      * 责任人
      */
     @ApiModelProperty("责任人")
     private String  userName;
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -204,5 +200,26 @@ public class AssetSoftwareInstall {
 
     public void setInstallTime(Integer installTime) {
         this.installTime = installTime;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetSoftwareInstall{" +
+                "id='" + id + '\'' +
+                ", assetId='" + assetId + '\'' +
+                ", softwareId='" + softwareId + '\'' +
+                ", number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", ip='" + ip + '\'' +
+                ", mac='" + mac + '\'' +
+                ", serial='" + serial + '\'' +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", installType=" + installType +
+                ", installStatus=" + installStatus +
+                ", installTime=" + installTime +
+                ", userId='" + userId + '\'' +
+                ", userName='" + userName + '\'' +
+                '}';
     }
 }

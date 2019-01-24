@@ -74,4 +74,8 @@ public class AssetLableRequest extends BasicRequest implements ObjectValidator {
 
     }
 
+    @Override
+    public String toString() {
+        return "AssetLable{" + ", name=" + name + ", labelType=" + labelType + ", description=" + description + "}";
+    }
 }
