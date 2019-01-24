@@ -1,22 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -39,6 +22,21 @@ import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -1399,6 +1397,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
+            asset.setNumber (entity.getNumber ());
             asset.setName(entity.getName());
             asset.setManufacturer(entity.getManufacturer());
             asset.setFirmwareVersion(entity.getFirmwareVersion());
@@ -1598,6 +1597,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
+            asset.setNumber (networkDeviceEntity.getNumber ());
             asset.setName(networkDeviceEntity.getName());
             asset.setManufacturer(networkDeviceEntity.getManufacturer());
             asset.setFirmwareVersion(networkDeviceEntity.getFirmwareVersion());
@@ -1707,6 +1707,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
+            asset.setNumber (entity.getNumber ());
             asset.setName(entity.getName());
             asset.setManufacturer(entity.getManufacturer());
             asset.setFirmwareVersion(entity.getFirmwareVersion());
@@ -1802,6 +1803,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
+            asset.setNumber (entity.getNumber ());
             asset.setName(entity.getName());
             asset.setManufacturer(entity.getManufacturer());
             asset.setFirmwareVersion(entity.getFirmware());
@@ -1899,6 +1901,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
+            asset.setNumber (entity.getNumber ());
             asset.setName(entity.getName());
             asset.setManufacturer(entity.getManufacturer());
             asset.setSerial(entity.getSerial());
