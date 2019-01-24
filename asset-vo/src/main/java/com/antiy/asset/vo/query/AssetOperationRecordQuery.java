@@ -34,6 +34,21 @@ public class AssetOperationRecordQuery extends ObjectQuery {
     @ApiModelProperty(value = "资产类型")
     private AssetOperationTableEnum targetType;
 
+    /**
+     * 被操作对象状态
+     */
+    @NotNull(message = "被操作对象状态不能为空")
+    @ApiModelProperty(value = "被操作对象状态")
+    private Integer                 originStatus;
+
+    public Integer getOriginStatus() {
+        return originStatus;
+    }
+
+    public void setOriginStatus(Integer originStatus) {
+        this.originStatus = originStatus;
+    }
+
     public String getTargetObjectId() {
         return targetObjectId;
     }
