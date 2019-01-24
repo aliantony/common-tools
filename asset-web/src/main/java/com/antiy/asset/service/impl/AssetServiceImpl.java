@@ -1,5 +1,22 @@
 package com.antiy.asset.service.impl;
 
+import java.util.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -22,21 +39,6 @@ import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -1971,8 +1973,8 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
 
     @Override
     protected void convert(AssetResponse asset, AssetEntity assetEntity) {
-        if (Objects.nonNull(asset.getInnet())) {
-            assetEntity.setIsInnet(asset.getInnet() == 1? "已入网" : "未入网");
+        if (Objects.nonNull(asset.getIsInnet())) {
+            assetEntity.setIsInnet(asset.getIsInnet() == 1? "已入网" : "未入网");
         }
 
         if (Objects.nonNull(asset.getAssetStatus())) {

@@ -40,7 +40,7 @@ public class StorageDeviceEntity {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者",type = 1)
+    @ExcelField(value = "user", align = 1, title = "使用者")
     private String  user;
     /**
      * 联系电话
