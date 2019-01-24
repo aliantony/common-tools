@@ -391,10 +391,10 @@
             and report_source = #{assetSource }
         </if>
         <if test="  beginTime != null">
-            and release_time &gt;= #{beginTime }
+            and gmt_create &gt;= #{beginTime }
         </if>
         <if test=" endTime != null">
-            and release_time &lt;= #{endTime }
+            and gmt_create &lt;= #{endTime }
         </if>
 
     </sql>
@@ -480,9 +480,6 @@
             </if>
             and status = 1
         </trim>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
     </select>
 
     <select id="findQuery" resultMap="BaseResultMap"
