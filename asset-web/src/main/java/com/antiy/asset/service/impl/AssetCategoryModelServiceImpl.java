@@ -249,7 +249,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      */
     private void recursion(List<AssetCategoryModel> result, List<AssetCategoryModel> list, Integer id) {
         for (AssetCategoryModel assetCategoryModel : list) {
-            if (Objects.equals(assetCategoryModel.getParentId(), id)) {
+            if (Objects.equals(assetCategoryModel.getParentId(), Objects.toString(id))) {
                 result.add(assetCategoryModel);
                 recursion(result, list, assetCategoryModel.getId());
             }
