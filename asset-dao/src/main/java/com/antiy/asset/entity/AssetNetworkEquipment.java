@@ -11,100 +11,99 @@ import com.antiy.common.base.BaseEntity;
 
 public class AssetNetworkEquipment extends BaseEntity {
     /**
-     *  资产主键
+     * 资产主键
      */
-    private String assetId;
+    private Integer assetId;
     /**
-     *  接口数目
+     * 接口数目
      */
     private Integer interfaceSize;
     /**
-     *  是否无线:0-否,1-是
+     * 是否无线:0-否,1-是
      */
     private Integer isWireless;
     /**
-     *  端口数目
+     * 端口数目
      */
     private Integer portSize;
     /**
-     *  cpu版本
+     * cpu版本
      */
-    private String cpuVersion;
+    private String  cpuVersion;
     /**
-     *  cpu大小
+     * cpu大小
      */
     private Integer cpu;
     /**
-     *  ios
+     * ios
      */
-    private String ios;
+    private String  ios;
     /**
-     *  内网IP
+     * 内网IP
      */
-    private String innerIp;
+    private String  innerIp;
     /**
-     *  外网IP
+     * 外网IP
      */
-    private String outerIp;
+    private String  outerIp;
     /**
-     *  MAC地址
+     * MAC地址
      */
-    private String macAddress;
+    private String  macAddress;
     /**
-     *  子网掩码
+     * 子网掩码
      */
-    private String subnetMask;
+    private String  subnetMask;
     /**
-     *  预计带宽(M)
+     * 预计带宽(M)
      */
     private Integer expectBandwidth;
     /**
-     *  配置寄存器(GB)
+     * 配置寄存器(GB)
      */
     private Integer register;
     /**
-     *  DRAM大小
+     * DRAM大小
      */
-    private Float dramSize;
+    private Float   dramSize;
     /**
-     *  FLASH大小
+     * FLASH大小
      */
-    private Float flashSize;
+    private Float   flashSize;
     /**
-     *  NCRM大小
+     * NCRM大小
      */
-    private Float ncrmSize;
+    private Float   ncrmSize;
     /**
-     *  创建人
+     * 创建人
      */
     private Integer createUser;
     /**
-     *  修改人
+     * 修改人
      */
     private Integer modifyUser;
     /**
-     *  创建时间
+     * 创建时间
      */
-    private Long gmtCreate;
+    private Long    gmtCreate;
     /**
-     *  备注
+     * 备注
      */
-    private String memo;
+    private String  memo;
     /**
-     *  更新时间
+     * 更新时间
      */
-    private Long gmtModified;
+    private Long    gmtModified;
     /**
-     *  状态,0 未删除,1已删除
+     * 状态,0 未删除,1已删除
      */
     private Integer status;
 
-
-    public String getAssetId() {
+    public Integer getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(String assetId) {
+    public void setAssetId(Integer assetId) {
         this.assetId = assetId;
     }
 

@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
@@ -19,11 +20,13 @@ public class AssetLabelRelationRequest extends BasicRequest implements ObjectVal
      * 资产主键
      */
     @ApiModelProperty("资产主键")
+    @Encode
     private String  assetId;
     /**
      * 标签主键
      */
     @ApiModelProperty("标签主键")
+    @Encode
     private Integer assetLabelId;
 
     public String getAssetId() {
@@ -45,6 +48,11 @@ public class AssetLabelRelationRequest extends BasicRequest implements ObjectVal
     @Override
     public void validate() throws RequestParamValidateException {
 
+    }
+
+    @Override
+    public String toString() {
+        return "AssetLabelRelation{" + ", assetId=" + assetId + ", assetLabelId=" + assetLabelId + "}";
     }
 
 }

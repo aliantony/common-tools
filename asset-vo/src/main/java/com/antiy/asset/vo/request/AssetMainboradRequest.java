@@ -1,9 +1,9 @@
 package com.antiy.asset.vo.request;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
@@ -21,43 +21,53 @@ public class AssetMainboradRequest extends BasicRequest implements ObjectValidat
      * 主键
      */
     @ApiModelProperty("主键")
-    private String  id;
+    @Encode
+    private String id;
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer assetId;
+    @Encode
+    private String assetId;
     /**
      * 品牌
      */
     @ApiModelProperty("品牌")
     @NotBlank
-    private String  brand;
+    private String brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
-    private String  model;
+    private String model;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    private String  serial;
+    private String serial;
     /**
      * BIOS版本
      */
     @ApiModelProperty("BIOS版本")
-    private String  biosVersion;
+    private String biosVersion;
     /**
      * BIOS日期
      */
     @ApiModelProperty("BIOS日期")
-    private Long    biosDate;
+    private Long   biosDate;
 
     /**
-     *  备注
+     * 备注
      */
     private String memo;
+
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
 
     public String getId() {
         return id;
@@ -65,14 +75,6 @@ public class AssetMainboradRequest extends BasicRequest implements ObjectValidat
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Integer getAssetId() {
-        return assetId;
-    }
-
-    public void setAssetId(Integer assetId) {
-        this.assetId = assetId;
     }
 
     public String getBrand() {
@@ -130,15 +132,8 @@ public class AssetMainboradRequest extends BasicRequest implements ObjectValidat
 
     @Override
     public String toString() {
-        return "AssetMainborad{" +
-                ", assetId=" + assetId +
-                ", brand=" + brand +
-                ", model=" + model +
-                ", serial=" + serial +
-                ", biosVersion=" + biosVersion +
-                ", biosDate=" + biosDate +
-                ", memo=" + memo +
-                "}";
+        return "AssetMainborad{" + ", assetId=" + assetId + ", brand=" + brand + ", model=" + model + ", serial="
+               + serial + ", biosVersion=" + biosVersion + ", biosDate=" + biosDate + ", memo=" + memo + "}";
     }
 
 }

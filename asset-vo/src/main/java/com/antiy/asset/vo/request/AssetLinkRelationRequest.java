@@ -112,4 +112,11 @@ public class AssetLinkRelationRequest extends BasicRequest implements ObjectVali
 
     }
 
+    @Override
+    public String toString() {
+        return "AssetLinkRelation{" + ", name=" + name + ", linkType=" + linkType + ", headAsset=" + headAsset
+               + ", tailAsse=" + tailAsse + ", headType=" + headType + ", tailType=" + tailType + ", linkStatus="
+               + linkStatus + "}";
+    }
+
 }

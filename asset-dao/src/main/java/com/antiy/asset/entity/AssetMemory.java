@@ -14,7 +14,7 @@ public class AssetMemory extends BaseEntity {
     /**
      * 资产主键
      */
-    private Integer assetId;
+    private String  assetId;
     /**
      * 内存容量
      */
@@ -22,11 +22,11 @@ public class AssetMemory extends BaseEntity {
     /**
      * 内存品牌
      */
-    private String brand;
+    private String  brand;
     /**
      * 内存序列号
      */
-    private String serial;
+    private String  serial;
 
     public Double getFrequency() {
         return frequency;
@@ -39,7 +39,7 @@ public class AssetMemory extends BaseEntity {
     /**
      * 内存主频(MHz)
      */
-    private Double frequency;
+    private Double  frequency;
     /**
      * 插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM
      */
@@ -89,11 +89,11 @@ public class AssetMemory extends BaseEntity {
      */
     private Integer status;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 
@@ -217,7 +217,6 @@ public class AssetMemory extends BaseEntity {
     public void setSerial(String serial) {
         this.serial = serial;
     }
-
 
     public String getBrand() {
         return brand;

@@ -14,7 +14,7 @@ public class AssetMainborad extends BaseEntity {
     /**
      * 资产主键
      */
-    private Integer assetId;
+    private String  assetId;
     /**
      * 品牌
      */
@@ -60,11 +60,11 @@ public class AssetMainborad extends BaseEntity {
      */
     private Integer status;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 
