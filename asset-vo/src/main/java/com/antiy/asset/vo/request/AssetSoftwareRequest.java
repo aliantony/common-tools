@@ -156,9 +156,9 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     @ApiModelProperty(value = "备注")
     private String                      memo;
 
-    @ApiModelProperty(value = "硬件资产和软件资产关联表Id")
-    @Encode
-    private String                      assetSoftwareRelationId;
+//    @ApiModelProperty(value = "硬件资产和软件资产关联表Id")
+//    @Encode
+//    private String                      assetSoftwareRelationId;
 
     @ApiModelProperty(value = "流程处理")
     @NotNull(message = "处理流程不能为空")
@@ -173,13 +173,13 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.request = request;
     }
 
-    public String getAssetSoftwareRelationId() {
-        return assetSoftwareRelationId;
-    }
-
-    public void setAssetSoftwareRelationId(String assetSoftwareRelationId) {
-        this.assetSoftwareRelationId = assetSoftwareRelationId;
-    }
+//    public String getAssetSoftwareRelationId() {
+//        return assetSoftwareRelationId;
+//    }
+//
+//    public void setAssetSoftwareRelationId(String assetSoftwareRelationId) {
+//        this.assetSoftwareRelationId = assetSoftwareRelationId;
+//    }
 
     public AssetPortProtocolRequest getAssetPortProtocolRequest() {
         return assetPortProtocolRequest;
@@ -406,7 +406,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
                 ", releaseTime=" + releaseTime +
                 ", publisher='" + publisher + '\'' +
                 ", memo='" + memo + '\'' +
-                ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\'' +
+                ", assetSoftwareRelationId='" + "assetSoftwareRelationId" + '\'' +
                 ", request=" + request +
                 '}';
     }

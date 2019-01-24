@@ -107,6 +107,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 try {
 
                     AssetRequest requestAsset = request.getAsset();
+                    String number = requestAsset.getNumber ();
+                    if (CheckRepeat (number)){
+                        return 0;
+                    }
                     List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
                     Asset asset = requestConverter.convert(requestAsset, Asset.class);
                     if (assetGroup != null && !assetGroup.isEmpty()) {
@@ -181,13 +185,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                             assetSoftwareRelation.setAssetId(aid);
                             assetSoftwareRelation.setSoftwareId(computerReque.getSoftwareId());
-                            assetSoftwareRelation.setPort(computerReque.getPort());
+//                            assetSoftwareRelation.setPort(computerReque.getPort());
                             assetSoftwareRelation.setProtocol(computerReque.getProtocol());
                             assetSoftwareRelation.setSoftwareStatus(3);
                             assetSoftwareRelation.setMemo(computerReque.getMemo());
                             assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                             assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                            assetSoftwareRelation.setInstallType(computerReque.getInstallType());
+//                            assetSoftwareRelation.setInstallType(computerReque.getInstallType());
                             assetSoftwareRelationDao.insert(assetSoftwareRelation);
                             if (StringUtils.isNotBlank(computerReque.getLicenseSecretKey())) {
                                 AssetSoftwareLicense license = new AssetSoftwareLicense();
@@ -296,6 +300,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
 
         return num;
+    }
+
+    private boolean CheckRepeat(String number) throws Exception {
+        AssetQuery assetQuery = new AssetQuery ();
+        assetQuery.setNumber (number);
+        Integer countAsset = findCountAsset (assetQuery);
+        if (countAsset>=1){
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -1351,7 +1365,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ImportResult<ComputeDeviceEntity> result = ExcelUtils.importExcelFromClient(ComputeDeviceEntity.class, file, 0,
             0);
         int success=0;
-//        int repeat=0;
+        int repeat=0;
         int error=0;
         StringBuilder builder = new StringBuilder ();
         List<ComputeDeviceEntity> dataList = result.getDataList();
@@ -1361,6 +1375,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产名称为空");
                 continue;
             }
+            if (StringUtils.isBlank(entity.getNumber ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号为空");
+                continue;
+            }
+
+            if (CheckRepeat(entity.getNumber ())) {
+                repeat++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号重复");
+                continue;
+            }
+
+
             Asset asset = new Asset();
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (areaId);
@@ -1521,9 +1548,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         String re = "导入成功" + success + "条";
-//        re += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
-            re += error > 0 ? ", " + error + "条数据导入失败" : "";
-        StringBuilder stringBuilder = new StringBuilder ();
+        re += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
+        re += error > 0 ? ", " + error + "条数据导入失败" : "";
+        StringBuilder stringBuilder = new StringBuilder (re);
         if (error>0){
             stringBuilder.append (re).append ("其中").append (builder);
         }
@@ -1536,7 +1563,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ImportResult<NetworkDeviceEntity> importResult = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class,
             file, 0, 0);
         int success=0;
-//        int repeat=0;
+        int repeat=0;
         int error=0;
         StringBuilder builder = new StringBuilder ();
         List<NetworkDeviceEntity> entities = importResult.getDataList();
@@ -1544,6 +1571,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (StringUtils.isBlank(networkDeviceEntity.getName())) {
                 error++;
                 builder.append ("序号").append (networkDeviceEntity.getOrderNumber ()).append ("资产名称为空");
+                continue;
+            }
+            if (StringUtils.isBlank(networkDeviceEntity.getNumber ())) {
+                error++;
+                builder.append ("序号").append (networkDeviceEntity.getOrderNumber ()).append ("资产编号为空");
+                continue;
+            }
+
+            if (CheckRepeat(networkDeviceEntity.getNumber ())) {
+                repeat++;
+                builder.append ("序号").append (networkDeviceEntity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
             Asset asset = new Asset();
@@ -1616,9 +1654,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         String re = "导入成功" + success + "条";
-//        re += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
+        re += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
         re += error > 0 ? ", " + error + "条数据导入失败" : "";
-        StringBuilder stringBuilder = new StringBuilder ();
+        StringBuilder stringBuilder = new StringBuilder (re);
         if (error>0){
             stringBuilder.append (re).append ("其中").append (builder);
         }
@@ -1631,7 +1669,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ImportResult<SafetyEquipmentEntiy> result = ExcelUtils
             .importExcelFromClient(SafetyEquipmentEntiy.class, file, 0, 0);
         int success=0;
-//        int repeat=0;
+        int repeat=0;
         int error=0;
         StringBuilder builder = new StringBuilder ();
         List<SafetyEquipmentEntiy> resultDataList = result.getDataList();
@@ -1639,6 +1677,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产名称为空");
+                continue;
+            }
+            if (StringUtils.isBlank(entity.getNumber ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号为空");
+                continue;
+            }
+
+            if (CheckRepeat(entity.getNumber ())) {
+                repeat++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
             Asset asset = new Asset();
@@ -1696,12 +1745,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             success++;
         }
 
-        String re = "导入成功" + success + "条";
-//        re += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
-        re += error > 0 ? ", " + error + "条数据导入失败" : "";
-        StringBuilder stringBuilder = new StringBuilder ();
+        String res = "导入成功" + success + "条";
+        res += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
+        res += error > 0 ? ", " + error + "条数据导入失败" : "";
+        StringBuilder stringBuilder = new StringBuilder (res);
         if (error>0){
-            stringBuilder.append (re).append ("其中").append (builder);
+            stringBuilder.append (res).append ("其中").append (builder);
         }
 
         return stringBuilder.toString ();
@@ -1713,7 +1762,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ImportResult<StorageDeviceEntity> re = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 0, 0);
         List<StorageDeviceEntity> resultDataList = re.getDataList();
         int success=0;
-//        int repeat=0;
+        int repeat=0;
         int error=0;
         StringBuilder builder = new StringBuilder ();
         for (StorageDeviceEntity entity : resultDataList) {
@@ -1721,6 +1770,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产名称为空");
+                continue;
+            }
+            if (StringUtils.isBlank(entity.getNumber ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号为空");
+                continue;
+            }
+
+            if (CheckRepeat(entity.getNumber ())) {
+                repeat++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
             AssetStorageMedium assetSafetyEquipment = new AssetStorageMedium();
@@ -1784,9 +1844,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         String res = "导入成功" + success + "条";
-//        res += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
+        res += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
-        StringBuilder stringBuilder = new StringBuilder ();
+        StringBuilder stringBuilder = new StringBuilder (res);
         if (error>0){
             stringBuilder.append (re).append ("其中").append (builder);
         }
@@ -1799,13 +1859,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ImportResult<OtherDeviceEntity> re = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 0, 0);
         List<OtherDeviceEntity> resultDataList = re.getDataList();
         int success=0;
-//        int repeat=0;
+        int repeat=0;
         int error=0;
         StringBuilder builder = new StringBuilder ();
         for (OtherDeviceEntity entity : resultDataList) {
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产名称为空");
+                continue;
+            }
+            if (StringUtils.isBlank(entity.getNumber ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号为空");
+                continue;
+            }
+
+            if (CheckRepeat(entity.getNumber ())) {
+                repeat++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
             Asset asset = new Asset();
@@ -1854,9 +1925,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         String res = "导入成功" + success + "条";
-//        res += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
+        res += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
-        StringBuilder stringBuilder = new StringBuilder ();
+        StringBuilder stringBuilder = new StringBuilder (res);
         if (error>0){
             stringBuilder.append (re).append ("其中").append (builder);
         }
