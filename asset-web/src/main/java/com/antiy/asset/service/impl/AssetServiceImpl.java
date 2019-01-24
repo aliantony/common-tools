@@ -167,7 +167,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (assetStorageMedium != null) {
                         AssetStorageMedium medium = BeanConvert.convertBean(assetStorageMedium,
                             AssetStorageMedium.class);
-                        medium.setAssetId(aid);
+                        medium.setAssetId(asset.getStringId());
                         medium.setGmtCreate(System.currentTimeMillis());
                         medium.setCreateUser(LoginUserUtil.getLoginUser().getId());
                         LogHandle.log(assetStorageMedium, AssetEventEnum.ASSET_STORAGE_INSERT.getName(), AssetEventEnum.ASSET_STORAGE_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
@@ -1256,7 +1256,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (storageMedium != null && StringUtils.isNotBlank(storageMedium.getId())) {
                         AssetStorageMedium assetStorageMedium = BeanConvert.convertBean(storageMedium,
                             AssetStorageMedium.class);
-                        assetStorageMedium.setAssetId(asset.getId());
+                        assetStorageMedium.setAssetId(asset.getStringId());
                         // assetStorageMedium.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         assetStorageMedium.setGmtModified(System.currentTimeMillis());
                         LogHandle.log(assetStorageMedium, AssetEventEnum.ASSET_STORAGE_UPDATE.getName(), AssetEventEnum.ASSET_STORAGE_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
@@ -1745,7 +1745,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setContactTel(entity.getTelephone());
             asset.setEmail(entity.getEmail());
             assetDao.insert(asset);
-            assetSafetyEquipment.setAssetId(asset.getId());
+            assetSafetyEquipment.setAssetId(asset.getStringId());
             assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
             assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetSafetyEquipment.setFirmware(entity.getFirmware());

@@ -162,7 +162,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             activityRequest.setBusinessId(String.valueOf(num));
             activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
             ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
-            if (null==actionResponse||!actionResponse.isSuccess ()){
+            if (null==actionResponse||! RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())){
                 throw  new BusinessException ("软件资产登记流程失败",new Throwable ());
             }
         }

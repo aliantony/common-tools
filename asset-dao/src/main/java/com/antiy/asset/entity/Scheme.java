@@ -88,6 +88,14 @@ public class Scheme extends BaseEntity {
      */
     private String  content;
 
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
+
     public String getExtension() {
         return extension;
     }
