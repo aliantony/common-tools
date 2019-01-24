@@ -2,6 +2,7 @@ package com.antiy.asset.vo.response;
 
 import java.util.List;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -92,7 +93,8 @@ public class AssetResponse extends BaseResponse {
      * 责任人主键
      */
     @ApiModelProperty("责任人主键")
-    private Integer                  responsibleUserId;
+    @Encode
+    private String                  responsibleUserId;
     /**
      * 联系电话
      */
@@ -129,7 +131,7 @@ public class AssetResponse extends BaseResponse {
      * 是否入网,false表示未入网,true表示入网
      */
     @ApiModelProperty("是否入网,0表示未入网,1已入网")
-    private Integer                  innet;
+    private Integer                  isInnet;
     /**
      * 使用到期时间
      */
@@ -282,11 +284,11 @@ public class AssetResponse extends BaseResponse {
         this.uuid = uuid;
     }
 
-    public Integer getResponsibleUserId() {
+    public String getResponsibleUserId() {
         return responsibleUserId;
     }
 
-    public void setResponsibleUserId(Integer responsibleUserId) {
+    public void setResponsibleUserId(String responsibleUserId) {
         this.responsibleUserId = responsibleUserId;
     }
 
@@ -338,12 +340,12 @@ public class AssetResponse extends BaseResponse {
         this.tags = tags;
     }
 
-    public Integer getInnet() {
-        return innet;
+    public Integer getIsInnet() {
+        return isInnet;
     }
 
-    public void setInnet(Integer innet) {
-        this.innet = innet;
+    public void setIsInnet(Integer isInnet) {
+        this.isInnet = isInnet;
     }
 
     public Long getServiceLife() {

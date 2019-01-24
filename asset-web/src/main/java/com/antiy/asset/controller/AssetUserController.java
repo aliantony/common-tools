@@ -4,15 +4,18 @@ import javax.annotation.Resource;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetUser;
+import com.antiy.asset.service.IAssetDepartmentService;
 import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.templet.AssetUserEntity;
 import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.vo.response.AssetDepartmentResponse;
 import com.antiy.asset.vo.response.AssetUserResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.encoder.Encode;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +28,7 @@ import io.swagger.annotations.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author lvliang
@@ -36,7 +40,9 @@ import java.util.List;
 public class AssetUserController {
 
     @Resource
-    public IAssetUserService iAssetUserService;
+    public IAssetUserService       iAssetUserService;
+    @Resource
+    public IAssetDepartmentService iAssetDepartmentService;
 
     /**
      * 保存
@@ -45,7 +51,7 @@ public class AssetUserController {
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
-//    @PreAuthorize("hasAuthority('asset:user:saveSingle')")
+    // @PreAuthorize("hasAuthority('asset:user:saveSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetUser") AssetUserRequest assetUser) throws Exception {
@@ -108,6 +114,15 @@ public class AssetUserController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetUserResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "assetUser") AssetUserQuery assetUser) throws Exception {
+        if (!Objects.isNull(assetUser.getDepartmentId())) {
+            List<AssetDepartmentResponse> responses = iAssetDepartmentService
+                .findAssetDepartmentById(DataTypeUtils.stringToInteger(assetUser.getDepartmentId()));
+            String[] ids = new String[responses.size()];
+            for (int i = 0; i < responses.size(); i++) {
+                ids[i++] = responses.get(i).getStringId();
+            }
+            assetUser.setDepartmentIds(ids);
+        }
         return ActionResponse.success(iAssetUserService.findPageAssetUser(assetUser));
     }
 
