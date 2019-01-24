@@ -11,7 +11,6 @@ import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.WorkOrderClient;
 import com.antiy.asset.service.IAssetStatusChangeProcessService;
-import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
@@ -80,7 +79,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             if (assetStatusReqeust.getChangeFlow()) {
                 // 启动流程
                 actionResponse = activityClient.manualStartProcess(assetStatusReqeust.getManualStartActivityRequest());
-            } else if (!assetStatusReqeust.getChangeFlow()){
+            } else if (!assetStatusReqeust.getChangeFlow()) {
                 // 完成流程
                 actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
             }
@@ -124,10 +123,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                 assetFlowEnum != null ? assetFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
         }
 
-        // TODO 获取用户密码失败，待与用户小组调试
-        // assetOperationRecord.setTargetObjectId(DataTypeUtils.stringToInteger(
-        // aesEncoder.decode(assetStatusReqeust.getAssetId(), LoginUserUtil.getLoginUser().getUsername())));
-        assetOperationRecord.setTargetObjectId(3);
+        assetOperationRecord.setTargetObjectId(
+            aesEncoder.decode(assetStatusReqeust.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getUsername());
