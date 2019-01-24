@@ -1,8 +1,6 @@
 package com.antiy.asset.entity;
 
-import java.util.Date;
 import com.antiy.common.base.BaseEntity;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p></p>
@@ -16,73 +14,73 @@ public class AssetStorageMedium extends BaseEntity {
     /**
      * 资产主键
      */
-    private Integer           assetId;
+    private String  assetId;
     /**
      * 最大存储量
      */
-    private String            maximumStorage;
+    private String  maximumStorage;
     /**
      * 单机磁盘数
      */
-    private Integer           diskNumber;
+    private Integer diskNumber;
     /**
      * 高速缓存
      */
-    private String            highCache;
+    private String  highCache;
     /**
      * 内置接口
      */
-    private String            innerInterface;
+    private String  innerInterface;
     /**
      * RAID支持
      */
-    private String            raidSupport;
+    private String  raidSupport;
     /**
      * 平均传输率
      */
-    private String            averageTransferRate;
+    private String  averageTransferRate;
     /**
      * 驱动器数量
      */
-    private Integer           driverNumber;
+    private Integer driverNumber;
     /**
      * 固件
      */
-    private String            firmware;
+    private String  firmware;
     /**
      * OS版本
      */
-    private String            osVersion;
+    private String  osVersion;
     /**
      * 创建时间
      */
-    private Long              gmtCreate;
+    private Long    gmtCreate;
     /**
      * 修改时间
      */
-    private Long              gmtModified;
+    private Long    gmtModified;
     /**
      * 备注
      */
-    private String            memo;
+    private String  memo;
     /**
      * 创建人
      */
-    private Integer           createUser;
+    private Integer createUser;
     /**
      * 修改人
      */
-    private Integer           modifyUser;
+    private Integer modifyUser;
     /**
      * 状态,1 未删除,0已删除
      */
-    private Integer           status;
+    private Integer status;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

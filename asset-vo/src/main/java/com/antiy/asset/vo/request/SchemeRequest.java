@@ -140,4 +140,11 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
 
     }
 
+    @Override
+    public String toString() {
+        return "SchemeRequest{" + "id='" + id + '\'' + ", type=" + type + ", putintoUserId='" + putintoUserId + '\''
+               + ", putintoTime=" + putintoTime + ", putintoUser='" + putintoUser + '\'' + ", schemeSource="
+               + schemeSource + ", content='" + content + '\'' + ", fileInfo='" + fileInfo + '\'' + ", extension='"
+               + extension + '\'' + '}';
+    }
 }

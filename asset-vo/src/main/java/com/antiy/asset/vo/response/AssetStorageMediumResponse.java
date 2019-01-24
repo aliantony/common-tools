@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseEntity;
+import com.antiy.common.encoder.Encode;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -16,7 +17,8 @@ public class AssetStorageMediumResponse extends BaseEntity {
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer assetId;
+    @Encode
+    private String  assetId;
     /**
      * 最大存储量
      */
@@ -63,11 +65,11 @@ public class AssetStorageMediumResponse extends BaseEntity {
     @ApiModelProperty("OS版本")
     private String  osVersion;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 
@@ -141,5 +143,14 @@ public class AssetStorageMediumResponse extends BaseEntity {
 
     public void setOsVersion(String osVersion) {
         this.osVersion = osVersion;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetStorageMediumResponse{" + "assetId='" + assetId + '\'' + ", maximumStorage='" + maximumStorage
+               + '\'' + ", diskNumber=" + diskNumber + ", highCache='" + highCache + '\'' + ", innerInterface='"
+               + innerInterface + '\'' + ", raidSupport='" + raidSupport + '\'' + ", averageTransferRate='"
+               + averageTransferRate + '\'' + ", driverNumber=" + driverNumber + ", firmware='" + firmware + '\''
+               + ", osVersion='" + osVersion + '\'' + '}';
     }
 }

@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+import com.antiy.common.encoder.Encode;
 
 /**
  * <p> 资产用户信息 </p>
@@ -22,7 +23,8 @@ public class AssetUser extends BaseEntity {
     /**
      * 部门主键
      */
-    private Integer departmentId;
+    @Encode
+    private String  departmentId;
     /**
      * 电子邮箱
      */
@@ -72,11 +74,11 @@ public class AssetUser extends BaseEntity {
         this.name = name;
     }
 
-    public Integer getDepartmentId() {
+    public String getDepartmentId() {
         return departmentId;
     }
 
-    public void setDepartmentId(Integer departmentId) {
+    public void setDepartmentId(String departmentId) {
         this.departmentId = departmentId;
     }
 

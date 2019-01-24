@@ -23,7 +23,7 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      */
     @ApiModelProperty("资产主键")
     @Encode
-    private String assetId;
+    private String  assetId;
     /**
      * 最大存储量
      */
@@ -163,4 +163,12 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
 
     }
 
+    @Override
+    public String toString() {
+        return "AssetStorageMediumRequest{" + "id='" + id + '\'' + ", assetId='" + assetId + '\'' + ", maximumStorage='"
+               + maximumStorage + '\'' + ", diskNumber=" + diskNumber + ", highCache='" + highCache + '\''
+               + ", innerInterface='" + innerInterface + '\'' + ", raidSupport='" + raidSupport + '\''
+               + ", averageTransferRate='" + averageTransferRate + '\'' + ", driverNumber=" + driverNumber
+               + ", firmware='" + firmware + '\'' + ", osVersion='" + osVersion + '\'' + '}';
+    }
 }

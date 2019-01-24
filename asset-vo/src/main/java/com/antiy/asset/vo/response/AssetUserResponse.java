@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -25,7 +27,8 @@ public class AssetUserResponse extends BaseResponse {
      * 部门主键
      */
     @ApiModelProperty("部门主键")
-    private Integer departmentId;
+    @Encode
+    private String  departmentId;
     /**
      * 电子邮箱
      */
@@ -85,11 +88,11 @@ public class AssetUserResponse extends BaseResponse {
         this.name = name;
     }
 
-    public Integer getDepartmentId() {
+    public String getDepartmentId() {
         return departmentId;
     }
 
-    public void setDepartmentId(Integer departmentId) {
+    public void setDepartmentId(String departmentId) {
         this.departmentId = departmentId;
     }
 
@@ -179,5 +182,14 @@ public class AssetUserResponse extends BaseResponse {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetUserResponse{" + "name='" + name + '\'' + ", memo='" + memo + '\'' + ", departmentId='"
+               + departmentId + '\'' + ", email='" + email + '\'' + ", qq='" + qq + '\'' + ", weixin='" + weixin + '\''
+               + ", mobile='" + mobile + '\'' + ", address='" + address + '\'' + ", createUser=" + createUser
+               + ", modifyUser=" + modifyUser + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified
+               + ", status=" + status + '}';
     }
 }

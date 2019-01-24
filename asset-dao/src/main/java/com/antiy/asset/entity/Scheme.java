@@ -14,7 +14,7 @@ public class Scheme extends BaseEntity {
     /**
      * 资产主键
      */
-    private Integer assetId;
+    private String  assetId;
     /**
      * 类型（1.准入实施、2.效果检查、3.制定待退役方案、4.验证退役方案、5.实施退役方案）
      */
@@ -198,14 +198,6 @@ public class Scheme extends BaseEntity {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public Integer getAssetId() {
-        return assetId;
-    }
-
-    public void setAssetId(Integer assetId) {
-        this.assetId = assetId;
     }
 
     public Integer getOrderLevel() {

@@ -20,47 +20,48 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("主键")
     @Encode
-    private String  id;
+    private String id;
     /**
      * 姓名
      */
     @ApiModelProperty("姓名")
-    private String  name;
+    private String name;
     /**
      * 姓名
      */
     @ApiModelProperty("备注")
-    private String  memo;
+    private String memo;
     /**
      * 部门主键
      */
     @ApiModelProperty("部门主键")
-    private Integer departmentId;
+    @Encode
+    private String departmentId;
     /**
      * 电子邮箱
      */
     @ApiModelProperty("电子邮箱")
-    private String  email;
+    private String email;
     /**
      * qq号
      */
     @ApiModelProperty("qq号")
-    private String  qq;
+    private String qq;
     /**
      * 微信
      */
     @ApiModelProperty("微信")
-    private String  weixin;
+    private String weixin;
     /**
      * 手机号
      */
     @ApiModelProperty("手机号")
-    private String  mobile;
+    private String mobile;
     /**
      * 住址
      */
     @ApiModelProperty("住址")
-    private String  address;
+    private String address;
 
     public String getId() {
         return id;
@@ -86,11 +87,11 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
         this.name = name;
     }
 
-    public Integer getDepartmentId() {
+    public String getDepartmentId() {
         return departmentId;
     }
 
-    public void setDepartmentId(Integer departmentId) {
+    public void setDepartmentId(String departmentId) {
         this.departmentId = departmentId;
     }
 
@@ -139,4 +140,10 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
 
     }
 
+    @Override
+    public String toString() {
+        return "AssetUserRequest{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", memo='" + memo + '\''
+               + ", departmentId='" + departmentId + '\'' + ", email='" + email + '\'' + ", qq='" + qq + '\''
+               + ", weixin='" + weixin + '\'' + ", mobile='" + mobile + '\'' + ", address='" + address + '\'' + '}';
+    }
 }
