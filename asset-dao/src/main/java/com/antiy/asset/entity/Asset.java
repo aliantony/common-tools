@@ -3,6 +3,8 @@ package com.antiy.asset.entity;
 import com.antiy.common.base.BaseEntity;
 import com.antiy.common.encoder.Encode;
 
+import java.util.Date;
+
 /**
  * <p> 资产主表 </p>
  *
@@ -15,50 +17,91 @@ public class Asset extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 资产编号
+     * 品类名称
      */
+    private String            categoryModelName;
 
-    private String            number;
     /**
-     * 资产zu
+     * 硬盘
+     */
+    private String            hardDisk;
+    /**
+     * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
+     */
+    private String            memory;
+
+    /**
+     * CPUJSON数据{ID:1,name:intel,coresize:8}
+     */
+    private String            cpu;
+    /**
+     * 网卡JSON数据{ID:1,name:intel,speed:1900M}
+     */
+    private String            networkCard;
+    /**
+     * 父类资源Id
+     */
+    @Encode
+    private String            parentId;
+
+
+    /**
+     * ip
+     */
+    private String            ip;
+    /**
+     * mac
+     */
+    private String            mac;
+
+    /**
+     * json数据
      */
     private String            assetGroup;
     /**
-     * 区域ID
+     * 资产编号
      */
-    private String            areaId;
-    /**
-     * 机房位置
-     */
-    private String            houseLocation;
-    /**
-     * 资产类型:1台式办公机,2便携式办公机,3服务器虚拟终,4移动设备,4ATM机,5工控上位机,6路由器,7交换机,8防火墙,9IDS,10IPS,
-     */
-    private Integer           type;
+    private String            number;
     /**
      * 资产名称
      */
     private String            name;
     /**
+     * 网口
+     */
+    private Integer           ethernetPort;
+    /**
+     * 串口
+     */
+    private Integer           serialPort;
+    /**
+     * 安装方式1人工2自动
+     */
+    private Integer           installType;
+    /**
      * 序列号
      */
     private String            serial;
     /**
-     * 品类id
+     * 行政区划主键
      */
-    private String            categoryModel;
+    private String           areaId;
     /**
-     * 品类名称
+     * 品类型号
      */
-    private String            categoryModelName;
+    private Integer           categoryModel;
     /**
      * 厂商
      */
     private String            manufacturer;
     /**
-     * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
+     * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
     private Integer           assetStatus;
+    /**
+     * 准入状态，1待设置，2已允许，3已禁止
+     */
+    private Integer           admittanceStatus;
     /**
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
@@ -67,6 +110,10 @@ public class Asset extends BaseEntity {
      * 系统位数
      */
     private Integer           systemBit;
+    /**
+     * 责任人主键
+     */
+    private Integer           responsibleUserId;
     /**
      * 物理位置
      */
@@ -80,6 +127,10 @@ public class Asset extends BaseEntity {
      */
     private String            longitude;
     /**
+     * 机房位置
+     */
+    private String            houseLocation;
+    /**
      * 固件版本
      */
     private String            firmwareVersion;
@@ -88,10 +139,6 @@ public class Asset extends BaseEntity {
      */
     private String            uuid;
     /**
-     * 责任人主键
-     */
-    private String           responsibleUserId;
-    /**
      * 联系电话
      */
     private String            contactTel;
@@ -99,14 +146,6 @@ public class Asset extends BaseEntity {
      * 邮箱
      */
     private String            email;
-    /**
-     * 硬盘
-     */
-    private String            hardDisk;
-    /**
-     * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
-     */
-    private String            memory;
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
@@ -119,30 +158,19 @@ public class Asset extends BaseEntity {
      * 描述
      */
     private String            describle;
-    /**
-     * CPUJSON数据{ID:1,name:intel,coresize:8}
-     */
-    private String            cpu;
-    /**
-     * 网卡JSON数据{ID:1,name:intel,speed:1900M}
-     */
-    private String            networkCard;
-    /**
-     * 父类资源Id
-     */
-    private String            parentId;
+
     /**
      * 所属标签ID和名称列表JSON串
      */
     private String            tags;
     /**
-     * 是否入网,0表示未入网,1表示入网
-     */
-    private Integer           isInnet;
-    /**
      * 首次入网时间
      */
-    private Long              firstEnterNett;
+    private Date              firstEnterNett;
+    /**
+     * 是否入网,0表示未入网,1表示入网
+     */
+    private Boolean           isInnet;
     /**
      * 使用到期时间
      */
@@ -170,28 +198,115 @@ public class Asset extends BaseEntity {
     /**
      * 创建人
      */
-    private Integer            createUser;
+    private Integer           createUser;
     /**
      * 修改人
      */
-    private Integer            modifyUser;
+    private Integer           modifyUser;
     /**
      * 状态,1未删除,0已删除
      */
     private Integer           status;
 
-    /**
-     * ip
-     */
-    private String            ip;
-    /**
-     * mac
-     */
-    private String            mac;
-    /**
-     * 资产准入状态
-     */
-    private Integer           admittanceStatus;
+    @Override
+    public String toString() {
+        return "Asset{" +
+                "categoryModelName='" + categoryModelName + '\'' +
+                ", hardDisk='" + hardDisk + '\'' +
+                ", memory='" + memory + '\'' +
+                ", cpu='" + cpu + '\'' +
+                ", networkCard='" + networkCard + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", ip='" + ip + '\'' +
+                ", mac='" + mac + '\'' +
+                ", assetGroup='" + assetGroup + '\'' +
+                ", number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", ethernetPort=" + ethernetPort +
+                ", serialPort=" + serialPort +
+                ", installType=" + installType +
+                ", serial='" + serial + '\'' +
+                ", areaId=" + areaId +
+                ", categoryModel=" + categoryModel +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", assetStatus=" + assetStatus +
+                ", admittanceStatus=" + admittanceStatus +
+                ", operationSystem='" + operationSystem + '\'' +
+                ", systemBit=" + systemBit +
+                ", responsibleUserId=" + responsibleUserId +
+                ", location='" + location + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", houseLocation='" + houseLocation + '\'' +
+                ", firmwareVersion='" + firmwareVersion + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", contactTel='" + contactTel + '\'' +
+                ", email='" + email + '\'' +
+                ", assetSource=" + assetSource +
+                ", importanceDegree=" + importanceDegree +
+                ", describle='" + describle + '\'' +
+                ", tags='" + tags + '\'' +
+                ", firstEnterNett=" + firstEnterNett +
+                ", isInnet=" + isInnet +
+                ", serviceLife=" + serviceLife +
+                ", buyDate=" + buyDate +
+                ", warranty=" + warranty +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                '}';
+    }
+
+    public String getCategoryModelName() {
+        return categoryModelName;
+    }
+
+    public void setCategoryModelName(String categoryModelName) {
+        this.categoryModelName = categoryModelName;
+    }
+
+    public String getHardDisk() {
+        return hardDisk;
+    }
+
+    public void setHardDisk(String hardDisk) {
+        this.hardDisk = hardDisk;
+    }
+
+    public String getMemory() {
+        return memory;
+    }
+
+    public void setMemory(String memory) {
+        this.memory = memory;
+    }
+
+    public String getCpu() {
+        return cpu;
+    }
+
+    public void setCpu(String cpu) {
+        this.cpu = cpu;
+    }
+
+    public String getNetworkCard() {
+        return networkCard;
+    }
+
+    public void setNetworkCard(String networkCard) {
+        this.networkCard = networkCard;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
 
     public String getIp() {
         return ip;
@@ -209,20 +324,20 @@ public class Asset extends BaseEntity {
         this.mac = mac;
     }
 
+    public String getAssetGroup() {
+        return assetGroup;
+    }
+
+    public void setAssetGroup(String assetGroup) {
+        this.assetGroup = assetGroup;
+    }
+
     public String getNumber() {
         return number;
     }
 
     public void setNumber(String number) {
         this.number = number;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public String getName() {
@@ -233,12 +348,52 @@ public class Asset extends BaseEntity {
         this.name = name;
     }
 
+    public Integer getEthernetPort() {
+        return ethernetPort;
+    }
+
+    public void setEthernetPort(Integer ethernetPort) {
+        this.ethernetPort = ethernetPort;
+    }
+
+    public Integer getSerialPort() {
+        return serialPort;
+    }
+
+    public void setSerialPort(Integer serialPort) {
+        this.serialPort = serialPort;
+    }
+
+    public Integer getInstallType() {
+        return installType;
+    }
+
+    public void setInstallType(Integer installType) {
+        this.installType = installType;
+    }
+
     public String getSerial() {
         return serial;
     }
 
     public void setSerial(String serial) {
         this.serial = serial;
+    }
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
+    }
+
+    public Integer getCategoryModel() {
+        return categoryModel;
+    }
+
+    public void setCategoryModel(Integer categoryModel) {
+        this.categoryModel = categoryModel;
     }
 
     public String getManufacturer() {
@@ -257,6 +412,14 @@ public class Asset extends BaseEntity {
         this.assetStatus = assetStatus;
     }
 
+    public Integer getAdmittanceStatus() {
+        return admittanceStatus;
+    }
+
+    public void setAdmittanceStatus(Integer admittanceStatus) {
+        this.admittanceStatus = admittanceStatus;
+    }
+
     public String getOperationSystem() {
         return operationSystem;
     }
@@ -271,6 +434,14 @@ public class Asset extends BaseEntity {
 
     public void setSystemBit(Integer systemBit) {
         this.systemBit = systemBit;
+    }
+
+    public Integer getResponsibleUserId() {
+        return responsibleUserId;
+    }
+
+    public void setResponsibleUserId(Integer responsibleUserId) {
+        this.responsibleUserId = responsibleUserId;
     }
 
     public String getLocation() {
@@ -297,6 +468,14 @@ public class Asset extends BaseEntity {
         this.longitude = longitude;
     }
 
+    public String getHouseLocation() {
+        return houseLocation;
+    }
+
+    public void setHouseLocation(String houseLocation) {
+        this.houseLocation = houseLocation;
+    }
+
     public String getFirmwareVersion() {
         return firmwareVersion;
     }
@@ -313,22 +492,6 @@ public class Asset extends BaseEntity {
         this.uuid = uuid;
     }
 
-    public String getResponsibleUserId() {
-        return responsibleUserId;
-    }
-
-    public void setResponsibleUserId(String responsibleUserId) {
-        this.responsibleUserId = responsibleUserId;
-    }
-
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
     public String getContactTel() {
         return contactTel;
     }
@@ -343,22 +506,6 @@ public class Asset extends BaseEntity {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getHardDisk() {
-        return hardDisk;
-    }
-
-    public void setHardDisk(String hardDisk) {
-        this.hardDisk = hardDisk;
-    }
-
-    public String getMemory() {
-        return memory;
-    }
-
-    public void setMemory(String memory) {
-        this.memory = memory;
     }
 
     public Integer getAssetSource() {
@@ -385,22 +532,6 @@ public class Asset extends BaseEntity {
         this.describle = describle;
     }
 
-    public String getCpu() {
-        return cpu;
-    }
-
-    public void setCpu(String cpu) {
-        this.cpu = cpu;
-    }
-
-    public String getNetworkCard() {
-        return networkCard;
-    }
-
-    public void setNetworkCard(String networkCard) {
-        this.networkCard = networkCard;
-    }
-
     public String getTags() {
         return tags;
     }
@@ -409,20 +540,20 @@ public class Asset extends BaseEntity {
         this.tags = tags;
     }
 
-    public Integer getInnet() {
-        return isInnet;
-    }
-
-    public void setInnet(Integer isInnet) {
-        this.isInnet = isInnet;
-    }
-
-    public Long getFirstEnterNett() {
+    public Date getFirstEnterNett() {
         return firstEnterNett;
     }
 
-    public void setFirstEnterNett(Long firstEnterNett) {
+    public void setFirstEnterNett(Date firstEnterNett) {
         this.firstEnterNett = firstEnterNett;
+    }
+
+    public Boolean getInnet() {
+        return isInnet;
+    }
+
+    public void setInnet(Boolean innet) {
+        isInnet = innet;
     }
 
     public Long getServiceLife() {
@@ -458,7 +589,11 @@ public class Asset extends BaseEntity {
     }
 
     public Long getGmtModified() {
-        return System.currentTimeMillis();
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
     public String getMemo() {
@@ -469,137 +604,27 @@ public class Asset extends BaseEntity {
         this.memo = memo;
     }
 
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
     public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
+    }
+
+    public Integer getModifyUser() {
+        return modifyUser;
     }
 
     public void setModifyUser(Integer modifyUser) {
         this.modifyUser = modifyUser;
     }
 
-       public Integer getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public String getCategoryModelName() {
-        return categoryModelName;
-    }
-
-    public void setCategoryModelName(String categoryModelName) {
-        this.categoryModelName = categoryModelName;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
-    @Override
-    public String toString() {
-        return "Asset{" +
-                "number='" + number + '\'' +
-                ", assetGroup='" + assetGroup + '\'' +
-                ", areaId='" + areaId + '\'' +
-                ", houseLocation='" + houseLocation + '\'' +
-                ", type=" + type +
-                ", name='" + name + '\'' +
-                ", serial='" + serial + '\'' +
-                ", categoryModel='" + categoryModel + '\'' +
-                ", categoryModelName='" + categoryModelName + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", assetStatus=" + assetStatus +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", systemBit=" + systemBit +
-                ", location='" + location + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", firmwareVersion='" + firmwareVersion + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", responsibleUserId=" + responsibleUserId +
-                ", contactTel='" + contactTel + '\'' +
-                ", email='" + email + '\'' +
-                ", hardDisk='" + hardDisk + '\'' +
-                ", memory='" + memory + '\'' +
-                ", assetSource=" + assetSource +
-                ", importanceDegree=" + importanceDegree +
-                ", describle='" + describle + '\'' +
-                ", cpu='" + cpu + '\'' +
-                ", networkCard='" + networkCard + '\'' +
-                ", parentId='" + parentId + '\'' +
-                ", tags='" + tags + '\'' +
-                ", isInnet=" + isInnet +
-                ", firstEnterNett=" + firstEnterNett +
-                ", serviceLife=" + serviceLife +
-                ", buyDate=" + buyDate +
-                ", warranty=" + warranty +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", memo='" + memo + '\'' +
-                ", createUser='" + createUser + '\'' +
-                ", modifyUser='" + modifyUser + '\'' +
-                ", status=" + status +
-                ", ip='" + ip + '\'' +
-                ", mac='" + mac + '\'' +
-                ", admittanceStatus=" + admittanceStatus +
-                '}';
-    }
-
-    public String getAssetGroup() {
-        return assetGroup;
-    }
-
-    public void setAssetGroup(String assetGroup) {
-        this.assetGroup = assetGroup;
-    }
-
-    public String getAreaId() {
-        return areaId;
-    }
-
-    public void setAreaId(String areaId) {
-        this.areaId = areaId;
-    }
-
-    public String getHouseLocation() {
-        return houseLocation;
-    }
-
-    public void setHouseLocation(String houseLocation) {
-        this.houseLocation = houseLocation;
-    }
-
-    public String getCategoryModel() {
-        return categoryModel;
-    }
-
-    public void setCategoryModel(String categoryModel) {
-        this.categoryModel = categoryModel;
-    }
-
-    public Integer getAdmittanceStatus() {
-        return admittanceStatus;
-    }
-
-    public void setAdmittanceStatus(Integer admittanceStatus) {
-        this.admittanceStatus = admittanceStatus;
-    }
-
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
-    public Integer getIsInnet() {
-        return isInnet;
-    }
-
-    public void setIsInnet(Integer isInnet) {
-        this.isInnet = isInnet;
     }
 }
