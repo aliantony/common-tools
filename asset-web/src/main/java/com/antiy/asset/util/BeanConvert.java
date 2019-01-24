@@ -129,7 +129,6 @@ public class BeanConvert {
         copier.copy(o, o2, new Converter() {
             @Override
             public Object convert(Object o, Class aClass, Object o1) {
-                System.out.println(o + "=--=============" + o1);
                 if (o != null && rule.contains(o1)) {
                     if (String.class.equals(aClass)) {
                         return String.valueOf(o);

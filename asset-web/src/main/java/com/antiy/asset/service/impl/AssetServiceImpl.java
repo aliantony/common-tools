@@ -1,22 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -39,6 +22,21 @@ import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -1365,7 +1363,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public String importPc(MultipartFile file, String areaId) throws Exception {
+    public String importPc(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<ComputeDeviceEntity> result = ExcelUtils.importExcelFromClient(ComputeDeviceEntity.class, file, 0,
             0);
         int success=0;
@@ -1394,7 +1392,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             Asset asset = new Asset();
             asset.setGmtCreate(System.currentTimeMillis());
-            asset.setAreaId (areaId);
+            asset.setAreaId (importRequest.getAreaId ());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
@@ -1411,7 +1409,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setServiceLife(entity.getDueTime());
             asset.setWarranty(entity.getWarranty());
             asset.setDescrible(entity.getDescription());
-            asset.setMemo(entity.getDescription());
+            asset.setMemo(importRequest.getMemo ());
             asset.setOperationSystem(entity.getOperationSystem());
             asset.setContactTel(entity.getTelephone());
             asset.setEmail(entity.getEmail());
@@ -1537,11 +1535,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecordDao.insert(assetOperationRecord);
 
             //  流程
-            // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
 
             Map<String, Object> formData = new HashMap();
-//            formData.put("configBaselineUserId", configBaselineUserId);
-            formData.put("discard", 0);
+            String[] userIds = importRequest.getUserId ();
+            for (String configBaselineUserId : userIds) {
+                 formData.put("configBaselineUserId", configBaselineUserId);
+                 formData.put("discard", 0);
+            }
             ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
             manualStartActivityRequest.setBusinessId(asset.getId ().toString());
             manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
@@ -1563,7 +1563,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public String importNet(MultipartFile file, String areaId) throws Exception {
+    public String importNet(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<NetworkDeviceEntity> importResult = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class,
             file, 0, 0);
         int success=0;
@@ -1591,7 +1591,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             Asset asset = new Asset();
             AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
             asset.setGmtCreate(System.currentTimeMillis());
-            asset.setAreaId (areaId);
+            asset.setAreaId (importRequest.getAreaId ());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
@@ -1645,8 +1645,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
 
             Map<String, Object> formData = new HashMap();
-//            formData.put("configBaselineUserId", configBaselineUserId);
-            formData.put("discard", 0);
+            String[] userIds = importRequest.getUserId ();
+            for (String configBaselineUserId : userIds) {
+                formData.put("configBaselineUserId", configBaselineUserId);
+                formData.put("discard", 0);
+            }
             ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
             manualStartActivityRequest.setBusinessId(asset.getId ().toString());
             manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
@@ -1669,7 +1672,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public String importSecurity(MultipartFile file, String areaId) throws Exception {
+    public String importSecurity(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<SafetyEquipmentEntiy> result = ExcelUtils
             .importExcelFromClient(SafetyEquipmentEntiy.class, file, 0, 0);
         int success=0;
@@ -1697,7 +1700,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             Asset asset = new Asset();
             AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
             asset.setGmtCreate(System.currentTimeMillis());
-            asset.setAreaId (areaId);
+            asset.setAreaId (importRequest.getAreaId ());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
@@ -1738,8 +1741,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
 
             Map<String, Object> formData = new HashMap();
-//            formData.put("configBaselineUserId", configBaselineUserId);
-            formData.put("discard", 0);
+            String[] userIds = importRequest.getUserId ();
+            for (String configBaselineUserId : userIds) {
+                formData.put("configBaselineUserId", configBaselineUserId);
+                formData.put("discard", 0);
+            }
             ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
             manualStartActivityRequest.setBusinessId(asset.getId ().toString());
             manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
@@ -1762,7 +1768,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public String importStory(MultipartFile file, String areaId) throws Exception {
+    public String importStory(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<StorageDeviceEntity> re = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 0, 0);
         List<StorageDeviceEntity> resultDataList = re.getDataList();
         int success=0;
@@ -1789,7 +1795,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             AssetStorageMedium assetSafetyEquipment = new AssetStorageMedium();
             asset.setGmtCreate(System.currentTimeMillis());
-            asset.setAreaId (areaId);
+            asset.setAreaId (importRequest.getAreaId ());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
@@ -1833,11 +1839,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
             //  流程
-            // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
-
             Map<String, Object> formData = new HashMap();
-//            formData.put("configBaselineUserId", configBaselineUserId);
-            formData.put("discard", 0);
+            String[] userIds = importRequest.getUserId ();
+            for (String configBaselineUserId : userIds) {
+                formData.put("configBaselineUserId", configBaselineUserId);
+                formData.put("discard", 0);
+            }
             ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
             manualStartActivityRequest.setBusinessId(asset.getId ().toString());
             manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
@@ -1859,7 +1866,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public String importOhters(MultipartFile file, String areaId) throws Exception {
+    public String importOhters(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<OtherDeviceEntity> re = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 0, 0);
         List<OtherDeviceEntity> resultDataList = re.getDataList();
         int success=0;
@@ -1885,7 +1892,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             Asset asset = new Asset();
             asset.setGmtCreate(System.currentTimeMillis());
-            asset.setAreaId (areaId);
+            asset.setAreaId (importRequest.getAreaId ());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
@@ -1902,7 +1909,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setContactTel(entity.getTelephone());
             asset.setEmail(entity.getEmail());
             assetDao.insert(asset);
-            // // TODO: 2019/1/17 流程
             // 记录资产操作流程
             AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
             assetOperationRecord.setTargetObjectId(asset.getStringId());
@@ -1914,10 +1920,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
             assetOperationRecordDao.insert(assetOperationRecord);
             //  流程
-            // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
-
             Map<String, Object> formData = new HashMap();
-//            formData.put("configBaselineUserId", configBaselineUserId);
+            String[] userIds = importRequest.getUserId ();
+            for (String configBaselineUserId : userIds) {
+                formData.put("configBaselineUserId", configBaselineUserId);
+                formData.put("discard", 0);
+            }
             formData.put("discard", 0);
             ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
             manualStartActivityRequest.setBusinessId(asset.getId ().toString());

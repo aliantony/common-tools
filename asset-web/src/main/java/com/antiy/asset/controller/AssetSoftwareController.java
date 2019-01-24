@@ -5,6 +5,7 @@ import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
+import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
@@ -149,9 +150,9 @@ public class AssetSoftwareController {
     @ApiOperation(value = "导入软件excel文件", notes = "导入软件excel文件")
     @RequestMapping(value = "/import/file", method = RequestMethod.POST)
     public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile,
-                                     @ApiParam(value = "areaId") String areaId) throws Exception {
+                                     @RequestBody @ApiParam(value = "importRequest")AssetImportRequest importRequest) throws Exception {
 
-        return ActionResponse.success(iAssetSoftwareService.importExcel(multipartFile, areaId));
+        return ActionResponse.success(iAssetSoftwareService.importExcel(multipartFile, importRequest));
 
     }
 

@@ -173,7 +173,7 @@
             AND weixin = #{weixin }
         </if>
         <if test=" mobile != null">
-            AND mobile = #{mobile }
+            AND mobile like concat('%', #{mobile },'%')
         </if>
         <if test=" address != null">
             AND address = #{address }
@@ -344,10 +344,25 @@
         a.email, a.qq, a.weixin, a.mobile, a.address, a.create_user AS createUser, a.modify_user AS modifyUser,
         a.gmt_create AS gmtCreate, a.gmt_modified AS gmtModified, a.status,a.memo
         from asset_user a left join asset_department b on a.department_id = b.id
-        <trim prefix="WHERE" prefixOverrides="AND|OR">
-            <include refid="Where_Column_List"></include>
-            and a.status = 1
-        </trim>
+        where 1 = 1
+        <if test=" name != null">
+            AND a.name like concat('%',#{name },'%')
+        </if>
+        <if test=" departmentId != null">
+            AND a.department_id = #{departmentId }
+        </if>
+        <if test=" email != null">
+            AND a.email = #{email }
+        </if>
+        <if test=" qq != null">
+            AND a.qq = #{qq }
+        </if>
+        <if test=" weixin != null">
+            AND a.weixin = #{weixin }
+        </if>
+        <if test=" mobile != null">
+            AND a.mobile like concat('%', #{mobile },'%')
+        </if>
         <include refid="Page_List"></include>
     </select>
 </mapper>

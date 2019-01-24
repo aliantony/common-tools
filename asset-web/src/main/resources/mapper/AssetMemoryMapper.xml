@@ -15,6 +15,7 @@
         <result column="stitch" property="stitch"/>
         <result column="buy_date" property="buyDate"/>
         <result column="warranty_date" property="warrantyDate"/>
+        <result column="transfer_type" property="transferType"/>
         <result column="telephone" property="telephone"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
@@ -25,7 +26,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, capacity, brand, serial, frequency, slot_type, is_heatsink, stitch, buy_date, warranty_date, telephone, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_id, capacity, brand, serial, frequency, slot_type, is_heatsink, stitch, buy_date, warranty_date, transfer_type, telephone, gmt_create, gmt_modified, memo, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -63,6 +64,9 @@
         </if>
         <if test=" warrantyDate != null">
             warranty_date,
+        </if>
+        <if test=" transferType != null">
+            transfer_type,
         </if>
         <if test=" telephone != null">
             telephone,
@@ -118,6 +122,9 @@
         <if test=" warrantyDate != null">
             #{warrantyDate },
         </if>
+        <if test=" transferType != null">
+            #{transferType },
+        </if>
         <if test=" telephone != null">
             #{telephone },
         </if>
@@ -172,6 +179,9 @@
         <if test=" warrantyDate != null">
             warranty_date = #{warrantyDate },
         </if>
+        <if test=" transferType != null">
+            transfer_type = #{transferType },
+        </if>
         <if test=" telephone != null">
             telephone = #{telephone },
         </if>
@@ -194,7 +204,6 @@
             status = #{status },
         </if>
     </sql>
-
 
     <sql id="Where_Column_List">
         <if test=" assetId != null">
