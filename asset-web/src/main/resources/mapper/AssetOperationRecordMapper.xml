@@ -11,10 +11,12 @@
         <result column="content" property="content"/>
         <result column="create_user" property="createUser"/>
         <result column="gmt_create" property="gmtCreate"/>
+        <result column="process_result" property="processResult"/>
+        <result column="origin_status" property="originStatus"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, target_object_id AS targetObjectId, target_type AS targetType, content, create_user AS createUser, gmt_create AS gmtCreate, target_status AS targetStatus
+        id, target_object_id AS targetObjectId, target_type AS targetType, content, create_user AS createUser, gmt_create AS gmtCreate, target_status AS targetStatus,process_result AS processResult,origin_status, process_result AS processResult
     </sql>
 
     <sql id="Table_Name">
@@ -47,6 +49,12 @@
         <if test=" gmtCreate != null">
             gmt_create,
         </if>
+        <if test=" processResult != null">
+            process_result,
+        </if>
+        <if test=" originStatus != null">
+            origin_status,
+        </if>
     </sql>
 
     <sql id="IF_Value_Column_List">
@@ -73,6 +81,12 @@
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
+        </if>
+        <if test=" processResult != null">
+            #{processResult },
+        </if>
+        <if test=" originStatus != null">
+            #{originStatus },
         </if>
     </sql>
 
@@ -101,6 +115,12 @@
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
         </if>
+        <if test=" processResult != null">
+            process_result = #{processResult },
+        </if>
+        <if test=" originStatus != null">
+            origin_status = #{originStatus },
+        </if>
     </sql>
 
     <sql id="Where_Column_List">
@@ -127,6 +147,12 @@
         </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" processResult != null">
+            and process_result = #{processResult }
+        </if>
+        <if test=" originStatus != null">
+            and origin_status = #{originStatus }
         </if>
     </sql>
 
@@ -211,26 +237,33 @@
         </if>
     </select>
 
-    <select id="findAssetOperationRecordByAssetId" parameterType="com.antiy.asset.vo.query.AssetOperationRecordQuery"
-            resultType="com.antiy.asset.entity.AssetOperationRecordMapper">
-        SELECT
-            a.id,
-            a.target_object_id as targetObjectId,
-            a.target_status as targetStatus,
-            a.content,
-            a.operate_user_name as operateUserName,
-            a.gmt_create as gmtCreate,
-            c.putinto_user as putintoUser,
-            c.putinto_time as putintoTime,
+    <select id="findAssetOperationRecordBarByAssetId" parameterType="com.antiy.asset.vo.query.AssetOperationRecordQuery"
+            resultType="AssetOperationRecordBarPO">
+       SELECT
+            aor.gmt_create as gmtCreate,
+            aor.operate_user_name AS userName,
+            aor.process_result AS processResult,
+            aor.target_object_id AS id,
+            aor.origin_status AS originStatus,
+            sr.NAME AS roleName,
             c.file_info as fileInfo,
-            c.type,
-            c.result
+            c.memo
         FROM
-            asset_operation_record a
-          LEFT JOIN scheme c ON a.scheme_id = c.id
-          where c.status = 1
-          AND a.target_object_id = #{targetObjectId}
-          AND a.target_type = #{targetType.code}
-          order by a.id
+            asset_operation_record aor
+        LEFT JOIN sys_user_role sur ON sur.user_id = aor.operate_user_id
+        LEFT JOIN sys_role sr ON sr.id = sur.role_id
+        LEFT JOIN scheme c ON c.id = aor.scheme_id
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" targetObjectId != null">
+                AND aor.target_object_id = #{targetObjectId}
+            </if>
+            <if test=" targetType != null">
+                AND aor.target_type = #{targetType.code}
+            </if>
+            <if test=" originStatus != null">
+                AND aor.origin_status = #{originStatus}
+            </if>
+        </trim>
+        ORDER BY aor.id
     </select>
 </mapper>
