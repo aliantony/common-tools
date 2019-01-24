@@ -19,7 +19,7 @@ public class AssetSoftwareRelation extends BaseEntity {
     /**
      * 软件主键
      */
-    private Integer softwareId;
+    private String softwareId;
     /**
      * 软件资产状态：1待登记2待分析3可安装4已退役5不予登记
      */
@@ -75,7 +75,7 @@ public class AssetSoftwareRelation extends BaseEntity {
     /**
      * 责任人主键
      */
-    private Integer userId;
+    private String userId;
     /**
      * 责任人
      */
@@ -89,12 +89,20 @@ public class AssetSoftwareRelation extends BaseEntity {
         this.assetId = assetId;
     }
 
-    public Integer getSoftwareId() {
+    public String getSoftwareId() {
         return softwareId;
     }
 
-    public void setSoftwareId(Integer softwareId) {
+    public void setSoftwareId(String softwareId) {
         this.softwareId = softwareId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public Integer getSoftwareStatus() {
@@ -201,14 +209,6 @@ public class AssetSoftwareRelation extends BaseEntity {
         this.installTime = installTime;
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
     public String getUserName() {
         return userName;
     }
@@ -221,7 +221,7 @@ public class AssetSoftwareRelation extends BaseEntity {
     public String toString() {
         return "AssetSoftwareRelation{" +
                 "assetId='" + assetId + '\'' +
-                ", softwareId=" + softwareId +
+                ", softwareId='" + softwareId + '\'' +
                 ", softwareStatus=" + softwareStatus +
                 ", protocol='" + protocol + '\'' +
                 ", port='" + port + '\'' +
@@ -235,7 +235,7 @@ public class AssetSoftwareRelation extends BaseEntity {
                 ", modifyUser=" + modifyUser +
                 ", status=" + status +
                 ", installTime=" + installTime +
-                ", userId=" + userId +
+                ", userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
                 '}';
     }

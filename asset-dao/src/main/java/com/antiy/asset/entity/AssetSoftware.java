@@ -11,7 +11,10 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetSoftware extends BaseEntity {
-
+    /**
+     *  MD5/SHA
+     */
+    private String md5Code;
     /**
     *  软件大小(KB)
     */
@@ -377,32 +380,38 @@ public class AssetSoftware extends BaseEntity {
 
     @Override
     public String toString() {
-            return "AssetSoftware{" +
-                        ", size=" + size +
-                        ", operationSystem=" + operationSystem +
-                        ", categoryModel=" + categoryModel +
-                        ", name=" + name +
-                        ", uploadSoftwareName=" + uploadSoftwareName +
-                        ", path=" + path +
-                        ", version=" + version +
-                        ", manufacturer=" + manufacturer +
-                        ", description=" + description +
-                        ", assetGroup=" + assetGroup +
-                        ", softwareLabel=" + softwareLabel +
-                        ", softwareStatus=" + softwareStatus +
-                        ", authorization=" + authorization +
-                        ", reportSource=" + reportSource +
-                        ", port=" + port +
-                        ", language=" + language +
-                        ", releaseTime=" + releaseTime +
-                        ", publisher=" + publisher +
-                        ", gmtCreate=" + gmtCreate +
-                        ", memo=" + memo +
-                        ", gmtModified=" + gmtModified +
-                        ", createUser=" + createUser +
-                        ", modifyUser=" + modifyUser +
-                        ", status=" + status +
-            "}";
+        return "AssetSoftware{" +
+                "md5Code='" + md5Code + '\'' +
+                ", size=" + size +
+                ", operationSystem='" + operationSystem + '\'' +
+                ", categoryModel=" + categoryModel +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", name='" + name + '\'' +
+                ", serial='" + serial + '\'' +
+                ", uploadSoftwareName='" + uploadSoftwareName + '\'' +
+                ", path='" + path + '\'' +
+                ", version='" + version + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", description='" + description + '\'' +
+                ", assetGroup='" + assetGroup + '\'' +
+                ", softwareLabel=" + softwareLabel +
+                ", softwareStatus=" + softwareStatus +
+                ", authorization=" + authorization +
+                ", reportSource=" + reportSource +
+                ", port='" + port + '\'' +
+                ", language='" + language + '\'' +
+                ", releaseTime=" + releaseTime +
+                ", publisher='" + publisher + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", memo='" + memo + '\'' +
+                ", gmtModified=" + gmtModified +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                ", buyDate=" + buyDate +
+                ", serviceLife=" + serviceLife +
+                ", assetCount=" + assetCount +
+                '}';
     }
 
     public String getSerial() {
@@ -411,5 +420,13 @@ public class AssetSoftware extends BaseEntity {
 
     public void setSerial(String serial) {
         this.serial = serial;
+    }
+
+    public String getMd5Code() {
+        return md5Code;
+    }
+
+    public void setMd5Code(String md5Code) {
+        this.md5Code = md5Code;
     }
 }

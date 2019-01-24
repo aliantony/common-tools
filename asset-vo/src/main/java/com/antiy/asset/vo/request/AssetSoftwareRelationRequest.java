@@ -160,6 +160,23 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
 
     }
 
+    @Override
+    public String toString() {
+        return "AssetSoftwareRelationRequest{" +
+                "id='" + id + '\'' +
+                ", assetId='" + assetId + '\'' +
+                ", softwareId='" + softwareId + '\'' +
+                ", softwareStatus=" + softwareStatus +
+                ", memo='" + memo + '\'' +
+                ", protocol='" + protocol + '\'' +
+                ", licenseSecretKey='" + licenseSecretKey + '\'' +
+                ", port='" + port + '\'' +
+                ", installType=" + installType +
+                ", installStatus=" + installStatus +
+                ", installTime=" + installTime +
+                '}';
+    }
+
     public String getLicenseSecretKey() {
         return licenseSecretKey;
     }

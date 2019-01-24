@@ -2,35 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.antiy.asset.dao.AssetSoftwareDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetSoftware">
-        <id column="id" property="id"/>
-        <result column="size" property="size"/>
-        <result column="operation_system" property="operationSystem"/>
-        <result column="category_model" property="categoryModel"/>
-        <result column="category_model_name" property="categoryModelName"/>
-        <result column="name" property="name"/>
-        <result column="upload_software_name" property="uploadSoftwareName"/>
-        <result column="path" property="path"/>
-        <result column="version" property="version"/>
-        <result column="manufacturer" property="manufacturer"/>
-        <result column="description" property="description"/>
-        <result column="software_label" property="softwareLabel"/>
-        <result column="software_status" property="softwareStatus"/>
-        <result column="authorization" property="authorization"/>
-        <result column="report_source" property="reportSource"/>
-        <result column="port" property="port"/>
-        <result column="language" property="language"/>
-        <result column="release_time" property="releaseTime"/>
-        <result column="publisher" property="publisher"/>
-        <result column="serial" property="serial"/>
-        <result column="gmt_create" property="gmtCreate"/>
-        <result column="memo" property="memo"/>
-        <result column="gmt_modified" property="gmtModified"/>
-        <result column="create_user" property="createUser"/>
-        <result column="modify_user" property="modifyUser"/>
-        <result column="status" property="status"/>
-    </resultMap>
+
 
     <resultMap id="ManufacturerResultMap" type="java.util.HashMap">
         <result property="key" column="manufacturer"/>
@@ -40,15 +12,46 @@
         <result property="key" column="software_status"/>
         <result property="value" column="num"/>
     </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetSoftware">
+        <id column="id" property="id"/>
+        <result column="size" property="size"/>
+        <result column="operation_system" property="operationSystem"/>
+        <result column="category_model" property="categoryModel"/>
+        <result column="name" property="name"/>
+        <result column="upload_software_name" property="uploadSoftwareName"/>
+        <result column="path" property="path"/>
+        <result column="version" property="version"/>
+        <result column="manufacturer" property="manufacturer"/>
+        <result column="description" property="description"/>
+        <result column="asset_group" property="assetGroup"/>
+        <result column="software_label" property="softwareLabel"/>
+        <result column="software_status" property="softwareStatus"/>
+        <result column="authorization" property="authorization"/>
+        <result column="report_source" property="reportSource"/>
+        <result column="port" property="port"/>
+        <result column="service_life" property="serviceLife"/>
+        <result column="buy_date" property="buyDate"/>
+        <result column="language" property="language"/>
+        <result column="release_time" property="releaseTime"/>
+        <result column="serial" property="serial"/>
+        <result column="md5_code" property="md5Code"/>
+        <result column="publisher" property="publisher"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="memo" property="memo"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modify_user" property="modifyUser"/>
+        <result column="status" property="status"/>
+    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, size, operation_system, category_model, name, upload_software_name, path, version, manufacturer, description, asset_group, software_label, software_status, authorization, report_source, port, language, release_time, publisher,serial, gmt_create, memo, gmt_modified, create_user, modify_user, status
+        id, size, operation_system, category_model, name, upload_software_name, path, version, manufacturer, description, asset_group, software_label, software_status, authorization, report_source, port, service_life, buy_date, language, release_time, serial, md5_code, publisher, gmt_create, memo, gmt_modified, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
         asset_software
     </sql>
-
 
 
     <sql id="IF_Base_Column_List">
@@ -109,6 +112,12 @@
         <if test=" releaseTime != null">
             release_time,
         </if>
+        <if test=" serial != null">
+            serial,
+        </if>
+        <if test=" md5Code != null">
+            md5_code,
+        </if>
         <if test=" publisher != null">
             publisher,
         </if>
@@ -129,9 +138,6 @@
         </if>
         <if test=" status != null">
             status,
-        </if>
-        <if test=" serial != null">
-            serial,
         </if>
     </sql>
 
@@ -193,6 +199,12 @@
         <if test=" releaseTime != null">
             #{releaseTime },
         </if>
+        <if test=" serial != null">
+            #{serial },
+        </if>
+        <if test=" md5Code != null">
+            #{md5Code },
+        </if>
         <if test=" publisher != null">
             #{publisher },
         </if>
@@ -213,9 +225,6 @@
         </if>
         <if test=" status != null">
             #{status },
-        </if>
-        <if test=" serial != null">
-            #{serial },
         </if>
     </sql>
 
@@ -277,6 +286,12 @@
         <if test=" releaseTime != null">
             release_time = #{releaseTime },
         </if>
+        <if test=" serial != null">
+            serial = #{serial },
+        </if>
+        <if test=" md5Code != null">
+            md5_code = #{md5Code },
+        </if>
         <if test=" publisher != null">
             publisher = #{publisher },
         </if>
@@ -297,9 +312,6 @@
         </if>
         <if test=" status != null">
             status = #{status },
-        </if>
-        <if test=" serial != null">
-            serial = #{serial },
         </if>
     </sql>
 
