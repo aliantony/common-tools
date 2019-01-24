@@ -33,14 +33,16 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("综合查询")
     private String        multipleQuery;
     @ApiModelProperty("软件品类型号列表")
-    private Integer[]     categoryModels;
+    @Encode
+    private String[]      categoryModels;
     /**
      * 序列号
      */
     @ApiModelProperty(value = "序列号")
     private String        serial;
     @ApiModelProperty("区域id列表")
-    private Integer[]     areaIds;
+    @Encode
+    private String[]      areaIds;
     /**
      * 软件名称
      */
@@ -327,19 +329,19 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
         this.categoryModel = categoryModel;
     }
 
-    public Integer[] getCategoryModels() {
+    public String[] getCategoryModels() {
         return categoryModels;
     }
 
-    public void setCategoryModels(Integer[] categoryModels) {
+    public void setCategoryModels(String[] categoryModels) {
         this.categoryModels = categoryModels;
     }
 
-    public Integer[] getAreaIds() {
+    public String[] getAreaIds() {
         return areaIds;
     }
 
-    public void setAreaIds(Integer[] areaIds) {
+    public void setAreaIds(String[] areaIds) {
         this.areaIds = areaIds;
     }
 
