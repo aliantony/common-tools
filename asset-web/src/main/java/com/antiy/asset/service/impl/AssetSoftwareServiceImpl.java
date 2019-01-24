@@ -428,8 +428,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     list.add(b.getId());
                 }
                 AssetSoftwareQuery assetSoftwareQuery = new AssetSoftwareQuery();
-                assetSoftwareQuery.setCategoryModels(ArrayTypeUtil.ObjectArrayToIntegerArray(list.toArray()));
-                assetSoftwareQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(ids.toArray()));
+                assetSoftwareQuery.setCategoryModels(ArrayTypeUtil.ObjectArrayToStringArray(list.toArray()));
+                assetSoftwareQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToStringArray(ids.toArray()));
                 Long sum = assetSoftwareDao.findCountByCategoryModel(assetSoftwareQuery);
                 result.put(a.getName(), sum);
             }
@@ -611,7 +611,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,
                             AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
         assetSoftwareQuery.setAreaIds(
-            ArrayTypeUtil.ObjectArrayToIntegerArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+            ArrayTypeUtil.ObjectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         assetSoftwareQuery.setQueryAssetCount(true);
         List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery);
         ParamterExceptionUtils.isEmpty(list, "资产数据不能为空");
