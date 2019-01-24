@@ -1,11 +1,10 @@
 package com.antiy.asset.vo.query;
 
-import java.util.List;
-
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p> Asset 查询条件 </p>
@@ -32,6 +31,12 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("资产名称")
     private String        name;
+
+    /**
+     * 资产名称
+     */
+    @ApiModelProperty("资产编号")
+    private String        number;
     /**
      * 序列号
      */
@@ -307,5 +312,13 @@ public class AssetQuery extends ObjectQuery {
 
     public void setAdmittanceStatus(Integer admittanceStatus) {
         this.admittanceStatus = admittanceStatus;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 }

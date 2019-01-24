@@ -14,7 +14,7 @@ public class AssetSafetyEquipment extends BaseEntity {
     /**
      * 资产主键
      */
-    private Integer assetId;
+    private String assetId;
     /**
      * 特征库配置
      */
@@ -72,11 +72,11 @@ public class AssetSafetyEquipment extends BaseEntity {
         this.ip = ip;
     }
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 
@@ -146,8 +146,18 @@ public class AssetSafetyEquipment extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetSafetyEquipment{" + ", assetId=" + assetId + ", featureLibrary=" + featureLibrary + ", strategy="
-               + strategy + ", memo=" + memo + ", createUser=" + createUser + ", modifyUser=" + modifyUser
-               + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", status=" + status + "}";
+        return "AssetSafetyEquipment{" +
+                "assetId='" + assetId + '\'' +
+                ", featureLibrary='" + featureLibrary + '\'' +
+                ", strategy='" + strategy + '\'' +
+                ", softwareVersion='" + softwareVersion + '\'' +
+                ", ip='" + ip + '\'' +
+                ", memo='" + memo + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", status=" + status +
+                '}';
     }
 }

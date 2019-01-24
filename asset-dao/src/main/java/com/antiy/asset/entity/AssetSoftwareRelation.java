@@ -14,7 +14,7 @@ public class AssetSoftwareRelation extends BaseEntity {
     /**
      * 资产主键
      */
-    private Integer assetId;
+    private String assetId;
 
     /**
      * 软件主键
@@ -81,11 +81,11 @@ public class AssetSoftwareRelation extends BaseEntity {
      */
     private String  userName;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 
@@ -219,8 +219,24 @@ public class AssetSoftwareRelation extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetSoftwareRelation{" + ", assetId=" + assetId + ", softwareId=" + softwareId + ", softwareStatus="
-               + softwareStatus + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo
-               + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status + "}";
+        return "AssetSoftwareRelation{" +
+                "assetId='" + assetId + '\'' +
+                ", softwareId=" + softwareId +
+                ", softwareStatus=" + softwareStatus +
+                ", protocol='" + protocol + '\'' +
+                ", port='" + port + '\'' +
+                ", licenseSecretKey='" + licenseSecretKey + '\'' +
+                ", installType=" + installType +
+                ", installStatus=" + installStatus +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                ", installTime=" + installTime +
+                ", userId=" + userId +
+                ", userName='" + userName + '\'' +
+                '}';
     }
 }

@@ -263,4 +263,31 @@ public class AssetSoftwareRelationMapper {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+    @Override
+    public String toString() {
+        return "AssetSoftwareRelationMapper{" +
+                "assetName='" + assetName + '\'' +
+                ", assetNumber='" + assetNumber + '\'' +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", ip='" + ip + '\'' +
+                ", mac='" + mac + '\'' +
+                ", assetId=" + assetId +
+                ", softwareId=" + softwareId +
+                ", softwareStatus=" + softwareStatus +
+                ", protocol='" + protocol + '\'' +
+                ", port='" + port + '\'' +
+                ", licenseSecretKey='" + licenseSecretKey + '\'' +
+                ", installType=" + installType +
+                ", installStatus=" + installStatus +
+                ", userName='" + userName + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                '}';
+    }
 }

@@ -169,4 +169,23 @@ public class AssetSoftwareLicense extends BaseEntity {
     public void setSoftwareName(String softwareName) {
         this.softwareName = softwareName;
     }
+
+    @Override
+    public String toString() {
+        return "AssetSoftwareLicense{" +
+                "name='" + name + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", softwareId=" + softwareId +
+                ", buyDate=" + buyDate +
+                ", expiryDate=" + expiryDate +
+                ", licenseSecretKey='" + licenseSecretKey + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                ", softwareName='" + softwareName + '\'' +
+                '}';
+    }
 }
