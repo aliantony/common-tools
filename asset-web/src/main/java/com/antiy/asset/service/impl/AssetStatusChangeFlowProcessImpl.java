@@ -27,8 +27,6 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
 
     @Resource
     AssetDao   assetDao;
-    @Resource
-    AesEncoder aesEncoder;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {

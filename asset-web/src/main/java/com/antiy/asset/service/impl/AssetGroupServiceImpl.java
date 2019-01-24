@@ -1,16 +1,13 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.utils.LogUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +18,18 @@ import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
 import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
-import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 资产组表 服务实现类 </p>
@@ -46,22 +45,18 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Resource
     private AssetGroupRelationDao assetGroupRelationDao;
     @Resource
-    private AesEncoder            aesEncoder;
-    @Resource
-    SelectConvert                 selectConvert;
+    private SelectConvert         selectConvert;
 
     @Override
     public String saveAssetGroup(AssetGroupRequest request) throws Exception {
         AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
-        // assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
         int result = assetGroupDao.insert(assetGroup);
-        // return aesEncoder.decode(assetGroup.getStringId(), LoginUserUtil.getLoginUser().getUsername());
-        // TODO 解密id
 
         if (!Objects.equals(0, result)) { // 写入业务日志
-            LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_INSERT.getName(), AssetEventEnum.ASSET_GROUP_INSERT.getStatus(),
-                ModuleEnum.ASSET.getCode());
+            LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_INSERT.getName(),
+                AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}", assetGroup.toString());
         }
         return assetGroup.getStringId();
@@ -76,27 +71,26 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         Integer delResult = assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
         if (!Objects.equals(0, delResult)) {
             // 写入业务日志
-            LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(), AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getStatus(),
-                    ModuleEnum.ASSET.getCode());
-            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}",assetGroup.toString());
+            LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(),
+                AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}", assetGroup.toString());
         }
 
         for (Integer assetId : assetIdArr) {
             AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-            assetGroupRelation.setAssetGroupId(assetGroup.getId());
-            assetGroupRelation.setAssetId(assetId);
+            assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
+            assetGroupRelation.setAssetId(assetId.toString());
             assetGroupRelation.setGmtCreate(System.currentTimeMillis());
-            // TODO 创建人
             assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetGroupRelationList.add(assetGroupRelation);
         }
 
-        Integer result= assetGroupRelationDao.insertBatch(assetGroupRelationList);
+        Integer result = assetGroupRelationDao.insertBatch(assetGroupRelationList);
         if (!Objects.equals(0, result)) {
             // 写入业务日志
-            LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(),
-                    ModuleEnum.ASSET.getCode());
-            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}",assetGroup.toString());
+            LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
+                AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}", assetGroup.toString());
         }
         return result;
     }
@@ -106,8 +100,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         List<AssetGroup> assetGroupList = assetGroupDao.findQuery(query);
         List<AssetGroupResponse> assetResponseList = BeanConvert.convert(assetGroupList, AssetGroupResponse.class);
         for (AssetGroupResponse assetGroupResponse : assetResponseList) {
-            List<String> assetList = assetGroupRelationDao.findAssetNameByAssetGroupId(Integer
-                .valueOf(assetGroupResponse.getId()));
+            List<String> assetList = assetGroupRelationDao
+                .findAssetNameByAssetGroupId(Integer.valueOf(assetGroupResponse.getId()));
             assetGroupResponse.setAssetList(assetList);
         }
         return assetResponseList;

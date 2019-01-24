@@ -39,8 +39,6 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
                                                                                       IAssetGroupRelationService {
 
     @Resource
-    private AesEncoder            aesEncoder;
-    @Resource
     private AssetGroupRelationDao assetGroupRelationDao;
     @Resource
     private AssetNetworkCardDao   assetNetworkCardDao;

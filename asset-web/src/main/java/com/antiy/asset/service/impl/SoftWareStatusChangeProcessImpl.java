@@ -1,7 +1,14 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
@@ -11,11 +18,6 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * @auther: zhangbing
@@ -34,15 +36,13 @@ public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangePr
             .getNextStatus(assetStatusReqeust.getSoftwareStatusEnum(), assetStatusReqeust.getAgree());
         // 软件表详情操作
         AssetSoftware assetSoftware = new AssetSoftware();
-        //TODO 获取用户密码失败，待与用户小组调试
-//        assetSoftware.setId(DataTypeUtils.stringToInteger(aesEncoder.decode(assetStatusReqeust.getAssetId(),LoginUserUtil.getLoginUser().getUsername())));
-        assetSoftware.setId(3);
+        assetSoftware.setId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
         assetSoftware.setGmtModified(System.currentTimeMillis());
         assetSoftware.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetSoftware.setSoftwareStatus(softwareStatusEnum.getCode());
 
         LogHandle.log(assetSoftware.toString(), AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName(),
-                AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getStatus(), ModuleEnum.ASSET.getCode());
+            AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName() + " {}", assetSoftware.toString());
         return ActionResponse.success(assetSoftwareDao.update(assetSoftware));
     }

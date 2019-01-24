@@ -21,7 +21,6 @@ import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -38,9 +37,6 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
 
     @Resource
     private SchemeDao                            schemeDao;
-    @Resource
-    private AesEncoder                           aesEncoder;
-
     @Resource
     private BaseConverter<SchemeRequest, Scheme> schemeRequestToSchemeConverter;
 
