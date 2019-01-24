@@ -338,7 +338,6 @@
     </select>
 
 
-
     <select id="countAssetBySoftId" resultType="int" parameterType="int">
         SELECT
         count(1)
@@ -350,13 +349,13 @@
 
     <select id="findOS" resultType="string" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT DISTINCT
-            operation_system
+        operation_system
         FROM
-            asset
+        asset
         WHERE
-            operation_system IS NOT NULL
-            AND STATUS = 1
-            and area_id in
+        operation_system IS NOT NULL
+        AND STATUS = 1
+        and area_id in
         <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
             #{item}
         </foreach>
@@ -439,6 +438,18 @@
             update
             asset_software_relation
             set install_status = #{item.installStatus}
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <update id="installSoftware" parameterType="java.util.List">
+        <foreach collection="list" index="index" item="item" separator=";">
+            update
+              asset_software_relation
+            set
+                install_type = #{item.installType},
+                install_status = #{item.installStatus},
+                install_time = #{item.installTime}
             where id = #{item.id}
         </foreach>
     </update>

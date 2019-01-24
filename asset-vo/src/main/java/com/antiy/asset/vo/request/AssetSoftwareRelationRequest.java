@@ -3,6 +3,7 @@ package com.antiy.asset.vo.request;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -30,7 +31,7 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
      */
     @ApiModelProperty("软件主键")
     @Encode
-    private String softwareId;
+    private String  softwareId;
     /**
      * 软件资产状态：1待登记2待分析3可安装4已退役5不予登记
      */
@@ -157,24 +158,19 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
 
     @Override
     public void validate() throws RequestParamValidateException {
-
+        if (installType == 1) {
+            ParamterExceptionUtils.isNull(installTime, "人工安装，安装时间不能为空");
+            ParamterExceptionUtils.isNull(installStatus, "人工安装，安装状态不能为空");
+        }
     }
 
     @Override
     public String toString() {
-        return "AssetSoftwareRelationRequest{" +
-                "id='" + id + '\'' +
-                ", assetId='" + assetId + '\'' +
-                ", softwareId='" + softwareId + '\'' +
-                ", softwareStatus=" + softwareStatus +
-                ", memo='" + memo + '\'' +
-                ", protocol='" + protocol + '\'' +
-                ", licenseSecretKey='" + licenseSecretKey + '\'' +
-                ", port='" + port + '\'' +
-                ", installType=" + installType +
-                ", installStatus=" + installStatus +
-                ", installTime=" + installTime +
-                '}';
+        return "AssetSoftwareRelationRequest{" + "id='" + id + '\'' + ", assetId='" + assetId + '\'' + ", softwareId='"
+               + softwareId + '\'' + ", softwareStatus=" + softwareStatus + ", memo='" + memo + '\'' + ", protocol='"
+               + protocol + '\'' + ", licenseSecretKey='" + licenseSecretKey + '\'' + ", port='" + port + '\''
+               + ", installType=" + installType + ", installStatus=" + installStatus + ", installTime=" + installTime
+               + '}';
     }
 
     public String getLicenseSecretKey() {

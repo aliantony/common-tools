@@ -101,4 +101,6 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @return
      */
     Integer installAauto(List<AssetSoftwareRelationRequest> assetSoftwareRelationList);
+
+    Integer installSoftware(List<AssetSoftwareRelationRequest> assetSoftwareRelationList);
 }
