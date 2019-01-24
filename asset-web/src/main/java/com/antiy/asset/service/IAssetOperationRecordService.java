@@ -21,5 +21,5 @@ public interface IAssetOperationRecordService extends IBaseService<AssetOperatio
      * @param assetOperationRecordQuery
      * @return
      */
-    Map<Integer, List<AssetOperationRecordBarResponse>> queryStatusBar(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception;
+    Map<String, List<AssetOperationRecordBarResponse>> queryStatusBar(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception;
 }
