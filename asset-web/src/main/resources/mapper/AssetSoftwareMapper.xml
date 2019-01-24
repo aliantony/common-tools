@@ -629,6 +629,7 @@
         and a.status = 1
         and b.id is not null
     </select>
+    <!--软件资产对应的硬件资产数列表-->
     <select id="findInstallList" resultType="com.antiy.asset.entity.AssetSoftware"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select
@@ -708,9 +709,10 @@
         a.serial,
         a.category_model as categoryModel,
         a.manufacturer,
-        c.install_type as installType,
-        c.install_status as installStatus,
-        c.install_time as installTime
+        case
+          when c.install_type is not null then c.install_type
+        else a.install_type
+        end as install_type
         from
         asset a
         left join asset_network_card b on a.id = b.asset_id

@@ -189,4 +189,18 @@ public class AssetSoftwareRelationController {
         iAssetSoftwareRelationService.installArtificial(assetSoftwareRelationList);
         return ActionResponse.success();
     }
+    /**
+     * 安装软件
+     * @param assetSoftwareRelationList
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "安装软件", notes = "安装软件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/software/install", method = RequestMethod.POST)
+    public ActionResponse installSoftware(@ApiParam(value = "softwareQuery") @RequestBody List<AssetSoftwareRelationRequest> assetSoftwareRelationList) throws Exception {
+        iAssetSoftwareRelationService.installSoftware(assetSoftwareRelationList);
+        return ActionResponse.success();
+    }
+
 }
