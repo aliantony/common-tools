@@ -37,8 +37,8 @@ public class AssetCategoryModelResponse extends BaseResponse {
     /**
      * 描述
      */
-    @ApiModelProperty("描述")
-    private String  description;
+    @ApiModelProperty("备注")
+    private String  memo;
 
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
@@ -75,12 +75,12 @@ public class AssetCategoryModelResponse extends BaseResponse {
         this.parentId = parentId;
     }
 
-    public String getDescription() {
-        return description;
+    public String getMemo() {
+        return memo;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
     public Integer getStatus() {
@@ -89,14 +89,8 @@ public class AssetCategoryModelResponse extends BaseResponse {
 
     @Override
     public String toString() {
-        return "AssetCategoryModelResponse{" +
-                "name='" + name + '\'' +
-                ", type=" + type +
-                ", assetType=" + assetType +
-                ", parentId='" + parentId + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                '}';
+        return "AssetCategoryModelResponse{" + "name='" + name + '\'' + ", type=" + type + ", assetType=" + assetType
+               + ", parentId='" + parentId + '\'' + ", memo='" + memo + '\'' + ", status=" + status + '}';
     }
 
     public void setStatus(Integer status) {
