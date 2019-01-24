@@ -29,8 +29,8 @@ public class CodeUtils {
                 RedisUtil redisUtil = SpringUtil.getBean(RedisUtil.class);
                 List<CodeType> codeTypeList = redisUtil.getObjectsByKeyword(key, CodeType.class);
                 for (CodeType codeType : codeTypeList) {
-                    String ke = RedisKeyUtil.getKeyWhenHandleObjectList(ModuleEnum.COMMON.getType(), "codeTypeId",
-                        codeType.getId().toString(), Code.class);
+                    String ke = RedisKeyUtil.getKeyWhenOperateObjectList(ModuleEnum.COMMON.getType(),
+                        codeType.getCode(), Code.class);
                     List<Code> list = redisUtil.getObjectList(ke, Code.class);
                     code = new HashMap<>(16);
                     for (Code cod : list) {
