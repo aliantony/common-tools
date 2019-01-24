@@ -22,4 +22,17 @@ public class ArrayTypeUtil {
         }
         return integers;
     }
+
+    public static String[] ObjectArrayToStringArray(Object[] objects) {
+        String[] strings = new String[objects.length];
+        for (int i = 0; i < objects.length; i++) {
+            try {
+                strings[i] = (String) objects[i];
+            } catch (Exception e) {
+                logger.error("Object转换为整形出错", e);
+                throw new BusinessException("Object转换为整形出错");
+            }
+        }
+        return strings;
+    }
 }

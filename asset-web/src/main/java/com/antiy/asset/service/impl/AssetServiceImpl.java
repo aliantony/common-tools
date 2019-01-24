@@ -118,7 +118,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                     }
 
-                    asset.setResponsibleUserId(LoginUserUtil.getLoginUser().getId());
+                    asset.setResponsibleUserId(Objects.toString(LoginUserUtil.getLoginUser().getId()));
                     asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     asset.setAssetSource(2);
                     asset.setGmtCreate(System.currentTimeMillis());
@@ -738,8 +738,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     list.add(b.getId());
                 }
                 AssetQuery assetQuery = new AssetQuery();
-                assetQuery.setCategoryModels(ArrayTypeUtil.ObjectArrayToIntegerArray(list.toArray()));
-                assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(areaIds.toArray()));
+                assetQuery.setCategoryModels(ArrayTypeUtil.ObjectArrayToStringArray(list.toArray()));
+                assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToStringArray(areaIds.toArray()));
                 List<Integer> status = new ArrayList<>();
                 for (int i = 1; i < 8; i++) {
                     status.add(i);
@@ -1365,7 +1365,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (areaId);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            asset.setResponsibleUserId (LoginUserUtil.getLoginUser().getId());
+            asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setName(entity.getName());
@@ -1551,7 +1551,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (areaId);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            asset.setResponsibleUserId (LoginUserUtil.getLoginUser().getId());
+            asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setName(networkDeviceEntity.getName());
@@ -1646,7 +1646,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (areaId);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            asset.setResponsibleUserId (LoginUserUtil.getLoginUser().getId());
+            asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setName(entity.getName());
@@ -1727,7 +1727,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (areaId);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            asset.setResponsibleUserId (LoginUserUtil.getLoginUser().getId());
+            asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setName(entity.getName());
@@ -1812,7 +1812,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (areaId);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            asset.setResponsibleUserId (LoginUserUtil.getLoginUser().getId());
+            asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setName(entity.getName());
@@ -1870,7 +1870,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private void exportData(Class clazz, String fileName, AssetQuery assetQuery, HttpServletResponse response)
                                                                                                               throws Exception {
-        assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(LoginUserUtil.getLoginUser()
+        assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToStringArray(LoginUserUtil.getLoginUser()
             .getAreaIdsOfCurrentUser().toArray()));
         List<AssetResponse> list = this.findListAsset(assetQuery);
         List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);

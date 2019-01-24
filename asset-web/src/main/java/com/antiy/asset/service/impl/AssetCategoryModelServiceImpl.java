@@ -199,9 +199,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public ActionResponse deleteAllById(Serializable id) throws Exception {
         List<AssetCategoryModel> list = recursionSearch((Integer) id);
         AssetQuery assetQuery = new AssetQuery();
-        Integer[] ids = new Integer[list.size()];
+        String[] ids = new String[list.size()];
         for (int i = 0; i < list.size(); i++) {
-            ids[i] = list.get(i).getId();
+            ids[i] = Objects.toString(list.get(i).getId());
         }
         assetQuery.setCategoryModels(ids);
         Integer i = assetDao.findCountByCategoryModel(assetQuery);
