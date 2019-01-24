@@ -46,7 +46,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     private AssetGroupRelationDao assetGroupRelationDao;
     @Resource
     private SelectConvert         selectConvert;
-
+    @Resource
+    private BaseConverter<AssetGroup,AssetGroupResponse>         assetGroupToResponseConverter;
     @Override
     public String saveAssetGroup(AssetGroupRequest request) throws Exception {
         AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
@@ -98,10 +99,10 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public List<AssetGroupResponse> findListAssetGroup(AssetGroupQuery query) throws Exception {
         List<AssetGroup> assetGroupList = assetGroupDao.findQuery(query);
-        List<AssetGroupResponse> assetResponseList = BeanConvert.convert(assetGroupList, AssetGroupResponse.class);
+        List<AssetGroupResponse> assetResponseList = assetGroupToResponseConverter.convert(assetGroupList, AssetGroupResponse.class);
         for (AssetGroupResponse assetGroupResponse : assetResponseList) {
             List<String> assetList = assetGroupRelationDao
-                .findAssetNameByAssetGroupId(Integer.valueOf(assetGroupResponse.getId()));
+                .findAssetNameByAssetGroupId(Integer.valueOf(assetGroupResponse.getStringId()));
             assetGroupResponse.setAssetList(assetList);
         }
         return assetResponseList;
