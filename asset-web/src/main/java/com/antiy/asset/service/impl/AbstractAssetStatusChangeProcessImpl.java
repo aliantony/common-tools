@@ -123,8 +123,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                 assetFlowEnum != null ? assetFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
         }
 
-        assetOperationRecord.setTargetObjectId(
-            aesEncoder.decode(assetStatusReqeust.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
+        assetOperationRecord.setTargetObjectId(assetStatusReqeust.getAssetId());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getUsername());
@@ -142,10 +141,9 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         scheme.setExpecteStartTime(assetStatusReqeust.getWorkOrderVO().getStartTime());
         scheme.setExpecteEndTime(assetStatusReqeust.getWorkOrderVO().getEndTime());
         scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
-        scheme.setPutintoUserId(assetStatusReqeust.getWorkOrderVO().getExecuteUserId());
+        scheme.setPutintoUserId(assetStatusReqeust.getWorkOrderVO().getExecuteUserId().toString());
         scheme.setPutintoUser(assetStatusReqeust.getWorkOrderVO().getExecuteUserName());
-        scheme
-            .setAssetId(aesEncoder.decode(assetStatusReqeust.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
+        scheme.setAssetId(assetStatusReqeust.getAssetId());
         return scheme;
     }
 }
