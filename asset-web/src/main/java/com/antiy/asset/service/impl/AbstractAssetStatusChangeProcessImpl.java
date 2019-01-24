@@ -144,8 +144,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
         scheme.setPutintoUserId(assetStatusReqeust.getWorkOrderVO().getExecuteUserId());
         scheme.setPutintoUser(assetStatusReqeust.getWorkOrderVO().getExecuteUserName());
-        // TODO 资产ID解密
-        scheme.setAssetId(assetStatusReqeust.getAssetId());
+        scheme
+            .setAssetId(aesEncoder.decode(assetStatusReqeust.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         return scheme;
     }
 }
