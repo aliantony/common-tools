@@ -121,7 +121,9 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
 
         assetOperationRecord.setTargetObjectId(assetStatusReqeust.getAssetId());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+        assetOperationRecord.setOriginStatus(assetStatusReqeust.getAssetStatus().getCode());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
+        assetOperationRecord.setProcessResult(assetStatusReqeust.getAgree() ? 1: 0);
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getUsername());
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         return assetOperationRecord;
