@@ -481,16 +481,22 @@
     <select id="findCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select count(1) count from
         <include refid="Table_Name"></include>
+        <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+            left join asset_category_model b on asset_software.category_model = b.id
+        </if>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <include refid="Multiple_Query"></include>
             <if test=" multipleQuery != null">
                 and (
-                name LIKE CONCAT('%',#{multipleQuery},'%')
-                or serial LIKE CONCAT('%',#{multipleQuery},'%')
-                or id LIKE CONCAT('%',#{multipleQuery},'%')
+                  asset_software.name LIKE CONCAT('%',#{multipleQuery},'%')
+                or asset_software.serial LIKE CONCAT('%',#{multipleQuery},'%')
+                or asset_software.id LIKE CONCAT('%',#{multipleQuery},'%')
                 )
             </if>
-            and status = 1
+            and asset_software.status = 1
+            <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+                and b.status = 1
+            </if>
         </trim>
     </select>
 
@@ -524,10 +530,16 @@
         asset_software.memo,
         asset_software.language,
         asset_software.path,
-        asset_software.port ,
-        b.name as category_model_name from
+        asset_software.port
+        <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+            ,
+            b.name as category_model_name
+        </if>
+        from
         <include refid="Table_Name"></include>
-        left join asset_category_model b on asset_software.category_model = b.id
+        <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+          left join asset_category_model b on asset_software.category_model = b.id
+        </if>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <include refid="Multiple_Query"></include>
             <if test=" multipleQuery != null">
@@ -537,7 +549,10 @@
                 or asset_software.id LIKE CONCAT('%',#{multipleQuery},'%')
                 )
             </if>
-            and asset_software.status = 1 and b.status=1
+            and asset_software.status = 1
+            <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+              and b.status=1
+            </if>
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
