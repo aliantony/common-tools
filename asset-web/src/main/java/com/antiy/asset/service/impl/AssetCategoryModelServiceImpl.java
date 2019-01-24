@@ -102,7 +102,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @return
      */
     private void setParentType(AssetCategoryModel assetCategoryModel) throws Exception {
-        Integer parentId = assetCategoryModel.getParentId();
+        String parentId = assetCategoryModel.getParentId();
         AssetCategoryModel parent = assetCategoryModelDao.getById(parentId);
         BusinessExceptionUtils.isNull(parent, "父类型不存在");
         assetCategoryModel.setAssetType(parent.getAssetType());

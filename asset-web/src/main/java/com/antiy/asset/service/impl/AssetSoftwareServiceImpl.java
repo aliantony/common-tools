@@ -121,13 +121,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
                     assetSoftware.setReportSource(2);
                     assetSoftwareDao.insert(assetSoftware);
-                    Integer sid = assetSoftware.getId();
+                    String sid = assetSoftware.getStringId();
                     if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
                         String[] assetIds = request.getAssetIds();
                         for (String s : assetIds) {
                             AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                             assetSoftwareRelation.setSoftwareId(sid);
-                            assetSoftwareRelation.setAssetId(Integer.parseInt(s));
+                            assetSoftwareRelation.setAssetId(s);
                             assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                             assetSoftwareRelation.setSoftwareStatus(AssetStatusEnum.ANALYZE.getCode());
                             assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -148,7 +148,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     LogHandle.log(assetSoftware.toString(), AssetEventEnum.SOFT_INSERT.getName(),
                             AssetEventEnum.SOFT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                     LogUtils.info(logger, AssetEventEnum.SOFT_INSERT.getName() + " {}", assetSoftware.toString());
-                    return sid;
+                    return DataTypeUtils.stringToInteger(sid);
                 } catch (Exception e) {
                     LOGGER.warn ("登记软件信息失败", e);
                     return 0;
@@ -225,8 +225,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                         // 5.插入关系表，并且插入端口数据
                         for (String assetId : request.getAssetIds()) {
                             AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-                            assetSoftwareRelation.setSoftwareId(DataTypeUtils.stringToInteger(request.getId()));
-                            assetSoftwareRelation.setAssetId(DataTypeUtils.stringToInteger(assetId));
+                            assetSoftwareRelation.setSoftwareId(request.getId());
+                            assetSoftwareRelation.setAssetId(assetId);
                             assetSoftwareRelation.setSoftwareStatus(request.getSoftwareStatus());
                             assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                             assetSoftwareRelationDao.insert(assetSoftwareRelation);
@@ -236,7 +236,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                             if (ArrayUtils.isNotEmpty(request.getAssetPortProtocolRequest().getPort())) {
                                 AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>()
                                     .convert(request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
-                                protocol.setAssetSoftId(assetSoftwareRelation.getId());
+                                protocol.setAssetSoftId(assetSoftwareRelation.getStringId());
                                 for (Integer port : request.getAssetPortProtocolRequest().getPort()) {
                                     protocol.setPort(port);
                                     // 插入端口信息
@@ -568,7 +568,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             assetSoftwareDao.insert(asset);
             // 记录资产操作流程
             AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-            assetOperationRecord.setTargetObjectId(asset.getId());
+            assetOperationRecord.setTargetObjectId(asset.getStringId());
             assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
             assetOperationRecord.setTargetStatus(AssetStatusEnum.ANALYZE.getCode());
             assetOperationRecord.setContent("登记软件资产");

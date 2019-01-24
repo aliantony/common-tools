@@ -10,6 +10,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.Asset">
         <id column="id" property="id"/>
+        <result column="area_id" property="areaId"/>
         <result column="number" property="number"/>
         <result column="name" property="name"/>
         <result column="asset_groups" property="assetGroups"/>
@@ -18,6 +19,7 @@
         <result column="admittance_status" property="admittanceStatus"/>
         <result column="serial" property="serial"/>
         <result column="category_model" property="categoryModel"/>
+        <result column="category_model_name" property="categoryModelName"/>
         <result column="manufacturer" property="manufacturer"/>
         <result column="asset_status" property="assetStatus"/>
         <result column="operation_system" property="operationSystem"/>
@@ -846,7 +848,7 @@
         a.number,
         a.name,
         a.serial,
-        c.name as categoryModelName,
+        c.name as category_model_name,
         a.manufacturer, asset_status,
         a.operation_system,
         a.system_bit,

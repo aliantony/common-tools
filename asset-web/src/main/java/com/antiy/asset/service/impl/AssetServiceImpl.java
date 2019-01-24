@@ -129,8 +129,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         for (AssetGroupRequest assetGroupRequest : assetGroup) {
                             AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-                            assetGroupRelation.setAssetGroupId(Integer.parseInt(assetGroupRequest.getId()));
-                            assetGroupRelation.setAssetId(asset.getId());
+                            assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
+                            assetGroupRelation.setAssetId(asset.getStringId());
                             assetGroupRelation.setGmtCreate(System.currentTimeMillis());
                             assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                             LogHandle.log(assetGroupRequest, AssetEventEnum.ASSET_GROUP_INSERT.getName(), AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
@@ -139,7 +139,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                     }
 
-                    Integer aid = asset.getId();
+                    String aid = asset.getStringId();
 
                     AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
                     if (safetyEquipmentRequest != null) {
@@ -180,7 +180,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         for (AssetSoftwareRelationRequest computerReque : computerReques) {
                             AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                             assetSoftwareRelation.setAssetId(aid);
-                            assetSoftwareRelation.setSoftwareId(Integer.parseInt (computerReque.getSoftwareId()));
+                            assetSoftwareRelation.setSoftwareId(computerReque.getSoftwareId());
                             assetSoftwareRelation.setPort(computerReque.getPort());
                             assetSoftwareRelation.setProtocol(computerReque.getProtocol());
                             assetSoftwareRelation.setSoftwareStatus(3);
@@ -265,7 +265,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-                    assetOperationRecord.setTargetObjectId(asset.getId());
+                    assetOperationRecord.setTargetObjectId(asset.getStringId());
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     assetOperationRecord.setContent("登记硬件资产");
@@ -275,7 +275,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     LogHandle.log(asset, AssetEventEnum.ASSET_INSERT.getName(), AssetEventEnum.ASSET_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                     LogUtils.info(logger, AssetEventEnum .ASSET_INSERT.getName() + " {}", asset.toString());
-                    return aid;
+                    return DataTypeUtils.stringToInteger(aid);
                 } catch (Exception e) {
                    logger.warn ("登记硬件资产失败");
                    e.printStackTrace ();
@@ -300,7 +300,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer updateAsset(AssetRequest request) throws Exception {
-        Asset asset = requestConverter.convert(request, Asset.class);
+        Asset asset = BeanConvert.convertBean(request, Asset.class);
         asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
         asset.setGmtCreate(System.currentTimeMillis());
         return assetDao.update(asset);
@@ -1116,8 +1116,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     for (AssetGroupRequest assetGroupRequest : assetGroups) {
                         stringBuffer.append(assetGroupRequest.getName()).append(",");
                         AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-                        assetGroupRelation.setAssetGroupId(DataTypeUtils.stringToInteger(assetGroupRequest.getId()));
-                        assetGroupRelation.setAssetId(asset.getId());
+                        assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
+                        assetGroupRelation.setAssetId(asset.getStringId());
                         // assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                         assetGroupRelation.setGmtCreate(System.currentTimeMillis());
                     }
@@ -1136,7 +1136,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetCpu> assetCpuList = BeanConvert.convert(assetCpuRequestList, AssetCpu.class);
                         for (AssetCpu assetCpu : assetCpuList) {
                             // 设置资产id，可能是新增的
-                            assetCpu.setAssetId(asset.getId());
+                            assetCpu.setAssetId(asset.getStringId());
                             // assetCpu.setModifyUser(LoginUserUtil.getLoginUser().getId());
                             assetCpu.setGmtModified(System.currentTimeMillis());
                         }
@@ -1160,7 +1160,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             AssetNetworkCard.class);
                         for (AssetNetworkCard assetNetworkCard : assetNetworkCardList) {
                             // 设置资产id，可能是新增的
-                            assetNetworkCard.setAssetId(asset.getId());
+                            assetNetworkCard.setAssetId(asset.getStringId());
                             // assetNetworkCard.setModifyUser(LoginUserUtil.getLoginUser().getId());
                             assetNetworkCard.setGmtModified(System.currentTimeMillis());
                         }
@@ -1178,7 +1178,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetMainborad> assetMainborad = BeanConvert.convert(assetMainboradRequest,
                             AssetMainborad.class);
                         for (AssetMainborad mainborad : assetMainborad) {
-                            mainborad.setAssetId(asset.getId());
+                            mainborad.setAssetId(asset.getStringId());
                             // mainborad.setModifyUser(LoginUserUtil.getLoginUser().getId());
                             mainborad.setGmtModified(System.currentTimeMillis());
                         }
@@ -1197,7 +1197,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             AssetMemory.class);
                         for (AssetMemory assetMemory : assetMemoryList) {
                             // 设置资产id，可能是新增的
-                            assetMemory.setAssetId(asset.getId());
+                            assetMemory.setAssetId(asset.getStringId());
                             // asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                             assetMemory.setGmtModified(System.currentTimeMillis());
                         }
@@ -1216,7 +1216,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             AssetHardDisk.class);
                         for (AssetHardDisk assetHardDisk : assetHardDiskList) {
                             // 设置资产id，可能是新增的
-                            assetHardDisk.setAssetId(asset.getId());
+                            assetHardDisk.setAssetId(asset.getStringId());
                             assetHardDisk.setGmtCreate(System.currentTimeMillis());
                             // assetHardDisk.setModifyUser(LoginUserUtil.getLoginUser().getId());
                             assetHardDisk.setGmtModified(System.currentTimeMillis());
@@ -1232,7 +1232,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (networkEquipment != null && StringUtils.isNotBlank(networkEquipment.getId())) {
                         AssetNetworkEquipment assetNetworkEquipment = BeanConvert.convertBean(networkEquipment,
                             AssetNetworkEquipment.class);
-                        assetNetworkEquipment.setAssetId(asset.getId());
+                        assetNetworkEquipment.setAssetId(asset.getStringId());
                         // assetNetworkEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         assetNetworkEquipment.setGmtModified(System.currentTimeMillis());
                         LogHandle.log(assetNetworkEquipment, AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getName(), AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
@@ -1244,7 +1244,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (safetyEquipment != null && StringUtils.isNotBlank(safetyEquipment.getId())) {
                         AssetSafetyEquipment assetSafetyEquipment = BeanConvert.convertBean(safetyEquipment,
                             AssetSafetyEquipment.class);
-                        assetSafetyEquipment.setAssetId(asset.getId());
+                        assetSafetyEquipment.setAssetId(asset.getStringId());
                         // assetSafetyEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         assetSafetyEquipment.setGmtModified(System.currentTimeMillis());
                         LogHandle.log(assetSafetyEquipment, AssetEventEnum.ASSET_SAFE_DETAIL_UPDATE.getName(), AssetEventEnum.ASSET_SAFE_DETAIL_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
@@ -1271,7 +1271,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     List<AssetSoftwareRelation> assetSoftwareRelationList = BeanConvert.convert(
                         assetOuterRequest.getAssetSoftwareRelationList(), AssetSoftwareRelation.class);
                     assetSoftwareRelationList.stream().forEach(relation -> {
-                        relation.setAssetId(asset.getId());
+                        relation.setAssetId(asset.getStringId());
                         relation.setGmtCreate(System.currentTimeMillis());
                         // relation.setSoftwareStatus();
                         // relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -1289,7 +1289,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     });
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-                    assetOperationRecord.setTargetObjectId(asset.getId());
+                    assetOperationRecord.setTargetObjectId(asset.getStringId());
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     assetOperationRecord.setContent("资产变更");
@@ -1385,7 +1385,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setContactTel(entity.getTelephone());
             asset.setEmail(entity.getEmail());
             assetDao.insert(asset);
-            Integer id = asset.getId();
+            String id = asset.getStringId();
             if (StringUtils.isNotBlank(entity.getMemoryBrand())) {
                 AssetMemory assetMemory = new AssetMemory();
                 assetMemory.setAssetId(id);
@@ -1496,7 +1496,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             // 记录资产操作流程
             AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-            assetOperationRecord.setTargetObjectId(asset.getId());
+            assetOperationRecord.setTargetObjectId(asset.getStringId());
             assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setContent("登记硬件资产");
@@ -1569,7 +1569,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setContactTel(networkDeviceEntity.getTelephone());
             asset.setEmail(networkDeviceEntity.getEmail());
             assetDao.insert(asset);
-            assetNetworkEquipment.setAssetId(asset.getId());
+            assetNetworkEquipment.setAssetId(asset.getStringId());
             assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
             assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetNetworkEquipment.setInterfaceSize(networkDeviceEntity.getInterfaceSize());
@@ -1591,7 +1591,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetNetworkEquipmentDao.insert(assetNetworkEquipment);
             // 记录资产操作流程
             AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-            assetOperationRecord.setTargetObjectId(asset.getId());
+            assetOperationRecord.setTargetObjectId(asset.getStringId());
             assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setContent("登记硬件资产");
@@ -1664,7 +1664,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setContactTel(entity.getTelephone());
             asset.setEmail(entity.getEmail());
             assetDao.insert(asset);
-            assetSafetyEquipment.setAssetId(asset.getId());
+            assetSafetyEquipment.setAssetId(asset.getStringId());
             assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
             assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetSafetyEquipment.setSoftwareVersion(entity.getSoftwareVersion());
@@ -1673,7 +1673,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetSafetyEquipmentDao.insert(assetSafetyEquipment);
             // 记录资产操作流程
             AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-            assetOperationRecord.setTargetObjectId(asset.getId());
+            assetOperationRecord.setTargetObjectId(asset.getStringId());
             assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setContent("登记硬件资产");
@@ -1761,7 +1761,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetStorageMediumDao.insert(assetSafetyEquipment);
             // 记录资产操作流程
             AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-            assetOperationRecord.setTargetObjectId(asset.getId());
+            assetOperationRecord.setTargetObjectId(asset.getStringId());
             assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setContent("登记硬件资产");
@@ -1830,7 +1830,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // // TODO: 2019/1/17 流程
             // 记录资产操作流程
             AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-            assetOperationRecord.setTargetObjectId(asset.getId());
+            assetOperationRecord.setTargetObjectId(asset.getStringId());
             assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setContent("登记硬件资产");
