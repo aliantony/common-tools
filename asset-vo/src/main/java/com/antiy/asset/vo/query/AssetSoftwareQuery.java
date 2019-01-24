@@ -29,7 +29,8 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      * 软件品类
      */
     @ApiModelProperty("软件品类")
-    private Integer       categoryModel;
+    @Encode
+    private String        categoryModel;
     @ApiModelProperty("综合查询")
     private String        multipleQuery;
     @ApiModelProperty("软件品类型号列表")
@@ -321,11 +322,11 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
         this.status = status;
     }
 
-    public Integer getCategoryModel() {
+    public String getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
     }
 
