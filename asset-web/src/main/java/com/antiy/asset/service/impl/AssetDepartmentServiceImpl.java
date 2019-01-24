@@ -137,7 +137,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
      */
     private void recursion(List<AssetDepartment> result, List<AssetDepartment> list, Integer id) {
         for (AssetDepartment assetDepartment : list) {
-            if (Objects.equals(assetDepartment.getParentId(), id)) {
+            if (Objects.equals(assetDepartment.getParentId(), Objects.toString(id))) {
                 result.add(assetDepartment);
                 recursion(result, list, assetDepartment.getId());
             }
