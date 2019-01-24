@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.AssetStatusJumpEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
@@ -35,9 +36,7 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         AssetStatusEnum assetStatusEnum = AssetStatusJumpEnum.getNextStatus(assetStatusReqeust.getAssetStatus(),
             assetStatusReqeust.getAgree());
         Asset asset = new Asset();
-        // TODO 获取用户密码失败，待与用户小组调试
-        // asset.setId(DataTypeUtils.stringToInteger(aesEncoder.decode(assetStatusReqeust.getAssetId(),LoginUserUtil.getLoginUser().getUsername())));
-        asset.setId(1);
+        asset.setId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
         asset.setGmtModified(System.currentTimeMillis());
         asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
 
