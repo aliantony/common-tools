@@ -97,6 +97,18 @@ public class AssetSoftwaComputerRelationReques extends BasicRequest implements O
     }
 
     @Override
+    public String toString() {
+        return "AssetSoftwaComputerRelationReques{" +
+                "licenseSecretKey='" + licenseSecretKey + '\'' +
+                ", softwareid='" + softwareid + '\'' +
+                ", softwareName='" + softwareName + '\'' +
+                ", port='" + port + '\'' +
+                ", protocol='" + protocol + '\'' +
+                ", portMemo='" + portMemo + '\'' +
+                '}';
+    }
+
+    @Override
     public void validate() throws RequestParamValidateException {
 
     }

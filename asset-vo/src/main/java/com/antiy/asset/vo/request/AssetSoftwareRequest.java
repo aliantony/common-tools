@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Arrays;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -370,5 +371,38 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     public void setAssetIds(String[] assetIds) {
         this.assetIds = assetIds;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetSoftwareRequest{" +
+                "activityRequest=" + activityRequest +
+                ", softwareLicenseRequest=" + softwareLicenseRequest +
+                ", assetPortProtocolRequest=" + assetPortProtocolRequest +
+                ", assetIds=" + Arrays.toString (assetIds) +
+                ", id='" + id + '\'' +
+                ", size=" + size +
+                ", operationSystem='" + operationSystem + '\'' +
+                ", categoryModel='" + categoryModel + '\'' +
+                ", name='" + name + '\'' +
+                ", uploadSoftwareName='" + uploadSoftwareName + '\'' +
+                ", path='" + path + '\'' +
+                ", version='" + version + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", description='" + description + '\'' +
+                ", assetGroup='" + assetGroup + '\'' +
+                ", serial='" + serial + '\'' +
+                ", softwareLabel='" + softwareLabel + '\'' +
+                ", softwareStatus=" + softwareStatus +
+                ", authorization=" + authorization +
+                ", reportSource=" + reportSource +
+                ", port='" + port + '\'' +
+                ", language='" + language + '\'' +
+                ", releaseTime=" + releaseTime +
+                ", publisher='" + publisher + '\'' +
+                ", memo='" + memo + '\'' +
+                ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\'' +
+                ", request=" + request +
+                '}';
     }
 }
