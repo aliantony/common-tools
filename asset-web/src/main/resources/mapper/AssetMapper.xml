@@ -874,7 +874,7 @@
 
     <select id="findListAsset" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select * from (SELECT
+        select * from (select
         a.id,
         a.area_id,
         a.asset_group,
@@ -906,15 +906,15 @@
         a. buy_date,
         a.warranty,
         a.gmt_create,
-        GROUP_CONCAT( b.ip_address ) as ip,
-        GROUP_CONCAT( b.mac_address ) as mac
-        FROM
+        group_concat( b.ip_address ) as ip,
+        group_concat( b.mac_address ) as mac
+        from
         asset a
-        LEFT JOIN asset_network_card b ON a.id = b.asset_id
+        left join asset_network_card b on a.id = b.asset_id
         left join asset_category_model c on a.category_model = c.id
         where a.status = 1
-        GROUP BY
-        a.id) asset
+        group by a.id
+        order by a.gmt_create desc) asset
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <include refid="Multiple_Query"></include>
         </trim>
