@@ -3,6 +3,7 @@ package com.antiy.asset.service;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
+import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
@@ -137,9 +138,10 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
     /**
      * 导入
      * @param file
+     * @param areaId
      * @return
      */
-    String importExcel(MultipartFile file,String areaId) throws Exception;
+    String importExcel(MultipartFile file, AssetImportRequest areaId) throws Exception;
 
     List<AssetSoftwareResponse> findInstallList(AssetSoftwareQuery softwareQuery) throws Exception;
 
