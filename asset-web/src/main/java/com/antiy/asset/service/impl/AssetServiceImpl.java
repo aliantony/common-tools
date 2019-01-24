@@ -1,5 +1,22 @@
 package com.antiy.asset.service.impl;
 
+import java.util.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -14,10 +31,7 @@ import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
+import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.enums.ModuleEnum;
@@ -25,21 +39,6 @@ import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -99,7 +98,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private static final Logger                       logger = LogUtils.get(AssetServiceImpl.class);
 
     @Override
-    public Integer saveAsset(AssetOuterRequest request) throws Exception {
+    public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
 
         Integer num = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
@@ -296,10 +295,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         activityRequest.setBusinessId (String.valueOf (num));
         activityRequest.setProcessDefinitionKey (AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode ());
             ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
+            // 如果流程引擎为空,直接返回错误信息
+            if (null == actionResponse
+                    || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+            }
         }
 
 
-        return num;
+        return ActionResponse.success (num);
     }
 
     private boolean CheckRepeat(String number) throws Exception {
