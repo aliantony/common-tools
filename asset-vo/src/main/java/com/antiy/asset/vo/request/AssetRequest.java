@@ -7,6 +7,7 @@ import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -66,13 +67,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 序列号
      */
     @ApiModelProperty("序列号")
-    @NotNull
     private String                  serial;
     /**
      * 品类型号
      */
     @ApiModelProperty("品类型号")
     @Encode
+    @NotBlank
     private String                 categoryModel;
 
     /**
