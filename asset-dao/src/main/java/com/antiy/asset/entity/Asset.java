@@ -113,7 +113,7 @@ public class Asset extends BaseEntity {
     /**
      * 责任人主键
      */
-    private Integer           responsibleUserId;
+    private String           responsibleUserId;
     /**
      * 物理位置
      */
@@ -436,13 +436,6 @@ public class Asset extends BaseEntity {
         this.systemBit = systemBit;
     }
 
-    public Integer getResponsibleUserId() {
-        return responsibleUserId;
-    }
-
-    public void setResponsibleUserId(Integer responsibleUserId) {
-        this.responsibleUserId = responsibleUserId;
-    }
 
     public String getLocation() {
         return location;
@@ -626,5 +619,9 @@ public class Asset extends BaseEntity {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public void setResponsibleUserId(String responsibleUserId) {
+        this.responsibleUserId = responsibleUserId;
     }
 }
