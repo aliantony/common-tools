@@ -40,6 +40,17 @@ public class AssetOperationRecordBarResponse extends BaseResponse {
     @ApiModelProperty("备注")
     private String  memo;
 
+    @ApiModelProperty("原始状态")
+    private Integer originStatus;
+
+    public Integer getOriginStatus() {
+        return originStatus;
+    }
+
+    public void setOriginStatus(Integer originStatus) {
+        this.originStatus = originStatus;
+    }
+
     public Long getGmtCreate() {
         return gmtCreate;
     }
