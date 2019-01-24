@@ -61,7 +61,6 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         Integer result = assetDepartmentDao.insert(assetDepartment);
         if (result != null && !Objects.equals(result, 0)) {
             // 写入业务日志
-            // todo business phase
             LogHandle.log(assetDepartment.toString(), AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName(),
                 AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName() + " {}", assetDepartment.toString());
@@ -200,7 +199,6 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             Integer result = assetDepartmentDao.delete(list);
             if (!Objects.equals(result, 0)) {
                 // 写入业务日志
-                // todo business phase
                 LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
                     AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
                 LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
