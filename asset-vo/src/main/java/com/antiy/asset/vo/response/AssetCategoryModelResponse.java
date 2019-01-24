@@ -87,6 +87,18 @@ public class AssetCategoryModelResponse extends BaseResponse {
         return status;
     }
 
+    @Override
+    public String toString() {
+        return "AssetCategoryModelResponse{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", assetType=" + assetType +
+                ", parentId='" + parentId + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                '}';
+    }
+
     public void setStatus(Integer status) {
         this.status = status;
     }

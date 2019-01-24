@@ -87,4 +87,16 @@ public class AssetGroupResponse extends BaseResponse {
     public void setAssetList(List<String> assetList) {
         this.assetList = assetList;
     }
+
+    @Override
+    public String toString() {
+        return "AssetGroupResponse{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", memo='" + memo + '\'' +
+                ", createUserName='" + createUserName + '\'' +
+                ", assetList=" + assetList +
+                '}';
+    }
 }

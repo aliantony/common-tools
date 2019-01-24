@@ -35,4 +35,12 @@ public class ActivityHandleRequest {
     public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
+
+    @Override
+    public String toString() {
+        return "ActivityHandleRequest{" +
+                "formData='" + formData + '\'' +
+                ", taskId='" + taskId + '\'' +
+                '}';
+    }
 }

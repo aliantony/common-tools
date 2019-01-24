@@ -123,6 +123,20 @@ public class AssetCpuQuery extends ObjectQuery implements ObjectValidator {
     }
 
     @Override
+    public String toString() {
+        return "AssetCpuQuery{" +
+                "assetId='" + assetId + '\'' +
+                ", serial='" + serial + '\'' +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", mainFrequency=" + mainFrequency +
+                ", threadSize=" + threadSize +
+                ", coreSize=" + coreSize +
+                ", status=" + status +
+                '}';
+    }
+
+    @Override
     public void validate() throws RequestParamValidateException {
 
     }

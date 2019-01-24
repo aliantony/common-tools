@@ -28,28 +28,15 @@ public class AssetGroupRelationRequest extends BasicRequest implements ObjectVal
      * 资产组主键
      */
     @ApiModelProperty("资产组主键")
-    private Integer           assetGroupId;
+    @Encode
+    private String           assetGroupId;
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer           assetId;
+    @Encode
+    private String           assetId;
 
-    public Integer getAssetGroupId() {
-        return assetGroupId;
-    }
-
-    public void setAssetGroupId(Integer assetGroupId) {
-        this.assetGroupId = assetGroupId;
-    }
-
-    public Integer getAssetId() {
-        return assetId;
-    }
-
-    public void setAssetId(Integer assetId) {
-        this.assetId = assetId;
-    }
 
     public String getId() {
         return id;
@@ -57,6 +44,22 @@ public class AssetGroupRelationRequest extends BasicRequest implements ObjectVal
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getAssetGroupId() {
+        return assetGroupId;
+    }
+
+    public void setAssetGroupId(String assetGroupId) {
+        this.assetGroupId = assetGroupId;
+    }
+
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
     }
 
     @Override

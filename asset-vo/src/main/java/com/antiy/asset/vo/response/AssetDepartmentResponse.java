@@ -70,4 +70,13 @@ public class AssetDepartmentResponse extends BaseResponse {
         this.status = status;
     }
 
+    @Override
+    public String toString() {
+        return "AssetDepartmentResponse{" +
+                "name='" + name + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", memo='" + memo + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }

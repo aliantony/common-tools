@@ -117,4 +117,18 @@ public class AssetHardDiskResponse extends BaseResponse {
     public void setBuyDate(Long buyDate) {
         this.buyDate = buyDate;
     }
+
+    @Override
+    public String toString() {
+        return "AssetHardDiskResponse{" +
+                "assetId='" + assetId + '\'' +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", serial='" + serial + '\'' +
+                ", interfaceType=" + interfaceType +
+                ", capacity=" + capacity +
+                ", diskType=" + diskType +
+                ", buyDate=" + buyDate +
+                '}';
+    }
 }

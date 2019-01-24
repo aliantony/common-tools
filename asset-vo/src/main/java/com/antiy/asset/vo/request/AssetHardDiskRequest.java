@@ -173,10 +173,18 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
 
     @Override
     public String toString() {
-        return "AssetHardDisk{" + ", assetId=" + assetId + ", brand=" + brand + ", model=" + model + ", serial="
-               + serial + ", interfaceType=" + interfaceType + ", capacity=" + capacity + ", diskType=" + diskType
-               + ", buyDate=" + buyDate + ", useTimes=" + useTimes + ", cumulativeHour=" + cumulativeHour + ", memo="
-               + memo + "}";
+        return "AssetHardDiskRequest{" +
+                "assetId='" + assetId + '\'' +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", serial='" + serial + '\'' +
+                ", interfaceType=" + interfaceType +
+                ", capacity=" + capacity +
+                ", diskType=" + diskType +
+                ", buyDate=" + buyDate +
+                ", useTimes=" + useTimes +
+                ", cumulativeHour=" + cumulativeHour +
+                ", memo='" + memo + '\'' +
+                '}';
     }
-
 }

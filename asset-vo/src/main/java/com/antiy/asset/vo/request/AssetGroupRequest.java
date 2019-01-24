@@ -9,6 +9,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Arrays;
+
 /**
  * <p> AssetGroupRequest 请求对象 </p>
  *
@@ -72,6 +74,16 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetGroupRequest{" +
+                "id='" + id + '\'' +
+                ", memo='" + memo + '\'' +
+                ", name='" + name + '\'' +
+                ", assetIds=" + Arrays.toString(assetIds) +
+                '}';
     }
 
     @Override

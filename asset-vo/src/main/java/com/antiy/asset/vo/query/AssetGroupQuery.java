@@ -56,6 +56,15 @@ public class AssetGroupQuery extends ObjectQuery implements ObjectValidator {
     }
 
     @Override
+    public String toString() {
+        return "AssetGroupQuery{" +
+                "name='" + name + '\'' +
+                ", memo='" + memo + '\'' +
+                ", createUserName='" + createUserName + '\'' +
+                '}';
+    }
+
+    @Override
     public void validate() throws RequestParamValidateException {
 
     }

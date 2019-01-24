@@ -15,4 +15,11 @@ public class AssetCategoryModelNodeResponse extends AssetCategoryModelResponse {
     public void setChildrenNode(List<AssetCategoryModelResponse> childrenNode) {
         this.childrenNode = childrenNode;
     }
+
+    @Override
+    public String toString() {
+        return "AssetCategoryModelNodeResponse{" +
+                "childrenNode=" + childrenNode +
+                '}';
+    }
 }

@@ -79,6 +79,17 @@ public class AssetHardDiskQuery extends ObjectQuery implements ObjectValidator {
     }
 
     @Override
+    public String toString() {
+        return "AssetHardDiskQuery{" +
+                "assetId='" + assetId + '\'' +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", serial='" + serial + '\'' +
+                ", interfaceType=" + interfaceType +
+                '}';
+    }
+
+    @Override
     public void validate() throws RequestParamValidateException {
 
     }

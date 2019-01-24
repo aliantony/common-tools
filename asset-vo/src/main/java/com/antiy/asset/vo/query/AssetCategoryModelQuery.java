@@ -7,6 +7,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Arrays;
+
 /**
  * <p> AssetCategoryModel 查询条件 </p>
  *
@@ -109,6 +111,19 @@ public class AssetCategoryModelQuery extends ObjectQuery implements ObjectValida
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetCategoryModelQuery{" +
+                "id='" + id + '\'' +
+                ", ids=" + Arrays.toString(ids) +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", assetType=" + assetType +
+                ", parentId='" + parentId + '\'' +
+                ", status=" + status +
+                '}';
     }
 
     @Override

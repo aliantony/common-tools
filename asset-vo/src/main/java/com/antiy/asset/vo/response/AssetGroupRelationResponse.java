@@ -2,6 +2,7 @@ package com.antiy.asset.vo.response;
 
 import java.util.List;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -16,6 +17,7 @@ public class AssetGroupRelationResponse extends BaseResponse {
      * 资产ID
      */
     @ApiModelProperty("资产ID")
+    @Encode
     private String                         assetId;
 
     /**
@@ -130,5 +132,20 @@ public class AssetGroupRelationResponse extends BaseResponse {
 
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetGroupRelationResponse{" +
+                "assetId='" + assetId + '\'' +
+                ", assetName='" + assetName + '\'' +
+                ", number='" + number + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", networkCardResponseList=" + networkCardResponseList +
+                ", assetGroupName='" + assetGroupName + '\'' +
+                ", assetStatusName='" + assetStatusName + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                '}';
     }
 }

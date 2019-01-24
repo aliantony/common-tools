@@ -56,12 +56,14 @@ public class AssetDepartmentQuery extends ObjectQuery implements ObjectValidator
      * 创建人
      */
     @ApiModelProperty("创建人")
-    private Integer createUser;
+    @Encode
+    private String createUser;
     /**
      * 修改人
      */
     @ApiModelProperty("修改人")
-    private Integer modifyUser;
+    @Encode
+    private String modifyUser;
     /**
      * 状态,1未删除,0已删除
      */
@@ -124,22 +126,6 @@ public class AssetDepartmentQuery extends ObjectQuery implements ObjectValidator
         this.memo = memo;
     }
 
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -148,12 +134,36 @@ public class AssetDepartmentQuery extends ObjectQuery implements ObjectValidator
         this.status = status;
     }
 
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public String getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(String modifyUser) {
+        this.modifyUser = modifyUser;
+    }
+
     @Override
     public String toString() {
-        return "AssetDepartment{" + ", name=" + name + ", responsibleUser=" + responsibleUser + ", telephone="
-               + telephone + ", parentId=" + parentId + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified
-               + ", memo=" + memo + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status
-               + "}";
+        return "AssetDepartmentQuery{" +
+                "name='" + name + '\'' +
+                ", responsibleUser='" + responsibleUser + '\'' +
+                ", telephone='" + telephone + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser='" + createUser + '\'' +
+                ", modifyUser='" + modifyUser + '\'' +
+                ", status=" + status +
+                '}';
     }
 
     @Override

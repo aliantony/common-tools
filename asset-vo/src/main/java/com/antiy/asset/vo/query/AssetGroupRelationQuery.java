@@ -35,6 +35,13 @@ public class AssetGroupRelationQuery extends ObjectQuery implements ObjectValida
     }
 
     @Override
+    public String toString() {
+        return "AssetGroupRelationQuery{" +
+                "assetGroupId='" + assetGroupId + '\'' +
+                '}';
+    }
+
+    @Override
     public void validate() throws RequestParamValidateException {
 
     }

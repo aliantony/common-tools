@@ -37,4 +37,13 @@ public class AssetGroupDetailResponse {
     public void setAssetResponseList(List<AssetResponse> assetResponseList) {
         this.assetResponseList = assetResponseList;
     }
+
+    @Override
+    public String toString() {
+        return "AssetGroupDetailResponse{" +
+                "assetGroupName='" + assetGroupName + '\'' +
+                ", assetGroupMemo='" + assetGroupMemo + '\'' +
+                ", assetResponseList=" + assetResponseList +
+                '}';
+    }
 }
