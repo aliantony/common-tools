@@ -30,7 +30,10 @@ import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.templet.AssetSoftwareEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
 import com.antiy.asset.templet.ImportResult;
-import com.antiy.asset.util.*;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
@@ -423,13 +426,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             HashMap<String, Long> result = new HashMap<>();
             for (AssetCategoryModel a : categoryModelList1) {
                 List<AssetCategoryModel> search = recursionSearch(a.getId());
-                List list = new ArrayList();
-                for (AssetCategoryModel b : search) {
-                    list.add(b.getId());
+                String[] list = new String[search.size()];
+                for (int i = 0; i < search.size(); i++) {
+                    list[i] = search.get(i).getStringId();
                 }
                 AssetSoftwareQuery assetSoftwareQuery = new AssetSoftwareQuery();
-                assetSoftwareQuery.setCategoryModels(ArrayTypeUtil.ObjectArrayToIntegerArray(list.toArray()));
-                assetSoftwareQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToIntegerArray(ids.toArray()));
+                assetSoftwareQuery.setCategoryModels(list);
+                assetSoftwareQuery.setAreaIds(DataTypeUtils.integerArrayToStringArray(ids));
                 Long sum = assetSoftwareDao.findCountByCategoryModel(assetSoftwareQuery);
                 result.put(a.getName(), sum);
             }
@@ -611,7 +614,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,
                             AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
         assetSoftwareQuery.setAreaIds(
-            ArrayTypeUtil.ObjectArrayToIntegerArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         assetSoftwareQuery.setQueryAssetCount(true);
         List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery);
         ParamterExceptionUtils.isEmpty(list, "资产数据不能为空");

@@ -1,5 +1,7 @@
 package com.antiy.asset.util;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 
 import com.antiy.common.exception.BusinessException;
@@ -23,6 +25,7 @@ public class DataTypeUtils {
         }
         return result;
     }
+
     public static Integer[] stringArrayToIntegerArray(String[] values) {
         Integer[] result = new Integer[values.length];
         for (int i = 0; i < values.length; i++) {
@@ -31,6 +34,19 @@ public class DataTypeUtils {
             } catch (NumberFormatException e) {
                 logger.error("字符串转换为整形出错", e);
                 throw new BusinessException("字符串转换为整形出错");
+            }
+        }
+        return result;
+    }
+
+    public static String[] integerArrayToStringArray(List values) {
+        String[] result = new String[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            try {
+                result[i] = String.valueOf(values.get(i));
+            } catch (NumberFormatException e) {
+                logger.error("整形转换为字符串出错", e);
+                throw new BusinessException("整形转换为字符串出错");
             }
         }
         return result;
