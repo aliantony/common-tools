@@ -34,7 +34,11 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     @ApiModelProperty(value = "资产Id")
     @Encode
     private String[]                    assetIds;
-
+    /**
+     *  MD5/SHA
+     */
+    @ApiModelProperty("MD5/SHA")
+    private String md5Code;
     /**
      * 主键
      */
@@ -380,6 +384,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
                 ", softwareLicenseRequest=" + softwareLicenseRequest +
                 ", assetPortProtocolRequest=" + assetPortProtocolRequest +
                 ", assetIds=" + Arrays.toString (assetIds) +
+                ", md5Code='" + md5Code + '\'' +
                 ", id='" + id + '\'' +
                 ", size=" + size +
                 ", operationSystem='" + operationSystem + '\'' +
@@ -404,5 +409,13 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
                 ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\'' +
                 ", request=" + request +
                 '}';
+    }
+
+    public String getMd5Code() {
+        return md5Code;
+    }
+
+    public void setMd5Code(String md5Code) {
+        this.md5Code = md5Code;
     }
 }
