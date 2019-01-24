@@ -1,8 +1,5 @@
 package com.antiy.asset.controller;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetOperationRecordService;
 import com.antiy.asset.vo.query.AssetOperationRecordQuery;
-import com.antiy.asset.vo.response.AssetOperationRecordBarResponse;
 import com.antiy.common.base.ActionResponse;
 
 import io.swagger.annotations.*;
