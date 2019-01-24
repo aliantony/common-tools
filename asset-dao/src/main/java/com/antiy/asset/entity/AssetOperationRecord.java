@@ -53,6 +53,19 @@ public class AssetOperationRecord extends BaseEntity {
      */
     private Integer processResult;
 
+    /**
+     * 原始状态
+     */
+    private Integer originStatus;
+
+    public Integer getOriginStatus() {
+        return originStatus;
+    }
+
+    public void setOriginStatus(Integer originStatus) {
+        this.originStatus = originStatus;
+    }
+
     public String getTargetObjectId() {
         return targetObjectId;
     }
