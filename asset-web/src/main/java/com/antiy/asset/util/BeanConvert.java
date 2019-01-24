@@ -80,8 +80,7 @@ public class BeanConvert {
         if (target == null) {
             return null;
         }
-        BeanCopier copier = BeanCopier.create(target.getClass(), c2, true);
-        List<String> rule = getRules(target.getClass().getDeclaredFields(), c2.getDeclaredFields());
+        BeanCopier copier = BeanCopier.create(target.getClass(), c2, false);
         T o2 = null;
         try {
             o2 = c2.newInstance();
@@ -90,7 +89,7 @@ public class BeanConvert {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        copy(copier, target, o2, rule);
+        copy(copier, target, o2);
         return o2;
     }
 
@@ -107,8 +106,7 @@ public class BeanConvert {
         if (target == null || target.isEmpty()) {
             return null;
         }
-        BeanCopier copier = BeanCopier.create(target.get(0).getClass(), c2, true);
-        List<String> rule = getRules(target.get(0).getClass().getDeclaredFields(), c2.getDeclaredFields());
+        BeanCopier copier = BeanCopier.create(target.get(0).getClass(), c2, false);
         List<T> list = Lists.newArrayList();
         T o2 = null;
         for (Object o : target) {
@@ -119,26 +117,18 @@ public class BeanConvert {
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-            copy(copier, o, o2, rule);
+            copy(copier, o, o2);
             list.add(o2);
         }
         return list;
     }
 
+    private static void copy(BeanCopier copier, Object o, Object o2) {
+        copier.copy(o, o2, null);
+    }
+
     private static void copy(BeanCopier copier, Object o, Object o2, List<String> rule) {
-        copier.copy(o, o2, new Converter() {
-            @Override
-            public Object convert(Object o, Class aClass, Object o1) {
-                if (o != null && rule.contains(o1)) {
-                    if (String.class.equals(aClass)) {
-                        return String.valueOf(o);
-                    } else if (Integer.class.equals(aClass)) {
-                        return Integer.parseInt(o.toString());
-                    }
-                }
-                return o;
-            }
-        });
+        copier.copy(o, o2, null);
     }
 
     public static List<String> getRules(Field[] f1, Field[] f2) {
