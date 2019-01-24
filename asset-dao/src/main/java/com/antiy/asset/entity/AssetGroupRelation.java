@@ -36,7 +36,7 @@ public class AssetGroupRelation extends BaseEntity {
     /**
      * 创建人
      */
-    private String           createUser;
+    private Integer           createUser;
     /**
      * 创建人名字
      */
@@ -44,7 +44,7 @@ public class AssetGroupRelation extends BaseEntity {
     /**
      * 修改人
      */
-    private String           modifyUser;
+    private Integer           modifyUser;
     /**
      * 状态,1未删除,0已删除
      */
@@ -66,11 +66,19 @@ public class AssetGroupRelation extends BaseEntity {
         this.assetId = assetId;
     }
 
-    public void setCreateUser(String createUser) {
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
     }
 
-    public void setModifyUser(String modifyUser) {
+    public Integer getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(Integer modifyUser) {
         this.modifyUser = modifyUser;
     }
 
