@@ -2,6 +2,7 @@ package com.antiy.asset.vo.response;
 
 import java.util.List;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -51,7 +52,8 @@ public class AssetResponse extends BaseResponse {
      * 品类
      */
     @ApiModelProperty("品类")
-    private Integer                  categoryModel;
+    @Encode
+    private String                  categoryModel;
     /**
      * 品类名称
      */
@@ -92,7 +94,8 @@ public class AssetResponse extends BaseResponse {
      * 责任人主键
      */
     @ApiModelProperty("责任人主键")
-    private Integer                  responsibleUserId;
+    @Encode
+    private String                  responsibleUserId;
     /**
      * 联系电话
      */
@@ -119,7 +122,8 @@ public class AssetResponse extends BaseResponse {
      * 父类资源Id
      */
     @ApiModelProperty("父类资源Id")
-    private Integer                  parentId;
+    @Encode
+    private String                  parentId;
     /**
      * 所属标签
      */
@@ -226,14 +230,6 @@ public class AssetResponse extends BaseResponse {
         this.serial = serial;
     }
 
-    public Integer getCategoryModel() {
-        return categoryModel;
-    }
-
-    public void setCategoryModel(Integer categoryModel) {
-        this.categoryModel = categoryModel;
-    }
-
     public String getManufacturer() {
         return manufacturer;
     }
@@ -282,14 +278,6 @@ public class AssetResponse extends BaseResponse {
         this.uuid = uuid;
     }
 
-    public Integer getResponsibleUserId() {
-        return responsibleUserId;
-    }
-
-    public void setResponsibleUserId(Integer responsibleUserId) {
-        this.responsibleUserId = responsibleUserId;
-    }
-
     public String getContactTel() {
         return contactTel;
     }
@@ -320,14 +308,6 @@ public class AssetResponse extends BaseResponse {
 
     public void setImportanceDegree(Integer importanceDegree) {
         this.importanceDegree = importanceDegree;
-    }
-
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
     }
 
     public String getTags() {
@@ -392,5 +372,64 @@ public class AssetResponse extends BaseResponse {
 
     public void setFirstEnterNett(Long firstEnterNett) {
         this.firstEnterNett = firstEnterNett;
+    }
+
+    public String getCategoryModel() {
+        return categoryModel;
+    }
+
+    public void setCategoryModel(String categoryModel) {
+        this.categoryModel = categoryModel;
+    }
+
+    public String getResponsibleUserId() {
+        return responsibleUserId;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetResponse{" +
+                "number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", assetGroup='" + assetGroup + '\'' +
+                ", assetGroups=" + assetGroups +
+                ", ip='" + ip + '\'' +
+                ", mac='" + mac + '\'' +
+                ", serial='" + serial + '\'' +
+                ", categoryModel='" + categoryModel + '\'' +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", assetStatus=" + assetStatus +
+                ", operationSystem='" + operationSystem + '\'' +
+                ", systemBit=" + systemBit +
+                ", firmwareVersion='" + firmwareVersion + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", responsibleUserId='" + responsibleUserId + '\'' +
+                ", contactTel='" + contactTel + '\'' +
+                ", email='" + email + '\'' +
+                ", assetSource=" + assetSource +
+                ", importanceDegree=" + importanceDegree +
+                ", parentId='" + parentId + '\'' +
+                ", tags='" + tags + '\'' +
+                ", innet=" + innet +
+                ", serviceLife=" + serviceLife +
+                ", buyDate=" + buyDate +
+                ", warranty=" + warranty +
+                ", admittanceStatus=" + admittanceStatus +
+                ", gmtCreate=" + gmtCreate +
+                ", firstEnterNett=" + firstEnterNett +
+                '}';
+    }
+
+    public void setResponsibleUserId(String responsibleUserId) {
+        this.responsibleUserId = responsibleUserId;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 }

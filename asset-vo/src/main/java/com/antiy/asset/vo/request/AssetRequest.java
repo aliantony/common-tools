@@ -74,7 +74,8 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 品类型号
      */
     @ApiModelProperty("品类型号")
-    private Integer                 categoryModel;
+    @Encode
+    private String                 categoryModel;
 
     /**
      * 行政区划主键ID
@@ -143,7 +144,8 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 父类资源Id
      */
     @ApiModelProperty("父类资源Id")
-    private Integer                 parentId;
+    @Encode
+    private String                 parentId;
     /**
      * 所属标签ID和名称列表JSON串
      */
@@ -215,13 +217,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.serial = serial;
     }
 
-    public Integer getCategoryModel() {
-        return categoryModel;
-    }
 
-    public void setCategoryModel(Integer categoryModel) {
-        this.categoryModel = categoryModel;
-    }
 
     public String getAreaId() {
         return areaId;
@@ -311,11 +307,19 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.importanceDegree = importanceDegree;
     }
 
-    public Integer getParentId() {
+    public String getCategoryModel() {
+        return categoryModel;
+    }
+
+    public void setCategoryModel(String categoryModel) {
+        this.categoryModel = categoryModel;
+    }
+
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 
@@ -402,5 +406,39 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     @Override
     public void validate() throws RequestParamValidateException {
 
+    }
+
+    @Override
+    public String toString() {
+        return "AssetRequest{" +
+                "id='" + id + '\'' +
+                ", assetGroups=" + assetGroups +
+                ", houseLocation='" + houseLocation + '\'' +
+                ", contactTel='" + contactTel + '\'' +
+                ", email='" + email + '\'' +
+                ", number='" + number + '\'' +
+                ", type=" + type +
+                ", name='" + name + '\'' +
+                ", serial='" + serial + '\'' +
+                ", categoryModel='" + categoryModel + '\'' +
+                ", areaId='" + areaId + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", assetStatus=" + assetStatus +
+                ", operationSystem='" + operationSystem + '\'' +
+                ", systemBit=" + systemBit +
+                ", location='" + location + '\'' +
+                ", firmwareVersion='" + firmwareVersion + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", responsibleUserId='" + responsibleUserId + '\'' +
+                ", assetSource=" + assetSource +
+                ", importanceDegree=" + importanceDegree +
+                ", parentId='" + parentId + '\'' +
+                ", tags='" + tags + '\'' +
+                ", isInnet=" + isInnet +
+                ", serviceLife=" + serviceLife +
+                ", buyDate=" + buyDate +
+                ", warranty=" + warranty +
+                ", admittanceStatus=" + admittanceStatus +
+                '}';
     }
 }

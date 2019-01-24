@@ -90,7 +90,7 @@ public class Asset extends BaseEntity {
     /**
      * 责任人主键
      */
-    private Integer           responsibleUserId;
+    private String           responsibleUserId;
     /**
      * 联系电话
      */
@@ -130,7 +130,6 @@ public class Asset extends BaseEntity {
     /**
      * 父类资源Id
      */
-    @Encode
     private String            parentId;
     /**
      * 所属标签ID和名称列表JSON串
@@ -314,12 +313,20 @@ public class Asset extends BaseEntity {
         this.uuid = uuid;
     }
 
-    public Integer getResponsibleUserId() {
+    public String getResponsibleUserId() {
         return responsibleUserId;
     }
 
-    public void setResponsibleUserId(Integer responsibleUserId) {
+    public void setResponsibleUserId(String responsibleUserId) {
         this.responsibleUserId = responsibleUserId;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public Integer getModifyUser() {
+        return modifyUser;
     }
 
     public String getContactTel() {
