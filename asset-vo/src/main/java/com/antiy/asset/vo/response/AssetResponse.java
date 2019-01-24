@@ -51,7 +51,7 @@ public class AssetResponse extends BaseResponse {
      * 品类
      */
     @ApiModelProperty("品类")
-    private Integer                  categoryModel;
+    private String                  categoryModel;
     /**
      * 品类名称
      */
@@ -128,8 +128,8 @@ public class AssetResponse extends BaseResponse {
     /**
      * 是否入网,false表示未入网,true表示入网
      */
-    @ApiModelProperty("是否入网,false表示未入网,true已入网")
-    private Boolean                  innet;
+    @ApiModelProperty("是否入网,0表示未入网,1已入网")
+    private Integer                  innet;
     /**
      * 使用到期时间
      */
@@ -226,11 +226,11 @@ public class AssetResponse extends BaseResponse {
         this.serial = serial;
     }
 
-    public Integer getCategoryModel() {
+    public String getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
     }
 
@@ -338,11 +338,11 @@ public class AssetResponse extends BaseResponse {
         this.tags = tags;
     }
 
-    public Boolean getInnet() {
+    public Integer getInnet() {
         return innet;
     }
 
-    public void setInnet(Boolean innet) {
+    public void setInnet(Integer innet) {
         this.innet = innet;
     }
 
