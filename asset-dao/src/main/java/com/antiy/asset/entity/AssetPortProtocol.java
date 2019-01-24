@@ -11,12 +11,10 @@ import com.antiy.common.base.BaseEntity;
 
 public class AssetPortProtocol extends BaseEntity {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 资产软件关系表主键
      */
-    private Integer           assetSoftId;
+    private String           assetSoftId;
     /**
      * 端口
      */
@@ -54,12 +52,16 @@ public class AssetPortProtocol extends BaseEntity {
      */
     private Integer           status;
 
-    public Integer getAssetSoftId() {
+    public String getAssetSoftId() {
         return assetSoftId;
     }
 
-    public void setAssetSoftId(Integer assetSoftId) {
+    public void setAssetSoftId(String assetSoftId) {
         this.assetSoftId = assetSoftId;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
     public Integer getPort() {

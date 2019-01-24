@@ -7,6 +7,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Arrays;
+
 /**
  * <p> AssetPortProtocolRequest 请求对象 </p>
  *
@@ -82,6 +84,17 @@ public class AssetPortProtocolRequest extends BasicRequest implements ObjectVali
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetPortProtocolRequest{" +
+                "assetSoftId='" + assetSoftId + '\'' +
+                ", id='" + id + '\'' +
+                ", port=" + Arrays.toString(port) +
+                ", protocol='" + protocol + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 
     @Override

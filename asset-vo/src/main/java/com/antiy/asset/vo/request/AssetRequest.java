@@ -81,7 +81,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("行政区id")
     @Encode
-    private Integer                 areaId;
+    private String                 areaId;
     /**
      * 厂商
      */
@@ -122,8 +122,9 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 责任人主键
      */
     @ApiModelProperty("责任人主键")
+    @Encode
     @NotNull
-    private Integer                 responsibleUserId;
+    private String                 responsibleUserId;
 
     /**
      * 上报来源,1-自动上报，2-人工上报
@@ -222,11 +223,11 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.categoryModel = categoryModel;
     }
 
-    public Integer getAreaId() {
+    public String getAreaId() {
         return areaId;
     }
 
-    public void setAreaId(Integer areaId) {
+    public void setAreaId(String areaId) {
         this.areaId = areaId;
     }
 
@@ -286,11 +287,11 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.uuid = uuid;
     }
 
-    public Integer getResponsibleUserId() {
+    public String getResponsibleUserId() {
         return responsibleUserId;
     }
 
-    public void setResponsibleUserId(Integer responsibleUserId) {
+    public void setResponsibleUserId(String responsibleUserId) {
         this.responsibleUserId = responsibleUserId;
     }
 

@@ -1,9 +1,9 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
-import io.swagger.annotations.ApiModelProperty;
-import com.antiy.common.validation.ObjectValidator;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
 
 /**
  * <p> AssetPeripheralEquipmentRequest 请求对象 </p>
@@ -17,54 +17,46 @@ public class AssetPeripheralEquipmentRequest extends BasicRequest implements Obj
     /**
      * 资产主键
      */
-    @ApiModelProperty("资产主键")
-    private Integer assetId;
+    @Encode
+    private String assetId;
     /**
      * 设备类型：1鼠标2键盘3打印机
      */
-    @ApiModelProperty("设备类型：1鼠标2键盘3打印机")
     private Integer type;
     /**
      * 厂商
      */
-    @ApiModelProperty("厂商")
     private String  manufacturer;
     /**
      * 创建时间
      */
-    @ApiModelProperty("创建时间")
     private Long    gmtCreate;
     /**
      * 更新时间
      */
-    @ApiModelProperty("更新时间")
     private Long    gmtModified;
     /**
      * 备注
      */
-    @ApiModelProperty("备注")
     private String  memo;
     /**
      * 创建人
      */
-    @ApiModelProperty("创建人")
     private Integer createUser;
     /**
      * 修改人
      */
-    @ApiModelProperty("修改人")
     private Integer modifyUser;
     /**
      * 状态,0 已删除,1未删除
      */
-    @ApiModelProperty("状态,0 已删除,1未删除")
     private Integer status;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 
@@ -130,6 +122,21 @@ public class AssetPeripheralEquipmentRequest extends BasicRequest implements Obj
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetPeripheralEquipmentRequest{" +
+                "assetId='" + assetId + '\'' +
+                ", type=" + type +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                '}';
     }
 
     @Override

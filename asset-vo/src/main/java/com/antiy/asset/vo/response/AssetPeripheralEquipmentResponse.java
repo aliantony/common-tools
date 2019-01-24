@@ -1,53 +1,63 @@
-package com.antiy.asset.dto;
+package com.antiy.asset.vo.response;
 
-import java.util.Date;
 import com.antiy.common.base.BaseEntity;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * <p> 输入设备表 数据对象 </p>
+ * <p> AssetPeripheralEquipmentResponse 响应对象 </p>
  *
  * @author zhangyajun
- * @since 2019-01-11
+ * @since 2018-12-27
  */
 
-public class AssetPeripheralEquipmentDTO extends BaseEntity {
+public class AssetPeripheralEquipmentResponse extends BaseResponse {
 
     /**
      * 资产主键
      */
+    @ApiModelProperty("资产主键")
+    @Encode
     private String assetId;
     /**
      * 设备类型：1鼠标2键盘3打印机
      */
+    @ApiModelProperty("设备类型")
     private Integer type;
     /**
      * 厂商
      */
+    @ApiModelProperty("厂商")
     private String  manufacturer;
     /**
      * 创建时间
      */
+    @ApiModelProperty("创建时间")
     private Long    gmtCreate;
     /**
      * 更新时间
      */
+    @ApiModelProperty("更新时间")
     private Long    gmtModified;
     /**
      * 备注
      */
+    @ApiModelProperty("备注")
     private String  memo;
     /**
      * 创建人
      */
+    @ApiModelProperty("创建人")
     private Integer createUser;
     /**
      * 修改人
      */
+    @ApiModelProperty("修改人")
     private Integer modifyUser;
     /**
      * 状态,0 已删除,1未删除
      */
+    @ApiModelProperty("状态")
     private Integer status;
 
     public String getAssetId() {
@@ -83,7 +93,7 @@ public class AssetPeripheralEquipmentDTO extends BaseEntity {
     }
 
     public Long getGmtModified() {
-        return System.currentTimeMillis();
+        return gmtModified;
     }
 
     public void setGmtModified(Long gmtModified) {
@@ -124,8 +134,16 @@ public class AssetPeripheralEquipmentDTO extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetPeripheralEquipment{" + ", assetId=" + assetId + ", type=" + type + ", manufacturer="
-               + manufacturer + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo
-               + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status + "}";
+        return "AssetPeripheralEquipmentResponse{" +
+                "assetId='" + assetId + '\'' +
+                ", type=" + type +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                '}';
     }
 }

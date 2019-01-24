@@ -149,4 +149,21 @@ public class AssetOuterResponse {
     public void setAssetSoftwareRelationList(List<AssetSoftwareRelationResponse> assetSoftwareRelationList) {
         this.assetSoftwareRelationList = assetSoftwareRelationList;
     }
+
+    @Override
+    public String toString() {
+        return "AssetOuterResponse{" +
+                "asset=" + asset +
+                ", assetCpu=" + assetCpu +
+                ", assetNetworkCard=" + assetNetworkCard +
+                ", assetMemory=" + assetMemory +
+                ", assetMainborad=" + assetMainborad +
+                ", assetHardDisk=" + assetHardDisk +
+                ", assetNetworkEquipment=" + assetNetworkEquipment +
+                ", assetSafetyEquipment=" + assetSafetyEquipment +
+                ", assetStorageMedium=" + assetStorageMedium +
+                ", assetSoftware=" + assetSoftware +
+                ", assetSoftwareRelationList=" + assetSoftwareRelationList +
+                '}';
+    }
 }

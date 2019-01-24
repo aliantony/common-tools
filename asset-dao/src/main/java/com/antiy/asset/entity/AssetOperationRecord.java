@@ -11,12 +11,10 @@ import com.antiy.common.base.BaseEntity;
 
 public class AssetOperationRecord extends BaseEntity {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 被操作的对象ID
      */
-    private Integer           targetObjectId;
+    private String           targetObjectId;
     /**
      * 被操作对象类别
      */
@@ -50,11 +48,11 @@ public class AssetOperationRecord extends BaseEntity {
      */
     private Integer           createUser;
 
-    public Integer getTargetObjectId() {
+    public String getTargetObjectId() {
         return targetObjectId;
     }
 
-    public void setTargetObjectId(Integer targetObjectId) {
+    public void setTargetObjectId(String targetObjectId) {
         this.targetObjectId = targetObjectId;
     }
 

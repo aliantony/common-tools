@@ -184,4 +184,23 @@ public class AssetNetworkEquipmentResponse extends BaseResponse {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "AssetNetworkEquipmentResponse{" +
+                "assetId='" + assetId + '\'' +
+                ", interfaceSize=" + interfaceSize +
+                ", isWireless=" + isWireless +
+                ", innerIp='" + innerIp + '\'' +
+                ", outerIp='" + outerIp + '\'' +
+                ", macAddress='" + macAddress + '\'' +
+                ", subnetMask='" + subnetMask + '\'' +
+                ", expectBandwidth=" + expectBandwidth +
+                ", register=" + register +
+                ", dramSize=" + dramSize +
+                ", flashSize=" + flashSize +
+                ", ncrmSize=" + ncrmSize +
+                ", status=" + status +
+                '}';
+    }
 }

@@ -144,4 +144,20 @@ public class AssetPortProtocolResponse extends BaseResponse {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "AssetPortProtocolResponse{" +
+                "assetSoftId='" + assetSoftId + '\'' +
+                ", port=" + port +
+                ", protocol='" + protocol + '\'' +
+                ", description='" + description + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                '}';
+    }
 }

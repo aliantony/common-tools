@@ -13,7 +13,7 @@ public class AssetOperationRecordMapper {
     /**
      * 被操作的对象ID
      */
-    private Integer targetObjectId;
+    private String targetObjectId;
     /**
      * 被操作对象名称
      */
@@ -55,11 +55,7 @@ public class AssetOperationRecordMapper {
      */
     private String  fileInfo;
 
-    public Integer getTargetObject() {
-        return targetObjectId;
-    }
-
-    public void setTargetObject(Integer targetObjectId) {
+    public void setTargetObjectId(String targetObjectId) {
         this.targetObjectId = targetObjectId;
     }
 
@@ -133,14 +129,6 @@ public class AssetOperationRecordMapper {
 
     public void setOperateUserName(String operateUserName) {
         this.operateUserName = operateUserName;
-    }
-
-    public Integer getTargetObjectId() {
-        return targetObjectId;
-    }
-
-    public void setTargetObjectId(Integer targetObjectId) {
-        this.targetObjectId = targetObjectId;
     }
 
     public String getFileInfo() {

@@ -92,6 +92,17 @@ public class AssetOperationRecordRequest extends BasicRequest implements ObjectV
     }
 
     @Override
+    public String toString() {
+        return "AssetOperationRecordRequest{" +
+                "targetObjectId='" + targetObjectId + '\'' +
+                ", targetType='" + targetType + '\'' +
+                ", content='" + content + '\'' +
+                ", createUser=" + createUser +
+                ", gmtCreate=" + gmtCreate +
+                '}';
+    }
+
+    @Override
     public void validate() throws RequestParamValidateException {
 
     }

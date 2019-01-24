@@ -170,4 +170,23 @@ public class AssetOperationRecordResponse extends BaseResponse {
     public void setFileInfo(String fileInfo) {
         this.fileInfo = fileInfo;
     }
+
+    @Override
+    public String toString() {
+        return "AssetOperationRecordResponse{" +
+                "targetObjectId='" + targetObjectId + '\'' +
+                ", targetType='" + targetType + '\'' +
+                ", targetStatus=" + targetStatus +
+                ", content='" + content + '\'' +
+                ", operateUserId=" + operateUserId +
+                ", operateUserName='" + operateUserName + '\'' +
+                ", schemeId=" + schemeId +
+                ", gmtCreate=" + gmtCreate +
+                ", type=" + type +
+                ", result=" + result +
+                ", putintoTime=" + putintoTime +
+                ", putintoUser='" + putintoUser + '\'' +
+                ", fileInfo='" + fileInfo + '\'' +
+                '}';
+    }
 }
