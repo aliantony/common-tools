@@ -915,4 +915,18 @@
         </if>
         GROUP BY asset_status
     </select>
+
+    <select id="queryAssetByIds" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+
+        select
+        *
+        from
+        asset
+        where
+         id in
+         <foreach collection="array" open="(" close=")" separator="," item="item" index="index">
+             #{item}
+         </foreach>
+        and status = 1
+    </select>
 </mapper>
