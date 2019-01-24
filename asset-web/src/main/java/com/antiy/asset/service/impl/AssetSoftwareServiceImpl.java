@@ -163,8 +163,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             activityRequest.setBusinessId(String.valueOf(num));
             activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
             ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
-            if (null==actionResponse||! RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())){
-
+            // 如果流程引擎为空,直接返回错误信息
+            if (null == actionResponse
+                    || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
         }
 

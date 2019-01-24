@@ -4,10 +4,10 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
-import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,7 +29,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @param request
      * @return
      */
-    Integer saveAsset(AssetOuterRequest request) throws Exception;
+    ActionResponse saveAsset(AssetOuterRequest request) throws Exception;
 
     /**
      * 修改

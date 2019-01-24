@@ -50,8 +50,7 @@ public class AssetController {
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:saveSingle')")
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset) throws Exception {
-        iAssetService.saveAsset(asset);
-        return ActionResponse.success();
+        return ActionResponse.success( iAssetService.saveAsset(asset));
     }
 
     /**
