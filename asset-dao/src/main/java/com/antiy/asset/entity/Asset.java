@@ -89,7 +89,7 @@ public class Asset extends BaseEntity {
     /**
      * 品类型号
      */
-    private Integer           categoryModel;
+    private String           categoryModel;
     /**
      * 厂商
      */
@@ -170,7 +170,7 @@ public class Asset extends BaseEntity {
     /**
      * 是否入网,0表示未入网,1表示入网
      */
-    private Boolean           isInnet;
+    private Integer           isInnet;
     /**
      * 使用到期时间
      */
@@ -388,12 +388,16 @@ public class Asset extends BaseEntity {
         this.areaId = areaId;
     }
 
-    public Integer getCategoryModel() {
+    public String getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
+    }
+
+    public String getResponsibleUserId() {
+        return responsibleUserId;
     }
 
     public String getManufacturer() {
@@ -541,12 +545,12 @@ public class Asset extends BaseEntity {
         this.firstEnterNett = firstEnterNett;
     }
 
-    public Boolean getInnet() {
+    public Integer getIsInnet() {
         return isInnet;
     }
 
-    public void setInnet(Boolean innet) {
-        isInnet = innet;
+    public void setIsInnet(Integer isInnet) {
+        this.isInnet = isInnet;
     }
 
     public Long getServiceLife() {

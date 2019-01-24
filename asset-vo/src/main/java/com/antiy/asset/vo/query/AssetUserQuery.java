@@ -24,7 +24,12 @@ public class AssetUserQuery extends ObjectQuery implements ObjectValidator {
      * 部门主键
      */
     @ApiModelProperty("部门主键")
-    private Integer departmentId;
+    private String departmentId;
+    /**
+     * 部门主键
+     */
+    @ApiModelProperty("部门主键")
+    private String[] departmentIds;
     /**
      * 电子邮箱
      */
@@ -59,12 +64,20 @@ public class AssetUserQuery extends ObjectQuery implements ObjectValidator {
         this.name = name;
     }
 
-    public Integer getDepartmentId() {
+    public String getDepartmentId() {
         return departmentId;
     }
 
-    public void setDepartmentId(Integer departmentId) {
+    public void setDepartmentId(String departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public String[] getDepartmentIds() {
+        return departmentIds;
+    }
+
+    public void setDepartmentIds(String[] departmentIds) {
+        this.departmentIds = departmentIds;
     }
 
     public String getEmail() {
@@ -106,6 +119,7 @@ public class AssetUserQuery extends ObjectQuery implements ObjectValidator {
     public void setAddress(String address) {
         this.address = address;
     }
+
 
     @Override
     public void validate() throws RequestParamValidateException {

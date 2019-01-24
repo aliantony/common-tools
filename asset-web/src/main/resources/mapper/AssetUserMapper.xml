@@ -345,11 +345,14 @@
         a.gmt_create AS gmtCreate, a.gmt_modified AS gmtModified, a.status,a.memo
         from asset_user a left join asset_department b on a.department_id = b.id
         where 1 = 1
+        <if test=" departmentId != null">
+            AND a.department_id in
+            <foreach collection="departmentIds" separator="," open="(" close=")" index="index" item="item">
+                #{item }
+            </foreach>
+        </if>
         <if test=" name != null">
             AND a.name like concat('%',#{name },'%')
-        </if>
-        <if test=" departmentId != null">
-            AND a.department_id = #{departmentId }
         </if>
         <if test=" email != null">
             AND a.email = #{email }
