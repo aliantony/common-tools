@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+import com.antiy.common.encoder.Encode;
 
 /**
  * <p> 资产主表 </p>
@@ -43,9 +44,9 @@ public class Asset extends BaseEntity {
      */
     private String            serial;
     /**
-     * 品类
+     * 品类id
      */
-    private Integer           categoryModel;
+    private String            categoryModel;
     /**
      * 品类名称
      */
@@ -129,7 +130,8 @@ public class Asset extends BaseEntity {
     /**
      * 父类资源Id
      */
-    private Integer           parentId;
+    @Encode
+    private String            parentId;
     /**
      * 所属标签ID和名称列表JSON串
      */
@@ -169,11 +171,11 @@ public class Asset extends BaseEntity {
     /**
      * 创建人
      */
-    private Integer           createUser;
+    private String            createUser;
     /**
      * 修改人
      */
-    private Integer           modifyUser;
+    private String            modifyUser;
     /**
      * 状态,1未删除,0已删除
      */
@@ -392,14 +394,6 @@ public class Asset extends BaseEntity {
         this.networkCard = networkCard;
     }
 
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
-
     public String getTags() {
         return tags;
     }
@@ -468,19 +462,19 @@ public class Asset extends BaseEntity {
         this.memo = memo;
     }
 
-    public Integer getCreateUser() {
+    public String getCreateUser() {
         return createUser;
     }
 
-    public void setCreateUser(Integer createUser) {
+    public void setCreateUser(String createUser) {
         this.createUser = createUser;
     }
 
-    public Integer getModifyUser() {
+    public String getModifyUser() {
         return modifyUser;
     }
 
-    public void setModifyUser(Integer modifyUser) {
+    public void setModifyUser(String modifyUser) {
         this.modifyUser = modifyUser;
     }
 
@@ -490,10 +484,6 @@ public class Asset extends BaseEntity {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public Integer getCategoryModel() {
-        return categoryModel;
     }
 
     public String getCategoryModelName() {
@@ -510,17 +500,52 @@ public class Asset extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Asset{" + ", number=" + number + ", type=" + type + ", name=" + name + ", serial=" + serial
-               + ", categoryModel=" + categoryModel + ", manufacturer=" + manufacturer + ", assetStatus=" + assetStatus
-               + ", operationSystem=" + operationSystem + ", systemBit=" + systemBit + ", location=" + location
-               + ", latitude=" + latitude + ", longitude=" + longitude + ", firmwareVersion=" + firmwareVersion
-               + ", uuid=" + uuid + ", responsibleUserId=" + responsibleUserId + ", contactTel=" + contactTel
-               + ", email=" + email + ", hardDisk=" + hardDisk + ", memory=" + memory + ", assetSource=" + assetSource
-               + ", importanceDegree=" + importanceDegree + ", describle=" + describle + ", cpu=" + cpu
-               + ", networkCard=" + networkCard + ", parentId=" + parentId + ", tags=" + tags + ", isInnet=" + isInnet
-               + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty=" + warranty + ", gmtCreate="
-               + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser=" + createUser
-               + ", modifyUser=" + modifyUser + ", isDelete=" + status + "}";
+        return "Asset{" +
+                "number='" + number + '\'' +
+                ", assetGroup='" + assetGroup + '\'' +
+                ", areaId='" + areaId + '\'' +
+                ", houseLocation='" + houseLocation + '\'' +
+                ", type=" + type +
+                ", name='" + name + '\'' +
+                ", serial='" + serial + '\'' +
+                ", categoryModel='" + categoryModel + '\'' +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", assetStatus=" + assetStatus +
+                ", operationSystem='" + operationSystem + '\'' +
+                ", systemBit=" + systemBit +
+                ", location='" + location + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", firmwareVersion='" + firmwareVersion + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", responsibleUserId=" + responsibleUserId +
+                ", contactTel='" + contactTel + '\'' +
+                ", email='" + email + '\'' +
+                ", hardDisk='" + hardDisk + '\'' +
+                ", memory='" + memory + '\'' +
+                ", assetSource=" + assetSource +
+                ", importanceDegree=" + importanceDegree +
+                ", describle='" + describle + '\'' +
+                ", cpu='" + cpu + '\'' +
+                ", networkCard='" + networkCard + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", tags='" + tags + '\'' +
+                ", isInnet=" + isInnet +
+                ", firstEnterNett=" + firstEnterNett +
+                ", serviceLife=" + serviceLife +
+                ", buyDate=" + buyDate +
+                ", warranty=" + warranty +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser='" + createUser + '\'' +
+                ", modifyUser='" + modifyUser + '\'' +
+                ", status=" + status +
+                ", ip='" + ip + '\'' +
+                ", mac='" + mac + '\'' +
+                ", admittanceStatus=" + admittanceStatus +
+                '}';
     }
 
     public String getAssetGroup() {
@@ -547,7 +572,11 @@ public class Asset extends BaseEntity {
         this.houseLocation = houseLocation;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public String getCategoryModel() {
+        return categoryModel;
+    }
+
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
     }
 
@@ -557,5 +586,21 @@ public class Asset extends BaseEntity {
 
     public void setAdmittanceStatus(Integer admittanceStatus) {
         this.admittanceStatus = admittanceStatus;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public Integer getIsInnet() {
+        return isInnet;
+    }
+
+    public void setIsInnet(Integer isInnet) {
+        this.isInnet = isInnet;
     }
 }

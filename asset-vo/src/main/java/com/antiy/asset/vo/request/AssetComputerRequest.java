@@ -100,4 +100,17 @@ public class AssetComputerRequest extends BasicRequest implements ObjectValidato
     public void setComputerReques(List<AssetSoftwaComputerRelationReques> computerReques) {
         this.computerReques = computerReques;
     }
+
+    @Override
+    public String toString() {
+        return "AssetComputerRequest{" +
+                "asset=" + asset +
+                ", mainboard=" + mainboard +
+                ", memory=" + memory +
+                ", hardDisk=" + hardDisk +
+                ", cpu=" + cpu +
+                ", networkCard=" + networkCard +
+                ", computerReques=" + computerReques +
+                '}';
+    }
 }

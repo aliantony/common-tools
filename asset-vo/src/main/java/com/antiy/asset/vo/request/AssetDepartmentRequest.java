@@ -33,7 +33,7 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
      */
     @Encode
     @ApiModelProperty("上级部门")
-    private Integer parentId;
+    private String parentId;
     /**
      * 上级部门
      */
@@ -56,12 +56,20 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
         this.name = name;
     }
 
-    public Integer getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
     @Override

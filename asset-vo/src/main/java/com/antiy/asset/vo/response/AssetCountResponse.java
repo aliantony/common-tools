@@ -20,4 +20,11 @@ public class AssetCountResponse {
     public void setMap(Map<String, Long> map) {
         this.map = map;
     }
+
+    @Override
+    public String toString() {
+        return "AssetCountResponse{" +
+                "map=" + map +
+                '}';
+    }
 }

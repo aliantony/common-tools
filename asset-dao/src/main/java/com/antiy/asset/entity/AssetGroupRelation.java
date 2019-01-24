@@ -16,11 +16,11 @@ public class AssetGroupRelation extends BaseEntity {
     /**
      * 资产组主键
      */
-    private Integer           assetGroupId;
+    private String           assetGroupId;
     /**
      * 资产主键
      */
-    private Integer           assetId;
+    private String           assetId;
     /**
      * 创建时间
      */
@@ -36,7 +36,7 @@ public class AssetGroupRelation extends BaseEntity {
     /**
      * 创建人
      */
-    private Integer           createUser;
+    private String           createUser;
     /**
      * 创建人名字
      */
@@ -44,26 +44,34 @@ public class AssetGroupRelation extends BaseEntity {
     /**
      * 修改人
      */
-    private Integer           modifyUser;
+    private String           modifyUser;
     /**
      * 状态,1未删除,0已删除
      */
     private Integer           status;
 
-    public Integer getAssetGroupId() {
+    public String getAssetGroupId() {
         return assetGroupId;
     }
 
-    public void setAssetGroupId(Integer assetGroupId) {
+    public void setAssetGroupId(String assetGroupId) {
         this.assetGroupId = assetGroupId;
     }
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public void setModifyUser(String modifyUser) {
+        this.modifyUser = modifyUser;
     }
 
     public Long getGmtCreate() {
@@ -86,22 +94,6 @@ public class AssetGroupRelation extends BaseEntity {
         this.memo = memo;
     }
 
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -120,9 +112,17 @@ public class AssetGroupRelation extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetGroupRelation{" + ", assetGroupId=" + assetGroupId + ", assetId=" + assetId + ", gmtCreate="
-               + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser=" + createUser
-               + ", modifyUser=" + modifyUser + ", status=" + status + "}";
+        return "AssetGroupRelation{" +
+                "assetGroupId='" + assetGroupId + '\'' +
+                ", assetId='" + assetId + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser='" + createUser + '\'' +
+                ", createUserName='" + createUserName + '\'' +
+                ", modifyUser='" + modifyUser + '\'' +
+                ", status=" + status +
+                '}';
     }
 
     public void setGmtModified(Long gmtModified) {

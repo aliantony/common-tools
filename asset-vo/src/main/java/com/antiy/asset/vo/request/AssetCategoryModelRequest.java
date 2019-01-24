@@ -43,7 +43,7 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
     @Encode
     @ApiModelProperty("父ID")
     @NotNull(message = "父ID不能为空")
-    private Integer parentId;
+    private String parentId;
 
     /**
      * 是否系统默认：0系统1自定义
@@ -82,14 +82,6 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
         this.assetType = assetType;
     }
 
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
-
     public String getMemo() {
         return memo;
     }
@@ -104,6 +96,14 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
 
     public void setIsDefault(Integer isDefault) {
         this.isDefault = isDefault;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 
     @Override

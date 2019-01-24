@@ -104,4 +104,17 @@ public class AssetCpuResponse extends BaseResponse {
     public void setCoreSize(Integer coreSize) {
         this.coreSize = coreSize;
     }
+
+    @Override
+    public String toString() {
+        return "AssetCpuResponse{" +
+                "assetId='" + assetId + '\'' +
+                ", serial='" + serial + '\'' +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", mainFrequency=" + mainFrequency +
+                ", threadSize=" + threadSize +
+                ", coreSize=" + coreSize +
+                '}';
+    }
 }

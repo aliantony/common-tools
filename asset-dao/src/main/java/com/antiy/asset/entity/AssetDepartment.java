@@ -21,7 +21,7 @@ public class AssetDepartment extends BaseEntity {
     /**
      * 上级部门
      */
-    private Integer           parentId;
+    private String            parentId;
     /**
      * 创建时间
      */
@@ -55,11 +55,11 @@ public class AssetDepartment extends BaseEntity {
         this.name = name;
     }
 
-    public Integer getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 
@@ -113,8 +113,15 @@ public class AssetDepartment extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetDepartment{" + "name='" + name + '\'' + ", parentId=" + parentId + ", gmtCreate=" + gmtCreate
-               + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
-               + ", modifyUser=" + modifyUser + ", status=" + status + '}';
+        return "AssetDepartment{" +
+                "name='" + name + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                '}';
     }
 }

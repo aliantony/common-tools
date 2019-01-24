@@ -16,7 +16,7 @@ public class AssetHardDisk extends BaseEntity {
     /**
      * 资产主键
      */
-    private Integer           assetId;
+    private String           assetId;
     /**
      * 硬盘品牌
      */
@@ -68,23 +68,16 @@ public class AssetHardDisk extends BaseEntity {
     /**
      * 创建人
      */
-    private Integer           createUser;
+    private String           createUser;
     /**
      * 修改人
      */
-    private Integer           modifyUser;
+    private String           modifyUser;
     /**
      * 状态,1 未删除,0已删除
      */
     private Integer           status;
 
-    public Integer getAssetId() {
-        return assetId;
-    }
-
-    public void setAssetId(Integer assetId) {
-        this.assetId = assetId;
-    }
 
     public String getBrand() {
         return brand;
@@ -182,22 +175,6 @@ public class AssetHardDisk extends BaseEntity {
         this.memo = memo;
     }
 
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -206,12 +183,49 @@ public class AssetHardDisk extends BaseEntity {
         this.status = status;
     }
 
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public String getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(String modifyUser) {
+        this.modifyUser = modifyUser;
+    }
+
     @Override
     public String toString() {
-        return "AssetHardDisk{" + ", assetId=" + assetId + ", brand=" + brand + ", model=" + model + ", serial="
-               + serial + ", interfaceType=" + interfaceType + ", capacity=" + capacity + ", diskType=" + diskType
-               + ", buyDate=" + buyDate + ", useTimes=" + useTimes + ", cumulativeHour=" + cumulativeHour
-               + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser="
-               + createUser + ", modifyUser=" + modifyUser + ", status=" + status + "}";
+        return "AssetHardDisk{" +
+                "assetId='" + assetId + '\'' +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", serial='" + serial + '\'' +
+                ", interfaceType=" + interfaceType +
+                ", capacity=" + capacity +
+                ", diskType=" + diskType +
+                ", buyDate=" + buyDate +
+                ", useTimes=" + useTimes +
+                ", cumulativeHour=" + cumulativeHour +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser='" + createUser + '\'' +
+                ", modifyUser='" + modifyUser + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

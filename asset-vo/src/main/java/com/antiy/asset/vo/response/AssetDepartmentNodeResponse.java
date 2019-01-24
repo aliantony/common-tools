@@ -23,4 +23,11 @@ public class AssetDepartmentNodeResponse extends AssetDepartmentResponse {
     public void setChildrenNode(List<AssetDepartmentNodeResponse> childrenNode) {
         this.childrenNode = childrenNode;
     }
+
+    @Override
+    public String toString() {
+        return "AssetDepartmentNodeResponse{" +
+                "childrenNode=" + childrenNode +
+                '}';
+    }
 }

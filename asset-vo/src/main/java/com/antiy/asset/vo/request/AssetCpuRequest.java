@@ -29,7 +29,8 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer assetId;
+    @Encode
+    private String assetId;
     /**
      * 序列号
      */
@@ -71,15 +72,7 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
         this.id = id;
     }
 
-    public Integer getAssetId() {
-        return assetId;
-    }
-
-    public void setAssetId(Integer assetId) {
-        this.assetId = assetId;
-    }
-
-    public String getSerial() {
+      public String getSerial() {
         return serial;
     }
 
@@ -125,6 +118,28 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
 
     public void setCoreSize(Integer coreSize) {
         this.coreSize = coreSize;
+    }
+
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetCpuRequest{" +
+                "id='" + id + '\'' +
+                ", assetId='" + assetId + '\'' +
+                ", serial='" + serial + '\'' +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", mainFrequency=" + mainFrequency +
+                ", threadSize=" + threadSize +
+                ", coreSize=" + coreSize +
+                '}';
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+import com.antiy.common.encoder.Encode;
 
 /**
  * <p> 品类型号表 </p>
@@ -28,7 +29,7 @@ public class AssetCategoryModel extends BaseEntity {
     /**
      * 父ID
      */
-    private Integer           parentId;
+    private String           parentId;
     /**
      * 描述
      */
@@ -52,11 +53,11 @@ public class AssetCategoryModel extends BaseEntity {
     /**
      * 创建人
      */
-    private Integer           createUser;
+    private String           createUser;
     /**
      * 修改人
      */
-    private Integer           modifyUser;
+    private String           modifyUser;
     /**
      * 状态,1未删除,0已删除
      */
@@ -86,13 +87,6 @@ public class AssetCategoryModel extends BaseEntity {
         this.assetType = assetType;
     }
 
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
 
     public String getDescription() {
         return description;
@@ -122,19 +116,19 @@ public class AssetCategoryModel extends BaseEntity {
         this.memo = memo;
     }
 
-    public Integer getCreateUser() {
+    public String getCreateUser() {
         return createUser;
     }
 
-    public void setCreateUser(Integer createUser) {
+    public void setCreateUser(String createUser) {
         this.createUser = createUser;
     }
 
-    public Integer getModifyUser() {
+    public String getModifyUser() {
         return modifyUser;
     }
 
-    public void setModifyUser(Integer modifyUser) {
+    public void setModifyUser(String modifyUser) {
         this.modifyUser = modifyUser;
     }
 
@@ -154,11 +148,33 @@ public class AssetCategoryModel extends BaseEntity {
         this.isDefault = isDefault;
     }
 
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     @Override
     public String toString() {
-        return "AssetCategoryModel{" + ", name=" + name + ", type=" + type + ", assetType=" + assetType + ", parentId="
-               + parentId + ", description=" + description + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified
-               + ", memo=" + memo + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status
-               + "}";
+        return "AssetCategoryModel{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", assetType=" + assetType +
+                ", parentId='" + parentId + '\'' +
+                ", description='" + description + '\'' +
+                ", isDefault=" + isDefault +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser='" + createUser + '\'' +
+                ", modifyUser='" + modifyUser + '\'' +
+                ", status=" + status +
+                '}';
     }
 }
