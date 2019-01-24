@@ -48,18 +48,18 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("品类型号")
     @Encode
-    private String       categoryModel;
+    private String        categoryModel;
     /**
      * 品类型号列表
      */
     @ApiModelProperty("品类型号列表")
     @Encode
-    private String[]     categoryModels;
+    private String[]      categoryModels;
     /**
      * 行政区划主键列表
      */
     @Encode
-    private String[]     areaIds;
+    private String[]      areaIds;
     /**
      * 厂商
      */
@@ -86,7 +86,7 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("责任人主键")
     @Encode
-    private String       responsibleUserId;
+    private String        responsibleUserId;
 
     /**
      * 上报来源,1-自动上报，2-人工上报
@@ -104,7 +104,7 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("父类资源Id")
     @Encode
-    private String       parentId;
+    private String        parentId;
 
     /**
      * 是否入网,0表示未入网,1表示入网
@@ -122,7 +122,8 @@ public class AssetQuery extends ObjectQuery {
      * 资产组id
      */
     @ApiModelProperty("资产组id")
-    private Integer       assetGroup;
+    @Encode
+    private String        assetGroup;
     /**
      * 首次发现时间还是首次入网时间（1：发现。2：入网）
      */
@@ -137,11 +138,11 @@ public class AssetQuery extends ObjectQuery {
      * 资产准入状态
      */
     @ApiModelProperty("资产准入状态")
-    private Integer admittanceStatus;
+    private Integer       admittanceStatus;
     /**
      * 创建时间
      */
-    private Long              gmtCreate;
+    private Long          gmtCreate;
 
     public Long getGmtCreate() {
         return gmtCreate;
@@ -182,8 +183,6 @@ public class AssetQuery extends ObjectQuery {
     public void setSerial(String serial) {
         this.serial = serial;
     }
-
-
 
     public String getManufacturer() {
         return manufacturer;
@@ -297,11 +296,11 @@ public class AssetQuery extends ObjectQuery {
         this.multipleQuery = multipleQuery;
     }
 
-    public Integer getAssetGroup() {
+    public String getAssetGroup() {
         return assetGroup;
     }
 
-    public void setAssetGroup(Integer assetGroup) {
+    public void setAssetGroup(String assetGroup) {
         this.assetGroup = assetGroup;
     }
 
@@ -331,30 +330,14 @@ public class AssetQuery extends ObjectQuery {
 
     @Override
     public String toString() {
-        return "AssetQuery{" +
-                "ids=" + Arrays.toString(ids) +
-                ", multipleQuery='" + multipleQuery + '\'' +
-                ", name='" + name + '\'' +
-                ", number='" + number + '\'' +
-                ", serial='" + serial + '\'' +
-                ", categoryModel='" + categoryModel + '\'' +
-                ", categoryModels=" + Arrays.toString(categoryModels) +
-                ", areaIds=" + Arrays.toString(areaIds) +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", assetStatus=" + assetStatus +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", responsibleUserId='" + responsibleUserId + '\'' +
-                ", assetSource=" + assetSource +
-                ", importanceDegree=" + importanceDegree +
-                ", parentId='" + parentId + '\'' +
-                ", isInnet=" + isInnet +
-                ", assetStatusList=" + assetStatusList +
-                ", assetGroup=" + assetGroup +
-                ", timeType=" + timeType +
-                ", softwareId='" + softwareId + '\'' +
-                ", admittanceStatus=" + admittanceStatus +
-                ", gmtCreate=" + gmtCreate +
-                '}';
+        return "AssetQuery{" + "ids=" + Arrays.toString(ids) + ", multipleQuery='" + multipleQuery + '\'' + ", name='"
+               + name + '\'' + ", number='" + number + '\'' + ", serial='" + serial + '\'' + ", categoryModel='"
+               + categoryModel + '\'' + ", categoryModels=" + Arrays.toString(categoryModels) + ", areaIds="
+               + Arrays.toString(areaIds) + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
+               + ", operationSystem='" + operationSystem + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='"
+               + responsibleUserId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
+               + ", parentId='" + parentId + '\'' + ", isInnet=" + isInnet + ", assetStatusList=" + assetStatusList
+               + ", assetGroup=" + assetGroup + ", timeType=" + timeType + ", softwareId='" + softwareId + '\''
+               + ", admittanceStatus=" + admittanceStatus + ", gmtCreate=" + gmtCreate + '}';
     }
 }
