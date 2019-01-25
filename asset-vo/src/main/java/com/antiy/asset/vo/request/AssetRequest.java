@@ -156,11 +156,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty("所属标签ID和名称列表JSON串")
     private String                  tags;
     /**
-     * 是否入网,0表示未入网,1表示入网
-     */
-    @ApiModelProperty("是否入网,0表示未入网,1表示入网")
-    private Integer                 isInnet;
-    /**
      * 使用到期时间
      */
     @ApiModelProperty("使用到期时间")
@@ -335,14 +330,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.tags = tags;
     }
 
-    public Integer getIsInnet() {
-        return isInnet;
-    }
-
-    public void setIsInnet(Integer isInnet) {
-        this.isInnet = isInnet;
-    }
-
     public Long getServiceLife() {
         return serviceLife;
     }
@@ -448,7 +435,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
                 ", importanceDegree=" + importanceDegree +
                 ", parentId='" + parentId + '\'' +
                 ", tags='" + tags + '\'' +
-                ", isInnet=" + isInnet +
                 ", serviceLife=" + serviceLife +
                 ", buyDate=" + buyDate +
                 ", warranty=" + warranty +

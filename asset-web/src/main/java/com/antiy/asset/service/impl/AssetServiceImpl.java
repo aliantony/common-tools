@@ -2060,9 +2060,9 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
 
     @Override
     protected void convert(AssetResponse asset, AssetEntity assetEntity) {
-        if (Objects.nonNull(asset.getIsInnet())) {
+       /* if (Objects.nonNull(asset.getIsInnet())) {
             assetEntity.setIsInnet(asset.getIsInnet() == 1? "已入网" : "未入网");
-        }
+        }*/
 
         if (Objects.nonNull(asset.getAssetStatus())) {
             AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode(asset.getAssetStatus());
