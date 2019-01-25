@@ -108,12 +108,6 @@ public class AssetQuery extends ObjectQuery {
     private String        parentId;
 
     /**
-     * 是否入网,0表示未入网,1表示入网
-     */
-    @ApiModelProperty("是否入网,0表示未入网,1表示入网")
-    private Boolean       isInnet;
-
-    /**
      * 资产状态
      */
     @ApiModelProperty("资产状态")
@@ -273,14 +267,6 @@ public class AssetQuery extends ObjectQuery {
         this.parentId = parentId;
     }
 
-    public Boolean getInnet() {
-        return isInnet;
-    }
-
-    public void setInnet(Boolean innet) {
-        isInnet = innet;
-    }
-
     public List<Integer> getAssetStatusList() {
         return assetStatusList;
     }
@@ -337,8 +323,8 @@ public class AssetQuery extends ObjectQuery {
                + Arrays.toString(areaIds) + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
                + ", operationSystem='" + operationSystem + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='"
                + responsibleUserId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
-               + ", parentId='" + parentId + '\'' + ", isInnet=" + isInnet + ", assetStatusList=" + assetStatusList
-               + ", assetGroup=" + assetGroup + ", timeType=" + timeType + ", softwareId='" + softwareId + '\''
-               + ", admittanceStatus=" + admittanceStatus + ", gmtCreate=" + gmtCreate + '}';
+               + ", parentId='" + parentId + '\'' + ", assetStatusList=" + assetStatusList + ", assetGroup="
+               + assetGroup + ", timeType=" + timeType + ", softwareId='" + softwareId + '\'' + ", admittanceStatus="
+               + admittanceStatus + ", gmtCreate=" + gmtCreate + '}';
     }
 }

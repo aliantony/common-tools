@@ -171,10 +171,6 @@ public class Asset extends BaseEntity {
      */
     private Date              firstEnterNett;
     /**
-     * 是否入网,0表示未入网,1表示入网
-     */
-    private Integer           isInnet;
-    /**
      * 使用到期时间
      */
     private Long              serviceLife;
@@ -226,9 +222,9 @@ public class Asset extends BaseEntity {
                + firmwareVersion + '\'' + ", uuid='" + uuid + '\'' + ", contactTel='" + contactTel + '\'' + ", email='"
                + email + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
                + ", describle='" + describle + '\'' + ", tags='" + tags + '\'' + ", firstEnterNett=" + firstEnterNett
-               + ", isInnet=" + isInnet + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty="
-               + warranty + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo='" + memo + '\''
-               + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status + '}';
+               + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty=" + warranty + ", gmtCreate="
+               + gmtCreate + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
+               + ", modifyUser=" + modifyUser + ", status=" + status + '}';
     }
 
     public String getResponsibleUserName() {
@@ -521,14 +517,6 @@ public class Asset extends BaseEntity {
 
     public void setFirstEnterNett(Date firstEnterNett) {
         this.firstEnterNett = firstEnterNett;
-    }
-
-    public Integer getIsInnet() {
-        return isInnet;
-    }
-
-    public void setIsInnet(Integer isInnet) {
-        this.isInnet = isInnet;
     }
 
     public Long getServiceLife() {

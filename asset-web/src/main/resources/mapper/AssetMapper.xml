@@ -50,7 +50,6 @@
         <result column="parent_id" property="parentId"/>
         <result column="tags" property="tags"/>
         <result column="first_enter_nett" property="firstEnterNett"/>
-        <result column="is_innet" property="isInnet"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
         <result column="warranty" property="warranty"/>
@@ -158,9 +157,6 @@
         </if>
         <if test=" firstEnterNett != null">
             first_enter_nett,
-        </if>
-        <if test=" isInnet != null">
-            is_innet,
         </if>
         <if test=" serviceLife != null">
             service_life,
@@ -279,9 +275,6 @@
         <if test=" firstEnterNett != null">
             #{firstEnterNett },
         </if>
-        <if test=" isInnet != null">
-            #{isInnet },
-        </if>
         <if test=" serviceLife != null">
             #{serviceLife },
         </if>
@@ -399,9 +392,6 @@
         <if test=" firstEnterNett != null">
             first_enter_nett = #{firstEnterNett },
         </if>
-        <if test=" isInnet != null">
-            is_innet = #{isInnet },
-        </if>
         <if test=" serviceLife != null">
             service_life = #{serviceLife },
         </if>
@@ -502,9 +492,6 @@
         <if test=" tags != null">
             and tags = #{tags }
         </if>
-        <if test=" isInnet != null">
-            and is_innet = #{isInnet }
-        </if>
         <if test=" firstEnterNett != null">
             and first_enter_nett = #{firstEnterNett }
         </if>
@@ -596,9 +583,6 @@
         </if>
         <if test=" tags != null">
             and tags = #{tags }
-        </if>
-        <if test=" isInnet != null">
-            and is_innet = #{isInnet }
         </if>
         <if test=" firstEnterNett != null">
             and first_enter_nett = #{firstEnterNett }
