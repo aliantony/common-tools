@@ -32,12 +32,11 @@ public class AssetOperationRecordController {
      * @return actionResponse
      */
     @ApiOperation(value = "查找资产操作历史", notes = "传入查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:operationrecord:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetSoftware") AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
-        return ActionResponse
-            .success(assetOperationRecordService.findAssetOperationRecordByAssetId(assetOperationRecordQuery));
+    public ActionResponse queryList(@ApiParam(value = "assetOperationRecordQuery") AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
+        return ActionResponse.success(assetOperationRecordService.queryStatusBar(assetOperationRecordQuery));
     }
 
 }

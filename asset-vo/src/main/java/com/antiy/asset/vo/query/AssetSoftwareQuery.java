@@ -1,13 +1,14 @@
 package com.antiy.asset.vo.query;
 
+import java.util.List;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
-
-import java.util.List;
 
 /**
  * <p> AssetSoftware 查询条件 </p>
@@ -28,18 +29,21 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      * 软件品类
      */
     @ApiModelProperty("软件品类")
-    private Integer       categoryModel;
+    @Encode
+    private String        categoryModel;
     @ApiModelProperty("综合查询")
     private String        multipleQuery;
     @ApiModelProperty("软件品类型号列表")
-    private Integer[]     categoryModels;
+    @Encode
+    private String[]      categoryModels;
     /**
      * 序列号
      */
     @ApiModelProperty(value = "序列号")
-    private String                      serial;
+    private String        serial;
     @ApiModelProperty("区域id列表")
-    private Integer[]     areaIds;
+    @Encode
+    private String[]      areaIds;
     /**
      * 软件名称
      */
@@ -126,6 +130,17 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     private String        number;
     @ApiModelProperty(value = "资产id")
     private String        assetId;
+
+    @ApiModelProperty(value = "1表示查询发布时间，2表示查询到期时间")
+    private Integer       queryTime;
+
+    public Integer getQueryTime() {
+        return queryTime;
+    }
+
+    public void setQueryTime(Integer queryTime) {
+        this.queryTime = queryTime;
+    }
 
     public String getAssetId() {
         return assetId;
@@ -307,27 +322,27 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
         this.status = status;
     }
 
-    public Integer getCategoryModel() {
+    public String getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
     }
 
-    public Integer[] getCategoryModels() {
+    public String[] getCategoryModels() {
         return categoryModels;
     }
 
-    public void setCategoryModels(Integer[] categoryModels) {
+    public void setCategoryModels(String[] categoryModels) {
         this.categoryModels = categoryModels;
     }
 
-    public Integer[] getAreaIds() {
+    public String[] getAreaIds() {
         return areaIds;
     }
 
-    public void setAreaIds(Integer[] areaIds) {
+    public void setAreaIds(String[] areaIds) {
         this.areaIds = areaIds;
     }
 
@@ -347,10 +362,12 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
         this.multipleQuery = multipleQuery;
     }
 
-
-
     @Override
     public void validate() throws RequestParamValidateException {
-
+        if (queryTime != null) {
+            ParamterExceptionUtils.isNull(beginTime, "开始时间为空");
+            ParamterExceptionUtils.isNull(endTime, "结束时间为空");
+            ParamterExceptionUtils.isTrue(endTime > beginTime, "结束时间必须大于开始时间");
+        }
     }
 }

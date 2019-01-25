@@ -34,7 +34,7 @@ public class AssetQuery extends ObjectQuery {
     private String        name;
 
     /**
-     * 资产名称
+     * 资产编号
      */
     @ApiModelProperty("资产编号")
     private String        number;
@@ -70,6 +70,7 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役")
     private Integer       assetStatus;
+
     /**
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */

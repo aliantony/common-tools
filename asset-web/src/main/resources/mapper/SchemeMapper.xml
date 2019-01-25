@@ -349,4 +349,17 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <!--通过资产ID查询方案信息-->
+    <select id="findSchemeByAssetId" resultType="Scheme" parameterType="int">
+        select
+            sch.file_info,
+            sch.memo
+        from
+        <include refid="Table_Name"></include> sch
+        left join asset
+        on asset.id = sch.asset_id
+        left join asset_operation_record aor
+        on aor.scheme_id = sch.id
+        where asset_id = #{assetId} and aor.origin_status = #{originStatus}
+    </select>
 </mapper>

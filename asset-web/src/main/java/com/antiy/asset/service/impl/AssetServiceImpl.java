@@ -1397,6 +1397,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
+            asset.setNumber (entity.getNumber ());
             asset.setName(entity.getName());
             asset.setManufacturer(entity.getManufacturer());
             asset.setFirmwareVersion(entity.getFirmwareVersion());
@@ -1596,6 +1597,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
+            asset.setNumber (networkDeviceEntity.getNumber ());
             asset.setName(networkDeviceEntity.getName());
             asset.setManufacturer(networkDeviceEntity.getManufacturer());
             asset.setFirmwareVersion(networkDeviceEntity.getFirmwareVersion());
@@ -1705,6 +1707,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
+            asset.setNumber (entity.getNumber ());
             asset.setName(entity.getName());
             asset.setManufacturer(entity.getManufacturer());
             asset.setFirmwareVersion(entity.getFirmwareVersion());
@@ -1800,6 +1803,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
+            asset.setNumber (entity.getNumber ());
             asset.setName(entity.getName());
             asset.setManufacturer(entity.getManufacturer());
             asset.setFirmwareVersion(entity.getFirmware());
@@ -1897,6 +1901,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setResponsibleUserId (Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
+            asset.setNumber (entity.getNumber ());
             asset.setName(entity.getName());
             asset.setManufacturer(entity.getManufacturer());
             asset.setSerial(entity.getSerial());

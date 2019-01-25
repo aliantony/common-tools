@@ -390,12 +390,24 @@
         <if test=" reportSource != null">
             and report_source = #{assetSource }
         </if>
-        <if test="  beginTime != null">
-            and release_time &gt;= #{beginTime }
+        <if test="queryTime ==1">
+            <if test="  beginTime != null">
+                and asset_software.gmt_create &gt;= #{beginTime }
+            </if>
+            <if test=" endTime != null">
+                and asset_software.gmt_create &lt;= #{endTime }
+            </if>
         </if>
-        <if test=" endTime != null">
-            and release_time &lt;= #{endTime }
+
+        <if test="queryTime == 2">
+            <if test="  beginTime != null">
+                and service_life &gt;= #{beginTime }
+            </if>
+            <if test=" endTime != null">
+                and service_life &lt;= #{endTime }
+            </if>
         </if>
+
 
     </sql>
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetSoftware" useGeneratedKeys="true" keyProperty="id">
@@ -469,20 +481,23 @@
     <select id="findCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select count(1) count from
         <include refid="Table_Name"></include>
+        <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+            left join asset_category_model b on asset_software.category_model = b.id
+        </if>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <include refid="Multiple_Query"></include>
             <if test=" multipleQuery != null">
                 and (
-                name LIKE CONCAT('%',#{multipleQuery},'%')
-                or serial LIKE CONCAT('%',#{multipleQuery},'%')
-                or id LIKE CONCAT('%',#{multipleQuery},'%')
+                  asset_software.name LIKE CONCAT('%',#{multipleQuery},'%')
+                or asset_software.serial LIKE CONCAT('%',#{multipleQuery},'%')
+                or asset_software.id LIKE CONCAT('%',#{multipleQuery},'%')
                 )
             </if>
-            and status = 1
+            and asset_software.status = 1
+            <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+                and b.status = 1
+            </if>
         </trim>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
     </select>
 
     <select id="findQuery" resultMap="BaseResultMap"
@@ -503,33 +518,41 @@
     <select id="findListAssetSoftware" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select
-        a.id,
-        a.name,
-        a.authorization,
-        a.operation_system,
-        a.manufacturer,
-        a.version,
-        a.software_status,
-        a.release_time,
-        a.category_model ,
-        a.memo,
-        a.language,
-        a.path,
-        a.port ,
-        b.name as category_model_name from
+        asset_software.id,
+        asset_software.name,
+        asset_software.authorization,
+        asset_software.operation_system,
+        asset_software.manufacturer,
+        asset_software.version,
+        asset_software.software_status,
+        asset_software.release_time,
+        asset_software.category_model ,
+        asset_software.memo,
+        asset_software.language,
+        asset_software.path,
+        asset_software.port
+        <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+            ,
+            b.name as category_model_name
+        </if>
+        from
         <include refid="Table_Name"></include>
-        a
-        left join asset_category_model b on a.category_model = b.id
+        <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+          left join asset_category_model b on asset_software.category_model = b.id
+        </if>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <include refid="Multiple_Query"></include>
             <if test=" multipleQuery != null">
                 and (
-                a.name LIKE CONCAT('%',#{multipleQuery},'%')
-                or a.serial LIKE CONCAT('%',#{multipleQuery},'%')
-                or a.id LIKE CONCAT('%',#{multipleQuery},'%')
+                asset_software.name LIKE CONCAT('%',#{multipleQuery},'%')
+                or asset_software.serial LIKE CONCAT('%',#{multipleQuery},'%')
+                or asset_software.id LIKE CONCAT('%',#{multipleQuery},'%')
                 )
             </if>
-            and a.status = 1 and b.status=1
+            and asset_software.status = 1
+            <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+              and b.status=1
+            </if>
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}

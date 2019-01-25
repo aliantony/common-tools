@@ -14,39 +14,57 @@ public class AssetOperationRecord extends BaseEntity {
     /**
      * 被操作的对象ID
      */
-    private String           targetObjectId;
+    private String  targetObjectId;
     /**
      * 被操作对象类别
      */
-    private String            targetType;
+    private String  targetType;
     /**
      * 状态
      */
-    private Integer           targetStatus;
+    private Integer targetStatus;
     /**
      * 操作内容
      */
-    private String            content;
+    private String  content;
     /**
      * 操作人ID
      */
-    private Integer           operateUserId;
+    private Integer operateUserId;
     /**
      * 操作人名字
      */
-    private String            operateUserName;
+    private String  operateUserName;
     /**
      * 方案表ID
      */
-    private Integer           schemeId;
+    private Integer schemeId;
     /**
      * 创建时间
      */
-    private Long              gmtCreate;
+    private Long    gmtCreate;
     /**
      * 创建人
      */
-    private Integer           createUser;
+    private Integer createUser;
+
+    /**
+     * 处理结果
+     */
+    private Integer processResult;
+
+    /**
+     * 原始状态
+     */
+    private Integer originStatus;
+
+    public Integer getOriginStatus() {
+        return originStatus;
+    }
+
+    public void setOriginStatus(Integer originStatus) {
+        this.originStatus = originStatus;
+    }
 
     public String getTargetObjectId() {
         return targetObjectId;
@@ -120,10 +138,19 @@ public class AssetOperationRecord extends BaseEntity {
         this.createUser = createUser;
     }
 
+    public Integer getProcessResult() {
+        return processResult;
+    }
+
+    public void setProcessResult(Integer processResult) {
+        this.processResult = processResult;
+    }
+
     @Override
     public String toString() {
         return "AssetOperationRecord{" + ", targetObjectId=" + targetObjectId + ", targetType=" + targetType
                + ", targetStatus=" + targetStatus + ", content=" + content + ", operateUserId=" + operateUserId
-               + ", operateUserName=" + operateUserName + ", schemeId=" + schemeId + ", gmtCreate=" + gmtCreate + "}";
+               + ", operateUserName=" + operateUserName + ", schemeId=" + schemeId + ", gmtCreate=" + gmtCreate
+               + ", processResult=" + processResult + "}";
     }
 }

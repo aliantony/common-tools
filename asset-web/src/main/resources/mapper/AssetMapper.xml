@@ -672,6 +672,9 @@
         <if test=" admittanceStatus != null">
             and admittance_status = #{admittanceStatus}
         </if>
+        <if test=" number != null">
+            and number = #{number}
+        </if>
         <if test=" manufacturer != null">
             and manufacturer = #{manufacturer}
         </if>

@@ -2,8 +2,6 @@ package com.antiy.asset.vo.response;
 
 import java.util.List;
 
-import com.antiy.common.encoder.Encode;
-
 /**
  * <p> AssetGroupResponse 响应对象 </p>
  *
@@ -12,11 +10,6 @@ import com.antiy.common.encoder.Encode;
  */
 
 public class AssetGroupResponse extends BaseResponse {
-    /**
-     * 资产组ID
-     */
-    @Encode
-    private String id;
     /**
      * 资产组名称
      */
@@ -76,27 +69,13 @@ public class AssetGroupResponse extends BaseResponse {
         return assetList;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public void setAssetList(List<String> assetList) {
         this.assetList = assetList;
     }
 
     @Override
     public String toString() {
-        return "AssetGroupResponse{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", gmtCreate=" + gmtCreate +
-                ", memo='" + memo + '\'' +
-                ", createUserName='" + createUserName + '\'' +
-                ", assetList=" + assetList +
-                '}';
+        return "AssetGroupResponse{" + ", name='" + name + '\'' + ", gmtCreate=" + gmtCreate + ", memo='" + memo + '\''
+               + ", createUserName='" + createUserName + '\'' + ", assetList=" + assetList + '}';
     }
 }
