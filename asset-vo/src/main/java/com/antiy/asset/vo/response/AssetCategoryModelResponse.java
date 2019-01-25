@@ -21,13 +21,7 @@ public class AssetCategoryModelResponse extends BaseResponse {
     /**
      * 类型:1-品类，2-型号
      */
-    @ApiModelProperty("类型:1-品类，2-型号")
-    private Integer type;
-    /**
-     * 资产类型:1软件，2硬件
-     */
-    @ApiModelProperty("资产类型:1软件，2硬件")
-    private Integer assetType;
+
     /**
      * 父ID
      */
@@ -40,8 +34,6 @@ public class AssetCategoryModelResponse extends BaseResponse {
     @ApiModelProperty("备注")
     private String  memo;
 
-    @ApiModelProperty("状态,1未删除,0已删除")
-    private Integer status;
 
     public String getName() {
         return name;
@@ -51,21 +43,7 @@ public class AssetCategoryModelResponse extends BaseResponse {
         this.name = name;
     }
 
-    public Integer getType() {
-        return type;
-    }
 
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Integer getAssetType() {
-        return assetType;
-    }
-
-    public void setAssetType(Integer assetType) {
-        this.assetType = assetType;
-    }
 
     public String getParentId() {
         return parentId;
@@ -83,17 +61,13 @@ public class AssetCategoryModelResponse extends BaseResponse {
         this.memo = memo;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
 
     @Override
     public String toString() {
-        return "AssetCategoryModelResponse{" + "name='" + name + '\'' + ", type=" + type + ", assetType=" + assetType
-               + ", parentId='" + parentId + '\'' + ", memo='" + memo + '\'' + ", status=" + status + '}';
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
+        return "AssetCategoryModelResponse{" +
+                "name='" + name + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", memo='" + memo + '\'' +
+                '}';
     }
 }
