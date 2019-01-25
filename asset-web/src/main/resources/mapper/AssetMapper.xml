@@ -664,6 +664,9 @@
                 #{assetStatus}
             </foreach>
         </if>
+        <if test="assetStatus != null">
+            and asset_status =  #{assetStatus}
+        </if>
         <if test=" categoryModels != null and categoryModels.length > 0">
             and category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
