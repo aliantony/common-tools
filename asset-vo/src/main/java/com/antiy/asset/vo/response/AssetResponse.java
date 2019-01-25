@@ -96,6 +96,11 @@ public class AssetResponse extends BaseResponse {
     @Encode
     private String                  responsibleUserId;
     /**
+     * 责任人名称
+     */
+    @ApiModelProperty("责任人名称")
+    private String            responsibleUserName;
+    /**
      * 联系电话
      */
     @ApiModelProperty("联系电话")
@@ -163,6 +168,14 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("首次入网时间")
     private Long                     firstEnterNett;
+
+    public String getResponsibleUserName() {
+        return responsibleUserName;
+    }
+
+    public void setResponsibleUserName(String responsibleUserName) {
+        this.responsibleUserName = responsibleUserName;
+    }
 
     public Integer getAdmittanceStatus() {
         return admittanceStatus;

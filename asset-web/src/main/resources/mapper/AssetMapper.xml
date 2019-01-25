@@ -35,6 +35,7 @@
         <result column="operation_system" property="operationSystem"/>
         <result column="system_bit" property="systemBit"/>
         <result column="responsible_user_id" property="responsibleUserId"/>
+        <result column="responsible_user_name" property="responsibleUserName"/>
         <result column="location" property="location"/>
         <result column="latitude" property="latitude"/>
         <result column="longitude" property="longitude"/>
@@ -896,6 +897,7 @@
         a.firmware_version,
         a.uuid,
         a.responsible_user_id,
+        d.name as responsible_user_name,
         a.contact_tel,
         a.email,
         a.asset_source,
@@ -915,6 +917,7 @@
         asset a
         left join asset_network_card b on a.id = b.asset_id
         left join asset_category_model c on a.category_model = c.id
+        left join asset_user d on a.responsible_user_id = d.id
         where a.status = 1
         group by a.id
         order by a.gmt_create desc) asset
