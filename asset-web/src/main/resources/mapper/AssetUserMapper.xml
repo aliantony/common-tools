@@ -208,10 +208,10 @@
     <!-- 根据主键查询 -->
     <select id="getById" resultType="com.antiy.asset.entity.AssetUser" parameterType="java.lang.Integer">
         select
-        <include refid="Base_Column_List"/>
+        a.*, b.name as departmentName
         from
-        <include refid="Table_Name"></include>
-        where id = #{id}
+       asset_user a left join asset_department b on a.department_id = b.id
+        where a.id = #{id}
     </select>
 
 
