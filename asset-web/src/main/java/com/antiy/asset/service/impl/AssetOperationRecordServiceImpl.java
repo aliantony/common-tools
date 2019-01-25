@@ -50,59 +50,59 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
         HashMap<String, Object> map = new HashMap<>();
         if (AssetOperationTableEnum.ASSET.getMsg().equals(assetOperationRecordQuery.getTargetType().getMsg())){
-            map.put("originStatus", AssetStatusEnum.WATI_REGSIST.getMsg());
+            map.put("originStatus", AssetStatusEnum.WATI_REGSIST.getCode());
             statusBarMap.put(AssetStatusEnum.WATI_REGSIST.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
 
-            map.put("originStatus", AssetStatusEnum.NOT_REGSIST.getMsg());
+            map.put("originStatus", AssetStatusEnum.NOT_REGSIST.getCode());
             statusBarMap.put(AssetStatusEnum.NOT_REGSIST.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
 
-            map.put("originStatus", AssetStatusEnum.WAIT_SETTING.getMsg());
+            map.put("originStatus", AssetStatusEnum.WAIT_SETTING.getCode());
             statusBarMap.put(AssetStatusEnum.WAIT_SETTING.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
 
-            map.put("originStatus", AssetStatusEnum.WAIT_VALIDATE.getMsg());
+            map.put("originStatus", AssetStatusEnum.WAIT_VALIDATE.getCode());
             statusBarMap.put(AssetStatusEnum.WAIT_VALIDATE.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
 
-            map.put("originStatus", AssetStatusEnum.WAIT_NET.getMsg());
+            map.put("originStatus", AssetStatusEnum.WAIT_NET.getCode());
             statusBarMap.put(AssetStatusEnum.WAIT_NET.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
 
-            map.put("originStatus", AssetStatusEnum.WAIT_CHECK.getMsg());
+            map.put("originStatus", AssetStatusEnum.WAIT_CHECK.getCode());
             statusBarMap.put(AssetStatusEnum.WAIT_CHECK.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
 
-            map.put("originStatus", AssetStatusEnum.NET_IN.getMsg());
+            map.put("originStatus", AssetStatusEnum.NET_IN.getCode());
             statusBarMap.put(AssetStatusEnum.NET_IN.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
 
-            map.put("originStatus", AssetStatusEnum.WAIT_RETIRE.getMsg());
+            map.put("originStatus", AssetStatusEnum.WAIT_RETIRE.getCode());
             statusBarMap.put(AssetStatusEnum.WAIT_RETIRE.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
 
-            map.put("originStatus", AssetStatusEnum.RETIRE.getMsg());
+            map.put("originStatus", AssetStatusEnum.RETIRE.getCode());
             statusBarMap.put(AssetStatusEnum.RETIRE.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
         }else if (AssetOperationTableEnum.SOFTWARE.getMsg().equals(assetOperationRecordQuery.getTargetType().getMsg())){
-            map.put("originStatus", SoftwareStatusEnum.WATI_REGSIST.getMsg());
+            map.put("originStatus", SoftwareStatusEnum.WATI_REGSIST.getCode());
             statusBarMap.put(SoftwareStatusEnum.WATI_REGSIST.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
 
-            map.put("originStatus", SoftwareStatusEnum.NOT_REGSIST.getMsg());
+            map.put("originStatus", SoftwareStatusEnum.NOT_REGSIST.getCode());
             statusBarMap.put(SoftwareStatusEnum.NOT_REGSIST.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
 
-            map.put("originStatus", SoftwareStatusEnum.WAIT_ANALYZE.getMsg());
+            map.put("originStatus", SoftwareStatusEnum.WAIT_ANALYZE.getCode());
             statusBarMap.put(SoftwareStatusEnum.WAIT_ANALYZE.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
 
-            map.put("originStatus", SoftwareStatusEnum.ALLOW_INSTALL.getMsg());
+            map.put("originStatus", SoftwareStatusEnum.ALLOW_INSTALL.getCode());
             statusBarMap.put(SoftwareStatusEnum.ALLOW_INSTALL.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
 
-            map.put("originStatus", SoftwareStatusEnum.RETIRE.getMsg());
+            map.put("originStatus", SoftwareStatusEnum.RETIRE.getCode());
             statusBarMap.put(SoftwareStatusEnum.RETIRE.getMsg(),
                     getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
         }else {
