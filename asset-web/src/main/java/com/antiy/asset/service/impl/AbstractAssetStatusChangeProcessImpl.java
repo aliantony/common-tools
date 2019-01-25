@@ -123,7 +123,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setOriginStatus(assetStatusReqeust.getAssetStatus().getCode());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
-        assetOperationRecord.setProcessResult(assetStatusReqeust.getAgree() ? 1: 0);
+        assetOperationRecord.setProcessResult(assetStatusReqeust.getAgree() ? 1 : 0);
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getUsername());
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         return assetOperationRecord;
@@ -136,8 +136,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      */
     private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) {
         Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
-        scheme.setExpecteStartTime(assetStatusReqeust.getWorkOrderVO().getStartTime());
-        scheme.setExpecteEndTime(assetStatusReqeust.getWorkOrderVO().getEndTime());
+        scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
+        scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));
         scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
         scheme.setPutintoUserId(assetStatusReqeust.getWorkOrderVO().getExecuteUserId().toString());
         scheme.setPutintoUser(assetStatusReqeust.getWorkOrderVO().getExecuteUserName());

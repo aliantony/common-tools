@@ -6,6 +6,7 @@ import java.util.Map;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.vo.query.AssetOperationRecordQuery;
 import com.antiy.asset.vo.response.AssetOperationRecordBarResponse;
+import com.antiy.asset.vo.response.NameValueVo;
 import com.antiy.common.base.IBaseService;
 
 /**
@@ -21,5 +22,5 @@ public interface IAssetOperationRecordService extends IBaseService<AssetOperatio
      * @param assetOperationRecordQuery
      * @return
      */
-    Map<String, List<AssetOperationRecordBarResponse>> queryStatusBar(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception;
+    List<NameValueVo> queryStatusBar(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception;
 }

@@ -7,11 +7,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.enums.AssetOperationTableEnum;
-import com.antiy.asset.vo.enums.SoftwareStatusEnum;
-import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.exception.BusinessException;
-import org.apache.hadoop.mapred.IFile;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetOperationRecordDao;
@@ -20,12 +15,17 @@ import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.AssetOperationRecordBarPO;
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.service.IAssetOperationRecordService;
+import com.antiy.asset.vo.enums.AssetOperationTableEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.enums.SoftwareStatusEnum;
 import com.antiy.asset.vo.query.AssetOperationRecordQuery;
 import com.antiy.asset.vo.response.AssetOperationRecordBarResponse;
 import com.antiy.asset.vo.response.AssetStatusBarResponse;
+import com.antiy.asset.vo.response.NameValueVo;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.exception.BusinessException;
 
 /**
  * <p> 资产操作记录表 服务实现类 </p>
@@ -45,71 +45,103 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
     private BaseConverter<AssetOperationRecordBarPO, AssetOperationRecordBarResponse> operationRecordBarPOToResponseConverter;
 
     @Override
-    public Map<String, List<AssetOperationRecordBarResponse>> queryStatusBar(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
-        Map<String, List<AssetOperationRecordBarResponse>> statusBarMap = new HashMap<>();
+    public List<NameValueVo> queryStatusBar(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
+
+        List<NameValueVo> nameValueVoList = new ArrayList<>();
 
         HashMap<String, Object> map = new HashMap<>();
-        if (AssetOperationTableEnum.ASSET.getMsg().equals(assetOperationRecordQuery.getTargetType().getMsg())){
+        if (AssetOperationTableEnum.ASSET.getMsg().equals(assetOperationRecordQuery.getTargetType().getMsg())) {
             map.put("originStatus", AssetStatusEnum.WATI_REGSIST.getCode());
-            statusBarMap.put(AssetStatusEnum.WATI_REGSIST.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            NameValueVo<AssetOperationRecordBarResponse> waitRegist = new NameValueVo<>();
+            waitRegist.setName(AssetStatusEnum.WATI_REGSIST.getMsg());
+            waitRegist.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(waitRegist);
 
             map.put("originStatus", AssetStatusEnum.NOT_REGSIST.getCode());
-            statusBarMap.put(AssetStatusEnum.NOT_REGSIST.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            NameValueVo<AssetOperationRecordBarResponse> notRegist = new NameValueVo<>();
+            notRegist.setName(AssetStatusEnum.NOT_REGSIST.getMsg());
+            notRegist.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(notRegist);
 
             map.put("originStatus", AssetStatusEnum.WAIT_SETTING.getCode());
-            statusBarMap.put(AssetStatusEnum.WAIT_SETTING.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            NameValueVo<AssetOperationRecordBarResponse> waitSetting = new NameValueVo<>();
+            waitSetting.setName(AssetStatusEnum.WAIT_SETTING.getMsg());
+            waitSetting.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(waitSetting);
 
             map.put("originStatus", AssetStatusEnum.WAIT_VALIDATE.getCode());
-            statusBarMap.put(AssetStatusEnum.WAIT_VALIDATE.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            NameValueVo<AssetOperationRecordBarResponse> waitVAlidate = new NameValueVo<>();
+            waitVAlidate.setName(AssetStatusEnum.WAIT_VALIDATE.getMsg());
+            waitVAlidate.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(waitVAlidate);
 
             map.put("originStatus", AssetStatusEnum.WAIT_NET.getCode());
-            statusBarMap.put(AssetStatusEnum.WAIT_NET.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            NameValueVo<AssetOperationRecordBarResponse> waitNet = new NameValueVo<>();
+            waitNet.setName(AssetStatusEnum.WAIT_NET.getMsg());
+            waitNet.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(waitNet);
 
             map.put("originStatus", AssetStatusEnum.WAIT_CHECK.getCode());
-            statusBarMap.put(AssetStatusEnum.WAIT_CHECK.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            NameValueVo<AssetOperationRecordBarResponse> waitCheck = new NameValueVo<>();
+            waitCheck.setName(AssetStatusEnum.WAIT_CHECK.getMsg());
+            waitCheck.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(waitCheck);
 
             map.put("originStatus", AssetStatusEnum.NET_IN.getCode());
-            statusBarMap.put(AssetStatusEnum.NET_IN.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            NameValueVo<AssetOperationRecordBarResponse> netIn = new NameValueVo<>();
+            netIn.setName(AssetStatusEnum.NET_IN.getMsg());
+            netIn.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(netIn);
 
             map.put("originStatus", AssetStatusEnum.WAIT_RETIRE.getCode());
-            statusBarMap.put(AssetStatusEnum.WAIT_RETIRE.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            NameValueVo<AssetOperationRecordBarResponse> waitRetire = new NameValueVo<>();
+            waitRetire.setName(AssetStatusEnum.WAIT_RETIRE.getMsg());
+            waitRetire.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(waitRetire);
 
             map.put("originStatus", AssetStatusEnum.RETIRE.getCode());
-            statusBarMap.put(AssetStatusEnum.RETIRE.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
-        }else if (AssetOperationTableEnum.SOFTWARE.getMsg().equals(assetOperationRecordQuery.getTargetType().getMsg())){
+            NameValueVo<AssetOperationRecordBarResponse> retire = new NameValueVo<>();
+            retire.setName(AssetStatusEnum.RETIRE.getMsg());
+            retire.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(retire);
+
+        } else if (AssetOperationTableEnum.SOFTWARE.getMsg()
+            .equals(assetOperationRecordQuery.getTargetType().getMsg())) {
             map.put("originStatus", SoftwareStatusEnum.WATI_REGSIST.getCode());
-            statusBarMap.put(SoftwareStatusEnum.WATI_REGSIST.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            NameValueVo<AssetOperationRecordBarResponse> waitRegist = new NameValueVo<>();
+            waitRegist.setName(AssetStatusEnum.WATI_REGSIST.getMsg());
+            waitRegist.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(waitRegist);
 
             map.put("originStatus", SoftwareStatusEnum.NOT_REGSIST.getCode());
-            statusBarMap.put(SoftwareStatusEnum.NOT_REGSIST.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            NameValueVo<AssetOperationRecordBarResponse> notRegist = new NameValueVo<>();
+            notRegist.setName(AssetStatusEnum.NOT_REGSIST.getMsg());
+            notRegist.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(notRegist);
 
             map.put("originStatus", SoftwareStatusEnum.WAIT_ANALYZE.getCode());
-            statusBarMap.put(SoftwareStatusEnum.WAIT_ANALYZE.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            NameValueVo<AssetOperationRecordBarResponse> waitAnalyze = new NameValueVo<>();
+            waitAnalyze.setName(SoftwareStatusEnum.WAIT_ANALYZE.getMsg());
+            waitAnalyze.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(waitAnalyze);
 
             map.put("originStatus", SoftwareStatusEnum.ALLOW_INSTALL.getCode());
-            statusBarMap.put(SoftwareStatusEnum.ALLOW_INSTALL.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            NameValueVo<AssetOperationRecordBarResponse> allowInstall = new NameValueVo<>();
+            allowInstall.setName(SoftwareStatusEnum.ALLOW_INSTALL.getMsg());
+            allowInstall.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(allowInstall);
 
             map.put("originStatus", SoftwareStatusEnum.RETIRE.getCode());
-            statusBarMap.put(SoftwareStatusEnum.RETIRE.getMsg(),
-                    getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
-        }else {
+            NameValueVo<AssetOperationRecordBarResponse> retire = new NameValueVo<>();
+            retire.setName(SoftwareStatusEnum.ALLOW_INSTALL.getMsg());
+            retire.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(retire);
+
+        } else {
             throw new BusinessException(RespBasicCode.PARAMETER_ERROR.getResultDes());
         }
 
-        return statusBarMap;
+        return nameValueVoList;
     }
 
     private List<AssetOperationRecordBarResponse> getAssetOperationRecordBarResponses(HashMap<String, Object> map,
@@ -122,12 +154,13 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
         List<AssetOperationRecordBarResponse> assetOperationRecordBarResponseList = new ArrayList<>();
         for (AssetOperationRecordBarPO assetOperationRecordBarPO : assetOperationRecordBarPOList) {
 
-            if (assetOperationRecordBarPO == null){
+            if (assetOperationRecordBarPO == null) {
                 continue;
-            }else {
+            } else {
                 map.put("assetId", assetOperationRecordBarPO.getId());
 
-                AssetOperationRecordBarResponse assetOperationRecordBarResponse = operationRecordBarPOToResponseConverter.convert(assetOperationRecordBarPO,AssetOperationRecordBarResponse.class);
+                AssetOperationRecordBarResponse assetOperationRecordBarResponse = operationRecordBarPOToResponseConverter
+                    .convert(assetOperationRecordBarPO, AssetOperationRecordBarResponse.class);
 
                 List<Scheme> schemeList = schemeDao.findSchemeByAssetId(map);
 

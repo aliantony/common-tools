@@ -27,6 +27,7 @@ import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -41,16 +42,21 @@ import com.antiy.common.utils.LoginUserUtil;
 public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implements IAssetGroupService {
 
     @Resource
-    private AssetGroupDao         assetGroupDao;
+    private AssetGroupDao                                 assetGroupDao;
     @Resource
-    private AssetGroupRelationDao assetGroupRelationDao;
+    private AesEncoder                                    aesEncoder;
     @Resource
-    private SelectConvert         selectConvert;
+    private AssetGroupRelationDao                         assetGroupRelationDao;
     @Resource
-    private BaseConverter<AssetGroup,AssetGroupResponse>         assetGroupToResponseConverter;
+    private SelectConvert                                 selectConvert;
+    @Resource
+    private BaseConverter<AssetGroup, AssetGroupResponse> assetGroupToResponseConverter;
+    @Resource
+    private BaseConverter<AssetGroupRequest, AssetGroup>  assetGroupToAssetGroupConverter;
+
     @Override
     public String saveAssetGroup(AssetGroupRequest request) throws Exception {
-        AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
+        AssetGroup assetGroup = assetGroupToAssetGroupConverter.convert(request, AssetGroup.class);
         assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
         int result = assetGroupDao.insert(assetGroup);
@@ -60,7 +66,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}", assetGroup.toString());
         }
-        return assetGroup.getStringId();
+        return aesEncoder.encode(assetGroup.getStringId(),LoginUserUtil.getLoginUser().getUsername());
     }
 
     @Override
@@ -99,7 +105,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public List<AssetGroupResponse> findListAssetGroup(AssetGroupQuery query) throws Exception {
         List<AssetGroup> assetGroupList = assetGroupDao.findQuery(query);
-        List<AssetGroupResponse> assetResponseList = assetGroupToResponseConverter.convert(assetGroupList, AssetGroupResponse.class);
+        List<AssetGroupResponse> assetResponseList = assetGroupToResponseConverter.convert(assetGroupList,
+            AssetGroupResponse.class);
         for (AssetGroupResponse assetGroupResponse : assetResponseList) {
             List<String> assetList = assetGroupRelationDao
                 .findAssetNameByAssetGroupId(Integer.valueOf(assetGroupResponse.getStringId()));
