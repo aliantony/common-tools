@@ -50,7 +50,7 @@ public class AssetAdmittanceController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:admittance:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "asset") @RequestBody AssetQuery asset) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
         return ActionResponse.success(assetService.findPageAsset(asset));
     }
 
