@@ -319,10 +319,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetUserQuery assetUserQuery = new AssetUserQuery ();
         assetUserQuery.setExportName (user);
         List<AssetUser> assetUsers = assetUserDao.queryUserList (assetUserQuery);
+        Integer count = assetUserDao.findListCount (assetUserQuery);
         if (null!=assetUsers&&assetUsers.size ()>0){
             uid=  assetUsers.get (0).getStringId ();
             return true;
         }
+//        if (count>=1){
+//            return true;
+//        }
         return false;
     }
 
@@ -1406,9 +1410,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
-            if (CheckUser (entity.getUser ())) {
-                repeat++;
-                builder.append ("序号").append (entity.getOrderNumber ()).append ("使用者重复");
+            if (StringUtils.isBlank(entity.getUser ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("使用者为空");
+                continue;
+            }
+            if (!CheckUser(entity.getUser())) {
+                error++;
+                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
                 continue;
             }
 
@@ -1613,12 +1622,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append ("序号").append (networkDeviceEntity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
-            if (CheckUser (networkDeviceEntity.getUser ())) {
-                repeat++;
-                builder.append ("序号").append (networkDeviceEntity.getOrderNumber ()).append ("使用者重复");
+
+            if (StringUtils.isBlank(networkDeviceEntity.getUser ())) {
+                error++;
+                builder.append ("序号").append (networkDeviceEntity.getOrderNumber ()).append ("使用者为空");
                 continue;
             }
-
+            if (!CheckUser(networkDeviceEntity.getUser())) {
+                error++;
+                builder.append("序号").append(networkDeviceEntity.getOrderNumber()).append("没有此使用者");
+                continue;
+            }
 
             Asset asset = new Asset();
             asset.setResponsibleUserId (uid);
@@ -1731,12 +1745,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
-            if (CheckUser (entity.getUser ())) {
-                repeat++;
-                builder.append ("序号").append (entity.getOrderNumber ()).append ("使用者重复");
+            if (!CheckUser(entity.getUser())) {
+                error++;
+                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
                 continue;
             }
 
+            if (StringUtils.isBlank(entity.getUser ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("使用者为空");
+                continue;
+            }
+            if (!CheckUser(entity.getUser())) {
+                error++;
+                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
+                continue;
+            }
 
             Asset asset = new Asset();
             asset.setResponsibleUserId (uid);
@@ -1836,12 +1860,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
-            if (CheckUser (entity.getUser ())) {
-                repeat++;
-                builder.append ("序号").append (entity.getOrderNumber ()).append ("使用者重复");
+            if (StringUtils.isBlank(entity.getUser ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("使用者为空");
                 continue;
             }
-
+            if (!CheckUser(entity.getUser())) {
+                error++;
+                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
+                continue;
+            }
 
             Asset asset = new Asset();
             asset.setResponsibleUserId (uid);
@@ -1943,12 +1971,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
-            if (CheckUser(entity.getUser())) {
-                repeat++;
-                builder.append("序号").append(entity.getOrderNumber()).append("使用者重复");
+            if (StringUtils.isBlank(entity.getUser ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("使用者为空");
                 continue;
             }
-
+            if (!CheckUser(entity.getUser())) {
+                error++;
+                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
+                continue;
+            }
             Asset asset = new Asset();
             asset.setResponsibleUserId(uid);
             asset.setGmtCreate(System.currentTimeMillis());
