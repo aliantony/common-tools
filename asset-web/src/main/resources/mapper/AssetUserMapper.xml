@@ -355,6 +355,9 @@
         <if test=" name != null">
             AND a.name like concat('%',#{name },'%')
         </if>
+        <if test=" exportName != null">
+            AND a.name =#{name }
+        </if>
         <if test=" email != null">
             AND a.email = #{email }
         </if>
