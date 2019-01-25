@@ -47,7 +47,6 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
     @Override
     public List<NameValueVo> queryStatusBar(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
 
-        Map<String, Object> resultMap = new HashMap<>();
         List<NameValueVo> nameValueVoList = new ArrayList<>();
 
         HashMap<String, Object> map = new HashMap<>();
