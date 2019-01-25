@@ -4,6 +4,8 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 
+import java.util.Objects;
+
 /**
  * @Description: 数组类型转换
  */
@@ -27,7 +29,7 @@ public class ArrayTypeUtil {
         String[] strings = new String[objects.length];
         for (int i = 0; i < objects.length; i++) {
             try {
-                strings[i] = (String) objects[i];
+                strings[i] = Objects.toString( objects[i]);
             } catch (Exception e) {
                 logger.error("Object转换为整形出错", e);
                 throw new BusinessException("Object转换为整形出错");

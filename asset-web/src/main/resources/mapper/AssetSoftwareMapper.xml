@@ -3,7 +3,6 @@
 <mapper namespace="com.antiy.asset.dao.AssetSoftwareDao">
 
 
-
     <resultMap id="ManufacturerResultMap" type="java.util.HashMap">
         <result property="key" column="manufacturer"/>
         <result property="value" column="num"/>
@@ -477,7 +476,6 @@
     </select>
 
 
-
     <select id="findCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select count(1) count from
         <include refid="Table_Name"></include>
@@ -488,7 +486,7 @@
             <include refid="Multiple_Query"></include>
             <if test=" multipleQuery != null">
                 and (
-                  asset_software.name LIKE CONCAT('%',#{multipleQuery},'%')
+                asset_software.name LIKE CONCAT('%',#{multipleQuery},'%')
                 or asset_software.serial LIKE CONCAT('%',#{multipleQuery},'%')
                 or asset_software.id LIKE CONCAT('%',#{multipleQuery},'%')
                 )
@@ -538,7 +536,7 @@
         from
         <include refid="Table_Name"></include>
         <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
-          left join asset_category_model b on asset_software.category_model = b.id
+            left join asset_category_model b on asset_software.category_model = b.id
         </if>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <include refid="Multiple_Query"></include>
@@ -551,7 +549,7 @@
             </if>
             and asset_software.status = 1
             <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
-              and b.status=1
+                and b.status=1
             </if>
         </trim>
         <if test="pageSize !=-1">
@@ -593,23 +591,36 @@
     </select>
 
     <select id="countManufacturer" resultMap="ManufacturerResultMap">
-        select manufacturer, count(manufacturer) num from asset_software where software_status != 4  and status =1 GROUP BY manufacturer
+        select manufacturer, count(manufacturer) num from asset_software where software_status != 5 and status =1 GROUP BY manufacturer
     </select>
 
     <select id="countStatus" resultMap="StatusResultMap">
-        select software_status, count(software_status) num from asset_software  where software_status != 4 and status =1 GROUP BY software_status
+        select software_status, count(software_status) num from asset_software  where software_status != 5 and status =1 GROUP BY software_status
     </select>
 
     <select id="findCountByCategoryModel" resultType="java.lang.Long"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select count(1) count
-        from asset t1 where status =1 and asset_status!=4
-        <if test=" categoryModels != null ">
+        from asset t1 where 1=1
+        <if test=" categoryModels != null and categoryModels.length >0 ">
             and category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
         </if>
+        <if test=" areaIds != null">
+            and area_id in
+            <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <!--<if test=" softwareStatusList != null and softwareStatusList.size()>0">-->
+            <!--and software_status in-->
+            <!--<foreach collection="softwareStatusList" open="(" close=")" separator="," index="index" item="item">-->
+                <!--#{item}-->
+            <!--</foreach>-->
+        <!--</if>-->
+        and status=1
     </select>
 
     <select id="pulldownManufacturer" resultType="java.lang.String">
@@ -733,7 +744,7 @@
         a.category_model as categoryModel,
         a.manufacturer,
         case
-          when c.install_type is not null then c.install_type
+        when c.install_type is not null then c.install_type
         else a.install_type
         end as install_type
         from
