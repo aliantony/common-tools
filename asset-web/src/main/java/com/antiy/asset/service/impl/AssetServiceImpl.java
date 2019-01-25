@@ -319,14 +319,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetUserQuery assetUserQuery = new AssetUserQuery ();
         assetUserQuery.setExportName (user);
         List<AssetUser> assetUsers = assetUserDao.queryUserList (assetUserQuery);
-        Integer count = assetUserDao.findListCount (assetUserQuery);
         if (null!=assetUsers&&assetUsers.size ()>0){
             uid=  assetUsers.get (0).getStringId ();
             return true;
         }
-//        if (count>=1){
-//            return true;
-//        }
         return false;
     }
 
