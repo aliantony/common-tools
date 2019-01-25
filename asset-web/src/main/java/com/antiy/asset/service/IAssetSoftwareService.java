@@ -27,20 +27,20 @@ import java.util.Map;
 public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
 
     /**
-     * 保存
-     *
-     * @param request
-     * @return
-     */
-    ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception;
-
-    /**
      * 批量保存
      *
      * @param assetSoftwareList
      * @return
      */
     Integer batchSave(List<AssetSoftware> assetSoftwareList) throws Exception;
+
+    /**
+     * 保存
+     *
+     * @param request
+     * @return
+     */
+    ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception;
 
     /**
      * 修改

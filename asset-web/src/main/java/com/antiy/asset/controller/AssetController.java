@@ -47,7 +47,7 @@ public class AssetController {
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:saveSingle')")
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset) throws Exception {
-        return ActionResponse.success( iAssetService.saveAsset(asset));
+        return  iAssetService.saveAsset(asset);
     }
 
     /**
@@ -282,7 +282,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/net", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importNet')")
-    public ActionResponse importNet(@ApiParam(value = "file") MultipartFile file,@RequestBody AssetImportRequest importRequest) throws Exception {
+    public ActionResponse importNet(@ApiParam(value = "file") MultipartFile file, AssetImportRequest importRequest) throws Exception {
 
         return ActionResponse.success(iAssetService.importNet(file,importRequest));
     }
@@ -296,7 +296,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/safety", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importSafety')")
-    public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file,@RequestBody AssetImportRequest importRequest) throws Exception {
+    public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file, AssetImportRequest importRequest) throws Exception {
 
         return ActionResponse.success(iAssetService.importSecurity(file,importRequest));
     }
@@ -310,7 +310,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/storage", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importStorage')")
-    public ActionResponse importStorage(@ApiParam(value = "file") MultipartFile file,@RequestBody AssetImportRequest importRequest) throws Exception {
+    public ActionResponse importStorage(@ApiParam(value = "file") MultipartFile file, AssetImportRequest importRequest) throws Exception {
 
         return ActionResponse.success(iAssetService.importStory(file,importRequest));
     }
@@ -324,7 +324,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/ohters", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importOhters')")
-    public ActionResponse importOhters(@ApiParam(value = "file") MultipartFile file,@RequestBody AssetImportRequest importRequest) throws Exception {
+    public ActionResponse importOhters(@ApiParam(value = "file") MultipartFile file, AssetImportRequest importRequest) throws Exception {
 
         return ActionResponse.success(iAssetService.importOhters(file,importRequest));
     }

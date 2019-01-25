@@ -1377,6 +1377,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产名称为空");
                 continue;
             }
+            if (StringUtils.isBlank(entity.getUser ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("使用者为空");
+                continue;
+            }
+
             if (StringUtils.isBlank(entity.getNumber ())) {
                 error++;
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号为空");
@@ -1399,6 +1405,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setAssetSource(2);
             asset.setNumber (entity.getNumber ());
             asset.setName(entity.getName());
+//            assetUserDao.queryUserList ()
+//            asset.setResponsibleUserId ();
             asset.setManufacturer(entity.getManufacturer());
             asset.setFirmwareVersion(entity.getFirmwareVersion());
             asset.setSerial(entity.getSerial());
@@ -1556,7 +1564,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         re += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
         re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder (re);
-        if (error>0){
+        if (error+repeat>0){
             stringBuilder.append (re).append ("其中").append (builder);
         }
 
@@ -1666,7 +1674,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         re += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
         re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder (re);
-        if (error>0){
+        if (error+repeat>0){
             stringBuilder.append (re).append ("其中").append (builder);
         }
 
@@ -1862,7 +1870,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder (res);
-        if (error>0){
+        if (error+repeat>0){
             stringBuilder.append (re).append ("其中").append (builder);
         }
 
@@ -1945,7 +1953,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder (res);
-        if (error>0){
+        if (error+repeat>0){
             stringBuilder.append (re).append ("其中").append (builder);
         }
 

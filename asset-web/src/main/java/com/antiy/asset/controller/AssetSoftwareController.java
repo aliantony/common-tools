@@ -46,7 +46,7 @@ public class AssetSoftwareController {
     @PreAuthorize(value = "hasAuthority('asset:software:saveSingle')")
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetSoftware") AssetSoftwareRequest assetSoftware) throws Exception {
 
-        return ActionResponse.success(iAssetSoftwareService.saveAssetSoftware(assetSoftware));
+        return iAssetSoftwareService.saveAssetSoftware(assetSoftware);
     }
 
     /**
@@ -150,7 +150,7 @@ public class AssetSoftwareController {
     @ApiOperation(value = "导入软件excel文件", notes = "导入软件excel文件")
     @RequestMapping(value = "/import/file", method = RequestMethod.POST)
     public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile,
-                                     @RequestBody @ApiParam(value = "importRequest")AssetImportRequest importRequest) throws Exception {
+                                      AssetImportRequest importRequest) throws Exception {
 
         return ActionResponse.success(iAssetSoftwareService.importExcel(multipartFile, importRequest));
 
