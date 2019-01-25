@@ -690,7 +690,12 @@
         <if test=" timeType != null and timeType == 2  and endTime != null">
             and gmt_create &lt;= #{endTime }
         </if>
-
+        <if test=" timeType != null and timeType == 3  and beginTime != null">
+            and service_life &gt;= #{beginTime }
+        </if>
+        <if test=" timeType != null and timeType == 3  and endTime != null">
+            and service_life &lt;= #{endTime }
+        </if>
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.Asset" useGeneratedKeys="true" keyProperty="id">
