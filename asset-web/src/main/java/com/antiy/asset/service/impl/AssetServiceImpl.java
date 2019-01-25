@@ -12,6 +12,7 @@ import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetOperationTableEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
@@ -309,6 +310,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetQuery.setNumber (number);
         Integer countAsset = findCountAsset (assetQuery);
         if (countAsset>=1){
+            return true;
+        }
+        return false;
+    }
+    String uid=null;
+    private boolean CheckUser(String user) throws Exception {
+        AssetUserQuery assetUserQuery = new AssetUserQuery ();
+        assetUserQuery.setExportName (user);
+        List<AssetUser> assetUsers = assetUserDao.queryUserList (assetUserQuery);
+        if (null!=assetUsers&&assetUsers.size ()>0){
+            uid=  assetUsers.get (0).getStringId ();
             return true;
         }
         return false;
@@ -1377,6 +1389,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产名称为空");
                 continue;
             }
+            if (StringUtils.isBlank(entity.getUser ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("使用者为空");
+                continue;
+            }
+
             if (StringUtils.isBlank(entity.getNumber ())) {
                 error++;
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号为空");
@@ -1388,9 +1406,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
+            if (StringUtils.isBlank(entity.getUser ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("使用者为空");
+                continue;
+            }
+            if (!CheckUser(entity.getUser())) {
+                error++;
+                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
+                continue;
+            }
 
 
             Asset asset = new Asset();
+            asset.setResponsibleUserId (uid);
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (importRequest.getAreaId ());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -1556,7 +1585,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         re += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
         re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder (re);
-        if (error>0){
+        if (error+repeat>0){
             stringBuilder.append (re).append ("其中").append (builder);
         }
 
@@ -1589,7 +1618,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append ("序号").append (networkDeviceEntity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
+
+            if (StringUtils.isBlank(networkDeviceEntity.getUser ())) {
+                error++;
+                builder.append ("序号").append (networkDeviceEntity.getOrderNumber ()).append ("使用者为空");
+                continue;
+            }
+            if (!CheckUser(networkDeviceEntity.getUser())) {
+                error++;
+                builder.append("序号").append(networkDeviceEntity.getOrderNumber()).append("没有此使用者");
+                continue;
+            }
+
             Asset asset = new Asset();
+            asset.setResponsibleUserId (uid);
             AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (importRequest.getAreaId ());
@@ -1666,7 +1708,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         re += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
         re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder (re);
-        if (error>0){
+        if (error+repeat>0){
             stringBuilder.append (re).append ("其中").append (builder);
         }
 
@@ -1699,7 +1741,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
+            if (!CheckUser(entity.getUser())) {
+                error++;
+                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
+                continue;
+            }
+
+            if (StringUtils.isBlank(entity.getUser ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("使用者为空");
+                continue;
+            }
+            if (!CheckUser(entity.getUser())) {
+                error++;
+                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
+                continue;
+            }
+
             Asset asset = new Asset();
+            asset.setResponsibleUserId (uid);
             AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (importRequest.getAreaId ());
@@ -1779,7 +1839,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int error=0;
         StringBuilder builder = new StringBuilder ();
         for (StorageDeviceEntity entity : resultDataList) {
-            Asset asset = new Asset();
+
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产名称为空");
@@ -1796,6 +1856,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
+            if (StringUtils.isBlank(entity.getUser ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("使用者为空");
+                continue;
+            }
+            if (!CheckUser(entity.getUser())) {
+                error++;
+                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
+                continue;
+            }
+
+            Asset asset = new Asset();
+            asset.setResponsibleUserId (uid);
             AssetStorageMedium assetSafetyEquipment = new AssetStorageMedium();
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (importRequest.getAreaId ());
@@ -1862,8 +1935,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder (res);
-        if (error>0){
-            stringBuilder.append (re).append ("其中").append (builder);
+        if (error+repeat>0){
+            stringBuilder.append (res).append ("其中").append (builder);
         }
 
         return stringBuilder.toString ();
@@ -1894,7 +1967,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append ("序号").append (entity.getOrderNumber ()).append ("资产编号重复");
                 continue;
             }
+            if (StringUtils.isBlank(entity.getUser ())) {
+                error++;
+                builder.append ("序号").append (entity.getOrderNumber ()).append ("使用者为空");
+                continue;
+            }
+            if (!CheckUser(entity.getUser())) {
+                error++;
+                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
+                continue;
+            }
             Asset asset = new Asset();
+            asset.setResponsibleUserId(uid);
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId (importRequest.getAreaId ());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -1945,8 +2029,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += repeat > 0 ? ", " + repeat + "条编号重复"  : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder (res);
-        if (error>0){
-            stringBuilder.append (re).append ("其中").append (builder);
+        if (error+repeat>0){
+            stringBuilder.append (res).append ("其中").append (builder);
         }
 
         return stringBuilder.toString ();

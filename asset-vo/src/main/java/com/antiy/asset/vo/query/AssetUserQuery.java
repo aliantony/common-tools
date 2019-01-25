@@ -19,6 +19,11 @@ public class AssetUserQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty("姓名")
     private String  name;
+    /**
+     * 姓名
+     */
+    @ApiModelProperty("导入使用姓名")
+    private String exportName;
 
     /**
      * 部门主键
@@ -124,5 +129,13 @@ public class AssetUserQuery extends ObjectQuery implements ObjectValidator {
     @Override
     public void validate() throws RequestParamValidateException {
 
+    }
+
+    public String getExportName() {
+        return exportName;
+    }
+
+    public void setExportName(String exportName) {
+        this.exportName = exportName;
     }
 }

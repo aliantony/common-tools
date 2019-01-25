@@ -178,7 +178,7 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception;
     /**
-     * 1-计算设备 2-网络设备 3-安全设备 4-存储介质 5-服务器 6-外设
+     * 1-计算设备 2-网络设备 3-安全设备 4-存储介质 5-其他设备
      * @param type 导出模板的类型
      */
     void exportTemplate(int type) throws Exception;
