@@ -133,11 +133,6 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("")
     private String                   tags;
     /**
-     * 是否入网,false表示未入网,true表示入网
-     */
-    @ApiModelProperty("是否入网,0表示未入网,1已入网")
-    private Integer                  isInnet;
-    /**
      * 使用到期时间
      */
     @ApiModelProperty("使用到期时间")
@@ -351,14 +346,6 @@ public class AssetResponse extends BaseResponse {
 
     public void setTags(String tags) {
         this.tags = tags;
-    }
-
-    public Integer getIsInnet() {
-        return isInnet;
-    }
-
-    public void setIsInnet(Integer isInnet) {
-        this.isInnet = isInnet;
     }
 
     public Long getServiceLife() {

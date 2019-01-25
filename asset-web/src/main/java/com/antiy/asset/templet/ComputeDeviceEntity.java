@@ -133,7 +133,11 @@ public class ComputeDeviceEntity {
     @ExcelField(value = "memory_capacity", align = 1, title = "内存容量")
     private Integer  memoryCapacity;
 
-
+    /**
+     * 内存类型
+     */
+    @ExcelField(value = "transfer_type", align = 1, title = "内存类型", dictType = "transfer_type")
+    private Integer  transferType;
     /**
      * 内存主频
      */
@@ -742,5 +746,13 @@ public class ComputeDeviceEntity {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public Integer getTransferType() {
+        return transferType;
+    }
+
+    public void setTransferType(Integer transferType) {
+        this.transferType = transferType;
     }
 }

@@ -19,46 +19,56 @@ public class AssetOuterRequest extends BasicRequest {
      * 资产主表信息
      */
     @Valid()
+    @ApiModelProperty(value = "资产主表信息")
     private AssetRequest                       asset;
 
     /**
      * 主板
      */
+    @ApiModelProperty(value = "主板")
     private List<AssetMainboradRequest>        mainboard;
 
     /**
      * 内存
      */
+    @ApiModelProperty(value = "内存")
     private List<AssetMemoryRequest>           memory;
 
     /**
      * 硬盘
      */
+    @ApiModelProperty(value = "硬盘")
     private List<AssetHardDiskRequest>         hardDisk;
 
     /**
      * cpu
      */
+    @ApiModelProperty(value = "cpu")
     private List<AssetCpuRequest>              cpu;
     /**
      * 网卡
      */
+    @ApiModelProperty(value = "网卡")
     private List<AssetNetworkCardRequest>      networkCard;
     /**
      * 网络设备
      */
+    @ApiModelProperty(value = "网络设备")
     private AssetNetworkEquipmentRequest       networkEquipment;
     /**
      * 安全设备
      */
+    @ApiModelProperty(value = "安全设备")
     private AssetSafetyEquipmentRequest        safetyEquipment;
     /**
      * 存储介质
      */
+    @ApiModelProperty(value = "存储介质")
     private AssetStorageMediumRequest          assetStorageMedium;
     /**
      * 资产软件关系表
      */
+    @ApiModelProperty(value = "资产软件关系表")
     private List<AssetSoftwareRelationRequest> assetSoftwareRelationList;
     @ApiModelProperty(value = "流程数据")
     ManualStartActivityRequest activityRequest;

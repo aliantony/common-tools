@@ -66,9 +66,9 @@ public class AssetQuery extends ObjectQuery {
     @ApiModelProperty("厂商")
     private String        manufacturer;
     /**
-     * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役
+     * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
-    @ApiModelProperty("资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6-已入网，7-待退役，8-已退役")
+    @ApiModelProperty("资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役")
     private Integer       assetStatus;
 
     /**
@@ -106,12 +106,6 @@ public class AssetQuery extends ObjectQuery {
     @ApiModelProperty("父类资源Id")
     @Encode
     private String        parentId;
-
-    /**
-     * 是否入网,0表示未入网,1表示入网
-     */
-    @ApiModelProperty("是否入网,0表示未入网,1表示入网")
-    private Boolean       isInnet;
 
     /**
      * 资产状态
@@ -273,14 +267,6 @@ public class AssetQuery extends ObjectQuery {
         this.parentId = parentId;
     }
 
-    public Boolean getInnet() {
-        return isInnet;
-    }
-
-    public void setInnet(Boolean innet) {
-        isInnet = innet;
-    }
-
     public List<Integer> getAssetStatusList() {
         return assetStatusList;
     }
@@ -337,8 +323,8 @@ public class AssetQuery extends ObjectQuery {
                + Arrays.toString(areaIds) + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
                + ", operationSystem='" + operationSystem + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='"
                + responsibleUserId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
-               + ", parentId='" + parentId + '\'' + ", isInnet=" + isInnet + ", assetStatusList=" + assetStatusList
-               + ", assetGroup=" + assetGroup + ", timeType=" + timeType + ", softwareId='" + softwareId + '\''
-               + ", admittanceStatus=" + admittanceStatus + ", gmtCreate=" + gmtCreate + '}';
+               + ", parentId='" + parentId + '\'' + ", assetStatusList=" + assetStatusList + ", assetGroup="
+               + assetGroup + ", timeType=" + timeType + ", softwareId='" + softwareId + '\'' + ", admittanceStatus="
+               + admittanceStatus + ", gmtCreate=" + gmtCreate + '}';
     }
 }

@@ -50,7 +50,6 @@
         <result column="parent_id" property="parentId"/>
         <result column="tags" property="tags"/>
         <result column="first_enter_nett" property="firstEnterNett"/>
-        <result column="is_innet" property="isInnet"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
         <result column="warranty" property="warranty"/>
@@ -158,9 +157,6 @@
         </if>
         <if test=" firstEnterNett != null">
             first_enter_nett,
-        </if>
-        <if test=" isInnet != null">
-            is_innet,
         </if>
         <if test=" serviceLife != null">
             service_life,
@@ -279,9 +275,6 @@
         <if test=" firstEnterNett != null">
             #{firstEnterNett },
         </if>
-        <if test=" isInnet != null">
-            #{isInnet },
-        </if>
         <if test=" serviceLife != null">
             #{serviceLife },
         </if>
@@ -399,9 +392,6 @@
         <if test=" firstEnterNett != null">
             first_enter_nett = #{firstEnterNett },
         </if>
-        <if test=" isInnet != null">
-            is_innet = #{isInnet },
-        </if>
         <if test=" serviceLife != null">
             service_life = #{serviceLife },
         </if>
@@ -502,9 +492,6 @@
         <if test=" tags != null">
             and tags = #{tags }
         </if>
-        <if test=" isInnet != null">
-            and is_innet = #{isInnet }
-        </if>
         <if test=" firstEnterNett != null">
             and first_enter_nett = #{firstEnterNett }
         </if>
@@ -597,9 +584,6 @@
         <if test=" tags != null">
             and tags = #{tags }
         </if>
-        <if test=" isInnet != null">
-            and is_innet = #{isInnet }
-        </if>
         <if test=" firstEnterNett != null">
             and first_enter_nett = #{firstEnterNett }
         </if>
@@ -664,6 +648,9 @@
                 #{assetStatus}
             </foreach>
         </if>
+        <if test="assetStatus != null">
+            and asset_status =  #{assetStatus}
+        </if>
         <if test=" categoryModels != null and categoryModels.length > 0">
             and category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
@@ -703,7 +690,12 @@
         <if test=" timeType != null and timeType == 2  and endTime != null">
             and gmt_create &lt;= #{endTime }
         </if>
-
+        <if test=" timeType != null and timeType == 3  and beginTime != null">
+            and service_life &gt;= #{beginTime }
+        </if>
+        <if test=" timeType != null and timeType == 3  and endTime != null">
+            and service_life &lt;= #{endTime }
+        </if>
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.Asset" useGeneratedKeys="true" keyProperty="id">

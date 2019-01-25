@@ -3,7 +3,7 @@ package com.antiy.asset.controller;
 import javax.annotation.Resource;
 
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
-import com.antiy.common.encoder.Encode;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -81,42 +81,42 @@ public class AssetDepartmentController {
     /**
      * 通过ID查询
      *
-     * @param id 主键
+     * @param condition 主键
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetDepartmentResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:department:queryById')")
-    public ActionResponse queryById(@PathVariable @ApiParam(value = "assetDepartment") @Encode String id)
-                                                                                                          throws Exception {
-        ParamterExceptionUtils.isNull(id, "id不能为空");
-        return ActionResponse.success(iAssetDepartmentService.getById(Integer.parseInt(id)));
+    public ActionResponse queryById(@ApiParam(value = "QueryCondition") QueryCondition condition) throws Exception {
+        ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "id不能为空");
+        return ActionResponse.success(iAssetDepartmentService.getById(Integer.parseInt(condition.getPrimaryKey())));
 
     }
 
     /**
      * 通过ID删除 删除后会把该部门下的所有用户的部门id置为null
      *
-     * @param id 主键,isConfirm 是否已经确认删除
+     * @param condition 主键
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:department:deleteById')")
-    public ActionResponse deleteById(@PathVariable @ApiParam(value = "id")@Encode String id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "id不能为空");
-        return iAssetDepartmentService.deleteAllById(Integer.parseInt(id));
+    public ActionResponse deleteById(@ApiParam(value = "id") QueryCondition condition) throws Exception {
+        ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "id不能为空");
+        return iAssetDepartmentService.deleteAllById(Integer.parseInt(condition.getPrimaryKey()));
     }
 
     @ApiOperation(value = "通过ID查询所有部门信息及子部门信息", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetDepartmentResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/get/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/get/id", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:department:getByID')")
-    public ActionResponse getByID(@PathVariable @ApiParam(value = "id") @Encode String id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "id不能为空");
-        return ActionResponse.success(iAssetDepartmentService.findAssetDepartmentById(Integer.parseInt(id)));
+    public ActionResponse getByID(@ApiParam(value = "id") QueryCondition condition) throws Exception {
+        ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "id不能为空");
+        return ActionResponse.success(iAssetDepartmentService.findAssetDepartmentById(Integer.parseInt(condition
+            .getPrimaryKey())));
     }
 
     /**
