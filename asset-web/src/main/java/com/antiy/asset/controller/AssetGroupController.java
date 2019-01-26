@@ -4,11 +4,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.QueryCondition;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.service.IAssetService;
@@ -18,10 +18,8 @@ import com.antiy.asset.vo.response.AssetGroupDetailResponse;
 import com.antiy.asset.vo.response.AssetGroupResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.utils.ParamterExceptionUtils;
+import com.antiy.common.encoder.Encode;
 
 import io.swagger.annotations.*;
 
@@ -36,8 +34,6 @@ public class AssetGroupController {
 
     @Resource
     public IAssetGroupService iAssetGroupService;
-    @Resource
-    public IAssetService      iAssetService;
 
     /**
      * 保存
@@ -89,26 +85,26 @@ public class AssetGroupController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:group:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "assetGroup") QueryCondition queryCondition) throws Exception {
-        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键ID不能为空");
+    public ActionResponse queryById(@ApiParam(value = "queryCondition") QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "primaryKey不能为空");
         return ActionResponse.success(iAssetGroupService.findGroupById(queryCondition.getPrimaryKey()));
     }
 
     /**
      * 通过ID删除
      *
-     * @param request 主键
+     * @param baseRequest 主键
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:group:deleteById')")
-    public ActionResponse deleteById(@ApiParam(value = "id") @RequestBody BaseRequest request) throws Exception {
-        ParamterExceptionUtils.isBlank(request.getStringId(), "ID删除不能为空");
-        return ActionResponse.success(iAssetGroupService.deleteById(Integer.valueOf(request.getStringId())));
+    public ActionResponse deleteById(@RequestBody @ApiParam(value = "queryCondition") BaseRequest baseRequest) throws Exception {
+        ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "stringId不能为空");
+        return ActionResponse.success(iAssetGroupService.deleteById(Integer.valueOf(baseRequest.getStringId())));
     }
 
     /**

@@ -75,7 +75,7 @@ public class AssetAdmittanceController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/access/export", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:asset:export ')")
-    public ActionResponse export(@ApiParam(value = "asset") @RequestParam Integer status) throws Exception {
+    public ActionResponse export(@ApiParam(value = "asset") @RequestParam(required = false) Integer status) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setAdmittanceStatus(status);
         List<AssetResponse> assetList = assetService.findListAsset(assetQuery);
