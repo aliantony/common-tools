@@ -1,26 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.util.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import com.antiy.common.utils.SpringUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -49,6 +28,24 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -66,7 +63,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Resource
     private AssetSoftwareLicenseDao                                          assetSoftwareLicenseDao;
     @Resource
-    private AssetPortProtocolDao                                             assetPortProtocolDaoDao;
+    private AssetPortProtocolDao                                             assetPortProtocolDao;
     @Resource
     private AssetCategoryModelDao                                            assetCategoryModelDao;
     @Resource
@@ -111,20 +108,27 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                     AssetSoftwareLicense license = BeanConvert.convertBean(request.getSoftwareLicenseRequest(),
                         AssetSoftwareLicense.class);
+                    AssetPortProtocol protocol = BeanConvert.convertBean (request.getAssetPortProtocolRequest (),
+                            AssetPortProtocol.class);
 
                     assetSoftware.setSoftwareStatus(AssetStatusEnum.ANALYZE.getCode());
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
                     assetSoftware.setReportSource(2);
                     assetSoftwareDao.insert(assetSoftware);
-                    license.setSoftwareId(assetSoftware.getId());
-                    license.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                    license.setGmtCreate(System.currentTimeMillis());
-                    license.setExpiryDate(assetSoftware.getServiceLife());
-                    license.setBuyDate(assetSoftware.getBuyDate());
-                    assetSoftwareLicenseDao.insert(license);
-
                     String sid = String.valueOf(assetSoftware.getId());
+                    protocol.setAssetSoftId (sid);
+                    protocol.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    protocol.setGmtCreate(System.currentTimeMillis());
+                    assetPortProtocolDao.insert (protocol);
+//                    license.setSoftwareId(assetSoftware.getId());
+//                    license.setCreateUser(LoginUserUtil.getLoginUser().getId());
+//                    license.setGmtCreate(System.currentTimeMillis());
+//                    license.setExpiryDate(assetSoftware.getServiceLife());
+//                    license.setBuyDate(assetSoftware.getBuyDate());
+//                    assetSoftwareLicenseDao.insert(license);
+
+
                     // if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
                     // String[] assetIds = request.getAssetIds();
                     // for (String s : assetIds) {
@@ -219,7 +223,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                         List<Integer> releationIds = assetSoftwareRelationDao.getAllReleationId(null,
                             DataTypeUtils.stringToInteger(request.getId()));
                         if (CollectionUtils.isNotEmpty(releationIds)) {
-                            assetPortProtocolDaoDao.deletePortProtocol(releationIds);
+                            assetPortProtocolDao.deletePortProtocol(releationIds);
                         }
 
                         // 5.移除关系表
@@ -244,7 +248,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                                 for (Integer port : request.getAssetPortProtocolRequest().getPort()) {
                                     protocol.setPort(port);
                                     // 插入端口信息
-                                    assetPortProtocolDaoDao.insert(protocol);
+                                    assetPortProtocolDao.insert(protocol);
                                 }
                             }
 
