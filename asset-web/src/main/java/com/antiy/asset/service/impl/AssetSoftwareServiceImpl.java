@@ -615,6 +615,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareQuery.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser()
             .getAreaIdsOfCurrentUser()));
         assetSoftwareQuery.setQueryAssetCount(true);
+        assetSoftwareQuery.setPageSize(-1);
         List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery);
         ParamterExceptionUtils.isEmpty(list, "资产数据不能为空");
         DownloadVO downloadVO = new DownloadVO();

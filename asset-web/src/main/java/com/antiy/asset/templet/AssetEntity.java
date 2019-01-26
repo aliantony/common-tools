@@ -39,7 +39,7 @@ public class AssetEntity {
      * mac
      */
     @ApiModelProperty("资产组")
-    private String assetGroups;
+    private String assetGroup;
     /**
      * mac
      */
@@ -61,10 +61,35 @@ public class AssetEntity {
     @ApiModelProperty("资产来源")
     private String assetSource;
     /**
-     * 是否入网
+     * 使用者
      */
-    @ApiModelProperty("是否入网")
-    private String isInnet;
+    @ApiModelProperty("使用者")
+    private String responsibleUserName;
+    /**
+     * 重要程度
+     */
+    @ApiModelProperty("重要程度")
+    private String importanceDegree;
+    /**
+     * 重要程度
+     */
+    @ApiModelProperty("操作系统")
+    private String operationSystem;
+    /**
+     * 首次入网时间
+     */
+    @ApiModelProperty("首次入网时间")
+    private String firstEnterNett;
+    /**
+     * 是否准入
+     */
+    @ApiModelProperty("是否准入")
+    private String admittanceStatus;
+    /**
+     * 使用到期时间
+     */
+    @ApiModelProperty("使用到期时间")
+    private String serviceLife;
 
     public String getName() {
         return name;
@@ -114,12 +139,12 @@ public class AssetEntity {
         this.mac = mac;
     }
 
-    public String getAssetGroups() {
-        return assetGroups;
+    public String getAssetGroup() {
+        return assetGroup;
     }
 
-    public void setAssetGroups(String assetGroups) {
-        this.assetGroups = assetGroups;
+    public void setAssetGroup(String assetGroup) {
+        this.assetGroup = assetGroup;
     }
 
     public String getAssetStatus() {
@@ -154,11 +179,51 @@ public class AssetEntity {
         this.assetSource = assetSource;
     }
 
-    public String getIsInnet() {
-        return isInnet;
+    public String getResponsibleUserName() {
+        return responsibleUserName;
     }
 
-    public void setIsInnet(String isInnet) {
-        this.isInnet = isInnet;
+    public void setResponsibleUserName(String responsibleUserName) {
+        this.responsibleUserName = responsibleUserName;
+    }
+
+    public String getImportanceDegree() {
+        return importanceDegree;
+    }
+
+    public void setImportanceDegree(String importanceDegree) {
+        this.importanceDegree = importanceDegree;
+    }
+
+    public String getOperationSystem() {
+        return operationSystem;
+    }
+
+    public void setOperationSystem(String operationSystem) {
+        this.operationSystem = operationSystem;
+    }
+
+    public String getFirstEnterNett() {
+        return firstEnterNett;
+    }
+
+    public void setFirstEnterNett(String firstEnterNett) {
+        this.firstEnterNett = firstEnterNett;
+    }
+
+    public String getAdmittanceStatus() {
+        return admittanceStatus;
+    }
+
+    public void setAdmittanceStatus(String admittanceStatus) {
+        this.admittanceStatus = admittanceStatus;
+    }
+
+    public String getServiceLife() {
+        return serviceLife;
+    }
+
+    public void setServiceLife(String serviceLife) {
+        this.serviceLife = serviceLife;
     }
 }
