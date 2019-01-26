@@ -247,7 +247,15 @@
             </trim>
         </where>
     </select>
-
+    <select id="findRepeatName" resultType="int">
+        select count(1) count
+        from
+        <include refid="Table_Name"></include>
+        where name=#{name}
+        <if test="id!=null">
+            and id!=#{id}
+        </if>
+    </select>
     <select id="findQuery" resultType="com.antiy.asset.entity.AssetDepartment"
             parameterType="com.antiy.common.base.ObjectQuery">
         select

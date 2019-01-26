@@ -337,7 +337,15 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
-
+    <select id="findRepeatName" resultType="int">
+        select count(1) count
+        from
+        <include refid="Table_Name"></include>
+        where name=#{name}
+        <if test="id!=null">
+            and id!=#{id}
+        </if>
+    </select>
     <select id="getNextLevelCategoryByName" resultType="com.antiy.asset.entity.AssetCategoryModel"
             parameterType="java.lang.String">
        select id, name, type, asset_type AS assetType, parent_id AS parentId,is_default AS isDefault,
