@@ -33,25 +33,15 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
     @ApiModelProperty("名称")
     private String  name;
 
-    @Max(value = 2, message = "资产类型只能为1或2")
-    @Min(value = 1, message = "资产类型只能为1或2")
-    @ApiModelProperty("资产类型:1软件，2硬件")
-    private Integer assetType;
+
     /**
      * 父ID
      */
     @Encode
     @ApiModelProperty("父ID")
-    @NotNull(message = "父ID不能为空")
     private String parentId;
 
-    /**
-     * 是否系统默认：0系统1自定义
-     */
-    @Max(value = 1, message = "isDefault只能为0和1")
-    @Min(value = 0, message = "isDefault只能为0和1")
-    @ApiModelProperty("是否是系统默认")
-    private Integer isDefault;
+
     /**
      * 备注
      */
@@ -74,15 +64,7 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
         this.name = name;
     }
 
-    public Integer getAssetType() {
-        return assetType;
-    }
-
-    public void setAssetType(Integer assetType) {
-        this.assetType = assetType;
-    }
-
-    public String getMemo() {
+     public String getMemo() {
         return memo;
     }
 
@@ -90,13 +72,6 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
         this.memo = memo;
     }
 
-    public Integer getIsDefault() {
-        return isDefault;
-    }
-
-    public void setIsDefault(Integer isDefault) {
-        this.isDefault = isDefault;
-    }
 
     public String getParentId() {
         return parentId;

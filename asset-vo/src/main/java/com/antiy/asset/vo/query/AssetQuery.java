@@ -120,9 +120,9 @@ public class AssetQuery extends ObjectQuery {
     @Encode
     private String        assetGroup;
     /**
-     * 首次发现时间还是首次入网时间（1：发现。2：入网）
+     * 时间类型（1：发现。2：入网，3：到期）
      */
-    @ApiModelProperty("首次发现时间还是首次入网时间（1：发现。2：入网）")
+    @ApiModelProperty("时间类型（1：发现。2：入网。3：到期）")
     private Integer       timeType;
 
     @Encode
@@ -132,7 +132,7 @@ public class AssetQuery extends ObjectQuery {
     /**
      * 资产准入状态
      */
-    @ApiModelProperty("资产准入状态")
+    @ApiModelProperty("准入状态，1待设置，2已允许，3已禁止")
     private Integer       admittanceStatus;
     /**
      * 创建时间

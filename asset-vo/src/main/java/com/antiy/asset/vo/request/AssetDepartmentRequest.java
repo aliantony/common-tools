@@ -31,8 +31,8 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
     /**
      * 上级部门
      */
-    @Encode
     @ApiModelProperty("上级部门")
+    @Encode
     private String parentId;
     /**
      * 上级部门

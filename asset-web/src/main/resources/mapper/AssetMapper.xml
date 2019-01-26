@@ -648,6 +648,9 @@
                 #{assetStatus}
             </foreach>
         </if>
+        <if test="name != null">
+            and name like CONCAT('%',#{name},'%')
+        </if>
         <if test="assetStatus != null">
             and asset_status =  #{assetStatus}
         </if>
@@ -657,14 +660,26 @@
                 #{item}
             </foreach>
         </if>
+        <if test=" categoryModel != null">
+            and category_model = #{categoryModel}
+        </if>
+        <if test=" parentId != null">
+            and parent_id = #{parentId}
+        </if>
         <if test=" admittanceStatus != null">
             and admittance_status = #{admittanceStatus}
         </if>
         <if test=" number != null">
             and number = #{number}
         </if>
+        <if test=" uuid != null">
+            and uuid like CONCAT('%', #{uuid}, '%')
+        </if>
+        <if test=" serial != null">
+            and serial like CONCAT('%', #{serial}, '%')
+        </if>
         <if test=" manufacturer != null">
-            and manufacturer = #{manufacturer}
+            and manufacturer like CONCAT('%',#{manufacturer}, '%')
         </if>
         <if test=" operationSystem != null">
             and operation_system = #{operationSystem}
@@ -829,13 +844,13 @@
         from
         <include refid="Table_Name"></include>
         where 1 = 1
-        <if test=" categoryModels != null">
+        <if test=" categoryModels != null and categoryModels.length >0 ">
             and category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
         </if>
-        <if test=" categoryModel != null">
+        <if test=" categoryModel != null ">
             and category_model =#{categoryModel}
         </if>
         <if test=" assetStatusList != null">
@@ -844,7 +859,7 @@
                 #{item}
             </foreach>
         </if>
-        <if test=" areaIds != null">
+        <if test=" areaIds != null and areaIds.length >0 ">
             and area_id in
             <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
                 #{item}
@@ -926,7 +941,7 @@
         <include refid="Table_Name"></include>
         where status=1
         and
-        asset_status!=8
+        asset_status!=9
         <if test="areaIds != null and areaIds.size() > 0">
             and area_id in
             <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">

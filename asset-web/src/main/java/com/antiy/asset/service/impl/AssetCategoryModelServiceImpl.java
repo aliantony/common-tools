@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import com.antiy.asset.convert.CategoryRequestConvert;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.util.NodeUtilsConverter;
 import com.antiy.asset.vo.enums.AssetEventEnum;
@@ -81,15 +82,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 
     }
 
-    Boolean checkNameRepeat(AssetCategoryModelRequest request) throws Exception {
-        if (Objects.nonNull(request.getName())) {
-            AssetCategoryModelQuery assetCategoryModelQuery = new AssetCategoryModelQuery();
-            assetCategoryModelQuery.setName(request.getName());
-            return assetCategoryModelDao.findCount(assetCategoryModelQuery) >= 1;
-        }
-        return false;
-    }
-
     /**
      * 设置资产类型与父品类的资产类型一致
      * @param assetCategoryModel
@@ -98,6 +90,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     private void setParentType(AssetCategoryModel assetCategoryModel) throws Exception {
         String parentId = assetCategoryModel.getParentId();
         AssetCategoryModel parent = assetCategoryModelDao.getById(Integer.parseInt(parentId));
+        BusinessExceptionUtils.isTrue(!parent.getName().equals("品类型号"), "不能在第一级新增节点");
         BusinessExceptionUtils.isNull(parent, "父类型不存在");
         assetCategoryModel.setAssetType(parent.getAssetType());
     }
@@ -157,6 +150,16 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                                                                                                            throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetCategoryModel(query), query.getCurrentPage(),
             this.findListAssetCategoryModel(query));
+    }
+
+    boolean checkNameRepeat(AssetCategoryModelRequest request) throws Exception {
+        if (Objects.nonNull(request.getName())) {
+            AssetCategoryModelQuery assetDepartmentQuery = new AssetCategoryModelQuery();
+            assetDepartmentQuery.setName(request.getName());
+            return assetCategoryModelDao.findRepeatName(
+                request.getId() == null ? null : DataTypeUtils.stringToInteger(request.getId()), request.getName()) >= 1;
+        }
+        return false;
     }
 
     /**

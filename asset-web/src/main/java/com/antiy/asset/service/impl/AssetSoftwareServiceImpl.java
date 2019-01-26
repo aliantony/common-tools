@@ -7,6 +7,7 @@ import java.util.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.common.utils.SpringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -98,7 +99,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private SoftwareEntityConvert                                            softwareEntityConvert;
 
     private static final Logger                                              LOGGER = LogUtils
-        .get(AssetSoftwareServiceImpl.class);
+                                                                                        .get(AssetSoftwareServiceImpl.class);
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -210,8 +211,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     if (StringUtils.isNotBlank(request.getAssetSoftwareRelationId())
                         && request.getSoftwareStatus() != null) {
                         AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-                        assetSoftwareRelation
-                            .setId(DataTypeUtils.stringToInteger(request.getAssetSoftwareRelationId()));
+                        assetSoftwareRelation.setId(DataTypeUtils.stringToInteger(request.getAssetSoftwareRelationId()));
                         assetSoftwareRelation.setSoftwareStatus(request.getSoftwareStatus());
                         assetSoftwareRelationDao.update(assetSoftwareRelation);
                     } else if (ArrayUtils.isNotEmpty(request.getAssetIds())) { // 更新一批实例
@@ -272,8 +272,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param request
      */
     private void updateLicense(AssetSoftwareRequest request) throws Exception {
-        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter
-            .convert(request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
+        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter.convert(
+            request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
         assetSoftwareLicense.setSoftwareId(DataTypeUtils.stringToInteger(request.getId()));
         // 写入业务日志
         LogHandle.log(assetSoftwareLicense.toString(), AssetEventEnum.SOFT_INSERT.getName(),
@@ -309,9 +309,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             protected void convert(AssetSoftware assetSoftware, AssetSoftwareResponse assetSoftwareResponse) {
                 super.convert(assetSoftware, assetSoftwareResponse);
                 if (MapUtils.isNotEmpty(finalSoftAssetCount)) {
-                    assetSoftwareResponse.setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null
-                        ? finalSoftAssetCount.get(assetSoftware.getId()).intValue()
-                        : 0);
+                    assetSoftwareResponse
+                        .setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null ? finalSoftAssetCount
+                            .get(assetSoftware.getId()).intValue() : 0);
                 }
             }
         };
@@ -339,12 +339,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      *
      * @param id 查询的品类id
      */
-    public List<AssetCategoryModel> recursionSearch(Integer id) throws Exception {
-        List<AssetCategoryModel> list = assetCategoryModelDao.getAll();
+    public List<AssetCategoryModel> recursionSearch(List<AssetCategoryModel> list, Integer id) throws Exception {
         List<AssetCategoryModel> result = new ArrayList();
-        for (AssetCategoryModel AssetCategoryModel : list) {
-            if (AssetCategoryModel.getId().equals(id)) {
-                result.add(AssetCategoryModel);
+        for (AssetCategoryModel assetCategoryModel : list) {
+            if (Objects.equals(id, assetCategoryModel.getId())) {
+                result.add(assetCategoryModel);
             }
         }
         recursion(result, list, id);
@@ -360,7 +359,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      */
     private void recursion(List<AssetCategoryModel> result, List<AssetCategoryModel> list, Integer id) {
         for (AssetCategoryModel AssetCategoryModel : list) {
-            if (Objects.equals(AssetCategoryModel.getParentId(), id)) {
+            if (Objects.equals(AssetCategoryModel.getParentId(), Objects.toString(id))) {
                 result.add(AssetCategoryModel);
                 recursion(result, list, AssetCategoryModel.getId());
             }
@@ -414,24 +413,23 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public AssetCountResponse countCategory() throws Exception {
         List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        HashMap<String, Object> map = new HashMap();
-        map.put("name", "软件");
-        map.put("parentId", 0);
-        List<AssetCategoryModel> categoryModelList = assetCategoryModelDao.getByWhere(map);
-        if (CollectionUtils.isNotEmpty(categoryModelList)) {
-            Integer id = categoryModelList.get(0).getId();
-            map.clear();
-            map.put("parentId", id);
-            List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getByWhere(map);
-            HashMap<String, Long> result = new HashMap<>();
+        List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getNextLevelCategoryByName("软件");
+        HashMap<String, Long> result = new HashMap<>();
+        List<AssetCategoryModel> categoryModelDaoAll = assetCategoryModelDao.getAll();
+        if (CollectionUtils.isNotEmpty(categoryModelDaoAll)) {
             for (AssetCategoryModel a : categoryModelList1) {
-                List<AssetCategoryModel> search = recursionSearch(a.getId());
+                List<AssetCategoryModel> search = recursionSearch(categoryModelDaoAll, a.getId());
                 String[] list = new String[search.size()];
                 for (int i = 0; i < search.size(); i++) {
                     list[i] = search.get(i).getStringId();
                 }
+                List status = new ArrayList();
+                for (int i = 1; i <= 4; i++) {
+                    status.add(i);
+                }
                 AssetSoftwareQuery assetSoftwareQuery = new AssetSoftwareQuery();
                 assetSoftwareQuery.setCategoryModels(list);
+                assetSoftwareQuery.setSoftwareStatusList(status);
                 assetSoftwareQuery.setAreaIds(DataTypeUtils.integerArrayToStringArray(ids));
                 Long sum = assetSoftwareDao.findCountByCategoryModel(assetSoftwareQuery);
                 result.put(a.getName(), sum);
@@ -517,7 +515,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery) throws Exception {
+    public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery)
+                                                                                                          throws Exception {
         return new PageResult<>(softwareQuery.getPageSize(), this.findAssetInstallCount(softwareQuery),
             softwareQuery.getCurrentPage(), this.findAssetInstallList(softwareQuery));
     }
@@ -613,8 +612,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,
                             AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
-        assetSoftwareQuery.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        assetSoftwareQuery.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser()
+            .getAreaIdsOfCurrentUser()));
         assetSoftwareQuery.setQueryAssetCount(true);
         List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery);
         ParamterExceptionUtils.isEmpty(list, "资产数据不能为空");
@@ -659,8 +658,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param assetSoftwareDetailResponse
      * @throws Exception
      */
-    private void querySoftwarePort(SoftwareQuery softwareQuery,
-                                   AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+    private void querySoftwarePort(SoftwareQuery softwareQuery, AssetSoftwareDetailResponse assetSoftwareDetailResponse)
+                                                                                                                        throws Exception {
         AssetPortProtocolQuery assetPortProtocolQuery = new AssetPortProtocolQuery();
         assetPortProtocolQuery.setAssetSoftId(softwareQuery.getPrimaryKey());
         assetPortProtocolQuery.setPageSize(Constants.MAX_PAGESIZE);
