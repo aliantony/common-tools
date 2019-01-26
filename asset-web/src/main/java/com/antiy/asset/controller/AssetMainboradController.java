@@ -3,12 +3,17 @@ package com.antiy.asset.controller;
 import javax.annotation.Resource;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetMainboradService;
 import com.antiy.asset.vo.query.AssetMainboradQuery;
 import com.antiy.asset.vo.request.AssetMainboradRequest;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
@@ -72,30 +77,30 @@ public class AssetMainboradController {
     /**
      * 通过ID查询
      *
-     * @param id 主键封装对象
+     * @param queryCondition 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('asset:mainborad:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "assetMainborad") @PathVariable("id") Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetMainboradService.getById(id));
+    public ActionResponse queryById(@ApiParam(value = "assetMainborad") QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
+        return ActionResponse.success(iAssetMainboradService.getById(queryCondition.getPrimaryKey()));
     }
 
     /**
      * 通过ID删除
      *
-     * @param id 主键封装对象
+     * @param request 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:mainborad:deleteById')")
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") @PathVariable("id") Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetMainboradService.deleteById(id));
+    public ActionResponse deleteById(@ApiParam(value = "query") @RequestBody BaseRequest request) throws Exception {
+        ParamterExceptionUtils.isNull(request.getStringId(), "ID不能为空");
+        return ActionResponse.success(iAssetMainboradService.deleteById(request.getStringId()));
     }
 }

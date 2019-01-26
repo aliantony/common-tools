@@ -26,7 +26,7 @@ public class Scheme extends BaseEntity {
     /**
      * 实施用户主键
      */
-    private String putintoUserId;
+    private Integer putintoUserId;
     /**
      * 实施时间
      */
@@ -132,11 +132,11 @@ public class Scheme extends BaseEntity {
         this.result = result;
     }
 
-    public String getPutintoUserId() {
+    public Integer getPutintoUserId() {
         return putintoUserId;
     }
 
-    public void setPutintoUserId(String putintoUserId) {
+    public void setPutintoUserId(Integer putintoUserId) {
         this.putintoUserId = putintoUserId;
     }
 

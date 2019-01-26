@@ -34,6 +34,11 @@ public class AssetMemoryResponse extends BaseResponse {
     @ApiModelProperty("插槽类型:1-SDRAM,2-SIMM,3-DIMM,4-RIMM")
     private Integer slotType;
     /**
+     * 内存类型：1未知，2-ddr2,3-ddr3,4-ddr4
+     */
+    @ApiModelProperty("内存类型：1未知，2-ddr2,3-ddr3,4-ddr4")
+    private Integer transferType;
+    /**
      * 是否带散热片:0-不带，1-带
      */
     @ApiModelProperty("是否带散热片:0-不带，1-带")
@@ -116,5 +121,13 @@ public class AssetMemoryResponse extends BaseResponse {
 
     public void setWarrantyDate(Long warrantyDate) {
         this.warrantyDate = warrantyDate;
+    }
+
+    public Integer getTransferType() {
+        return transferType;
+    }
+
+    public void setTransferType(Integer transferType) {
+        this.transferType = transferType;
     }
 }

@@ -11,7 +11,6 @@ import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.AssetStatusJumpEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LoginUserUtil;
 
 /**
@@ -23,7 +22,7 @@ import com.antiy.common.utils.LoginUserUtil;
 public class AssetStatusChangeProcessImpl extends AbstractAssetStatusChangeProcessImpl {
 
     @Resource
-    AssetDao   assetDao;
+    AssetDao assetDao;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
@@ -31,6 +30,7 @@ public class AssetStatusChangeProcessImpl extends AbstractAssetStatusChangeProce
         AssetStatusEnum assetStatusEnum = AssetStatusJumpEnum.getNextStatus(assetStatusReqeust.getAssetStatus(),
             assetStatusReqeust.getAgree());
         Asset asset = new Asset();
+        asset.setAssetStatus(assetStatusEnum.getCode());
         asset.setId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
         asset.setGmtModified(System.currentTimeMillis());
         asset.setModifyUser(LoginUserUtil.getLoginUser().getId());

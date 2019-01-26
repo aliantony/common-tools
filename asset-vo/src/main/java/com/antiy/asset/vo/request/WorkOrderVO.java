@@ -3,6 +3,7 @@ package com.antiy.asset.vo.request;
 import java.util.List;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
@@ -29,19 +30,19 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
      * 1.紧急，2.重要，3.次要，4.提示
      */
     @ApiModelProperty("1.紧急，2.重要，3.次要，4.提示")
-    private String            workLevel;
+    private Integer           workLevel;
 
     /**
      * 1巡检，2预警，3重保，4应急，5清查,6基准配置，7基准验证，8准入实施，9其他
      */
     @ApiModelProperty("1巡检，2预警，3重保，4应急，5清查,6基准配置，7基准验证，8准入实施，9其他")
-    private String            orderType;
+    private Integer           orderType;
 
     /**
      * 1资产管理，2配置管理，3漏洞管理，4.补丁管理，5日志管理6.告警管理，7日常安全管理，8安全设备管理，9系统管理，10其他
      */
     @ApiModelProperty("1资产管理，2配置管理，3漏洞管理，4.补丁管理，5日志管理6.告警管理，7日常安全管理，8安全设备管理，9系统管理，10其他")
-    private String            orderSource;
+    private Integer           orderSource;
 
     /**
      * 工单内容
@@ -53,6 +54,7 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
      * 执行人id
      */
     @ApiModelProperty("执行人id")
+    @Encode
     private String            executeUserId;
     /**
      * 执行人姓名
@@ -86,6 +88,22 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
     @ApiModelProperty("与工单绑定的相关告警来源id")
     private String            relatedSourceId;
 
+    public void setWorkLevel(Integer workLevel) {
+        this.workLevel = workLevel;
+    }
+
+    public Integer getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(Integer orderType) {
+        this.orderType = orderType;
+    }
+
+    public void setOrderSource(Integer orderSource) {
+        this.orderSource = orderSource;
+    }
+
     public String getName() {
         return name;
     }
@@ -96,27 +114,11 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
 
     public Integer getWorkLevel() {
 
-        return Integer.valueOf(workLevel);
-    }
-
-    public void setWorkLevel(String workLevel) {
-        this.workLevel = workLevel;
-    }
-
-    public Integer getOrderType() {
-        return Integer.valueOf(orderType);
-    }
-
-    public void setOrderType(String orderType) {
-        this.orderType = orderType;
+        return this.workLevel;
     }
 
     public Integer getOrderSource() {
-        return Integer.valueOf(orderSource);
-    }
-
-    public void setOrderSource(String orderSource) {
-        this.orderSource = orderSource;
+        return this.orderSource;
     }
 
     public String getContent() {
@@ -127,16 +129,16 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
         this.content = content;
     }
 
-    public Long getStartTime() {
-        return Long.valueOf(startTime);
+    public String getStartTime() {
+        return this.startTime;
     }
 
     public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public Long getEndTime() {
-        return Long.valueOf(endTime);
+    public String getEndTime() {
+        return this.endTime;
     }
 
     public void setEndTime(String endTime) {
@@ -151,17 +153,16 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
         this.workOrderAttachments = workOrderAttachments;
     }
 
-    public Integer getExecuteUserId() {
-        // 如果解密失败返回null处理
-        return null != executeUserId ? Integer.valueOf(executeUserId) : null;
+    public String getExecuteUserId() {
+        return this.executeUserId;
     }
 
     public void setExecuteUserId(String executeUserId) {
         this.executeUserId = executeUserId;
     }
 
-    public Integer getRelatedSourceId() {
-        return Integer.valueOf(relatedSourceId);
+    public String getRelatedSourceId() {
+        return this.relatedSourceId;
     }
 
     public void setRelatedSourceId(String relatedSourceId) {
@@ -179,7 +180,8 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
     @Override
     public void validate() throws RequestParamValidateException {
         if (null != startTime && null != endTime) {
-            ParamterExceptionUtils.isTrue(getStartTime() < getEndTime() ? true : false, "任务预计开始时间不能晚于或等于任务预计结束时间");
+            ParamterExceptionUtils.isTrue(Long.valueOf(getStartTime()) < Long.valueOf(getEndTime()),
+                "任务预计开始时间不能晚于或等于任务预计结束时间");
         }
     }
 

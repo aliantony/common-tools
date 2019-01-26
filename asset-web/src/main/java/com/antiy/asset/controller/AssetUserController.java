@@ -1,34 +1,32 @@
 package com.antiy.asset.controller;
 
+import java.util.List;
+import java.util.Objects;
+
 import javax.annotation.Resource;
 
-import com.antiy.asset.entity.Asset;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.IAssetDepartmentService;
-import com.antiy.asset.templet.AssetEntity;
+import com.antiy.asset.service.IAssetUserService;
 import com.antiy.asset.templet.AssetUserEntity;
 import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.vo.response.AssetDepartmentResponse;
-import com.antiy.asset.vo.response.AssetUserResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.encoder.Encode;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import com.antiy.asset.service.IAssetUserService;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
+import com.antiy.asset.vo.response.AssetDepartmentResponse;
+import com.antiy.asset.vo.response.AssetUserResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.QueryCondition;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author lvliang
@@ -129,29 +127,33 @@ public class AssetUserController {
     /**
      * 通过ID查询
      *
-     * @param id 主键
+     * @param queryCondition 主键
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @PreAuthorize("hasAuthority('asset:user:queryById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetUserResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
-    public ActionResponse queryById(@PathVariable @ApiParam(value = "id") @Encode String id) throws Exception {
-        return ActionResponse.success(iAssetUserService.getById(DataTypeUtils.stringToInteger(id)));
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    public ActionResponse queryById(@PathVariable @ApiParam(value = "id") QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "Id不能为空");
+        return ActionResponse
+            .success(iAssetUserService.getById(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey())));
     }
 
     /**
      * 注销用户
      *
-     * @param id 主键
+     * @param baseRequest 主键
      * @return actionResponse
      */
     @ApiOperation(value = "注销用户", notes = "主键封装对象")
     @PreAuthorize("hasAuthority('asset:user:cancelUser')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/cancel/{id}", method = RequestMethod.POST)
-    public ActionResponse cancelUser(@PathVariable @RequestBody @ApiParam(value = "id") @Encode String id) throws Exception {
-        return ActionResponse.success(iAssetUserService.deleteById(DataTypeUtils.stringToInteger(id)));
+    @RequestMapping(value = "/cancel", method = RequestMethod.POST)
+    public ActionResponse cancelUser(@RequestBody @ApiParam(value = "baseRequest") BaseRequest baseRequest) throws Exception {
+        ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "ID不能为空");
+        return ActionResponse
+            .success(iAssetUserService.deleteById(DataTypeUtils.stringToInteger(baseRequest.getStringId())));
     }
 
     /**
