@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +33,6 @@ public class AssetGroupController {
 
     @Resource
     public IAssetGroupService iAssetGroupService;
-    @Resource
-    public IAssetService      iAssetService;
 
     /**
      * 保存
@@ -80,15 +79,16 @@ public class AssetGroupController {
     /**
      * 通过ID查询
      *
-     * @param id 主键
+     * @param queryCondition 主键
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:group:queryById')")
-    public ActionResponse queryById(@PathVariable @ApiParam(value = "assetGroup") @Encode String id) throws Exception {
-        return ActionResponse.success(iAssetGroupService.findGroupById(id));
+    public ActionResponse queryById(@ApiParam(value = "queryCondition") QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "primaryKey不能为空");
+        return ActionResponse.success(iAssetGroupService.findGroupById(queryCondition.getPrimaryKey()));
     }
 
     /**
@@ -99,9 +99,10 @@ public class AssetGroupController {
      */
     @ApiOperation(value = "通过ID删除", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:group:deleteById')")
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "queryCondition")QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "primaryKey不能为空");
         return ActionResponse.success(iAssetGroupService.deleteById(Integer.valueOf(queryCondition.getPrimaryKey())));
     }
 
