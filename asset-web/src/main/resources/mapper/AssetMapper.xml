@@ -693,16 +693,16 @@
         <if test=" importanceDegree != null">
             and importance_degree = #{importanceDegree }
         </if>
-        <if test=" timeType != null and timeType == 1  and beginTime != null">
+        <if test=" timeType != null and timeType == 2  and beginTime != null">
             and first_enter_nett &gt;= #{beginTime }
         </if>
-        <if test=" timeType != null and timeType == 1  and endTime != null">
+        <if test=" timeType != null and timeType == 2  and endTime != null">
             and first_enter_nett &lt;= #{endTime }
         </if>
-        <if test=" timeType != null and timeType == 2  and beginTime != null">
+        <if test=" timeType != null and timeType == 1  and beginTime != null">
             and gmt_create &gt;= #{beginTime }
         </if>
-        <if test=" timeType != null and timeType == 2  and endTime != null">
+        <if test=" timeType != null and timeType == 1  and endTime != null">
             and gmt_create &lt;= #{endTime }
         </if>
         <if test=" timeType != null and timeType == 3  and beginTime != null">
