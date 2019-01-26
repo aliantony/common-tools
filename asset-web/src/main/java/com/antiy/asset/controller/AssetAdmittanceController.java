@@ -13,6 +13,7 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.common.base.BaseRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,11 +64,13 @@ public class AssetAdmittanceController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/access/anagement", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:accessManagement ')")
-    public ActionResponse anagement(@ApiParam(value = "assetRequest") @RequestBody @Encode String assetId,
-                                    Integer status) throws Exception {
+    public ActionResponse anagement(@RequestBody Admittance admittance) throws Exception {
+        ParamterExceptionUtils.isNull(admittance, "资产不能为空");
+        ParamterExceptionUtils.isNull(admittance.getStringId(), "资产主键不能为空");
+        ParamterExceptionUtils.isNull(admittance.getAdmittanceStatus(), "资产准入状态不能为空");
         Asset asset = new Asset();
-        asset.setId(DataTypeUtils.stringToInteger(assetId));
-        asset.setAdmittanceStatus(status);
+        asset.setId(DataTypeUtils.stringToInteger(admittance.getStringId()));
+        asset.setAdmittanceStatus(admittance.getAdmittanceStatus());
         return ActionResponse.success(assetService.update(asset));
     }
 
@@ -87,5 +90,21 @@ public class AssetAdmittanceController {
         List<AccessExport> accessExportList = BeanConvert.convert(assetList, AccessExport.class);
         ExcelUtils.exportToClient(AccessExport.class, "资产准入管理.xlsx", "", accessExportList);
         return ActionResponse.success();
+    }
+}
+
+class Admittance extends BaseRequest {
+    @ApiModelProperty("准入状态")
+    private Integer admittanceStatus;
+
+    public Integer getAdmittanceStatus() {
+        return admittanceStatus;
+    }
+
+    public void setAdmittanceStatus(Integer admittanceStatus) {
+        this.admittanceStatus = admittanceStatus;
+    }
+
+    public Admittance() {
     }
 }
