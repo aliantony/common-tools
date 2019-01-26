@@ -1091,26 +1091,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOuterResponse.setAsset(assetResponse);
 
         // CPU
-        if (condition.getIsNeedCpu() == 1) {
+        if (condition.getIsNeedCpu() != null && condition.getIsNeedCpu() == 1) {
             assetOuterResponse.setAssetCpu(BeanConvert.convert(assetCpuDao.getByWhere(param), AssetCpuResponse.class));
         }
         // 网卡
-        if (condition.getIsNeedNetwork() == 1) {
+        if (condition.getIsNeedNetwork() != null && condition.getIsNeedNetwork() == 1) {
             assetOuterResponse.setAssetNetworkCard(
                 BeanConvert.convert(assetNetworkCardDao.getByWhere(param), AssetNetworkCardResponse.class));
         }
         // 硬盘
-        if (condition.getIsNeedHarddisk() == 1) {
+        if (condition.getIsNeedHarddisk() != null && condition.getIsNeedHarddisk() == 1) {
             assetOuterResponse
                 .setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param), AssetHardDiskResponse.class));
         }
         // 主板
-        if (condition.getIsNeedMainboard() == 1) {
+        if (condition.getIsNeedMainboard() != null && condition.getIsNeedMainboard() == 1) {
             assetOuterResponse.setAssetMainborad(
                 BeanConvert.convert(assetMainboradDao.getByWhere(param), AssetMainboradResponse.class));
         }
         // 内存
-        if (condition.getIsNeedMemory() == 1) {
+        if (condition.getIsNeedMemory() != null && condition.getIsNeedMemory() == 1) {
             assetOuterResponse
                 .setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param), AssetMemoryResponse.class));
         }
@@ -1132,7 +1132,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOuterResponse.setAssetStorageMedium(
                 BeanConvert.convertBean(assetStorageMediumList.get(0), AssetStorageMediumResponse.class));
         }
-        if (condition.getIsNeedSoftware() == 1) {
+        if (condition.getIsNeedSoftware() != null && condition.getIsNeedSoftware() == 1) {
             // 软件列表
             List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
                 .getSoftByAssetId(DataTypeUtils.stringToInteger(condition.getPrimaryKey()));
