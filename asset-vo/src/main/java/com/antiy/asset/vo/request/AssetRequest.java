@@ -6,7 +6,6 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -45,7 +44,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 邮箱
      */
     @ApiModelProperty("邮箱")
-    @Email
+//    @Email
     private String                  email;
     /**
      * 资产编号
@@ -175,6 +174,19 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("资产准入状态:待设置，2已允许，3已禁止")
     private Integer                 admittanceStatus;
+    /**
+     * 首次入网时间
+     */
+    @ApiModelProperty("首次入网时间")
+    private Long              firstEnterNett;
+
+    public Long getFirstEnterNett() {
+        return firstEnterNett;
+    }
+
+    public void setFirstEnterNett(Long firstEnterNett) {
+        this.firstEnterNett = firstEnterNett;
+    }
 
     public String getNumber() {
         return number;

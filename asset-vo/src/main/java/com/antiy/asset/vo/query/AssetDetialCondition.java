@@ -36,7 +36,7 @@ public class AssetDetialCondition extends QueryCondition {
     private Integer isNeedSoftware;
 
     public Integer getIsNeedCpu() {
-        return isNeedCpu;
+        return isNeedCpu == null ? 0 : isNeedCpu;
     }
 
     public void setIsNeedCpu(Integer isNeedCpu) {
@@ -44,7 +44,7 @@ public class AssetDetialCondition extends QueryCondition {
     }
 
     public Integer getIsNeedNetwork() {
-        return isNeedNetwork;
+        return isNeedNetwork == null ? 0 : isNeedNetwork;
     }
 
     public void setIsNeedNetwork(Integer isNeedNetwork) {
@@ -52,7 +52,7 @@ public class AssetDetialCondition extends QueryCondition {
     }
 
     public Integer getIsNeedMemory() {
-        return isNeedMemory;
+        return isNeedMemory == null ? 0 : isNeedMemory;
     }
 
     public void setIsNeedMemory(Integer isNeedMemory) {
@@ -60,7 +60,7 @@ public class AssetDetialCondition extends QueryCondition {
     }
 
     public Integer getIsNeedMainboard() {
-        return isNeedMainboard;
+        return isNeedMainboard == null ? 0 : isNeedMainboard;
     }
 
     public void setIsNeedMainboard(Integer isNeedMainboard) {
@@ -68,7 +68,7 @@ public class AssetDetialCondition extends QueryCondition {
     }
 
     public Integer getIsNeedHarddisk() {
-        return isNeedHarddisk;
+        return isNeedHarddisk == null ? 0 : isNeedHarddisk;
     }
 
     public void setIsNeedHarddisk(Integer isNeedHarddisk) {
@@ -76,7 +76,7 @@ public class AssetDetialCondition extends QueryCondition {
     }
 
     public Integer getIsNeedSoftware() {
-        return isNeedSoftware;
+        return isNeedSoftware == null ? 0 : isNeedSoftware;
     }
 
     public void setIsNeedSoftware(Integer isNeedSoftware) {

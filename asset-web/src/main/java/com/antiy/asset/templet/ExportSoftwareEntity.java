@@ -22,7 +22,32 @@ public class ExportSoftwareEntity {
      */
     @ApiModelProperty("软件厂商")
     private String  manufacturer;
-
+    /**
+     * 软件序列号
+     */
+    // todo 待确认字段
+    // @ApiModelProperty("软件序列号")
+    // private String manufacturer;
+    // /**
+    // * 授权
+    // */
+    // @ApiModelProperty("授权")
+    // private String manufacturer;
+    // /**
+    // * 资产来源
+    // */
+    // @ApiModelProperty("资产来源")
+    // private String manufacturer;
+    // /**
+    // * 安装时间
+    // */
+    // @ApiModelProperty("安装时间")
+    // private String manufacturer;
+    // /**
+    // * 安装时间
+    // */
+    // @ApiModelProperty("上传时间")
+    // private String manufacturer;
     /**
      * 软件品类名
      */

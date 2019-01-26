@@ -104,7 +104,7 @@ public class AssetDepartmentController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:department:deleteById')")
-    public ActionResponse deleteById(@ApiParam(value = "id") QueryCondition condition) throws Exception {
+    public ActionResponse deleteById(@RequestBody @ApiParam(value = "id") QueryCondition condition) throws Exception {
         ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "id不能为空");
         return iAssetDepartmentService.deleteAllById(Integer.parseInt(condition.getPrimaryKey()));
     }

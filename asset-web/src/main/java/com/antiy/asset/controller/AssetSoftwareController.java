@@ -1,5 +1,17 @@
 package com.antiy.asset.controller;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
@@ -12,15 +24,11 @@ import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.asset.vo.response.SoftwareInstallResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -82,31 +90,31 @@ public class AssetSoftwareController {
     /**
      * 通过ID查询
      *
-     * @param id 主键封装对象
+     * @param queryCondition 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:software:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "assetSoftware") @PathVariable("id") Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareService.getById(id));
+    public ActionResponse queryById(@ApiParam(value = "assetSoftware") QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
+        return ActionResponse.success(iAssetSoftwareService.getById(queryCondition.getPrimaryKey()));
     }
 
     /**
      * 通过ID删除
      *
-     * @param id 主键封装对象
+     * @param baseRequest 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     @PreAuthorize(value = "hasAuthority('asset:software:deleteById')")
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") @PathVariable("id") Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareService.deleteById(id));
+    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") BaseRequest baseRequest) throws Exception {
+        ParamterExceptionUtils.isNull(baseRequest.getStringId(), "ID不能为空");
+        return ActionResponse.success(iAssetSoftwareService.deleteById(baseRequest.getStringId()));
     }
 
     /**
@@ -150,7 +158,7 @@ public class AssetSoftwareController {
     @ApiOperation(value = "导入软件excel文件", notes = "导入软件excel文件")
     @RequestMapping(value = "/import/file", method = RequestMethod.POST)
     public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile,
-                                      AssetImportRequest importRequest) throws Exception {
+                                     AssetImportRequest importRequest) throws Exception {
 
         return ActionResponse.success(iAssetSoftwareService.importExcel(multipartFile, importRequest));
 

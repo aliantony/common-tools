@@ -1,8 +1,12 @@
 package com.antiy.asset.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
-import com.antiy.asset.annotation.ExcelField;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.AccessExport;
@@ -10,24 +14,12 @@ import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.AssetRequest;
-import com.antiy.asset.vo.response.AssetOuterResponse;
+import com.antiy.asset.vo.request.AdmittanceRequest;
 import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.common.base.BaseRequest;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import com.antiy.asset.service.IAssetCategoryModelService;
-import com.antiy.asset.vo.query.AssetCategoryModelQuery;
-import com.antiy.asset.vo.request.AssetCategoryModelRequest;
-import com.antiy.asset.vo.response.AssetCategoryModelResponse;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
-
-import java.util.List;
 
 /**
  * @author 吕梁
@@ -64,7 +56,7 @@ public class AssetAdmittanceController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/access/anagement", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:accessManagement ')")
-    public ActionResponse anagement(@RequestBody Admittance admittance) throws Exception {
+    public ActionResponse anagement(@RequestBody AdmittanceRequest admittance) throws Exception {
         ParamterExceptionUtils.isNull(admittance, "资产不能为空");
         ParamterExceptionUtils.isNull(admittance.getStringId(), "资产主键不能为空");
         ParamterExceptionUtils.isNull(admittance.getAdmittanceStatus(), "资产准入状态不能为空");
@@ -83,28 +75,13 @@ public class AssetAdmittanceController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/access/export", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:asset:export ')")
-    public ActionResponse export(@ApiParam(value = "asset") @RequestParam Integer status) throws Exception {
+    public ActionResponse export(@ApiParam(value = "asset") @RequestParam(required = false) Integer status) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setAdmittanceStatus(status);
+        assetQuery.setPageSize(-1);
         List<AssetResponse> assetList = assetService.findListAsset(assetQuery);
         List<AccessExport> accessExportList = BeanConvert.convert(assetList, AccessExport.class);
         ExcelUtils.exportToClient(AccessExport.class, "资产准入管理.xlsx", "", accessExportList);
         return ActionResponse.success();
-    }
-}
-
-class Admittance extends BaseRequest {
-    @ApiModelProperty("准入状态，1待设置，2已允许，3已禁止")
-    private Integer admittanceStatus;
-
-    public Integer getAdmittanceStatus() {
-        return admittanceStatus;
-    }
-
-    public void setAdmittanceStatus(Integer admittanceStatus) {
-        this.admittanceStatus = admittanceStatus;
-    }
-
-    public Admittance() {
     }
 }

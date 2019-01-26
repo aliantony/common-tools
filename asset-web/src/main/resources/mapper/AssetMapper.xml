@@ -912,7 +912,6 @@
         a. describle,
         a. parent_id,
         a.tags,
-        a.is_innet,
         a.first_enter_nett,
         a.service_life,
         a. buy_date,

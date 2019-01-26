@@ -2,15 +2,17 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.base.*;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetNetworkCardService;
 import com.antiy.asset.vo.query.AssetNetworkCardQuery;
 import com.antiy.asset.vo.request.AssetNetworkCardRequest;
 import com.antiy.asset.vo.response.AssetNetworkCardResponse;
-import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
@@ -76,30 +78,30 @@ public class AssetNetworkCardController {
     /**
      * 通过ID查询
      *
-     * @param id 主键封装对象
+     * @param queryCondition 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:networkcard:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "assetNetworkCard") @PathVariable("id") Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetNetworkCardService.getById(id));
+    public ActionResponse queryById(@ApiParam(value = "assetNetworkCard") QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
+        return ActionResponse.success(iAssetNetworkCardService.getById(queryCondition.getPrimaryKey()));
     }
 
     /**
      * 通过ID删除
      *
-     * @param id 主键封装对象
+     * @param baseRequest 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:networkcard:deleteById')")
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") @PathVariable("id") Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetNetworkCardService.deleteById(id));
+    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") BaseRequest baseRequest) throws Exception {
+        ParamterExceptionUtils.isNull(baseRequest.getStringId(), "ID不能为空");
+        return ActionResponse.success(iAssetNetworkCardService.deleteById(baseRequest.getStringId()));
     }
 }

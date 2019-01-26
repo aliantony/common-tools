@@ -302,39 +302,41 @@
 
     <!-- 根据资产主键查询软件信息 -->
     <select id="getSoftByAssetId" resultType="com.antiy.asset.entity.AssetSoftware" parameterType="java.lang.Integer">
-        SELECT
+        select
             asoft.id,
             asoft.size,
-            asoft.operation_system AS operationSystem,
-            asoft.category_model as categoryModel,
-            a.name as categoryModelName,
-            asoft.category_model as categoryModel,
+            asoft.operation_system as operationsystem,
+            asoft.category_model as categorymodel,
+            a.name as categorymodelname,
+            asoft.category_model as categorymodel,
             asoft.name,
-            asoft.upload_software_name AS uploadSoftwareName,
+            asoft.upload_software_name as uploadsoftwarename,
             asoft.path,
             asoft.version,
             asoft.manufacturer,
             asoft.description,
-            asoft.software_label AS softwareLabel,
-            asoft.software_status AS softwareStatus,
+            asoft.software_label as softwarelabel,
+            asoft.software_status as softwarestatus,
             asoft.authorization,
-            asoft.report_source AS reportSource,
-            asoft.PORT,
-            asoft.LANGUAGE,
-            asoft.release_time AS releaseTime,
+            asoft.report_source as reportsource,
+            asoft.port,
+            asoft.language,
+            asoft.release_time as releasetime,
             asoft.publisher,
-            asoft.gmt_create AS gmtCreate,
+            asoft.gmt_create as gmtcreate,
             asoft.memo,
-            asoft.gmt_modified AS gmtModified,
-            asoft.STATUS
-        FROM
+            asoft.gmt_modified as gmtmodified,
+            asl.license_secret_key as licenseSecretKey,
+            asoft.status
+        from
             asset_software_relation asoftrel
-            LEFT JOIN asset_software asoft ON asoftrel.software_id = asoft.id
-            LEFT JOIN asset_category_model a ON asoft.category_model = a.id
-        WHERE
-            asset_id = #{assetId}
+            left join asset_software_license asl on asoftrel.id = asl.software_id
+            left join asset_software asoft on asoftrel.software_id = asoft.id
+            left join asset_category_model a on asoft.category_model = a.id
+        where
+            asset_id = #{assetid}
             and asoft.id is not null
-            AND asoftrel.status = 1
+            and asoftrel.status = 1
     </select>
 
 

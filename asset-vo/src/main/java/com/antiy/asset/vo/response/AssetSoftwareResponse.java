@@ -136,6 +136,19 @@ public class AssetSoftwareResponse extends BaseResponse {
      */
     @ApiModelProperty(value = "关联 硬件资产数")
     private Integer assetCount;
+    /**
+     * 软件许可密钥
+     */
+    @ApiModelProperty(value = "软件许可密钥")
+    private String  licenseSecretKey;
+
+    public String getLicenseSecretKey() {
+        return licenseSecretKey;
+    }
+
+    public void setLicenseSecretKey(String licenseSecretKey) {
+        this.licenseSecretKey = licenseSecretKey;
+    }
 
     public Integer getAssetCount() {
         return assetCount;

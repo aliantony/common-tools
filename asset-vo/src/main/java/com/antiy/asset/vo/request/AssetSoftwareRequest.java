@@ -377,6 +377,22 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.assetIds = assetIds;
     }
 
+    public String getMd5Code() {
+        return md5Code;
+    }
+
+    public void setMd5Code(String md5Code) {
+        this.md5Code = md5Code;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
     @Override
     public String toString() {
         return "AssetSoftwareRequest{" +
@@ -406,16 +422,8 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
                 ", releaseTime=" + releaseTime +
                 ", publisher='" + publisher + '\'' +
                 ", memo='" + memo + '\'' +
-                ", assetSoftwareRelationId='" + "assetSoftwareRelationId" + '\'' +
+                ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\'' +
                 ", request=" + request +
                 '}';
-    }
-
-    public String getMd5Code() {
-        return md5Code;
-    }
-
-    public void setMd5Code(String md5Code) {
-        this.md5Code = md5Code;
     }
 }
