@@ -19,10 +19,7 @@ import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.utils.BusinessExceptionUtils;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.antiy.common.utils.ParamterExceptionUtils;
+import com.antiy.common.utils.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -2079,6 +2076,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                                                                                               throws Exception {
         assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToStringArray(LoginUserUtil.getLoginUser()
             .getAreaIdsOfCurrentUser().toArray()));
+        assetQuery.setPageSize(-1);
         List<AssetResponse> list = this.findListAsset(assetQuery);
         List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
         DownloadVO downloadVO = new DownloadVO();
@@ -2095,8 +2093,6 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
 
     @Override
     protected void convert(AssetResponse asset, AssetEntity assetEntity) {
-        /* if (Objects.nonNull(asset.getIsInnet())) { assetEntity.setIsInnet(asset.getIsInnet() == 1? "已入网" : "未入网"); } */
-
         if (Objects.nonNull(asset.getAssetStatus())) {
             AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode(asset.getAssetStatus());
             assetEntity.setAssetStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
@@ -2110,6 +2106,46 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
                 assetEntity.setAssetSource("自动上报");
             }
         }
+        // 1核心2重要3一般
+        if (Objects.nonNull(asset.getImportanceDegree())) {
+            switch (asset.getImportanceDegree()) {
+                case 1:
+                    assetEntity.setImportanceDegree("核心");
+                    break;
+                case 2:
+                    assetEntity.setImportanceDegree("重要");
+                    break;
+                case 3:
+                    assetEntity.setImportanceDegree("一般");
+                    break;
+            }
+        }
+        // 1待设置，2已允许，3已禁止
+        if (Objects.nonNull(asset.getAdmittanceStatus())) {
+            switch (asset.getAdmittanceStatus()) {
+                case 1:
+                    assetEntity.setAdmittanceStatus("待设置");
+                    break;
+                case 2:
+                    assetEntity.setAdmittanceStatus("已允许");
+                    break;
+                case 3:
+                    assetEntity.setAdmittanceStatus("已禁止");
+                    break;
+            }
+        }
+
+        assetEntity.setGmtCreate(LongToDateString(asset.getGmtCreate()));
+        assetEntity.setFirstEnterNett(LongToDateString(asset.getFirstEnterNett()));
+        assetEntity.setServiceLife(LongToDateString(asset.getServiceLife()));
         super.convert(asset, assetEntity);
     }
+
+    private String LongToDateString(Long datetime) {
+        if (Objects.nonNull(datetime)) {
+            return DateUtils.getDataString(new Date(datetime), DateUtils.WHOLE_FORMAT);
+        }
+        return "";
+    }
+
 }
