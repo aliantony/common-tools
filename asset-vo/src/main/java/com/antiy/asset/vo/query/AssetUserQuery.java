@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
@@ -28,11 +29,13 @@ public class AssetUserQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 部门主键
      */
+    @Encode
     @ApiModelProperty("部门主键")
     private String departmentId;
     /**
      * 部门主键
      */
+    @Encode
     @ApiModelProperty("部门主键")
     private String[] departmentIds;
     /**
