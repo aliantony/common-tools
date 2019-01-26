@@ -8,6 +8,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,6 +83,7 @@ public class AssetController {
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
     public ActionResponse queryList(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
+        asset.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
 
