@@ -601,25 +601,19 @@
     <select id="findCountByCategoryModel" resultType="java.lang.Long"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select count(1) count
-        from asset t1 where 1=1
+        from asset_software t1 where 1=1
         <if test=" categoryModels != null and categoryModels.length >0 ">
             and category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
         </if>
-        <if test=" areaIds != null">
-            and area_id in
-            <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
+        <if test=" softwareStatusList != null and softwareStatusList.size()>0">
+            and software_status in
+            <foreach collection="softwareStatusList" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
         </if>
-        <!--<if test=" softwareStatusList != null and softwareStatusList.size()>0">-->
-            <!--and software_status in-->
-            <!--<foreach collection="softwareStatusList" open="(" close=")" separator="," index="index" item="item">-->
-                <!--#{item}-->
-            <!--</foreach>-->
-        <!--</if>-->
         and status=1
     </select>
 

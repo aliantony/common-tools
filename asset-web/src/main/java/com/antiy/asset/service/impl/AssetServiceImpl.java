@@ -765,22 +765,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public AssetCountResponse countCategory() throws Exception {
         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        HashMap<String, Object> map = new HashMap();
-        map.put("name", "硬件");
-        // 查询第一级分类id
-        List<AssetCategoryModel> categoryModelList = assetCategoryModelDao.getByWhere(map);
-        if (CollectionUtils.isNotEmpty(categoryModelList)) {
-            Integer id = categoryModelList.get(0).getId();
-            map.clear();
-            map.put("parentId", id);
-            // 查询第二级分类id
-            List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getByWhere(map);
+        // 查询第二级分类id
+        List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getNextLevelCategoryByName("硬件");
+        if (CollectionUtils.isNotEmpty(categoryModelList1)) {
             HashMap<String, Long> result = new HashMap<>();
             List<AssetCategoryModel> categoryModelDaoAll = assetCategoryModelDao.getAll();
-
             for (AssetCategoryModel a : categoryModelList1) {
                 // 查询第二级每个分类下所有的分类id，并添加至list集合
-
                 List<AssetCategoryModel> search = recursionSearch(categoryModelDaoAll, a.getId());
                 Long sum = 0L;
                 List<Integer> list = new ArrayList<>();
@@ -2104,8 +2095,7 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
 
     @Override
     protected void convert(AssetResponse asset, AssetEntity assetEntity) {
-        /*
-         * if (Objects.nonNull(asset.getIsInnet())) { assetEntity.setIsInnet(asset.getIsInnet() == 1? "已入网" : "未入网"); } */
+        /* if (Objects.nonNull(asset.getIsInnet())) { assetEntity.setIsInnet(asset.getIsInnet() == 1? "已入网" : "未入网"); } */
 
         if (Objects.nonNull(asset.getAssetStatus())) {
             AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode(asset.getAssetStatus());

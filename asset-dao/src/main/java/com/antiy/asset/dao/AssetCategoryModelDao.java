@@ -17,4 +17,6 @@ public interface AssetCategoryModelDao extends IBaseDao<AssetCategoryModel> {
     List<AssetCategoryModel> findListAssetCategoryModel(AssetCategoryModelQuery query) throws Exception;
 
     Integer delete(List<AssetCategoryModel> list);
+
+    List<AssetCategoryModel> getNextLevelCategoryByName(String name) throws Exception;
 }
