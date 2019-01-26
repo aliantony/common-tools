@@ -2108,7 +2108,7 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
     }
 
     private String LongToDateString(Long datetime) {
-        if (Objects.nonNull(datetime) && !Objects.equals(datetime, 0)) {
+        if (Objects.nonNull(datetime) && !Objects.equals(datetime, 0L)) {
             return DateUtils.getDataString(new Date(datetime), DateUtils.WHOLE_FORMAT);
         }
         return "";
