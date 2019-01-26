@@ -49,7 +49,7 @@ public class AssetSoftwareEntity {
      * 软件品类
      */
     @ExcelField(value = "category", align = 1, title = "软件品类", type = 0,dictType = "software_category")
-    private Integer           category;
+    private String           category;
 
     /**
      * 软件版本
@@ -176,11 +176,11 @@ public class AssetSoftwareEntity {
         this.operationSystem = operationSystem;
     }
 
-    public Integer getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Integer category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 

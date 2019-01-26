@@ -2,6 +2,9 @@ package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Arrays;
@@ -14,7 +17,7 @@ import java.util.List;
  * @since 2018-12-27
  */
 
-public class AssetQuery extends ObjectQuery {
+public class AssetQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 资产id列表
      */
@@ -143,9 +146,32 @@ public class AssetQuery extends ObjectQuery {
      */
     @ApiModelProperty("首次入网时间")
     private Long              firstEnterNett;
-
+    @ApiModelProperty("开始时间")
+    private Long          beginTime;
+    @ApiModelProperty("结束时间")
+    private Long          endTime;
     public Long getFirstEnterNett() {
         return firstEnterNett;
+    }
+
+    @Override
+    public Long getBeginTime() {
+        return beginTime;
+    }
+
+    @Override
+    public void setBeginTime(Long beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    @Override
+    public Long getEndTime() {
+        return endTime;
+    }
+
+    @Override
+    public void setEndTime(Long endTime) {
+        this.endTime = endTime;
     }
 
     public void setFirstEnterNett(Long firstEnterNett) {
@@ -339,5 +365,14 @@ public class AssetQuery extends ObjectQuery {
                + ", parentId='" + parentId + '\'' + ", assetStatusList=" + assetStatusList + ", assetGroup="
                + assetGroup + ", timeType=" + timeType + ", softwareId='" + softwareId + '\'' + ", admittanceStatus="
                + admittanceStatus + ", gmtCreate=" + gmtCreate + '}';
+    }
+
+    @Override
+    public void validate() throws RequestParamValidateException {
+        if (timeType != null) {
+            ParamterExceptionUtils.isNull(beginTime, "开始时间为空");
+            ParamterExceptionUtils.isNull(endTime, "结束时间为空");
+            ParamterExceptionUtils.isTrue(endTime > beginTime, "结束时间必须大于开始时间");
+        }
     }
 }

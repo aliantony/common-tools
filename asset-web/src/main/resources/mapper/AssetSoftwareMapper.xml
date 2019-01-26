@@ -17,6 +17,7 @@
         <result column="size" property="size"/>
         <result column="operation_system" property="operationSystem"/>
         <result column="category_model" property="categoryModel"/>
+        <result column="category_model_name" property="categoryModelName"/>
         <result column="name" property="name"/>
         <result column="upload_software_name" property="uploadSoftwareName"/>
         <result column="path" property="path"/>
@@ -368,7 +369,7 @@
     <!--资产条件查询-->
     <sql id="Multiple_Query">
 
-        <if test="softwareStatusList != null and softwareStatusList.size() > 0">
+        <if test="softwareStatusList != null and softwareStatusList.length > 0">
             and software_status in
             <foreach item="softwareStatus" collection="softwareStatusList" open="(" separator="," close=")">
                 #{softwareStatus}
@@ -380,8 +381,14 @@
                 #{item}
             </foreach>
         </if>
+        <if test=" softwareStatus != null">
+            and software_status = #{softwareStatus}
+        </if>
         <if test=" manufacturer != null">
             and manufacturer = #{manufacturer}
+        </if>
+        <if test=" authorization != null">
+            and authorization = #{authorization}
         </if>
         <if test=" operationSystem != null">
             and operation_system = #{operationSystem}
@@ -479,7 +486,7 @@
     <select id="findCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select count(1) count from
         <include refid="Table_Name"></include>
-        <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+        <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
             left join asset_category_model b on asset_software.category_model = b.id
         </if>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
@@ -492,7 +499,7 @@
                 )
             </if>
             and asset_software.status = 1
-            <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+            <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
                 and b.status = 1
             </if>
         </trim>
@@ -529,13 +536,13 @@
         asset_software.language,
         asset_software.path,
         asset_software.port
-        <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+        <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
             ,
             b.name as category_model_name
         </if>
         from
         <include refid="Table_Name"></include>
-        <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+        <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
             left join asset_category_model b on asset_software.category_model = b.id
         </if>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
@@ -548,7 +555,7 @@
                 )
             </if>
             and asset_software.status = 1
-            <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.size() > 0)">
+            <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
                 and b.status=1
             </if>
         </trim>
@@ -581,7 +588,7 @@
                 </otherwise>
             </choose>
 
-            <if test="areaIds != null and areaIds.size() > 0">
+            <if test="areaIds != null and areaIds.length > 0">
                 t1.area_id in
                 <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
                     #{areaId}
@@ -608,7 +615,7 @@
                 #{item}
             </foreach>
         </if>
-        <if test=" softwareStatusList != null and softwareStatusList.size()>0">
+        <if test=" softwareStatusList != null and softwareStatusList.length>0">
             and software_status in
             <foreach collection="softwareStatusList" open="(" close=")" separator="," index="index" item="item">
                 #{item}
