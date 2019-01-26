@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -25,7 +26,8 @@ public class AssetSoftwareResponse extends BaseResponse {
      * 软件品类
      */
     @ApiModelProperty("软件品类")
-    private Integer categoryModel;
+    @Encode
+    private String categoryModel;
 
     /**
      * 软件品类名字
@@ -174,11 +176,11 @@ public class AssetSoftwareResponse extends BaseResponse {
         this.operationSystem = operationSystem;
     }
 
-    public Integer getCategoryModel() {
+    public String getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
     }
 
