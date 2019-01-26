@@ -1,26 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.util.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import com.antiy.common.utils.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -46,9 +25,28 @@ import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -557,21 +555,41 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 builder.append("序号").append(entity.getOrderNumber()).append("软件版本");
                 continue;
             }
+            if (StringUtils.isBlank(entity.getFilePath ())) {
+                error++;
+                builder.append("序号").append(entity.getOrderNumber()).append("文件地址为空");
+                continue;
+            }
+            if (Objects.isNull (entity.getServiceLife ())&&entity.getAuthorization ()==1) {
+                error++;
+                builder.append("序号").append(entity.getOrderNumber()).append("到期时间为空");
+                continue;
+            }
+
             AssetSoftware asset = new AssetSoftware();
+
+            if (entity.getAuthorization ()==2){
+                asset.setServiceLife(4070883661L);
+            }else {
+                asset.setServiceLife(entity.getServiceLife());
+            }
+
             asset.setGmtCreate(System.currentTimeMillis());
-            asset.setGmtCreate(System.currentTimeMillis());
+            asset.setMd5Code (entity.getMD5 ());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             // 可分析
             asset.setSoftwareStatus(2);
+            asset.setReleaseTime (entity.getReleaseTime ());
+            asset.setPath (entity.getFilePath ());
             asset.setName(entity.getName());
             asset.setVersion(entity.getVersion());
             asset.setManufacturer(entity.getManufacturer());
             asset.setOperationSystem(entity.getOperationSystem());
             asset.setSerial(entity.getSerial());
             asset.setBuyDate(entity.getBuyDate());
-            asset.setServiceLife(entity.getServiceLife());
             asset.setAuthorization(entity.getAuthorization());
             asset.setMemo(entity.getDescription());
+            asset.setDescription (entity.getDescription());
             asset.setCategoryModel(entity.getCategory());
             asset.setSize(entity.getSize());
 
