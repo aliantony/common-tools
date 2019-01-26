@@ -175,6 +175,19 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("资产准入状态:待设置，2已允许，3已禁止")
     private Integer                 admittanceStatus;
+    /**
+     * 首次入网时间
+     */
+    @ApiModelProperty("首次入网时间")
+    private Long              firstEnterNett;
+
+    public Long getFirstEnterNett() {
+        return firstEnterNett;
+    }
+
+    public void setFirstEnterNett(Long firstEnterNett) {
+        this.firstEnterNett = firstEnterNett;
+    }
 
     public String getNumber() {
         return number;
