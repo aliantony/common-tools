@@ -47,9 +47,9 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Override
     public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
-        AssetDepartment parent = assetDepartmentDao.getById(assetDepartment.getParentId());
+        AssetDepartment parent = assetDepartmentDao.getById(Integer.parseInt(assetDepartment.getParentId()));
         if (checkNameRepeat(request)) {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该品类名已存在");
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该部门名已存在");
         }
         if (Objects.isNull(parent)) {
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "父级部门不存在");
