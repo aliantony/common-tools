@@ -31,6 +31,7 @@ public class AssetStatusChangeProcessImpl extends AbstractAssetStatusChangeProce
         AssetStatusEnum assetStatusEnum = AssetStatusJumpEnum.getNextStatus(assetStatusReqeust.getAssetStatus(),
             assetStatusReqeust.getAgree());
         Asset asset = new Asset();
+        asset.setAssetStatus(assetStatusEnum.getCode());
         asset.setId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
         asset.setGmtModified(System.currentTimeMillis());
         asset.setModifyUser(LoginUserUtil.getLoginUser().getId());

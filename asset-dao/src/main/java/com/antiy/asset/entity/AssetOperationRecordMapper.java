@@ -1,7 +1,5 @@
 package com.antiy.asset.entity;
 
-import java.util.List;
-
 /**
  * <p> AssetOperationRecordMapper 数据库返回对象 </p>
  *
@@ -13,7 +11,7 @@ public class AssetOperationRecordMapper {
     /**
      * 被操作的对象ID
      */
-    private String targetObjectId;
+    private String  targetObjectId;
     /**
      * 被操作对象名称
      */
@@ -54,6 +52,10 @@ public class AssetOperationRecordMapper {
      * 附件信息（[{"XXX文件","10.12.5.1:5566/file/asset/dj"}]）
      */
     private String  fileInfo;
+
+    public String getTargetObjectId() {
+        return targetObjectId;
+    }
 
     public void setTargetObjectId(String targetObjectId) {
         this.targetObjectId = targetObjectId;

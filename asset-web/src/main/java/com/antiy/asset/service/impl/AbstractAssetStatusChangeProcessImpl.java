@@ -11,10 +11,12 @@ import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.WorkOrderClient;
 import com.antiy.asset.service.IAssetStatusChangeProcessService;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.SoftwareFlowEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.asset.vo.request.SchemeRequest;
@@ -71,11 +73,11 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
 
         // 3.调用流程引擎
         if (null != assetStatusReqeust.getActivityHandleRequest()) {
-            ActionResponse actionResponse = null;
+            ActionResponse actionResponse;
             if (assetStatusReqeust.getChangeFlow()) {
                 // 启动流程
                 actionResponse = activityClient.manualStartProcess(assetStatusReqeust.getManualStartActivityRequest());
-            } else if (!assetStatusReqeust.getChangeFlow()) {
+            }else {
                 // 完成流程
                 actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
             }
@@ -139,7 +141,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
         scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));
         scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
-        scheme.setPutintoUserId(assetStatusReqeust.getWorkOrderVO().getExecuteUserId().toString());
+        scheme.setPutintoUserId(DataTypeUtils.stringToInteger(assetStatusReqeust.getWorkOrderVO().getExecuteUserId()));
         scheme.setPutintoUser(assetStatusReqeust.getWorkOrderVO().getExecuteUserName());
         scheme.setAssetId(assetStatusReqeust.getAssetId());
         return scheme;
