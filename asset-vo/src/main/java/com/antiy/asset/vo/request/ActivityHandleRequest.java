@@ -17,7 +17,6 @@ public class ActivityHandleRequest {
     private String formData;
 
     @ApiModelProperty(value = "任务Id")
-    @NotBlank(message = "任务Id不能为空")
     private String taskId;
 
     public String getFormData() {
@@ -38,9 +37,6 @@ public class ActivityHandleRequest {
 
     @Override
     public String toString() {
-        return "ActivityHandleRequest{" +
-                "formData='" + formData + '\'' +
-                ", taskId='" + taskId + '\'' +
-                '}';
+        return "ActivityHandleRequest{" + "formData='" + formData + '\'' + ", taskId='" + taskId + '\'' + '}';
     }
 }
