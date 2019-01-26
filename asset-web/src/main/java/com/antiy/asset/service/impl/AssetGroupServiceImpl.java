@@ -128,7 +128,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public AssetGroupResponse findGroupById(String id) throws Exception {
-        return (AssetGroupResponse) BeanConvert.convert(assetGroupDao.getById(Integer.valueOf(id)),
+        return assetGroupToResponseConverter.convert(assetGroupDao.getById(Integer.valueOf(id)),
             AssetGroupResponse.class);
     }
 }
