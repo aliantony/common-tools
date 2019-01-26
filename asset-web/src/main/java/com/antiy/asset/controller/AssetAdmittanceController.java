@@ -94,7 +94,7 @@ public class AssetAdmittanceController {
 }
 
 class Admittance extends BaseRequest {
-    @ApiModelProperty("准入状态")
+    @ApiModelProperty("准入状态，1待设置，2已允许，3已禁止")
     private Integer admittanceStatus;
 
     public Integer getAdmittanceStatus() {
