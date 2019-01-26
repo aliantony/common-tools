@@ -23,6 +23,7 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -340,12 +341,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<AssetResponse> findListAsset(AssetQuery query) throws Exception {
+        if (ArrayUtils.isEmpty(query.getAreaIds())) {
+            query.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        }
         List<Asset> asset = assetDao.findListAsset(query);
         List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
         return objects;
     }
 
     public Integer findCountAsset(AssetQuery query) throws Exception {
+        if (ArrayUtils.isEmpty(query.getAreaIds())) {
+            query.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        }
         return assetDao.findCount(query);
     }
 
