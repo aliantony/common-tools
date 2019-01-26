@@ -4,6 +4,7 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
+import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCountResponse;
@@ -91,9 +92,10 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "asset") QueryCondition asset) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "asset") AssetDetialCondition asset) throws Exception {
+        ParamterExceptionUtils.isNull(asset, "资产不能为空");
         ParamterExceptionUtils.isNull(asset.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetService.getByAssetId(asset.getPrimaryKey()));
+        return ActionResponse.success(iAssetService.getByAssetId(asset));
     }
 
     /**
