@@ -1,31 +1,38 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.QueryCondition;
+import io.swagger.annotations.ApiModelProperty;
 
 public class AssetDetialCondition extends QueryCondition {
     /**
      * 是否需要查询cpu,1:是，0否
      */
+    @ApiModelProperty("是否需要查询cpu,1:是，0否")
     private Integer isNeedCpu;
     /**
      * 是否需要查询网卡,1:是，0否
      */
+    @ApiModelProperty("是否需要查询网卡,1:是，0否")
     private Integer isNeedNetwork;
     /**
      * 是否需要查询内存,1:是，0否
      */
+    @ApiModelProperty("是否需要查询内存,1:是，0否")
     private Integer isNeedMemory;
     /**
      * 是否需要查询主板,1:是，0否
      */
+    @ApiModelProperty("是否需要查询主板,1:是，0否")
     private Integer isNeedMainboard;
     /**
      * 是否需要查询硬盘,1:是，0否
      */
+    @ApiModelProperty("是否需要查询硬盘,1:是，0否")
     private Integer isNeedHarddisk;
     /**
      * 是否需要查询cpu,1:是，0否
      */
+    @ApiModelProperty("是否需要查询cpu,1:是，0否")
     private Integer isNeedSoftware;
 
     public Integer getIsNeedCpu() {
