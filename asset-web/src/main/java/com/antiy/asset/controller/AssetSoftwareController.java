@@ -99,7 +99,7 @@ public class AssetSoftwareController {
     @PreAuthorize(value = "hasAuthority('asset:software:queryById')")
     public ActionResponse queryById(@ApiParam(value = "assetSoftware") QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareService.getById(queryCondition.getPrimaryKey()));
+        return ActionResponse.success(iAssetSoftwareService.getById(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey())));
     }
 
     /**
@@ -114,7 +114,7 @@ public class AssetSoftwareController {
     @PreAuthorize(value = "hasAuthority('asset:software:deleteById')")
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isNull(baseRequest.getStringId(), "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareService.deleteById(baseRequest.getStringId()));
+        return ActionResponse.success(iAssetSoftwareService.deleteById(DataTypeUtils.stringToInteger(baseRequest.getStringId())));
     }
 
     /**
