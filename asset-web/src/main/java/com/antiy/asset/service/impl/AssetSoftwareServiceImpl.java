@@ -7,6 +7,7 @@ import java.util.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.common.utils.SpringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -338,10 +339,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      *
      * @param id 查询的品类id
      */
-    public List<AssetCategoryModel> recursionSearch(List<AssetCategoryModel> list,Integer id) throws Exception {
+    public List<AssetCategoryModel> recursionSearch(List<AssetCategoryModel> list, Integer id) throws Exception {
         List<AssetCategoryModel> result = new ArrayList();
         for (AssetCategoryModel assetCategoryModel : list) {
-            if (Objects.equals(id,assetCategoryModel.getId())) {
+            if (Objects.equals(id, assetCategoryModel.getId())) {
                 result.add(assetCategoryModel);
             }
         }
@@ -411,20 +412,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public AssetCountResponse countCategory() throws Exception {
-        //todo 状态有问题
         List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        HashMap<String, Object> map = new HashMap();
-        map.put("name", "软件");
-        List<AssetCategoryModel> categoryModelList = assetCategoryModelDao.getByWhere(map);
-        if (CollectionUtils.isNotEmpty(categoryModelList)) {
-            Integer id = categoryModelList.get(0).getId();
-            map.clear();
-            map.put("parentId", id);
-            List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getByWhere(map);
-            HashMap<String, Long> result = new HashMap<>();
-            List<AssetCategoryModel> categoryModelDaoAll=assetCategoryModelDao.getAll();
+        List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getNextLevelCategoryByName("软件");
+        HashMap<String, Long> result = new HashMap<>();
+        List<AssetCategoryModel> categoryModelDaoAll = assetCategoryModelDao.getAll();
+        if (CollectionUtils.isNotEmpty(categoryModelDaoAll)) {
             for (AssetCategoryModel a : categoryModelList1) {
-                List<AssetCategoryModel> search = recursionSearch(categoryModelDaoAll,a.getId());
+                List<AssetCategoryModel> search = recursionSearch(categoryModelDaoAll, a.getId());
                 String[] list = new String[search.size()];
                 for (int i = 0; i < search.size(); i++) {
                     list[i] = search.get(i).getStringId();
