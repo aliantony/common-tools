@@ -22,32 +22,7 @@ public class ExportSoftwareEntity {
      */
     @ApiModelProperty("软件厂商")
     private String  manufacturer;
-    /**
-     * 软件序列号
-     */
-    // todo 待确认字段
-    // @ApiModelProperty("软件序列号")
-    // private String manufacturer;
-    // /**
-    // * 授权
-    // */
-    // @ApiModelProperty("授权")
-    // private String manufacturer;
-    // /**
-    // * 资产来源
-    // */
-    // @ApiModelProperty("资产来源")
-    // private String manufacturer;
-    // /**
-    // * 安装时间
-    // */
-    // @ApiModelProperty("安装时间")
-    // private String manufacturer;
-    // /**
-    // * 安装时间
-    // */
-    // @ApiModelProperty("上传时间")
-    // private String manufacturer;
+
     /**
      * 软件品类名
      */
@@ -64,14 +39,13 @@ public class ExportSoftwareEntity {
     private Integer assetCount;
 
     @ApiModelProperty("状态")
-    // todo 新的软件状态
     private String  status;
 
     /**
      * 发布时间
      */
     @ApiModelProperty("发布时间")
-    private Long    releaseTime;
+    private String    releaseTime;
 
     public String getName() {
         return name;
@@ -129,11 +103,25 @@ public class ExportSoftwareEntity {
         this.status = status;
     }
 
-    public Long getReleaseTime() {
+    public String getReleaseTime() {
         return releaseTime;
     }
 
-    public void setReleaseTime(Long releaseTime) {
+    public void setReleaseTime(String releaseTime) {
         this.releaseTime = releaseTime;
+    }
+
+    @Override
+    public String toString() {
+        return "ExportSoftwareEntity{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", categoryName='" + categoryName + '\'' +
+                ", version='" + version + '\'' +
+                ", assetCount=" + assetCount +
+                ", status='" + status + '\'' +
+                ", releaseTime='" + releaseTime + '\'' +
+                '}';
     }
 }

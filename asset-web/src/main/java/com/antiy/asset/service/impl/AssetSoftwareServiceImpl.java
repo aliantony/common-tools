@@ -1,5 +1,26 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.util.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -28,24 +49,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -703,6 +706,15 @@ class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportS
         if (Objects.nonNull(assetSoftware.getStringId())) {
             exportSoftwareEntity.setId(Integer.parseInt(assetSoftware.getStringId()));
         }
+        exportSoftwareEntity.setCategoryName(assetSoftware.getCategoryModelName());
+        exportSoftwareEntity.setReleaseTime(LongToDateString(assetSoftware.getReleaseTime()));
         super.convert(assetSoftware, exportSoftwareEntity);
+    }
+
+    private String LongToDateString(Long datetime) {
+        if (Objects.nonNull(datetime)&&!Objects.equals(datetime, 0)) {
+            return DateUtils.getDataString(new Date(datetime), DateUtils.WHOLE_FORMAT);
+        }
+        return "";
     }
 }

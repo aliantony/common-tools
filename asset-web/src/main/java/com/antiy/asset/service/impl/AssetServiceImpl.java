@@ -2102,53 +2102,13 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
             AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode(asset.getAssetStatus());
             assetEntity.setAssetStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
         }
-        assetEntity.setCategoryModel(asset.getCategoryModelName());
-        if (Objects.nonNull(asset.getAssetSource())) {
-            if (asset.getAssetSource().equals(1)) {
-                assetEntity.setAssetSource("人工上报");
-            }
-            if (asset.getAssetSource().equals(2)) {
-                assetEntity.setAssetSource("自动上报");
-            }
-        }
-        // 1核心2重要3一般
-        if (Objects.nonNull(asset.getImportanceDegree())) {
-            switch (asset.getImportanceDegree()) {
-                case 1:
-                    assetEntity.setImportanceDegree("核心");
-                    break;
-                case 2:
-                    assetEntity.setImportanceDegree("重要");
-                    break;
-                case 3:
-                    assetEntity.setImportanceDegree("一般");
-                    break;
-            }
-        }
-        // 1待设置，2已允许，3已禁止
-        if (Objects.nonNull(asset.getAdmittanceStatus())) {
-            switch (asset.getAdmittanceStatus()) {
-                case 1:
-                    assetEntity.setAdmittanceStatus("待设置");
-                    break;
-                case 2:
-                    assetEntity.setAdmittanceStatus("已允许");
-                    break;
-                case 3:
-                    assetEntity.setAdmittanceStatus("已禁止");
-                    break;
-            }
-        }
-
+        assetEntity.setCategoryModelName(asset.getCategoryModelName());
         assetEntity.setGmtCreate(LongToDateString(asset.getGmtCreate()));
-        // todo 有问题待修改
-        // assetEntity.setFirstEnterNett(LongToDateString(asset.getFirstEnterNett()));
-        assetEntity.setServiceLife(LongToDateString(asset.getServiceLife()));
         super.convert(asset, assetEntity);
     }
 
     private String LongToDateString(Long datetime) {
-        if (Objects.nonNull(datetime)) {
+        if (Objects.nonNull(datetime) && !Objects.equals(datetime, 0)) {
             return DateUtils.getDataString(new Date(datetime), DateUtils.WHOLE_FORMAT);
         }
         return "";
