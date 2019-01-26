@@ -31,7 +31,6 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
     private WorkOrderVO           workOrderVO;
 
     @ApiModelProperty(value = "流程引擎")
-    @Valid
     private ActivityHandleRequest activityHandleRequest;
 
     @ApiModelProperty(value = "资产变更流程信息")
@@ -65,7 +64,7 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
     /**
      * 是否资产变更流程
      */
-    @ApiModelProperty("是否资产变更流程")
+    @ApiModelProperty("是否资产变更/退役流程")
     private Boolean       changeFlow;
 
     public ManualStartActivityRequest getManualStartActivityRequest() {

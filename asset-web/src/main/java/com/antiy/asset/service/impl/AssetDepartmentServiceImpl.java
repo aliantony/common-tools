@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.util.NodeUtilsConverter;
 import com.antiy.asset.vo.enums.AssetEventEnum;
@@ -70,7 +71,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         if (Objects.nonNull(request.getName())) {
             AssetDepartmentQuery assetDepartmentQuery = new AssetDepartmentQuery();
             assetDepartmentQuery.setName(request.getName());
-            return assetDepartmentDao.findCount(assetDepartmentQuery) >= 1;
+            return assetDepartmentDao.findRepeatName(
+                request.getId() == null ? null : DataTypeUtils.stringToInteger(request.getId()), request.getName()) >= 1;
         }
         return false;
     }
@@ -79,7 +81,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     public ActionResponse updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
         if (checkNameRepeat(request)) {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该品类名已存在");
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该部门名已存在");
         }
         assetDepartment.setParentId(null);
         assetDepartment.setStatus(1);

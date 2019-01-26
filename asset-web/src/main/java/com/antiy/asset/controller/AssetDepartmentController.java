@@ -59,7 +59,7 @@ public class AssetDepartmentController {
     public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetDepartment") AssetDepartmentRequest assetDepartment)
                                                                                                                                 throws Exception {
         ParamterExceptionUtils.isNull(assetDepartment, "请求不能为空");
-        ParamterExceptionUtils.isNull(assetDepartment.getId(), "部门名不能为空");
+        ParamterExceptionUtils.isNull(assetDepartment.getId(), "id不能为空");
         return iAssetDepartmentService.updateAssetDepartment(assetDepartment);
     }
 

@@ -3,6 +3,7 @@ package com.antiy.asset.dao;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface AssetCategoryModelDao extends IBaseDao<AssetCategoryModel> {
     Integer delete(List<AssetCategoryModel> list);
 
     List<AssetCategoryModel> getNextLevelCategoryByName(String name) throws Exception;
+
+    Integer findRepeatName(@Param("id") Integer id, @Param("name") String name);
 }
