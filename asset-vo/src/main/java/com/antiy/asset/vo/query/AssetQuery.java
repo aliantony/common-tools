@@ -138,6 +138,19 @@ public class AssetQuery extends ObjectQuery {
      * 创建时间
      */
     private Long          gmtCreate;
+    /**
+     * 首次入网时间
+     */
+    @ApiModelProperty("首次入网时间")
+    private Long              firstEnterNett;
+
+    public Long getFirstEnterNett() {
+        return firstEnterNett;
+    }
+
+    public void setFirstEnterNett(Long firstEnterNett) {
+        this.firstEnterNett = firstEnterNett;
+    }
 
     public Long getGmtCreate() {
         return gmtCreate;

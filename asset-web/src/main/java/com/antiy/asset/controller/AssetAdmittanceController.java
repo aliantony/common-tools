@@ -78,6 +78,7 @@ public class AssetAdmittanceController {
     public ActionResponse export(@ApiParam(value = "asset") @RequestParam(required = false) Integer status) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setAdmittanceStatus(status);
+        assetQuery.setPageSize(-1);
         List<AssetResponse> assetList = assetService.findListAsset(assetQuery);
         List<AccessExport> accessExportList = BeanConvert.convert(assetList, AccessExport.class);
         ExcelUtils.exportToClient(AccessExport.class, "资产准入管理.xlsx", "", accessExportList);

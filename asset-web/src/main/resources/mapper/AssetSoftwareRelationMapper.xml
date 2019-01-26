@@ -326,9 +326,11 @@
             asoft.gmt_create AS gmtCreate,
             asoft.memo,
             asoft.gmt_modified AS gmtModified,
+            asl.license_secret_key as license_secret_key
             asoft.STATUS
         FROM
             asset_software_relation asoftrel
+            left join asser_software_licence asl on asoftrel.id = asl.software_id
             LEFT JOIN asset_software asoft ON asoftrel.software_id = asoft.id
             LEFT JOIN asset_category_model a ON asoft.category_model = a.id
         WHERE

@@ -169,7 +169,7 @@ public class Asset extends BaseEntity {
     /**
      * 首次入网时间
      */
-    private Date              firstEnterNett;
+    private Long              firstEnterNett;
     /**
      * 使用到期时间
      */
@@ -511,11 +511,11 @@ public class Asset extends BaseEntity {
         this.tags = tags;
     }
 
-    public Date getFirstEnterNett() {
+    public Long getFirstEnterNett() {
         return firstEnterNett;
     }
 
-    public void setFirstEnterNett(Date firstEnterNett) {
+    public void setFirstEnterNett(Long firstEnterNett) {
         this.firstEnterNett = firstEnterNett;
     }
 
