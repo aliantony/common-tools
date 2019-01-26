@@ -4,21 +4,23 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.entity.AssetSoftwareRelation;
-import com.antiy.asset.entity.AssetSoftwareRelationMapper;
-import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.encoder.Encode;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
@@ -47,10 +49,9 @@ public class AssetSoftwareRelationController {
     @PreAuthorize("hasAuthority('asset:softwarerelation:saveSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@ApiParam(value = "assetSoftwareRelation") @RequestBody AssetSoftwareRelationRequest assetSoftwareRelationRequest)
-                                                                                                                                                       throws Exception {
-        return ActionResponse.success(iAssetSoftwareRelationService
-            .saveAssetSoftwareRelation(assetSoftwareRelationRequest));
+    public ActionResponse saveSingle(@ApiParam(value = "assetSoftwareRelation") @RequestBody AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
+        return ActionResponse
+            .success(iAssetSoftwareRelationService.saveAssetSoftwareRelation(assetSoftwareRelationRequest));
     }
 
     /**
@@ -63,8 +64,7 @@ public class AssetSoftwareRelationController {
     @PreAuthorize("hasAuthority('asset:softwarerelation:updateSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetSoftwareRelation") AssetSoftwareRelationRequest assetSoftwareRelationRequest)
-                                                                                                                                            throws Exception {
+    public ActionResponse updateSingle(@ApiParam(value = "assetSoftwareRelation") AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
         iAssetSoftwareRelationService.updateAssetSoftwareRelation(assetSoftwareRelationRequest);
         return ActionResponse.success();
     }
@@ -79,10 +79,9 @@ public class AssetSoftwareRelationController {
     @PreAuthorize("hasAuthority('asset:softwarerelation:queryList')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareRelationResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@ApiParam(value = "assetSoftwareRelation") AssetSoftwareRelationQuery assetSoftwareRelationQuery)
-                                                                                                                                     throws Exception {
-        return ActionResponse.success(iAssetSoftwareRelationService
-            .findPageAssetSoftwareRelation(assetSoftwareRelationQuery));
+    public ActionResponse queryList(@ApiParam(value = "assetSoftwareRelation") AssetSoftwareRelationQuery assetSoftwareRelationQuery) throws Exception {
+        return ActionResponse
+            .success(iAssetSoftwareRelationService.findPageAssetSoftwareRelation(assetSoftwareRelationQuery));
     }
 
     /**
@@ -94,58 +93,57 @@ public class AssetSoftwareRelationController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @PreAuthorize("hasAuthority('asset:softwarerelation:queryById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareRelationResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "assetSoftwareRelation") @PathVariable("id") Integer id)
-                                                                                                              throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareRelationService.getById(id));
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    public ActionResponse queryById(@ApiParam(value = "assetSoftwareRelation") QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
+        return ActionResponse.success(iAssetSoftwareRelationService.getById(queryCondition.getPrimaryKey()));
     }
 
     /**
      * 通过ID删除
      *
-     * @param id
+     * @param baseRequest
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @PreAuthorize("hasAuthority('asset:softwarerelation:deleteById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareRelationService.deleteById(id));
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public ActionResponse deleteById(@ApiParam(value = "id") @RequestBody BaseRequest baseRequest) throws Exception {
+        ParamterExceptionUtils.isNull(baseRequest.getStringId(), "ID不能为空");
+        return ActionResponse.success(iAssetSoftwareRelationService.deleteById(baseRequest.getStringId()));
     }
 
     /**
      * 通过软件ID统计资产数量
      *
-     * @param id
+     * @param queryCondition
      * @return actionResponse
      */
     @ApiOperation(value = "通过软件ID统计资产数量", notes = "软件ID")
     @PreAuthorize("hasAuthority('asset:softwarerelation:countAssetBySoftId')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/countAssetBySoftId/{id}", method = RequestMethod.GET)
-    public ActionResponse countAssetBySoftId(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareRelationService.countAssetBySoftId(id));
+    @RequestMapping(value = "/countAssetBySoftId", method = RequestMethod.GET)
+    public ActionResponse countAssetBySoftId(@ApiParam(value = "id") QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
+        return ActionResponse.success(iAssetSoftwareRelationService
+            .countAssetBySoftId(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey())));
     }
 
     /**
      * 查询硬件资产关联的软件列表
      *
-     * @param assetId
+     * @param queryCondition
      * @return actionResponse
      */
     @ApiOperation(value = "查询硬件资产关联的软件列表", notes = "资产ID")
     @PreAuthorize("hasAuthority('asset:softwarerelation:getSoftwareByAssetId')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/getSoftwareByAssetId/{assetId}", method = RequestMethod.GET)
-    public ActionResponse getSoftwareByAssetId(@ApiParam(value = "assetId") @PathVariable("assetId") @Encode String assetId)
-                                                                                                                            throws Exception {
-        ParamterExceptionUtils.isNull(assetId, "资产ID不能为空");
-        return ActionResponse.success(iAssetSoftwareRelationService.getSoftByAssetId(DataTypeUtils
-            .stringToInteger(assetId)));
+    @RequestMapping(value = "/getSoftwareByAssetId", method = RequestMethod.GET)
+    public ActionResponse getSoftwareByAssetId(@ApiParam(value = "assetId") QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "资产ID不能为空");
+        return ActionResponse.success(iAssetSoftwareRelationService
+            .getSoftByAssetId(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey())));
     }
 
     /**
@@ -160,7 +158,6 @@ public class AssetSoftwareRelationController {
     public ActionResponse<List<String>> queryOS() throws Exception {
         return ActionResponse.success(iAssetSoftwareRelationService.findOS());
     }
-
 
     /**
      * 自动安装软件
@@ -189,6 +186,7 @@ public class AssetSoftwareRelationController {
         iAssetSoftwareRelationService.installArtificial(assetSoftwareRelationList);
         return ActionResponse.success();
     }
+
     /**
      * 安装软件
      * @param assetSoftwareRelationList
