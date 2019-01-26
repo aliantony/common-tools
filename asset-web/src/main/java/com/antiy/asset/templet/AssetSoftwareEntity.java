@@ -50,11 +50,11 @@ public class AssetSoftwareEntity {
     @ExcelField(value = "operationSystem", align = 1, title = "兼容系统", type = 0)
     private String            operationSystem;
 
-    /**
-     * 协议
-     */
-    @ExcelField(value = "agreement", align = 1, title = "协议", type = 0)
-    private String            agreement;
+//    /**
+//     * 协议
+//     */
+//    @ExcelField(value = "agreement", align = 1, title = "协议", type = 0)
+//    private String            agreement;
     /**
      * 1-免费软件，2-商业软件
      */
@@ -213,13 +213,13 @@ public class AssetSoftwareEntity {
         this.orderNumber = orderNumber;
     }
 
-    public String getAgreement() {
-        return agreement;
-    }
-
-    public void setAgreement(String agreement) {
-        this.agreement = agreement;
-    }
+//    public String getAgreement() {
+//        return agreement;
+//    }
+//
+//    public void setAgreement(String agreement) {
+//        this.agreement = agreement;
+//    }
 
     public String getMD5() {
         return MD5;
