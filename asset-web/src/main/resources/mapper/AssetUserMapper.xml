@@ -301,6 +301,7 @@
     <!--查询资产表的使用者信息-->
     <select id="findUserInAsset" resultType="AssetUser" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
+        distinct
             asset.responsible_user_id,
             au.name,
             au.id
