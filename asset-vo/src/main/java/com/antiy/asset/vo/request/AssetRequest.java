@@ -48,7 +48,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 邮箱
      */
     @ApiModelProperty("邮箱")
-    @Pattern(regexp = "/^[A-Za-z\\d]+([-_.][A-Za-z\\d]+)*@([A-Za-z\\d]+[-.])+[A-Za-z\\d]{2,4}$/", message = "邮箱不正确")
+    @Email(message = "邮箱不正确")
     private String                  email;
     /**
      * 资产编号
