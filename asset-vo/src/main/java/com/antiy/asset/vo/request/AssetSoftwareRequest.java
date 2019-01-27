@@ -128,7 +128,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 上报来源:1-自动上报，2-人工上报
      */
     @ApiModelProperty(value = "上报来源", allowableValues = "1-自动上报，2-人工上报")
-    @NotNull(message = "上报来源不能为空")
+//    @NotNull(message = "上报来源不能为空")
     private Integer                     reportSource;
     /**
      * 端口
@@ -161,8 +161,8 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     private String                      assetSoftwareRelationId;
 
     @ApiModelProperty(value = "流程处理")
-    @NotNull(message = "处理流程不能为空")
-    @Valid
+//    @NotNull(message = "处理流程不能为空")
+//    @Valid
     private ActivityHandleRequest       request;
 
     public ActivityHandleRequest getRequest() {

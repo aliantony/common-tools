@@ -23,7 +23,7 @@ public class AssetSoftwareLicense extends BaseEntity {
     /**
      * 软件主键
      */
-    private Integer           softwareId;
+    private String           softwareId;
     /**
      * 购买日期
      */
@@ -82,11 +82,11 @@ public class AssetSoftwareLicense extends BaseEntity {
         this.manufacturer = manufacturer;
     }
 
-    public Integer getSoftwareId() {
+    public String getSoftwareId() {
         return softwareId;
     }
 
-    public void setSoftwareId(Integer softwareId) {
+    public void setSoftwareId(String softwareId) {
         this.softwareId = softwareId;
     }
 

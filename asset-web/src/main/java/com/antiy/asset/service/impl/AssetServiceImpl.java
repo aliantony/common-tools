@@ -1349,7 +1349,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetSoftwareRelationDao.insert(relation);
                             AssetSoftwareLicense assetSoftwareLicense = new AssetSoftwareLicense();
                             assetSoftwareLicense.setLicenseSecretKey(relation.getLicenseSecretKey());
-                            assetSoftwareLicense.setSoftwareId(relation.getId());
+                            assetSoftwareLicense.setSoftwareId(relation.getStringId ());
                             // 插入资产软件许可
                             assetSoftwareLicenseDao.insert(assetSoftwareLicense);
                         } catch (Exception e) {

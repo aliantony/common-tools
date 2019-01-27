@@ -107,8 +107,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 try {
                     AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
 
-                    AssetSoftwareLicense license = BeanConvert.convertBean(request.getSoftwareLicenseRequest(),
-                        AssetSoftwareLicense.class);
+//                    AssetSoftwareLicense license = BeanConvert.convertBean(request.getSoftwareLicenseRequest(),
+//                        AssetSoftwareLicense.class);
                     AssetPortProtocol protocol = BeanConvert.convertBean (request.getAssetPortProtocolRequest (),
                             AssetPortProtocol.class);
 
@@ -279,7 +279,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private void updateLicense(AssetSoftwareRequest request) throws Exception {
         AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter.convert(
             request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
-        assetSoftwareLicense.setSoftwareId(DataTypeUtils.stringToInteger(request.getId()));
+        assetSoftwareLicense.setSoftwareId(request.getId());
         // 写入业务日志
         LogHandle.log(assetSoftwareLicense.toString(), AssetEventEnum.SOFT_INSERT.getName(),
             AssetEventEnum.SOFT_LICENSE_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());

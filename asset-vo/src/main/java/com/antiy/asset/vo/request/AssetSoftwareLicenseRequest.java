@@ -54,13 +54,13 @@ public class AssetSoftwareLicenseRequest extends BasicRequest implements ObjectV
         this.id = id;
     }
 
-    public String getSoftwareId() {
-        return softwareId;
-    }
-
-    public void setSoftwareId(String softwareId) {
-        this.softwareId = softwareId;
-    }
+//    public String getSoftwareId() {
+//        return softwareId;
+//    }
+//
+//    public void setSoftwareId(String softwareId) {
+//        this.softwareId = softwareId;
+//    }
 
     public Long getBuyDate() {
         return buyDate;
@@ -94,7 +94,6 @@ public class AssetSoftwareLicenseRequest extends BasicRequest implements ObjectV
     public String toString() {
         return "AssetSoftwareLicenseRequest{" +
                 "id='" + id + '\'' +
-                ", softwareId='" + softwareId + '\'' +
                 ", buyDate=" + buyDate +
                 ", expiryDate=" + expiryDate +
                 ", licenseSecretKey='" + licenseSecretKey + '\'' +
@@ -113,4 +112,11 @@ public class AssetSoftwareLicenseRequest extends BasicRequest implements ObjectV
         this.expiryDate = expiryDate;
     }
 
+    public String getSoftwareId() {
+        return softwareId;
+    }
+
+    public void setSoftwareId(String softwareId) {
+        this.softwareId = softwareId;
+    }
 }
