@@ -15,13 +15,18 @@ public class AssetSoftwareEntity {
     /**
      * 序号
      */
-    @ExcelField(value = "order_number", align = 1, title = "序号" )
-    private Integer orderNumber;
+    @ExcelField(value = "order_number", align = 1, title = "序号")
+    private Integer           orderNumber;
     /**
      * 软件名称
      */
     @ExcelField(value = "name", align = 1, title = "软件名称", type = 0)
     private String            name;
+    /**
+     * 软件品类
+     */
+    @ExcelField(value = "category", align = 1, title = "软件品类", type = 0, dictType = "software_category")
+    private String            category;
     /**
      * 软件名称
      */
@@ -34,41 +39,66 @@ public class AssetSoftwareEntity {
     private String            serial;
 
     /**
-     * 软件大小(M)
-     */
-    @ExcelField(value = "size", align = 1, title = "软件大小(M)", type = 0)
-    private Integer           size;
-
-    /**
-     * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
-     */
-    @ExcelField(value = "operationSystem", align = 1, title = "操作系统", type = 0)
-    private String            operationSystem;
-
-    /**
-     * 软件品类
-     */
-    @ExcelField(value = "category", align = 1, title = "软件品类", type = 0,dictType = "software_category")
-    private Integer           category;
-
-    /**
      * 软件版本
      */
     @ExcelField(value = "version", align = 1, title = "软件版本", type = 0)
     private String            version;
 
     /**
-     * 软件描述
+     * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
      */
-    @ExcelField(value = "description", align = 1, title = "软件描述", type = 0)
-    private String            description;
+    @ExcelField(value = "operationSystem", align = 1, title = "兼容系统", type = 0)
+    private String            operationSystem;
 
+//    /**
+//     * 协议
+//     */
+//    @ExcelField(value = "agreement", align = 1, title = "协议", type = 0)
+//    private String            agreement;
     /**
      * 1-免费软件，2-商业软件
      */
     @ExcelField(value = "authorization", align = 1, title = "授权", type = 0, dictType = "authorization")
     private Integer           authorization;
 
+    /**
+     * MD5/SHA
+     */
+    @ExcelField(value = "MD5", align = 1, title = "授权", type = 0)
+    private String            MD5;
+    /**
+     * 购买时间
+     */
+    @ExcelField(value = "buy_date", align = 1, title = "购买时间", isDate = true)
+    private Long              buyDate;
+
+    /**
+     * 到期时间
+     */
+    @ExcelField(value = "service_life", align = 1, title = "到期时间", isDate = true)
+    private Long              serviceLife;
+    /**
+     * 发布时间
+     */
+    @ExcelField(value = "releaseTime", align = 1, title = "发布时间", type = 0, isDate = true)
+    private Long              releaseTime;
+    /**
+     * 文件地址
+     */
+    @ExcelField(value = "file_path", align = 1, title = "文件地址", type = 0)
+    private String            filePath;
+
+    /**
+     * 软件大小(M)
+     */
+    @ExcelField(value = "size", align = 1, title = "软件大小(M)", type = 0)
+    private Integer           size;
+
+    /**
+     * 软件描述
+     */
+    @ExcelField(value = "description", align = 1, title = "软件描述", type = 0)
+    private String            description;
 
     public Integer getAuthorization() {
         return authorization;
@@ -78,38 +108,13 @@ public class AssetSoftwareEntity {
         this.authorization = authorization;
     }
 
-    /**
-     * 发布时间
-     */
-    @ExcelField(value = "releaseTime", align = 1, title = "发布时间", type = 0, isDate = true)
-    private Long              releaseTime;
-    /**
-     * 购买日期
-     */
-    @ExcelField(value = "buyDate", align = 1, title = "购买日期", type = 0, isDate = true)
-    private Long buyDate;
-    /**
-     * 到期时间
-     */
-    @ExcelField(value = "serviceLife", align = 1, title = "到期时间", type = 0, isDate = true)
-    private Long              serviceLife;
-
     @Override
     public String toString() {
-        return "AssetSoftwareEntity{" +
-                "name='" + name + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", serial='" + serial + '\'' +
-                ", size=" + size +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", category=" + category +
-                ", version='" + version + '\'' +
-                ", description='" + description + '\'' +
-                ", authorization=" + authorization +
-                ", releaseTime=" + releaseTime +
-                ", buyDate=" + buyDate +
-                ", serviceLife=" + serviceLife +
-                '}';
+        return "AssetSoftwareEntity{" + "name='" + name + '\'' + ", manufacturer='" + manufacturer + '\''
+               + ", serial='" + serial + '\'' + ", size=" + size + ", operationSystem='" + operationSystem + '\''
+               + ", category=" + category + ", version='" + version + '\'' + ", description='" + description + '\''
+               + ", authorization=" + authorization + ", releaseTime=" + releaseTime + ", buyDate=" + buyDate
+               + ", serviceLife=" + serviceLife + '}';
     }
 
     public String getName() {
@@ -176,11 +181,11 @@ public class AssetSoftwareEntity {
         this.operationSystem = operationSystem;
     }
 
-    public Integer getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Integer category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
@@ -200,12 +205,35 @@ public class AssetSoftwareEntity {
         this.description = description;
     }
 
-
     public Integer getOrderNumber() {
         return orderNumber;
     }
 
     public void setOrderNumber(Integer orderNumber) {
         this.orderNumber = orderNumber;
+    }
+
+//    public String getAgreement() {
+//        return agreement;
+//    }
+//
+//    public void setAgreement(String agreement) {
+//        this.agreement = agreement;
+//    }
+
+    public String getMD5() {
+        return MD5;
+    }
+
+    public void setMD5(String MD5) {
+        this.MD5 = MD5;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }

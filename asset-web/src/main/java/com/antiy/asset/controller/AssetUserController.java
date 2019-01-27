@@ -117,7 +117,7 @@ public class AssetUserController {
                 .findAssetDepartmentById(DataTypeUtils.stringToInteger(assetUser.getDepartmentId()));
             String[] ids = new String[responses.size()];
             for (int i = 0; i < responses.size(); i++) {
-                ids[i++] = responses.get(i).getStringId();
+                ids[i] = responses.get(i).getStringId();
             }
             assetUser.setDepartmentIds(ids);
         }

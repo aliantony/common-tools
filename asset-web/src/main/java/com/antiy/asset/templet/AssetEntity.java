@@ -19,7 +19,7 @@ public class AssetEntity {
      * 品类型号
      */
     @ApiModelProperty("品类型号")
-    private String categoryModel;
+    private String categoryModelName;
     /**
      * 厂商
      */
@@ -50,46 +50,6 @@ public class AssetEntity {
      */
     @ApiModelProperty("首次发现时间")
     private String gmtCreate;
-    /**
-     * 序列号
-     */
-    @ApiModelProperty("序列号")
-    private String serial;
-    /**
-     * 资产来源
-     */
-    @ApiModelProperty("资产来源")
-    private String assetSource;
-    /**
-     * 使用者
-     */
-    @ApiModelProperty("使用者")
-    private String responsibleUserName;
-    /**
-     * 重要程度
-     */
-    @ApiModelProperty("重要程度")
-    private String importanceDegree;
-    /**
-     * 重要程度
-     */
-    @ApiModelProperty("操作系统")
-    private String operationSystem;
-    /**
-     * 首次入网时间
-     */
-    @ApiModelProperty("首次入网时间")
-    private String firstEnterNett;
-    /**
-     * 是否准入
-     */
-    @ApiModelProperty("是否准入")
-    private String admittanceStatus;
-    /**
-     * 使用到期时间
-     */
-    @ApiModelProperty("使用到期时间")
-    private String serviceLife;
 
     public String getName() {
         return name;
@@ -107,12 +67,12 @@ public class AssetEntity {
         this.number = number;
     }
 
-    public String getCategoryModel() {
-        return categoryModel;
+    public String getCategoryModelName() {
+        return categoryModelName;
     }
 
-    public void setCategoryModel(String categoryModel) {
-        this.categoryModel = categoryModel;
+    public void setCategoryModelName(String categoryModelName) {
+        this.categoryModelName = categoryModelName;
     }
 
     public String getManufacturer() {
@@ -161,69 +121,5 @@ public class AssetEntity {
 
     public void setGmtCreate(String gmtCreate) {
         this.gmtCreate = gmtCreate;
-    }
-
-    public String getSerial() {
-        return serial;
-    }
-
-    public void setSerial(String serial) {
-        this.serial = serial;
-    }
-
-    public String getAssetSource() {
-        return assetSource;
-    }
-
-    public void setAssetSource(String assetSource) {
-        this.assetSource = assetSource;
-    }
-
-    public String getResponsibleUserName() {
-        return responsibleUserName;
-    }
-
-    public void setResponsibleUserName(String responsibleUserName) {
-        this.responsibleUserName = responsibleUserName;
-    }
-
-    public String getImportanceDegree() {
-        return importanceDegree;
-    }
-
-    public void setImportanceDegree(String importanceDegree) {
-        this.importanceDegree = importanceDegree;
-    }
-
-    public String getOperationSystem() {
-        return operationSystem;
-    }
-
-    public void setOperationSystem(String operationSystem) {
-        this.operationSystem = operationSystem;
-    }
-
-    public String getFirstEnterNett() {
-        return firstEnterNett;
-    }
-
-    public void setFirstEnterNett(String firstEnterNett) {
-        this.firstEnterNett = firstEnterNett;
-    }
-
-    public String getAdmittanceStatus() {
-        return admittanceStatus;
-    }
-
-    public void setAdmittanceStatus(String admittanceStatus) {
-        this.admittanceStatus = admittanceStatus;
-    }
-
-    public String getServiceLife() {
-        return serviceLife;
-    }
-
-    public void setServiceLife(String serviceLife) {
-        this.serviceLife = serviceLife;
     }
 }

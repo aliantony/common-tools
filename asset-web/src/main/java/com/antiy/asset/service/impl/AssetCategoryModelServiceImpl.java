@@ -188,6 +188,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
 
+
+
     /**
      * 删除品类及其子品类,若存在资产则不能删（进行递归）
      * @return ActionResponse

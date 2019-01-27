@@ -163,6 +163,20 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("首次入网时间")
     private Long                     firstEnterNett;
+    /**
+     * 行政区划主键
+     */
+    @ApiModelProperty("行政区划主键")
+    @Encode
+    private String            areaId;
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
+    }
 
     public String getResponsibleUserName() {
         return responsibleUserName;
