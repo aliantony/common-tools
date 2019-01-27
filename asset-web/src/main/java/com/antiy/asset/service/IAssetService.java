@@ -225,4 +225,5 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     String importOhters(MultipartFile file, AssetImportRequest areaId) throws Exception;
+
 }

@@ -1,19 +1,5 @@
 package com.antiy.asset.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-
-import com.antiy.asset.vo.response.AssetCountColumnarResponse;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.utils.LoginUserUtil;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
@@ -21,14 +7,23 @@ import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.AssetCountColumnarResponse;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.QueryCondition;
+import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import java.util.List;
 
 /**
  * @author zhangyajun
@@ -57,6 +52,7 @@ public class AssetController {
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset) throws Exception {
         return iAssetService.saveAsset(asset);
     }
+
 
     /**
      * 修改
