@@ -538,8 +538,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public String importExcel(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-        ImportResult<AssetSoftwareEntity> re = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class, file, 0, 0);
-        List<AssetSoftwareEntity> resultDataList = re.getDataList();
+        ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class, file, 0, 0);
+        List<AssetSoftwareEntity> resultDataList = importResult.getDataList();
         int success = 0;
         // int repeat=0;
         int error = 0;
@@ -569,7 +569,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             AssetSoftware asset = new AssetSoftware();
 
             if (entity.getAuthorization ()==2){
-                asset.setServiceLife(4070883661L);
+                asset.setServiceLife(4070883661000L);
             }else {
                 asset.setServiceLife(entity.getServiceLife());
             }
@@ -624,9 +624,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder(res);
         if (error > 0) {
-            stringBuilder.append(re).append("其中").append(builder);
+            stringBuilder.append("其中").append(builder);
         }
         // 写入业务日志
         LogHandle.log(resultDataList.toString(), AssetEventEnum.SOFT_EXPORT.getName(),
