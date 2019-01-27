@@ -54,13 +54,7 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
      * 执行人id
      */
     @ApiModelProperty("执行人id")
-    @Encode
     private String            executeUserId;
-    /**
-     * 执行人姓名
-     */
-    @ApiModelProperty("执行人姓名")
-    private String            executeUserName;
 
     /**
      * 工单开始时间
@@ -169,14 +163,6 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
         this.relatedSourceId = relatedSourceId;
     }
 
-    public String getExecuteUserName() {
-        return executeUserName;
-    }
-
-    public void setExecuteUserName(String executeUserName) {
-        this.executeUserName = executeUserName;
-    }
-
     @Override
     public void validate() throws RequestParamValidateException {
         if (null != startTime && null != endTime) {
@@ -189,8 +175,7 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
     public String toString() {
         return super.toString() + "WorkOrderVO{" + "name='" + name + '\'' + ", workLevel=" + workLevel + ", orderType="
                + orderType + ", orderSource=" + orderSource + ", content='" + content + '\'' + ", executeUserId="
-               + executeUserId + ", executeUserName='" + executeUserName + '\'' + ", startTime=" + startTime
-               + ", endTime=" + endTime + ", workOrderAttachments=" + workOrderAttachments + ", relatedSourceId="
-               + relatedSourceId + '}';
+               + executeUserId + '\'' + ", startTime=" + startTime + ", endTime=" + endTime + ", workOrderAttachments="
+               + workOrderAttachments + ", relatedSourceId=" + relatedSourceId + '}';
     }
 }

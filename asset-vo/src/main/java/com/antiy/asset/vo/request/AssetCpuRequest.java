@@ -1,15 +1,14 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * <p> AssetCpuRequest 请求对象 </p>
@@ -36,20 +35,20 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
      * 序列号
      */
     @ApiModelProperty("序列号")
-    @Size(message = "序列号长度不能超过32位", max = 32)
+    @Size(message = "CPU序列号长度不能超过32位", max = 32)
     private String  serial;
     /**
      * 品牌
      */
     @ApiModelProperty("品牌")
-    @NotBlank(message = "品牌不能为空")
-    @Size(message = "品牌长度不能超过32位", max = 32)
+    @NotBlank(message = "CPU品牌不能为空")
+    @Size(message = "CPU品牌长度不能超过32位", max = 32)
     private String  brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
-    @Size(message = "型号长度不能超过32位", max = 32)
+    @Size(message = "CPU型号长度不能超过32位", max = 32)
     private String  model;
     /**
      * CPU主频

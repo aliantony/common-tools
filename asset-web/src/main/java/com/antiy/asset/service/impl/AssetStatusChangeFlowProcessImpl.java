@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -14,7 +15,6 @@ import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.AssetStatusJumpEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LoginUserUtil;
 
 /**
@@ -26,7 +26,7 @@ import com.antiy.common.utils.LoginUserUtil;
 public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeProcessImpl {
 
     @Resource
-    AssetDao   assetDao;
+    AssetDao assetDao;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
@@ -34,6 +34,7 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         AssetStatusEnum assetStatusEnum = AssetStatusJumpEnum.getNextStatus(assetStatusReqeust.getAssetStatus(),
             assetStatusReqeust.getAgree());
         Asset asset = new Asset();
+        asset.setAssetStatus(assetStatusEnum.getCode());
         asset.setId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
         asset.setGmtModified(System.currentTimeMillis());
         asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
@@ -42,15 +43,17 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         Map<String, Boolean> analyzeInfo = (Map<String, Boolean>) JSONArray
             .parse(assetStatusReqeust.getSchemeRequest().getExtension());
         // 如果影响，直接修改资产状态为待配置
-        if (analyzeInfo.get("baseline")) {
+        if (analyzeInfo != null && analyzeInfo.get("baseline")) {
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetDao.update(asset);
-        } else {
+        } else if (analyzeInfo == null){
+            throw new BusinessException("是否更新基准不能为空");
+        }else {
             asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
             assetDao.update(asset);
         }
 
-        // 更新软件资产状态
+        // 更新资产状态
         return ActionResponse.success();
     }
 }

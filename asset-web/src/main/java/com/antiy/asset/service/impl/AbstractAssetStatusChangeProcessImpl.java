@@ -15,14 +15,15 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.SoftwareFlowEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -47,22 +48,33 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
 
     @Resource
     private WorkOrderClient                      workOrderClient;
+    @Resource
+    AesEncoder aesEncoder;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
+        Scheme scheme = null;
+        if (assetStatusReqeust.getSchemeRequest() != null){
+            // 1.保存方案信息
+            scheme = convertScheme(assetStatusReqeust);
+            schemeDao.insert(scheme);
 
-        // 1.保存方案信息
-        Scheme scheme = convertScheme(assetStatusReqeust);
-        schemeDao.insert(scheme);
+            // 写入业务日志
+            LogHandle.log(scheme.toString(), AssetEventEnum.ASSET_SCHEME_INSERT.getName(),
+                    AssetEventEnum.ASSET_SCHEME_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme.toString());
+        }
 
-        // 写入业务日志
-        LogHandle.log(scheme.toString(), AssetEventEnum.ASSET_SCHEME_INSERT.getName(),
-            AssetEventEnum.ASSET_SCHEME_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme.toString());
 
         // 2.保存流程
         AssetOperationRecord assetOperationRecord = convertAssetOperationRecord(assetStatusReqeust);
-        assetOperationRecord.setSchemeId(scheme.getId());
+        if (assetStatusReqeust.getSoftware()){
+            assetOperationRecord.setTargetStatus(assetStatusReqeust.getAssetStatus().getCode());
+        }else {
+            assetOperationRecord.setTargetStatus(assetStatusReqeust.getSoftwareStatusEnum().getCode());
+        }
+
+        assetOperationRecord.setSchemeId(scheme != null ? scheme.getId() : null);
         assetOperationRecordDao.insert(assetOperationRecord);
 
         // 写入业务日志
@@ -73,11 +85,12 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
 
         // 3.调用流程引擎
         if (null != assetStatusReqeust.getActivityHandleRequest()) {
-            ActionResponse actionResponse;
-            if (assetStatusReqeust.getChangeFlow()) {
+            ActionResponse actionResponse = null;
+            if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode().equals(AssetFlowCategoryEnum.HARDWARE_CHANGE.getCode()) ||
+            assetStatusReqeust.getAssetFlowCategoryEnum().getCode().equals(AssetFlowCategoryEnum.HARDWARE_RETIRE.getCode())) {
                 // 启动流程
                 actionResponse = activityClient.manualStartProcess(assetStatusReqeust.getManualStartActivityRequest());
-            }else {
+            }else if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode().equals(AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode())){
                 // 完成流程
                 actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
             }
@@ -141,8 +154,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
         scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));
         scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
-        scheme.setPutintoUserId(DataTypeUtils.stringToInteger(assetStatusReqeust.getWorkOrderVO().getExecuteUserId()));
-        scheme.setPutintoUser(assetStatusReqeust.getWorkOrderVO().getExecuteUserName());
+        scheme.setPutintoUserId(DataTypeUtils.stringToInteger(aesEncoder.decode(assetStatusReqeust.getWorkOrderVO().getExecuteUserId(),LoginUserUtil.getLoginUser().getUsername())));
         scheme.setAssetId(assetStatusReqeust.getAssetId());
         return scheme;
     }
