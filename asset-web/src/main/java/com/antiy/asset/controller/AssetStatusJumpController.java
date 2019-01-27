@@ -1,6 +1,5 @@
 package com.antiy.asset.controller;
 
-import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.antiy.asset.service.impl.AssetStatusChangeFactory;
 import com.antiy.asset.service.impl.AssetStatusChangeProcessImpl;
 import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
+import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.LogUtils;
@@ -40,27 +40,13 @@ public class AssetStatusJumpController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ActionResponse statusJump(@ApiParam(value = "assetStatusReqeust") @RequestBody(required = false) AssetStatusReqeust assetStatusReqeust) throws Exception {
-        if (assetStatusReqeust.getSoftware()) {
+        if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
+            .equals(AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode())) {
             return AssetStatusChangeFactory.getStatusChangeProcess(SoftWareStatusChangeProcessImpl.class)
                 .changeStatus(assetStatusReqeust);
         } else {
             return AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeProcessImpl.class)
                 .changeStatus(assetStatusReqeust);
         }
-    }
-
-    /**
-     * 资产状态变更
-     *
-     * @param assetStatusReqeust
-     * @return actionResponse
-     */
-    @ApiOperation(value = "资产状态变更", notes = "传入实体对象信息")
-    @PreAuthorize("hasAuthority('asset:statusjump:changeFlow')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/changeFlow", method = RequestMethod.POST)
-    public ActionResponse changeFlow(@ApiParam(value = "assetStatusReqeust") @RequestBody(required = false) AssetStatusReqeust assetStatusReqeust) throws Exception {
-            return AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeFlowProcessImpl.class)
-                    .changeStatus(assetStatusReqeust);
     }
 }
