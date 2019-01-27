@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -45,7 +46,9 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         if (analyzeInfo != null && analyzeInfo.get("baseline")) {
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetDao.update(asset);
-        } else {
+        } else if (analyzeInfo == null){
+            throw new BusinessException("是否更新基准不能为空");
+        }else {
             asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
             assetDao.update(asset);
         }
