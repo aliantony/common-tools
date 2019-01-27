@@ -86,6 +86,13 @@ public class AssetOuterRequest extends BasicRequest {
     @Valid
     ManualStartActivityRequest                 activityRequest;
 
+    /**
+     * 存储介质
+     */
+    @ApiModelProperty(value = "其他设备")
+    @Valid
+    private AssetOthersRequest                 assetOthersRequest;
+
     public ManualStartActivityRequest getActivityRequest() {
         return activityRequest;
     }
@@ -174,12 +181,11 @@ public class AssetOuterRequest extends BasicRequest {
         this.assetSoftwareRelationList = assetSoftwareRelationList;
     }
 
-    @Override
-    public String toString() {
-        return "AssetOuterRequest{" + "asset=" + asset + ", mainboard=" + mainboard.toString() + ", memory="
-               + memory.toString() + ", hardDisk=" + hardDisk.toString() + ", cpu=" + cpu.toString() + ", networkCard="
-               + networkCard.toString() + ", networkEquipment=" + networkEquipment.toString() + ", safetyEquipment="
-               + safetyEquipment.toString() + ", assetStorageMedium=" + assetStorageMedium.toString()
-               + ", assetSoftwareRelationList=" + assetSoftwareRelationList.toString() + '}';
+    public AssetOthersRequest getAssetOthersRequest() {
+        return assetOthersRequest;
+    }
+
+    public void setAssetOthersRequest(AssetOthersRequest assetOthersRequest) {
+        this.assetOthersRequest = assetOthersRequest;
     }
 }

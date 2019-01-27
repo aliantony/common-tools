@@ -56,12 +56,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty("资产编号")
     @Size(message = "资产编号不能超过32位", max = 32)
     private String                  number;
-    /**
-     * 资产类型:1台式办公机,2便携式办公机,3服务器虚拟终,4移动设备,4ATM机,5工控上位机,6路由器,7交换机,8防火墙,9IDS,10IPS,
-     */
-    @ApiModelProperty("资产类型:1台式办公机,2便携式办公机,3服务器虚拟终,4移动设备,4ATM机,5工控上位机,6路由器,7交换机,8防火墙,9IDS,10IPS,")
-    @NotNull(message = "资产类型不能为空")
-    private Integer                 type;
+
     /**
      * 资产名称
      */
@@ -227,13 +222,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.number = number;
     }
 
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
 
     public String getName() {
         return name;
@@ -444,7 +432,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     public String toString() {
         return "AssetRequest{" + "id='" + id + '\'' + ", assetGroups=" + assetGroups + ", houseLocation='"
                + houseLocation + '\'' + ", contactTel='" + contactTel + '\'' + ", email='" + email + '\'' + ", number='"
-               + number + '\'' + ", type=" + type + ", name='" + name + '\'' + ", serial='" + serial + '\''
+               + number + '\'' +  ", name='" + name + '\'' + ", serial='" + serial + '\''
                + ", categoryModel='" + categoryModel + '\'' + ", areaId='" + areaId + '\'' + ", manufacturer='"
                + manufacturer + '\'' + ", assetStatus=" + assetStatus + ", operationSystem='" + operationSystem + '\''
                + ", systemBit=" + systemBit + ", location='" + location + '\'' + ", installType=" + installType
