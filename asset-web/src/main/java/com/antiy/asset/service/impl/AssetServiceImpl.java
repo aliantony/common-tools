@@ -124,7 +124,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setAssetSource(2);
                     asset.setGmtCreate(System.currentTimeMillis());
                     asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                    AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest ();
+                    if (assetOthersRequest!=null){
 
+                        Asset asset1 = BeanConvert.convertBean (assetOthersRequest,
+                                Asset.class);
+                        assetDao.insert(asset1);
+                        LogHandle.log(assetOthersRequest, AssetEventEnum.ASSET_OTHERS_INSERT.getName(),
+                                AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum.ASSET_OTHERS_INSERT.getName() + " {}",
+                                assetOthersRequest.toString());
+                    }
                     assetDao.insert(asset);
                     if (assetGroup != null && !assetGroup.isEmpty()) {
 
@@ -157,6 +167,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             safetyEquipmentRequest.toString());
                         assetSafetyEquipmentDao.insert(safetyEquipment);
                     }
+
+
                     AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
                     if (networkEquipmentRequest != null) {
                         AssetNetworkEquipment assetNetworkEquipment = BeanConvert.convertBean(networkEquipmentRequest,
@@ -281,7 +293,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetHardDisk> hardDisks = BeanConvert.convert(hardDisk, AssetHardDisk.class);
                         for (AssetHardDisk assetHardDisk : hardDisks) {
                             ParamterExceptionUtils.isBlank (assetHardDisk.getBrand (),"硬盘品牌为空");
-                            ParamterExceptionUtils.isNull (assetHardDisk.getCapacity (),"硬盘容量");
+                            ParamterExceptionUtils.isNull (assetHardDisk.getCapacity (),"硬盘容量空");
                             assetHardDisk.setAssetId(aid);
                             assetHardDisk.setGmtCreate(System.currentTimeMillis());
                             assetHardDisk.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -1418,6 +1430,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return count;
                 } catch (Exception e) {
+                    transactionStatus.setRollbackOnly();
                     logger.error("修改资产失败", e);
                 }
                 return 0;
@@ -1431,7 +1444,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // TODO 通知工作流
         ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
         manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
-        // activityClient.manualStartProcess(manualStartActivityRequest);
+        activityClient.manualStartProcess(manualStartActivityRequest);
         return assetCount;
     }
 

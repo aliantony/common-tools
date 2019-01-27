@@ -95,8 +95,10 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     private void setParentType(AssetCategoryModel assetCategoryModel) throws Exception {
         String parentId = assetCategoryModel.getParentId();
         AssetCategoryModel parent = assetCategoryModelDao.getById(Integer.parseInt(parentId));
-        BusinessExceptionUtils.isTrue(!parent.getName().equals("品类型号"), "不能在第一级新增节点");
         BusinessExceptionUtils.isNull(parent, "父类型不存在");
+        BusinessExceptionUtils.isTrue(!parent.getName().equals("品类型号"), "不能在第一，二级新增节点");
+        BusinessExceptionUtils.isTrue(!parent.getName().equals("硬件"), "不能在第一，二级新增节点");
+        BusinessExceptionUtils.isTrue(!parent.getName().equals("软件"), "不能在第一，二级新增节点");
         assetCategoryModel.setAssetType(parent.getAssetType());
     }
 

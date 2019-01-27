@@ -301,6 +301,7 @@
     <!--查询资产表的使用者信息-->
     <select id="findUserInAsset" resultType="AssetUser" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
+        distinct
             asset.responsible_user_id,
             au.name,
             au.id
@@ -379,6 +380,7 @@
         <if test=" address != null">
             AND address like concat('%',  #{address },'%')
         </if>
+        and a.status = 1
         <include refid="Page_List"></include>
     </select>
 </mapper>
