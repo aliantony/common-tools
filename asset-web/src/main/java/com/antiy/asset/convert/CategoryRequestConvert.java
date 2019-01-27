@@ -15,7 +15,9 @@ public class CategoryRequestConvert extends BaseConverter<AssetCategoryModelRequ
     @Override
     protected void convert(AssetCategoryModelRequest assetCategoryModelRequest, AssetCategoryModel assetCategoryModel) {
         try {
-            assetCategoryModel.setId(Integer.parseInt(assetCategoryModelRequest.getStringId()));
+            if (assetCategoryModelRequest.getStringId() != null) {
+                assetCategoryModel.setId(Integer.parseInt(assetCategoryModelRequest.getStringId()));
+            }
         } catch (Exception e) {
             logger.error("String转Integer出错");
         }
