@@ -103,14 +103,8 @@ public class AssetComputerRequest extends BasicRequest implements ObjectValidato
 
     @Override
     public String toString() {
-        return "AssetComputerRequest{" +
-                "asset=" + asset +
-                ", mainboard=" + mainboard +
-                ", memory=" + memory +
-                ", hardDisk=" + hardDisk +
-                ", cpu=" + cpu +
-                ", networkCard=" + networkCard +
-                ", computerReques=" + computerReques +
-                '}';
+        return "AssetComputerRequest{" + "asset=" + asset + ", mainboard=" + mainboard + ", memory=" + memory
+               + ", hardDisk=" + hardDisk + ", cpu=" + cpu + ", networkCard=" + networkCard + ", computerReques="
+               + computerReques + '}';
     }
 }
