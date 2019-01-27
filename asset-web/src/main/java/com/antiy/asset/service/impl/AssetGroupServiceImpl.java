@@ -59,6 +59,15 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         AssetGroup assetGroup = assetGroupToAssetGroupConverter.convert(request, AssetGroup.class);
         assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
+        for (String assetId : request.getAssetIds()) {
+            AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
+            assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetGroupRelation.setCreateUserName(LoginUserUtil.getLoginUser().getUsername());
+            assetGroupRelation.setAssetGroupId(request.getId());
+            assetGroupRelation.setAssetId(assetId);
+            assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
+            assetGroupRelationDao.insert(assetGroupRelation);
+        }
         int result = assetGroupDao.insert(assetGroup);
 
         if (!Objects.equals(0, result)) { // 写入业务日志
@@ -66,7 +75,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}", assetGroup.toString());
         }
-        return aesEncoder.encode(assetGroup.getStringId(),LoginUserUtil.getLoginUser().getUsername());
+        return aesEncoder.encode(assetGroup.getStringId(), LoginUserUtil.getLoginUser().getUsername());
     }
 
     @Override
