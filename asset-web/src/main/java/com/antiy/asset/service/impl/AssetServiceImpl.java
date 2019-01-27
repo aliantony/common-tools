@@ -1630,7 +1630,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder (re);
         if (error+repeat>0){
-            stringBuilder.append (re).append ("其中").append (builder);
+            stringBuilder.append ("其中").append (builder);
         }
 
         return stringBuilder.toString ();
@@ -1753,7 +1753,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder (re);
         if (error+repeat>0){
-            stringBuilder.append (re).append ("其中").append (builder);
+            stringBuilder.append ("其中").append (builder);
         }
 
         return stringBuilder.toString ();
@@ -1867,7 +1867,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder (res);
         if (error>0){
-            stringBuilder.append (res).append ("其中").append (builder);
+            stringBuilder.append ("其中").append (builder);
         }
 
         return stringBuilder.toString ();
@@ -1980,7 +1980,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder (res);
         if (error+repeat>0){
-            stringBuilder.append (res).append ("其中").append (builder);
+            stringBuilder.append ("其中").append (builder);
         }
 
         return stringBuilder.toString ();
@@ -2074,7 +2074,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder (res);
         if (error+repeat>0){
-            stringBuilder.append (res).append ("其中").append (builder);
+            stringBuilder.append ("其中").append (builder);
         }
 
         return stringBuilder.toString ();
