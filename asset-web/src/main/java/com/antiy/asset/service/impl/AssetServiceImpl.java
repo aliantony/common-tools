@@ -134,8 +134,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                         LogUtils.info(logger, AssetEventEnum.ASSET_OTHERS_INSERT.getName() + " {}",
                                 assetOthersRequest.toString());
+                    }else {
+                        assetDao.insert(asset);
                     }
-                    assetDao.insert(asset);
+
                     if (assetGroup != null && !assetGroup.isEmpty()) {
 
                         for (AssetGroupRequest assetGroupRequest : assetGroup) {
@@ -349,7 +351,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private boolean CheckRepeat(String number) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setNumber(number);
-        Integer countAsset = findCountAsset(assetQuery);
+        Integer countAsset = findCountAssetNumber(assetQuery);
         if (countAsset >= 1) {
             return true;
         }
@@ -395,6 +397,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         return assetDao.findCount(query);
     }
+
+    public Integer findCountAssetNumber(AssetQuery query) throws Exception {
+        return assetDao.findCount(query);
+    }
+
 
     @Override
     public PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception {
