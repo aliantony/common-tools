@@ -14,6 +14,12 @@ public @interface ExcelField {
      * @return
      */
     String value() default "";
+    /**
+     * 是否必填：true必填，false不必填
+     *
+     * @return
+     */
+    boolean required() default false;
 
     /**
      * 标题

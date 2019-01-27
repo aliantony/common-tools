@@ -8,13 +8,13 @@ public class AssetUserEntity {
     /**
      * 姓名
      */
-    @ExcelField(value = "name", align = 1, title = "姓名", type = 0)
+    @ExcelField(value = "name", align = 1, title = "姓名", type = 0, required = true)
     private String  name;
 
     /**
      * 部门主键
      */
-    @ExcelField(value = "departmentId", align = 1, title = "所属部门", type = 0)
+    @ExcelField(value = "departmentId", align = 1, title = "所属部门", type = 0, required = true)
     private Integer departmentId;
 
     /**
