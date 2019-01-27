@@ -1,5 +1,7 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,30 +9,28 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.convert.CategoryRequestConvert;
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.NodeUtilsConverter;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
-import com.antiy.common.base.*;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.utils.BusinessExceptionUtils;
-import com.antiy.common.utils.LogUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.antiy.asset.convert.CategoryRequestConvert;
 import com.antiy.asset.dao.AssetCategoryModelDao;
+import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.NodeUtilsConverter;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
+import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
+import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.asset.vo.response.AssetCategoryModelResponse;
-
-import static com.antiy.biz.file.FileHelper.logger;
+import com.antiy.common.base.*;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.BusinessExceptionUtils;
+import com.antiy.common.utils.LogUtils;
 
 /**
  * <p> 品类型号表 服务实现类 </p>
@@ -39,8 +39,8 @@ import static com.antiy.biz.file.FileHelper.logger;
  * @since 2019-01-02
  */
 @Service
-public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel> implements
-                                                                                      IAssetCategoryModelService {
+public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel>
+                                           implements IAssetCategoryModelService {
 
     @Resource
     private AssetCategoryModelDao   assetCategoryModelDao;
@@ -62,6 +62,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Override
     public ActionResponse saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel assetCategoryModel = requestConverter.convert(request, AssetCategoryModel.class);
+        assetCategoryModel.setId(DataTypeUtils.stringToInteger(request.getStringId()));
         if (checkNameRepeat(request)) {
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该品类名已存在");
         }
@@ -75,8 +76,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             // 写入业务日志
             LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_INSERT.getName(),
                 AssetEventEnum.ASSET_CATEGORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils
-                .info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}", assetCategoryModel.toString());
+            LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}",
+                assetCategoryModel.toString());
         }
         return ActionResponse.success(assetCategoryModel.getId());
 
@@ -98,6 +99,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Override
     public ActionResponse updateAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel assetCategoryModel = categoryRequestConvert.convert(request, AssetCategoryModel.class);
+        assetCategoryModel.setId(DataTypeUtils.stringToInteger(request.getStringId()));
         if (checkNameRepeat(request)) {
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该品类名已存在");
         }
@@ -146,8 +148,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query)
-                                                                                                           throws Exception {
+    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetCategoryModel(query), query.getCurrentPage(),
             this.findListAssetCategoryModel(query));
     }
@@ -157,7 +158,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             AssetCategoryModelQuery assetDepartmentQuery = new AssetCategoryModelQuery();
             assetDepartmentQuery.setName(request.getName());
             return assetCategoryModelDao.findRepeatName(
-                request.getId() == null ? null : DataTypeUtils.stringToInteger(request.getId()), request.getName()) >= 1;
+                request.getStringId() == null ? null : DataTypeUtils.stringToInteger(request.getStringId()),
+                request.getName()) >= 1;
         }
         return false;
     }
@@ -183,12 +185,10 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         query.setPageSize(-1);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         NodeUtilsConverter nodeConverter = new NodeUtilsConverter();
-        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(
-            assetCategoryModels, AssetCategoryModelNodeResponse.class);
+        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter
+            .columnToNode(assetCategoryModels, AssetCategoryModelNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
-
-
 
     /**
      * 删除品类及其子品类,若存在资产则不能删（进行递归）
@@ -258,7 +258,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 @Component
 class CategoryResponseConvert extends BaseConverter<AssetCategoryModel, AssetCategoryModelResponse> {
     @Override
-    protected void convert(AssetCategoryModel assetCategoryModel, AssetCategoryModelResponse assetCategoryModelResponse) {
+    protected void convert(AssetCategoryModel assetCategoryModel,
+                           AssetCategoryModelResponse assetCategoryModelResponse) {
         assetCategoryModelResponse.setParentId(Objects.toString(assetCategoryModel.getParentId()));
         super.convert(assetCategoryModel, assetCategoryModelResponse);
     }

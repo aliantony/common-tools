@@ -2,16 +2,19 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.response.AssetCategoryModelResponse;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
+import com.antiy.asset.vo.response.AssetCategoryModelResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.QueryCondition;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
 
@@ -37,11 +40,7 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:categorymodel:saveSingle')")
-    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel)
-                                                                                                                                                         throws Exception {
-        ParamterExceptionUtils.isNull(assetCategoryModel, "请求不能为空");
-        ParamterExceptionUtils.isNull(assetCategoryModel.getName(), "品类名不能为空");
-        ParamterExceptionUtils.isNull(assetCategoryModel.getParentId(), "父品类不能为空");
+    public ActionResponse saveSingle(@RequestBody(required = true) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
         return iAssetCategoryModelService.saveAssetCategoryModel(assetCategoryModel);
     }
 
@@ -55,10 +54,7 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:categorymodel:updateSingle')")
-    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel)
-                                                                                                                                                           throws Exception {
-        ParamterExceptionUtils.isNull(assetCategoryModel, "请求不能为空");
-        ParamterExceptionUtils.isNull(assetCategoryModel.getId(), "id不能为空");
+    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
         return iAssetCategoryModelService.updateAssetCategoryModel(assetCategoryModel);
     }
 
@@ -72,8 +68,7 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetCategoryModel") AssetCategoryModelQuery assetCategoryModel)
-                                                                                                                       throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetCategoryModel") AssetCategoryModelQuery assetCategoryModel) throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.findPageAssetCategoryModel(assetCategoryModel));
     }
 

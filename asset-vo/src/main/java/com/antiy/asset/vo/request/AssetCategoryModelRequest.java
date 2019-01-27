@@ -1,10 +1,9 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
-import com.antiy.common.base.BasicRequest;
+import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
@@ -18,43 +17,30 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetCategoryModelRequest extends BasicRequest implements ObjectValidator {
-
-    /**
-     * id
-     */
-    @ApiModelProperty("id")
-    @Encode
-    private String  id;
+public class AssetCategoryModelRequest extends BaseRequest implements ObjectValidator {
 
     /**
      * 名称
      */
     @ApiModelProperty("名称")
-    private String  name;
-
+    @NotBlank(message = "名称不能为空")
+    @Size(message = "长度不能超过32位", max = 32)
+    private String name;
 
     /**
      * 父ID
      */
-    @Encode
+    @Encode(message = "父Id转换异常")
     @ApiModelProperty("父ID")
+    @NotBlank(message = "父Id不能为空")
     private String parentId;
-
 
     /**
      * 备注
      */
     @ApiModelProperty("备注")
-    private String  memo;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    @Size(message = "备注不能超过256位", max = 256)
+    private String memo;
 
     public String getName() {
         return name;
@@ -64,14 +50,13 @@ public class AssetCategoryModelRequest extends BasicRequest implements ObjectVal
         this.name = name;
     }
 
-     public String getMemo() {
+    public String getMemo() {
         return memo;
     }
 
     public void setMemo(String memo) {
         this.memo = memo;
     }
-
 
     public String getParentId() {
         return parentId;
