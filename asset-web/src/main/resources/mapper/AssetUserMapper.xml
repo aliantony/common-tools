@@ -379,6 +379,7 @@
         <if test=" address != null">
             AND address like concat('%',  #{address },'%')
         </if>
+        and a.status = 1
         <include refid="Page_List"></include>
     </select>
 </mapper>

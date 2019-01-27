@@ -135,7 +135,7 @@ public class AssetUserController {
     @PreAuthorize("hasAuthority('asset:user:queryById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetUserResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public ActionResponse queryById(@PathVariable @ApiParam(value = "id") QueryCondition queryCondition) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "id") QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "Id不能为空");
         return ActionResponse
             .success(iAssetUserService.getById(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey())));
