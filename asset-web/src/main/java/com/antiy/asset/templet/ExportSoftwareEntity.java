@@ -23,11 +23,6 @@ public class ExportSoftwareEntity {
     @ApiModelProperty("软件厂商")
     private String  manufacturer;
 
-    /**
-     * 软件品类名
-     */
-    @ApiModelProperty("软件品类名")
-    private String  categoryName;
 
     /**
      * 软件版本
@@ -71,13 +66,6 @@ public class ExportSoftwareEntity {
         this.manufacturer = manufacturer;
     }
 
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
 
     public String getVersion() {
         return version;
@@ -117,7 +105,6 @@ public class ExportSoftwareEntity {
                 "name='" + name + '\'' +
                 ", id=" + id +
                 ", manufacturer='" + manufacturer + '\'' +
-                ", categoryName='" + categoryName + '\'' +
                 ", version='" + version + '\'' +
                 ", assetCount=" + assetCount +
                 ", status='" + status + '\'' +
