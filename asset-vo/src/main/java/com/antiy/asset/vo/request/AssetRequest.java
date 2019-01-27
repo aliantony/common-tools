@@ -1,16 +1,14 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -50,7 +48,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 邮箱
      */
     @ApiModelProperty("邮箱")
-    @Pattern(regexp = "/^[A-Za-z\\d]+([-_.][A-Za-z\\d]+)*@([A-Za-z\\d]+[-.])+[A-Za-z\\d]{2,4}$/", message = "邮箱不正确")
+    @Email(message = "邮箱不正确")
     private String                  email;
     /**
      * 资产编号
@@ -132,13 +130,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 固件版本
      */
     @ApiModelProperty("固件版本")
-    @Size(message = "固件版本不能超过11位",max = 11)
+    @Size(message = "固件版本不能超过11位", max = 11)
     private String                  firmwareVersion;
     /**
      * 设备uuid
      */
     @ApiModelProperty("设备uuid")
-    @Size(message = "设备uuid不能超过64位",max = 64)
+    @Size(message = "设备uuid不能超过64位", max = 64)
     private String                  uuid;
     /**
      * 责任人主键
@@ -176,6 +174,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 使用到期时间
      */
     @ApiModelProperty("使用到期时间")
+    @NotNull(message = "使用到期时间不能为空")
     private Long                    serviceLife;
     /**
      * 制造日期
@@ -197,6 +196,12 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("首次入网时间")
     private Long                    firstEnterNett;
+    /**
+     * 描述
+     */
+    @ApiModelProperty("描述")
+    @Size(message = "描述不能超过128位", max = 128)
+    private String            describle;
 
     public Long getFirstEnterNett() {
         return firstEnterNett;
@@ -447,5 +452,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
                + responsibleUserId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
                + ", parentId='" + parentId + '\'' + ", tags='" + tags + '\'' + ", serviceLife=" + serviceLife
                + ", buyDate=" + buyDate + ", warranty=" + warranty + ", admittanceStatus=" + admittanceStatus + '}';
+    }
+
+    public String getDescrible() {
+        return describle;
+    }
+
+    public void setDescrible(String describle) {
+        this.describle = describle;
     }
 }

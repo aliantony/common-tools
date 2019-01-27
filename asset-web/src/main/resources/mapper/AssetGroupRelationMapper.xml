@@ -288,9 +288,8 @@
             and b.status = 1
     </select>
     <update id="deleteByAssetId" parameterType="java.lang.Integer">
-        update
+        delete from
         <include refid="Table_Name"></include>
-        set status = 0
         where asset_id = #{assetId}
     </update>
     <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetGroupRelation" useGeneratedKeys="true"

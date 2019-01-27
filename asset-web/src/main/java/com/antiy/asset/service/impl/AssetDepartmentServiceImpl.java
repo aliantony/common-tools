@@ -12,8 +12,10 @@ import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.util.NodeUtilsConverter;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.common.base.*;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -44,6 +46,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     private BaseConverter<AssetDepartmentRequest, AssetDepartment>  requestConverter;
     @Resource
     private BaseConverter<AssetDepartment, AssetDepartmentResponse> responseConverter;
+    @Resource
+    private AesEncoder                                              aesEncoder;
 
     @Override
     public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
@@ -64,7 +68,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
                 AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName() + " {}", assetDepartment.toString());
         }
-        return ActionResponse.success(assetDepartment.getId());
+        return ActionResponse.success(aesEncoder.encode(assetDepartment.getStringId(), LoginUserUtil.getLoginUser()
+            .getUsername()));
     }
 
     boolean checkNameRepeat(AssetDepartmentRequest request) throws Exception {

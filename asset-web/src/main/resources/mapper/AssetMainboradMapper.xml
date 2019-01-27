@@ -285,7 +285,7 @@
         set status = 0
         where asset_id = #{assetId}
     </update>
-    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetHardDisk" useGeneratedKeys="true"
+    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetMainborad" useGeneratedKeys="true"
             keyProperty="id"
             keyColumn="id">
         insert into
@@ -304,19 +304,19 @@
         modify_user
         )
         values
-        <foreach collection="list" item="hardDisk" separator=",">
+        <foreach collection="list" item="mainboard" separator="," index="index">
             (
-            #{asset_id},
-            #{brand},
-            #{model},
-            #{serial},
-            #{bios_version} ,
-            #{bios_date},
-            #{gmt_create },
-            #{gmt_modified},
-            #{memo},
-            #{create_user},
-            #{ modify_user},
+            #{mainboard.assetId},
+            #{mainboard.brand},
+            #{mainboard.model},
+            #{mainboard.serial},
+            #{mainboard.biosVersion} ,
+            #{mainboard.biosDate},
+            #{mainboard.gmtCreate },
+            #{mainboard.gmtModified},
+            #{mainboard.memo},
+            #{mainboard.createUser},
+            #{mainboard.modifyUser}
             )
         </foreach>
     </insert>

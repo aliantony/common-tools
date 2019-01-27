@@ -565,7 +565,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 builder.append("序号").append(entity.getOrderNumber()).append("软件版本");
                 continue;
             }
-            if (StringUtils.isBlank(entity.getFilePath())) {
+            if (StringUtils.isBlank(entity.getCategory())) {
+                error++;
+                builder.append("序号").append(entity.getOrderNumber()).append("软件品类");
+                continue;
+            }
+            if (StringUtils.isBlank(entity.getFilePath ())) {
                 error++;
                 builder.append("序号").append(entity.getOrderNumber()).append("文件地址为空");
                 continue;

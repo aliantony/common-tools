@@ -66,12 +66,13 @@ public class AssetUserController {
     @PreAuthorize("hasAuthority('asset:user:importUser')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/importUser", method = RequestMethod.POST)
-    public void importUser(@RequestBody @PathVariable("file") MultipartFile file) throws Exception {
+    public ActionResponse importUser(@RequestBody @PathVariable("file") MultipartFile file) throws Exception {
         ImportResult<AssetUserEntity> importResult = ExcelUtils.importExcelFromClient(AssetUserEntity.class, file, 0,
             0);
         List<AssetUserEntity> assetUserEntityList = importResult.getDataList();
         List<AssetUser> assetUserList = BeanConvert.convert(assetUserEntityList, AssetUser.class);
         iAssetUserService.importUser(assetUserList);
+        return ActionResponse.success(importResult.getMsg());
     }
 
     /**
@@ -134,7 +135,7 @@ public class AssetUserController {
     @PreAuthorize("hasAuthority('asset:user:queryById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetUserResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public ActionResponse queryById(@PathVariable @ApiParam(value = "id") QueryCondition queryCondition) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "id") QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "Id不能为空");
         return ActionResponse
             .success(iAssetUserService.getById(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey())));

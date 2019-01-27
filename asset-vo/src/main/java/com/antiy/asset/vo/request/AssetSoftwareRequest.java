@@ -22,7 +22,7 @@ import java.util.Arrays;
 @ApiModel(value = "软件请求")
 public class AssetSoftwareRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty(value = "登记流程数据")
-    ManualStartActivityRequest activityRequest;
+    ManualStartActivityRequest          activityRequest;
     @Valid
     @ApiModelProperty(value = "软件license")
     private AssetSoftwareLicenseRequest softwareLicenseRequest;
@@ -34,11 +34,12 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     @ApiModelProperty(value = "资产Id")
     @Encode
     private String[]                    assetIds;
+
     /**
-     *  MD5/SHA
+     * MD5/SHA
      */
     @ApiModelProperty("MD5/SHA")
-    private String md5Code;
+    private String                      md5Code;
     /**
      * 主键
      */
@@ -95,6 +96,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 软件描述
      */
     @ApiModelProperty(value = "软件描述")
+    @Size(message = "描述不能超过128位", max = 128)
     private String                      description;
     /**
      * 资产组
@@ -128,7 +130,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 上报来源:1-自动上报，2-人工上报
      */
     @ApiModelProperty(value = "上报来源", allowableValues = "1-自动上报，2-人工上报")
-//    @NotNull(message = "上报来源不能为空")
+    // @NotNull(message = "上报来源不能为空")
     private Integer                     reportSource;
     /**
      * 端口
@@ -161,8 +163,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     private String                      assetSoftwareRelationId;
 
     @ApiModelProperty(value = "流程处理")
-//    @NotNull(message = "处理流程不能为空")
-//    @Valid
+    @Valid
     private ActivityHandleRequest       request;
 
     public ActivityHandleRequest getRequest() {
@@ -353,6 +354,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     public void validate() throws RequestParamValidateException {
 
     }
+
     public ManualStartActivityRequest getActivityRequest() {
         return activityRequest;
     }
@@ -395,35 +397,16 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     @Override
     public String toString() {
-        return "AssetSoftwareRequest{" +
-                "activityRequest=" + activityRequest +
-                ", softwareLicenseRequest=" + softwareLicenseRequest +
-                ", assetPortProtocolRequest=" + assetPortProtocolRequest +
-                ", assetIds=" + Arrays.toString (assetIds) +
-                ", md5Code='" + md5Code + '\'' +
-                ", id='" + id + '\'' +
-                ", size=" + size +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", categoryModel='" + categoryModel + '\'' +
-                ", name='" + name + '\'' +
-                ", uploadSoftwareName='" + uploadSoftwareName + '\'' +
-                ", path='" + path + '\'' +
-                ", version='" + version + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", description='" + description + '\'' +
-                ", assetGroup='" + assetGroup + '\'' +
-                ", serial='" + serial + '\'' +
-                ", softwareLabel='" + softwareLabel + '\'' +
-                ", softwareStatus=" + softwareStatus +
-                ", authorization=" + authorization +
-                ", reportSource=" + reportSource +
-                ", port='" + port + '\'' +
-                ", language='" + language + '\'' +
-                ", releaseTime=" + releaseTime +
-                ", publisher='" + publisher + '\'' +
-                ", memo='" + memo + '\'' +
-                ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\'' +
-                ", request=" + request +
-                '}';
+        return "AssetSoftwareRequest{" + "activityRequest=" + activityRequest + ", softwareLicenseRequest="
+               + softwareLicenseRequest + ", assetPortProtocolRequest=" + assetPortProtocolRequest + ", assetIds="
+               + Arrays.toString(assetIds) + ", md5Code='" + md5Code + '\'' + ", id='" + id + '\'' + ", size=" + size
+               + ", operationSystem='" + operationSystem + '\'' + ", categoryModel='" + categoryModel + '\''
+               + ", name='" + name + '\'' + ", uploadSoftwareName='" + uploadSoftwareName + '\'' + ", path='" + path
+               + '\'' + ", version='" + version + '\'' + ", manufacturer='" + manufacturer + '\'' + ", description='"
+               + description + '\'' + ", assetGroup='" + assetGroup + '\'' + ", serial='" + serial + '\''
+               + ", softwareLabel='" + softwareLabel + '\'' + ", softwareStatus=" + softwareStatus + ", authorization="
+               + authorization + ", reportSource=" + reportSource + ", port='" + port + '\'' + ", language='" + language
+               + '\'' + ", releaseTime=" + releaseTime + ", publisher='" + publisher + '\'' + ", memo='" + memo + '\''
+               + ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\'' + ", request=" + request + '}';
     }
 }

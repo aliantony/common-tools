@@ -18,7 +18,7 @@ public interface AssetHardDiskDao extends IBaseDao<AssetHardDisk> {
 
     Integer updateBatch(List<AssetHardDisk> assetHardDiskList) throws Exception;
 
-    Integer insertBacth(List<AssetHardDisk> assetHardDiskList);
+    Integer insertBatch(List<AssetHardDisk> assetHardDiskList);
 
     Integer deleteByAssetId(Integer id);
 }

@@ -6,10 +6,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
+import io.protostuff.runtime.ArraySchemas;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +59,7 @@ public class AssetHardDiskServiceImpl extends BaseServiceImpl<AssetHardDisk> imp
     @Override
     public List<AssetHardDiskResponse> findListAssetHardDisk(AssetHardDiskQuery query) throws Exception {
         List<AssetHardDisk> assetHardDisk = assetHardDiskDao.findListAssetHardDisk(query);
-        List<AssetHardDiskResponse> assetHardDiskResponse = new ArrayList<AssetHardDiskResponse>();
+        List<AssetHardDiskResponse> assetHardDiskResponse = BeanConvert.convert(assetHardDisk, AssetHardDiskResponse.class);
         return assetHardDiskResponse;
     }
 
