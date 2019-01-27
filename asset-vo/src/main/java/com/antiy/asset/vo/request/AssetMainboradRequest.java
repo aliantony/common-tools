@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
@@ -33,22 +34,26 @@ public class AssetMainboradRequest extends BasicRequest implements ObjectValidat
      * 品牌
      */
     @ApiModelProperty("品牌")
-    @NotBlank
+    @NotBlank(message = "品牌不能为空")
+    @Size(message = "品牌长度不能超过32位",max = 32)
     private String brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
+    @Size(message = "型号长度不能超过32位",max = 32)
     private String model;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
+    @Size(message = "序列号长度不能超过32位",max = 32)
     private String serial;
     /**
      * BIOS版本
      */
     @ApiModelProperty("BIOS版本")
+    @Size(message = "BIOS版本长度不能超过20位",max = 20)
     private String biosVersion;
     /**
      * BIOS日期

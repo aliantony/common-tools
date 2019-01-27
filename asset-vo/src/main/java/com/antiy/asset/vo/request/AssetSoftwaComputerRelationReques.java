@@ -1,5 +1,8 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -19,12 +22,14 @@ public class AssetSoftwaComputerRelationReques extends BasicRequest implements O
      * 许可密钥
      */
     @ApiModelProperty("许可密钥")
+    @Size(message = "许可密钥长度不能超过32位", max = 32)
     private String licenseSecretKey;
     /**
      * 软件ID
      */
     @ApiModelProperty("softwareid")
     @Encode
+    @NotBlank(message = "关联的软件Id不能为空")
     private String softwareid;
     /**
      * 软件名称
@@ -98,14 +103,9 @@ public class AssetSoftwaComputerRelationReques extends BasicRequest implements O
 
     @Override
     public String toString() {
-        return "AssetSoftwaComputerRelationReques{" +
-                "licenseSecretKey='" + licenseSecretKey + '\'' +
-                ", softwareid='" + softwareid + '\'' +
-                ", softwareName='" + softwareName + '\'' +
-                ", port='" + port + '\'' +
-                ", protocol='" + protocol + '\'' +
-                ", portMemo='" + portMemo + '\'' +
-                '}';
+        return "AssetSoftwaComputerRelationReques{" + "licenseSecretKey='" + licenseSecretKey + '\'' + ", softwareid='"
+               + softwareid + '\'' + ", softwareName='" + softwareName + '\'' + ", port='" + port + '\''
+               + ", protocol='" + protocol + '\'' + ", portMemo='" + portMemo + '\'' + '}';
     }
 
     @Override

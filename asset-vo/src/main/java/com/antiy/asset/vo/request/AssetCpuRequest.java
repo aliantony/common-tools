@@ -2,6 +2,7 @@ package com.antiy.asset.vo.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
@@ -30,28 +31,31 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("资产主键")
     @Encode
-    private String assetId;
+    private String  assetId;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
+    @Size(message = "序列号长度不能超过32位", max = 32)
     private String  serial;
     /**
      * 品牌
      */
     @ApiModelProperty("品牌")
-    @NotBlank
+    @NotBlank(message = "品牌不能为空")
+    @Size(message = "品牌长度不能超过32位", max = 32)
     private String  brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
+    @Size(message = "型号长度不能超过32位", max = 32)
     private String  model;
     /**
      * CPU主频
      */
     @ApiModelProperty("CPU主频")
-    @NotNull
+    @NotNull(message = "CPU主频不能为空")
     private Float   mainFrequency;
     /**
      * 线程数
@@ -72,7 +76,7 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
         this.id = id;
     }
 
-      public String getSerial() {
+    public String getSerial() {
         return serial;
     }
 
@@ -130,16 +134,9 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
 
     @Override
     public String toString() {
-        return "AssetCpuRequest{" +
-                "id='" + id + '\'' +
-                ", assetId='" + assetId + '\'' +
-                ", serial='" + serial + '\'' +
-                ", brand='" + brand + '\'' +
-                ", model='" + model + '\'' +
-                ", mainFrequency=" + mainFrequency +
-                ", threadSize=" + threadSize +
-                ", coreSize=" + coreSize +
-                '}';
+        return "AssetCpuRequest{" + "id='" + id + '\'' + ", assetId='" + assetId + '\'' + ", serial='" + serial + '\''
+               + ", brand='" + brand + '\'' + ", model='" + model + '\'' + ", mainFrequency=" + mainFrequency
+               + ", threadSize=" + threadSize + ", coreSize=" + coreSize + '}';
     }
 
     @Override
