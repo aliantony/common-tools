@@ -281,7 +281,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetHardDisk> hardDisks = BeanConvert.convert(hardDisk, AssetHardDisk.class);
                         for (AssetHardDisk assetHardDisk : hardDisks) {
                             ParamterExceptionUtils.isBlank (assetHardDisk.getBrand (),"硬盘品牌为空");
-                            ParamterExceptionUtils.isNull (assetHardDisk.getCapacity (),"硬盘容量");
+                            ParamterExceptionUtils.isNull (assetHardDisk.getCapacity (),"硬盘容量空");
                             assetHardDisk.setAssetId(aid);
                             assetHardDisk.setGmtCreate(System.currentTimeMillis());
                             assetHardDisk.setCreateUser(LoginUserUtil.getLoginUser().getId());
