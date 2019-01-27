@@ -46,7 +46,7 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("资产组ID数组")
     @Encode
-    @Length(max = 1000, message = "资产组Id数组长度不能超过1000")
+    @Size(max = 1000, message = "资产组Id数组长度不能超过1000")
     private String[] assetIds;
 
     public String getMemo() {
