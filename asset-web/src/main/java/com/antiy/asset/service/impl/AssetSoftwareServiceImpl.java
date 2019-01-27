@@ -104,10 +104,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 try {
                     AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
 
-//                    AssetSoftwareLicense license = BeanConvert.convertBean(request.getSoftwareLicenseRequest(),
-//                        AssetSoftwareLicense.class);
-                    AssetPortProtocol protocol = BeanConvert.convertBean (request.getAssetPortProtocolRequest (),
-                            AssetPortProtocol.class);
+                    // AssetSoftwareLicense license = BeanConvert.convertBean(request.getSoftwareLicenseRequest(),
+                    // AssetSoftwareLicense.class);
+                    AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
+                        AssetPortProtocol.class);
 
                     assetSoftware.setSoftwareStatus(AssetStatusEnum.ANALYZE.getCode());
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -115,16 +115,16 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetSoftware.setReportSource(2);
                     assetSoftwareDao.insert(assetSoftware);
                     String sid = String.valueOf(assetSoftware.getId());
-                    protocol.setAssetSoftId (sid);
+                    protocol.setAssetSoftId(sid);
                     protocol.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     protocol.setGmtCreate(System.currentTimeMillis());
-                    assetPortProtocolDao.insert (protocol);
-//                    license.setSoftwareId(assetSoftware.getId());
-//                    license.setCreateUser(LoginUserUtil.getLoginUser().getId());
-//                    license.setGmtCreate(System.currentTimeMillis());
-//                    license.setExpiryDate(assetSoftware.getServiceLife());
-//                    license.setBuyDate(assetSoftware.getBuyDate());
-//                    assetSoftwareLicenseDao.insert(license);
+                    assetPortProtocolDao.insert(protocol);
+                    // license.setSoftwareId(assetSoftware.getId());
+                    // license.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    // license.setGmtCreate(System.currentTimeMillis());
+                    // license.setExpiryDate(assetSoftware.getServiceLife());
+                    // license.setBuyDate(assetSoftware.getBuyDate());
+                    // assetSoftwareLicenseDao.insert(license);
 
                     // if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
                     // String[] assetIds = request.getAssetIds();
@@ -402,6 +402,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<Map<String, Long>> list = assetSoftwareDao.countStatus(ids);
         Map<String, Long> result = new HashMap();
+        for (SoftwareStatusEnum assetStatusEnum : SoftwareStatusEnum.values()) {
+            result.put(assetStatusEnum.getMsg(), 0L);
+        }
         for (Map map : list) {
             SoftwareStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode((Integer) map.get("key"));
             if (assetStatusEnum != null) {
@@ -544,7 +547,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public String importExcel(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-        ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class, file, 0, 0);
+        ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class,
+            file, 0, 0);
         List<AssetSoftwareEntity> resultDataList = importResult.getDataList();
         int success = 0;
         // int repeat=0;
@@ -561,12 +565,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 builder.append("序号").append(entity.getOrderNumber()).append("软件版本");
                 continue;
             }
-            if (StringUtils.isBlank(entity.getFilePath ())) {
+            if (StringUtils.isBlank(entity.getFilePath())) {
                 error++;
                 builder.append("序号").append(entity.getOrderNumber()).append("文件地址为空");
                 continue;
             }
-            if (Objects.isNull (entity.getServiceLife ())&&entity.getAuthorization ()==1) {
+            if (Objects.isNull(entity.getServiceLife()) && entity.getAuthorization() == 1) {
                 error++;
                 builder.append("序号").append(entity.getOrderNumber()).append("到期时间为空");
                 continue;
@@ -574,19 +578,19 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
             AssetSoftware asset = new AssetSoftware();
 
-            if (entity.getAuthorization ()==2){
+            if (entity.getAuthorization() == 2) {
                 asset.setServiceLife(4070883661000L);
-            }else {
+            } else {
                 asset.setServiceLife(entity.getServiceLife());
             }
 
             asset.setGmtCreate(System.currentTimeMillis());
-            asset.setMd5Code (entity.getMD5 ());
+            asset.setMd5Code(entity.getMD5());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             // 可分析
             asset.setSoftwareStatus(2);
-            asset.setReleaseTime (entity.getReleaseTime ());
-            asset.setPath (entity.getFilePath ());
+            asset.setReleaseTime(entity.getReleaseTime());
+            asset.setPath(entity.getFilePath());
             asset.setName(entity.getName());
             asset.setVersion(entity.getVersion());
             asset.setManufacturer(entity.getManufacturer());
@@ -595,7 +599,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             asset.setBuyDate(entity.getBuyDate());
             asset.setAuthorization(entity.getAuthorization());
             asset.setMemo(entity.getDescription());
-            asset.setDescription (entity.getDescription());
+            asset.setDescription(entity.getDescription());
             asset.setCategoryModel(entity.getCategory());
             asset.setSize(entity.getSize());
 
