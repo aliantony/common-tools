@@ -74,6 +74,9 @@ public enum AssetEventEnum {
     ASSET_STORAGE_UPDATE(66,"存储介质修改"),
     ASSET_STORAGE_DELETE(67,"存储介质删除"),
     ASSET_OPERATION_RECORD_INSERT(68,"历史纪录新增"),
+    ASSET_OTHERS_INSERT(69,"资产其他设备新增"),
+    ASSET_OTHERS_UPDATE(70,"资产其他设备修改"),
+    ASSET_OTHERS_DELETE(71,"资产其他设备删除"),
     ;
 
 

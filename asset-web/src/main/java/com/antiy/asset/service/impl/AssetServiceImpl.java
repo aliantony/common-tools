@@ -124,7 +124,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setAssetSource(2);
                     asset.setGmtCreate(System.currentTimeMillis());
                     asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                    AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest ();
+                    if (assetOthersRequest!=null){
 
+                        Asset asset1 = BeanConvert.convertBean (assetOthersRequest,
+                                Asset.class);
+                        assetDao.insert(asset1);
+                        LogHandle.log(assetOthersRequest, AssetEventEnum.ASSET_OTHERS_INSERT.getName(),
+                                AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum.ASSET_OTHERS_INSERT.getName() + " {}",
+                                assetOthersRequest.toString());
+                    }
                     assetDao.insert(asset);
                     if (assetGroup != null && !assetGroup.isEmpty()) {
 
@@ -157,6 +167,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             safetyEquipmentRequest.toString());
                         assetSafetyEquipmentDao.insert(safetyEquipment);
                     }
+
+
                     AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
                     if (networkEquipmentRequest != null) {
                         AssetNetworkEquipment assetNetworkEquipment = BeanConvert.convertBean(networkEquipmentRequest,

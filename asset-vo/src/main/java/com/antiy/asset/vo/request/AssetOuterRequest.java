@@ -1,12 +1,10 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
+import com.antiy.common.base.BasicRequest;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
-
-import com.antiy.common.base.BasicRequest;
-
-import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -75,6 +73,12 @@ public class AssetOuterRequest extends BasicRequest {
     @ApiModelProperty(value = "存储介质")
     @Valid
     private AssetStorageMediumRequest          assetStorageMedium;
+    /**
+     * 存储介质
+     */
+    @ApiModelProperty(value = "其他设备")
+    @Valid
+    private AssetOthersRequest          assetOthersRequest;
     /**
      * 资产软件关系表
      */
@@ -176,10 +180,27 @@ public class AssetOuterRequest extends BasicRequest {
 
     @Override
     public String toString() {
-        return "AssetOuterRequest{" + "asset=" + asset + ", mainboard=" + mainboard.toString() + ", memory="
-               + memory.toString() + ", hardDisk=" + hardDisk.toString() + ", cpu=" + cpu.toString() + ", networkCard="
-               + networkCard.toString() + ", networkEquipment=" + networkEquipment.toString() + ", safetyEquipment="
-               + safetyEquipment.toString() + ", assetStorageMedium=" + assetStorageMedium.toString()
-               + ", assetSoftwareRelationList=" + assetSoftwareRelationList.toString() + '}';
+        return "AssetOuterRequest{" +
+                "asset=" + asset +
+                ", mainboard=" + mainboard +
+                ", memory=" + memory +
+                ", hardDisk=" + hardDisk +
+                ", cpu=" + cpu +
+                ", networkCard=" + networkCard +
+                ", networkEquipment=" + networkEquipment +
+                ", safetyEquipment=" + safetyEquipment +
+                ", assetStorageMedium=" + assetStorageMedium +
+                ", assetOthersRequest=" + assetOthersRequest +
+                ", assetSoftwareRelationList=" + assetSoftwareRelationList +
+                ", activityRequest=" + activityRequest +
+                '}';
+    }
+
+    public AssetOthersRequest getAssetOthersRequest() {
+        return assetOthersRequest;
+    }
+
+    public void setAssetOthersRequest(AssetOthersRequest assetOthersRequest) {
+        this.assetOthersRequest = assetOthersRequest;
     }
 }
