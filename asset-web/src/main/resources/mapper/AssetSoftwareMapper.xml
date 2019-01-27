@@ -615,7 +615,7 @@
                 #{item}
             </foreach>
         </if>
-        <if test=" softwareStatusList != null and softwareStatusList.length>0">
+        <if test=" softwareStatusList != null and softwareStatusList.size() >0">
             and software_status in
             <foreach collection="softwareStatusList" open="(" close=")" separator="," index="index" item="item">
                 #{item}

@@ -10,10 +10,7 @@ import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.templet.AssetSoftwareEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
 import com.antiy.asset.templet.ImportResult;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.*;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
@@ -128,7 +125,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 //                    license.setExpiryDate(assetSoftware.getServiceLife());
 //                    license.setBuyDate(assetSoftware.getBuyDate());
 //                    assetSoftwareLicenseDao.insert(license);
-
 
                     // if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
                     // String[] assetIds = request.getAssetIds();
@@ -397,22 +393,32 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
         result.put("其他", sum);
         AssetCountResponse assetCountResponse = new AssetCountResponse();
-        assetCountResponse.setMap(result);
+        assetCountResponse.setMap(ArrayTypeUtil.ObjectArrayToEntryArray(result.entrySet().toArray()));
         return assetCountResponse;
     }
 
     @Override
-    public AssetCountResponse countStatus() throws Exception {
+    public AssetCountColumnarResponse countStatus() throws Exception {
         List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<Map<String, Long>> list = assetSoftwareDao.countStatus(ids);
         Map<String, Long> result = new HashMap();
         for (Map map : list) {
-            AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode((Integer) map.get("key"));
-            result.put(assetStatusEnum == null ? "" : assetStatusEnum.getMsg(), (Long) map.get("value"));
+            SoftwareStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode((Integer) map.get("key"));
+            if (assetStatusEnum != null) {
+                result.put(assetStatusEnum.getMsg(), (Long) map.get("value"));
+            }
         }
-        AssetCountResponse assetCountResponse = new AssetCountResponse();
-        assetCountResponse.setMap(result);
-        return assetCountResponse;
+        String keys[] = new String[SoftwareStatusEnum.values().length];
+        Long values[] = new Long[SoftwareStatusEnum.values().length];
+        int i = 0;
+        for (Map.Entry<String, Long> entry : result.entrySet()) {
+            keys[i] = entry.getKey();
+            values[i] = entry.getValue();
+        }
+        AssetCountColumnarResponse assetCountColumnarResponse = new AssetCountColumnarResponse();
+        assetCountColumnarResponse.setKeys(ArrayTypeUtil.ObjectArrayToStringArray(result.keySet().toArray()));
+        assetCountColumnarResponse.setValues(ArrayTypeUtil.ObjectArrayToLongArray(result.values().toArray()));
+        return assetCountColumnarResponse;
     }
 
     @Override
@@ -440,7 +446,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 result.put(a.getName(), sum);
             }
             AssetCountResponse assetCountResponse = new AssetCountResponse();
-            assetCountResponse.setMap(result);
+            assetCountResponse.setMap(ArrayTypeUtil.ObjectArrayToEntryArray(result.entrySet().toArray()));
             return assetCountResponse;
         }
         return null;
@@ -718,7 +724,7 @@ class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportS
     protected void convert(AssetSoftwareResponse assetSoftware, ExportSoftwareEntity exportSoftwareEntity) {
         exportSoftwareEntity.setCategoryName(assetSoftware.getCategoryModelName());
         if (Objects.nonNull(assetSoftware.getSoftwareStatus())) {
-            AssetStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode(assetSoftware.getSoftwareStatus());
+            SoftwareStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode(assetSoftware.getSoftwareStatus());
             exportSoftwareEntity.setStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
         }
         if (Objects.nonNull(assetSoftware.getStringId())) {
@@ -730,7 +736,7 @@ class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportS
     }
 
     private String LongToDateString(Long datetime) {
-        if (Objects.nonNull(datetime)&&!Objects.equals(datetime, 0L)) {
+        if (Objects.nonNull(datetime) && !Objects.equals(datetime, 0L)) {
             return DateUtils.getDataString(new Date(datetime), DateUtils.WHOLE_FORMAT);
         }
         return "";
