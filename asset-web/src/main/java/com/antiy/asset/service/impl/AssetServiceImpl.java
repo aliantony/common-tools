@@ -214,6 +214,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetNetworkCard> networkCardList = BeanConvert.convert(networkCardRequestList,
                             AssetNetworkCard.class);
                         for (AssetNetworkCard assetNetworkCard : networkCardList) {
+                            ParamterExceptionUtils.isBlank (assetNetworkCard.getBrand (),"网卡品牌为空");
                             assetNetworkCard.setAssetId(aid);
                             assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                             assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -230,6 +231,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetMainborad> mainboradList = BeanConvert.convert(mainboradRequestList,
                             AssetMainborad.class);
                         for (AssetMainborad assetMainborad : mainboradList) {
+                            ParamterExceptionUtils.isBlank (assetMainborad.getBrand (),"主板品牌为空");
                             assetMainborad.setAssetId(aid);
                             assetMainborad.setGmtCreate(System.currentTimeMillis());
                             assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -244,6 +246,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (memoryRequestList != null && memoryRequestList.size() > 0) {
                         List<AssetMemory> memoryList = BeanConvert.convert(memoryRequestList, AssetMemory.class);
                         for (AssetMemory assetMemory : memoryList) {
+                            ParamterExceptionUtils.isBlank (assetMemory.getBrand (),"内存品牌为空");
+                            ParamterExceptionUtils.isNull (assetMemory.getFrequency (),"内存主频为空");
+                            ParamterExceptionUtils.isNull (assetMemory.getCapacity (),"内存容量为空");
                             assetMemory.setAssetId(aid);
                             assetMemory.setGmtCreate(System.currentTimeMillis());
                             assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -258,6 +263,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (cpuRequestList != null && cpuRequestList.size() > 0) {
                         List<AssetCpu> assetCpuList = BeanConvert.convert(cpuRequestList, AssetCpu.class);
                         for (AssetCpu assetCpu : assetCpuList) {
+                            ParamterExceptionUtils.isBlank (assetCpu.getBrand (),"CPU品牌为空");
+                            ParamterExceptionUtils.isNull (assetCpu.getMainFrequency (),"CPU主频为空");
                             assetCpu.setAssetId(aid);
                             assetCpu.setGmtCreate(System.currentTimeMillis());
                             assetCpu.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -273,6 +280,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (hardDisk != null && hardDisk.size() > 0) {
                         List<AssetHardDisk> hardDisks = BeanConvert.convert(hardDisk, AssetHardDisk.class);
                         for (AssetHardDisk assetHardDisk : hardDisks) {
+                            ParamterExceptionUtils.isBlank (assetHardDisk.getBrand (),"硬盘品牌为空");
+                            ParamterExceptionUtils.isNull (assetHardDisk.getCapacity (),"硬盘容量");
                             assetHardDisk.setAssetId(aid);
                             assetHardDisk.setGmtCreate(System.currentTimeMillis());
                             assetHardDisk.setCreateUser(LoginUserUtil.getLoginUser().getId());
