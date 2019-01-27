@@ -105,6 +105,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Override
     public ActionResponse updateAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel assetCategoryModel = categoryRequestConvert.convert(request, AssetCategoryModel.class);
+        assetCategoryModel.setId(DataTypeUtils.stringToInteger(request.getStringId()));
         if (checkNameRepeat(request)) {
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该品类名已存在");
         }
