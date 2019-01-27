@@ -70,7 +70,7 @@ public class AssetNetworkEquipmentController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:networkequipment:queryList')")
-    public ActionResponse queryList(@RequestBody(required = false) @ApiParam(value = "assetNetworkEquipment") AssetNetworkEquipmentQuery assetNetworkEquipment) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetNetworkEquipment") AssetNetworkEquipmentQuery assetNetworkEquipment) throws Exception {
         return ActionResponse
             .success(iAssetNetworkEquipmentService.findPageAssetNetworkEquipment(assetNetworkEquipment));
     }

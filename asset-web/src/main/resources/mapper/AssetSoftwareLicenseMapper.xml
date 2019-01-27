@@ -303,9 +303,10 @@
         </if>
     </select>
     <delete id="deleteByAssetId" parameterType="java.lang.Integer">
-        delete from
-            asset_software_license a
+       delete
+        from
+            asset_software_license
         where
-            exists ( select 1 from asset_software_relation b where b.id = a.software_id and b.asset_id = 2 )
+            software_id in ( select id from asset_software_relation where asset_id = #{assetId} )
     </delete>
 </mapper>

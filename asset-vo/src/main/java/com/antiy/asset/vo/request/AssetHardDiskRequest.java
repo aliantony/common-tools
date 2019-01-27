@@ -19,7 +19,12 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetHardDiskRequest extends BasicRequest implements ObjectValidator {
-
+    /**
+     * 主键
+     */
+    @ApiModelProperty("主键")
+    @Encode
+    private String  id;
     /**
      * 资产主键
      */
@@ -168,6 +173,14 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
 
     public void setCumulativeHour(Integer cumulativeHour) {
         this.cumulativeHour = cumulativeHour;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

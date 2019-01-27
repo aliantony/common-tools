@@ -7,6 +7,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * <p> AssetHardDisk 查询条件 </p>
  *
@@ -24,19 +26,49 @@ public class AssetHardDiskQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 硬盘品牌
      */
+    @ApiModelProperty(value = "硬盘品牌")
     private String  brand;
     /**
      * 硬盘型号
      */
+    @ApiModelProperty(value = "硬盘型号")
     private String  model;
     /**
      * 序列号
      */
+    @ApiModelProperty(value = "序列号")
     private String  serial;
     /**
      * 接口类型:1SATA、2IDE、3ATA、4SCSI、5光纤通道
      */
+    @ApiModelProperty(value = "接口类型")
     private Integer interfaceType;
+    /**
+     * 容量
+     */
+    @ApiModelProperty(value = "容量")
+    private Integer capacity;
+    /**
+     * 磁盘类型,1 HDD,2,SSD
+     */
+    @ApiModelProperty("磁盘类型,1 HDD,2,SSD")
+    private Integer diskType;
+
+    public Integer getDiskType() {
+        return diskType;
+    }
+
+    public void setDiskType(Integer diskType) {
+        this.diskType = diskType;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
 
     public String getAssetId() {
         return assetId;

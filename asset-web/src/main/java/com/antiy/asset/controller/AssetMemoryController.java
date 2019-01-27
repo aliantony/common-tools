@@ -69,7 +69,7 @@ public class AssetMemoryController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('asset:memory:queryList')")
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetMemory") AssetMemoryQuery assetMemory) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetMemory") AssetMemoryQuery assetMemory) throws Exception {
         return ActionResponse.success(iAssetMemoryService.findPageAssetMemory(assetMemory));
     }
 

@@ -314,11 +314,27 @@
         select count(1) count
         from
         <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
-            </trim>
-        </where>
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" assetId != null">
+                and asset_id = #{assetId }
+            </if>
+            <if test=" capacity != null">
+                and capacity = #{capacity }
+            </if>
+            <if test=" frequency != null">
+                and frequency = #{frequency }
+            </if>
+            <if test=" slotType != null">
+                and slot_type = #{slotType }
+            </if>
+            <if test=" isHeatsink != null">
+                and is_heatsink = #{isHeatsink }
+            </if>
+            <if test=" stitch != null">
+                and stitch = #{stitch }
+            </if>
+            and status = 1
+        </trim>
     </select>
 
     <select id="findQuery" resultType="com.antiy.asset.entity.AssetMemory"

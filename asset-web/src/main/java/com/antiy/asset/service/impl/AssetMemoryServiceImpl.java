@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.common.enums.ModuleEnum;
@@ -32,7 +33,7 @@ import com.antiy.common.utils.LoginUserUtil;
  */
 @Service
 public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> implements IAssetMemoryService {
-    private Logger logger = LogUtils.get(this.getClass());
+    private Logger                                          logger = LogUtils.get(this.getClass());
     @Resource
     private AssetMemoryDao                                  assetMemoryDao;
     @Resource
@@ -45,7 +46,8 @@ public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> impleme
         AssetMemory assetMemory = requestConverter.convert(request, AssetMemory.class);
         assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetMemory.setGmtCreate(System.currentTimeMillis());
-        LogHandle.log(request, AssetEventEnum.ASSET_MEMORY_INSERT.getName(), AssetEventEnum.ASSET_MEMORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogHandle.log(request, AssetEventEnum.ASSET_MEMORY_INSERT.getName(),
+            AssetEventEnum.ASSET_MEMORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_INSERT.getName() + " {}", request.toString());
         return assetMemoryDao.insert(assetMemory);
     }
@@ -55,7 +57,8 @@ public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> impleme
         AssetMemory assetMemory = requestConverter.convert(request, AssetMemory.class);
         assetMemory.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetMemory.setGmtModified(System.currentTimeMillis());
-        LogHandle.log(request, AssetEventEnum.ASSET_MEMORY_UPDATE.getName(), AssetEventEnum.ASSET_MEMORY_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogHandle.log(request, AssetEventEnum.ASSET_MEMORY_UPDATE.getName(),
+            AssetEventEnum.ASSET_MEMORY_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_UPDATE.getName() + " {}", request.toString());
         return assetMemoryDao.update(assetMemory);
     }
@@ -64,7 +67,7 @@ public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> impleme
     public List<AssetMemoryResponse> findListAssetMemory(AssetMemoryQuery query) throws Exception {
         List<AssetMemory> assetMemory = assetMemoryDao.findListAssetMemory(query);
         // TODO
-        List<AssetMemoryResponse> assetMemoryResponse = new ArrayList<AssetMemoryResponse>();
+        List<AssetMemoryResponse> assetMemoryResponse = BeanConvert.convert(assetMemory, AssetMemoryResponse.class);
         return assetMemoryResponse;
     }
 
@@ -77,9 +80,11 @@ public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> impleme
         return new PageResult<>(query.getPageSize(), this.findCountAssetMemory(query), query.getCurrentPage(),
             this.findListAssetMemory(query));
     }
+
     @Override
     public Integer deleteById(Serializable id) throws Exception {
-        LogHandle.log(id, AssetEventEnum.ASSET_MEMORY_DELETE.getName(), AssetEventEnum.ASSET_MEMORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogHandle.log(id, AssetEventEnum.ASSET_MEMORY_DELETE.getName(), AssetEventEnum.ASSET_MEMORY_DELETE.getStatus(),
+            ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_DELETE.getName() + " {}", id);
         return super.deleteById(id);
     }

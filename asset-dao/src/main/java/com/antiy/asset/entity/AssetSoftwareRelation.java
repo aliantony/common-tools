@@ -71,7 +71,7 @@ public class AssetSoftwareRelation extends BaseEntity {
     /**
      * 安装时间
      */
-    private Integer installTime;
+    private Long installTime;
     /**
      * 责任人主键
      */
@@ -201,11 +201,11 @@ public class AssetSoftwareRelation extends BaseEntity {
         this.installStatus = installStatus;
     }
 
-    public Integer getInstallTime() {
+    public Long getInstallTime() {
         return installTime;
     }
 
-    public void setInstallTime(Integer installTime) {
+    public void setInstallTime(Long installTime) {
         this.installTime = installTime;
     }
 

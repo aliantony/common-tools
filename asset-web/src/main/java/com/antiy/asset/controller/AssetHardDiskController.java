@@ -69,7 +69,7 @@ public class AssetHardDiskController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('asset:harddisk:queryList')")
-    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetHardDisk") AssetHardDiskQuery assetHardDisk) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetHardDisk") AssetHardDiskQuery assetHardDisk) throws Exception {
         return ActionResponse.success(iAssetHardDiskService.findPageAssetHardDisk(assetHardDisk));
     }
 
