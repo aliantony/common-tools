@@ -73,7 +73,7 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
      * 安装时间
      */
     @ApiModelProperty("安装时间")
-    @NotNull
+    @NotNull(message = "安装时间不能为空")
     private Long installTime;
 
     public String getId() {
