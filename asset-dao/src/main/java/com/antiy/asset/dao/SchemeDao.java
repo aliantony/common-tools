@@ -1,15 +1,14 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.entity.Scheme;
-import com.antiy.common.base.IBaseDao;
-
 import java.util.List;
 import java.util.Map;
 
+import com.antiy.asset.entity.Scheme;
+import com.antiy.asset.vo.query.AssetIDAndSchemeTypeQuery;
+import com.antiy.common.base.IBaseDao;
+
 /**
- * <p>
- * 方案表 Mapper 接口
- * </p>
+ * <p> 方案表 Mapper 接口 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02
@@ -21,6 +20,14 @@ public interface SchemeDao extends IBaseDao<Scheme> {
      * @param map
      * @return
      */
-    List<Scheme> findSchemeByAssetId(Map<String,Object> map);
+    List<Scheme> findSchemeByAssetIdAndStatus(Map<String, Object> map);
+
+    /**
+     * 通过资产ID和方案类型查询方案信息
+     *
+     * @param query
+     * @return
+     */
+    Scheme findSchemeByAssetIdAndType(AssetIDAndSchemeTypeQuery query);
 
 }

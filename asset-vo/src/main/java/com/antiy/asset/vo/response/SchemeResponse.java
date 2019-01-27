@@ -11,9 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class SchemeResponse {
-    @Encode
-    private String  id;
+public class SchemeResponse extends BaseResponse {
     /**
      * 资产id
      */
@@ -165,14 +163,6 @@ public class SchemeResponse {
 
     public void setMemo(String memo) {
         this.memo = memo;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getAssetId() {

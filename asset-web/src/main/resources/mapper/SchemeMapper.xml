@@ -323,14 +323,11 @@
             </if>
             and status = 1
         </trim>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
     </select>
 
     <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.SchemeQuery">
         select id,asset_id,type, result, content, expecte_start_time,
-        expecte_end_time,expecte_start_time,scheme_source,putinto_time,order_level,putinto_user_id, putinto_user,
+        expecte_end_time,scheme_source,putinto_time,order_level,putinto_user_id, putinto_user,
         file_info,memo from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
@@ -349,8 +346,8 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
-    <!--通过资产ID查询方案信息-->
-    <select id="findSchemeByAssetId" resultType="Scheme" parameterType="int">
+    <!--通过资产ID和状态查询方案信息-->
+    <select id="findSchemeByAssetIdAndStatus" resultType="Scheme" parameterType="int">
         select
             sch.file_info,
             sch.memo
@@ -361,5 +358,24 @@
         left join asset_operation_record aor
         on aor.scheme_id = sch.id
         where asset_id = #{assetId} and aor.origin_status = #{originStatus}
+    </select>
+
+    <!--通过资产ID查询方案信息-->
+    <select id="findSchemeByAssetIdAndType" resultType="Scheme" parameterType="com.antiy.asset.vo.query.AssetIDAndSchemeTypeQuery">
+        select
+            content,
+            file_info,
+            memo
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" assetId != null">
+                and asset_id = #{assetId}
+            </if>
+            <if test=" type != null">
+                and type = #{type}
+            </if>
+            and status = 1
+        </trim>
     </select>
 </mapper>
