@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import com.antiy.asset.vo.response.AssetCountColumnarResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -244,7 +245,7 @@ public class AssetController {
      * @return 状态名和该状态下资产数量的映射
      */
     @ApiOperation(value = "硬件资产按状态统计接口", notes = "无查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "assetCountResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountColumnarResponse.class, responseContainer = "assetCountResponse"), })
     @RequestMapping(value = "/count/status", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:asset:countAssetByStatus')")
     public ActionResponse countAssetByStatus() throws Exception {

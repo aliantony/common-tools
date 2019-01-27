@@ -5,10 +5,7 @@ import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
-import com.antiy.asset.vo.response.AssetCountResponse;
-import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
-import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
-import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -88,7 +85,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @return
      * @throws Exception
      */
-    AssetCountResponse countStatus() throws Exception;
+    AssetCountColumnarResponse countStatus() throws Exception;
 
     /**
      * 按第二级品类统计数量

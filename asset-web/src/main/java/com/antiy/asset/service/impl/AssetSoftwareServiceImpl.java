@@ -10,10 +10,7 @@ import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.templet.AssetSoftwareEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
 import com.antiy.asset.templet.ImportResult;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.*;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
@@ -107,10 +104,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 try {
                     AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
 
-//                    AssetSoftwareLicense license = BeanConvert.convertBean(request.getSoftwareLicenseRequest(),
-//                        AssetSoftwareLicense.class);
-                    AssetPortProtocol protocol = BeanConvert.convertBean (request.getAssetPortProtocolRequest (),
-                            AssetPortProtocol.class);
+                    // AssetSoftwareLicense license = BeanConvert.convertBean(request.getSoftwareLicenseRequest(),
+                    // AssetSoftwareLicense.class);
+                    AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
+                        AssetPortProtocol.class);
 
                     assetSoftware.setSoftwareStatus(AssetStatusEnum.ANALYZE.getCode());
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -118,17 +115,16 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetSoftware.setReportSource(2);
                     assetSoftwareDao.insert(assetSoftware);
                     String sid = String.valueOf(assetSoftware.getId());
-                    protocol.setAssetSoftId (sid);
+                    protocol.setAssetSoftId(sid);
                     protocol.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     protocol.setGmtCreate(System.currentTimeMillis());
-                    assetPortProtocolDao.insert (protocol);
-//                    license.setSoftwareId(assetSoftware.getId());
-//                    license.setCreateUser(LoginUserUtil.getLoginUser().getId());
-//                    license.setGmtCreate(System.currentTimeMillis());
-//                    license.setExpiryDate(assetSoftware.getServiceLife());
-//                    license.setBuyDate(assetSoftware.getBuyDate());
-//                    assetSoftwareLicenseDao.insert(license);
-
+                    assetPortProtocolDao.insert(protocol);
+                    // license.setSoftwareId(assetSoftware.getId());
+                    // license.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    // license.setGmtCreate(System.currentTimeMillis());
+                    // license.setExpiryDate(assetSoftware.getServiceLife());
+                    // license.setBuyDate(assetSoftware.getBuyDate());
+                    // assetSoftwareLicenseDao.insert(license);
 
                     // if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
                     // String[] assetIds = request.getAssetIds();
@@ -397,22 +393,35 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
         result.put("其他", sum);
         AssetCountResponse assetCountResponse = new AssetCountResponse();
-        assetCountResponse.setMap(result);
+        assetCountResponse.setMap(ArrayTypeUtil.ObjectArrayToEntryArray(result.entrySet().toArray()));
         return assetCountResponse;
     }
 
     @Override
-    public AssetCountResponse countStatus() throws Exception {
+    public AssetCountColumnarResponse countStatus() throws Exception {
         List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<Map<String, Long>> list = assetSoftwareDao.countStatus(ids);
         Map<String, Long> result = new HashMap();
-        for (Map map : list) {
-            AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode((Integer) map.get("key"));
-            result.put(assetStatusEnum == null ? "" : assetStatusEnum.getMsg(), (Long) map.get("value"));
+        for (SoftwareStatusEnum assetStatusEnum : SoftwareStatusEnum.values()) {
+            result.put(assetStatusEnum.getMsg(), 0L);
         }
-        AssetCountResponse assetCountResponse = new AssetCountResponse();
-        assetCountResponse.setMap(result);
-        return assetCountResponse;
+        for (Map map : list) {
+            SoftwareStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode((Integer) map.get("key"));
+            if (assetStatusEnum != null) {
+                result.put(assetStatusEnum.getMsg(), (Long) map.get("value"));
+            }
+        }
+        String keys[] = new String[SoftwareStatusEnum.values().length];
+        Long values[] = new Long[SoftwareStatusEnum.values().length];
+        int i = 0;
+        for (Map.Entry<String, Long> entry : result.entrySet()) {
+            keys[i] = entry.getKey();
+            values[i] = entry.getValue();
+        }
+        AssetCountColumnarResponse assetCountColumnarResponse = new AssetCountColumnarResponse();
+        assetCountColumnarResponse.setKeys(ArrayTypeUtil.ObjectArrayToStringArray(result.keySet().toArray()));
+        assetCountColumnarResponse.setValues(ArrayTypeUtil.ObjectArrayToLongArray(result.values().toArray()));
+        return assetCountColumnarResponse;
     }
 
     @Override
@@ -440,7 +449,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 result.put(a.getName(), sum);
             }
             AssetCountResponse assetCountResponse = new AssetCountResponse();
-            assetCountResponse.setMap(result);
+            assetCountResponse.setMap(ArrayTypeUtil.ObjectArrayToEntryArray(result.entrySet().toArray()));
             return assetCountResponse;
         }
         return null;
@@ -538,7 +547,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public String importExcel(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-        ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class, file, 0, 0);
+        ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class,
+            file, 0, 0);
         List<AssetSoftwareEntity> resultDataList = importResult.getDataList();
         int success = 0;
         // int repeat=0;
@@ -555,12 +565,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 builder.append("序号").append(entity.getOrderNumber()).append("软件版本");
                 continue;
             }
-            if (StringUtils.isBlank(entity.getFilePath ())) {
+            if (StringUtils.isBlank(entity.getFilePath())) {
                 error++;
                 builder.append("序号").append(entity.getOrderNumber()).append("文件地址为空");
                 continue;
             }
-            if (Objects.isNull (entity.getServiceLife ())&&entity.getAuthorization ()==1) {
+            if (Objects.isNull(entity.getServiceLife()) && entity.getAuthorization() == 1) {
                 error++;
                 builder.append("序号").append(entity.getOrderNumber()).append("到期时间为空");
                 continue;
@@ -568,19 +578,19 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
             AssetSoftware asset = new AssetSoftware();
 
-            if (entity.getAuthorization ()==2){
+            if (entity.getAuthorization() == 2) {
                 asset.setServiceLife(4070883661000L);
-            }else {
+            } else {
                 asset.setServiceLife(entity.getServiceLife());
             }
 
             asset.setGmtCreate(System.currentTimeMillis());
-            asset.setMd5Code (entity.getMD5 ());
+            asset.setMd5Code(entity.getMD5());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             // 可分析
             asset.setSoftwareStatus(2);
-            asset.setReleaseTime (entity.getReleaseTime ());
-            asset.setPath (entity.getFilePath ());
+            asset.setReleaseTime(entity.getReleaseTime());
+            asset.setPath(entity.getFilePath());
             asset.setName(entity.getName());
             asset.setVersion(entity.getVersion());
             asset.setManufacturer(entity.getManufacturer());
@@ -589,7 +599,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             asset.setBuyDate(entity.getBuyDate());
             asset.setAuthorization(entity.getAuthorization());
             asset.setMemo(entity.getDescription());
-            asset.setDescription (entity.getDescription());
+            asset.setDescription(entity.getDescription());
             asset.setCategoryModel(entity.getCategory());
             asset.setSize(entity.getSize());
 
@@ -718,7 +728,7 @@ class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportS
     protected void convert(AssetSoftwareResponse assetSoftware, ExportSoftwareEntity exportSoftwareEntity) {
         exportSoftwareEntity.setCategoryName(assetSoftware.getCategoryModelName());
         if (Objects.nonNull(assetSoftware.getSoftwareStatus())) {
-            AssetStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode(assetSoftware.getSoftwareStatus());
+            SoftwareStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode(assetSoftware.getSoftwareStatus());
             exportSoftwareEntity.setStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
         }
         if (Objects.nonNull(assetSoftware.getStringId())) {
@@ -730,7 +740,7 @@ class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportS
     }
 
     private String LongToDateString(Long datetime) {
-        if (Objects.nonNull(datetime)&&!Objects.equals(datetime, 0L)) {
+        if (Objects.nonNull(datetime) && !Objects.equals(datetime, 0L)) {
             return DateUtils.getDataString(new Date(datetime), DateUtils.WHOLE_FORMAT);
         }
         return "";

@@ -38,9 +38,9 @@ public enum SoftwareStatusEnum {
         return null;
     }
 
-    public static AssetStatusEnum getAssetByCode(Integer code) {
+    public static SoftwareStatusEnum getAssetByCode(Integer code) {
         if (code != null) {
-            for (AssetStatusEnum softwareType : AssetStatusEnum.values()) {
+            for (SoftwareStatusEnum softwareType : SoftwareStatusEnum.values()) {
                 if (softwareType.getCode().equals(code)) {
                     return softwareType;
                 }

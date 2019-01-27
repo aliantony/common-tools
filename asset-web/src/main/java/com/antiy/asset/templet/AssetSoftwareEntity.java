@@ -64,7 +64,7 @@ public class AssetSoftwareEntity {
     /**
      * MD5/SHA
      */
-    @ExcelField(value = "MD5", align = 1, title = "授权", type = 0)
+    @ExcelField(value = "MD5", align = 1, title = "MD5/SHA", type = 0)
     private String            MD5;
     /**
      * 购买时间

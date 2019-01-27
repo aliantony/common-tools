@@ -6,6 +6,7 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
+import com.antiy.asset.vo.response.AssetCountColumnarResponse;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -146,7 +147,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      * @throws Exception
      */
-    AssetCountResponse countStatus() throws Exception;
+    AssetCountColumnarResponse countStatus() throws Exception;
 
     /**
      * 按第二级品类统计数量
