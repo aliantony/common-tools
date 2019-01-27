@@ -3,12 +3,15 @@ package com.antiy.asset.service;
 import java.util.List;
 
 import com.antiy.asset.entity.Scheme;
+import com.antiy.asset.vo.query.AssetIDAndSchemeTypeQuery;
 import com.antiy.asset.vo.query.SchemeQuery;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.asset.vo.response.SchemeResponse;
+import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.base.QueryCondition;
 
 /**
  * <p> 方案表 服务类 </p>
@@ -53,9 +56,9 @@ public interface ISchemeService extends IBaseService<Scheme> {
     /**
      * 通过id查询方案
      *
-     * @param id
+     * @param query
      * @return
      */
-    SchemeResponse findSchemeById(String id) throws Exception;
+    SchemeResponse findSchemeByAssetIdAndType(AssetIDAndSchemeTypeQuery query) throws Exception;
 
 }
