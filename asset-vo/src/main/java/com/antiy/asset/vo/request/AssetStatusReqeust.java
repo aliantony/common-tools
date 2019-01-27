@@ -1,5 +1,10 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
 import com.antiy.common.base.BasicRequest;
@@ -7,12 +12,9 @@ import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * @auther: zhangbing
@@ -24,14 +26,14 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
 
     @ApiModelProperty(value = "方案信息")
     @Valid
-    private SchemeRequest         schemeRequest;
+    private SchemeRequest              schemeRequest;
 
     @ApiModelProperty(value = "工单信息")
     @Valid
-    private WorkOrderVO           workOrderVO;
+    private WorkOrderVO                workOrderVO;
 
     @ApiModelProperty(value = "流程引擎")
-    private ActivityHandleRequest activityHandleRequest;
+    private ActivityHandleRequest      activityHandleRequest;
 
     @ApiModelProperty(value = "资产变更流程信息")
     @Valid
@@ -42,11 +44,11 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("同意(true)/拒绝(false)")
     @NotNull(message = "同意或拒绝不能为空")
-    private Boolean               agree;
+    private Boolean                    agree;
 
     @ApiModelProperty(value = "是否为软件,false为硬件，true为软件，默认false", allowableValues = "false,true")
     @NotNull(message = "软件或者硬件判断条件不能为空")
-    private Boolean               software = false;
+    private Boolean                    software = false;
 
     /**
      * 资产主键
@@ -54,18 +56,19 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
     @Encode
     @ApiModelProperty("资产主键")
     @NotBlank(message = "资产主键不能为空")
-    private String                assetId;
+    private String                     assetId;
     /**
      * 资产主键
      */
     @ApiModelProperty("硬件资产当前状态")
-    private AssetStatusEnum       assetStatus;
+    private AssetStatusEnum            assetStatus;
 
     /**
      * 是否资产变更流程
      */
-    @ApiModelProperty("是否资产变更/退役流程")
-    private Boolean       changeFlow;
+    @ApiModelProperty("资产流程类别")
+    @NotNull(message = "资产流程类别不能为空")
+    private AssetFlowCategoryEnum      assetFlowCategoryEnum;
 
     public ManualStartActivityRequest getManualStartActivityRequest() {
         return manualStartActivityRequest;
@@ -75,16 +78,16 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
         this.manualStartActivityRequest = manualStartActivityRequest;
     }
 
-    public Boolean getChangeFlow() {
-        return changeFlow;
+    public AssetFlowCategoryEnum getAssetFlowCategoryEnum() {
+        return assetFlowCategoryEnum;
     }
 
-    public void setChangeFlow(Boolean changeFlow) {
-        this.changeFlow = changeFlow;
+    public void setAssetFlowCategoryEnum(AssetFlowCategoryEnum assetFlowCategoryEnum) {
+        this.assetFlowCategoryEnum = assetFlowCategoryEnum;
     }
 
     @ApiModelProperty(value = "软件资产当前状态")
-    private SoftwareStatusEnum    softwareStatusEnum;
+    private SoftwareStatusEnum softwareStatusEnum;
 
     public SoftwareStatusEnum getSoftwareStatusEnum() {
         return softwareStatusEnum;
@@ -165,17 +168,10 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
 
     @Override
     public String toString() {
-        return "AssetStatusReqeust{" +
-                "schemeRequest=" + schemeRequest +
-                ", workOrderVO=" + workOrderVO +
-                ", activityHandleRequest=" + activityHandleRequest +
-                ", manualStartActivityRequest=" + manualStartActivityRequest +
-                ", agree=" + agree +
-                ", software=" + software +
-                ", assetId='" + assetId + '\'' +
-                ", assetStatus=" + assetStatus +
-                ", changeFlow=" + changeFlow +
-                ", softwareStatusEnum=" + softwareStatusEnum +
-                '}';
+        return "AssetStatusReqeust{" + "schemeRequest=" + schemeRequest + ", workOrderVO=" + workOrderVO
+               + ", activityHandleRequest=" + activityHandleRequest + ", manualStartActivityRequest="
+               + manualStartActivityRequest + ", agree=" + agree + ", software=" + software + ", assetId='" + assetId
+               + '\'' + ", assetStatus=" + assetStatus + ", assetFlowCategoryEnum=" + assetFlowCategoryEnum
+               + ", softwareStatusEnum=" + softwareStatusEnum + '}';
     }
 }

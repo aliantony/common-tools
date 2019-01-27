@@ -1,15 +1,14 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * <p> AssetHardDiskRequest 请求对象 </p>
@@ -48,7 +47,7 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      * 序列号
      */
     @ApiModelProperty("序列号")
-    @Size(message = "序列号长度不能超过32位", max = 32)
+    @Size(message = "硬盘序列号长度不能超过32位", max = 32)
     private String  serial;
     /**
      * 接口类型:1SATA、2IDE、3ATA、4SCSI、5光纤通道
