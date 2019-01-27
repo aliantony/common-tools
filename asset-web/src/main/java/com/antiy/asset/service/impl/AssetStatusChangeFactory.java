@@ -1,5 +1,6 @@
 package com.antiy.asset.service.impl;
 
+import com.antiy.common.exception.BusinessException;
 import org.apache.commons.lang.StringUtils;
 
 import com.antiy.common.utils.SpringUtil;
@@ -16,7 +17,7 @@ public class AssetStatusChangeFactory {
             statusChangeProcess = (AbstractAssetStatusChangeProcessImpl) SpringUtil
                 .getBean(StringUtils.uncapitalize(c.getSimpleName()));
         } catch (Exception e) {
-            // 异常处理
+            throw new BusinessException("获取示例失败");
         }
         return (T) statusChangeProcess;
     }
