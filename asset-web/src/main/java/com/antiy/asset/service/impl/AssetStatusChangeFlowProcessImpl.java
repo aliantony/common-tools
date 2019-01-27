@@ -53,7 +53,7 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
             assetDao.update(asset);
         }
 
-        // 更新软件资产状态
+        // 更新资产状态
         return ActionResponse.success();
     }
 }
