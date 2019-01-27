@@ -7,10 +7,7 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
-import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetOperationTableEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetUserQuery;
@@ -1428,9 +1425,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(asset.getStringId());
+                    assetOperationRecord.setOriginStatus(asset.getStatus());
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
-                    assetOperationRecord.setContent("资产变更");
+                    assetOperationRecord.setContent(AssetEventEnum.ASSET_MODIFY.getName());
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
                     assetOperationRecord.setGmtCreate(System.currentTimeMillis());
@@ -1444,14 +1442,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         });
         // 状态变更
-        /* AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeProcessImpl.class)
-         * .changeStatus(assetStatusReqeust); */
+        AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
+        assetStatusReqeust.setAssetStatus(AssetStatusEnum.NET_IN);
+        assetStatusReqeust.setAssetId(asset.getStringId());
+        assetStatusReqeust.setAgree(true);
+        assetStatusReqeust.setSoftware(false);
+        assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.HARDWARE_CHANGE);
+        assetStatusReqeust.setManualStartActivityRequest(assetOuterRequest.getActivityRequest());
+        AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeProcessImpl.class).changeStatus(assetStatusReqeust);
         // TODO 下发智甲
 
         // TODO 通知工作流
-        ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
-        manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
-        activityClient.manualStartProcess(manualStartActivityRequest);
+//        ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
+//        manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
+//        activityClient.manualStartProcess(manualStartActivityRequest);
         return assetCount;
     }
 
