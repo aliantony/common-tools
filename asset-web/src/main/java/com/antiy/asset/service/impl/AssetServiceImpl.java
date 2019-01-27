@@ -304,8 +304,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         });
-        // 启动流程
-        // ActionResponse actionResponse = activityClient.manualStartProcess (activityRequest);
+
         if (num != null && num == -3) {
             ActionResponse.fail(RespBasicCode.PARAMETER_ERROR, "编号重复");
         }
@@ -1513,6 +1512,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setOperationSystem(entity.getOperationSystem());
             asset.setContactTel(entity.getTelephone());
             asset.setEmail(entity.getEmail());
+            asset.setCategoryModel ("4");
+
             assetDao.insert(asset);
             String id = asset.getStringId();
 
@@ -1734,6 +1735,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setMemo(networkDeviceEntity.getMemo());
             asset.setContactTel(networkDeviceEntity.getTelephone());
             asset.setEmail(networkDeviceEntity.getEmail());
+            asset.setCategoryModel ("5");
             assetDao.insert(asset);
             assetNetworkEquipment.setAssetId(asset.getStringId());
             assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
@@ -1862,6 +1864,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setMemo(entity.getMemo());
             asset.setContactTel(entity.getTelephone());
             asset.setEmail(entity.getEmail());
+            asset.setCategoryModel ("7");
             assetDao.insert(asset);
             assetSafetyEquipment.setAssetId(asset.getStringId());
             assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
@@ -1971,6 +1974,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setMemo(entity.getMemo());
             asset.setContactTel(entity.getTelephone());
             asset.setEmail(entity.getEmail());
+            asset.setCategoryModel ("6");
             assetDao.insert(asset);
             assetSafetyEquipment.setAssetId(asset.getStringId());
             assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
@@ -2077,6 +2081,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setMemo(entity.getMemo());
             asset.setContactTel(entity.getTelephone());
             asset.setEmail(entity.getEmail());
+            asset.setCategoryModel ("8");
             assetDao.insert(asset);
             // 记录资产操作流程
             AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
