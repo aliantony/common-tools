@@ -127,13 +127,13 @@ public class BeanConvert {
             public Object convert(Object o, Class aClass, Object o1) {
                 System.out.println(o1);
 
-                if (o != null && rule.contains(o1)&&!"".equals (o)) {
+                if (o != null && rule.contains(o1) && !"".equals(o)) {
                     if (String.class.equals(aClass)) {
                         return String.valueOf(o);
                     } else if (Integer.class.equals(aClass)) {
                         return Integer.parseInt(o.toString());
                     }
-                } else {
+                } else if (o == null || "".equals(o)) {
                     return null;
                 }
                 return o;

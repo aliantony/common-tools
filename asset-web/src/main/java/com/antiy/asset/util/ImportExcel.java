@@ -278,9 +278,10 @@ public class ImportExcel {
      * @return
      */
     public <T> List<T> getDataList(Class<T> clazz) throws IllegalAccessException, InstantiationException,
-                                                  NoSuchMethodException, InvocationTargetException {
+                                                   NoSuchMethodException, InvocationTargetException {
         initAnnotationList(clazz);
         List<T> dataList = new ArrayList<>();
+        boolean flag = true;
         for (int i = getDataRownum(); i < lastRowNum; i++) {
             // 数据行
             Row dataRow = this.getRow(i);
@@ -325,15 +326,21 @@ public class ImportExcel {
                                     || !"0".equals(val.toString().split("\\.")[1])) {
                                     failNums++;
                                     sb.append("数据格式错误,第").append(dataRow.getRowNum()).append("行，第").append(column)
-                                        .append(column).append("列").append(ef.title()).append(val).append("\n");
-                                    log.error("数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title()
-                                              + " " + val);
+                                        .append("列").append(ef.title()).append(val).append("\n");
+                                    log.error("数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title() + " "
+                                              + val);
+                                    flag = false;
                                     break;
                                 }
                             }
                             val = (int) (Double.valueOf(val.toString()).doubleValue());
                         } catch (Exception e) {
-                            log.error(e.getMessage() + val);
+                            failNums++;
+                            flag = false;
+                            sb.append("数据格式错误,第").append(dataRow.getRowNum()).append("行，第").append(column).append("列")
+                                .append(ef.title()).append(val).append("\n");
+                            log.error("数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title() + " " + val);
+                            break;
                         }
                     } else if (valType == Long.class) {
                         // val = Long.valueOf(val.toString()).longValue();
@@ -341,10 +348,12 @@ public class ImportExcel {
                             Date date = DateUtil.getJavaDate(Double.valueOf(val.toString()).doubleValue());
                             val = date.getTime();
                         } catch (NumberFormatException e) {
+                            flag = false;
                             failNums++;
-                            sb.append("数据格式错误,第").append(dataRow.getRowNum()).append("行，第").append(column)
-                                .append(column).append("列").append(ef.title()).append(val).append("\n");
-                            log.error("数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列：" + ef.title() + " " + val);
+                            sb.append("数据格式错误,第").append(dataRow.getRowNum()).append("行，第").append(column).append("列")
+                                .append(ef.title()).append(val).append("\n");
+                            log.error(
+                                "数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列：" + ef.title() + " " + val);
                             break;
                         }
                     } else if (valType == Double.class) {
@@ -365,8 +374,11 @@ public class ImportExcel {
                     }
                 }
             }
-            dataList.add(data);
-            successNums++;
+            if (flag) {
+                dataList.add(data);
+                successNums++;
+            }
+            flag = true;
         }
         totalNums = successNums + failNums;
         return dataList;
