@@ -24,7 +24,6 @@ public class ManualStartActivityRequest {
      * 业务Id
      */
     @ApiModelProperty(value = "业务Id")
-    @NotBlank(message = "业务Id不能为空")
     private String businessId;
 
     /**
