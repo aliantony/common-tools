@@ -1,16 +1,14 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -198,6 +196,12 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("首次入网时间")
     private Long                    firstEnterNett;
+    /**
+     * 描述
+     */
+    @ApiModelProperty("描述")
+    @Size(message = "描述不能超过128位", max = 128)
+    private String            describle;
 
     public Long getFirstEnterNett() {
         return firstEnterNett;
@@ -448,5 +452,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
                + responsibleUserId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
                + ", parentId='" + parentId + '\'' + ", tags='" + tags + '\'' + ", serviceLife=" + serviceLife
                + ", buyDate=" + buyDate + ", warranty=" + warranty + ", admittanceStatus=" + admittanceStatus + '}';
+    }
+
+    public String getDescrible() {
+        return describle;
+    }
+
+    public void setDescrible(String describle) {
+        this.describle = describle;
     }
 }

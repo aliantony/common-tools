@@ -1,19 +1,17 @@
 package com.antiy.asset.vo.request;
 
-import java.util.Arrays;
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.Arrays;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -98,6 +96,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 软件描述
      */
     @ApiModelProperty(value = "软件描述")
+    @Size(message = "描述不能超过128位", max = 128)
     private String                      description;
     /**
      * 资产组
