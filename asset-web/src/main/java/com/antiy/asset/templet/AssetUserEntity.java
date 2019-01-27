@@ -6,11 +6,6 @@ public class AssetUserEntity {
 
 
     /**
-     * 序号
-     */
-    @ExcelField(value = "order_number", align = 1, title = "序号" )
-    private Integer orderNumber;
-    /**
      * 姓名
      */
     @ExcelField(value = "name", align = 1, title = "姓名", type = 0)
@@ -122,11 +117,4 @@ public class AssetUserEntity {
         this.address = address;
     }
 
-    public Integer getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
-    }
 }
