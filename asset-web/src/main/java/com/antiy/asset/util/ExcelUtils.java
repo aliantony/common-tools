@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.common.exception.BusinessException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,7 +37,7 @@ public class ExcelUtils {
         try {
             new ExportExcel(title, clazz).exportToClient(response, fileName, dataList);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new BusinessException("文件导出异常");
         }
 
     }
@@ -57,7 +58,7 @@ public class ExcelUtils {
         try {
             new ExportExcel(title, headerList).exportToClient(response, fileName, dataList);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new BusinessException("文件导出异常");
         }
     }
 
@@ -74,7 +75,7 @@ public class ExcelUtils {
         try {
             new ExportExcel(title, clazz).exportToFile(fileInfo + fileName, dataList);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new BusinessException("文件导出异常");
         }
 
     }
@@ -96,15 +97,15 @@ public class ExcelUtils {
             ir.setDataList(ie.getDataList(clazz));
             ir.setMsg(ie.getResultMsg());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new BusinessException("文件导入异常");
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            throw new BusinessException("文件导入异常");
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            throw new BusinessException("文件导入异常");
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            throw new BusinessException("文件导入异常");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new BusinessException("文件导入异常");
         }
         return ir;
     }
@@ -125,15 +126,15 @@ public class ExcelUtils {
             ir.setDataList(ie.getDataList(clazz));
             ir.setMsg(ie.getResultMsg());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new BusinessException("文件导入异常");
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            throw new BusinessException("文件导入异常");
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            throw new BusinessException("文件导入异常");
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            throw new BusinessException("文件导入异常");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new BusinessException("文件导入异常");
         }
         return ir;
     }
@@ -152,7 +153,7 @@ public class ExcelUtils {
         try {
             new ExportExcel(title, clazz,2).exportTempleteToClient(response, filename);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new BusinessException("模板导出异常");
         }
     }
 
@@ -168,7 +169,7 @@ public class ExcelUtils {
         try {
             new ExportExcel(title, clazz, 2).exportTempleteToFile(fileInfo + filename);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new BusinessException("模板导出异常");
         }
     }
 }
