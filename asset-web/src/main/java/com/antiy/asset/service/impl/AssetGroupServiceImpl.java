@@ -65,6 +65,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             assetGroupRelation.setCreateUserName(LoginUserUtil.getLoginUser().getUsername());
             assetGroupRelation.setAssetGroupId(request.getId());
             assetGroupRelation.setAssetId(assetId);
+            assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
             assetGroupRelationDao.insert(assetGroupRelation);
         }
         int result = assetGroupDao.insert(assetGroup);

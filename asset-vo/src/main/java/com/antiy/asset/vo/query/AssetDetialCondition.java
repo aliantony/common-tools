@@ -5,81 +5,81 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetDetialCondition extends QueryCondition {
     /**
-     * 是否需要查询cpu,1:是，0否
+     * 是否需要查询cpu,true:是，false否
      */
-    @ApiModelProperty("是否需要查询cpu,1:是，0否")
-    private Integer isNeedCpu;
+    @ApiModelProperty("是否需要查询cpu,true:是，false否")
+    private Boolean isNeedCpu;
     /**
-     * 是否需要查询网卡,1:是，0否
+     * 是否需要查询网卡,true:是，false否
      */
-    @ApiModelProperty("是否需要查询网卡,1:是，0否")
-    private Integer isNeedNetwork;
+    @ApiModelProperty("是否需要查询网卡,true:是，false否")
+    private Boolean isNeedNetwork;
     /**
-     * 是否需要查询内存,1:是，0否
+     * 是否需要查询内存,true:是，false否
      */
-    @ApiModelProperty("是否需要查询内存,1:是，0否")
-    private Integer isNeedMemory;
+    @ApiModelProperty("是否需要查询内存,true:是，false否")
+    private Boolean isNeedMemory;
     /**
-     * 是否需要查询主板,1:是，0否
+     * 是否需要查询主板,true:是，false否
      */
-    @ApiModelProperty("是否需要查询主板,1:是，0否")
-    private Integer isNeedMainboard;
+    @ApiModelProperty("是否需要查询主板,true:是，false否")
+    private Boolean isNeedMainboard;
     /**
-     * 是否需要查询硬盘,1:是，0否
+     * 是否需要查询硬盘,true:是，false否
      */
-    @ApiModelProperty("是否需要查询硬盘,1:是，0否")
-    private Integer isNeedHarddisk;
+    @ApiModelProperty("是否需要查询硬盘,true:是，false否")
+    private Boolean isNeedHarddisk;
     /**
-     * 是否需要查询cpu,1:是，0否
+     * 是否需要查询cpu,true:是，false否
      */
-    @ApiModelProperty("是否需要查询cpu,1:是，0否")
-    private Integer isNeedSoftware;
+    @ApiModelProperty("是否需要查询cpu,true:是，false否")
+    private Boolean isNeedSoftware;
 
-    public Integer getIsNeedCpu() {
-        return isNeedCpu == null ? 0 : isNeedCpu;
+    public Boolean getIsNeedCpu() {
+        return isNeedCpu == null ? false : true;
     }
 
-    public void setIsNeedCpu(Integer isNeedCpu) {
-        this.isNeedCpu = isNeedCpu;
+    public void setIsNeedCpu(Boolean needCpu) {
+        isNeedCpu = needCpu;
     }
 
-    public Integer getIsNeedNetwork() {
-        return isNeedNetwork == null ? 0 : isNeedNetwork;
+    public Boolean getIsNeedNetwork() {
+        return isNeedNetwork == null ? false : true;
     }
 
-    public void setIsNeedNetwork(Integer isNeedNetwork) {
-        this.isNeedNetwork = isNeedNetwork;
+    public void setIsNeedNetwork(Boolean needNetwork) {
+        isNeedNetwork = needNetwork;
     }
 
-    public Integer getIsNeedMemory() {
-        return isNeedMemory == null ? 0 : isNeedMemory;
+    public Boolean getIsNeedMemory() {
+        return isNeedMemory == null ? false : true;
     }
 
-    public void setIsNeedMemory(Integer isNeedMemory) {
-        this.isNeedMemory = isNeedMemory;
+    public void setIsNeedMemory(Boolean needMemory) {
+        isNeedMemory = needMemory;
     }
 
-    public Integer getIsNeedMainboard() {
-        return isNeedMainboard == null ? 0 : isNeedMainboard;
+    public Boolean getIsNeedMainboard() {
+        return isNeedMainboard == null ? false : true;
     }
 
-    public void setIsNeedMainboard(Integer isNeedMainboard) {
-        this.isNeedMainboard = isNeedMainboard;
+    public void setIsNeedMainboard(Boolean needMainboard) {
+        isNeedMainboard = needMainboard;
     }
 
-    public Integer getIsNeedHarddisk() {
-        return isNeedHarddisk == null ? 0 : isNeedHarddisk;
+    public Boolean getIsNeedHarddisk() {
+        return isNeedHarddisk == null ? false : true;
     }
 
-    public void setIsNeedHarddisk(Integer isNeedHarddisk) {
-        this.isNeedHarddisk = isNeedHarddisk;
+    public void setIsNeedHarddisk(Boolean needHarddisk) {
+        isNeedHarddisk = needHarddisk;
     }
 
-    public Integer getIsNeedSoftware() {
-        return isNeedSoftware == null ? 0 : isNeedSoftware;
+    public Boolean getIsNeedSoftware() {
+        return isNeedSoftware == null ? false : true;
     }
 
-    public void setIsNeedSoftware(Integer isNeedSoftware) {
-        this.isNeedSoftware = isNeedSoftware;
+    public void setIsNeedSoftware(Boolean needSoftware) {
+        isNeedSoftware = needSoftware;
     }
 }

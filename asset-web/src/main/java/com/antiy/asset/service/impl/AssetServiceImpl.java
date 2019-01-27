@@ -1135,26 +1135,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOuterResponse.setAsset(assetResponse);
 
         // CPU
-        if (condition.getIsNeedCpu() == 1) {
+        if (condition.getIsNeedCpu()) {
             assetOuterResponse.setAssetCpu(BeanConvert.convert(assetCpuDao.getByWhere(param), AssetCpuResponse.class));
         }
         // 网卡
-        if (condition.getIsNeedNetwork() == 1) {
+        if (condition.getIsNeedNetwork()) {
             assetOuterResponse.setAssetNetworkCard(
                 BeanConvert.convert(assetNetworkCardDao.getByWhere(param), AssetNetworkCardResponse.class));
         }
         // 硬盘
-        if (condition.getIsNeedHarddisk() == 1) {
+        if (condition.getIsNeedHarddisk()) {
             assetOuterResponse
                 .setAssetHardDisk(BeanConvert.convert(assetHardDiskDao.getByWhere(param), AssetHardDiskResponse.class));
         }
         // 主板
-        if (condition.getIsNeedMainboard() == 1) {
+        if (condition.getIsNeedMainboard()) {
             assetOuterResponse.setAssetMainborad(
                 BeanConvert.convert(assetMainboradDao.getByWhere(param), AssetMainboradResponse.class));
         }
         // 内存
-        if (condition.getIsNeedMemory() == 1) {
+        if (condition.getIsNeedMemory()) {
             assetOuterResponse
                 .setAssetMemory(BeanConvert.convert(assetMemoryDao.getByWhere(param), AssetMemoryResponse.class));
         }
@@ -1176,7 +1176,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOuterResponse.setAssetStorageMedium(
                 BeanConvert.convertBean(assetStorageMediumList.get(0), AssetStorageMediumResponse.class));
         }
-        if (condition.getIsNeedSoftware() == 1) {
+        if (condition.getIsNeedSoftware()) {
             // 软件列表
             List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
                 .getSoftByAssetId(DataTypeUtils.stringToInteger(condition.getPrimaryKey()));

@@ -5,11 +5,13 @@ import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.core.Converter;
+import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Bean转换
@@ -125,16 +127,14 @@ public class BeanConvert {
         copier.copy(o, o2, new Converter() {
             @Override
             public Object convert(Object o, Class aClass, Object o1) {
-                System.out.println(o1);
-
-                if (o != null && rule.contains(o1) && !"".equals(o)) {
+                if (Objects.isNull(o) || StringUtils.isBlank(o.toString())) {
+                    return null;
+                } else if ( rule.contains(o1)) {
                     if (String.class.equals(aClass)) {
                         return String.valueOf(o);
                     } else if (Integer.class.equals(aClass)) {
                         return Integer.parseInt(o.toString());
                     }
-                } else if (o == null || "".equals(o)) {
-                    return null;
                 }
                 return o;
             }
