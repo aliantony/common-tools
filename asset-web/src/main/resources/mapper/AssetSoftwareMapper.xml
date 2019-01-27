@@ -369,13 +369,13 @@
     <!--资产条件查询-->
     <sql id="Multiple_Query">
 
-        <if test="softwareStatusList != null and softwareStatusList.length > 0">
+        <if test="softwareStatusList != null and softwareStatusList.size() > 0">
             and software_status in
             <foreach item="softwareStatus" collection="softwareStatusList" open="(" separator="," close=")">
                 #{softwareStatus}
             </foreach>
         </if>
-        <if test=" categoryModels != null and categoryModels.length > 0">
+        <if test=" categoryModels != null and categoryModels.size() > 0">
             and category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
