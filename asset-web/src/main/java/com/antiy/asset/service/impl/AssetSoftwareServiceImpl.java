@@ -731,7 +731,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportSoftwareEntity> {
     @Override
     protected void convert(AssetSoftwareResponse assetSoftware, ExportSoftwareEntity exportSoftwareEntity) {
-        exportSoftwareEntity.setCategoryName(assetSoftware.getCategoryModelName());
         if (Objects.nonNull(assetSoftware.getSoftwareStatus())) {
             SoftwareStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode(assetSoftware.getSoftwareStatus());
             exportSoftwareEntity.setStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
@@ -739,7 +738,6 @@ class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportS
         if (Objects.nonNull(assetSoftware.getStringId())) {
             exportSoftwareEntity.setId(Integer.parseInt(assetSoftware.getStringId()));
         }
-        exportSoftwareEntity.setCategoryName(assetSoftware.getCategoryModelName());
         exportSoftwareEntity.setReleaseTime(LongToDateString(assetSoftware.getReleaseTime()));
         super.convert(assetSoftware, exportSoftwareEntity);
     }
