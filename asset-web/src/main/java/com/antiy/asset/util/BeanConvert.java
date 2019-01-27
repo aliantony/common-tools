@@ -1,19 +1,15 @@
 package com.antiy.asset.util;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
+import com.antiy.common.encoder.Encode;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.cglib.core.Converter;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
-import com.antiy.common.encoder.Encode;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.cglib.beans.BeanCopier;
-import org.springframework.cglib.core.Converter;
 
 /**
  * Bean转换
@@ -130,12 +126,15 @@ public class BeanConvert {
             @Override
             public Object convert(Object o, Class aClass, Object o1) {
                 System.out.println(o1);
-                if (o != null && rule.contains(o1)) {
+
+                if (o != null && rule.contains(o1)&&!"".equals (o)) {
                     if (String.class.equals(aClass)) {
                         return String.valueOf(o);
                     } else if (Integer.class.equals(aClass)) {
                         return Integer.parseInt(o.toString());
                     }
+                } else {
+                    return null;
                 }
                 return o;
             }
