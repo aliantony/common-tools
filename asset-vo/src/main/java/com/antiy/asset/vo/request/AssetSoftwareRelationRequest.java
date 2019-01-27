@@ -5,9 +5,8 @@ import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetSoftwareRelationRequest 请求对象 </p>
@@ -61,19 +60,16 @@ public class AssetSoftwareRelationRequest extends BasicRequest implements Object
      * 安装方式1人工2自动
      */
     @ApiModelProperty("安装方式")
-//    @NotNull
     private Integer installType;
     /**
      * 安装状态0失败、1成功，2安装中
      */
-    @ApiModelProperty("安装方式")
-//    @NotNull
+    @ApiModelProperty("安装状态")
     private Integer installStatus;
     /**
      * 安装时间
      */
     @ApiModelProperty("安装时间")
-    @NotNull
     private Integer installTime;
 
     public String getId() {

@@ -1,10 +1,12 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BasicRequest;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 
 import javax.validation.Valid;
-import java.util.List;
+
+import com.antiy.common.base.BasicRequest;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -18,7 +20,7 @@ public class AssetOuterRequest extends BasicRequest {
     /**
      * 资产主表信息
      */
-    @Valid()
+    @Valid
     @ApiModelProperty(value = "资产主表信息")
     private AssetRequest                       asset;
 
@@ -26,52 +28,63 @@ public class AssetOuterRequest extends BasicRequest {
      * 主板
      */
     @ApiModelProperty(value = "主板")
+    @Valid
     private List<AssetMainboradRequest>        mainboard;
 
     /**
      * 内存
      */
     @ApiModelProperty(value = "内存")
+    @Valid
     private List<AssetMemoryRequest>           memory;
 
     /**
      * 硬盘
      */
     @ApiModelProperty(value = "硬盘")
+    @Valid
     private List<AssetHardDiskRequest>         hardDisk;
 
     /**
      * cpu
      */
     @ApiModelProperty(value = "cpu")
+    @Valid
     private List<AssetCpuRequest>              cpu;
     /**
      * 网卡
      */
     @ApiModelProperty(value = "网卡")
+    @Valid
     private List<AssetNetworkCardRequest>      networkCard;
     /**
      * 网络设备
      */
     @ApiModelProperty(value = "网络设备")
+    @Valid
     private AssetNetworkEquipmentRequest       networkEquipment;
     /**
      * 安全设备
      */
     @ApiModelProperty(value = "安全设备")
+    @Valid
     private AssetSafetyEquipmentRequest        safetyEquipment;
     /**
      * 存储介质
      */
     @ApiModelProperty(value = "存储介质")
+    @Valid
     private AssetStorageMediumRequest          assetStorageMedium;
     /**
      * 资产软件关系表
      */
     @ApiModelProperty(value = "资产软件关系表")
+    @Valid
     private List<AssetSoftwareRelationRequest> assetSoftwareRelationList;
+
     @ApiModelProperty(value = "流程数据")
-    ManualStartActivityRequest activityRequest;
+    @Valid
+    ManualStartActivityRequest                 activityRequest;
 
     public ManualStartActivityRequest getActivityRequest() {
         return activityRequest;
@@ -163,17 +176,10 @@ public class AssetOuterRequest extends BasicRequest {
 
     @Override
     public String toString() {
-        return "AssetOuterRequest{" +
-                "asset=" + asset +
-                ", mainboard=" + mainboard.toString() +
-                ", memory=" + memory.toString() +
-                ", hardDisk=" + hardDisk.toString() +
-                ", cpu=" + cpu.toString() +
-                ", networkCard=" + networkCard.toString() +
-                ", networkEquipment=" + networkEquipment.toString() +
-                ", safetyEquipment=" + safetyEquipment.toString() +
-                ", assetStorageMedium=" + assetStorageMedium.toString() +
-                ", assetSoftwareRelationList=" + assetSoftwareRelationList.toString() +
-                '}';
+        return "AssetOuterRequest{" + "asset=" + asset + ", mainboard=" + mainboard.toString() + ", memory="
+               + memory.toString() + ", hardDisk=" + hardDisk.toString() + ", cpu=" + cpu.toString() + ", networkCard="
+               + networkCard.toString() + ", networkEquipment=" + networkEquipment.toString() + ", safetyEquipment="
+               + safetyEquipment.toString() + ", assetStorageMedium=" + assetStorageMedium.toString()
+               + ", assetSoftwareRelationList=" + assetSoftwareRelationList.toString() + '}';
     }
 }

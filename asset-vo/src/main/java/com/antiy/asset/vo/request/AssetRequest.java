@@ -132,13 +132,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 固件版本
      */
     @ApiModelProperty("固件版本")
-    @Size(message = "固件版本不能超过11位",max = 11)
+    @Size(message = "固件版本不能超过11位", max = 11)
     private String                  firmwareVersion;
     /**
      * 设备uuid
      */
     @ApiModelProperty("设备uuid")
-    @Size(message = "设备uuid不能超过64位",max = 64)
+    @Size(message = "设备uuid不能超过64位", max = 64)
     private String                  uuid;
     /**
      * 责任人主键
@@ -176,6 +176,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 使用到期时间
      */
     @ApiModelProperty("使用到期时间")
+    @NotNull(message = "使用到期时间不能为空")
     private Long                    serviceLife;
     /**
      * 制造日期

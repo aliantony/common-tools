@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.NotNull;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -38,6 +40,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * 是否无线:0-否,1-是
      */
     @ApiModelProperty("是否无线:0-否,1-是")
+    @NotNull(message = "是否五险不能为空")
     private Boolean isWireless;
     /**
      * 内网IP
@@ -191,21 +194,11 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
 
     @Override
     public String toString() {
-        return "AssetNetworkEquipmentRequest{" +
-                "id='" + id + '\'' +
-                ", assetId='" + assetId + '\'' +
-                ", interfaceSize=" + interfaceSize +
-                ", isWireless=" + isWireless +
-                ", innerIp='" + innerIp + '\'' +
-                ", outerIp='" + outerIp + '\'' +
-                ", macAddress='" + macAddress + '\'' +
-                ", subnetMask='" + subnetMask + '\'' +
-                ", expectBandwidth=" + expectBandwidth +
-                ", register=" + register +
-                ", dramSize=" + dramSize +
-                ", flashSize=" + flashSize +
-                ", ncrmSize=" + ncrmSize +
-                '}';
+        return "AssetNetworkEquipmentRequest{" + "id='" + id + '\'' + ", assetId='" + assetId + '\''
+               + ", interfaceSize=" + interfaceSize + ", isWireless=" + isWireless + ", innerIp='" + innerIp + '\''
+               + ", outerIp='" + outerIp + '\'' + ", macAddress='" + macAddress + '\'' + ", subnetMask='" + subnetMask
+               + '\'' + ", expectBandwidth=" + expectBandwidth + ", register=" + register + ", dramSize=" + dramSize
+               + ", flashSize=" + flashSize + ", ncrmSize=" + ncrmSize + '}';
     }
 
     @Override
