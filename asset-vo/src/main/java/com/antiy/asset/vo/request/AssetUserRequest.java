@@ -7,6 +7,9 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * <p> AssetUserRequest 请求对象 </p>
  *
@@ -24,10 +27,11 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
     /**
      * 姓名
      */
+    @NotBlank(message = "用户姓名不能为空")
     @ApiModelProperty("姓名")
     private String name;
     /**
-     * 姓名
+     * 备注
      */
     @ApiModelProperty("备注")
     private String memo;
@@ -36,6 +40,7 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("部门主键")
     @Encode
+    @NotBlank(message = "部门主键不能为空")
     private String departmentId;
     /**
      * 部门名
