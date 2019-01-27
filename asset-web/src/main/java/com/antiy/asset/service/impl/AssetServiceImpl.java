@@ -1418,6 +1418,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return count;
                 } catch (Exception e) {
+                    transactionStatus.setRollbackOnly();
                     logger.error("修改资产失败", e);
                 }
                 return 0;
@@ -1431,7 +1432,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // TODO 通知工作流
         ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
         manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
-        // activityClient.manualStartProcess(manualStartActivityRequest);
+        activityClient.manualStartProcess(manualStartActivityRequest);
         return assetCount;
     }
 
