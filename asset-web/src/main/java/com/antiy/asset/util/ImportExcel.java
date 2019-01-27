@@ -295,8 +295,17 @@ public class ImportExcel {
             int column = 0;
             for (Object[] os : annotationList) {
                 Object val = this.getCellValue(dataRow, column++);
+                ExcelField ef = (ExcelField) os[0];
+                if (val == null && ef.required()) {
+                    failNums++;
+                    sb.append("数据不能为空,第").append(dataRow.getRowNum()).append("行，第").append(column)
+                            .append("列").append(ef.title()).append("\n");
+                    log.error("数据不能为空,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title() + " "
+                            + val);
+                    flag = false;
+                    break;
+                }
                 if (val != null) {
-                    ExcelField ef = (ExcelField) os[0];
                     // 是码表数据
                     if (StringUtils.isNotBlank(ef.dictType())) {
                         // 转换

@@ -163,20 +163,26 @@
         <if test=" departmentId != null">
             AND department_id = #{departmentId }
         </if>
+        <if test=" departmentIds != null">
+            AND department_id in
+            <foreach collection="departmentIds" item="item" index="" open="(" close=")" separator="," >
+                #{item}
+            </foreach>
+        </if>
         <if test=" email != null">
-            AND email = #{email }
+            AND email   like concat('%',  #{email },'%')
         </if>
         <if test=" qq != null">
-            AND qq = #{qq }
+            AND qq  like concat('%', #{qq },'%')
         </if>
         <if test=" weixin != null">
-            AND weixin = #{weixin }
+            AND weixin like concat('%', #{weixin },'%')
         </if>
         <if test=" mobile != null">
             AND mobile like concat('%', #{mobile },'%')
         </if>
         <if test=" address != null">
-            AND address = #{address }
+            AND address like concat('%',  #{address },'%')
         </if>
     </sql>
     <sql id="Page_List">
@@ -295,6 +301,7 @@
     <!--查询资产表的使用者信息-->
     <select id="findUserInAsset" resultType="AssetUser" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
+        distinct
             asset.responsible_user_id,
             au.name,
             au.id
@@ -359,17 +366,21 @@
             AND a.name =#{exportName}
         </if>
         <if test=" email != null">
-            AND a.email = #{email }
+            AND a.email  like concat('%',  #{email },'%')
         </if>
         <if test=" qq != null">
-            AND a.qq = #{qq }
+            AND a.qq  like concat('%',  #{qq },'%')
         </if>
         <if test=" weixin != null">
-            AND a.weixin = #{weixin }
+            AND a.weixin  like concat('%',  #{weixin },'%')
         </if>
         <if test=" mobile != null">
             AND a.mobile like concat('%', #{mobile },'%')
         </if>
+        <if test=" address != null">
+            AND address like concat('%',  #{address },'%')
+        </if>
+        and a.status = 1
         <include refid="Page_List"></include>
     </select>
 </mapper>
