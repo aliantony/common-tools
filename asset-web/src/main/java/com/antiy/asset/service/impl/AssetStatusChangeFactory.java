@@ -17,7 +17,7 @@ public class AssetStatusChangeFactory {
             statusChangeProcess = (AbstractAssetStatusChangeProcessImpl) SpringUtil
                 .getBean(StringUtils.uncapitalize(c.getSimpleName()));
         } catch (Exception e) {
-            throw new BusinessException("获取示例失败");
+            throw new BusinessException("获取实例失败");
         }
         return (T) statusChangeProcess;
     }
