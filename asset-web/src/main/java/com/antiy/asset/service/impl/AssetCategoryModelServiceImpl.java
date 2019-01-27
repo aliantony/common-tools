@@ -9,6 +9,8 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -39,8 +41,8 @@ import com.antiy.common.utils.LogUtils;
  * @since 2019-01-02
  */
 @Service
-public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel>
-                                           implements IAssetCategoryModelService {
+public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel> implements
+                                                                                      IAssetCategoryModelService {
 
     @Resource
     private AssetCategoryModelDao   assetCategoryModelDao;
@@ -52,6 +54,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     private CategoryResponseConvert responseConverter;
     @Resource
     private CategoryRequestConvert  categoryRequestConvert;
+    @Resource
+    private AesEncoder              aesEncoder;
 
     /**
      *
@@ -75,10 +79,11 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             // 写入业务日志
             LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_INSERT.getName(),
                 AssetEventEnum.ASSET_CATEGORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}",
-                assetCategoryModel.toString());
+            LogUtils
+                .info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}", assetCategoryModel.toString());
         }
-        return ActionResponse.success(assetCategoryModel.getId());
+        return ActionResponse.success(aesEncoder.encode(assetCategoryModel.getStringId(), LoginUserUtil.getLoginUser()
+            .getUsername()));
 
     }
 
@@ -147,7 +152,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query)
+                                                                                                           throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetCategoryModel(query), query.getCurrentPage(),
             this.findListAssetCategoryModel(query));
     }
@@ -184,8 +190,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         query.setPageSize(-1);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         NodeUtilsConverter nodeConverter = new NodeUtilsConverter();
-        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter
-            .columnToNode(assetCategoryModels, AssetCategoryModelNodeResponse.class);
+        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(
+            assetCategoryModels, AssetCategoryModelNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
 
@@ -257,8 +263,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 @Component
 class CategoryResponseConvert extends BaseConverter<AssetCategoryModel, AssetCategoryModelResponse> {
     @Override
-    protected void convert(AssetCategoryModel assetCategoryModel,
-                           AssetCategoryModelResponse assetCategoryModelResponse) {
+    protected void convert(AssetCategoryModel assetCategoryModel, AssetCategoryModelResponse assetCategoryModelResponse) {
         assetCategoryModelResponse.setParentId(Objects.toString(assetCategoryModel.getParentId()));
         super.convert(assetCategoryModel, assetCategoryModelResponse);
     }
