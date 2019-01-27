@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import com.antiy.common.base.BasicRequest;
+import com.antiy.common.base.BaseRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetComputerRequest extends BasicRequest implements ObjectValidator {
+public class AssetComputerRequest extends BaseRequest implements ObjectValidator {
     @Valid
     @ApiModelProperty(value = "资产信息")
     private AssetRequest                            asset;

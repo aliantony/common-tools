@@ -1,13 +1,15 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetMemoryRequest 请求对象 </p>
@@ -28,25 +30,26 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      * 硬盘品牌
      */
     @ApiModelProperty("内存品牌")
-    @NotBlank
+    @NotBlank(message = "内存品牌不能为空")
+    @Size(message = "内存品牌长度不能超过64位", max = 64)
     private String  brand;
     /**
      * 内存类型：1未知，2-ddr2,3-ddr3,4-ddr4
      */
-    @NotNull
+    @NotNull(message = "内存类型不能为空")
     @ApiModelProperty("内存类型：1未知，2-ddr2,3-ddr3,4-ddr4")
     private Integer transferType;
     /**
      * 内存容量
      */
     @ApiModelProperty("内存容量")
-    @NotNull
+    @NotNull(message = "内存容量不能为空")
     private Integer capacity;
     /**
      * 内存主频(MHz)
      */
     @ApiModelProperty("内存主频(MHz)")
-    @NotNull
+    @NotNull(message = "内存主频不能为空")
     private Double  frequency;
     /**
      * 插槽类型:1-SDRAM,2-SIMM,3-DIMM,4-RIMM
@@ -178,20 +181,10 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
 
     @Override
     public String toString() {
-        return "AssetMemoryRequest{" +
-                "assetId='" + assetId + '\'' +
-                ", brand='" + brand + '\'' +
-                ", transferType=" + transferType +
-                ", capacity=" + capacity +
-                ", frequency=" + frequency +
-                ", slotType=" + slotType +
-                ", isHeatsink=" + isHeatsink +
-                ", stitch=" + stitch +
-                ", buyDate=" + buyDate +
-                ", warrantyDate=" + warrantyDate +
-                ", telephone='" + telephone + '\'' +
-                ", memo='" + memo + '\'' +
-                '}';
+        return "AssetMemoryRequest{" + "assetId='" + assetId + '\'' + ", brand='" + brand + '\'' + ", transferType="
+               + transferType + ", capacity=" + capacity + ", frequency=" + frequency + ", slotType=" + slotType
+               + ", isHeatsink=" + isHeatsink + ", stitch=" + stitch + ", buyDate=" + buyDate + ", warrantyDate="
+               + warrantyDate + ", telephone='" + telephone + '\'' + ", memo='" + memo + '\'' + '}';
     }
 
     public Integer getTransferType() {

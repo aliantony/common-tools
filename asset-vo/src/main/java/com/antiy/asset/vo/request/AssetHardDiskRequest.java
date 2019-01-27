@@ -2,6 +2,7 @@ package com.antiy.asset.vo.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
@@ -29,17 +30,20 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      * 硬盘品牌
      */
     @ApiModelProperty("硬盘品牌")
-    @NotBlank
+    @NotBlank(message = "硬盘品牌不能为空")
+    @Size(message = "硬盘品牌长度不能超过32位", max = 32)
     private String  brand;
     /**
      * 硬盘型号
      */
     @ApiModelProperty("硬盘型号")
+    @Size(message = "硬盘品牌长度不能超过32位", max = 32)
     private String  model;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
+    @Size(message = "序列号长度不能超过32位", max = 32)
     private String  serial;
     /**
      * 接口类型:1SATA、2IDE、3ATA、4SCSI、5光纤通道
@@ -50,13 +54,13 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      * 容量 (MB)
      */
     @ApiModelProperty("容量 (MB)")
-    @NotNull
+    @NotNull(message = "硬盘容量不能为空")
     private Integer capacity;
     /**
      * 磁盘类型,1 HDD,2,SSD
      */
     @ApiModelProperty("磁盘类型,1 HDD,2,SSD")
-    @NotNull
+    @NotNull(message = "磁盘类型不能为空")
     private Integer diskType;
     /**
      * 购买日期
@@ -173,18 +177,9 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
 
     @Override
     public String toString() {
-        return "AssetHardDiskRequest{" +
-                "assetId='" + assetId + '\'' +
-                ", brand='" + brand + '\'' +
-                ", model='" + model + '\'' +
-                ", serial='" + serial + '\'' +
-                ", interfaceType=" + interfaceType +
-                ", capacity=" + capacity +
-                ", diskType=" + diskType +
-                ", buyDate=" + buyDate +
-                ", useTimes=" + useTimes +
-                ", cumulativeHour=" + cumulativeHour +
-                ", memo='" + memo + '\'' +
-                '}';
+        return "AssetHardDiskRequest{" + "assetId='" + assetId + '\'' + ", brand='" + brand + '\'' + ", model='" + model
+               + '\'' + ", serial='" + serial + '\'' + ", interfaceType=" + interfaceType + ", capacity=" + capacity
+               + ", diskType=" + diskType + ", buyDate=" + buyDate + ", useTimes=" + useTimes + ", cumulativeHour="
+               + cumulativeHour + ", memo='" + memo + '\'' + '}';
     }
 }
