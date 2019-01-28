@@ -22,7 +22,10 @@ import java.util.Arrays;
 @ApiModel(value = "软件请求")
 public class AssetSoftwareRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty(value = "登记流程数据")
-    ManualStartActivityRequest          activityRequest;
+    private ManualStartActivityRequest          activityRequest;
+    @ApiModelProperty(value = "流程处理")
+    @Valid
+    private ActivityHandleRequest       request;
     @Valid
     @ApiModelProperty(value = "软件license")
     private AssetSoftwareLicenseRequest softwareLicenseRequest;
@@ -151,10 +154,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     @ApiModelProperty(value = "硬件资产和软件资产关联表Id")
     @Encode
     private String                      assetSoftwareRelationId;
-
-    @ApiModelProperty(value = "流程处理")
-    @Valid
-    private ActivityHandleRequest       request;
 
     public ActivityHandleRequest getRequest() {
         return request;
@@ -328,7 +327,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     @Override
     public void validate() throws RequestParamValidateException {
-
     }
 
     public ManualStartActivityRequest getActivityRequest() {

@@ -13,7 +13,6 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "流程处理请求")
 public class ActivityHandleRequest {
     @ApiModelProperty(value = "流程表单数据,JSON串")
-    @NotBlank(message = "流程表单数据不能为空")
     private String formData;
 
     @ApiModelProperty(value = "任务Id")
