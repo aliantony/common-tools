@@ -120,18 +120,4 @@ public class AssetGroupController {
     public ActionResponse<List<SelectResponse>> queryGroupInfo() throws Exception {
         return ActionResponse.success(iAssetGroupService.queryGroupInfo());
     }
-
-    /**
-     * 通过资产组ID查询资产组详情
-     * @author zhangyajun
-     *
-     * @return 资产组名称集合
-     */
-//    @ApiOperation(value = "通过资产组ID查询资产组详情", notes = "无查询条件")
-//    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupDetailResponse.class, responseContainer = "actionResponse"), })
-//    @RequestMapping(value = "/query/assetByAssetGroupId", method = RequestMethod.GET)
-//    @PreAuthorize(value = "hasAuthority('asset:group:queryAssetByGroupId')")
-//    public ActionResponse<PageResult<AssetGroupResponse>> queryAssetByGroupId(@ApiParam(value = "query") AssetGroupQuery query) throws Exception {
-//        return ActionResponse.success(iAssetGroupService.findPageAssetGroup(query));
-//    }
 }
