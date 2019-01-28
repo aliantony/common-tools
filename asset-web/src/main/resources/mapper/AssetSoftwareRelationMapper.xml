@@ -319,7 +319,6 @@
             asoft.software_status as softwarestatus,
             asoft.authorization,
             asoft.report_source as reportsource,
-            asoft.port,
             asoft.language,
             asoft.release_time as releasetime,
             asoft.publisher,

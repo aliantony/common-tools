@@ -146,8 +146,6 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
     private List<AssetOperationRecordBarResponse> getAssetOperationRecordBarResponses(HashMap<String, Object> map,
                                                                                       AssetOperationRecordQuery assetOperationRecordQuery) {
-        assetOperationRecordQuery.setOriginStatus((Integer) map.get("originStatus"));
-
         List<AssetOperationRecordBarPO> assetOperationRecordBarPOList = assetOperationRecordDao
             .findAssetOperationRecordBarByAssetId(assetOperationRecordQuery);
 
