@@ -1375,9 +1375,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
                         assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
                         assetNetworkEquipment.setGmtModified(System.currentTimeMillis());
-                        LogHandle.log(assetNetworkEquipment, AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getName(),
-                            AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                        LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getName() + " {}",
+                        LogHandle.log(assetNetworkEquipment, AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getName(),
+                            AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getName() + " {}",
                             assetNetworkEquipment.toString());
                         assetNetworkEquipmentDao.update(assetNetworkEquipment);
                     }
