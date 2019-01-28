@@ -1238,6 +1238,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     asset.setAssetGroup(stringBuffer.toString());
                     asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                    asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                    asset.setGmtModified(System.currentTimeMillis());
                     // 1. 更新资产主表
                     LogHandle.log(asset, AssetEventEnum.ASSET_MODIFY.getName(), AssetEventEnum.ASSET_MODIFY.getStatus(),
                         ModuleEnum.ASSET.getCode());
