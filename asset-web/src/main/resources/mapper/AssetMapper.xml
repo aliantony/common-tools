@@ -815,7 +815,7 @@
         b.uuid
         FROM
         asset_network_card a
-        LEFT JOIN asset b ON a.asset_id = b.id
+        LEFT JOIN asset b ON a.asset_id = b.id AND b.status = 1
         WHERE
         ( a.ip_address, a.mac_address ) IN
         <foreach collection="list" open="(" close=")" index="index" item="item" separator=",">
@@ -824,7 +824,6 @@
             </foreach>
         </foreach>
         AND a.status = 1
-        AND b.status = 1
     </select>
 
     <select id="findTopologyList" resultMap="topologyResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
@@ -921,12 +920,9 @@
         group_concat( b.mac_address ) as mac
         from
         asset a
-        left join asset_network_card b on a.id = b.asset_id
-        left join asset_category_model c on a.category_model = c.id
-        left join asset_user d on a.responsible_user_id = d.id
-        where a.status = 1
-        and b.status = 1
-        and c.status = 1
+        left join asset_network_card b on a.id = b.asset_id and b.status = 1
+        left join asset_category_model c on a.category_model = c.id and c.status = 1
+        left join asset_user d on a.responsible_user_id = d.id and d.status = 1
         group by a.id
         order by a.gmt_create desc) asset
         <trim prefix="WHERE" prefixOverrides="AND|OR">
