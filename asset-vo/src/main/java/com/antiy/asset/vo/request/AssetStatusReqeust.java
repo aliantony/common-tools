@@ -155,8 +155,11 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
 
     @Override
     public void validate() throws RequestParamValidateException {
+
+        if (activityHandleRequest == null && manualStartActivityRequest == null) {
+            ParamterExceptionUtils.isTrue(false, "请求流程不能为空");
+        }
         if (!software) {
-            ParamterExceptionUtils.isNull(activityHandleRequest, "流程不能为空");
             ParamterExceptionUtils.isNull(assetStatus, "硬件资产状态不能为空");
         }
 
