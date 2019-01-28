@@ -260,9 +260,6 @@
             <if test=" targetType != null">
                 AND aor.target_type = #{targetType.code}
             </if>
-            <if test=" originStatus != null">
-                AND aor.origin_status = #{originStatus}
-            </if>
         </trim>
         ORDER BY aor.id
     </select>
