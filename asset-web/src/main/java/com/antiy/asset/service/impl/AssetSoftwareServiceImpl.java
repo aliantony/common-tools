@@ -149,6 +149,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(sid);
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
+                    assetOperationRecord.setOriginStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.ANALYZE.getCode());
                     assetOperationRecord.setContent("登记软件资产");
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -171,6 +172,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             // 启动流程
             ManualStartActivityRequest activityRequest = request.getActivityRequest();
             activityRequest.setBusinessId(String.valueOf(num));
+            activityRequest.setAssignee(DataTypeUtils.integerToString(LoginUserUtil.getLoginUser().getId()));
             activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
             ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
             // 如果流程引擎为空,直接返回错误信息
