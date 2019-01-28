@@ -898,6 +898,7 @@
         a.operation_system,
         a.system_bit,
         a.location,
+        a.house_location,
         a.latitude,
         a.longitude,
         a.firmware_version,
