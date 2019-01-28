@@ -1,5 +1,6 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,7 +46,7 @@ public class AssetStatusJumpController {
             return AssetStatusChangeFactory.getStatusChangeProcess(SoftWareStatusChangeProcessImpl.class)
                 .changeStatus(assetStatusReqeust);
         } else {
-            return AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeProcessImpl.class)
+            return AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeFlowProcessImpl.class)
                 .changeStatus(assetStatusReqeust);
         }
     }
