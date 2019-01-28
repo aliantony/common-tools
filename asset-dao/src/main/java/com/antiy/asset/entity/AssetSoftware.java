@@ -1,7 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
-import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -27,7 +27,7 @@ public class AssetSoftware extends BaseEntity {
     /**
      * 软件品类
      */
-    private String categoryModel;
+    private String  categoryModel;
     /**
      * 软件品类名字
      */
@@ -83,9 +83,9 @@ public class AssetSoftware extends BaseEntity {
      */
     private Integer reportSource;
     /**
-     * 端口
+     * 协议
      */
-    private String  port;
+    private String  protocol;
     /**
      * 语言
      */
@@ -289,12 +289,12 @@ public class AssetSoftware extends BaseEntity {
         this.reportSource = reportSource;
     }
 
-    public String getPort() {
-        return port;
+    public String getProtocol() {
+        return protocol;
     }
 
-    public void setPort(String port) {
-        this.port = port;
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
     }
 
     public String getLanguage() {
@@ -368,22 +368,6 @@ public class AssetSoftware extends BaseEntity {
     public void setStatus(Integer status) {
         this.status = status;
     }
-
-    @Override
-    public String toString() {
-        return "AssetSoftware{" + "md5Code='" + md5Code + '\'' + ", size=" + size + ", operationSystem='"
-               + operationSystem + '\'' + ", categoryModel=" + categoryModel + ", categoryModelName='"
-               + categoryModelName + '\'' + ", name='" + name + '\'' + ", serial='" + serial + '\''
-               + ", uploadSoftwareName='" + uploadSoftwareName + '\'' + ", path='" + path + '\'' + ", version='"
-               + version + '\'' + ", manufacturer='" + manufacturer + '\'' + ", description='" + description + '\''
-               + ", assetGroup='" + assetGroup + '\'' + ", softwareLabel=" + softwareLabel + ", softwareStatus="
-               + softwareStatus + ", authorization=" + authorization + ", reportSource=" + reportSource + ", port='"
-               + port + '\'' + ", language='" + language + '\'' + ", releaseTime=" + releaseTime + ", publisher='"
-               + publisher + '\'' + ", gmtCreate=" + gmtCreate + ", memo='" + memo + '\'' + ", gmtModified="
-               + gmtModified + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status
-               + ", buyDate=" + buyDate + ", serviceLife=" + serviceLife + ", assetCount=" + assetCount + '}';
-    }
-
     public String getSerial() {
         return serial;
     }

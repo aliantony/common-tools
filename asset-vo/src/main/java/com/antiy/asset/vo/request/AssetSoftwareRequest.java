@@ -1,17 +1,19 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.Arrays;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Arrays;
+
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -135,8 +137,8 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     /**
      * 端口
      */
-    @ApiModelProperty(value = "端口")
-    private String                      port;
+    @ApiModelProperty(value = "协议")
+    private String                      protocol;
     /**
      * 语言
      */
@@ -294,12 +296,12 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.reportSource = reportSource;
     }
 
-    public String getPort() {
-        return port;
+    public String getProtocol() {
+        return protocol;
     }
 
-    public void setPort(String port) {
-        this.port = port;
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
     }
 
     public String getLanguage() {
@@ -397,16 +399,35 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     @Override
     public String toString() {
-        return "AssetSoftwareRequest{" + "activityRequest=" + activityRequest + ", softwareLicenseRequest="
-               + softwareLicenseRequest + ", assetPortProtocolRequest=" + assetPortProtocolRequest + ", assetIds="
-               + Arrays.toString(assetIds) + ", md5Code='" + md5Code + '\'' + ", id='" + id + '\'' + ", size=" + size
-               + ", operationSystem='" + operationSystem + '\'' + ", categoryModel='" + categoryModel + '\''
-               + ", name='" + name + '\'' + ", uploadSoftwareName='" + uploadSoftwareName + '\'' + ", path='" + path
-               + '\'' + ", version='" + version + '\'' + ", manufacturer='" + manufacturer + '\'' + ", description='"
-               + description + '\'' + ", assetGroup='" + assetGroup + '\'' + ", serial='" + serial + '\''
-               + ", softwareLabel='" + softwareLabel + '\'' + ", softwareStatus=" + softwareStatus + ", authorization="
-               + authorization + ", reportSource=" + reportSource + ", port='" + port + '\'' + ", language='" + language
-               + '\'' + ", releaseTime=" + releaseTime + ", publisher='" + publisher + '\'' + ", memo='" + memo + '\''
-               + ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\'' + ", request=" + request + '}';
+        return "AssetSoftwareRequest{" +
+                "activityRequest=" + activityRequest +
+                ", softwareLicenseRequest=" + softwareLicenseRequest +
+                ", assetPortProtocolRequest=" + assetPortProtocolRequest +
+                ", assetIds=" + Arrays.toString(assetIds) +
+                ", md5Code='" + md5Code + '\'' +
+                ", id='" + id + '\'' +
+                ", size=" + size +
+                ", operationSystem='" + operationSystem + '\'' +
+                ", categoryModel='" + categoryModel + '\'' +
+                ", name='" + name + '\'' +
+                ", uploadSoftwareName='" + uploadSoftwareName + '\'' +
+                ", path='" + path + '\'' +
+                ", version='" + version + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", description='" + description + '\'' +
+                ", assetGroup='" + assetGroup + '\'' +
+                ", serial='" + serial + '\'' +
+                ", softwareLabel='" + softwareLabel + '\'' +
+                ", softwareStatus=" + softwareStatus +
+                ", authorization=" + authorization +
+                ", reportSource=" + reportSource +
+                ", protocol='" + protocol + '\'' +
+                ", language='" + language + '\'' +
+                ", releaseTime=" + releaseTime +
+                ", publisher='" + publisher + '\'' +
+                ", memo='" + memo + '\'' +
+                ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\'' +
+                ", request=" + request +
+                '}';
     }
 }

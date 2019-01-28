@@ -925,6 +925,8 @@
         left join asset_category_model c on a.category_model = c.id
         left join asset_user d on a.responsible_user_id = d.id
         where a.status = 1
+        and b.status = 1
+        and c.status = 1
         group by a.id
         order by a.gmt_create desc) asset
         <trim prefix="WHERE" prefixOverrides="AND|OR">

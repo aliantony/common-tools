@@ -70,6 +70,9 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
     @NotNull(message = "资产流程类别不能为空")
     private AssetFlowCategoryEnum      assetFlowCategoryEnum;
 
+    @ApiModelProperty(value = "软件资产当前状态")
+    private SoftwareStatusEnum         softwareStatusEnum;
+
     public ManualStartActivityRequest getManualStartActivityRequest() {
         return manualStartActivityRequest;
     }
@@ -85,9 +88,6 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
     public void setAssetFlowCategoryEnum(AssetFlowCategoryEnum assetFlowCategoryEnum) {
         this.assetFlowCategoryEnum = assetFlowCategoryEnum;
     }
-
-    @ApiModelProperty(value = "软件资产当前状态")
-    private SoftwareStatusEnum softwareStatusEnum;
 
     public SoftwareStatusEnum getSoftwareStatusEnum() {
         return softwareStatusEnum;

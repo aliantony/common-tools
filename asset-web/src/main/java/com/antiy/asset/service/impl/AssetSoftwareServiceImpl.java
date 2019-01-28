@@ -202,6 +202,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetSoftware.setId(DataTypeUtils.stringToInteger(request.getId()));
                     int assetSoftwareCount = assetSoftwareDao.update(assetSoftware);
 
+                    /**
                     // 2.更新license表
                     if (null != request.getSoftwareLicenseRequest()
                         && StringUtils.isNotBlank(request.getSoftwareLicenseRequest().getId())) {
@@ -251,6 +252,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                         }
                     }
+                     */
                     // 写入业务日志
                     LogHandle.log(assetSoftware.toString(), AssetEventEnum.SOFT_UPDATE.getName(),
                         AssetEventEnum.SOFT_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());

@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -27,7 +28,7 @@ public class AssetSoftwareResponse extends BaseResponse {
      */
     @ApiModelProperty("软件品类")
     @Encode
-    private String categoryModel;
+    private String  categoryModel;
 
     /**
      * 软件品类名字
@@ -143,6 +144,44 @@ public class AssetSoftwareResponse extends BaseResponse {
      */
     @ApiModelProperty(value = "软件许可密钥")
     private String  licenseSecretKey;
+
+    @ApiModelProperty(value = "序列号")
+    private String  serial;
+    /**
+     * MD5/SHA
+     */
+    @ApiModelProperty(value = "md5码")
+    private String  md5Code;
+
+    @ApiModelProperty(value = "软件到期时间")
+    /**
+     * 到期时间
+     */
+    private Long    serviceLife;
+
+    public Long getServiceLife() {
+        return serviceLife;
+    }
+
+    public void setServiceLife(Long serviceLife) {
+        this.serviceLife = serviceLife;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public String getMd5Code() {
+        return md5Code;
+    }
+
+    public void setMd5Code(String md5Code) {
+        this.md5Code = md5Code;
+    }
 
     public String getLicenseSecretKey() {
         return licenseSecretKey;
