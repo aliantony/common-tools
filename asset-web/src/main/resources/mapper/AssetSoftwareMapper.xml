@@ -382,6 +382,10 @@
                 #{item}
             </foreach>
         </if>
+
+        <if test="name != null">
+            and name like CONCAT('%',#{name},'%')
+        </if>
         <if test=" softwareStatus != null">
             and software_status = #{softwareStatus}
         </if>
