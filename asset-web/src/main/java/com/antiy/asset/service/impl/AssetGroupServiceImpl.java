@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.exception.BusinessException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -82,10 +83,20 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     public Integer updateAssetGroup(AssetGroupRequest request) throws Exception {
         AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
         assetGroup.setId(DataTypeUtils.stringToInteger(request.getId()));
+        assetGroup.setId(DataTypeUtils.stringToInteger(request.getId()));
         Integer[] assetIdArr = DataTypeUtils.stringArrayToIntegerArray(request.getAssetIds());
+
+        List<String> nameList = assetGroupRelationDao.findAssetNameByAssetGroupId(DataTypeUtils.stringToInteger(request.getId()));
+
+        if (nameList != null && nameList.size() > 0){
+            throw new BusinessException("该资产组还包资产数据,不能进行删除");
+        }
+
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
 
         Integer delResult = assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
+
+
         if (!Objects.equals(0, delResult)) {
             // 写入业务日志
             LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(),
