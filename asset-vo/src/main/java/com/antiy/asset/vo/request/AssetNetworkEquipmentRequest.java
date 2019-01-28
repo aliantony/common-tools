@@ -99,6 +99,32 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      */
     @ApiModelProperty("固件版本")
     private String  firmwareVersion;
+    /**
+     * cpu版本
+     */
+    @ApiModelProperty("cpu版本")
+    private String  cpuVersion;
+    /**
+     * cpu大小
+     */
+    @ApiModelProperty("cpu大小")
+    private Integer cpuSize;
+
+    public String getCpuVersion() {
+        return cpuVersion;
+    }
+
+    public void setCpuVersion(String cpuVersion) {
+        this.cpuVersion = cpuVersion;
+    }
+
+    public Integer getCpuSize() {
+        return cpuSize;
+    }
+
+    public void setCpuSize(Integer cpuSize) {
+        this.cpuSize = cpuSize;
+    }
 
     public String getFirmwareVersion() {
         return firmwareVersion;
