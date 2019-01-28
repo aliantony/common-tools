@@ -1233,7 +1233,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetGroupRelationDao.deleteByAssetId(asset.getId());
                     assetGroupRelationDao.insertBatch(assetGroupRelations);
                     asset.setAssetGroup(stringBuffer.toString());
-
+                    asset.setStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     // 1. 更新资产主表
                     LogHandle.log(asset, AssetEventEnum.ASSET_MODIFY.getName(), AssetEventEnum.ASSET_MODIFY.getStatus(),
                         ModuleEnum.ASSET.getCode());
@@ -1450,7 +1450,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return 0;
             }
         });
-        // 状态变更
+       /* // 状态变更
         AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
         assetStatusReqeust.setAssetStatus(AssetStatusEnum.NET_IN);
         assetStatusReqeust.setAssetId(asset.getStringId());
@@ -1459,13 +1459,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.HARDWARE_CHANGE);
         assetStatusReqeust.setManualStartActivityRequest(assetOuterRequest.getActivityRequest());
         AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeProcessImpl.class)
-            .changeStatus(assetStatusReqeust);
+            .changeStatus(assetStatusReqeust);*/
         // TODO 下发智甲
 
         // TODO 通知工作流
-        // ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
-        // manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
-        // activityClient.manualStartProcess(manualStartActivityRequest);
+         ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
+         manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
+         activityClient.manualStartProcess(manualStartActivityRequest);
         return assetCount;
     }
 
