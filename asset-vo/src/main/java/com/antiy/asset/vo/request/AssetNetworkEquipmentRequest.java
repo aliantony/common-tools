@@ -92,6 +92,19 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      */
     @ApiModelProperty("NCRM大小")
     private Float   ncrmSize;
+    /**
+     * ios
+     */
+    @ApiModelProperty("ios")
+    private String  ios;
+
+    public String getIos() {
+        return ios;
+    }
+
+    public void setIos(String ios) {
+        this.ios = ios;
+    }
 
     public Integer getPorteSize() {
         return porteSize;
