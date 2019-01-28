@@ -90,7 +90,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             assetStatusReqeust.getAssetFlowCategoryEnum().getCode().equals(AssetFlowCategoryEnum.HARDWARE_RETIRE.getCode())) {
                 // 启动流程
                 actionResponse = activityClient.manualStartProcess(assetStatusReqeust.getManualStartActivityRequest());
-            }else if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode().equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode()) || AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode().equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())){
+            }else if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode().equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode()) || AssetFlowCategoryEnum.HARDWARE_CHANGE.getCode().equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())){
                 // 完成流程
                 actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
             }
