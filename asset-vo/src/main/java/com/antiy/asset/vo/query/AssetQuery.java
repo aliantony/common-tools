@@ -131,7 +131,6 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @Encode
     @ApiModelProperty(value = "软件资产Id")
     private String        softwareId;
-
     /**
      * 资产准入状态
      */
@@ -145,11 +144,12 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 首次入网时间
      */
     @ApiModelProperty("首次入网时间")
-    private Long              firstEnterNett;
+    private Long          firstEnterNett;
     @ApiModelProperty("开始时间")
     private Long          beginTime;
     @ApiModelProperty("结束时间")
     private Long          endTime;
+
     public Long getFirstEnterNett() {
         return firstEnterNett;
     }
