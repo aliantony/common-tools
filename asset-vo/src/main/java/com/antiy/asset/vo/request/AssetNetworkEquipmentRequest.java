@@ -97,6 +97,19 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      */
     @ApiModelProperty("ios")
     private String  ios;
+    /**
+     * 固件版本
+     */
+    @ApiModelProperty("固件版本")
+    private String  firmwareVersion;
+
+    public String getFirmwareVersion() {
+        return firmwareVersion;
+    }
+
+    public void setFirmwareVersion(String firmwareVersion) {
+        this.firmwareVersion = firmwareVersion;
+    }
 
     public String getIos() {
         return ios;
