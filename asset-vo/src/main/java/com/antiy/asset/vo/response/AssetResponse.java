@@ -1,9 +1,9 @@
 package com.antiy.asset.vo.response;
 
-import java.util.List;
-
 import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -169,6 +169,16 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("行政区划主键")
     @Encode
     private String            areaId;
+    /**
+     * 物理位置
+     */
+    @ApiModelProperty("物理位置")
+    private String            location;
+    /**
+     * 机房位置
+     */
+    @ApiModelProperty("机房位置")
+    private String            houseLocation;
 
     public String getAreaId() {
         return areaId;
@@ -408,5 +418,21 @@ public class AssetResponse extends BaseResponse {
 
     public void setFirstEnterNett(Long firstEnterNett) {
         this.firstEnterNett = firstEnterNett;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getHouseLocation() {
+        return houseLocation;
+    }
+
+    public void setHouseLocation(String houseLocation) {
+        this.houseLocation = houseLocation;
     }
 }
