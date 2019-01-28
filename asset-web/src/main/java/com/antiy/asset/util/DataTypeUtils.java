@@ -26,6 +26,17 @@ public class DataTypeUtils {
         return result;
     }
 
+    public static String integerTostring(Integer value) {
+        String result;
+        try {
+            result = String.valueOf(value);
+        } catch (NumberFormatException e) {
+            logger.error("整形转换为字符串出错", e);
+            throw new BusinessException("整形转换为字符串出错");
+        }
+        return result;
+    }
+
     public static Integer[] stringArrayToIntegerArray(String[] values) {
         Integer[] result = new Integer[values.length];
         for (int i = 0; i < values.length; i++) {
