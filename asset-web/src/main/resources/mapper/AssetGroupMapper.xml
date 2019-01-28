@@ -183,6 +183,7 @@
         from
         <include refid="Table_Name"></include>
         where id = #{id}
+        and status = 1
     </select>
 
 
