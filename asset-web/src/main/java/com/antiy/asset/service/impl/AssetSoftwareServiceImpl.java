@@ -27,6 +27,7 @@ import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
@@ -63,6 +64,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Resource
     private AssetSoftwareDao                                                 assetSoftwareDao;
+    @Resource
+    private AesEncoder aesEncoder;
     @Resource
     private AssetSoftwareRelationDao                                         assetSoftwareRelationDao;
     @Resource
@@ -182,7 +185,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             }
         }
 
-        return ActionResponse.success(num);
+        return ActionResponse.success(aesEncoder.encode(num.toString(),LoginUserUtil.getLoginUser().getUsername()));
 
     }
 
