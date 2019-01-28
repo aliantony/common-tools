@@ -93,6 +93,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private static final Logger                       logger = LogUtils.get(AssetServiceImpl.class);
 
     @Override
+
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
 
         String aid = "";
