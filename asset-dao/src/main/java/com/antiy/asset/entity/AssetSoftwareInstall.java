@@ -1,5 +1,6 @@
 package com.antiy.asset.entity;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 public class AssetSoftwareInstall {
@@ -75,6 +76,7 @@ public class AssetSoftwareInstall {
      * 责任人主键
      */
     @ApiModelProperty("责任人主键")
+    @Encode
     private String userId;
     /**
      * 责任人

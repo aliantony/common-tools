@@ -87,7 +87,7 @@ public class AssetSoftwareRelationController {
     /**
      * 通过ID查询
      *
-     * @param id
+     * @param queryCondition
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")

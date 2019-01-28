@@ -750,6 +750,8 @@
         c.serial,
         c.category_model as categoryModel,
         c.manufacturer,
+        a.install_time,
+        a.install_status,
         case
         when a.install_type is not null then a.install_type
         else c.install_type
@@ -760,6 +762,7 @@
         left join asset c on c.id = a.asset_id and c.status = 1
         left join asset_user d on c.responsible_user_id = d.id and d.status = 1
         where 1 = 1
+        and c.id is not null
         and a.software_id = #{id}
         and a.install_status in (0, 3)
         <if test=" multipleQuery != null">
@@ -773,7 +776,6 @@
         <if test=" assetId != null">
             and a.asset_id = #{assetId}
         </if>
-        and c.status = 1
         group by
         a.id
     </select>
