@@ -86,7 +86,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         // 3.调用流程引擎
         if (null != assetStatusReqeust.getActivityHandleRequest()) {
             ActionResponse actionResponse = null;
-            if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode().equals(AssetFlowCategoryEnum.HARDWARE_CHANGE.getCode()) ||
+            if (
             assetStatusReqeust.getAssetFlowCategoryEnum().getCode().equals(AssetFlowCategoryEnum.HARDWARE_RETIRE.getCode())) {
                 // 启动流程
                 actionResponse = activityClient.manualStartProcess(assetStatusReqeust.getManualStartActivityRequest());
