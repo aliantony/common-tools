@@ -110,7 +110,7 @@ public class AssetCategoryModelController {
      */
     @ApiOperation(value = "查询硬件第二级数据接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/name", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/second", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:categorymodel:getCategoryByName')")
     public ActionResponse getCategoryByName() throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.getCategoryByName("硬件"));
