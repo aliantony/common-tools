@@ -90,7 +90,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             assetStatusReqeust.getAssetFlowCategoryEnum().getCode().equals(AssetFlowCategoryEnum.HARDWARE_RETIRE.getCode())) {
                 // 启动流程
                 actionResponse = activityClient.manualStartProcess(assetStatusReqeust.getManualStartActivityRequest());
-            }else if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode().equals(AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode())){
+            }else if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode().equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode()) || AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode().equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())){
                 // 完成流程
                 actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
             }
@@ -151,10 +151,13 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      */
     private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) {
         Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
-        scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
-        scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));
-        scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
-        scheme.setPutintoUserId(DataTypeUtils.stringToInteger(aesEncoder.decode(assetStatusReqeust.getWorkOrderVO().getExecuteUserId(),LoginUserUtil.getLoginUser().getUsername())));
+        scheme.setPutintoUserId(LoginUserUtil.getLoginUser().getId());
+        if(null != assetStatusReqeust.getWorkOrderVO()) {
+            scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
+            scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));
+            scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
+            scheme.setPutintoUserId(DataTypeUtils.stringToInteger(aesEncoder.decode(assetStatusReqeust.getWorkOrderVO().getExecuteUserId(), LoginUserUtil.getLoginUser().getUsername())));
+        }
         scheme.setAssetId(assetStatusReqeust.getAssetId());
         return scheme;
     }

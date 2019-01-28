@@ -1,6 +1,5 @@
 package com.antiy.asset.controller;
 
-import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.impl.AssetStatusChangeFactory;
-import com.antiy.asset.service.impl.AssetStatusChangeProcessImpl;
+import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
 import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
