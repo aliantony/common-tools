@@ -750,12 +750,12 @@
         c.serial,
         c.category_model as categoryModel,
         c.manufacturer,
-        a.install_time,
-        a.install_status,
+        a.install_time as installTime,
+        a.install_status as installStatus,
         case
         when a.install_type is not null then a.install_type
         else c.install_type
-        end as install_type
+        end as installType
         from
         asset_software_relation a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1
