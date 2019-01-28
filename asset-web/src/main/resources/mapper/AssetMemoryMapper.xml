@@ -251,6 +251,7 @@
         <if test=" status != null">
             and status = #{status }
         </if>
+        and status = 1
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetMemory">

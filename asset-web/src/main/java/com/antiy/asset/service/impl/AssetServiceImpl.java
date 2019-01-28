@@ -1237,7 +1237,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetGroupRelationDao.insertBatch(assetGroupRelations);
                     }
                     asset.setAssetGroup(stringBuffer.toString());
-                    asset.setStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                    asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                    asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                    asset.setGmtModified(System.currentTimeMillis());
                     // 1. 更新资产主表
                     LogHandle.log(asset, AssetEventEnum.ASSET_MODIFY.getName(), AssetEventEnum.ASSET_MODIFY.getStatus(),
                         ModuleEnum.ASSET.getCode());
@@ -1245,6 +1247,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     int count = assetDao.update(asset);
 
                     // 2. 更新cpu信息
+                    // 先删除再新增
+                    LogHandle.log(asset.getId(), AssetEventEnum.ASSET_CPU_DELETE.getName(),
+                            AssetEventEnum.ASSET_CPU_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.info(logger, AssetEventEnum.ASSET_CPU_DELETE.getName() + " {}", asset.getStringId());
+                    assetCpuDao.deleteByAssetId(asset.getId());
                     List<AssetCpuRequest> assetCpuRequestList = assetOuterRequest.getCpu();
                     if (assetCpuRequestList != null && !assetCpuRequestList.isEmpty()) {
                         List<AssetCpu> assetCpuList = BeanConvert.convert(assetCpuRequestList, AssetCpu.class);
@@ -1256,12 +1263,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetCpu.setModifyUser(LoginUserUtil.getLoginUser().getId());
                             assetCpu.setGmtModified(System.currentTimeMillis());
                         }
-                        // 先删除再新增
-                        LogHandle.log(asset.getId(), AssetEventEnum.ASSET_CPU_DELETE.getName(),
-                            AssetEventEnum.ASSET_CPU_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                        LogUtils.info(logger, AssetEventEnum.ASSET_CPU_DELETE.getName() + " {}", asset.getStringId());
-                        assetCpuDao.deleteByAssetId(asset.getId());
-
                         LogHandle.log(assetCpuList, AssetEventEnum.ASSET_CPU_INSERT.getName(),
                             AssetEventEnum.ASSET_CPU_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                         LogUtils.info(logger, AssetEventEnum.ASSET_CPU_INSERT.getName() + " {}",
@@ -1416,25 +1417,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetSoftwareRelationDao.deleteByAssetId(asset.getId());
                     // 删除软件许可
                     assetSoftwareLicenseDao.deleteByAssetId(asset.getId());
-                    List<AssetSoftwareRelation> assetSoftwareRelationList = BeanConvert
-                        .convert(assetOuterRequest.getAssetSoftwareRelationList(), AssetSoftwareRelation.class);
-                    assetSoftwareRelationList.stream().forEach(relation -> {
-                        relation.setAssetId(asset.getStringId());
-                        relation.setGmtCreate(System.currentTimeMillis());
-                        // relation.setSoftwareStatus();
-                        relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                        try {
-                            // 插入资产软件关系
-                            assetSoftwareRelationDao.insert(relation);
-                            AssetSoftwareLicense assetSoftwareLicense = new AssetSoftwareLicense();
-                            assetSoftwareLicense.setLicenseSecretKey(relation.getLicenseSecretKey());
-                            assetSoftwareLicense.setSoftwareId(relation.getStringId());
-                            // 插入资产软件许可
-                            assetSoftwareLicenseDao.insert(assetSoftwareLicense);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
+                    if (!Objects.isNull(assetOuterRequest.getAssetSoftwareRelationList())) {
+                        List<AssetSoftwareRelation> assetSoftwareRelationList = BeanConvert
+                                .convert(assetOuterRequest.getAssetSoftwareRelationList(), AssetSoftwareRelation.class);
+                        assetSoftwareRelationList.stream().forEach(relation -> {
+                            relation.setAssetId(asset.getStringId());
+                            relation.setGmtCreate(System.currentTimeMillis());
+                            // relation.setSoftwareStatus();
+                            relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            try {
+                                // 插入资产软件关系
+                                assetSoftwareRelationDao.insert(relation);
+                                AssetSoftwareLicense assetSoftwareLicense = new AssetSoftwareLicense();
+                                assetSoftwareLicense.setLicenseSecretKey(relation.getLicenseSecretKey());
+                                assetSoftwareLicense.setSoftwareId(relation.getStringId());
+                                // 插入资产软件许可
+                                assetSoftwareLicenseDao.insert(assetSoftwareLicense);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(asset.getStringId());
@@ -1468,6 +1471,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 通知工作流
          ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
+         if (Objects.isNull(manualStartActivityRequest)) {
+             manualStartActivityRequest = new ManualStartActivityRequest();
+         }
          manualStartActivityRequest.setBusinessId(asset.getStringId());
          manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
          manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
