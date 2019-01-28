@@ -54,20 +54,7 @@ public class AssetController {
     }
 
 
-    /**
-     * 修改
-     *
-     * @param asset
-     * @return actionResponse
-     */
-    @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    // @PreAuthorize(value = "hasAuthority('asset:asset:updateSingle')")
-    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetRequest asset) throws Exception {
-        iAssetService.updateAsset(asset);
-        return ActionResponse.success();
-    }
+
 
     /**
      * 批量查询
