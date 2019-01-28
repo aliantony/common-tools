@@ -184,6 +184,7 @@
         <if test=" address != null">
             AND address like concat('%',  #{address },'%')
         </if>
+        and status = 1
     </sql>
     <sql id="Page_List">
         <if test="pageSize !=-1">
@@ -220,6 +221,7 @@
         from
        asset_user a left join asset_department b on a.department_id = b.id
         where a.id = #{id}
+        and a.status = 1
     </select>
 
 
