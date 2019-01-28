@@ -355,4 +355,22 @@
        WHERE parent_id
        in ( select id  from asset_category_model where name=#{name})
     </select>
+
+    <select id="getNextLevelCategoryByNameArray" resultType="com.antiy.asset.entity.AssetCategoryModel"
+            parameterType="java.lang.String">
+        select id, name, type, asset_type AS assetType, parent_id AS parentId,is_default AS isDefault,
+        description, gmt_create AS gmtCreate, gmt_modified AS gmtModified, memo, create_user AS createUser,
+        modify_user AS modifyUser, status
+        from asset_category_model
+        WHERE parent_id
+        in ( select id from asset_category_model where 1=1
+        <if test=" names != null and names.length > 0">
+            and name in
+            <foreach collection="names" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        )
+    </select>
+
 </mapper>
