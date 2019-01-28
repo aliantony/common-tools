@@ -71,5 +71,5 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      *
      * @return
      */
-    List<AssetCategoryModel> getCategoryByNameArray(String[] name) throws Exception;
+    List<AssetCategoryModel> getCategoryByName(String name) throws Exception;
 }

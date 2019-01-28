@@ -104,18 +104,16 @@ public class AssetCategoryModelController {
     }
 
     /**
-     * 通过名称查询下一级节点
+     * 查询硬件第二级数据接口
      *
-     * @param names 名称
      * @return
      */
-    @ApiOperation(value = "通过名称查询下一级节点接口", notes = "主键封装对象")
+    @ApiOperation(value = "查询硬件第二级数据接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/name", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:categorymodel:getCategoryByName')")
-    public ActionResponse getCategoryByName(@ApiParam(value = "品类名称")@RequestParam(value = "name") String... names) throws Exception {
-        ParamterExceptionUtils.isNull(names, "品类名称不能为null");
-        return ActionResponse.success(iAssetCategoryModelService.getCategoryByNameArray(names));
+    public ActionResponse getCategoryByName() throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.getCategoryByName("硬件"));
     }
 
     /**
