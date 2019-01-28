@@ -24,6 +24,22 @@ public class AssetMemoryResponse extends BaseResponse {
     @ApiModelProperty("内存容量")
     private Integer capacity;
     /**
+     * 内存类型：1未知，2-ddr2,3-ddr3,4-ddr4
+     */
+    @ApiModelProperty("内存类型：1未知，2-ddr2,3-ddr3,4-ddr4")
+    private Integer transferType;
+    /**
+     * 内存品牌
+     */
+    @ApiModelProperty("内存品牌")
+    private String  brand;
+    /**
+     * 内存序列号
+     */
+    @ApiModelProperty("内存序列号")
+    private String  serial;
+
+    /**
      * 内存主频(MHz)
      */
     @ApiModelProperty("内存主频(MHz)")
@@ -33,11 +49,6 @@ public class AssetMemoryResponse extends BaseResponse {
      */
     @ApiModelProperty("插槽类型:1-SDRAM,2-SIMM,3-DIMM,4-RIMM")
     private Integer slotType;
-    /**
-     * 内存类型：1未知，2-ddr2,3-ddr3,4-ddr4
-     */
-    @ApiModelProperty("内存类型：1未知，2-ddr2,3-ddr3,4-ddr4")
-    private Integer transferType;
     /**
      * 是否带散热片:0-不带，1-带
      */
@@ -58,6 +69,22 @@ public class AssetMemoryResponse extends BaseResponse {
      */
     @ApiModelProperty("保修期")
     private Long    warrantyDate;
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
 
     public String getAssetId() {
         return assetId;
