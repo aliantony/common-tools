@@ -29,7 +29,7 @@
         <result column="software_status" property="softwareStatus"/>
         <result column="authorization" property="authorization"/>
         <result column="report_source" property="reportSource"/>
-        <result column="port" property="port"/>
+        <result column="protocol" property="protocol"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
         <result column="language" property="language"/>
@@ -42,11 +42,12 @@
         <result column="gmt_modified" property="gmtModified"/>
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
+        <result column="md5_code" property="md5Code"/>
         <result column="status" property="status"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, size, operation_system, category_model, name, upload_software_name, path, version, manufacturer, description, asset_group, software_label, software_status, authorization, report_source, port, service_life, buy_date, language, release_time, serial, md5_code, publisher, gmt_create, memo, gmt_modified, create_user, modify_user, status
+        id, size, operation_system, category_model, name, upload_software_name, path, version, manufacturer, description, asset_group, software_label, software_status, authorization, report_source, protocol, service_life, buy_date, language, release_time, serial, md5_code, publisher, gmt_create, memo, gmt_modified, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -97,8 +98,8 @@
         <if test=" reportSource != null">
             report_source,
         </if>
-        <if test=" port != null">
-            port,
+        <if test=" protocol != null">
+            protocol,
         </if>
         <if test=" serviceLife != null">
             service_life,
@@ -184,8 +185,8 @@
         <if test=" reportSource != null">
             #{reportSource },
         </if>
-        <if test=" port != null">
-            #{port },
+        <if test=" protocol != null">
+            #{protocol },
         </if>
         <if test=" serviceLife != null">
             #{serviceLife },
@@ -271,8 +272,8 @@
         <if test=" reportSource != null">
             report_source = #{reportSource },
         </if>
-        <if test=" port != null">
-            port = #{port },
+        <if test=" protocol != null">
+            protocol = #{protocol },
         </if>
         <if test=" serviceLife != null">
             service_life = #{serviceLife },
@@ -346,8 +347,8 @@
         <if test=" reportSource != null">
             and report_source = #{reportSource }
         </if>
-        <if test=" port != null">
-            and port = #{port }
+        <if test=" protocol != null">
+            and protocol = #{protocol }
         </if>
         <if test=" language != null">
             and language = #{language }
@@ -443,10 +444,10 @@
         a.name, upload_software_name, path, version,
         manufacturer, a.description, asset_group,
         software_label, software_status, authorization,
-        report_source, port, language, a.release_time,
+        report_source, protocol, language, a.release_time,
         publisher, a.gmt_create, a.memo, a.gmt_modified,
         a.create_user,a.modify_user, a.status,
-        b.name as category_model_name
+        b.name as category_model_name,md5_code,serial
         from
         <include refid="Table_Name"></include>
         a
@@ -535,7 +536,7 @@
         asset_software.memo,
         asset_software.language,
         asset_software.path,
-        asset_software.port
+        asset_software.protocol
         <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
             ,
             b.name as category_model_name
