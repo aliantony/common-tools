@@ -86,12 +86,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         assetGroup.setId(DataTypeUtils.stringToInteger(request.getId()));
         Integer[] assetIdArr = DataTypeUtils.stringArrayToIntegerArray(request.getAssetIds());
 
-        List<String> nameList = assetGroupRelationDao.findAssetNameByAssetGroupId(DataTypeUtils.stringToInteger(request.getId()));
-
-        if (nameList != null && nameList.size() > 0){
-            throw new BusinessException("该资产组还包资产数据,不能进行删除");
-        }
-
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
 
         Integer delResult = assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
@@ -151,8 +145,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public AssetGroupResponse findGroupById(String id) throws Exception {
-        return assetGroupToResponseConverter.convert(assetGroupDao.getById(Integer.valueOf(id)),
-            AssetGroupResponse.class);
+        AssetGroupResponse assetGroupResponse = assetGroupToResponseConverter.convert(assetGroupDao.getById(Integer.valueOf(id)),
+                AssetGroupResponse.class);
+        return assetGroupResponse;
     }
 }
 

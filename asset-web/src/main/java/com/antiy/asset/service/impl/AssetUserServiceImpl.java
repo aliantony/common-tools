@@ -53,7 +53,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Transactional
     public String saveAssetUser(AssetUserRequest request) throws Exception {
         AssetUser assetUser = requestConverter.convert(request, AssetUser.class);
-        // assetUser.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetUser.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetUser.setGmtCreate(System.currentTimeMillis());
         assetUserDao.insert(assetUser);
         // 写入业务日志
@@ -68,7 +68,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     public Integer updateAssetUser(AssetUserRequest request) throws Exception {
         AssetUser assetUser = requestConverter.convert(request, AssetUser.class);
         assetUser.setId(DataTypeUtils.stringToInteger(request.getId()));
-        // assetUser.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        assetUser.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetUser.setGmtCreate(System.currentTimeMillis());
         // 写入业务日志
         LogHandle.log(assetUser.toString(), AssetEventEnum.ASSET_USER_UPDATE.getName(),
@@ -106,7 +106,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Transactional
     public void importUser(List<AssetUser> assetUserList) {
         assetUserList.stream().forEach(user -> {
-            // user.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            user.setCreateUser(LoginUserUtil.getLoginUser().getId());
             user.setGmtCreate(System.currentTimeMillis());
             user.setStatus(1);
             user.setMemo("");

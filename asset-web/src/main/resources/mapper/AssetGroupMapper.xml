@@ -18,7 +18,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name,purpose,important_degree AS importantDegree,name,gmt_create AS gmtCreate,gmt_modified AS gmtModified, memo,create_user AS createUser ,modify_user AS modifyUser,status
+        id, name,purpose,important_degree AS importantDegree,gmt_create AS gmtCreate,gmt_modified AS gmtModified, memo,create_user AS createUser ,modify_user AS modifyUser,status
     </sql>
 
     <sql id="Table_Name">
@@ -173,11 +173,11 @@
         <trim prefix="SET" suffixOverrides=",">
             <include refid="Set_Column_List"></include>
         </trim>
-        where id = #{id}
+        where id = #{id} and status = 1
     </update>
 
     <!-- 根据主键查询 -->
-    <select id="getById" resultType="com.antiy.asset.entity.AssetGroup" parameterType="java.lang.Integer">
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
         from
