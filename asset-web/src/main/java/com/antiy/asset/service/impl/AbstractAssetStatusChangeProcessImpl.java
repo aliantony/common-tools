@@ -49,28 +49,27 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     @Resource
     private WorkOrderClient                      workOrderClient;
     @Resource
-    AesEncoder aesEncoder;
+    AesEncoder                                   aesEncoder;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
         Scheme scheme = null;
-        if (assetStatusReqeust.getSchemeRequest() != null){
+        if (assetStatusReqeust.getSchemeRequest() != null) {
             // 1.保存方案信息
             scheme = convertScheme(assetStatusReqeust);
             schemeDao.insert(scheme);
 
             // 写入业务日志
             LogHandle.log(scheme.toString(), AssetEventEnum.ASSET_SCHEME_INSERT.getName(),
-                    AssetEventEnum.ASSET_SCHEME_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                AssetEventEnum.ASSET_SCHEME_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme.toString());
         }
 
-
         // 2.保存流程
         AssetOperationRecord assetOperationRecord = convertAssetOperationRecord(assetStatusReqeust);
-        if (!assetStatusReqeust.getSoftware()){
+        if (!assetStatusReqeust.getSoftware()) {
             assetOperationRecord.setOriginStatus(assetStatusReqeust.getAssetStatus().getCode());
-        }else {
+        } else {
             assetOperationRecord.setOriginStatus(assetStatusReqeust.getSoftwareStatusEnum().getCode());
         }
 
@@ -84,26 +83,29 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             assetOperationRecord.toString());
 
         // 3.调用流程引擎
-        if (null != assetStatusReqeust.getActivityHandleRequest()) {
-            ActionResponse actionResponse = null;
-            if (
-            assetStatusReqeust.getAssetFlowCategoryEnum().getCode().equals(AssetFlowCategoryEnum.HARDWARE_RETIRE.getCode())) {
-                // 启动流程
-                actionResponse = activityClient.manualStartProcess(assetStatusReqeust.getManualStartActivityRequest());
-            }else if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode().equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode()) || AssetFlowCategoryEnum.HARDWARE_CHANGE.getCode().equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())){
-                // 完成流程
-                actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
-            }
-
-            // 如果流程引擎为空,直接返回错误信息
-            if (null == actionResponse
-                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
-            }
+        ActionResponse actionResponse = null;
+        if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
+            .equals(AssetFlowCategoryEnum.HARDWARE_RETIRE.getCode())) {
+            // 启动流程
+            assetStatusReqeust.getManualStartActivityRequest().setAssignee(LoginUserUtil.getLoginUser().getName());
+            actionResponse = activityClient.manualStartProcess(assetStatusReqeust.getManualStartActivityRequest());
+        } else if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode()
+            .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
+                   || AssetFlowCategoryEnum.HARDWARE_CHANGE.getCode()
+                       .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+            // 完成流程
+            actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         }
+
+        // 如果流程引擎为空,直接返回错误信息
+        if (null == actionResponse
+            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+        }
+
         // 4.调用工单系统
         if (null != assetStatusReqeust.getWorkOrderVO()) {
-            ActionResponse actionResponse = workOrderClient.createWorkOrder(assetStatusReqeust.getWorkOrderVO());
+            actionResponse = workOrderClient.createWorkOrder(assetStatusReqeust.getWorkOrderVO());
             // 如果流程引擎为空,直接返回错误信息
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
@@ -152,11 +154,12 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) {
         Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
         scheme.setPutintoUserId(LoginUserUtil.getLoginUser().getId());
-        if(null != assetStatusReqeust.getWorkOrderVO()) {
+        if (null != assetStatusReqeust.getWorkOrderVO()) {
             scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
             scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));
             scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
-            scheme.setPutintoUserId(DataTypeUtils.stringToInteger(aesEncoder.decode(assetStatusReqeust.getWorkOrderVO().getExecuteUserId(), LoginUserUtil.getLoginUser().getUsername())));
+            scheme.setPutintoUserId(DataTypeUtils.stringToInteger(aesEncoder.decode(
+                assetStatusReqeust.getWorkOrderVO().getExecuteUserId(), LoginUserUtil.getLoginUser().getUsername())));
         }
         scheme.setAssetId(assetStatusReqeust.getAssetId());
         return scheme;
