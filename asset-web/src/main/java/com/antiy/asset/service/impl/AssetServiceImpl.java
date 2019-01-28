@@ -1237,7 +1237,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetGroupRelationDao.insertBatch(assetGroupRelations);
                     }
                     asset.setAssetGroup(stringBuffer.toString());
-                    asset.setStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                    asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     // 1. 更新资产主表
                     LogHandle.log(asset, AssetEventEnum.ASSET_MODIFY.getName(), AssetEventEnum.ASSET_MODIFY.getStatus(),
                         ModuleEnum.ASSET.getCode());
