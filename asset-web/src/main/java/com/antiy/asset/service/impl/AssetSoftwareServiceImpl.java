@@ -116,7 +116,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 //                    AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
 //                        AssetPortProtocol.class);
 
-                    assetSoftware.setSoftwareStatus(AssetStatusEnum.ANALYZE.getCode());
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
                     assetSoftware.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
