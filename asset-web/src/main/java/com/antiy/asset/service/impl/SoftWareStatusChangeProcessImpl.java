@@ -15,6 +15,7 @@ import com.antiy.asset.vo.enums.SoftwareStatusEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusJumpEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -31,7 +32,12 @@ public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangePr
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
-        super.changeStatus(assetStatusReqeust);
+        ActionResponse actionResponse = super.changeStatus(assetStatusReqeust);
+        if (null == actionResponse
+            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            return actionResponse;
+        }
+
         SoftwareStatusEnum softwareStatusEnum = SoftwareStatusJumpEnum
             .getNextStatus(assetStatusReqeust.getSoftwareStatusEnum(), assetStatusReqeust.getAgree());
         // 软件表详情操作

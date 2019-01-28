@@ -11,6 +11,7 @@ import com.antiy.asset.vo.enums.AssetStatusChangeEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.LoginUserUtil;
 
 /**
@@ -26,7 +27,12 @@ public class AssetStatusChangeProcessImpl extends AbstractAssetStatusChangeProce
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
-        super.changeStatus(assetStatusReqeust);
+        ActionResponse actionResponse = super.changeStatus(assetStatusReqeust);
+        if (null == actionResponse
+            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            return actionResponse;
+        }
+
         AssetStatusEnum assetStatusEnum = AssetStatusChangeEnum.getNextStatus(assetStatusReqeust.getAssetStatus(),
             assetStatusReqeust.getAgree());
         Asset asset = new Asset();
