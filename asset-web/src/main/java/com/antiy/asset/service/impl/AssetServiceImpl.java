@@ -1233,7 +1233,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetGroupRelations.add(assetGroupRelation);
                     }
                     assetGroupRelationDao.deleteByAssetId(asset.getId());
-                    assetGroupRelationDao.insertBatch(assetGroupRelations);
+                    if (!assetGroupRelations.isEmpty()) {
+                        assetGroupRelationDao.insertBatch(assetGroupRelations);
+                    }
                     asset.setAssetGroup(stringBuffer.toString());
                     asset.setStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     // 1. 更新资产主表
@@ -1446,6 +1448,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return count;
                 } catch (Exception e) {
+                    logger.info("资产变更失败:",e.getMessage());
                     transactionStatus.setRollbackOnly();
                     throw new BusinessException("资产变更失败");
                 }
@@ -1809,7 +1812,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetNetworkEquipment.setExpectBandwidth(networkDeviceEntity.getExpectBandwidth());
             assetNetworkEquipment.setMemo(networkDeviceEntity.getMemo());
             assetNetworkEquipment.setNcrmSize(networkDeviceEntity.getNcrmSize());
-            assetNetworkEquipment.setCpu(networkDeviceEntity.getCpuSize());
+            assetNetworkEquipment.setCpuSize(networkDeviceEntity.getCpuSize());
             assetNetworkEquipment.setDramSize(networkDeviceEntity.getDramSize());
             assetNetworkEquipment.setFlashSize(networkDeviceEntity.getFlashSize());
             assetNetworkEquipment.setRegister(networkDeviceEntity.getRegister());
