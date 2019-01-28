@@ -7,6 +7,7 @@
         <id column="id" property="id"/>
         <result column="asset_id" property="assetId"/>
         <result column="interface_size" property="interfaceSize"/>
+        <result column="port_size" property="portSize"/>
         <result column="is_wireless" property="isWireless"/>
         <result column="port_Size" property="portSize"/>
         <result column="cpu_version" property="cpuVersion"/>
@@ -30,7 +31,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, interface_size, is_wireless, port_Size, cpu_version, cpu, ios, inner_ip, outer_ip, mac_address, subnet_mask, expect_bandwidth, register, dram_size, flash_size, ncrm_size, create_user, modify_user, gmt_create, memo, gmt_modified, status
+        id, asset_id, interface_size, is_wireless, port_Size,port_size, cpu_version, cpu, ios, inner_ip, outer_ip, mac_address, subnet_mask, expect_bandwidth, register, dram_size, flash_size, ncrm_size, create_user, modify_user, gmt_create, memo, gmt_modified, status
     </sql>
 
     <sql id="Table_Name">
@@ -44,6 +45,9 @@
         </if>
         <if test=" interfaceSize != null">
             interface_size,
+        </if>
+        <if test=" portSize != null">
+            port_size,
         </if>
         <if test=" isWireless != null">
             is_wireless,
@@ -114,6 +118,9 @@
         <if test=" interfaceSize != null">
             #{interfaceSize },
         </if>
+        <if test=" portSize != null">
+            #{portSize },
+        </if>
         <if test=" isWireless != null">
             #{isWireless },
         </if>
@@ -182,6 +189,9 @@
         </if>
         <if test=" interfaceSize != null">
             interface_size = #{interfaceSize },
+        </if>
+        <if test=" portSize != null">
+            port_size = #{portSize },
         </if>
         <if test=" isWireless != null">
             is_wireless = #{isWireless },
