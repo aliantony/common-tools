@@ -17,7 +17,6 @@ import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -356,8 +355,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     logger.warn("登记硬件资产失败");
                     return 0;
-                } finally {
-                    throw new BusinessException("登记硬件资产失败");
                 }
             }
         });
