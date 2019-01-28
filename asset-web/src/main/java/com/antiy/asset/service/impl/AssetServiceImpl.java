@@ -1417,25 +1417,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetSoftwareRelationDao.deleteByAssetId(asset.getId());
                     // 删除软件许可
                     assetSoftwareLicenseDao.deleteByAssetId(asset.getId());
-                    List<AssetSoftwareRelation> assetSoftwareRelationList = BeanConvert
-                        .convert(assetOuterRequest.getAssetSoftwareRelationList(), AssetSoftwareRelation.class);
-                    assetSoftwareRelationList.stream().forEach(relation -> {
-                        relation.setAssetId(asset.getStringId());
-                        relation.setGmtCreate(System.currentTimeMillis());
-                        // relation.setSoftwareStatus();
-                        relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                        try {
-                            // 插入资产软件关系
-                            assetSoftwareRelationDao.insert(relation);
-                            AssetSoftwareLicense assetSoftwareLicense = new AssetSoftwareLicense();
-                            assetSoftwareLicense.setLicenseSecretKey(relation.getLicenseSecretKey());
-                            assetSoftwareLicense.setSoftwareId(relation.getStringId());
-                            // 插入资产软件许可
-                            assetSoftwareLicenseDao.insert(assetSoftwareLicense);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
+                    if (!Objects.isNull(assetOuterRequest.getAssetSoftwareRelationList())) {
+                        List<AssetSoftwareRelation> assetSoftwareRelationList = BeanConvert
+                                .convert(assetOuterRequest.getAssetSoftwareRelationList(), AssetSoftwareRelation.class);
+                        assetSoftwareRelationList.stream().forEach(relation -> {
+                            relation.setAssetId(asset.getStringId());
+                            relation.setGmtCreate(System.currentTimeMillis());
+                            // relation.setSoftwareStatus();
+                            relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            try {
+                                // 插入资产软件关系
+                                assetSoftwareRelationDao.insert(relation);
+                                AssetSoftwareLicense assetSoftwareLicense = new AssetSoftwareLicense();
+                                assetSoftwareLicense.setLicenseSecretKey(relation.getLicenseSecretKey());
+                                assetSoftwareLicense.setSoftwareId(relation.getStringId());
+                                // 插入资产软件许可
+                                assetSoftwareLicenseDao.insert(assetSoftwareLicense);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(asset.getStringId());
