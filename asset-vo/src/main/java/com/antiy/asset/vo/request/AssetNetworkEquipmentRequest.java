@@ -37,6 +37,11 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
     @ApiModelProperty("接口数目")
     private Integer interfaceSize;
     /**
+     * 端口数目
+     */
+    @ApiModelProperty("端口数目")
+    private Integer porteSize;
+    /**
      * 是否无线:0-否,1-是
      */
     @ApiModelProperty("是否无线:0-否,1-是")
@@ -87,6 +92,14 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      */
     @ApiModelProperty("NCRM大小")
     private Float   ncrmSize;
+
+    public Integer getPorteSize() {
+        return porteSize;
+    }
+
+    public void setPorteSize(Integer porteSize) {
+        this.porteSize = porteSize;
+    }
 
     public String getId() {
         return id;
