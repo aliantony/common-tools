@@ -1463,8 +1463,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             .changeStatus(assetStatusReqeust);*/
         // TODO 下发智甲
 
-        // TODO 通知工作流
+        // 通知工作流
          ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
+         manualStartActivityRequest.setBusinessId(asset.getStringId());
+         manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
          manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
          activityClient.manualStartProcess(manualStartActivityRequest);
         return assetCount;
