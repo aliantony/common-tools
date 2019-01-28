@@ -1,17 +1,19 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.Arrays;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Arrays;
+
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -22,7 +24,7 @@ import java.util.Arrays;
 @ApiModel(value = "软件请求")
 public class AssetSoftwareRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty(value = "登记流程数据")
-    private ManualStartActivityRequest          activityRequest;
+    private ManualStartActivityRequest  activityRequest;
     @ApiModelProperty(value = "流程处理")
     @Valid
     private ActivityHandleRequest       request;
@@ -109,6 +111,12 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     private String                      serial;
 
     /**
+     * 到期时间
+     */
+    @ApiModelProperty(value = "到期时间")
+    private Long                        serviceLife;
+
+    /**
      * 软件状态：1待登记2待分析3可安装4已退役5不予登记
      */
     @ApiModelProperty(value = "软件状态：1待登记2待分析3可安装4已退役5不予登记")
@@ -154,6 +162,14 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     @ApiModelProperty(value = "硬件资产和软件资产关联表Id")
     @Encode
     private String                      assetSoftwareRelationId;
+
+    public Long getServiceLife() {
+        return serviceLife;
+    }
+
+    public void setServiceLife(Long serviceLife) {
+        this.serviceLife = serviceLife;
+    }
 
     public ActivityHandleRequest getRequest() {
         return request;
@@ -251,7 +267,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.description = description;
     }
 
-
     public Integer getSoftwareStatus() {
         return softwareStatus;
     }
@@ -316,7 +331,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.categoryModel = categoryModel;
     }
 
-
     public String getMemo() {
         return memo;
     }
@@ -371,33 +385,16 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     @Override
     public String toString() {
-        return "AssetSoftwareRequest{" +
-                "activityRequest=" + activityRequest +
-                ", softwareLicenseRequest=" + softwareLicenseRequest +
-                ", assetPortProtocolRequest=" + assetPortProtocolRequest +
-                ", assetIds=" + Arrays.toString(assetIds) +
-                ", md5Code='" + md5Code + '\'' +
-                ", id='" + id + '\'' +
-                ", size=" + size +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", categoryModel='" + categoryModel + '\'' +
-                ", name='" + name + '\'' +
-                ", uploadSoftwareName='" + uploadSoftwareName + '\'' +
-                ", path='" + path + '\'' +
-                ", version='" + version + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", description='" + description + '\'' +
-                ", serial='" + serial + '\'' +
-                ", softwareStatus=" + softwareStatus +
-                ", authorization=" + authorization +
-                ", reportSource=" + reportSource +
-                ", protocol='" + protocol + '\'' +
-                ", language='" + language + '\'' +
-                ", releaseTime=" + releaseTime +
-                ", publisher='" + publisher + '\'' +
-                ", memo='" + memo + '\'' +
-                ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\'' +
-                ", request=" + request +
-                '}';
+        return "AssetSoftwareRequest{" + "activityRequest=" + activityRequest + ", softwareLicenseRequest="
+               + softwareLicenseRequest + ", assetPortProtocolRequest=" + assetPortProtocolRequest + ", assetIds="
+               + Arrays.toString(assetIds) + ", md5Code='" + md5Code + '\'' + ", id='" + id + '\'' + ", size=" + size
+               + ", operationSystem='" + operationSystem + '\'' + ", categoryModel='" + categoryModel + '\''
+               + ", name='" + name + '\'' + ", uploadSoftwareName='" + uploadSoftwareName + '\'' + ", path='" + path
+               + '\'' + ", version='" + version + '\'' + ", manufacturer='" + manufacturer + '\'' + ", description='"
+               + description + '\'' + ", serial='" + serial + '\'' + ", softwareStatus=" + softwareStatus
+               + ", authorization=" + authorization + ", reportSource=" + reportSource + ", protocol='" + protocol
+               + '\'' + ", language='" + language + '\'' + ", releaseTime=" + releaseTime + ", publisher='" + publisher
+               + '\'' + ", memo='" + memo + '\'' + ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\''
+               + ", request=" + request + '}';
     }
 }
