@@ -184,6 +184,7 @@
         <if test=" address != null">
             AND address like concat('%',  #{address },'%')
         </if>
+        and status = 1
     </sql>
     <sql id="Page_List">
         <if test="pageSize !=-1">
@@ -214,10 +215,13 @@
     <!-- 根据主键查询 -->
     <select id="getById" resultType="com.antiy.asset.entity.AssetUser" parameterType="java.lang.Integer">
         select
-        a.*, b.name as departmentName
+        a.*,
+        b.id as departmentId,
+        b.name as departmentName
         from
        asset_user a left join asset_department b on a.department_id = b.id
         where a.id = #{id}
+        and a.status = 1
     </select>
 
 

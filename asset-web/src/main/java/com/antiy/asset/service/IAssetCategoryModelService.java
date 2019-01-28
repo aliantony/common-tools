@@ -64,6 +64,12 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      *
      * @return
      */
-    AssetCategoryModelNodeResponse queryCategoryNode()  throws Exception;
+    AssetCategoryModelNodeResponse queryCategoryNode() throws Exception;
 
+    /**
+     * 通过名称查询下一级的品类
+     *
+     * @return
+     */
+    List<AssetCategoryModel> getCategoryByNameArray(String[] name) throws Exception;
 }

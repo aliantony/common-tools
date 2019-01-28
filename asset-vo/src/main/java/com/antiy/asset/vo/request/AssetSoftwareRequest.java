@@ -1,19 +1,17 @@
 package com.antiy.asset.vo.request;
 
-import java.util.Arrays;
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.Arrays;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -100,23 +98,13 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     @ApiModelProperty(value = "软件描述")
     @Size(message = "描述不能超过128位", max = 128)
     private String                      description;
-    /**
-     * 资产组
-     */
-    @ApiModelProperty(value = "资产组")
-    private String                      assetGroup;
 
     /**
      * 序列号
      */
     @ApiModelProperty(value = "序列号")
     private String                      serial;
-    /**
-     * 软件标签
-     */
-    @ApiModelProperty(value = "软件标签")
-    @Encode
-    private String                      softwareLabel;
+
     /**
      * 软件状态：1待登记2待分析3可安装4已退役5不予登记
      */
@@ -264,13 +252,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.description = description;
     }
 
-    public String getAssetGroup() {
-        return assetGroup;
-    }
-
-    public void setAssetGroup(String assetGroup) {
-        this.assetGroup = assetGroup;
-    }
 
     public Integer getSoftwareStatus() {
         return softwareStatus;
@@ -336,13 +317,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.categoryModel = categoryModel;
     }
 
-    public String getSoftwareLabel() {
-        return softwareLabel;
-    }
-
-    public void setSoftwareLabel(String softwareLabel) {
-        this.softwareLabel = softwareLabel;
-    }
 
     public String getMemo() {
         return memo;
@@ -415,9 +389,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
                 ", version='" + version + '\'' +
                 ", manufacturer='" + manufacturer + '\'' +
                 ", description='" + description + '\'' +
-                ", assetGroup='" + assetGroup + '\'' +
                 ", serial='" + serial + '\'' +
-                ", softwareLabel='" + softwareLabel + '\'' +
                 ", softwareStatus=" + softwareStatus +
                 ", authorization=" + authorization +
                 ", reportSource=" + reportSource +

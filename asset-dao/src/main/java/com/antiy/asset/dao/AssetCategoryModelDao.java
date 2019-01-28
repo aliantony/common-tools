@@ -21,5 +21,7 @@ public interface AssetCategoryModelDao extends IBaseDao<AssetCategoryModel> {
 
     List<AssetCategoryModel> getNextLevelCategoryByName(String name) throws Exception;
 
+    List<AssetCategoryModel> getNextLevelCategoryByNameArray(@Param("names") String[] names) throws Exception;
+
     Integer findRepeatName(@Param("id") Integer id, @Param("name") String name);
 }
