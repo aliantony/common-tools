@@ -417,6 +417,8 @@ public class ImportExcel {
     public String getResultMsg() {
         sb.append("成功条数:").append(successNums).append("\n").append("空白条数:").append(blankNums).append("\n")
             .append("失败条数:").append(failNums).append("\n").append("总条数:").append(totalNums).append("\n");
-        return sb.toString();
+        String resultString = sb.toString();
+        sb.delete(0, sb.length());
+        return resultString;
     }
 }
