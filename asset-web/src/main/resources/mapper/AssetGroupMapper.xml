@@ -173,7 +173,7 @@
         <trim prefix="SET" suffixOverrides=",">
             <include refid="Set_Column_List"></include>
         </trim>
-        where id = #{id}
+        where id = #{id} and status = 1
     </update>
 
     <!-- 根据主键查询 -->
