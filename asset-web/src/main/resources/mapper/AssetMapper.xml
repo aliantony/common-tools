@@ -815,7 +815,7 @@
         b.uuid
         FROM
         asset_network_card a
-        LEFT JOIN asset b ON a.asset_id = b.id
+        LEFT JOIN asset b ON a.asset_id = b.id AND b.status = 1
         WHERE
         ( a.ip_address, a.mac_address ) IN
         <foreach collection="list" open="(" close=")" index="index" item="item" separator=",">
@@ -824,7 +824,6 @@
             </foreach>
         </foreach>
         AND a.status = 1
-        AND b.status = 1
     </select>
 
     <select id="findTopologyList" resultMap="topologyResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">

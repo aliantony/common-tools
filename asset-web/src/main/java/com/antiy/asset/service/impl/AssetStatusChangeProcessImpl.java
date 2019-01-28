@@ -34,7 +34,7 @@ public class AssetStatusChangeProcessImpl extends AbstractAssetStatusChangeProce
         asset.setId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
         asset.setGmtModified(System.currentTimeMillis());
         asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
-        // 更新软件资产状态
+        // 更新资产状态
         assetDao.update(asset);
         return ActionResponse.success();
     }

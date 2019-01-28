@@ -1,7 +1,5 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.constraints.NotNull;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -45,8 +43,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * 是否无线:0-否,1-是
      */
     @ApiModelProperty("是否无线:0-否,1-是")
-    @NotNull(message = "是否五险不能为空")
-    private Boolean isWireless;
+    private Integer isWireless;
     /**
      * 内网IP
      */
@@ -151,11 +148,11 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
         this.interfaceSize = interfaceSize;
     }
 
-    public Boolean getWireless() {
+    public Integer getIsWireless() {
         return isWireless;
     }
 
-    public void setWireless(Boolean isWireless) {
+    public void setIsWireless(Integer isWireless) {
         this.isWireless = isWireless;
     }
 
