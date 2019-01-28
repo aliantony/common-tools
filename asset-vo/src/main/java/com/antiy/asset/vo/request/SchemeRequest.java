@@ -47,7 +47,7 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     /**
      * 方案来源
      */
-    @ApiModelProperty("方案来源")
+    @ApiModelProperty("方案来源,1 硬件，2软件")
     private Integer schemeSource;
 
     /**

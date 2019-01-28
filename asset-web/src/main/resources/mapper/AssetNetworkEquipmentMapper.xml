@@ -7,9 +7,11 @@
         <id column="id" property="id"/>
         <result column="asset_id" property="assetId"/>
         <result column="interface_size" property="interfaceSize"/>
+        <result column="port_size" property="portSize"/>
         <result column="is_wireless" property="isWireless"/>
         <result column="port_Size" property="portSize"/>
         <result column="cpu_version" property="cpuVersion"/>
+        <result column="firmware_version" property="firmwareVersion"/>
         <result column="cpu" property="cpu"/>
         <result column="ios" property="ios"/>
         <result column="inner_ip" property="innerIp"/>
@@ -30,7 +32,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id as assetId, interface_size as interfaceSize, is_wireless as isWireless, port_Size as portSize, cpu_version as cpuVersion, cpu, ios, inner_ip as innerIp, outer_ip as outerIp, mac_address as macAddress, subnet_mask as subnetMask, expect_bandwidth as expectBandwidth, register, dram_size as dramSize, flash_size as flashSize, ncrm_size as ncrmSize, create_user AS createUser, modify_user AS modifyUser, status
+        id, asset_id as assetId, interface_size as interfaceSize, is_wireless as isWireless,port_size as portSize, port_Size as portSize, cpu_version as cpuVersion, cpu, ios, inner_ip as innerIp, outer_ip as outerIp, mac_address as macAddress, subnet_mask as subnetMask, expect_bandwidth as expectBandwidth, register, dram_size as dramSize, flash_size as flashSize, ncrm_size as ncrmSize, firmware_version as firmwareVersion, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
 
     <sql id="Table_Name">
@@ -39,11 +41,17 @@
 
 
     <sql id="IF_Base_Column_List">
+        <if test=" firmwareVersion != null">
+            firmware_version,
+        </if>
         <if test=" assetId != null">
             asset_id,
         </if>
         <if test=" interfaceSize != null">
             interface_size,
+        </if>
+        <if test=" portSize != null">
+            port_size,
         </if>
         <if test=" isWireless != null">
             is_wireless,
@@ -111,8 +119,14 @@
         <if test=" assetId != null">
             #{assetId },
         </if>
+        <if test=" firmwareVersion != null">
+            #{firmwareVersion },
+        </if>
         <if test=" interfaceSize != null">
             #{interfaceSize },
+        </if>
+        <if test=" portSize != null">
+            #{portSize },
         </if>
         <if test=" isWireless != null">
             #{isWireless },
@@ -180,8 +194,14 @@
         <if test=" assetId != null">
             asset_id = #{assetId },
         </if>
+        <if test=" firmwareVersion != null">
+            firmware_version = #{firmwareVersion },
+        </if>
         <if test=" interfaceSize != null">
             interface_size = #{interfaceSize },
+        </if>
+        <if test=" portSize != null">
+            port_size = #{portSize },
         </if>
         <if test=" isWireless != null">
             is_wireless = #{isWireless },
