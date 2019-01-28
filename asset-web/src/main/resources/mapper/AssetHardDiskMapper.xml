@@ -207,6 +207,7 @@
         <if test=" diskType != null">
             and disk_type = #{diskType }
         </if>
+        and status = 1
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetHardDisk">

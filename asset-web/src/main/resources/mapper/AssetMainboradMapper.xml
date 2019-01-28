@@ -164,7 +164,7 @@
         <if test=" biosDate != null">
             and bios_date = #{biosDate }
         </if>
-        and status = 0
+        and status = 1
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetMainborad" useGeneratedKeys="true" keyProperty="id">
