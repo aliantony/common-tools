@@ -52,7 +52,7 @@ public class AssetResponse extends BaseResponse {
      * 品类
      */
     @ApiModelProperty("品类")
-    private String                  categoryModel;
+    private String                   categoryModel;
     /**
      * 品类名称
      */
@@ -94,12 +94,12 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("责任人主键")
     @Encode
-    private String                  responsibleUserId;
+    private String                   responsibleUserId;
     /**
      * 责任人名称
      */
     @ApiModelProperty("责任人名称")
-    private String            responsibleUserName;
+    private String                   responsibleUserName;
     /**
      * 联系电话
      */
@@ -121,7 +121,11 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("1核心2重要3一般")
     private Integer                  importanceDegree;
-
+    /**
+     * 描述
+     */
+    @ApiModelProperty("描述")
+    private String                   describle;
     /**
      * 父类资源Id
      */
@@ -168,17 +172,25 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("行政区划主键")
     @Encode
-    private String            areaId;
+    private String                   areaId;
     /**
      * 物理位置
      */
     @ApiModelProperty("物理位置")
-    private String            location;
+    private String                   location;
     /**
      * 机房位置
      */
     @ApiModelProperty("机房位置")
-    private String            houseLocation;
+    private String                   houseLocation;
+
+    public String getDescrible() {
+        return describle;
+    }
+
+    public void setDescrible(String describle) {
+        this.describle = describle;
+    }
 
     public String getAreaId() {
         return areaId;

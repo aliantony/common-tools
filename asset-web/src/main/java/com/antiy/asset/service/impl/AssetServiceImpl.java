@@ -1471,6 +1471,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 通知工作流
          ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
+         if (Objects.isNull(manualStartActivityRequest)) {
+             manualStartActivityRequest = new ManualStartActivityRequest();
+         }
          manualStartActivityRequest.setBusinessId(asset.getStringId());
          manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
          manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
