@@ -1,19 +1,17 @@
 package com.antiy.asset.vo.request;
 
-import java.util.Arrays;
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.Arrays;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -148,6 +146,8 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty(value = "发布时间")
     private Long                        releaseTime;
+
+
     /**
      * 发布者
      */
@@ -163,13 +163,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     @Encode
     private String                      assetSoftwareRelationId;
 
-    public Long getServiceLife() {
-        return serviceLife;
-    }
 
-    public void setServiceLife(Long serviceLife) {
-        this.serviceLife = serviceLife;
-    }
 
     public ActivityHandleRequest getRequest() {
         return request;
@@ -396,5 +390,13 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
                + '\'' + ", language='" + language + '\'' + ", releaseTime=" + releaseTime + ", publisher='" + publisher
                + '\'' + ", memo='" + memo + '\'' + ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\''
                + ", request=" + request + '}';
+    }
+
+    public Long getServiceLife() {
+        return serviceLife;
+    }
+
+    public void setServiceLife(Long serviceLife) {
+        this.serviceLife = serviceLife;
     }
 }
