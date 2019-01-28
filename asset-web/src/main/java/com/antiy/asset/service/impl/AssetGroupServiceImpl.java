@@ -81,6 +81,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public Integer updateAssetGroup(AssetGroupRequest request) throws Exception {
         AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
+        assetGroup.setId(DataTypeUtils.stringToInteger(request.getId()));
         Integer[] assetIdArr = DataTypeUtils.stringArrayToIntegerArray(request.getAssetIds());
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
 
@@ -108,6 +109,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}", assetGroup.toString());
         }
+
+        assetGroupDao.update(assetGroup);
         return result;
     }
 
