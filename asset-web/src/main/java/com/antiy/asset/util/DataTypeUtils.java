@@ -26,7 +26,7 @@ public class DataTypeUtils {
         return result;
     }
 
-    public static String integerTostring(Integer value) {
+    public static String integerToString(Integer value) {
         String result;
         try {
             result = String.valueOf(value);
