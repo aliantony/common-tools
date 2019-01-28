@@ -2,7 +2,10 @@ package com.antiy.asset.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
+import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.entity.AssetOperationRecord;
+import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.entity.AssetSoftwareLicense;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetPortProtocolService;
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
@@ -16,7 +19,10 @@ import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.SoftwareQuery;
-import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.request.AssetImportRequest;
+import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
+import com.antiy.asset.vo.request.AssetSoftwareRequest;
+import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
@@ -107,8 +113,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                     // AssetSoftwareLicense license = BeanConvert.convertBean(request.getSoftwareLicenseRequest(),
                     // AssetSoftwareLicense.class);
-                    AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
-                        AssetPortProtocol.class);
+//                    AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
+//                        AssetPortProtocol.class);
 
                     assetSoftware.setSoftwareStatus(AssetStatusEnum.ANALYZE.getCode());
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -116,10 +122,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetSoftware.setReportSource(2);
                     assetSoftwareDao.insert(assetSoftware);
                     String sid = String.valueOf(assetSoftware.getId());
-                    protocol.setAssetSoftId(sid);
-                    protocol.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                    protocol.setGmtCreate(System.currentTimeMillis());
-                    assetPortProtocolDao.insert(protocol);
+//                    protocol.setAssetSoftId(sid);
+//                    protocol.setCreateUser(LoginUserUtil.getLoginUser().getId());
+//                    protocol.setGmtCreate(System.currentTimeMillis());
+//                    assetPortProtocolDao.insert(protocol);
                     // license.setSoftwareId(assetSoftware.getId());
                     // license.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     // license.setGmtCreate(System.currentTimeMillis());
