@@ -26,7 +26,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, capacity, brand, serial, frequency, slot_type, is_heatsink, stitch, buy_date, warranty_date, transfer_type, telephone, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_id as assetId, capacity, brand, serial, frequency, slot_type as slotType, is_heatsink as isHeatsink, stitch, buy_date as buyDate, warranty_date as warrantyDate, transfer_type as transferType, telephone, gmt_create as gmtCreate, gmt_modified as gmtModified, memo, create_user as createUser, modify_user as modifyUser, status
     </sql>
 
     <sql id="Table_Name">
