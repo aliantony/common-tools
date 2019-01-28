@@ -93,7 +93,10 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
                    || AssetFlowCategoryEnum.HARDWARE_CHANGE.getCode()
                        .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
-            // 完成流程
+            // 硬件完成流程
+            actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
+        }else if (AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode().equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())){
+            //软件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         }
 
@@ -126,19 +129,20 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         if (assetStatusReqeust.getSoftware()) {
             SoftwareFlowEnum softwareFlowEnum = EnumUtil.getByCode(SoftwareFlowEnum.class,
-                assetStatusReqeust.getAssetStatus().getCode());
+                assetStatusReqeust.getSoftwareStatusEnum().getCode());
+            assetOperationRecord.setOriginStatus(assetStatusReqeust.getSoftwareStatusEnum().getCode());
             assetOperationRecord.setContent(
                 softwareFlowEnum != null ? softwareFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
         } else {
             AssetFlowEnum assetFlowEnum = EnumUtil.getByCode(AssetFlowEnum.class,
                 assetStatusReqeust.getAssetStatus().getCode());
+            assetOperationRecord.setOriginStatus(assetStatusReqeust.getAssetStatus().getCode());
             assetOperationRecord.setContent(
                 assetFlowEnum != null ? assetFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
         }
 
         assetOperationRecord.setTargetObjectId(assetStatusReqeust.getAssetId());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
-        assetOperationRecord.setOriginStatus(assetStatusReqeust.getAssetStatus().getCode());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setProcessResult(assetStatusReqeust.getAgree() ? 1 : 0);
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getUsername());
