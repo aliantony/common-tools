@@ -17,6 +17,7 @@ import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -1446,9 +1447,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     return count;
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
-                    logger.error("修改资产失败", e);
+                    throw new BusinessException("资产变更失败");
                 }
-                return 0;
             }
         });
        /* // 状态变更
