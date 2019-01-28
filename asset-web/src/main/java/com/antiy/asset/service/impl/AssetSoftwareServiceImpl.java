@@ -119,6 +119,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetSoftware.setSoftwareStatus(AssetStatusEnum.ANALYZE.getCode());
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
+                    assetSoftware.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
                     assetSoftware.setReportSource(2);
                     assetSoftwareDao.insert(assetSoftware);
                     String sid = String.valueOf(assetSoftware.getId());
