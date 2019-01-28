@@ -1247,6 +1247,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     int count = assetDao.update(asset);
 
                     // 2. 更新cpu信息
+                    // 先删除再新增
+                    LogHandle.log(asset.getId(), AssetEventEnum.ASSET_CPU_DELETE.getName(),
+                            AssetEventEnum.ASSET_CPU_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.info(logger, AssetEventEnum.ASSET_CPU_DELETE.getName() + " {}", asset.getStringId());
+                    assetCpuDao.deleteByAssetId(asset.getId());
                     List<AssetCpuRequest> assetCpuRequestList = assetOuterRequest.getCpu();
                     if (assetCpuRequestList != null && !assetCpuRequestList.isEmpty()) {
                         List<AssetCpu> assetCpuList = BeanConvert.convert(assetCpuRequestList, AssetCpu.class);
@@ -1258,12 +1263,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetCpu.setModifyUser(LoginUserUtil.getLoginUser().getId());
                             assetCpu.setGmtModified(System.currentTimeMillis());
                         }
-                        // 先删除再新增
-                        LogHandle.log(asset.getId(), AssetEventEnum.ASSET_CPU_DELETE.getName(),
-                            AssetEventEnum.ASSET_CPU_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                        LogUtils.info(logger, AssetEventEnum.ASSET_CPU_DELETE.getName() + " {}", asset.getStringId());
-                        assetCpuDao.deleteByAssetId(asset.getId());
-
                         LogHandle.log(assetCpuList, AssetEventEnum.ASSET_CPU_INSERT.getName(),
                             AssetEventEnum.ASSET_CPU_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                         LogUtils.info(logger, AssetEventEnum.ASSET_CPU_INSERT.getName() + " {}",
