@@ -324,7 +324,7 @@
             and category_model = #{categoryModel }
         </if>
         <if test=" name != null">
-            and name = #{name }
+            and name like CONCAT('%',#{name},'%')
         </if>
         <if test=" version != null">
             and version = #{version }
@@ -381,6 +381,10 @@
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
+        </if>
+
+        <if test="name != null">
+            and name like CONCAT('%',#{name},'%')
         </if>
         <if test=" softwareStatus != null">
             and software_status = #{softwareStatus}

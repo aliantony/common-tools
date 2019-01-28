@@ -134,6 +134,7 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty(value = "1表示查询发布时间，2表示查询到期时间")
     private Integer       queryTime;
 
+
     public Integer getQueryTime() {
         return queryTime;
     }
