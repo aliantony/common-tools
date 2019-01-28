@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> 网络设备详情表 </p>
@@ -13,7 +14,7 @@ public class AssetNetworkEquipment extends BaseEntity {
     /**
      * 资产主键
      */
-    private String assetId;
+    private String  assetId;
     /**
      * 接口数目
      */
@@ -33,7 +34,7 @@ public class AssetNetworkEquipment extends BaseEntity {
     /**
      * cpu大小
      */
-    private Integer cpu;
+    private Integer cpuSize;
     /**
      * ios
      */
@@ -98,6 +99,19 @@ public class AssetNetworkEquipment extends BaseEntity {
      * 状态,0 未删除,1已删除
      */
     private Integer status;
+    /**
+     * 固件版本
+     */
+    @ApiModelProperty("固件版本")
+    private String  firmwareVersion;
+
+    public String getFirmwareVersion() {
+        return firmwareVersion;
+    }
+
+    public void setFirmwareVersion(String firmwareVersion) {
+        this.firmwareVersion = firmwareVersion;
+    }
 
     public String getAssetId() {
         return assetId;
@@ -139,12 +153,12 @@ public class AssetNetworkEquipment extends BaseEntity {
         this.cpuVersion = cpuVersion;
     }
 
-    public Integer getCpu() {
-        return cpu;
+    public Integer getCpuSize() {
+        return cpuSize;
     }
 
-    public void setCpu(Integer cpu) {
-        this.cpu = cpu;
+    public void setCpuSize(Integer cpuSize) {
+        this.cpuSize = cpuSize;
     }
 
     public Integer getIsWireless() {
