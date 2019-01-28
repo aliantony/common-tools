@@ -324,7 +324,7 @@
             and category_model = #{categoryModel }
         </if>
         <if test=" name != null">
-            and name = #{name }
+            and name like CONCAT('%',#{name},'%')
         </if>
         <if test=" version != null">
             and version = #{version }
