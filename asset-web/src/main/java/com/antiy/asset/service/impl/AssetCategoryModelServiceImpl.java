@@ -198,8 +198,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public List<AssetCategoryModel> getCategoryByName(String name) throws Exception {
-        return assetCategoryModelDao.getNextLevelCategoryByName(name);
+    public List<AssetCategoryModelResponse> getCategoryByName(String name) throws Exception {
+        return responseConverter.convert(assetCategoryModelDao.getNextLevelCategoryByName(name),
+            AssetCategoryModelResponse.class);
     }
 
     /**
