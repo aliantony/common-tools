@@ -14,19 +14,11 @@ public class AssetGroupResponse extends BaseResponse {
      * 资产组名称
      */
     private String name;
-    /**
-     * 创建时间
-     */
-    private Long   gmtCreate;
+
     /**
      * 备注
      */
     private String memo;
-
-    /**
-     * 创建人名字
-     */
-    private String createUserName;
 
     /**
      * 资产信息
@@ -41,28 +33,12 @@ public class AssetGroupResponse extends BaseResponse {
         this.name = name;
     }
 
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
     public String getMemo() {
         return memo;
     }
 
     public void setMemo(String memo) {
         this.memo = memo;
-    }
-
-    public String getCreateUserName() {
-        return createUserName;
-    }
-
-    public void setCreateUserName(String createUserName) {
-        this.createUserName = createUserName;
     }
 
     public List<String> getAssetList() {
@@ -75,7 +51,7 @@ public class AssetGroupResponse extends BaseResponse {
 
     @Override
     public String toString() {
-        return "AssetGroupResponse{" + ", name='" + name + '\'' + ", gmtCreate=" + gmtCreate + ", memo='" + memo + '\''
-               + ", createUserName='" + createUserName + '\'' + ", assetList=" + assetList + '}';
+        return "AssetGroupResponse{" + ", name='" + name + '\'' + ", gmtCreate=" + memo + '\'' + ", createUserName='"
+               + ", assetList=" + assetList + '}';
     }
 }
