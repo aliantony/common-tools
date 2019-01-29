@@ -5,9 +5,11 @@ import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetUserQuery;
@@ -16,6 +18,7 @@ import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
@@ -35,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -92,6 +96,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private ActivityClient                            activityClient;
     private static final Logger                       logger = LogUtils.get(AssetServiceImpl.class);
+    @Resource
+    private AesEncoder                                aesEncoder;
 
     @Override
 
@@ -394,8 +400,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
+        Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
+        if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
+            query.setIds(processMap.keySet().toArray(new String[]{}));
+        }
         List<Asset> asset = assetDao.findListAsset(query);
         List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
+        if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
+            objects.forEach(object -> {
+                object.setWaitingTaskReponse(processMap.get(object.getStringId()));
+            });
+        }
         return objects;
     }
 
@@ -404,7 +419,31 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
+        Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
+        if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
+            query.setIds(processMap.keySet().toArray(new String[]{}));
+        }
         return assetDao.findCount(query);
+    }
+
+    /**
+     * 获取流程引擎数据，并且返回map对象
+     * @return
+     */
+    public Map<String, WaitingTaskReponse> getAllHardWaitingTask(String definitionKeyType) {
+        // 1.获取当前用户的所有代办任务
+        ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
+        activityWaitingQuery.setUser(
+            aesEncoder.encode(LoginUserUtil.getLoginUser().getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+        activityWaitingQuery.setProcessDefinitionKey(definitionKeyType);
+        ActionResponse<List<WaitingTaskReponse>> actionResponse = activityClient
+            .queryAllWaitingTask(activityWaitingQuery);
+        ParamterExceptionUtils.isTrue(
+            actionResponse != null && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode()),
+            "获取工作流异常");
+        List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
+        return waitingTaskReponses.stream()
+            .collect(Collectors.toMap(WaitingTaskReponse::getBusinessId, waitingTaskReponse -> waitingTaskReponse));
     }
 
     public Integer findCountAssetNumber(AssetQuery query) throws Exception {
@@ -1249,7 +1288,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 2. 更新cpu信息
                     // 先删除再新增
                     LogHandle.log(asset.getId(), AssetEventEnum.ASSET_CPU_DELETE.getName(),
-                            AssetEventEnum.ASSET_CPU_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                        AssetEventEnum.ASSET_CPU_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
                     LogUtils.info(logger, AssetEventEnum.ASSET_CPU_DELETE.getName() + " {}", asset.getStringId());
                     assetCpuDao.deleteByAssetId(asset.getId());
                     List<AssetCpuRequest> assetCpuRequestList = assetOuterRequest.getCpu();
@@ -1419,7 +1458,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetSoftwareLicenseDao.deleteByAssetId(asset.getId());
                     if (!Objects.isNull(assetOuterRequest.getAssetSoftwareRelationList())) {
                         List<AssetSoftwareRelation> assetSoftwareRelationList = BeanConvert
-                                .convert(assetOuterRequest.getAssetSoftwareRelationList(), AssetSoftwareRelation.class);
+                            .convert(assetOuterRequest.getAssetSoftwareRelationList(), AssetSoftwareRelation.class);
                         assetSoftwareRelationList.stream().forEach(relation -> {
                             relation.setAssetId(asset.getStringId());
                             relation.setGmtCreate(System.currentTimeMillis());
@@ -1451,33 +1490,31 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return count;
                 } catch (Exception e) {
-                    logger.info("资产变更失败:",e.getMessage());
+                    logger.info("资产变更失败:", e.getMessage());
                     transactionStatus.setRollbackOnly();
                     throw new BusinessException("资产变更失败");
                 }
             }
         });
-       /* // 状态变更
-        AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
-        assetStatusReqeust.setAssetStatus(AssetStatusEnum.NET_IN);
-        assetStatusReqeust.setAssetId(asset.getStringId());
-        assetStatusReqeust.setAgree(true);
-        assetStatusReqeust.setSoftware(false);
-        assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.HARDWARE_CHANGE);
-        assetStatusReqeust.setManualStartActivityRequest(assetOuterRequest.getActivityRequest());
-        AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeProcessImpl.class)
-            .changeStatus(assetStatusReqeust);*/
+        /* // 状态变更 AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
+         * assetStatusReqeust.setAssetStatus(AssetStatusEnum.NET_IN);
+         * assetStatusReqeust.setAssetId(asset.getStringId()); assetStatusReqeust.setAgree(true);
+         * assetStatusReqeust.setSoftware(false);
+         * assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.HARDWARE_CHANGE);
+         * assetStatusReqeust.setManualStartActivityRequest(assetOuterRequest.getActivityRequest());
+         * AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeProcessImpl.class)
+         * .changeStatus(assetStatusReqeust); */
         // TODO 下发智甲
 
         // 通知工作流
-         ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
-         if (Objects.isNull(manualStartActivityRequest)) {
-             manualStartActivityRequest = new ManualStartActivityRequest();
-         }
-         manualStartActivityRequest.setBusinessId(asset.getStringId());
-         manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
-         manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
-         activityClient.manualStartProcess(manualStartActivityRequest);
+        ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
+        if (Objects.isNull(manualStartActivityRequest)) {
+            manualStartActivityRequest = new ManualStartActivityRequest();
+        }
+        manualStartActivityRequest.setBusinessId(asset.getStringId());
+        manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
+        manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
+        activityClient.manualStartProcess(manualStartActivityRequest);
         return assetCount;
     }
 

@@ -116,6 +116,11 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("安装方式")
     private Integer       installType;
     /**
+     * 安装状态
+     */
+    @ApiModelProperty("安装状态")
+    private Integer       installStatus;
+    /**
      * 状态,0 未删除,1已删除
      */
     @ApiModelProperty("状态,0 未删除,1已删除")
@@ -136,6 +141,14 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty(value = "软件资产Id列表")
     private List<String>  ids;
+
+    public Integer getInstallStatus() {
+        return installStatus;
+    }
+
+    public void setInstallStatus(Integer installStatus) {
+        this.installStatus = installStatus;
+    }
 
     public List<String> getIds() {
         return ids;

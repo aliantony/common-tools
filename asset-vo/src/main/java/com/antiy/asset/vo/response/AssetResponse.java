@@ -183,6 +183,19 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("机房位置")
     private String                   houseLocation;
+    /**
+     * 资产流程信息
+     */
+    @ApiModelProperty("资产流程信息")
+    private WaitingTaskReponse       waitingTaskReponse;
+
+    public WaitingTaskReponse getWaitingTaskReponse() {
+        return waitingTaskReponse;
+    }
+
+    public void setWaitingTaskReponse(WaitingTaskReponse waitingTaskReponse) {
+        this.waitingTaskReponse = waitingTaskReponse;
+    }
 
     public String getDescrible() {
         return describle;
