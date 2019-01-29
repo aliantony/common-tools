@@ -610,11 +610,24 @@
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
-        <if test=" areaIds != null">
+        <if test=" areaIds != null and ids == null">
             and area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
                 #{item}
             </foreach>
+        </if>
+
+        <if test=" areaIds != null and ids != null">
+            and (area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+
+            or id in
+            <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            )
         </if>
         <if test=" assetGroup != null">
             and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id =
@@ -773,14 +786,6 @@
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
-            <trim>
-                <if test=" ids != null">
-                    or id in
-                    <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
-                        #{item}
-                    </foreach>
-                </if>
-            </trim>
         </where>
     </select>
 
@@ -790,14 +795,6 @@
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
-            </trim>
-            <trim>
-                <if test=" ids != null">
-                    or id in
-                    <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
-                        #{item}
-                    </foreach>
-                </if>
             </trim>
         </where>
         ORDER BY
@@ -947,14 +944,6 @@
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
-            </trim>
-            <trim>
-                <if test=" ids != null">
-                    or id in
-                    <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
-                        #{item}
-                    </foreach>
-                </if>
             </trim>
             ORDER BY
             <if test=" ids != null">
