@@ -548,6 +548,7 @@
         asset_software.memo,
         asset_software.language,
         asset_software.path,
+        asset_software.serial,
         asset_software.protocol
         <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
             ,
@@ -776,7 +777,19 @@
         where 1 = 1
         and c.id is not null
         and a.software_id = #{id}
-        and a.install_status in (0, 3)
+        <if test=" installStatus != null">
+            <choose>
+                <when test="installStatus != 0">
+                    and a.install_status = #{installStatus}
+                </when>
+                <otherwise>
+                    and a.install_status in (1,2,3,4)
+                </otherwise>
+            </choose>
+        </if>
+        <if test=" installStatus == null">
+            and a.install_status in (0, 3)
+        </if>
         <if test=" multipleQuery != null">
             and (c.name LIKE CONCAT('%',#{multipleQuery},'%')
             or c.number LIKE CONCAT('%',#{multipleQuery},'%')

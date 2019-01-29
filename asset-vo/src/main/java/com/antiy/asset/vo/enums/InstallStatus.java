@@ -1,11 +1,11 @@
 package com.antiy.asset.vo.enums;
 
 public enum InstallStatus {
-
-    FAIL(0, "失败"),
-    SUCCESS(1, "成功"),
-    INSTALLING(2, "安装中"),
-    UNINSTALLED(3, "未安装"),
+    ALL(0, "全部"),
+    FAIL(1, "失败"),
+    SUCCESS(2, "成功"),
+    INSTALLING(3, "安装中"),
+    UNINSTALLED(4, "未安装"),
     ;
 
     private Integer code;
