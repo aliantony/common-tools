@@ -55,7 +55,7 @@ public class ActivityClientImpl implements ActivityClient {
     @Override
     @AssetLog(description = "获取当前用户的待办任务")
     public ActionResponse<List<WaitingTaskReponse>> queryAllWaitingTask(ActivityWaitingQuery activityWaitingQuery) {
-        return (ActionResponse) baseClient.get(activityWaitingQuery,
+        return (ActionResponse) baseClient.post(activityWaitingQuery,
             new ParameterizedTypeReference<ActionResponse<List<WaitingTaskReponse>>>() {
             }, waitingTaskUrl);
     }

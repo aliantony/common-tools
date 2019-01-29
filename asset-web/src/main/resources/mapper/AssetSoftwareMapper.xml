@@ -410,6 +410,14 @@
             </if>
         </if>
 
+        <if test="ids != null and ids.size() > 0">
+            asset_software.id
+            in
+            <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
         <if test="queryTime == 2">
             <if test="  beginTime != null">
                 and service_life &gt;= #{beginTime }

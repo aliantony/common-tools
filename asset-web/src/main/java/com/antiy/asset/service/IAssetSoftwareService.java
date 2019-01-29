@@ -53,7 +53,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @param query
      * @return
      */
-    List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query) throws Exception;
+    List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query,Map<String, WaitingTaskReponse> waitingTaskReponseMap) throws Exception;
 
     /**
      * 批量查询
