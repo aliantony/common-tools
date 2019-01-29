@@ -1,17 +1,19 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.Arrays;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Arrays;
+
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -147,7 +149,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     @ApiModelProperty(value = "发布时间")
     private Long                        releaseTime;
 
-
     /**
      * 发布者
      */
@@ -163,7 +164,16 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     @Encode
     private String                      assetSoftwareRelationId;
 
+    @ApiModelProperty(value = "购买日期")
+    private Long                        buyDate;
 
+    public Long getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(Long buyDate) {
+        this.buyDate = buyDate;
+    }
 
     public ActivityHandleRequest getRequest() {
         return request;
