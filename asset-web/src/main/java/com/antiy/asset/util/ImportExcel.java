@@ -330,19 +330,7 @@ public class ImportExcel {
                         val = Integer.parseInt(val.toString().substring(0, val.toString().lastIndexOf(".")));
                     } else if (valType == Integer.class) {
                         try {
-                            if (!(val instanceof String)) {
-                                if (val.toString().split("\\.").length > 2
-                                    || !"0".equals(val.toString().split("\\.")[1])) {
-                                    failNums++;
-                                    sb.append("数据格式错误,第").append(dataRow.getRowNum()).append("行，第").append(column)
-                                        .append("列").append(ef.title()).append(val).append("\n");
-                                    log.error("数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title() + " "
-                                              + val);
-                                    flag = false;
-                                    break;
-                                }
-                            }
-                            val = (int) (Double.valueOf(val.toString()).doubleValue());
+                            val = Double.valueOf(val.toString()).intValue();
                         } catch (Exception e) {
                             failNums++;
                             flag = false;
