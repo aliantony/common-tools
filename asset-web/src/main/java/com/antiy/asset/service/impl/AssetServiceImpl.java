@@ -403,7 +403,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
         if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
-            query.setIds(processMap.keySet().toArray(new String[]{}));
+            query.setIds(processMap.keySet().toArray(new String[] {}));
+        } else {
+            query.setIds(new String[] { "0" });
         }
         List<Asset> asset = assetDao.findListAsset(query);
         List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
@@ -422,7 +424,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
         if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
-            query.setIds(processMap.keySet().toArray(new String[]{}));
+            query.setIds(processMap.keySet().toArray(new String[] {}));
+        } else {
+            query.setIds(new String[] { "0" });
         }
         return assetDao.findCount(query);
     }
@@ -443,8 +447,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             actionResponse != null && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode()),
             "获取工作流异常");
         List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
-        return waitingTaskReponses.stream().filter(waitingTaskReponse -> StringUtils.isNotBlank(waitingTaskReponse.getBusinessId()))
-            .collect(Collectors.toMap(WaitingTaskReponse::getBusinessId, Function.identity(),(key1, key2)->key2));
+        return waitingTaskReponses.stream()
+            .filter(waitingTaskReponse -> StringUtils.isNotBlank(waitingTaskReponse.getBusinessId()))
+            .collect(Collectors.toMap(WaitingTaskReponse::getBusinessId, Function.identity(), (key1, key2) -> key2));
     }
 
     public Integer findCountAssetNumber(AssetQuery query) throws Exception {
