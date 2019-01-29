@@ -33,6 +33,19 @@ public class AssetGroupResponse extends BaseResponse {
      */
     List<String>   assetList;
 
+    /**
+     * 资产明细
+     */
+    String   assetDetail;
+
+    public String getAssetDetail() {
+        return assetDetail;
+    }
+
+    public void setAssetDetail(String assetDetail) {
+        this.assetDetail = assetDetail;
+    }
+
     public String getName() {
         return name;
     }

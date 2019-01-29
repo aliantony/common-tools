@@ -8,7 +8,6 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import com.antiy.common.exception.BusinessException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -71,7 +70,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             assetGroupRelationDao.insert(assetGroupRelation);
         }
 
-
         if (!Objects.equals(0, result)) { // 写入业务日志
             LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_INSERT.getName(),
                 AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
@@ -90,7 +88,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
 
         Integer delResult = assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
-
 
         if (!Objects.equals(0, delResult)) {
             // 写入业务日志
@@ -125,9 +122,19 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         List<AssetGroup> assetGroupList = assetGroupDao.findQuery(query);
         List<AssetGroupResponse> assetResponseList = assetGroupToResponseConverter.convert(assetGroupList,
             AssetGroupResponse.class);
+
         for (AssetGroupResponse assetGroupResponse : assetResponseList) {
             List<String> assetList = assetGroupRelationDao
                 .findAssetNameByAssetGroupId(Integer.valueOf(assetGroupResponse.getStringId()));
+            StringBuilder assetDetail = new StringBuilder();
+            for (String assetName : assetList) {
+                if (assetList.size() == 1 || assetList.size() == assetList.size() - 1) {
+                    assetDetail.append(assetName);
+                } else {
+                    assetDetail.append(assetName).append(",");
+                }
+            }
+            assetGroupResponse.setAssetDetail(assetDetail.toString());
             assetGroupResponse.setAssetList(assetList);
         }
         return assetResponseList;
@@ -135,7 +142,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public PageResult<AssetGroupResponse> findPageAssetGroup(AssetGroupQuery query) throws Exception {
-        return new PageResult<AssetGroupResponse>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
+        return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
             this.findListAssetGroup(query));
     }
 
@@ -146,8 +153,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public AssetGroupResponse findGroupById(String id) throws Exception {
-        AssetGroupResponse assetGroupResponse = assetGroupToResponseConverter.convert(assetGroupDao.getById(Integer.valueOf(id)),
-                AssetGroupResponse.class);
+        AssetGroupResponse assetGroupResponse = assetGroupToResponseConverter
+            .convert(assetGroupDao.getById(Integer.valueOf(id)), AssetGroupResponse.class);
         return assetGroupResponse;
     }
 }
