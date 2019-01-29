@@ -56,7 +56,10 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty(value = "方案内容")
     private String  content;
 
-    @ApiModelProperty(value = "方案文件,JSON串")
+    @ApiModelProperty(value = "方案文件,JSON串,{\n" +
+            "\t\"name\": \"zhangsan\",\n" +
+            "\t\"url\": \"http://www.baidu.com\"\n" +
+            "}")
     private String  fileInfo;
 
     @ApiModelProperty(value = "扩展字段,JSON串,基准分析才有 {baseline:true,implement:true}")
