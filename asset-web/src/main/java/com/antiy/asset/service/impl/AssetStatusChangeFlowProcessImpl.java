@@ -49,11 +49,10 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         // 判断资产变更流程中的的分析信息中是否影响基准
         Map<String, Boolean> analyzeInfo = (Map<String, Boolean>) JSONArray
             .parse(assetStatusReqeust.getSchemeRequest().getExtension());
-        BusinessExceptionUtils.isNull(analyzeInfo, "是否更新基准不能为空");
 
         // 如果是硬件资产变更,并且不会影响基准，则会直接到已入网状态
         if (AssetFlowCategoryEnum.HARDWARE_CHANGE.equals(assetStatusReqeust.getAssetFlowCategoryEnum())
-            && !analyzeInfo.get("baseline")) {
+            && analyzeInfo!= null &&  !analyzeInfo.get("baseline")) {
             asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         }
         assetDao.update(asset);
