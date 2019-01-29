@@ -1,5 +1,7 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,15 +9,6 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.NodeUtilsConverter;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.common.base.*;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -24,12 +17,19 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.dao.AssetDepartmentDao;
 import com.antiy.asset.entity.AssetDepartment;
 import com.antiy.asset.service.IAssetDepartmentService;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.NodeUtilsConverter;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
 import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
-
-import static com.antiy.biz.file.FileHelper.logger;
+import com.antiy.common.base.*;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * <p> 资产部门信息 服务实现类 </p>
@@ -68,8 +68,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
                 AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName() + " {}", assetDepartment.toString());
         }
-        return ActionResponse.success(aesEncoder.encode(assetDepartment.getStringId(), LoginUserUtil.getLoginUser()
-            .getUsername()));
+        return ActionResponse
+            .success(aesEncoder.encode(assetDepartment.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
     }
 
     boolean checkNameRepeat(AssetDepartmentRequest request) throws Exception {
@@ -77,7 +77,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             AssetDepartmentQuery assetDepartmentQuery = new AssetDepartmentQuery();
             assetDepartmentQuery.setName(request.getName());
             return assetDepartmentDao.findRepeatName(
-                request.getId() == null ? null : DataTypeUtils.stringToInteger(request.getId()), request.getName()) >= 1;
+                request.getId() == null ? null : DataTypeUtils.stringToInteger(request.getId()),
+                request.getName()) >= 1;
         }
         return false;
     }
