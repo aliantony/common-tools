@@ -852,7 +852,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     sum = sum + (Long) map.get("value");
                 }
             }
-            result.put("其他", sum);
+            if (sum != 0) {
+                result.put("其他", sum);
+            }
             AssetCountResponse assetCountResponse = new AssetCountResponse();
             assetCountResponse.setMap(ArrayTypeUtil.ObjectArrayToEntryArray(result.entrySet().toArray()));
             return assetCountResponse;

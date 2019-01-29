@@ -612,11 +612,11 @@
     </select>
 
     <select id="countManufacturer" resultMap="ManufacturerResultMap">
-        select manufacturer, count(manufacturer) num from asset_software where software_status != 5 and status =1 GROUP BY manufacturer
+        select manufacturer, count(manufacturer) num from asset_software where software_status != 4 and status =1 GROUP BY manufacturer
     </select>
 
     <select id="countStatus" resultMap="StatusResultMap">
-        select software_status, count(software_status) num from asset_software  where software_status != 5 and status =1 GROUP BY software_status
+        select software_status, count(software_status) num from asset_software  where status =1 GROUP BY software_status
     </select>
 
     <select id="findCountByCategoryModel" resultType="java.lang.Long"
@@ -635,7 +635,7 @@
                 #{item}
             </foreach>
         </if>
-        and status=1
+        and status=1 and software_status != 4
     </select>
 
     <select id="pulldownManufacturer" resultType="java.lang.String">
