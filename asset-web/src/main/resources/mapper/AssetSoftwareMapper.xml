@@ -736,11 +736,11 @@
         and a.software_id = #{id}
         <if test=" installStatus != null">
             <choose>
-                <when test="installStatus != 0">
-                    and a.install_status = #{installStatus}
+                <when test="installStatus == 0">
+                    and a.install_status in (1,2,3,4)
                 </when>
                 <otherwise>
-                    and a.install_status in (1,2,3,4)
+                    and a.install_status = #{installStatus}
                 </otherwise>
             </choose>
         </if>
@@ -791,11 +791,11 @@
         and a.software_id = #{id}
         <if test=" installStatus != null">
             <choose>
-                <when test="installStatus != 0">
-                    and a.install_status = #{installStatus}
+                <when test="installStatus == 0">
+                    and a.install_status in (1,2,3,4)
                 </when>
                 <otherwise>
-                    and a.install_status in (1,2,3,4)
+                    and a.install_status = #{installStatus}
                 </otherwise>
             </choose>
         </if>
