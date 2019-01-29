@@ -328,7 +328,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     public PageResult<AssetSoftwareResponse> findPageAssetSoftware(AssetSoftwareQuery query) throws Exception {
         Map<String, WaitingTaskReponse> waitingTaskReponseMap = getAllSoftWaitingTask("soft");
         if (MapUtils.isEmpty(waitingTaskReponseMap)) {
-            return null;
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
         }
         Set<String> keys = waitingTaskReponseMap.keySet();
         List<String> list = new ArrayList<>(keys);
