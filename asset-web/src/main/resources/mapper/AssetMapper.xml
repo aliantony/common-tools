@@ -610,12 +610,12 @@
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
-
-        and id in
-        <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-
+        <if test=" ids != null">
+            and id in
+            <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test=" areaIds != null">
             and area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">

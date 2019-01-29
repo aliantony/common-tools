@@ -405,7 +405,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
             query.setIds(processMap.keySet().toArray(new String[] {}));
         } else {
-            query.setIds(new String[] { "0" });
+            return Lists.newArrayList();
         }
         List<Asset> asset = assetDao.findListAsset(query);
         List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
@@ -425,8 +425,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
         if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
             query.setIds(processMap.keySet().toArray(new String[] {}));
-        } else {
-            query.setIds(new String[] { "0" });
         }
         return assetDao.findCount(query);
     }
