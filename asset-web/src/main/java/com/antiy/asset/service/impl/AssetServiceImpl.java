@@ -456,6 +456,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception {
+        Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
+        if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
+            query.setIds(processMap.keySet().toArray(new String[] {}));
+        } else {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
+        }
         return new PageResult<>(query.getPageSize(), this.findCountAsset(query), query.getCurrentPage(),
             this.findListAsset(query));
     }
