@@ -152,7 +152,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetOperationRecord.setTargetObjectId(sid);
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
                     assetOperationRecord.setOriginStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
-                    assetOperationRecord.setTargetStatus(AssetStatusEnum.ANALYZE.getCode());
+                    assetOperationRecord.setTargetStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
                     assetOperationRecord.setContent("登记软件资产");
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
@@ -633,7 +633,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
             assetOperationRecord.setTargetObjectId(asset.getStringId());
             assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
-            assetOperationRecord.setTargetStatus(AssetStatusEnum.ANALYZE.getCode());
+            assetOperationRecord.setTargetStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
             assetOperationRecord.setContent("登记软件资产");
             assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
