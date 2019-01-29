@@ -753,7 +753,17 @@
             or c.serial LIKE CONCAT('%',#{multipleQuery},'%'))
         </if>
         <if test=" installType != null">
-            and a.install_type = #{installType}
+            <choose>
+                <when test="installType == 0">
+                    and a.install_type in (1,2)
+                </when>
+                <otherwise>
+                    and a.install_type = #{installType}
+                </otherwise>
+            </choose>
+        </if>
+        <if test=" installType != null">
+            and a.install_type in (1,2)
         </if>
         <if test=" assetId != null">
             and a.asset_id = #{assetId}
@@ -808,7 +818,17 @@
             or c.serial LIKE CONCAT('%',#{multipleQuery},'%'))
         </if>
         <if test=" installType != null">
-            and a.install_type = #{installType}
+            <choose>
+                <when test="installType == 0">
+                    and a.install_type in (1,2)
+                </when>
+                <otherwise>
+                    and a.install_type = #{installType}
+                </otherwise>
+            </choose>
+        </if>
+        <if test=" installType != null">
+            and a.install_type in (1,2)
         </if>
         <if test=" assetId != null">
             and a.asset_id = #{assetId}
