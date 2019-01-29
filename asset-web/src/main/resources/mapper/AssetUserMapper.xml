@@ -184,7 +184,6 @@
         <if test=" address != null">
             AND address like concat('%',  #{address },'%')
         </if>
-        and status = 1
     </sql>
     <sql id="Page_List">
         <if test="pageSize !=-1">
@@ -241,6 +240,7 @@
             <trim prefixOverrides="and">
                 <include refid="Where_Column_List"></include>
             </trim>
+            and status = 1
         </where>
     </select>
 
@@ -260,6 +260,7 @@
             <trim prefixOverrides="and">
                 <include refid="Where_Column_List"></include>
             </trim>
+            and status = 1
         </where>
     </select>
 
@@ -271,6 +272,7 @@
             <trim prefixOverrides="and">
                 <include refid="Where_Column_List"></include>
             </trim>
+            and status = 1
         </where>
     </select>
 
@@ -284,6 +286,7 @@
             <trim prefixOverrides="and">
                 <include refid="Where_Column_List"></include>
             </trim>
+            and status = 1
         </where>
         <include refid="Page_List"></include>
 
@@ -301,6 +304,26 @@
             and status = 1
         </trim>
         <include refid="Page_List"></include>
+    </select>
+    <select id="findExportListAssetUser" resultType="com.antiy.asset.entity.AssetUser"
+            parameterType="com.antiy.asset.vo.query.AssetUserQuery">
+        select
+        a.id,
+        a.NAME,
+        a.department_id AS departmentId,
+        b.name AS departmentName,
+        a.email,
+        a.qq,
+        a.weixin,
+        a.mobile,
+        a.address,
+        a.memo
+        from
+        asset_user a left join asset_department b on a.department_id = b.id
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <include refid="Where_Column_List"></include>
+            and a.status = 1
+        </trim>
     </select>
     <!--查询资产表的使用者信息-->
     <select id="findUserInAsset" resultType="AssetUser" parameterType="com.antiy.common.base.ObjectQuery">

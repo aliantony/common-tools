@@ -87,6 +87,29 @@ public class AssetUserController {
     public void exportTemplet() throws Exception {
         ExcelUtils.exportTemplet(AssetUserEntity.class, "用户信息表", "用户信息");
     }
+    /**
+     * 导出用户信息
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "导出用户信息", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:user:exportTemplet')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/exportData", method = RequestMethod.GET)
+    public void exportData(@ApiParam(value = "assetUser") AssetUserQuery assetUser) throws Exception {
+        if (!Objects.isNull(assetUser.getDepartmentId())) {
+            List<AssetDepartmentResponse> responses = iAssetDepartmentService
+                    .findAssetDepartmentById(DataTypeUtils.stringToInteger(assetUser.getDepartmentId()));
+            String[] ids = new String[responses.size()];
+            for (int i = 0; i < responses.size(); i++) {
+                ids[i] = responses.get(i).getStringId();
+            }
+            assetUser.setDepartmentIds(ids);
+        }
+        List<AssetUser> assetUserResponseList = iAssetUserService.findExportListAssetUser(assetUser);
+        List<AssetUserEntity> assetUserEntityList = BeanConvert.convert(assetUserResponseList, AssetUserEntity.class);
+        ExcelUtils.exportToClient(AssetUserEntity.class, "用户信息表.xlsx", "用户信息", assetUserEntityList);
+    }
 
     /**
      * 修改

@@ -30,4 +30,6 @@ public interface AssetUserDao extends IBaseDao<AssetUser> {
     void insertBatch(List<AssetUser> assetUserList);
 
     List<AssetUser> queryUserList(AssetUserQuery query);
+
+    List<AssetUser> findExportListAssetUser(AssetUserQuery assetUser);
 }

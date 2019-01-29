@@ -3,6 +3,7 @@ package com.antiy.asset.service;
 import java.util.List;
 
 import com.antiy.asset.entity.AssetUser;
+import com.antiy.asset.templet.AssetUserEntity;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
 import com.antiy.asset.vo.response.AssetUserResponse;
@@ -62,4 +63,6 @@ public interface IAssetUserService extends IBaseService<AssetUser> {
      * @param assetUserList
      */
     void importUser(List<AssetUser> assetUserList);
+
+    List<AssetUser> findExportListAssetUser(AssetUserQuery assetUser);
 }
