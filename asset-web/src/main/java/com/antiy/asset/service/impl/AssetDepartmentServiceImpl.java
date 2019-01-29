@@ -88,7 +88,6 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         if (checkNameRepeat(request)) {
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该部门名已存在");
         }
-        assetDepartment.setParentId(null);
         assetDepartment.setStatus(1);
         assetDepartment.setGmtModified(System.currentTimeMillis());
         Integer result = assetDepartmentDao.update(assetDepartment);
