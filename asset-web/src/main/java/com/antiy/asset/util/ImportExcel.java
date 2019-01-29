@@ -340,7 +340,6 @@ public class ImportExcel {
                             break;
                         }
                     } else if (valType == Long.class) {
-                        // val = Long.valueOf(val.toString()).longValue();
                         try {
                             Date date = DateUtil.getJavaDate(Double.valueOf(val.toString()).doubleValue());
                             val = date.getTime();
