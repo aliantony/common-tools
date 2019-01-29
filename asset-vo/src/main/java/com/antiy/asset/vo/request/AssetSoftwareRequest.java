@@ -24,6 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "软件请求")
 public class AssetSoftwareRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty(value = "登记流程数据")
+    @Valid
     private ManualStartActivityRequest  activityRequest;
     @ApiModelProperty(value = "流程处理")
     @Valid
