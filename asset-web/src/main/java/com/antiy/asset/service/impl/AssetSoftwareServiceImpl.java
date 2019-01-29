@@ -291,8 +291,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query,
-                                                             Map<String, WaitingTaskReponse> waitingTaskReponseMap) throws Exception {
+    public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query) throws Exception {
         List<AssetSoftware> assetSoftware = assetSoftwareDao.findListAssetSoftware(query);
         Map<Integer, Long> softAssetCount = null;
         if (query.getQueryAssetCount()) {
@@ -312,10 +311,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                         ? finalSoftAssetCount.get(assetSoftware.getId()).intValue()
                         : 0);
                 }
-
-                if (MapUtils.isNotEmpty(waitingTaskReponseMap)) {
-                    assetSoftwareResponse.setWaitingTaskReponse(waitingTaskReponseMap.get(assetSoftware.getStringId()));
-                }
             }
         };
         return baseConverter.convert(assetSoftware, AssetSoftwareResponse.class);
@@ -327,15 +322,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public PageResult<AssetSoftwareResponse> findPageAssetSoftware(AssetSoftwareQuery query) throws Exception {
-        Map<String, WaitingTaskReponse> waitingTaskReponseMap = getAllSoftWaitingTask("soft");
-        if (MapUtils.isEmpty(waitingTaskReponseMap)) {
-            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
-        }
-        Set<String> keys = waitingTaskReponseMap.keySet();
-        List<String> list = new ArrayList<>(keys);
-        query.setIds(list);
         return new PageResult<>(query.getPageSize(), this.findCountAssetSoftware(query), query.getCurrentPage(),
-            this.findListAssetSoftware(query, waitingTaskReponseMap));
+            this.findListAssetSoftware(query));
     }
 
     /**
@@ -684,14 +672,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         assetSoftwareQuery.setQueryAssetCount(true);
         assetSoftwareQuery.setPageSize(-1);
-        Map<String, WaitingTaskReponse> waitingTaskReponseMap = getAllSoftWaitingTask("soft");
-        if (MapUtils.isEmpty(waitingTaskReponseMap)) {
-            return;
-        }
-        Set<String> keys = waitingTaskReponseMap.keySet();
-        List<String> ids = new ArrayList<>(keys);
-        assetSoftwareQuery.setIds(ids);
-        List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery, waitingTaskReponseMap);
+        List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery);
         ParamterExceptionUtils.isEmpty(list, "资产数据不能为空");
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setSheetName("资产信息表");
