@@ -313,7 +313,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 }
 
                 if (MapUtils.isNotEmpty(waitingTaskReponseMap)) {
-                    assetSoftwareResponse.setWaitingTaskReponse(waitingTaskReponseMap.get(assetSoftware.getId()));
+                    assetSoftwareResponse.setWaitingTaskReponse(waitingTaskReponseMap.get(assetSoftware.getStringId()));
                 }
             }
         };
