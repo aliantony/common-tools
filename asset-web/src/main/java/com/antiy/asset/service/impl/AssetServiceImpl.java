@@ -864,7 +864,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public AssetCountColumnarResponse countStatus() throws Exception {
         List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        List<Map<String, Long>> list = assetSoftwareDao.countStatus(ids);
+        List<Map<String, Long>> list = assetDao.countStatus(ids);
         Map<String, Long> result = new HashMap();
         for (AssetStatusEnum assetStatusEnum : AssetStatusEnum.values()) {
             result.put(assetStatusEnum.getMsg(), 0L);
