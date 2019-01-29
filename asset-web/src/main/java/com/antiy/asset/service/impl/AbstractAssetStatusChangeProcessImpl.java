@@ -95,17 +95,18 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                        .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             // 硬件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
-        }else if (AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode().equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())){
-            //软件完成流程
+        } else if (AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode()
+            .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+            // 软件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         }
 
-     /*   // 如果流程引擎为空,直接返回错误信息
+        // 如果流程引擎为空,直接返回错误信息
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
         }
-*/
+
         // 4.调用工单系统
         if (null != assetStatusReqeust.getWorkOrderVO()) {
             actionResponse = workOrderClient.createWorkOrder(assetStatusReqeust.getWorkOrderVO());
@@ -162,7 +163,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
             scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));
             scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
-            scheme.setPutintoUserId(DataTypeUtils.stringToInteger(aesEncoder.decode(assetStatusReqeust.getWorkOrderVO().getExecuteUserId(),LoginUserUtil.getLoginUser().getUsername())));
+            scheme.setPutintoUserId(DataTypeUtils.stringToInteger(aesEncoder.decode(
+                assetStatusReqeust.getWorkOrderVO().getExecuteUserId(), LoginUserUtil.getLoginUser().getUsername())));
         }
         scheme.setAssetId(assetStatusReqeust.getAssetId());
         return scheme;
