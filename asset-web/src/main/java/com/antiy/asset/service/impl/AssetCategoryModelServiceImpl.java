@@ -113,7 +113,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         // 判断是不是系统内置
         if (checkIsDefault(assetCategoryModelById)) {
             assetCategoryModel.setStatus(1);
-            assetCategoryModel.setParentId(null);
+            setParentType(assetCategoryModel);
             assetCategoryModel.setAssetType(null);
             Integer result = assetCategoryModelDao.update(assetCategoryModel);
             if (!Objects.equals(0, result)) {
