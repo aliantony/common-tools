@@ -14,9 +14,12 @@ public class AssetUserEntity {
     /**
      * 部门主键
      */
-    @ExcelField(value = "departmentId", align = 1, title = "所属部门", type = 0, required = true)
     private Integer departmentId;
-
+    /**
+     * 部门名
+     */
+    @ExcelField(value = "departmentName", align = 1, title = "所属部门", type = 0, required = true)
+    private String departmentName;
     /**
      * 电子邮箱
      */
@@ -117,4 +120,11 @@ public class AssetUserEntity {
         this.address = address;
     }
 
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
 }

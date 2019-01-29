@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.templet.AssetUserEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,5 +113,10 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
             user.setMemo("");
         });
         assetUserDao.insertBatch(assetUserList);
+    }
+
+    @Override
+    public List<AssetUser> findExportListAssetUser(AssetUserQuery assetUser) {
+        return assetUserDao.findExportListAssetUser(assetUser);
     }
 }

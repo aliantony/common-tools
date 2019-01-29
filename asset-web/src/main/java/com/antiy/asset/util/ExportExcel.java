@@ -170,8 +170,8 @@ public class ExportExcel {
                 && StringUtils.isNotBlank(((ExcelField) annotationList.get(i)[0]).dictType())) {
                 XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper(sheet);
                 XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint) dvHelper
-                    .createExplicitListConstraint(CodeUtils.getCodeArray(((ExcelField) annotationList.get(i)[0])
-                        .dictType()));
+                    .createExplicitListConstraint(
+                        CodeUtils.getCodeArray(((ExcelField) annotationList.get(i)[0]).dictType()));
                 // 设置区域边界
                 CellRangeAddressList addressList = new CellRangeAddressList(1, 100000, i, i);
                 XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(dvConstraint,
@@ -181,8 +181,6 @@ public class ExportExcel {
                 validation.setShowPromptBox(true);
                 sheet.addValidationData(validation);
             }
-            CellDateFormatter cellDateFormatter = new CellDateFormatter("yyyy/MM/dd");
-
             sheet.autoSizeColumn(i);
         }
         for (int i = 0; i < headerList.size(); i++) {
@@ -324,7 +322,13 @@ public class ExportExcel {
      * @return
      */
     public void addCell(Row row, int column, Object val, int align) {
+        if (Objects.isNull(val)) {
+            return;
+        }
         Cell cell = row.createCell(column);
+        if (this.sheet.getColumnWidth(column) < val.toString().getBytes().length * 256) {
+            this.sheet.setColumnWidth(column, val.toString().getBytes().length * 256);
+        }
         CellStyle style = styles.get("data" + (align >= 1 && align <= 3 ? align : ""));
         cell.setCellStyle(style);
         try {
@@ -390,7 +394,8 @@ public class ExportExcel {
                         }
                         if (StringUtils.isNotBlank(excelField.dictType())) {
                             if (value != null) {
-                                value = CodeUtils.getCodeName(excelField.dictType(), Integer.parseInt(value.toString()));
+                                value = CodeUtils.getCodeName(excelField.dictType(),
+                                    Integer.parseInt(value.toString()));
                             } else {
                                 value = "";
                             }
@@ -454,8 +459,8 @@ public class ExportExcel {
     public void exportToClient(HttpServletResponse response, String fileName, List<?> dataList) throws IOException {
         response.reset();
         response.setContentType("application/octet-stream; charset=utf-8");
-        response.setHeader("Content-Disposition", "attachment; filename="
-                                                  + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
+        response.setHeader("Content-Disposition",
+            "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
         // 填充数据
         setDataList(dataList);
         write(response.getOutputStream());
@@ -501,8 +506,8 @@ public class ExportExcel {
         }
         response.reset();
         response.setContentType("application/octet-stream; charset=utf-8");
-        response.setHeader("Content-Disposition", "attachment; filename="
-                                                  + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
+        response.setHeader("Content-Disposition",
+            "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
         write(response.getOutputStream());
     }
 }
