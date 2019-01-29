@@ -38,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -442,8 +443,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             actionResponse != null && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode()),
             "获取工作流异常");
         List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
-        return waitingTaskReponses.stream()
-            .collect(Collectors.toMap(WaitingTaskReponse::getBusinessId, waitingTaskReponse -> waitingTaskReponse));
+        return waitingTaskReponses.stream().filter(waitingTaskReponse -> StringUtils.isNotBlank(waitingTaskReponse.getBusinessId()))
+            .collect(Collectors.toMap(WaitingTaskReponse::getBusinessId, Function.identity(),(key1, key2)->key2));
     }
 
     public Integer findCountAssetNumber(AssetQuery query) throws Exception {
