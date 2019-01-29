@@ -616,7 +616,6 @@
                 #{item}
             </foreach>
         </if>
-
         <if test=" areaIds != null and ids != null">
             and (area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
@@ -629,6 +628,14 @@
             </foreach>
             )
         </if>
+
+        <if test="areaIds==null and ids != null">
+            and id in
+            <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
         <if test=" assetGroup != null">
             and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id =
             #{assetGroup} and b.status = 1)
