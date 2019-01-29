@@ -328,17 +328,10 @@
     <!--查询资产表的使用者信息-->
     <select id="findUserInAsset" resultType="AssetUser" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
-        distinct
-            asset.responsible_user_id,
             au.name,
             au.id
-        FROM
-            asset
-            LEFT JOIN asset_user au ON asset.responsible_user_id = au.id
-        WHERE
-            asset.responsible_user_id IS NOT NULL
-        and
-            au.status = 1
+        FROM asset_user au
+        WHERE  au.status = 1 and au.name is not null
     </select>
 
     <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetUser" useGeneratedKeys="true" keyProperty="id"
