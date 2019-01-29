@@ -610,12 +610,6 @@
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
-        <if test=" ids != null">
-            and id in
-            <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
         <if test=" areaIds != null">
             and area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
@@ -779,6 +773,14 @@
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
+            <trim>
+                <if test=" ids != null">
+                    or id in
+                    <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+            </trim>
         </where>
     </select>
 
@@ -789,7 +791,23 @@
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
+            <trim>
+                <if test=" ids != null">
+                    or id in
+                    <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+            </trim>
         </where>
+        ORDER BY
+        <if test=" ids != null">
+            FIELD(`id`,  <foreach index="index" item="item" collection="ids" separator=",">
+            #{item}
+        </foreach>
+            ) DESC,
+        </if>
+        id desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -926,9 +944,28 @@
         left join asset_user d on a.responsible_user_id = d.id and d.status = 1
         group by a.id
         order by a.gmt_create desc) asset
-        <trim prefix="WHERE" prefixOverrides="AND|OR">
-            <include refid="Multiple_Query"></include>
-        </trim>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Multiple_Query"></include>
+            </trim>
+            <trim>
+                <if test=" ids != null">
+                    or id in
+                    <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+            </trim>
+            ORDER BY
+            <if test=" ids != null">
+                FIELD(`id`,  <foreach index="index" item="item" collection="ids" separator=",">
+                #{item}
+            </foreach>
+                ) DESC,
+            </if>
+            id desc
+        </where>
+
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
