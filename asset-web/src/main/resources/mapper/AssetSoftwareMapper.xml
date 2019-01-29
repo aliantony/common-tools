@@ -745,7 +745,7 @@
             </choose>
         </if>
         <if test=" installStatus == null">
-            and a.install_status in (0, 3)
+            and a.install_status in (1, 4)
         </if>
         <if test=" multipleQuery != null">
             and (c.name LIKE CONCAT('%',#{multipleQuery},'%')
@@ -800,7 +800,7 @@
             </choose>
         </if>
         <if test=" installStatus == null">
-            and a.install_status in (0, 3)
+            and a.install_status in (1, 4)
         </if>
         <if test=" multipleQuery != null">
             and (c.name LIKE CONCAT('%',#{multipleQuery},'%')
