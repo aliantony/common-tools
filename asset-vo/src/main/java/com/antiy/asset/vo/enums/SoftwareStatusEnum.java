@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
  * @Description:
  */
 public enum SoftwareStatusEnum {
-    WATI_REGSIST(1, "待登记"), NOT_REGSIST(2, "不予登记"), WAIT_ANALYZE(3, "待分析"), ALLOW_INSTALL(4, "可安装"), RETIRE(5, "已退役");
+    WATI_REGSIST(1, "待登记"), WAIT_ANALYZE(2, "待分析"), ALLOW_INSTALL(3, "可安装"), RETIRE(4, "已退役"), NOT_REGSIST(5, "不予登记");
 
     SoftwareStatusEnum(Integer code, String msg) {
         this.code = code;
@@ -52,7 +52,6 @@ public enum SoftwareStatusEnum {
     public Integer getCode() {
         return code;
     }
-
 
     public String getMsg() {
         return msg;
