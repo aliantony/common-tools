@@ -1,8 +1,12 @@
 package com.antiy.asset.intergration;
 
+import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.ManualStartActivityRequest;
+import com.antiy.asset.vo.response.WaitingTaskReponse;
 import com.antiy.common.base.ActionResponse;
+
+import java.util.List;
 
 /**
  * @auther: zhangbing
@@ -24,5 +28,11 @@ public interface ActivityClient {
      * @return
      */
     ActionResponse completeTask(ActivityHandleRequest request);
+
+    /**
+     * 查询当前用户的代办任务
+     * @return
+     */
+    ActionResponse<List<WaitingTaskReponse>> queryAllWaitingTask(ActivityWaitingQuery activityWaitingQuery);
 
 }

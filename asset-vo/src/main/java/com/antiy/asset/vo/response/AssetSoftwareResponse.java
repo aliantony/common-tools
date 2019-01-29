@@ -17,147 +17,158 @@ public class AssetSoftwareResponse extends BaseResponse {
      * 软件大小(KB)
      */
     @ApiModelProperty("软件大小(KB)")
-    private Integer size;
+    private Integer            size;
     /**
      * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
      */
     @ApiModelProperty("操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)")
-    private String  operationSystem;
+    private String             operationSystem;
     /**
      * 软件品类
      */
     @ApiModelProperty("软件品类")
     @Encode
-    private String  categoryModel;
+    private String             categoryModel;
 
     /**
      * 软件品类名字
      */
     @ApiModelProperty(value = "软件品类名字")
-    private String  categoryModelName;
+    private String             categoryModelName;
 
     /**
      * 软件名称
      */
     @ApiModelProperty("软件名称")
-    private String  name;
+    private String             name;
     /**
      * 上传的软件名称
      */
     @ApiModelProperty("上传的软件名称")
-    private String  uploadSoftwareName;
+    private String             uploadSoftwareName;
     /**
      * 安装包路径
      */
     @ApiModelProperty("安装包路径")
-    private String  path;
+    private String             path;
     /**
      * 版本
      */
     @ApiModelProperty("版本")
-    private String  version;
+    private String             version;
     /**
      * 厂商
      */
     @ApiModelProperty("厂商")
-    private String  manufacturer;
+    private String             manufacturer;
     /**
      * 软件描述
      */
     @ApiModelProperty("软件描述")
-    private String  description;
+    private String             description;
 
     /**
      * 软件状态：1待登记2待分析3可安装4已退役5不予登记
      */
     @ApiModelProperty("软件状态：1待登记2待分析3可安装4已退役5不予登记")
-    private Integer softwareStatus;
+    private Integer            softwareStatus;
 
     /**
      * 0-免费软件，1-商业软件
      */
     @ApiModelProperty("1-免费软件，2-商业软件")
-    private Integer authorization;
+    private Integer            authorization;
     /**
      * 上报来源:1-自动上报，2-人工上报
      */
     @ApiModelProperty("上报来源:1-自动上报，2-人工上报")
-    private Integer reportSource;
+    private Integer            reportSource;
     /**
      * 端口
      */
     @ApiModelProperty("端口")
-    private String  port;
+    private String             port;
     /**
      * 语言
      */
     @ApiModelProperty("语言")
-    private String  language;
+    private String             language;
     /**
      * 发布时间
      */
     @ApiModelProperty("发布时间")
-    private Long    releaseTime;
+    private Long               releaseTime;
     /**
      * 发布者
      */
     @ApiModelProperty("发布者")
-    private String  publisher;
+    private String             publisher;
     /**
      * 创建时间
      */
     @ApiModelProperty("创建时间")
-    private Long    gmtCreate;
+    private Long               gmtCreate;
     /**
      * 备注
      */
     @ApiModelProperty("备注")
-    private String  memo;
+    private String             memo;
     /**
      * 更新时间
      */
     @ApiModelProperty("更新时间")
-    private Long    gmtModified;
+    private Long               gmtModified;
     /**
      * 创建人
      */
     @ApiModelProperty("创建人")
-    private Integer createUser;
+    private Integer            createUser;
     /**
      * 修改人
      */
     @ApiModelProperty("修改人")
-    private Integer modifyUser;
+    private Integer            modifyUser;
     /**
      * 状态,0 未删除,1已删除
      */
     @ApiModelProperty("状态,0 未删除,1已删除")
-    private Integer status;
+    private Integer            status;
 
     /**
      * 关联硬件资产数
      */
     @ApiModelProperty(value = "关联 硬件资产数")
-    private Integer assetCount;
+    private Integer            assetCount;
     /**
      * 软件许可密钥
      */
     @ApiModelProperty(value = "软件许可密钥")
-    private String  licenseSecretKey;
+    private String             licenseSecretKey;
 
     @ApiModelProperty(value = "序列号")
-    private String  serial;
+    private String             serial;
     /**
      * MD5/SHA
      */
     @ApiModelProperty(value = "md5码")
-    private String  md5Code;
+    private String             md5Code;
 
     @ApiModelProperty(value = "软件到期时间")
     /**
      * 到期时间
      */
-    private Long    serviceLife;
+    private Long               serviceLife;
+
+    @ApiModelProperty(value = "代办任务信息")
+    private WaitingTaskReponse waitingTaskReponse;
+
+    public WaitingTaskReponse getWaitingTaskReponse() {
+        return waitingTaskReponse;
+    }
+
+    public void setWaitingTaskReponse(WaitingTaskReponse waitingTaskReponse) {
+        this.waitingTaskReponse = waitingTaskReponse;
+    }
 
     public Long getServiceLife() {
         return serviceLife;

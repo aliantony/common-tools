@@ -1,5 +1,25 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
@@ -15,10 +35,7 @@ import com.antiy.asset.templet.ExportSoftwareEntity;
 import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.*;
 import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.AssetPortProtocolQuery;
-import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
-import com.antiy.asset.vo.query.AssetSoftwareQuery;
-import com.antiy.asset.vo.query.SoftwareQuery;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
@@ -33,25 +50,6 @@ import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -65,7 +63,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Resource
     private AssetSoftwareDao                                                 assetSoftwareDao;
     @Resource
-    private AesEncoder aesEncoder;
+    private AesEncoder                                                       aesEncoder;
     @Resource
     private AssetSoftwareRelationDao                                         assetSoftwareRelationDao;
     @Resource
@@ -185,7 +183,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             }
         }
 
-        return ActionResponse.success(aesEncoder.encode(num.toString(),LoginUserUtil.getLoginUser().getUsername()));
+        return ActionResponse.success(aesEncoder.encode(num.toString(), LoginUserUtil.getLoginUser().getUsername()));
 
     }
 
@@ -323,8 +321,29 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public PageResult<AssetSoftwareResponse> findPageAssetSoftware(AssetSoftwareQuery query) throws Exception {
+        Map<String, WaitingTaskReponse> waitingTaskReponseMap = getAllSoftWaitingTask("soft");
         return new PageResult<>(query.getPageSize(), this.findCountAssetSoftware(query), query.getCurrentPage(),
             this.findListAssetSoftware(query));
+    }
+
+    /**
+     * 获取流程引擎数据，并且返回map对象
+     * @return
+     */
+    public Map<String, WaitingTaskReponse> getAllSoftWaitingTask(String definitionKeyType) {
+        // 1.获取当前用户的所有代办任务
+        ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
+        activityWaitingQuery.setUser(
+            aesEncoder.encode(LoginUserUtil.getLoginUser().getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+        activityWaitingQuery.setProcessDefinitionKey(definitionKeyType);
+        ActionResponse<List<WaitingTaskReponse>> actionResponse = activityClient
+            .queryAllWaitingTask(activityWaitingQuery);
+        ParamterExceptionUtils.isTrue(
+            actionResponse != null && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode()),
+            "获取工作流异常");
+        List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
+        return waitingTaskReponses.stream()
+            .collect(Collectors.toMap(WaitingTaskReponse::getBusinessId, waitingTaskReponse -> waitingTaskReponse));
     }
 
     @Override

@@ -34,7 +34,7 @@ public class AssetCpu extends BaseEntity {
      * CPU主频
      */
     private Float             mainFrequency;
-    /**
+    /**`1
      * 线程数
      */
     private Integer           threadSize;

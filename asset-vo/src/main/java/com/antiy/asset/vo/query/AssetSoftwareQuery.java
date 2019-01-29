@@ -134,6 +134,16 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty(value = "1表示查询发布时间，2表示查询到期时间")
     private Integer       queryTime;
 
+    @ApiModelProperty(value = "软件资产Id列表")
+    private List<String>  ids;
+
+    public List<String> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<String> ids) {
+        this.ids = ids;
+    }
 
     public Integer getQueryTime() {
         return queryTime;
