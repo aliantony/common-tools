@@ -41,11 +41,11 @@
 
 
     <sql id="IF_Base_Column_List">
-        <if test=" firmwareVersion != null">
-            firmware_version,
-        </if>
         <if test=" assetId != null">
             asset_id,
+        </if>
+        <if test=" firmwareVersion != null">
+            firmware_version,
         </if>
         <if test=" interfaceSize != null">
             interface_size,
