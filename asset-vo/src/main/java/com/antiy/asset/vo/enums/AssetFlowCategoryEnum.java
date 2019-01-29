@@ -13,7 +13,7 @@ public enum AssetFlowCategoryEnum {
                                                                             "软件资产登记流程"), HARDWARE_CHANGE("HARDWARE_CHANGE",
                                                                                                     "硬件资产变更流程"),HARDWARE_RETIRE("HARDWARE_RETIRE",
             "硬件资产退役流程"),HARDWARE_IMPL_RETIRE("HARDWARE_COMPLETE_RETIRE",
-            "硬件资产实施流程");
+            "硬件资产实施退役流程");
 
     AssetFlowCategoryEnum(String code, String msg) {
         this.code = code;
