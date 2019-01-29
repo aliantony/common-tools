@@ -60,16 +60,17 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         AssetGroup assetGroup = assetGroupToAssetGroupConverter.convert(request, AssetGroup.class);
         assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
+        int result = assetGroupDao.insert(assetGroup);
         for (String assetId : request.getAssetIds()) {
             AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
             assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetGroupRelation.setCreateUserName(LoginUserUtil.getLoginUser().getUsername());
-            assetGroupRelation.setAssetGroupId(request.getId());
+            assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
             assetGroupRelation.setAssetId(assetId);
             assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
             assetGroupRelationDao.insert(assetGroupRelation);
         }
-        int result = assetGroupDao.insert(assetGroup);
+
 
         if (!Objects.equals(0, result)) { // 写入业务日志
             LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_INSERT.getName(),
