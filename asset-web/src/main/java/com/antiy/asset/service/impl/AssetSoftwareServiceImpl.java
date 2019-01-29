@@ -3,6 +3,7 @@ package com.antiy.asset.service.impl;
 import static com.antiy.biz.file.FileHelper.logger;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -354,7 +355,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             "获取工作流异常");
         List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
         return waitingTaskReponses.stream()
-            .collect(Collectors.toMap(WaitingTaskReponse::getBusinessId, waitingTaskReponse -> waitingTaskReponse));
+            .collect(Collectors.toMap(WaitingTaskReponse::getBusinessId, Function.identity(), (key1, key2) -> key2));
     }
 
     @Override
