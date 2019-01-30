@@ -90,4 +90,12 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return actionResponse
      */
     List<Asset> queryAssetByIds(Integer[] ids);
+
+    /**
+     * 通过ID更新资产组字段名称
+     *
+     * @param map
+     * @return Integer
+     */
+    Integer updateAssetGroupNameWithAssetId(Map<String, Object> map);
 }
