@@ -11,11 +11,7 @@ public class ExportSoftwareEntity {
     @ApiModelProperty("软件名称")
     private String  name;
 
-    /**
-     * 软件编号
-     */
-    @ApiModelProperty("软件编号")
-    private Integer id;
+
 
     /**
      * 软件厂商
@@ -50,13 +46,6 @@ public class ExportSoftwareEntity {
         this.name = name;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getManufacturer() {
         return manufacturer;
@@ -103,7 +92,6 @@ public class ExportSoftwareEntity {
     public String toString() {
         return "ExportSoftwareEntity{" +
                 "name='" + name + '\'' +
-                ", id=" + id +
                 ", manufacturer='" + manufacturer + '\'' +
                 ", version='" + version + '\'' +
                 ", assetCount=" + assetCount +
