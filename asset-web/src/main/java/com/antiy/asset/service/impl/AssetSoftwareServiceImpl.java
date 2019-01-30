@@ -755,9 +755,6 @@ class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportS
             SoftwareStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode(assetSoftware.getSoftwareStatus());
             exportSoftwareEntity.setStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
         }
-        if (Objects.nonNull(assetSoftware.getStringId())) {
-            exportSoftwareEntity.setId(Integer.parseInt(assetSoftware.getStringId()));
-        }
         exportSoftwareEntity.setReleaseTime(LongToDateString(assetSoftware.getReleaseTime()));
         super.convert(assetSoftware, exportSoftwareEntity);
     }
