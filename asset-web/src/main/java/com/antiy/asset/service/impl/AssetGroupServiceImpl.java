@@ -127,6 +127,10 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 map.put("assetGroupName", assetNameBuilder.toString());
                 map.put("assetId", assetId);
                 assetDao.updateAssetGroupNameWithAssetId(map);
+                // 写入业务日志
+                LogHandle.log(assetGroupNameList.toString(), AssetEventEnum.ASSET_MODIFY.getName(),
+                        AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
+                LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetGroupNameList.toString());
             }
         }
 
