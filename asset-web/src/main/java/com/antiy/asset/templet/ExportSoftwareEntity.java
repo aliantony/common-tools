@@ -12,17 +12,10 @@ public class ExportSoftwareEntity {
     private String  name;
 
     /**
-     * 软件编号
-     */
-    @ApiModelProperty("软件编号")
-    private Integer id;
-
-    /**
      * 软件厂商
      */
     @ApiModelProperty("软件厂商")
     private String  manufacturer;
-
 
     /**
      * 软件版本
@@ -37,10 +30,10 @@ public class ExportSoftwareEntity {
     private String  status;
 
     /**
-     * 发布时间
+     * 上传时间
      */
-    @ApiModelProperty("发布时间")
-    private String    releaseTime;
+    @ApiModelProperty("登记时间")
+    private String  gmtCreate;
 
     public String getName() {
         return name;
@@ -50,14 +43,6 @@ public class ExportSoftwareEntity {
         this.name = name;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public String getManufacturer() {
         return manufacturer;
     }
@@ -65,7 +50,6 @@ public class ExportSoftwareEntity {
     public void setManufacturer(String manufacturer) {
         this.manufacturer = manufacturer;
     }
-
 
     public String getVersion() {
         return version;
@@ -91,24 +75,18 @@ public class ExportSoftwareEntity {
         this.status = status;
     }
 
-    public String getReleaseTime() {
-        return releaseTime;
+    public String getGmtCreate() {
+        return gmtCreate;
     }
 
-    public void setReleaseTime(String releaseTime) {
-        this.releaseTime = releaseTime;
+    public void setGmtCreate(String gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 
     @Override
     public String toString() {
-        return "ExportSoftwareEntity{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", version='" + version + '\'' +
-                ", assetCount=" + assetCount +
-                ", status='" + status + '\'' +
-                ", releaseTime='" + releaseTime + '\'' +
-                '}';
+        return "ExportSoftwareEntity{" + "name='" + name + '\'' + ", manufacturer='" + manufacturer + '\''
+               + ", version='" + version + '\'' + ", assetCount=" + assetCount + ", status='" + status + '\''
+               + ", gmtCreate='" + gmtCreate + '\'' + '}';
     }
 }

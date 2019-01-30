@@ -1805,7 +1805,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             stringBuilder.append(re).append("其中").append(builder);
             return stringBuilder.toString();
         }
-        return "";
+        return  stringBuilder.toString();
     }
 
     @Override

@@ -383,6 +383,18 @@
             </foreach>
         </if>
 
+
+        <if test=" ids != null and ids.size() > 0">
+            and asset_software.id in
+            <foreach collection="ids" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="id != null">
+            and asset_software.id = #{id}
+        </if>
+
         <if test="name != null">
             and name like CONCAT('%',#{name},'%')
         </if>
@@ -408,14 +420,6 @@
             <if test=" endTime != null">
                 and asset_software.gmt_create &lt;= #{endTime }
             </if>
-        </if>
-
-        <if test="ids != null and ids.size() > 0">
-            asset_software.id
-            in
-            <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
-                #{item}
-            </foreach>
         </if>
 
         <if test="queryTime == 2">
@@ -502,20 +506,36 @@
         <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
             left join asset_category_model b on asset_software.category_model = b.id
         </if>
-        <trim prefix="WHERE" prefixOverrides="AND|OR">
-            <include refid="Multiple_Query"></include>
-            <if test=" multipleQuery != null">
-                and (
-                asset_software.name LIKE CONCAT('%',#{multipleQuery},'%')
-                or asset_software.serial LIKE CONCAT('%',#{multipleQuery},'%')
-                or asset_software.id LIKE CONCAT('%',#{multipleQuery},'%')
-                )
-            </if>
-            and asset_software.status = 1
-            <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
-                and b.status = 1
-            </if>
-        </trim>
+        <where>
+            <trim prefixOverrides="and|or">
+                <choose>
+                    <when test="taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
+                        and (asset_software.status = 1 or id in
+                        <foreach index="index" item="item" collection="taskBussinessIds" open="(" separator=","
+                                 close=")">
+                            #{item}
+                        </foreach>
+                        )
+                    </when>
+                    <otherwise>
+                        and asset_software.status = 1
+                    </otherwise>
+                </choose>
+
+                <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
+                    and b.status = 1
+                </if>
+                <include refid="Multiple_Query"></include>
+                <if test=" multipleQuery != null">
+                    and (
+                    asset_software.name LIKE CONCAT('%',#{multipleQuery},'%')
+                    or asset_software.serial LIKE CONCAT('%',#{multipleQuery},'%')
+                    or asset_software.id LIKE CONCAT('%',#{multipleQuery},'%')
+                </if>
+
+            </trim>
+        </where>
+
     </select>
 
     <select id="findQuery" resultMap="BaseResultMap"
@@ -544,6 +564,7 @@
         asset_software.version,
         asset_software.software_status,
         asset_software.release_time,
+        asset_software.gmt_create,
         asset_software.category_model ,
         asset_software.memo,
         asset_software.language,
@@ -559,20 +580,44 @@
         <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
             left join asset_category_model b on asset_software.category_model = b.id
         </if>
-        <trim prefix="WHERE" prefixOverrides="AND|OR">
-            <include refid="Multiple_Query"></include>
-            <if test=" multipleQuery != null">
-                and (
-                asset_software.name LIKE CONCAT('%',#{multipleQuery},'%')
-                or asset_software.serial LIKE CONCAT('%',#{multipleQuery},'%')
-                or asset_software.id LIKE CONCAT('%',#{multipleQuery},'%')
-                )
-            </if>
-            and asset_software.status = 1
-            <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
-                and b.status=1
-            </if>
-        </trim>
+
+        <where>
+            <trim prefixOverrides="and|or">
+                <choose>
+                    <when test="taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
+                        and (asset_software.status = 1 or id in
+                        <foreach index="index" item="item" collection="taskBussinessIds" open="(" separator=","
+                                 close=")">
+                            #{item}
+                        </foreach>
+                        )
+                    </when>
+                    <otherwise>
+                        and asset_software.status = 1
+                    </otherwise>
+                </choose>
+                <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
+                    and b.status=1
+                </if>
+                <include refid="Multiple_Query"></include>
+                <if test=" multipleQuery != null">
+                    and (
+                    asset_software.name LIKE CONCAT('%',#{multipleQuery},'%')
+                    or asset_software.serial LIKE CONCAT('%',#{multipleQuery},'%')
+                    or asset_software.id LIKE CONCAT('%',#{multipleQuery},'%')
+                    )
+                </if>
+            </trim>
+        </where>
+        order by
+        <if test="ids!= null and ids.size() > 0">
+            FIELD(`id`,
+            <foreach index="index" item="item" collection="ids" separator=",">
+                #{item}
+            </foreach>
+            ) desc,
+        </if>
+        id desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -612,7 +657,7 @@
     </select>
 
     <select id="countManufacturer" resultMap="ManufacturerResultMap">
-        select manufacturer, count(manufacturer) num from asset_software where software_status != 4 and status =1 GROUP BY manufacturer
+        select manufacturer, count(manufacturer) num from asset_software where software_status != 4 and manufacturer is not null and status =1 GROUP BY manufacturer
     </select>
 
     <select id="countStatus" resultMap="StatusResultMap">
