@@ -234,6 +234,7 @@
         <include refid="Base_Column_List"/>
         from
         <include refid="Table_Name"></include>
+        where status=1
     </select>
 
 
@@ -283,5 +284,16 @@
         </trim>
         <include refid="Page_List"></include>
 
+    </select>
+
+    <select id="getIdByName" resultType="java.lang.String" parameterType="java.lang.String">
+        select
+          id
+        from
+          asset_department
+        where
+          name = #{name}
+          and status = 1
+          limit 0,1
     </select>
 </mapper>

@@ -276,7 +276,7 @@
         <include refid="Base_Column_List"/>
         from
         <include refid="Table_Name"></include>
-        where id = #{id}
+        where id = #{id} and status = 1
     </select>
 
 
@@ -349,10 +349,11 @@
     <!--通过资产ID和状态查询方案信息-->
     <select id="findSchemeByAssetIdAndStatus" resultType="Scheme" parameterType="int">
         select
-            sch.file_info,
-            sch.memo
+        sch.file_info,
+        sch.memo
         from
-        <include refid="Table_Name"></include> sch
+        <include refid="Table_Name"></include>
+        sch
         left join asset
         on asset.id = sch.asset_id
         left join asset_operation_record aor
@@ -361,11 +362,12 @@
     </select>
 
     <!--通过资产ID查询方案信息-->
-    <select id="findSchemeByAssetIdAndType" resultType="Scheme" parameterType="com.antiy.asset.vo.query.AssetIDAndSchemeTypeQuery">
+    <select id="findSchemeByAssetIdAndType" resultType="Scheme"
+            parameterType="com.antiy.asset.vo.query.AssetIDAndSchemeTypeQuery">
         select
-            content,
-            file_info,
-            memo
+        content,
+        file_info,
+        memo
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
