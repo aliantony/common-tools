@@ -133,7 +133,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
             map.put("originStatus", SoftwareStatusEnum.RETIRE.getCode());
             NameValueVo<AssetOperationRecordBarResponse> retire = new NameValueVo<>();
-            retire.setName(SoftwareStatusEnum.ALLOW_INSTALL.getMsg());
+            retire.setName(SoftwareStatusEnum.RETIRE.getMsg());
             retire.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
             nameValueVoList.add(retire);
 
