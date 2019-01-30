@@ -142,6 +142,17 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty(value = "软件资产Id列表")
     private List<String>  ids;
 
+    @ApiModelProperty(value = "流程引擎当前代办任务Id")
+    private List<String>  taskBussinessIds;
+
+    public List<String> getTaskBussinessIds() {
+        return taskBussinessIds;
+    }
+
+    public void setTaskBussinessIds(List<String> taskBussinessIds) {
+        this.taskBussinessIds = taskBussinessIds;
+    }
+
     public Integer getInstallStatus() {
         return installStatus;
     }
