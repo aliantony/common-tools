@@ -7,10 +7,7 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
-import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetOperationTableEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -359,12 +356,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return Integer.parseInt(aid);
                 } catch (RequestParamValidateException e) {
-                    transactionStatus.isRollbackOnly();
+                    transactionStatus.setRollbackOnly();
                     ParamterExceptionUtils.isTrue(false, "编号重复");
                     logger.error("录入失败");
                     e.printStackTrace ();
                 } catch (Exception e) {
-                    transactionStatus.isRollbackOnly();
+                    transactionStatus.setRollbackOnly();
                     e.printStackTrace ();
                     logger.error("录入失败");
                 }
