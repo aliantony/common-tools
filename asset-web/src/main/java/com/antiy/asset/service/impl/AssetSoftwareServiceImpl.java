@@ -398,8 +398,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public AssetCountResponse countManufacturer() throws Exception {
         int maxNum = 5;
-        List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        List<Map<String, Long>> list = assetSoftwareDao.countManufacturer(ids);
+        List<Map<String, Long>> list = assetSoftwareDao.countManufacturer();
         if (list.size() > maxNum) {
             list.sort(new Comparator<Map<String, Long>>() {
                 @Override
@@ -429,8 +428,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public AssetCountColumnarResponse countStatus() throws Exception {
-        List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        List<Map<String, Long>> list = assetSoftwareDao.countStatus(ids);
+        List<Map<String, Long>> list = assetSoftwareDao.countStatus();
         Map<String, Long> result = new HashMap();
         for (SoftwareStatusEnum assetStatusEnum : SoftwareStatusEnum.values()) {
             result.put(assetStatusEnum.getMsg(), 0L);
@@ -456,7 +454,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public AssetCountResponse countCategory() throws Exception {
-        List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getNextLevelCategoryByName("软件");
         HashMap<String, Long> result = new HashMap<>();
         List<AssetCategoryModel> categoryModelDaoAll = assetCategoryModelDao.getAll();
@@ -474,7 +471,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 AssetSoftwareQuery assetSoftwareQuery = new AssetSoftwareQuery();
                 assetSoftwareQuery.setCategoryModels(list);
                 assetSoftwareQuery.setSoftwareStatusList(status);
-                assetSoftwareQuery.setAreaIds(DataTypeUtils.integerArrayToStringArray(ids));
                 Long sum = assetSoftwareDao.findCountByCategoryModel(assetSoftwareQuery);
                 result.put(a.getName(), sum);
             }
