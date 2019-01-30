@@ -268,18 +268,18 @@
         </trim>
         <include refid="Page_List"></include>
     </select>
-
     <select id="findPulldownGroup" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
         select id,name from
         <include refid="Table_Name"></include>
         where
         status = 1
     </select>
-    <select id="findAssetByAssetGroupId" resultType="Asset"
-            parameterType="int">
+    <select id="removeDuplicate" resultType="boolean"
+            parameterType="string">
         select
+          count(1)
         from
         <include refid="Table_Name"></include>
-        where asset_group_id = #{assetGroupId}
+        where name = #{name}
     </select>
 </mapper>

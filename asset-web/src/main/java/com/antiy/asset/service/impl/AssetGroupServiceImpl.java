@@ -6,6 +6,8 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.common.exception.BusinessException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +59,12 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public String saveAssetGroup(AssetGroupRequest request) throws Exception {
+        //判重
+        String assetName = request.getName();
+        Boolean removeDuplicateResult = assetGroupDao.removeDuplicate(assetName);
+        if (removeDuplicateResult){
+            throw new BusinessException("资产组名称重复");
+        }
         AssetGroup assetGroup = assetGroupToAssetGroupConverter.convert(request, AssetGroup.class);
         assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
