@@ -807,7 +807,7 @@
                 </otherwise>
             </choose>
         </if>
-        <if test=" installType != null">
+        <if test=" installType == null">
             and a.install_type in (1,2)
         </if>
         <if test=" assetId != null">
@@ -872,7 +872,7 @@
                 </otherwise>
             </choose>
         </if>
-        <if test=" installType != null">
+        <if test=" installType == null">
             and a.install_type in (1,2)
         </if>
         <if test=" assetId != null">
