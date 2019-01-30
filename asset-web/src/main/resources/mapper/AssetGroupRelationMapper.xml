@@ -342,4 +342,12 @@
         LEFT JOIN asset ON asset.id = agrelation.asset_id
         where agrelation.asset_group_id = #{assetGroupId}
     </select>
+    <select id="findAssetGroupNameByAssetId" resultType="string" parameterType="int">
+        select agroup.name
+        from
+        <include refid="Table_Name"></include> agrelation
+        LEFT JOIN asset_group agroup
+        ON agroup.id = agrelation.asset_group_id
+        where agrelation.asset_id = #{assetId}
+    </select>
 </mapper>
