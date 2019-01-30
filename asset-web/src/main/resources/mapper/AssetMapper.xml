@@ -683,6 +683,9 @@
         <if test=" admittanceStatus != null">
             and admittance_status = #{admittanceStatus}
         </if>
+        <if test=" admittanceStatus == null">
+            and admittance_status in (1,2,3)
+        </if>
         <if test=" number != null">
             and number = #{number}
         </if>
@@ -914,6 +917,7 @@
         a.admittance_status,
         a.number,
         a.name,
+        a.install_type,
         a.serial,
         c.name as category_model_name,
         a.manufacturer, asset_status,
@@ -1008,4 +1012,12 @@
          </foreach>
         and status = 1
     </select>
+
+    <update id="updateAssetGroupNameWithAssetId" parameterType="map">
+        update asset
+        SET asset_group = #{assetGroupName} where id in
+        <foreach collection="assetIdArr" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
 </mapper>

@@ -2,15 +2,14 @@ package com.antiy.asset.service.impl;
 
 import static com.antiy.biz.file.FileHelper.logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.dao.AssetGroupRelationDao;
 import com.antiy.asset.entity.AssetGroup;
@@ -43,6 +42,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Resource
     private AssetGroupDao                                 assetGroupDao;
+    @Resource
+    private AssetDao                                      assetDao;
     @Resource
     private AesEncoder                                    aesEncoder;
     @Resource
@@ -106,6 +107,38 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         }
 
         Integer result = assetGroupRelationDao.insertBatch(assetGroupRelationList);
+
+        if (!Objects.equals(0, result)) {
+            // 写入业务日志
+            LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
+                AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}", assetGroup.toString());
+        }
+        assetGroupDao.update(assetGroup);
+
+        // -----------------------------更新资产主表的资产组字段内容start-----------------------------
+        Map<String, Object> map = new HashMap<>();
+
+        StringBuilder assetNameBuilder = new StringBuilder();
+        for (Integer assetId : assetIdArr) {
+            List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
+            if (assetGroupNameList != null && assetGroupNameList.size() > 0) {
+                String assetGroupName = assetGroupNameList.toString();
+                if (assetGroupNameList.size() == 1) {
+                    assetNameBuilder.append(assetGroupName, 1, assetGroupName.length() - 1);
+                    map.put("assetGroupName", assetNameBuilder.toString());
+                } else {
+                    assetNameBuilder.append(assetGroupName);
+                    map.put("assetGroupName", assetNameBuilder.toString());
+
+                }
+            }
+        }
+        map.put("assetIdArr", assetIdArr);
+        assetDao.updateAssetGroupNameWithAssetId(map);
+
+        // -----------------------------更新资产主表的资产组字段内容end-----------------------------
+
         if (!Objects.equals(0, result)) {
             // 写入业务日志
             LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),

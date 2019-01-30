@@ -780,17 +780,10 @@
         where 1 = 1
         and a.software_id = #{id}
         <if test=" installStatus != null">
-            <choose>
-                <when test="installStatus == 0">
-                    and a.install_status in (1,2,3,4)
-                </when>
-                <otherwise>
-                    and a.install_status = #{installStatus}
-                </otherwise>
-            </choose>
+            and a.install_status = #{installStatus}
         </if>
         <if test=" installStatus == null">
-            and a.install_status in (1, 4)
+            and a.install_status in (1,2,3 4)
         </if>
         <if test=" multipleQuery != null">
             and (c.name LIKE CONCAT('%',#{multipleQuery},'%')
@@ -798,16 +791,9 @@
             or c.serial LIKE CONCAT('%',#{multipleQuery},'%'))
         </if>
         <if test=" installType != null">
-            <choose>
-                <when test="installType == 0">
-                    and a.install_type in (1,2)
-                </when>
-                <otherwise>
-                    and a.install_type = #{installType}
-                </otherwise>
-            </choose>
+            and a.install_type = #{installType}
         </if>
-        <if test=" installType != null">
+        <if test=" installType == null">
             and a.install_type in (1,2)
         </if>
         <if test=" assetId != null">
@@ -845,17 +831,10 @@
         and c.id is not null
         and a.software_id = #{id}
         <if test=" installStatus != null">
-            <choose>
-                <when test="installStatus == 0">
-                    and a.install_status in (1,2,3,4)
-                </when>
-                <otherwise>
-                    and a.install_status = #{installStatus}
-                </otherwise>
-            </choose>
+            and a.install_status = #{installStatus}
         </if>
         <if test=" installStatus == null">
-            and a.install_status in (1, 4)
+            and a.install_status in (1,2,3 4)
         </if>
         <if test=" multipleQuery != null">
             and (c.name LIKE CONCAT('%',#{multipleQuery},'%')
@@ -863,16 +842,9 @@
             or c.serial LIKE CONCAT('%',#{multipleQuery},'%'))
         </if>
         <if test=" installType != null">
-            <choose>
-                <when test="installType == 0">
-                    and a.install_type in (1,2)
-                </when>
-                <otherwise>
-                    and a.install_type = #{installType}
-                </otherwise>
-            </choose>
+            and a.install_type = #{installType}
         </if>
-        <if test=" installType != null">
+        <if test=" installType == null">
             and a.install_type in (1,2)
         </if>
         <if test=" assetId != null">

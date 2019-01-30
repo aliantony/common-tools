@@ -7,10 +7,7 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
-import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetOperationTableEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -1327,7 +1324,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     LogUtils.info(logger, AssetEventEnum.ASSET_CPU_DELETE.getName() + " {}", asset.getStringId());
                     assetCpuDao.deleteByAssetId(asset.getId());
                     List<AssetCpuRequest> assetCpuRequestList = assetOuterRequest.getCpu();
-                    if (assetCpuRequestList != null && !assetCpuRequestList.isEmpty()) {
+                    if (CollectionUtils.isNotEmpty(assetCpuRequestList)) {
                         List<AssetCpu> assetCpuList = BeanConvert.convert(assetCpuRequestList, AssetCpu.class);
                         for (AssetCpu assetCpu : assetCpuList) {
                             // 设置资产id，可能是新增的
@@ -1350,7 +1347,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DELETE.getName() + " {}", asset.getStringId());
                     assetNetworkCardDao.deleteByAssetId(asset.getId());
                     List<AssetNetworkCardRequest> assetNetworkCardRequestList = assetOuterRequest.getNetworkCard();
-                    if (assetNetworkCardRequestList != null && !assetNetworkCardRequestList.isEmpty()) {
+                    if (CollectionUtils.isNotEmpty(assetNetworkCardRequestList)) {
                         List<AssetNetworkCard> assetNetworkCardList = BeanConvert.convert(assetNetworkCardRequestList,
                             AssetNetworkCard.class);
                         for (AssetNetworkCard assetNetworkCard : assetNetworkCardList) {
@@ -1374,7 +1371,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_DELETE.getName() + " {}", asset.getStringId());
                     assetMainboradDao.deleteByAssetId(asset.getId());
                     List<AssetMainboradRequest> assetMainboradRequest = assetOuterRequest.getMainboard();
-                    if (assetNetworkCardRequestList != null && !assetMainboradRequest.isEmpty()) {
+                    if (CollectionUtils.isNotEmpty(assetNetworkCardRequestList)) {
                         List<AssetMainborad> assetMainborad = BeanConvert.convert(assetMainboradRequest,
                             AssetMainborad.class);
                         for (AssetMainborad mainborad : assetMainborad) {
@@ -1397,7 +1394,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         AssetEventEnum.ASSET_MEMORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
                     LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_DELETE.getName() + " {}", asset.getStringId());
                     assetMemoryDao.deleteByAssetId(asset.getId());
-                    if (assetMemoryRequestList != null && !assetMemoryRequestList.isEmpty()) {
+                    if (CollectionUtils.isNotEmpty(assetMemoryRequestList)) {
                         List<AssetMemory> assetMemoryList = BeanConvert.convert(assetMemoryRequestList,
                             AssetMemory.class);
                         for (AssetMemory assetMemory : assetMemoryList) {
@@ -1419,7 +1416,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     LogUtils.info(logger, AssetEventEnum.ASSET_DISK_DELETE.getName() + " {}", asset.getStringId());
                     assetHardDiskDao.deleteByAssetId(asset.getId());
                     List<AssetHardDiskRequest> assetHardDiskRequestList = assetOuterRequest.getHardDisk();
-                    if (assetHardDiskRequestList != null && !assetHardDiskRequestList.isEmpty()) {
+                    if (CollectionUtils.isNotEmpty(assetHardDiskRequestList)) {
                         List<AssetHardDisk> assetHardDiskList = BeanConvert.convert(assetHardDiskRequestList,
                             AssetHardDisk.class);
                         for (AssetHardDisk assetHardDisk : assetHardDiskList) {
@@ -1491,7 +1488,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetSoftwareRelationDao.deleteByAssetId(asset.getId());
                     // 删除软件许可
                     assetSoftwareLicenseDao.deleteByAssetId(asset.getId());
-                    if (!Objects.isNull(assetOuterRequest.getAssetSoftwareRelationList())) {
+                    if (CollectionUtils.isNotEmpty(assetOuterRequest.getAssetSoftwareRelationList())) {
                         List<AssetSoftwareRelation> assetSoftwareRelationList = BeanConvert.convert(
                             assetOuterRequest.getAssetSoftwareRelationList(), AssetSoftwareRelation.class);
                         assetSoftwareRelationList.stream().forEach(relation -> {
@@ -1524,6 +1521,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setGmtCreate(System.currentTimeMillis());
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return count;
+
                 } catch (Exception e) {
                     logger.info("资产变更失败:", e.getMessage());
                     transactionStatus.setRollbackOnly();
