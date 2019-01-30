@@ -127,10 +127,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 if (assetGroupNameList.size() == 1) {
                     assetNameBuilder.append(assetGroupName, 1, assetGroupName.length() - 1);
                     map.put("assetGroupName", assetNameBuilder.toString());
-                } else {
-                    assetNameBuilder.append(assetGroupName);
-                    map.put("assetGroupName", assetNameBuilder.toString());
-
                 }
             }
         }
