@@ -284,4 +284,15 @@
         <include refid="Page_List"></include>
 
     </select>
+
+    <select id="getIdByName" resultType="java.lang.String" parameterType="java.lang.String">
+        select
+          id
+        from
+          asset_department
+        where
+          name = #{name}
+          and status = 1
+          limit 0,1
+    </select>
 </mapper>

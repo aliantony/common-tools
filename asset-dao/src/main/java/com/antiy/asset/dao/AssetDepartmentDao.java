@@ -21,4 +21,5 @@ public interface AssetDepartmentDao extends IBaseDao<AssetDepartment> {
 
     Integer findRepeatName(@Param("id") Integer id, @Param("name") String name);
 
+    String getIdByName(String name);
 }

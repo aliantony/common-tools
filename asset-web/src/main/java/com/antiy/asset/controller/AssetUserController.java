@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,6 +72,12 @@ public class AssetUserController {
             0);
         List<AssetUserEntity> assetUserEntityList = importResult.getDataList();
         List<AssetUser> assetUserList = BeanConvert.convert(assetUserEntityList, AssetUser.class);
+        assetUserList.stream().forEach(assetUser -> {
+            assetUser.setDepartmentId(iAssetDepartmentService.getIdByName(assetUser.getDepartmentName()));
+            assetUser.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetUser.setGmtCreate(System.currentTimeMillis());
+            assetUser.setStatus(1);
+        });
         iAssetUserService.importUser(assetUserList);
         return ActionResponse.success(importResult.getMsg());
     }
