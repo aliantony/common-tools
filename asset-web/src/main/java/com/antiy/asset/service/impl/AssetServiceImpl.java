@@ -1301,7 +1301,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             try {
                                 String assetGroupName = assetGroupDao
                                     .getById(DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
-                                asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
+//                                asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
+                                asset.setAssetGroup(stringBuilder.append(assetGroupName).substring(0,
                                     stringBuilder.length() - 1));
                             } catch (Exception e) {
                                 throw new BusinessException("资产组名称获取失败");
@@ -1325,7 +1326,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (!assetGroupRelations.isEmpty()) {
                         assetGroupRelationDao.insertBatch(assetGroupRelations);
                     }
-                    asset.setAssetGroup(stringBuffer.toString());
+//                    asset.setAssetGroup(stringBuffer.toString());
                     asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
