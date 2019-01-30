@@ -782,9 +782,6 @@
         <if test=" installStatus != null">
             and a.install_status = #{installStatus}
         </if>
-        <if test=" installStatus == null">
-            and a.install_status in (1,2,3 4)
-        </if>
         <if test=" multipleQuery != null">
             and (c.name LIKE CONCAT('%',#{multipleQuery},'%')
             or c.number LIKE CONCAT('%',#{multipleQuery},'%')
@@ -792,9 +789,6 @@
         </if>
         <if test=" installType != null">
             and a.install_type = #{installType}
-        </if>
-        <if test=" installType == null">
-            and a.install_type in (1,2)
         </if>
         <if test=" assetId != null">
             and a.asset_id = #{assetId}
@@ -833,9 +827,6 @@
         <if test=" installStatus != null">
             and a.install_status = #{installStatus}
         </if>
-        <if test=" installStatus == null">
-            and a.install_status in (1,2,3 4)
-        </if>
         <if test=" multipleQuery != null">
             and (c.name LIKE CONCAT('%',#{multipleQuery},'%')
             or c.number LIKE CONCAT('%',#{multipleQuery},'%')
@@ -843,9 +834,6 @@
         </if>
         <if test=" installType != null">
             and a.install_type = #{installType}
-        </if>
-        <if test=" installType == null">
-            and a.install_type in (1,2)
         </if>
         <if test=" assetId != null">
             and a.asset_id = #{assetId}
