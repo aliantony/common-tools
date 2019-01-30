@@ -125,7 +125,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         }
 
-                        asset.setResponsibleUserId(Objects.toString(LoginUserUtil.getLoginUser().getId()));
                         asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                         asset.setAssetSource(2);
                         asset.setGmtCreate(System.currentTimeMillis());
