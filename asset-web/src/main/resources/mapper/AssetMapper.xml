@@ -683,9 +683,6 @@
         <if test=" admittanceStatus != null">
             and admittance_status = #{admittanceStatus}
         </if>
-        <if test=" admittanceStatus == null">
-            and admittance_status in (1,2,3)
-        </if>
         <if test=" number != null">
             and number = #{number}
         </if>
