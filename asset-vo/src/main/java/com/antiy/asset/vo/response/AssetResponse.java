@@ -184,10 +184,23 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("机房位置")
     private String                   houseLocation;
     /**
+     * 安装方式1人工2自动
+     */
+    @ApiModelProperty("安装方式1人工2自动")
+    private Integer                  installType;
+    /**
      * 资产流程信息
      */
     @ApiModelProperty("资产流程信息")
     private WaitingTaskReponse       waitingTaskReponse;
+
+    public Integer getInstallType() {
+        return installType;
+    }
+
+    public void setInstallType(Integer installType) {
+        this.installType = installType;
+    }
 
     public WaitingTaskReponse getWaitingTaskReponse() {
         return waitingTaskReponse;
