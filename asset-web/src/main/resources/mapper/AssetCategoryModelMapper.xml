@@ -275,6 +275,7 @@
         <include refid="Base_Column_List"></include>
         from
         <include refid="Table_Name"></include>
+        where status=1
     </select>
 
 

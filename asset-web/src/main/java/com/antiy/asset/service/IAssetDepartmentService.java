@@ -70,4 +70,5 @@ public interface IAssetDepartmentService extends IBaseService<AssetDepartment> {
 
     ActionResponse deleteAllById(Serializable id) throws Exception;
 
+    String getIdByName(String name);
 }

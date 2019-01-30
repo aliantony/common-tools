@@ -104,14 +104,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void importUser(List<AssetUser> assetUserList) {
-        assetUserList.stream().forEach(user -> {
-            user.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setStatus(1);
-            user.setMemo("");
-        });
         assetUserDao.insertBatch(assetUserList);
     }
 

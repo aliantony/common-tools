@@ -188,6 +188,11 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         }
     }
 
+    @Override
+    public String getIdByName(String name) {
+        return assetDepartmentDao.getIdByName(name);
+    }
+
     /**
      * 删除部门，并将这些部门下的人员部门信息置为null
      *
