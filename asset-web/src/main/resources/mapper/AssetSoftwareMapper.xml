@@ -564,6 +564,7 @@
         asset_software.version,
         asset_software.software_status,
         asset_software.release_time,
+        asset_software.gmt_create,
         asset_software.category_model ,
         asset_software.memo,
         asset_software.language,
@@ -656,7 +657,7 @@
     </select>
 
     <select id="countManufacturer" resultMap="ManufacturerResultMap">
-        select manufacturer, count(manufacturer) num from asset_software where software_status != 4 and status =1 GROUP BY manufacturer
+        select manufacturer, count(manufacturer) num from asset_software where software_status != 4 and manufacturer is not null and status =1 GROUP BY manufacturer
     </select>
 
     <select id="countStatus" resultMap="StatusResultMap">
@@ -806,7 +807,7 @@
                 </otherwise>
             </choose>
         </if>
-        <if test=" installType != null">
+        <if test=" installType == null">
             and a.install_type in (1,2)
         </if>
         <if test=" assetId != null">
@@ -871,7 +872,7 @@
                 </otherwise>
             </choose>
         </if>
-        <if test=" installType != null">
+        <if test=" installType == null">
             and a.install_type in (1,2)
         </if>
         <if test=" assetId != null">
