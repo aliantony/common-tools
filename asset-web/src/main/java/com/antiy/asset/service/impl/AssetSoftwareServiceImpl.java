@@ -687,7 +687,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareQuery.setPageSize(-1);
         Map<String,WaitingTaskReponse> waitingTasks = getAllSoftWaitingTask("soft");
         List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery,waitingTasks);
-        ParamterExceptionUtils.isEmpty(list, "资产数据不能为空");
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setSheetName("资产信息表");
         List<ExportSoftwareEntity> softwareEntities = softwareEntityConvert.convert(list, ExportSoftwareEntity.class);
@@ -765,7 +764,7 @@ class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportS
             SoftwareStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode(assetSoftware.getSoftwareStatus());
             exportSoftwareEntity.setStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
         }
-        exportSoftwareEntity.setReleaseTime(LongToDateString(assetSoftware.getReleaseTime()));
+        exportSoftwareEntity.setGmtCreate(LongToDateString(assetSoftware.getGmtCreate()));
         super.convert(assetSoftware, exportSoftwareEntity);
     }
 
