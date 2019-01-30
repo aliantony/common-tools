@@ -1015,9 +1015,6 @@
 
     <update id="updateAssetGroupNameWithAssetId" parameterType="map">
         update asset
-        SET asset_group = #{assetGroupName} where id in
-        <foreach collection="assetIdArr" index="index" item="item" open="(" close=")" separator=",">
-            #{item}
-        </foreach>
+        SET asset_group = #{assetGroupName} where id = #{assetId}
     </update>
 </mapper>
