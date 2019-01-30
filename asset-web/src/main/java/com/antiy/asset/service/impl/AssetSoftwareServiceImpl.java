@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.common.exception.BusinessException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -687,7 +688,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         downloadVO.setSheetName("资产信息表");
         List<ExportSoftwareEntity> softwareEntities = softwareEntityConvert.convert(list, ExportSoftwareEntity.class);
         downloadVO.setDownloadList(softwareEntities);
-        excelDownloadUtil.excelDownload(response, s, downloadVO);
+        if(downloadVO.getDownloadList() != null){
+            excelDownloadUtil.excelDownload(response, s, downloadVO);
+        }else {
+            throw new BusinessException("导出数据为空");
+        }
+
     }
 
     @Override

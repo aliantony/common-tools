@@ -2271,7 +2271,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setSheetName("资产信息表");
         downloadVO.setDownloadList(assetEntities);
-        excelDownloadUtil.excelDownload(response, "资产信息表", downloadVO);
+        if(downloadVO.getDownloadList() != null){
+            excelDownloadUtil.excelDownload(response, "资产信息表", downloadVO);
+        }else {
+            throw new BusinessException("导出数据为空");
+        }
     }
 
 }
