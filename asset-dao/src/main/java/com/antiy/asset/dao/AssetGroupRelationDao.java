@@ -65,4 +65,11 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @return
      */
     Integer findCountDetailByGroupId(Integer id) throws Exception;
+
+    /**
+     * 通过资产D查询资产组名称
+     * @param id
+     * @return
+     */
+    List<String> findAssetGroupNameByAssetId(Integer id) throws Exception;
 }
