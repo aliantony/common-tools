@@ -1285,8 +1285,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (assetGroup != null && !assetGroup.isEmpty()) {
                         StringBuilder stringBuilder = new StringBuilder();
                         assetGroup.forEach(assetGroupRequest -> {
-                            asset.setAssetGroup(stringBuilder.append(assetGroupRequest.getName()).append(",")
-                                .substring(0, stringBuilder.length() - 1));
+                            try {
+                                String assetGroupName = assetDao.getById(assetGroupRequest.getId()).getName();
+                                asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",")
+                                        .substring(0, stringBuilder.length() - 1));
+                            } catch (Exception e) {
+                                throw  new BusinessException("资产组名称获取失败");
+                            }
                         });
                         asset.setAssetGroup(stringBuilder.toString());
                     }
