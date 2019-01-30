@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.utils.BusinessExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -68,8 +69,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
                 AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName() + " {}", assetDepartment.toString());
         }
-        return ActionResponse
-            .success(aesEncoder.encode(assetDepartment.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+        return ActionResponse.success(aesEncoder.encode(assetDepartment.getStringId(), LoginUserUtil.getLoginUser()
+            .getUsername()));
     }
 
     boolean checkNameRepeat(AssetDepartmentRequest request) throws Exception {
@@ -77,8 +78,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             AssetDepartmentQuery assetDepartmentQuery = new AssetDepartmentQuery();
             assetDepartmentQuery.setName(request.getName());
             return assetDepartmentDao.findRepeatName(
-                request.getId() == null ? null : DataTypeUtils.stringToInteger(request.getId()),
-                request.getName()) >= 1;
+                request.getId() == null ? null : DataTypeUtils.stringToInteger(request.getId()), request.getName()) >= 1;
         }
         return false;
     }
@@ -86,6 +86,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Override
     public ActionResponse updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
+        BusinessExceptionUtils.isTrue(!request.getId().equals(request.getParentId()), "上级部门不能为自身");
         AssetDepartment parent = assetDepartmentDao.getById(Integer.parseInt(assetDepartment.getParentId()));
         if (checkNameRepeat(request)) {
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该部门名已存在");
