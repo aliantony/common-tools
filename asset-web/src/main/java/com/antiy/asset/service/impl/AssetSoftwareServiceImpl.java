@@ -168,7 +168,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     return DataTypeUtils.stringToInteger(sid);
                 } catch (Exception e) {
                     LOGGER.warn("登记软件信息失败", e);
-                    transactionStatus.isRollbackOnly();
+                    transactionStatus.setRollbackOnly();
                     return 0;
                 }
             }

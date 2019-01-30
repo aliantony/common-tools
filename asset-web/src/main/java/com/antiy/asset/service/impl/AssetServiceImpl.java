@@ -359,12 +359,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return Integer.parseInt(aid);
                 } catch (RequestParamValidateException e) {
-                    transactionStatus.isRollbackOnly();
+                    transactionStatus.setRollbackOnly();
                     ParamterExceptionUtils.isTrue(false, "编号重复");
                     logger.error("录入失败");
                     e.printStackTrace ();
                 } catch (Exception e) {
-                    transactionStatus.isRollbackOnly();
+                    transactionStatus.setRollbackOnly();
                     e.printStackTrace ();
                     logger.error("录入失败");
                 }
