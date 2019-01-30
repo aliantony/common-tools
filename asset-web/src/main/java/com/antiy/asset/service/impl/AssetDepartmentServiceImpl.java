@@ -187,7 +187,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     public ActionResponse deleteAllById(Serializable id) throws Exception {
         List<AssetDepartment> list = recursionSearch((Integer) id);
         if (CollectionUtils.isNotEmpty(list)) {
-            return ActionResponse.success(assetDepartmentDao.delete(list));
+            return ActionResponse.success(assetDepartmentDao.delete(list) >= 1 ? 1 : 0);
         } else {
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该部门不存在");
         }
