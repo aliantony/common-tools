@@ -465,12 +465,13 @@
             a.protocol,
             a.software_status as softwarestatus,
             b.license_secret_key as licenseSecretKey,
+            a.install_type as installType,
+            a.install_status as installStatus,
             a.memo
         from
-            asset_software_relation a left join asset_software_license b on a.id = b.software_id
+            asset_software_relation a left join asset_software_license b on a.id = b.software_id and b.status = 1
         where
 	        a.asset_id = #{id}
 	        and a.status = 1
-	        and b.status = 1
     </select>
 </mapper>
