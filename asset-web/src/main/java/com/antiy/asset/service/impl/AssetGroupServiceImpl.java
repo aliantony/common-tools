@@ -118,20 +118,17 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
         // -----------------------------更新资产主表的资产组字段内容start-----------------------------
         Map<String, Object> map = new HashMap<>();
-
         StringBuilder assetNameBuilder = new StringBuilder();
         for (Integer assetId : assetIdArr) {
             List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
-            if (assetGroupNameList != null && assetGroupNameList.size() > 0) {
-                String assetGroupName = assetGroupNameList.toString();
-                if (assetGroupNameList.size() == 1) {
-                    assetNameBuilder.append(assetGroupName, 1, assetGroupName.length() - 1);
-                    map.put("assetGroupName", assetNameBuilder.toString());
-                }
+            String assetGroupName  = assetGroupNameList.toString();
+            if (assetGroupNameList.size() > 0) {
+                assetNameBuilder.append(assetGroupNameList.toString(), 1, assetGroupName.length() - 1);
+                map.put("assetGroupName", assetNameBuilder.toString());
+                map.put("assetId", assetId);
+                assetDao.updateAssetGroupNameWithAssetId(map);
             }
         }
-        map.put("assetIdArr", assetIdArr);
-        assetDao.updateAssetGroupNameWithAssetId(map);
 
         // -----------------------------更新资产主表的资产组字段内容end-----------------------------
 
