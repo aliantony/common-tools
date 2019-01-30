@@ -37,23 +37,23 @@ public class ImportExcel {
     /**
      * 导入信息
      */
-    private static StringBuilder sb          = new StringBuilder();
+    private StringBuilder sb          = new StringBuilder();
     /**
      * 空白条数
      */
-    private static int           blankNums   = 0;
+    private int           blankNums   = 0;
     /**
      * 失败条数
      */
-    private static int           failNums    = 0;
+    private int           failNums    = 0;
     /**
      * 成功条数
      */
-    private static int           successNums = 0;
+    private int           successNums = 0;
     /**
      * 总条数
      */
-    private static int           totalNums   = 0;
+    private int           totalNums   = 0;
     /**
      * 工作薄对象
      */

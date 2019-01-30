@@ -92,7 +92,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @param assetCategoryModel
      * @return
      */
-    private void setParentType(AssetCategoryModel assetCategoryModel) throws Exception {
+    private AssetCategoryModel setParentType(AssetCategoryModel assetCategoryModel) throws Exception {
         String parentId = assetCategoryModel.getParentId();
         AssetCategoryModel parent = assetCategoryModelDao.getById(Integer.parseInt(parentId));
         BusinessExceptionUtils.isNull(parent, "父类型不存在");
@@ -100,6 +100,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         BusinessExceptionUtils.isTrue(!parent.getName().equals("硬件"), "不能在第一，二级新增节点");
         BusinessExceptionUtils.isTrue(!parent.getName().equals("软件"), "不能在第一，二级新增节点");
         assetCategoryModel.setAssetType(parent.getAssetType());
+        return parent;
     }
 
     @Override
@@ -113,7 +114,10 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         // 判断是不是系统内置
         if (checkIsDefault(assetCategoryModelById)) {
             assetCategoryModel.setStatus(1);
-            setParentType(assetCategoryModel);
+            AssetCategoryModel parent = setParentType(assetCategoryModel);
+            if (!parent.getAssetType().equals(assetCategoryModelById.getAssetType())) {
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "软硬件类型不同时不能更新");
+            }
             assetCategoryModel.setAssetType(null);
             Integer result = assetCategoryModelDao.update(assetCategoryModel);
             if (!Objects.equals(0, result)) {
