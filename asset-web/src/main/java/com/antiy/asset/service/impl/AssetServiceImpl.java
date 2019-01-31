@@ -1313,14 +1313,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     StringBuffer stringBuffer = new StringBuffer();
                     List<AssetGroupRequest> assetGroups = assetOuterRequest.getAsset().getAssetGroups();
                     List<AssetGroupRelation> assetGroupRelations = Lists.newArrayList();
-                    for (AssetGroupRequest assetGroupRequest : assetGroups) {
-                        stringBuffer.append(assetGroupRequest.getName()).append(",");
-                        AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-                        assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
-                        assetGroupRelation.setAssetId(asset.getStringId());
-                        assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                        assetGroupRelation.setGmtCreate(System.currentTimeMillis());
-                        assetGroupRelations.add(assetGroupRelation);
+                    if (CollectionUtils.isNotEmpty(assetGroups)) {
+                        for (AssetGroupRequest assetGroupRequest : assetGroups) {
+                            stringBuffer.append(assetGroupRequest.getName()).append(",");
+                            AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
+                            assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
+                            assetGroupRelation.setAssetId(asset.getStringId());
+                            assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            assetGroupRelation.setGmtCreate(System.currentTimeMillis());
+                            assetGroupRelations.add(assetGroupRelation);
+                        }
                     }
                     assetGroupRelationDao.deleteByAssetId(asset.getId());
                     if (!assetGroupRelations.isEmpty()) {
@@ -1542,6 +1544,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     return count;
 
                 } catch (Exception e) {
+                    e.printStackTrace();
                     logger.info("资产变更失败:", e);
                     transactionStatus.setRollbackOnly();
                     throw new BusinessException("资产变更失败");
