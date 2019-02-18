@@ -118,7 +118,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 安装方式
      */
     @ApiModelProperty("安装方式1人工2自动")
-    @NotNull(message = "安装方式不能为空")
+//    @NotNull(message = "安装方式不能为空")
     private Integer                 installType;
 
     /**
