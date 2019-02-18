@@ -141,8 +141,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         }
 
+//                        asset.setAssetSource(2);
                         asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                        asset.setAssetSource(2);
                         asset.setGmtCreate(System.currentTimeMillis());
                         asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                         assetDao.insert(asset);
@@ -330,33 +330,49 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             ParamterExceptionUtils.isTrue(false, "资产名称重复");
                         }
                         Asset asset1 = BeanConvert.convertBean(assetOthersRequest, Asset.class);
-                        List<AssetGroupRequest> assetGroups = assetOthersRequest.getAssetGroups();
 
-                        if (assetGroups != null && !assetGroups.isEmpty()) {
+                        List<AssetGroupRequest> assetGroup = assetOthersRequest.getAssetGroups();
+
+
+
+                        if (assetGroup != null && !assetGroup.isEmpty()) {
                             StringBuilder stringBuilder = new StringBuilder();
-                            assetGroups.forEach(assetGroupRequest -> {
-                                asset1.setAssetGroup(stringBuilder.append(assetGroupRequest.getName()).append(",")
-                                    .substring(0, stringBuilder.length() - 1));
+                            assetGroup.forEach(assetGroupRequest -> {
+                                try {
+                                    String assetGroupName = assetGroupDao
+                                            .getById(DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
+                                    asset1.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
+                                            stringBuilder.length() - 1));
+                                } catch (Exception e) {
+                                    throw new BusinessException("资产组名称获取失败");
+                                }
                             });
 
                         }
+
+                        asset1.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        asset1.setGmtCreate(System.currentTimeMillis());
+                        asset1.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                         assetDao.insert(asset1);
                         aid = asset1.getStringId();
-                        if (assetGroups != null && !assetGroups.isEmpty()) {
 
-                            for (AssetGroupRequest assetGroupRequest : assetGroups) {
+                        if (assetGroup != null && !assetGroup.isEmpty()) {
+
+                            for (AssetGroupRequest assetGroupRequest : assetGroup) {
                                 AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
                                 assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
                                 assetGroupRelation.setAssetId(asset1.getStringId());
                                 assetGroupRelation.setGmtCreate(System.currentTimeMillis());
                                 assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                                 LogHandle.log(assetGroupRequest, AssetEventEnum.ASSET_GROUP_INSERT.getName(),
-                                    AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                                        AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                                 LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}",
-                                    assetGroupRequest.toString());
+                                        assetGroupRequest.toString());
                                 assetGroupRelationDao.insert(assetGroupRelation);
                             }
                         }
+
+
                         LogHandle.log(assetOthersRequest, AssetEventEnum.ASSET_OTHERS_INSERT.getName(),
                             AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                         LogUtils.info(logger, AssetEventEnum.ASSET_OTHERS_INSERT.getName() + " {}",

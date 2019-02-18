@@ -59,6 +59,12 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
     @Size(message = "资产名字不能超过32位", max = 32)
     private String                  name;
     /**
+     * 上报来源,1-自动上报，2-人工上报
+     */
+    @ApiModelProperty("上报来源,1-自动上报，2-人工上报")
+    @NotNull(message = "上报来源不能为空")
+    private Integer                 assetSource;
+    /**
      * 序列号
      */
     @ApiModelProperty("序列号")
@@ -305,5 +311,13 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
     @Override
     public void validate() throws RequestParamValidateException {
 
+    }
+
+    public Integer getAssetSource() {
+        return assetSource;
+    }
+
+    public void setAssetSource(Integer assetSource) {
+        this.assetSource = assetSource;
     }
 }

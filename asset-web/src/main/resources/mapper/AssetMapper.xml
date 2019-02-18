@@ -666,7 +666,7 @@
             and name like CONCAT('%',#{name},'%')
         </if>
         <if test="assetName != null">
-            and name =#{name}
+            and name =#{assetName}
         </if>
         <if test="assetStatus != null">
             and asset_status =  #{assetStatus}
