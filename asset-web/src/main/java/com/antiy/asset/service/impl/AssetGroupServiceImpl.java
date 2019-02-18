@@ -69,14 +69,16 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
         int result = assetGroupDao.insert(assetGroup);
-        for (String assetId : request.getAssetIds()) {
-            AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-            assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            assetGroupRelation.setCreateUserName(LoginUserUtil.getLoginUser().getUsername());
-            assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
-            assetGroupRelation.setAssetId(assetId);
-            assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
-            assetGroupRelationDao.insert(assetGroupRelation);
+        if (request.getAssetIds() != null){
+            for (String assetId : request.getAssetIds()) {
+                AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
+                assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                assetGroupRelation.setCreateUserName(LoginUserUtil.getLoginUser().getUsername());
+                assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
+                assetGroupRelation.setAssetId(assetId);
+                assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
+                assetGroupRelationDao.insert(assetGroupRelation);
+            }
         }
 
         if (!Objects.equals(0, result)) { // 写入业务日志
