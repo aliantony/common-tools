@@ -533,9 +533,8 @@
                     and (
                     asset_software.name LIKE CONCAT('%',#{multipleQuery},'%')
                     or asset_software.serial LIKE CONCAT('%',#{multipleQuery},'%')
-                    or asset_software.id LIKE CONCAT('%',#{multipleQuery},'%')
+                    or asset_software.id LIKE CONCAT('%',#{multipleQuery},'%'))
                 </if>
-
             </trim>
         </where>
 
