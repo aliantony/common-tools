@@ -252,7 +252,7 @@
             </if>
             and agroup.status = 1
         </trim>
-
+        order by agroup.id desc
         <include refid="Page_List"></include>
     </select>
 

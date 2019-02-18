@@ -6,8 +6,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.common.exception.BusinessException;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +29,7 @@ import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
@@ -59,24 +59,26 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public String saveAssetGroup(AssetGroupRequest request) throws Exception {
-        //判重
+        // 判重
         String assetName = request.getName();
         Boolean removeDuplicateResult = assetGroupDao.removeDuplicate(assetName);
-        if (removeDuplicateResult){
+        if (removeDuplicateResult) {
             throw new BusinessException("资产组名称重复");
         }
         AssetGroup assetGroup = assetGroupToAssetGroupConverter.convert(request, AssetGroup.class);
         assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
         int result = assetGroupDao.insert(assetGroup);
-        for (String assetId : request.getAssetIds()) {
-            AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-            assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            assetGroupRelation.setCreateUserName(LoginUserUtil.getLoginUser().getUsername());
-            assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
-            assetGroupRelation.setAssetId(assetId);
-            assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
-            assetGroupRelationDao.insert(assetGroupRelation);
+        if (ArrayUtils.isEmpty(request.getAssetIds())) {
+            for (String assetId : request.getAssetIds()) {
+                AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
+                assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                assetGroupRelation.setCreateUserName(LoginUserUtil.getLoginUser().getUsername());
+                assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
+                assetGroupRelation.setAssetId(assetId);
+                assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
+                assetGroupRelationDao.insert(assetGroupRelation);
+            }
         }
 
         if (!Objects.equals(0, result)) { // 写入业务日志
@@ -129,7 +131,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         StringBuilder assetNameBuilder = new StringBuilder();
         for (Integer assetId : assetIdArr) {
             List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
-            String assetGroupName  = assetGroupNameList.toString();
+            String assetGroupName = assetGroupNameList.toString();
             if (assetGroupNameList.size() > 0) {
                 assetNameBuilder.append(assetGroupNameList.toString(), 1, assetGroupName.length() - 1);
                 map.put("assetGroupName", assetNameBuilder.toString());
@@ -137,7 +139,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 assetDao.updateAssetGroupNameWithAssetId(map);
                 // 写入业务日志
                 LogHandle.log(assetGroupNameList.toString(), AssetEventEnum.ASSET_MODIFY.getName(),
-                        AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
+                    AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
                 LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetGroupNameList.toString());
             }
         }
