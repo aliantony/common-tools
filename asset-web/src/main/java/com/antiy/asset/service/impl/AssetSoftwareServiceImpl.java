@@ -1,27 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import com.antiy.common.exception.BusinessException;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
@@ -51,10 +29,31 @@ import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -121,7 +120,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetSoftwareLicense.class);
                     // AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
                     // AssetPortProtocol.class);
-
+                    if (CheckRepeatName (assetSoftware.getName ())) {
+                        ParamterExceptionUtils.isTrue(false, "资产名称重复");
+                    }
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
                     assetSoftware.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
@@ -167,11 +168,17 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                         AssetEventEnum.SOFT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                     LogUtils.info(logger, AssetEventEnum.SOFT_INSERT.getName() + " {}", assetSoftware.toString());
                     return DataTypeUtils.stringToInteger(sid);
-                } catch (Exception e) {
-                    LOGGER.warn("登记软件信息失败", e);
+                } catch (RequestParamValidateException e) {
                     transactionStatus.setRollbackOnly();
-                    return 0;
+                        ParamterExceptionUtils.isTrue(false, "资产名称重复");
+                    logger.error("录入失败");
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    transactionStatus.setRollbackOnly();
+                    e.printStackTrace();
+                    logger.error("录入失败");
                 }
+                return 0;
             }
         });
 
@@ -553,6 +560,16 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     public Integer findAssetInstallCount(AssetSoftwareQuery query) throws Exception {
         return assetSoftwareDao.findAssetInstallCount(query);
+    }
+
+    private boolean CheckRepeatName(String name) throws Exception {
+        AssetSoftwareQuery assetQuery = new AssetSoftwareQuery ();
+        assetQuery.setAssetName (name);
+        Integer countAsset = assetSoftwareDao.findCountCheck (assetQuery);
+        if (countAsset >= 1) {
+            return true;
+        }
+        return false;
     }
 
     @Override

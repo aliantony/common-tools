@@ -398,6 +398,9 @@
         <if test="name != null">
             and name like CONCAT('%',#{name},'%')
         </if>
+        <if test="assetName != null">
+            and name =#{name}
+        </if>
         <if test=" softwareStatus != null">
             and software_status = #{softwareStatus}
         </if>
@@ -534,6 +537,18 @@
                 </if>
 
             </trim>
+        </where>
+
+    </select>
+    <select id="findCountCheck" resultType="int" parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
+        select count(1) count from
+        <include refid="Table_Name"></include>
+        <where>
+            <if test=" assetName != null">
+
+                asset_software.name ={name}
+            </if>
+
         </where>
 
     </select>

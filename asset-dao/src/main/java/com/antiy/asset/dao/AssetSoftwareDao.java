@@ -62,6 +62,8 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
 
     Integer findCount(AssetSoftwareQuery assetSoftwareQuery);
 
+    Integer findCountCheck(AssetSoftwareQuery assetSoftwareQuery);
+
     List<AssetSoftware> findInstallList(AssetSoftwareQuery softwareQuery);
 
     List<AssetSoftwareInstallResponse> findAssetInstallList(AssetSoftwareQuery softwareQuery);

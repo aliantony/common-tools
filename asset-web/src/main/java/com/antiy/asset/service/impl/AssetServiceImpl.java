@@ -1,25 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -45,6 +25,24 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -121,6 +119,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         String number = requestAsset.getNumber();
                         if (CheckRepeat(number)) {
                             ParamterExceptionUtils.isTrue(false, "编号重复");
+                        }
+                        String name = requestAsset.getName ();
+                        if (CheckRepeatName (name)) {
+                            ParamterExceptionUtils.isTrue(false, "资产名称重复");
                         }
                         List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
                         Asset asset = requestConverter.convert(requestAsset, Asset.class);
@@ -323,6 +325,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         if (CheckRepeat(number)) {
                             ParamterExceptionUtils.isTrue(false, "编号重复");
                         }
+                        String name = assetOthersRequest.getName ();
+                        if (CheckRepeatName (name)) {
+                            ParamterExceptionUtils.isTrue(false, "资产名称重复");
+                        }
                         Asset asset1 = BeanConvert.convertBean(assetOthersRequest, Asset.class);
                         List<AssetGroupRequest> assetGroups = assetOthersRequest.getAssetGroups();
 
@@ -369,7 +375,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     return Integer.parseInt(aid);
                 } catch (RequestParamValidateException e) {
                     transactionStatus.setRollbackOnly();
-                    ParamterExceptionUtils.isTrue(false, "编号重复");
+                    if (e.getMessage ().equals ("编号重复")){
+                        ParamterExceptionUtils.isTrue(false, "编号重复");
+                    }else {
+                        ParamterExceptionUtils.isTrue(false, "资产名称重复");
+                    }
                     logger.error("录入失败");
                     e.printStackTrace();
                 } catch (Exception e) {
@@ -402,6 +412,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private boolean CheckRepeat(String number) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setNumber(number);
+        Integer countAsset = findCountAssetNumber(assetQuery);
+        if (countAsset >= 1) {
+            return true;
+        }
+        return false;
+    }
+    private boolean CheckRepeatName(String name) throws Exception {
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setAssetName (name);
         Integer countAsset = findCountAssetNumber(assetQuery);
         if (countAsset >= 1) {
             return true;

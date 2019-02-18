@@ -1,14 +1,13 @@
 package com.antiy.asset.vo.query;
 
-import java.util.List;
-
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p> AssetSoftware 查询条件 </p>
@@ -49,6 +48,8 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty("软件名称")
     private String        name;
+
+    private String        assetName;
 
     /**
      * 版本
@@ -404,5 +405,13 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
             ParamterExceptionUtils.isNull(endTime, "结束时间为空");
             ParamterExceptionUtils.isTrue(endTime > beginTime, "结束时间必须大于开始时间");
         }
+    }
+
+    public String getAssetName() {
+        return assetName;
+    }
+
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
     }
 }
