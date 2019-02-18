@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.common.exception.BusinessException;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +71,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
         int result = assetGroupDao.insert(assetGroup);
-        if (request.getAssetIds() != null){
+        if (ArrayUtils.isEmpty(request.getAssetIds())){
             for (String assetId : request.getAssetIds()) {
                 AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
                 assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
