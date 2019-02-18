@@ -546,7 +546,7 @@
         <where>
             <if test=" assetName != null">
 
-                asset_software.name ={name}
+                asset_software.name ={assetName}
             </if>
 
         </where>
