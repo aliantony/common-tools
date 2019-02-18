@@ -150,7 +150,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 1核心2重要3一般
      */
     @ApiModelProperty("1核心2重要3一般")
-    @NotNull(message = "重要性不能为空")
     private Integer                 importanceDegree;
 
     /**
