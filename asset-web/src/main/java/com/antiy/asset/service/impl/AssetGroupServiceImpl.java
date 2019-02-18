@@ -69,7 +69,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
         int result = assetGroupDao.insert(assetGroup);
-        if (!ArrayUtils.isEmpty(request.getAssetIds())) {
+        if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
             for (String assetId : request.getAssetIds()) {
                 AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
                 assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
