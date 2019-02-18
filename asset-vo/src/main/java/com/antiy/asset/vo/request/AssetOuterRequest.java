@@ -1,12 +1,10 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
+import com.antiy.common.base.BasicRequest;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
-
-import com.antiy.common.base.BasicRequest;
-
-import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -87,7 +85,7 @@ public class AssetOuterRequest extends BasicRequest {
     ManualStartActivityRequest                 activityRequest;
 
     /**
-     * 存储介质
+     * 其他设备
      */
     @ApiModelProperty(value = "其他设备")
     @Valid

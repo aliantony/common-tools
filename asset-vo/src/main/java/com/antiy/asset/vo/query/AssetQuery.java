@@ -35,6 +35,11 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty("资产名称")
     private String        name;
+    /**
+     * 资产名称,重复判读使用
+     */
+
+    private String        assetName;
 
     /**
      * 资产编号
@@ -149,6 +154,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     private Long          beginTime;
     @ApiModelProperty("结束时间")
     private Long          endTime;
+
 
     public Long getFirstEnterNett() {
         return firstEnterNett;
@@ -374,5 +380,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
             ParamterExceptionUtils.isNull(endTime, "结束时间为空");
             ParamterExceptionUtils.isTrue(endTime > beginTime, "结束时间必须大于开始时间");
         }
+    }
+
+    public String getAssetName() {
+        return assetName;
+    }
+
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
     }
 }
