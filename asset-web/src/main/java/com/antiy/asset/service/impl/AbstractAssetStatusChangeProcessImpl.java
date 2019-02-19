@@ -14,10 +14,7 @@ import com.antiy.asset.service.IAssetStatusChangeProcessService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
-import com.antiy.asset.vo.enums.AssetFlowEnum;
-import com.antiy.asset.vo.enums.SoftwareFlowEnum;
+import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.common.base.ActionResponse;
@@ -142,6 +139,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             assetOperationRecord.setContent(
                 assetFlowEnum != null ? assetFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
         }
+
+        assetOperationRecord.setTargetType(assetStatusReqeust.getSoftware() ? AssetOperationTableEnum.SOFTWARE.getCode() : AssetOperationTableEnum.ASSET.getCode());
 
         assetOperationRecord.setTargetObjectId(assetStatusReqeust.getAssetId());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
