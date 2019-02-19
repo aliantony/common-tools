@@ -77,6 +77,9 @@
         <if test=" memo != null">
             memo,
         </if>
+        <if test=" content != null">
+            content,
+        </if>
         <if test=" createUser != null">
             create_user,
         </if>
@@ -131,6 +134,9 @@
         <if test=" memo != null">
             #{memo },
         </if>
+        <if test=" content != null">
+            #{content },
+        </if>
         <if test=" createUser != null">
             #{createUser },
         </if>
@@ -184,6 +190,9 @@
         </if>
         <if test=" memo != null">
             memo = #{memo },
+        </if>
+        <if test=" content != null">
+            content = #{content },
         </if>
         <if test=" createUser != null">
             create_user = #{createUser },
