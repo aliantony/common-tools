@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.biz.util.RedisUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
@@ -107,6 +108,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private static final Logger                       logger = LogUtils.get(AssetServiceImpl.class);
     @Resource
     private AesEncoder                                aesEncoder;
+    @Resource
+    private RedisUtil                                 redisUtil;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -116,7 +119,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
-                    String aid = "";
+                    String aid;
                     if (requestAsset != null) {
                         String number = requestAsset.getNumber();
                         if (CheckRepeat(number)) {
@@ -124,21 +127,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                         List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
                         Asset asset = requestConverter.convert(requestAsset, Asset.class);
-                        if (assetGroup != null && !assetGroup.isEmpty()) {
+                        if (CollectionUtils.isNotEmpty(assetGroup)) {
                             StringBuilder stringBuilder = new StringBuilder();
                             assetGroup.forEach(assetGroupRequest -> {
                                 try {
                                     String assetGroupName = assetGroupDao
-                                            .getById(DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
+                                        .getById(DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
                                     asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
-                                            stringBuilder.length() - 1));
+                                        stringBuilder.length() - 1));
                                 } catch (Exception e) {
                                     throw new BusinessException("资产组名称获取失败");
                                 }
                             });
 
                         }
-
                         asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                         asset.setAssetSource(2);
                         asset.setGmtCreate(System.currentTimeMillis());
@@ -1301,9 +1303,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             try {
                                 String assetGroupName = assetGroupDao
                                     .getById(DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
-//                                asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
-                                asset.setAssetGroup(stringBuilder.append(assetGroupName).substring(0,
-                                    stringBuilder.length() - 1));
+                                // asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
+                                asset.setAssetGroup(
+                                    stringBuilder.append(assetGroupName).substring(0, stringBuilder.length() - 1));
                             } catch (Exception e) {
                                 throw new BusinessException("资产组名称获取失败");
                             }
@@ -1328,7 +1330,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (!assetGroupRelations.isEmpty()) {
                         assetGroupRelationDao.insertBatch(assetGroupRelations);
                     }
-//                    asset.setAssetGroup(stringBuffer.toString());
+                    // asset.setAssetGroup(stringBuffer.toString());
                     asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
