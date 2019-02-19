@@ -34,6 +34,17 @@ public class AssetOperationRecordQuery extends ObjectQuery {
     @ApiModelProperty(value = "资产类型")
     private AssetOperationTableEnum targetType;
 
+    @ApiModelProperty(value = "当前资产的状态")
+    private String                  originStatus;
+
+    public String getOriginStatus() {
+        return originStatus;
+    }
+
+    public void setOriginStatus(String originStatus) {
+        this.originStatus = originStatus;
+    }
+
     public String getTargetObjectId() {
         return targetObjectId;
     }

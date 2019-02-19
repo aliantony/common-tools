@@ -1,5 +1,25 @@
 package com.antiy.asset.service.impl;
 
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -25,24 +45,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -120,8 +122,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         if (CheckRepeat(number)) {
                             ParamterExceptionUtils.isTrue(false, "编号重复");
                         }
-                        String name = requestAsset.getName ();
-                        if (CheckRepeatName (name)) {
+                        String name = requestAsset.getName();
+                        if (CheckRepeatName(name)) {
                             ParamterExceptionUtils.isTrue(false, "资产名称重复");
                         }
                         List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
@@ -131,9 +133,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetGroup.forEach(assetGroupRequest -> {
                                 try {
                                     String assetGroupName = assetGroupDao
-                                            .getById(DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
+                                        .getById(DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
                                     asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
-                                            stringBuilder.length() - 1));
+                                        stringBuilder.length() - 1));
                                 } catch (Exception e) {
                                     throw new BusinessException("资产组名称获取失败");
                                 }
@@ -141,7 +143,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         }
 
-//                        asset.setAssetSource(2);
+                        // asset.setAssetSource(2);
                         asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                         asset.setGmtCreate(System.currentTimeMillis());
                         asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
@@ -325,24 +327,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         if (CheckRepeat(number)) {
                             ParamterExceptionUtils.isTrue(false, "编号重复");
                         }
-                        String name = assetOthersRequest.getName ();
-                        if (CheckRepeatName (name)) {
+                        String name = assetOthersRequest.getName();
+                        if (CheckRepeatName(name)) {
                             ParamterExceptionUtils.isTrue(false, "资产名称重复");
                         }
                         Asset asset1 = BeanConvert.convertBean(assetOthersRequest, Asset.class);
 
                         List<AssetGroupRequest> assetGroup = assetOthersRequest.getAssetGroups();
 
-
-
                         if (assetGroup != null && !assetGroup.isEmpty()) {
                             StringBuilder stringBuilder = new StringBuilder();
                             assetGroup.forEach(assetGroupRequest -> {
                                 try {
                                     String assetGroupName = assetGroupDao
-                                            .getById(DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
+                                        .getById(DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
                                     asset1.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
-                                            stringBuilder.length() - 1));
+                                        stringBuilder.length() - 1));
                                 } catch (Exception e) {
                                     throw new BusinessException("资产组名称获取失败");
                                 }
@@ -365,13 +365,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetGroupRelation.setGmtCreate(System.currentTimeMillis());
                                 assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                                 LogHandle.log(assetGroupRequest, AssetEventEnum.ASSET_GROUP_INSERT.getName(),
-                                        AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                                    AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                                 LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}",
-                                        assetGroupRequest.toString());
+                                    assetGroupRequest.toString());
                                 assetGroupRelationDao.insert(assetGroupRelation);
                             }
                         }
-
 
                         LogHandle.log(assetOthersRequest, AssetEventEnum.ASSET_OTHERS_INSERT.getName(),
                             AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
@@ -381,6 +380,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(aid);
+                    assetOperationRecord.setOriginStatus(AssetStatusEnum.WATI_REGSIST.getCode());
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     assetOperationRecord.setContent("登记硬件资产");
@@ -391,9 +391,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     return Integer.parseInt(aid);
                 } catch (RequestParamValidateException e) {
                     transactionStatus.setRollbackOnly();
-                    if (e.getMessage ().equals ("编号重复")){
+                    if (e.getMessage().equals("编号重复")) {
                         ParamterExceptionUtils.isTrue(false, "编号重复");
-                    }else {
+                    } else {
                         ParamterExceptionUtils.isTrue(false, "资产名称重复");
                     }
                     logger.error("录入失败");
@@ -401,7 +401,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     e.printStackTrace();
-                    logger.error("录入失败",e);
+                    logger.error("录入失败", e);
                 }
                 return 0;
             }
@@ -434,9 +434,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         return false;
     }
+
     private boolean CheckRepeatName(String name) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setAssetName (name);
+        assetQuery.setAssetName(name);
         Integer countAsset = findCountAssetNumber(assetQuery);
         if (countAsset >= 1) {
             return true;
@@ -1336,9 +1337,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             try {
                                 String assetGroupName = assetGroupDao
                                     .getById(DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
-//                                asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
-                                asset.setAssetGroup(stringBuilder.append(assetGroupName).substring(0,
-                                    stringBuilder.length() - 1));
+                                // asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
+                                asset.setAssetGroup(
+                                    stringBuilder.append(assetGroupName).substring(0, stringBuilder.length() - 1));
                             } catch (Exception e) {
                                 throw new BusinessException("资产组名称获取失败");
                             }
@@ -1361,7 +1362,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (!assetGroupRelations.isEmpty()) {
                         assetGroupRelationDao.insertBatch(assetGroupRelations);
                     }
-//                    asset.setAssetGroup(stringBuffer.toString());
+                    // asset.setAssetGroup(stringBuffer.toString());
                     asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
@@ -1709,8 +1710,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String id = asset.getStringId();
 
             if (StringUtils.isNotBlank(entity.getMemoryBrand()) && !Objects.isNull(entity.getMemoryCapacity())
-                && !Objects.isNull(entity.getMemoryFrequency())
-                && entity.getMemoryNum() > 0) {
+                && !Objects.isNull(entity.getMemoryFrequency()) && entity.getMemoryNum() > 0) {
                 AssetMemory assetMemory = new AssetMemory();
                 assetMemory.setAssetId(id);
                 assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
