@@ -41,6 +41,9 @@ public class FileController {
 
     @Value("${modelName}")
     private String              modelName;
+
+    @Value("${hdfs.fsUri}")
+    private String              defaultHDFSUrl;
     private static final String UTF8   = "UTF-8";
 
     /**
@@ -80,16 +83,16 @@ public class FileController {
     @PreAuthorize("hasAuthority('asset:file:download')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/file/download", method = RequestMethod.GET)
-    public ActionResponse download(@ApiParam(value = "url地址") String url, String fileName, HttpServletResponse response)
-                                                                                                                        throws Exception {
+    public ActionResponse download(@ApiParam(value = "url地址") String url, String fileName,
+                                   HttpServletResponse response) throws Exception {
         ParamterExceptionUtils.isBlank(url, "url地址不能为空");
         ParamterExceptionUtils.isBlank(fileName, "文件名字不能为空");
         // 清空response
         response.reset();
         response.setContentType("application/x-msdownload;");
-        response.setHeader("Content-disposition", "attachment; filename="
-                                                  + new String(fileName.getBytes(UTF8), "ISO8859-1"));
-        FileResponse fileResponse = fileUtils.download(url);
+        response.setHeader("Content-disposition",
+            "attachment; filename=" + new String(fileName.getBytes(UTF8), "ISO8859-1"));
+        FileResponse fileResponse = fileUtils.download(defaultHDFSUrl.concat(url));
         if (fileResponse != null && RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
             InputStream inputStream = (InputStream) fileResponse.getData();
 
