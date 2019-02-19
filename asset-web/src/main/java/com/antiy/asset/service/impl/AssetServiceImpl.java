@@ -1959,7 +1959,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
             assetOperationRecordDao.insert(assetOperationRecord);
             // 流程
-            // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
 
             Map<String, Object> formData = new HashMap();
             String[] userIds = importRequest.getUserId();
@@ -2075,7 +2074,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
             assetOperationRecordDao.insert(assetOperationRecord);
             // 流程
-            // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
 
             Map<String, Object> formData = new HashMap();
             String[] userIds = importRequest.getUserId();

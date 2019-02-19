@@ -259,7 +259,6 @@ public class AssetController {
     @PreAuthorize(value = "hasAuthority('asset:asset:importPc')")
     public ActionResponse importPc(@ApiParam(value = "file") MultipartFile file,
                                    AssetImportRequest importRequest) throws Exception {
-
         return ActionResponse.success(iAssetService.importPc(file, importRequest));
     }
 
@@ -289,7 +288,7 @@ public class AssetController {
     @PreAuthorize(value = "hasAuthority('asset:asset:importSafety')")
     public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file,
                                        AssetImportRequest importRequest) throws Exception {
-
+        String originalFilename = file.getOriginalFilename ();
         return ActionResponse.success(iAssetService.importSecurity(file, importRequest));
     }
 
