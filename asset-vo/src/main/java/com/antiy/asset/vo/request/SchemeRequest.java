@@ -56,10 +56,14 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty(value = "方案内容")
     private String  content;
 
-    @ApiModelProperty(value = "方案文件,JSON串,{\n" +
-            "\t\"name\": \"zhangsan\",\n" +
-            "\t\"url\": \"http://www.baidu.com\"\n" +
-            "}")
+    /**
+     * 备注
+     */
+    @ApiModelProperty(value = "备注")
+    private String  memo;
+
+    @ApiModelProperty(value = "方案文件,JSON串,{\n" + "\t\"name\": \"zhangsan\",\n" + "\t\"url\": \"http://www.baidu.com\"\n"
+                              + "}")
     private String  fileInfo;
 
     @ApiModelProperty(value = "扩展字段,JSON串,基准分析才有 {baseline:true,implement:true}")
@@ -135,6 +139,14 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
 
     public void setSchemeSource(Integer schemeSource) {
         this.schemeSource = schemeSource;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
     @Override
