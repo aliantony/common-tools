@@ -377,6 +377,7 @@
             <if test=" type != null">
                 and type = #{type}
             </if>
+            and gmt_create = ( select max( gmt_create ) as gmtTime from scheme )
             and status = 1
         </trim>
     </select>
