@@ -22,9 +22,9 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty(value = "主键")
     private String  id;
     /**
-     * 类型（1.准入实施、2.效果检查、3.制定待退役方案、4.验证退役方案、5.实施退役方案）
+     * 类型（1.准入实施、2.效果检查、3.制定待退役方案、4.验证退役方案、5.实施退役方案、6.硬件基准配置分析、7.硬件基准验证）
      */
-    @ApiModelProperty("类型（1.准入实施、2.效果检查、3.制定待退役方案、4.实施退役方案、5.资产变更, 6.硬件基准验证）")
+    @ApiModelProperty("类型（1.准入实施、2.效果检查、3.制定待退役方案、4.实施退役方案、5.资产变更、6.硬件基准配置分析、7.硬件基准验证）")
     @NotNull(message = "类型不能为空")
     private Integer type;
 
