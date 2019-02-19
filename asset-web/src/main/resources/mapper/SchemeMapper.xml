@@ -362,7 +362,7 @@
     </select>
 
     <!--通过资产ID查询方案信息-->
-    <select id="findSchemeByAssetIdAndType" resultType="Scheme"
+    <select id="findSchemeByAssetIdAndType" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetIDAndSchemeTypeQuery">
         select
         content,
