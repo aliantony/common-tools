@@ -1709,7 +1709,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String id = asset.getStringId();
 
             if (StringUtils.isNotBlank(entity.getMemoryBrand()) && !Objects.isNull(entity.getMemoryCapacity())
-                && !Objects.isNull(entity.getMemoryFrequency()) && !Objects.isNull(entity.getMemoryFrequency())
+                && !Objects.isNull(entity.getMemoryFrequency())
                 && entity.getMemoryNum() > 0) {
                 AssetMemory assetMemory = new AssetMemory();
                 assetMemory.setAssetId(id);

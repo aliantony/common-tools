@@ -4,6 +4,9 @@ import com.antiy.common.base.BasicRequest;
 import io.swagger.annotations.ApiModelProperty;
 import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
+
+import javax.validation.Valid;
+
 /**
  * <p>
  * AssetChangeRecordRequest 请求对象
@@ -14,7 +17,9 @@ import com.antiy.common.exception.RequestParamValidateException;
  */
 
 public class AssetChangeRecordRequest extends BasicRequest implements ObjectValidator{
-
+    @ApiModelProperty("硬件资产信息")
+    @Valid
+    private  AssetOuterRequest assetOuterRequest;
     /**
      *  1--硬件资产，2--软件资产
      */
@@ -61,6 +66,17 @@ public class AssetChangeRecordRequest extends BasicRequest implements ObjectVali
     @ApiModelProperty("业务主键Id")
     private Integer businessId;
 
+    @ApiModelProperty(value = "流程数据")
+    @Valid
+    ManualStartActivityRequest                 activityRequest;
+
+    public ManualStartActivityRequest getActivityRequest() {
+        return activityRequest;
+    }
+
+    public void setActivityRequest(ManualStartActivityRequest activityRequest) {
+        this.activityRequest = activityRequest;
+    }
 
 
     public Integer getType() {
@@ -149,4 +165,11 @@ public void setBusinessId(Integer businessId) {
 
     }
 
+    public AssetOuterRequest getAssetOuterRequest() {
+        return assetOuterRequest;
+    }
+
+    public void setAssetOuterRequest(AssetOuterRequest assetOuterRequest) {
+        this.assetOuterRequest = assetOuterRequest;
+    }
 }
