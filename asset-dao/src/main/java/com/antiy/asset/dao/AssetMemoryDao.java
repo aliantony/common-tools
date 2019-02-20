@@ -1,5 +1,6 @@
 package com.antiy.asset.dao;
 
+import com.antiy.asset.entity.AssetCpu;
 import com.antiy.asset.entity.AssetMemory;
 import com.antiy.asset.vo.query.AssetMemoryQuery;
 import com.antiy.common.base.IBaseDao;
@@ -21,4 +22,6 @@ public interface AssetMemoryDao extends IBaseDao<AssetMemory> {
     Integer insertBatch(List<AssetMemory> assetMemoryList);
 
     Integer deleteByAssetId(Integer id);
+
+    List<AssetMemory> findMemoryByAssetId(Integer assestId);
 }
