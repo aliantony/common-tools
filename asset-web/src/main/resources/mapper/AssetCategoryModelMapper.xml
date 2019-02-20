@@ -234,7 +234,6 @@
         where id = #{id} and status=1
     </select>
 
-
     <update id="deleteById" parameterType="java.lang.Integer">
         update
         <include refid="Table_Name"></include>

@@ -68,17 +68,6 @@ public class AssetChangeRecordRequest extends BasicRequest implements ObjectVali
     @ApiModelProperty("业务主键Id")
     private Integer businessId;
 
-    @ApiModelProperty(value = "流程数据")
-    @Valid
-    ManualStartActivityRequest                 activityRequest;
-
-    public ManualStartActivityRequest getActivityRequest() {
-        return activityRequest;
-    }
-
-    public void setActivityRequest(ManualStartActivityRequest activityRequest) {
-        this.activityRequest = activityRequest;
-    }
 
 
     public Integer getType() {

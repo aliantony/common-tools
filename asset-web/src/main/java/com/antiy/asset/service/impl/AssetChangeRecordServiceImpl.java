@@ -51,7 +51,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
             AssetOuterRequest assetOuterRequest = request.getAssetOuterRequest ();
             assetChangeRecord.setChangeVal (JsonUtil.object2Json (assetOuterRequest));
             assetChangeRecordDao.insert(assetChangeRecord);
-            ManualStartActivityRequest manualStartActivityRequest = request.getActivityRequest ();
+            ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest ();
             if (Objects.isNull(manualStartActivityRequest)) {
                 manualStartActivityRequest = new ManualStartActivityRequest();
             }

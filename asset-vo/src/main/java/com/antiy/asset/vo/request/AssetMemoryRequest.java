@@ -1,15 +1,14 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * <p> AssetMemoryRequest 请求对象 </p>
@@ -38,6 +37,12 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
     @NotBlank(message = "内存品牌不能为空")
     @Size(message = "内存品牌长度不能超过64位", max = 64)
     private String  brand;
+    /**
+     * 序列号
+     */
+    @ApiModelProperty("序列号")
+    @Size(message = "主板序列号长度不能超过32位",max = 32)
+    private String serial;
     /**
      * 内存类型：1未知，2-ddr2,3-ddr3,4-ddr4
      */
@@ -206,5 +211,13 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
 
     public void setTransferType(Integer transferType) {
         this.transferType = transferType;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
     }
 }
