@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
-import com.antiy.biz.util.RedisUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
@@ -108,8 +107,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private static final Logger                       logger = LogUtils.get(AssetServiceImpl.class);
     @Resource
     private AesEncoder                                aesEncoder;
-    @Resource
-    private RedisUtil                                 redisUtil;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -119,15 +116,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
-                    String aid;
+                    String aid = "";
                     if (requestAsset != null) {
                         String number = requestAsset.getNumber();
                         if (CheckRepeat(number)) {
                             ParamterExceptionUtils.isTrue(false, "编号重复");
                         }
+                        String name = requestAsset.getName();
+                        if (CheckRepeatName(name)) {
+                            ParamterExceptionUtils.isTrue(false, "资产名称重复");
+                        }
                         List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
                         Asset asset = requestConverter.convert(requestAsset, Asset.class);
-                        if (CollectionUtils.isNotEmpty(assetGroup)) {
+                        if (assetGroup != null && !assetGroup.isEmpty()) {
                             StringBuilder stringBuilder = new StringBuilder();
                             assetGroup.forEach(assetGroupRequest -> {
                                 try {
@@ -141,8 +142,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             });
 
                         }
+
+                        // asset.setAssetSource(2);
                         asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                        asset.setAssetSource(2);
                         asset.setGmtCreate(System.currentTimeMillis());
                         asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                         assetDao.insert(asset);
@@ -325,22 +327,38 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         if (CheckRepeat(number)) {
                             ParamterExceptionUtils.isTrue(false, "编号重复");
                         }
+                        String name = assetOthersRequest.getName();
+                        if (CheckRepeatName(name)) {
+                            ParamterExceptionUtils.isTrue(false, "资产名称重复");
+                        }
                         Asset asset1 = BeanConvert.convertBean(assetOthersRequest, Asset.class);
-                        List<AssetGroupRequest> assetGroups = assetOthersRequest.getAssetGroups();
 
-                        if (assetGroups != null && !assetGroups.isEmpty()) {
+                        List<AssetGroupRequest> assetGroup = assetOthersRequest.getAssetGroups();
+
+                        if (assetGroup != null && !assetGroup.isEmpty()) {
                             StringBuilder stringBuilder = new StringBuilder();
-                            assetGroups.forEach(assetGroupRequest -> {
-                                asset1.setAssetGroup(stringBuilder.append(assetGroupRequest.getName()).append(",")
-                                    .substring(0, stringBuilder.length() - 1));
+                            assetGroup.forEach(assetGroupRequest -> {
+                                try {
+                                    String assetGroupName = assetGroupDao
+                                        .getById(DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
+                                    asset1.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
+                                        stringBuilder.length() - 1));
+                                } catch (Exception e) {
+                                    throw new BusinessException("资产组名称获取失败");
+                                }
                             });
 
                         }
+
+                        asset1.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        asset1.setGmtCreate(System.currentTimeMillis());
+                        asset1.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                         assetDao.insert(asset1);
                         aid = asset1.getStringId();
-                        if (assetGroups != null && !assetGroups.isEmpty()) {
 
-                            for (AssetGroupRequest assetGroupRequest : assetGroups) {
+                        if (assetGroup != null && !assetGroup.isEmpty()) {
+
+                            for (AssetGroupRequest assetGroupRequest : assetGroup) {
                                 AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
                                 assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
                                 assetGroupRelation.setAssetId(asset1.getStringId());
@@ -353,6 +371,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetGroupRelationDao.insert(assetGroupRelation);
                             }
                         }
+
                         LogHandle.log(assetOthersRequest, AssetEventEnum.ASSET_OTHERS_INSERT.getName(),
                             AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                         LogUtils.info(logger, AssetEventEnum.ASSET_OTHERS_INSERT.getName() + " {}",
@@ -361,8 +380,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(aid);
+                    assetOperationRecord.setOriginStatus(AssetStatusEnum.WATI_REGSIST.getCode());
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                    assetOperationRecord.setProcessResult(1);
                     assetOperationRecord.setContent("登记硬件资产");
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
@@ -371,13 +392,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     return Integer.parseInt(aid);
                 } catch (RequestParamValidateException e) {
                     transactionStatus.setRollbackOnly();
-                    ParamterExceptionUtils.isTrue(false, "编号重复");
+                    if (e.getMessage().equals("编号重复")) {
+                        ParamterExceptionUtils.isTrue(false, "编号重复");
+                    } else {
+                        ParamterExceptionUtils.isTrue(false, "资产名称重复");
+                    }
                     logger.error("录入失败");
                     e.printStackTrace();
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     e.printStackTrace();
-                    logger.error("录入失败");
+                    logger.error("录入失败", e);
                 }
                 return 0;
             }
@@ -404,6 +429,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private boolean CheckRepeat(String number) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setNumber(number);
+        Integer countAsset = findCountAssetNumber(assetQuery);
+        if (countAsset >= 1) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean CheckRepeatName(String name) throws Exception {
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setAssetName(name);
         Integer countAsset = findCountAssetNumber(assetQuery);
         if (countAsset >= 1) {
             return true;
@@ -1315,16 +1350,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     StringBuffer stringBuffer = new StringBuffer();
                     List<AssetGroupRequest> assetGroups = assetOuterRequest.getAsset().getAssetGroups();
                     List<AssetGroupRelation> assetGroupRelations = Lists.newArrayList();
-                    if (CollectionUtils.isNotEmpty(assetGroups)) {
-                        for (AssetGroupRequest assetGroupRequest : assetGroups) {
-                            stringBuffer.append(assetGroupRequest.getName()).append(",");
-                            AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-                            assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
-                            assetGroupRelation.setAssetId(asset.getStringId());
-                            assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                            assetGroupRelation.setGmtCreate(System.currentTimeMillis());
-                            assetGroupRelations.add(assetGroupRelation);
-                        }
+                    for (AssetGroupRequest assetGroupRequest : assetGroups) {
+                        stringBuffer.append(assetGroupRequest.getName()).append(",");
+                        AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
+                        assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
+                        assetGroupRelation.setAssetId(asset.getStringId());
+                        assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        assetGroupRelation.setGmtCreate(System.currentTimeMillis());
+                        assetGroupRelations.add(assetGroupRelation);
                     }
                     assetGroupRelationDao.deleteByAssetId(asset.getId());
                     if (!assetGroupRelations.isEmpty()) {
@@ -1546,7 +1579,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     return count;
 
                 } catch (Exception e) {
-                    e.printStackTrace();
                     logger.info("资产变更失败:", e);
                     transactionStatus.setRollbackOnly();
                     throw new BusinessException("资产变更失败");
@@ -1679,8 +1711,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String id = asset.getStringId();
 
             if (StringUtils.isNotBlank(entity.getMemoryBrand()) && !Objects.isNull(entity.getMemoryCapacity())
-                && !Objects.isNull(entity.getMemoryFrequency()) && !Objects.isNull(entity.getMemoryFrequency())
-                && entity.getMemoryNum() > 0) {
+                && !Objects.isNull(entity.getMemoryFrequency()) && entity.getMemoryNum() > 0) {
                 AssetMemory assetMemory = new AssetMemory();
                 assetMemory.setAssetId(id);
                 assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -1878,7 +1909,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(importRequest.getAreaId());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            asset.setResponsibleUserId(Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setNumber(networkDeviceEntity.getNumber());
@@ -1929,7 +1959,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
             assetOperationRecordDao.insert(assetOperationRecord);
             // 流程
-            // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
 
             Map<String, Object> formData = new HashMap();
             String[] userIds = importRequest.getUserId();
@@ -2007,7 +2036,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(importRequest.getAreaId());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            asset.setResponsibleUserId(Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setNumber(entity.getNumber());
@@ -2045,7 +2073,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
             assetOperationRecordDao.insert(assetOperationRecord);
             // 流程
-            // TODO: 2019/1/22 根据区域ID 查询全部的配置人员
 
             Map<String, Object> formData = new HashMap();
             String[] userIds = importRequest.getUserId();
@@ -2117,7 +2144,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(importRequest.getAreaId());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            asset.setResponsibleUserId(Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setNumber(entity.getNumber());
@@ -2227,7 +2253,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(importRequest.getAreaId());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            asset.setResponsibleUserId(Objects.toString(LoginUserUtil.getLoginUser().getId()));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             asset.setAssetSource(2);
             asset.setNumber(entity.getNumber());

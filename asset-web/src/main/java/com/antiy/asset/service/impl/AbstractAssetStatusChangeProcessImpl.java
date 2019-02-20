@@ -14,10 +14,7 @@ import com.antiy.asset.service.IAssetStatusChangeProcessService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
-import com.antiy.asset.vo.enums.AssetFlowEnum;
-import com.antiy.asset.vo.enums.SoftwareFlowEnum;
+import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.common.base.ActionResponse;
@@ -92,8 +89,9 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         } else if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode()
             .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
                    || AssetFlowCategoryEnum.HARDWARE_CHANGE.getCode()
-                       .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode()) || AssetFlowCategoryEnum.HARDWARE_IMPL_RETIRE.getCode()
-                .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+                       .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
+                   || AssetFlowCategoryEnum.HARDWARE_IMPL_RETIRE.getCode()
+                       .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             // 硬件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         } else if (AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode()
@@ -143,6 +141,9 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                 assetFlowEnum != null ? assetFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
         }
 
+        assetOperationRecord.setTargetType(assetStatusReqeust.getSoftware() ? AssetOperationTableEnum.SOFTWARE.getCode()
+            : AssetOperationTableEnum.ASSET.getCode());
+
         assetOperationRecord.setTargetObjectId(assetStatusReqeust.getAssetId());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
@@ -159,7 +160,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      */
     private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) {
         Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
-        scheme.setPutintoUserId(LoginUserUtil.getLoginUser().getId());
+        scheme.setGmtCreate(System.currentTimeMillis());
+        scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         if (null != assetStatusReqeust.getWorkOrderVO()) {
             scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
             scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));

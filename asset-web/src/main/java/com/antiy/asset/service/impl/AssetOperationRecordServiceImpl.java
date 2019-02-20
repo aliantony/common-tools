@@ -3,7 +3,6 @@ package com.antiy.asset.service.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -146,6 +145,8 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
     private List<AssetOperationRecordBarResponse> getAssetOperationRecordBarResponses(HashMap<String, Object> map,
                                                                                       AssetOperationRecordQuery assetOperationRecordQuery) {
+        assetOperationRecordQuery
+            .setOriginStatus(map.get("originStatus") != null ? map.get("originStatus").toString() : null);
         List<AssetOperationRecordBarPO> assetOperationRecordBarPOList = assetOperationRecordDao
             .findAssetOperationRecordBarByAssetId(assetOperationRecordQuery);
 
