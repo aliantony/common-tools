@@ -245,13 +245,10 @@
             aor.process_result AS processResult,
             aor.target_object_id AS id,
             aor.origin_status AS originStatus,
-            sr.NAME AS roleName,
             c.file_info as fileInfo,
             c.memo
         FROM
             asset_operation_record aor
-        LEFT JOIN sys_user_role sur ON sur.user_id = aor.operate_user_id
-        LEFT JOIN sys_role sr ON sr.id = sur.role_id
         LEFT JOIN scheme c ON c.id = aor.scheme_id
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" targetObjectId != null">

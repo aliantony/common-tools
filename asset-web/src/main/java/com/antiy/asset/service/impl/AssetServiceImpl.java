@@ -1505,13 +1505,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(asset.getStringId());
-                    assetOperationRecord.setOriginStatus(asset.getStatus());
+                    assetOperationRecord.setOriginStatus(asset.getStatus() == null ? AssetStatusEnum.WATI_REGSIST.getCode() : asset.getStatus());
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     assetOperationRecord.setContent(AssetEventEnum.ASSET_MODIFY.getName());
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
                     assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+                    assetOperationRecord.setProcessResult(1);
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return count;
 
@@ -1772,6 +1773,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+            assetOperationRecord.setProcessResult(1);
+            assetOperationRecord.setOriginStatus(AssetStatusEnum.WATI_REGSIST.getCode());
             assetOperationRecordDao.insert(assetOperationRecord);
 
             // 流程
@@ -1891,6 +1894,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setContent("登记硬件资产");
+            assetOperationRecord.setProcessResult(1);
+            assetOperationRecord.setOriginStatus(AssetStatusEnum.WATI_REGSIST.getCode());
             assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
@@ -2008,6 +2013,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+            assetOperationRecord.setProcessResult(1);
+            assetOperationRecord.setOriginStatus(AssetStatusEnum.WATI_REGSIST.getCode());
             assetOperationRecordDao.insert(assetOperationRecord);
             // 流程
 
@@ -2215,6 +2222,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+            assetOperationRecord.setProcessResult(1);
+            assetOperationRecord.setOriginStatus(AssetStatusEnum.WATI_REGSIST.getCode());
             assetOperationRecordDao.insert(assetOperationRecord);
             // 流程
             Map<String, Object> formData = new HashMap();

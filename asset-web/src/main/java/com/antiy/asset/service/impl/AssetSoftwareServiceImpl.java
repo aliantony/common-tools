@@ -166,6 +166,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
                     assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+                    assetOperationRecord.setProcessResult(1);
                     assetOperationRecordDao.insert(assetOperationRecord);
                     // 写入业务日志
                     LogHandle.log(assetSoftware.toString(), AssetEventEnum.SOFT_INSERT.getName(),
