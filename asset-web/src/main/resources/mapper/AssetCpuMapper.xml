@@ -335,4 +335,11 @@
             )
         </foreach>
     </insert>
+    <select id="findCpuByAssetId" resultMap="BaseResultMap"
+            parameterType="int">
+        select brand, model, serial, main_frequency, thread_size, core_size from
+        <include refid="Table_Name"></include>
+        where asset_id = #{assetId}
+        and status = 1
+    </select>
 </mapper>

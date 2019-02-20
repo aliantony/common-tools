@@ -382,9 +382,10 @@
     </insert>
     <!-- 根据资产ID查询网卡信息 -->
     <select id="findNetworkCardByAssetId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-        select id, ip_address,mac_address
+        select id, brand, model, serial, ip_address,mac_address,default_gateway
         from
         <include refid="Table_Name"></include> anequip
         where asset_id = #{assetId}
+        and status = 1
     </select>
 </mapper>

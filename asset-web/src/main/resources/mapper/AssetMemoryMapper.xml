@@ -436,4 +436,11 @@
             )
         </foreach>
     </insert>
+    <select id="findMemoryByAssetId" resultMap="BaseResultMap"
+            parameterType="int">
+        select brand, transfer_type, serial, capacity, frequency, slot_type, is_heatsink, stitch from
+        <include refid="Table_Name"></include>
+        where asset_id = #{assetId}
+        and status = 1
+    </select>
 </mapper>

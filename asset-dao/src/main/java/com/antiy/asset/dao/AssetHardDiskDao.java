@@ -1,5 +1,6 @@
 package com.antiy.asset.dao;
 
+import com.antiy.asset.entity.AssetCpu;
 import com.antiy.asset.entity.AssetHardDisk;
 import com.antiy.asset.vo.query.AssetHardDiskQuery;
 import com.antiy.common.base.IBaseDao;
@@ -21,4 +22,6 @@ public interface AssetHardDiskDao extends IBaseDao<AssetHardDisk> {
     Integer insertBatch(List<AssetHardDisk> assetHardDiskList);
 
     Integer deleteByAssetId(Integer id);
+
+    List<AssetHardDisk> findHardDiskByAssetId(Integer assestId);
 }
