@@ -43,10 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -1567,11 +1564,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         File[] files = new File[types.length];
         File file = new File("/temp" + currentTime + "/模板.zip");
-        int m = 0;
         Map<Integer, AssetCategoryModel> categoryModelMap = new HashMap<>();
         for (AssetCategoryModel assetCategoryModel : list) {
             categoryModelMap.put(assetCategoryModel.getId(), assetCategoryModel);
         }
+        int m = 0;
         for (Integer type : types) {
             AssetCategoryModel assetCategoryModel = categoryModelMap.get(type);
             if (Objects.nonNull(assetCategoryModel)) {
