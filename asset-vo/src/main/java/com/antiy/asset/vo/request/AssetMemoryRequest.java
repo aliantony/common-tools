@@ -65,7 +65,7 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      * 是否带散热片:0-不带，1-带
      */
     @ApiModelProperty("是否带散热片:0-不带，1-带")
-    private Boolean isHeatsink;
+    private Integer heatsink;
     /**
      * 针脚数
      */
@@ -131,12 +131,12 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
         this.slotType = slotType;
     }
 
-    public Boolean getHeatsink() {
-        return isHeatsink;
+    public Integer getHeatsink() {
+        return heatsink;
     }
 
-    public void setHeatsink(Boolean isHeatsink) {
-        this.isHeatsink = isHeatsink;
+    public void setHeatsink(Integer heatsink) {
+        this.heatsink = heatsink;
     }
 
     public Integer getStitch() {
@@ -196,7 +196,7 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
     public String toString() {
         return "AssetMemoryRequest{" + "assetId='" + assetId + '\'' + ", brand='" + brand + '\'' + ", transferType="
                + transferType + ", capacity=" + capacity + ", frequency=" + frequency + ", slotType=" + slotType
-               + ", isHeatsink=" + isHeatsink + ", stitch=" + stitch + ", buyDate=" + buyDate + ", warrantyDate="
+               + ", heatsink=" + heatsink + ", stitch=" + stitch + ", buyDate=" + buyDate + ", warrantyDate="
                + warrantyDate + ", telephone='" + telephone + '\'' + ", memo='" + memo + '\'' + '}';
     }
 

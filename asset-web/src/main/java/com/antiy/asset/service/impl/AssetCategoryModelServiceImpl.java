@@ -12,6 +12,8 @@ import javax.annotation.Resource;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -214,6 +216,17 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         return responseConverter.convert(recursionSearch(assetCategoryModelDao.getAll(), id),
             AssetCategoryModelResponse.class);
     }
+    @Override
+    public List<Integer> findAssetCategoryModelIdsById(Integer id) throws Exception {
+        List<AssetCategoryModelResponse> categoryModelResponses = responseConverter.convert(recursionSearch(assetCategoryModelDao.getAll(),id),AssetCategoryModelResponse.class);
+        List<Integer> categoryModels = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(categoryModelResponses)) {
+            categoryModelResponses.stream().forEach(assetCategoryModelResponse -> {
+                categoryModels.add(DataTypeUtils.stringToInteger(assetCategoryModelResponse.getStringId()));
+            });
+        }
+        return categoryModels;
+    }
 
     /**
      * 删除品类及其子品类,若存在资产则不能删（进行递归）
@@ -251,6 +264,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      *
      * @param id 查询的部门id
      */
+    @Override
     public List<AssetCategoryModel> recursionSearch(List<AssetCategoryModel> list, Integer id) throws Exception {
         List<AssetCategoryModel> result = new ArrayList();
         for (AssetCategoryModel assetCategoryModel : list) {
