@@ -43,10 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -1232,25 +1229,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 网络设备
         List<AssetNetworkEquipment> assetNetworkEquipmentList = assetNetworkEquipmentDao.getByWhere(param);
         if (CollectionUtils.isNotEmpty(assetNetworkEquipmentList)) {
-            assetOuterResponse.setAssetNetworkEquipment(
-                BeanConvert.convertBean(assetNetworkEquipmentList.get(0), AssetNetworkEquipmentResponse.class));
+            assetOuterResponse.setAssetNetworkEquipment(BeanConvert.convertBean(assetNetworkEquipmentList.get(0),
+                AssetNetworkEquipmentResponse.class));
         }
         // 安全设备
         List<AssetSafetyEquipment> assetSafetyEquipmentList = assetSafetyEquipmentDao.getByWhere(param);
         if (CollectionUtils.isNotEmpty(assetSafetyEquipmentList)) {
-            assetOuterResponse.setAssetSafetyEquipment(
-                BeanConvert.convertBean(assetSafetyEquipmentList.get(0), AssetSafetyEquipmentResponse.class));
+            assetOuterResponse.setAssetSafetyEquipment(BeanConvert.convertBean(assetSafetyEquipmentList.get(0),
+                AssetSafetyEquipmentResponse.class));
         }
         // 存储介质
         List<AssetStorageMedium> assetStorageMediumList = assetStorageMediumDao.getByWhere(param);
         if (CollectionUtils.isNotEmpty(assetStorageMediumList)) {
-            assetOuterResponse.setAssetStorageMedium(
-                BeanConvert.convertBean(assetStorageMediumList.get(0), AssetStorageMediumResponse.class));
+            assetOuterResponse.setAssetStorageMedium(BeanConvert.convertBean(assetStorageMediumList.get(0),
+                AssetStorageMediumResponse.class));
         }
         // 软件列表
         if (condition.getIsNeedSoftware()) {
-            List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
-                .getSoftByAssetId(DataTypeUtils.stringToInteger(condition.getPrimaryKey()));
+            List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSoftByAssetId(DataTypeUtils
+                .stringToInteger(condition.getPrimaryKey()));
             assetOuterResponse.setAssetSoftware(BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class));
 
             // 资产软件关系列表
@@ -1508,7 +1505,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(asset.getStringId());
-                    assetOperationRecord.setOriginStatus(asset.getStatus() == null ? AssetStatusEnum.WATI_REGSIST.getCode() : asset.getStatus());
+                    assetOperationRecord.setOriginStatus(asset.getStatus() == null ? AssetStatusEnum.WATI_REGSIST
+                        .getCode() : asset.getStatus());
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     assetOperationRecord.setContent(AssetEventEnum.ASSET_MODIFY.getName());
@@ -1549,37 +1547,66 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     /**
+     * 导出后的文件格式为.zip压缩包
      * @param types 导出模板的类型
      */
     @Override
     public void exportTemplate(Integer[] types) throws Exception {
         List<AssetCategoryModel> list = assetCategoryModelDao.getNextLevelCategoryByName("硬件");
-        Map<String, Class> map = new HashMap();
-        map.put("计算设备", ComputeDeviceEntity.class);
-        map.put("网络设备", NetworkDeviceEntity.class);
-        map.put("安全设备", SafetyEquipmentEntiy.class);
-        map.put("存储设备", StorageDeviceEntity.class);
-        map.put("其他设备", OtherDeviceEntity.class);
-        File dictionry = new File("/temp/模板");
-        if (!dictionry.exists()) {
-            dictionry.mkdirs();
+        Map<String, Class> map = initMap();
+        // 根据时间戳创建文件夹，防止产生冲突
+        Long currentTime = System.currentTimeMillis();
+        // 创建临时文件夹
+        String dictionary = "/temp" + currentTime + "/模板" + currentTime;
+        File dictionaryFile = new File(dictionary);
+        if (!dictionaryFile.exists()) {
+            dictionaryFile.mkdirs();
         }
+        //创造模板文件
         File[] files = new File[types.length];
-        File file = new File("/temp/模板.zip");
-        int m = 0;
+        //创造压缩文件
+        File zip = new File("/temp" + currentTime + "/模板.zip");
+        Map<Integer, AssetCategoryModel> categoryModelMap = new HashMap<>();
         for (AssetCategoryModel assetCategoryModel : list) {
-            for (Integer type : types) {
-                if (assetCategoryModel.getId().equals(type)) {
-                    String categoryName = assetCategoryModel.getName();
-                    ExcelUtils.exportTemplet(map.get(assetCategoryModel.getName()), categoryName + "信息模板.xlsx",
-                        categoryName, "/temp/模板/");
-                    files[m++] = new File("/temp/模板/" + categoryName + "信息模板.xlsx");
-
+            categoryModelMap.put(assetCategoryModel.getId(), assetCategoryModel);
+        }
+        int m = 0;
+        for (Integer type : types) {
+            AssetCategoryModel assetCategoryModel = categoryModelMap.get(type);
+            if (Objects.nonNull(assetCategoryModel)) {
+                //生成模板文件
+                String categoryName = assetCategoryModel.getName();
+                ExcelUtils.exportTemplet(map.get(assetCategoryModel.getName()), categoryName + "信息模板.xlsx",
+                    categoryName, dictionary + "/");
+                files[m++] = new File(dictionary + "/" + categoryName + "信息模板.xlsx");
+            } else {
+                //输入参数有错，删除临时文件
+                for (File fil : files) {
+                    if (Objects.nonNull(fil)) {
+                        loggerIsDelete(fil);
+                    }
                 }
+                loggerIsDelete(dictionaryFile);
+                loggerIsDelete(dictionaryFile.getParentFile());
+                throw new BusinessException("存在错误的品类ID");
             }
         }
-        file.createNewFile();
-        ZipUtil.compress(file, files);
+        zip.createNewFile();
+        // 压缩文件为zip压缩包
+        ZipUtil.compress(zip, files);
+        // 将文件流发送到客户端
+        sendStreamToClient(zip);
+        // 记录临时文件删除是否成功
+        loggerIsDelete(zip);
+        for (File fil : files) {
+            loggerIsDelete(fil);
+        }
+        loggerIsDelete(dictionaryFile);
+        loggerIsDelete(dictionaryFile.getParentFile());
+
+    }
+
+    private void sendStreamToClient(File file) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(file);
         byte[] buffer = new byte[1024];
         int i = 0;
@@ -1596,8 +1623,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         ous.flush();
         ous.close();
-        file.delete();
+        fileInputStream.close();
+    }
 
+    private Map<String, Class> initMap() {
+        Map<String, Class> map = new HashMap();
+        map.put("计算设备", ComputeDeviceEntity.class);
+        map.put("网络设备", NetworkDeviceEntity.class);
+        map.put("安全设备", SafetyEquipmentEntiy.class);
+        map.put("存储设备", StorageDeviceEntity.class);
+        map.put("其他设备", OtherDeviceEntity.class);
+        return map;
+    }
+
+    void loggerIsDelete(File file) {
+        logger.info(file.getName() + "文件删除" + isDeleteSuccess(file.delete()));
+    }
+
+    String isDeleteSuccess(Boolean isDelete) {
+        return isDelete ? "成功" : "失败";
     }
 
     @Override
@@ -1690,7 +1734,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMemory.setFrequency(entity.getMemoryFrequency());
                 assetMemory.setCapacity(entity.getMemoryCapacity());
                 assetMemory.setStitch(entity.getStitch());
-                assetMemory.setIsHeatsink(entity.getHeatsink());
+                assetMemory.setHeatsink (entity.getHeatsink());
                 assetMemory.setTransferType(entity.getTransferType());
                 for (int i = 0; i < entity.getMemoryNum(); i++) {
                     assetMemoryDao.insert(assetMemory);
@@ -2287,10 +2331,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ExcelUtils.exportTemplet(clazz, fileName, title);
     }
 
-    private void exportData(Class clazz, String fileName, AssetQuery assetQuery,
-                            HttpServletResponse response) throws Exception {
-        assetQuery.setAreaIds(
-            ArrayTypeUtil.ObjectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+    private void exportData(Class clazz, String fileName, AssetQuery assetQuery, HttpServletResponse response)
+                                                                                                              throws Exception {
+        assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToStringArray(LoginUserUtil.getLoginUser()
+            .getAreaIdsOfCurrentUser().toArray()));
         assetQuery.setPageSize(-1);
         List<AssetResponse> list = this.findListAsset(assetQuery);
         List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);

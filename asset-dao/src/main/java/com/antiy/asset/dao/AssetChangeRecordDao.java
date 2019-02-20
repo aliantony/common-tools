@@ -1,6 +1,7 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetChangeRecord;
+import com.antiy.asset.vo.query.AssetChangeRecordQuery;
 import com.antiy.common.base.IBaseDao;
 
 /**
@@ -15,4 +16,11 @@ import com.antiy.common.base.IBaseDao;
 public interface AssetChangeRecordDao extends IBaseDao<AssetChangeRecord> {
 
     AssetChangeRecord  getByDescTime(Integer id);
+
+    /**
+     * 查询条件
+     * @param query
+     * @return
+     */
+    String findChangeValByBusinessId(AssetChangeRecordQuery query);
 }

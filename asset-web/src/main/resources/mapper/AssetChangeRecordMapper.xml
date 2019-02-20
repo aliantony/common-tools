@@ -233,4 +233,11 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <select id="findChangeValByBusinessId" resultType="com.antiy.asset.entity.AssetChangeRecord" parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        where type = #{type}
+        and business_id = #{businessId}
+        and status = 1
+    </select>
 </mapper>

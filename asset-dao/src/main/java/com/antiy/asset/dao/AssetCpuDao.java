@@ -21,4 +21,6 @@ public interface AssetCpuDao extends IBaseDao<AssetCpu> {
     Integer insertBatch(List<AssetCpu> assetCpuList);
 
     Integer deleteByAssetId(Integer id);
+
+    List<AssetCpu> findCpuByAssetId(Integer assestId);
 }

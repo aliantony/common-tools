@@ -476,6 +476,8 @@ public class ExportExcel {
     public void write(OutputStream outputStream) throws IOException {
         this.wb.write(outputStream);
         this.wb.close();
+        outputStream.flush();
+        outputStream.close();
     }
 
     /**

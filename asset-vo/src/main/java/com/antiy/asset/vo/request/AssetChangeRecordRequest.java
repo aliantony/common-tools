@@ -1,166 +1,144 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BasicRequest;
-import io.swagger.annotations.ApiModelProperty;
-import com.antiy.common.validation.ObjectValidator;
-import com.antiy.common.exception.RequestParamValidateException;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+
+import io.swagger.annotations.ApiModelProperty;
+
 /**
- * <p>
- * AssetChangeRecordRequest 请求对象
- * </p>
+ * <p> AssetChangeRecordRequest 请求对象 </p>
  *
  * @author zhangyajun
  * @since 2018-12-27
  */
 
-public class AssetChangeRecordRequest extends BasicRequest implements ObjectValidator{
+public class AssetChangeRecordRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty("硬件资产信息")
     @Valid
-    private  AssetOuterRequest assetOuterRequest;
+    private AssetOuterRequest assetOuterRequest;
     /**
-     *  1--硬件资产，2--软件资产
+     * 1--硬件资产，2--软件资产
      */
     @ApiModelProperty("1--硬件资产，2--软件资产")
     @NotNull(message = "类型不能为空：1--硬件资产，2--软件资产")
-    private Integer type;
+    private Integer           type;
     /**
-     *  状态,1未删除,0已删除
+     * 状态,1未删除,0已删除
      */
     @ApiModelProperty("状态,1未删除,0已删除")
-    private Integer status;
+    private Integer           status;
     /**
-     *  创建人
+     * 创建人
      */
     @ApiModelProperty("创建人")
-    private Integer createUser;
+    private Integer           createUser;
     /**
-     *  是否存储,1--已经存储,0--未存储
+     * 是否存储,1--已经存储,0--未存储
      */
     @ApiModelProperty("是否存储,1--已经存储,0--未存储")
-    private Integer isStore;
+    private Integer           isStore;
     /**
-     *  修改对象的JSON串
+     * 修改对象的JSON串
      */
     @ApiModelProperty("修改对象的JSON串")
-    private String changeVal;
+    private String            changeVal;
     /**
-     *  创建时间
+     * 创建时间
      */
     @ApiModelProperty("创建时间")
-    private Long gmtCreate;
+    private Long              gmtCreate;
     /**
-     *  更新时间
+     * 更新时间
      */
     @ApiModelProperty("更新时间")
-    private Long gmtModified;
+    private Long              gmtModified;
     /**
-     *  备注
+     * 备注
      */
     @ApiModelProperty("备注")
-    private String memo;
+    private String            memo;
     /**
-     *  业务主键Id
+     * 业务主键Id
      */
     @ApiModelProperty("业务主键Id")
-    private Integer businessId;
-
-    @ApiModelProperty(value = "流程数据")
-    @Valid
-    ManualStartActivityRequest                 activityRequest;
-
-    public ManualStartActivityRequest getActivityRequest() {
-        return activityRequest;
-    }
-
-    public void setActivityRequest(ManualStartActivityRequest activityRequest) {
-        this.activityRequest = activityRequest;
-    }
-
+    @NotNull(message = "业务主键Id")
+    private Integer           businessId;
 
     public Integer getType() {
-    return type;
+        return type;
     }
 
-public void setType(Integer type) {
-    this.type = type;
+    public void setType(Integer type) {
+        this.type = type;
     }
-
 
     public Integer getStatus() {
-    return status;
+        return status;
     }
 
-public void setStatus(Integer status) {
-    this.status = status;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
-
 
     public Integer getCreateUser() {
-    return createUser;
+        return createUser;
     }
 
-public void setCreateUser(Integer createUser) {
-    this.createUser = createUser;
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
     }
-
 
     public Integer getIsStore() {
-    return isStore;
+        return isStore;
     }
 
-public void setIsStore(Integer isStore) {
-    this.isStore = isStore;
+    public void setIsStore(Integer isStore) {
+        this.isStore = isStore;
     }
-
 
     public String getChangeVal() {
-    return changeVal;
+        return changeVal;
     }
 
-public void setChangeVal(String changeVal) {
-    this.changeVal = changeVal;
+    public void setChangeVal(String changeVal) {
+        this.changeVal = changeVal;
     }
-
 
     public Long getGmtCreate() {
-    return gmtCreate;
+        return gmtCreate;
     }
 
-public void setGmtCreate(Long gmtCreate) {
-    this.gmtCreate = gmtCreate;
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
-
 
     public Long getGmtModified() {
-    return gmtModified;
+        return gmtModified;
     }
 
-public void setGmtModified(Long gmtModified) {
-    this.gmtModified = gmtModified;
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
     }
-
 
     public String getMemo() {
-    return memo;
+        return memo;
     }
 
-public void setMemo(String memo) {
-    this.memo = memo;
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
-
 
     public Integer getBusinessId() {
-    return businessId;
+        return businessId;
     }
 
-public void setBusinessId(Integer businessId) {
-    this.businessId = businessId;
+    public void setBusinessId(Integer businessId) {
+        this.businessId = businessId;
     }
-
 
     @Override
     public void validate() throws RequestParamValidateException {

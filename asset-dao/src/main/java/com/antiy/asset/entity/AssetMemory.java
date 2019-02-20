@@ -51,7 +51,7 @@ public class AssetMemory extends BaseEntity {
     /**
      * 是否带散热片:0-不带，1-带
      */
-    private Integer isHeatsink;
+    private Integer heatsink;
     /**
      * 针脚数
      */
@@ -117,12 +117,12 @@ public class AssetMemory extends BaseEntity {
         this.slotType = slotType;
     }
 
-    public Integer getIsHeatsink() {
-        return isHeatsink;
+    public Integer getHeatsink() {
+        return heatsink;
     }
 
-    public void setIsHeatsink(Integer isHeatsink) {
-        this.isHeatsink = isHeatsink;
+    public void setHeatsink(Integer heatsink) {
+        this.heatsink = heatsink;
     }
 
     public Integer getStitch() {
@@ -208,7 +208,7 @@ public class AssetMemory extends BaseEntity {
     @Override
     public String toString() {
         return "AssetMemory{" + ", assetId=" + assetId + ", capacity=" + capacity + ", frequency=" + frequency
-               + ", slotType=" + slotType + ", isHeatsink=" + isHeatsink + ", stitch=" + stitch + ", buyDate=" + buyDate
+               + ", slotType=" + slotType + ", heatsink=" + heatsink + ", stitch=" + stitch + ", buyDate=" + buyDate
                + ", warrantyDate=" + warrantyDate + ", telephone=" + telephone + ", gmtCreate=" + gmtCreate
                + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser=" + createUser + ", modifyUser="
                + modifyUser + ", status=" + status + "}";
