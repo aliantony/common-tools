@@ -218,7 +218,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
     @Override
     public List<Integer> findAssetCategoryModelIdsById(Integer id) throws Exception {
-        List<AssetCategoryModelResponse> categoryModelResponses = responseConverter.convert(recursionSearch(id),AssetCategoryModelResponse.class);
+        List<AssetCategoryModelResponse> categoryModelResponses = responseConverter.convert(recursionSearch(assetCategoryModelDao.getAll(),id),AssetCategoryModelResponse.class);
         List<Integer> categoryModels = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(categoryModelResponses)) {
             categoryModelResponses.stream().forEach(assetCategoryModelResponse -> {
@@ -264,6 +264,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      *
      * @param id 查询的部门id
      */
+    @Override
     public List<AssetCategoryModel> recursionSearch(List<AssetCategoryModel> list, Integer id) throws Exception {
         List<AssetCategoryModel> result = new ArrayList();
         for (AssetCategoryModel assetCategoryModel : list) {
