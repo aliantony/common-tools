@@ -670,8 +670,15 @@
         </where>
     </select>
 
-    <select id="countManufacturer" resultMap="ManufacturerResultMap">
-        select manufacturer, count(manufacturer) num from asset_software where software_status != 4 and manufacturer is not null and status =1 GROUP BY manufacturer
+    <select id="countManufacturer" resultMap="ManufacturerResultMap" parameterType="java.util.List">
+        select manufacturer, count(manufacturer) num from asset_software where 1=1
+        <if test=" softwareStatusList != null and softwareStatusList.size() >0">
+            and software_status in
+            <foreach collection="softwareStatusList" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        and manufacturer is not null and status =1 GROUP BY manufacturer order by num desc
     </select>
 
     <select id="countStatus" resultMap="StatusResultMap">
@@ -694,7 +701,7 @@
                 #{item}
             </foreach>
         </if>
-        and status=1 and software_status != 4
+        and status=1
     </select>
 
     <select id="pulldownManufacturer" resultType="java.lang.String">

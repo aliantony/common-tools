@@ -983,7 +983,13 @@
                 #{areaId}
             </foreach>
         </if>
-        GROUP BY manufacturer
+        <if test=" assetStatusList != null">
+            and asset_status in
+            <foreach collection="assetStatusList" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY manufacturer order by num desc
     </select>
 
     <select id="countStatus" resultMap="StatusResultMap" parameterType="java.util.List">
