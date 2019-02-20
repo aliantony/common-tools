@@ -337,9 +337,10 @@
     </insert>
     <select id="findCpuByAssetId" resultMap="BaseResultMap"
             parameterType="int">
-        select brand, model, serial, main_frequency, thread_size, core_size from
+        select id, brand, model, serial, main_frequency, thread_size, core_size from
         <include refid="Table_Name"></include>
         where asset_id = #{assetId}
+        and gmt_create = ( select max( gmt_create ) from <include refid="Table_Name"></include> )
         and status = 1
     </select>
 </mapper>

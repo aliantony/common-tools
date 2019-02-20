@@ -233,11 +233,12 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
-    <select id="findChangeValByBusinessId" resultType="com.antiy.asset.entity.AssetChangeRecord" parameterType="com.antiy.common.base.ObjectQuery">
-        select * from
+    <select id="findChangeValByBusinessId" resultType="string" parameterType="com.antiy.common.base.ObjectQuery">
+        select change_val from
         <include refid="Table_Name"></include>
         where type = #{type}
         and business_id = #{businessId}
+        and gmt_create = ( select max( gmt_create ) from <include refid="Table_Name"></include> )
         and status = 1
     </select>
 </mapper>

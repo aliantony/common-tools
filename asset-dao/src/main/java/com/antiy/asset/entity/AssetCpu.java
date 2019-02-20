@@ -2,6 +2,7 @@ package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
 import com.antiy.common.encoder.Encode;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> 处理器表 </p>
@@ -21,26 +22,32 @@ public class AssetCpu extends BaseEntity {
     /**
      * 序列号
      */
+    @ApiModelProperty("序列号")
     private String            serial;
     /**
      * 品牌
      */
+    @ApiModelProperty("品牌")
     private String            brand;
     /**
      * 型号
      */
+    @ApiModelProperty("型号")
     private String            model;
     /**
      * CPU主频
      */
+    @ApiModelProperty("CPU主频")
     private Float             mainFrequency;
     /**`1
      * 线程数
      */
+    @ApiModelProperty("线程数")
     private Integer           threadSize;
     /**
      * 核心数
      */
+    @ApiModelProperty("处理器核心数")
     private Integer           coreSize;
     /**
      * 创建时间

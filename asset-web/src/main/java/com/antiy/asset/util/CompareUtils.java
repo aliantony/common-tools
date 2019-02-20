@@ -1,5 +1,7 @@
 package com.antiy.asset.util;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +43,8 @@ public class CompareUtils {
                     // 如果field1[i]属性值与field2[j]属性值内容不相同
                     if (!compare(field1[i].get(class1), field2[j].get(class2))) {
                         Map<String, Object> map2 = new HashMap<String, Object>();
-                        map2.put("name", field1[i].getName());
+                        ApiModelProperty apiModelProperty = (ApiModelProperty)field1[i].getAnnotation(ApiModelProperty.class);
+                        map2.put("name", apiModelProperty != null ? apiModelProperty.value() : field1[i].getName());
                         map2.put("old", field1[i].get(class1));
                         map2.put("new", field2[j].get(class2));
                         map2.put("label", label);

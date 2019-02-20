@@ -2,6 +2,7 @@ package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
 import com.antiy.common.encoder.Encode;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
@@ -56,10 +57,12 @@ public class Asset extends BaseEntity {
     /**
      * json数据
      */
+    @ApiModelProperty("资产组")
     private String            assetGroup;
     /**
      * 资产编号
      */
+    @ApiModelProperty("资产编号")
     private String            number;
     /**
      * 资产名称
@@ -76,6 +79,7 @@ public class Asset extends BaseEntity {
     /**
      * 安装方式1人工2自动
      */
+    @ApiModelProperty("安装方式")
     private Integer           installType;
     /**
      * 序列号
@@ -84,6 +88,7 @@ public class Asset extends BaseEntity {
     /**
      * 行政区划主键
      */
+    @ApiModelProperty("归属区域")
     private String            areaId;
     /**
      * 品类型号
@@ -104,22 +109,25 @@ public class Asset extends BaseEntity {
     /**
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
+    @ApiModelProperty("操作系统")
     private String            operationSystem;
     /**
      * 系统位数
      */
     private Integer           systemBit;
     /**
-     * 责任人主键
+     * 使用者主键
      */
+    @ApiModelProperty("使用者")
     private String            responsibleUserId;
     /**
-     * 责任人名称
+     * 使用者名称
      */
     private String            responsibleUserName;
     /**
      * 物理位置
      */
+    @ApiModelProperty("物理位置")
     private String            location;
     /**
      * 纬度
@@ -132,10 +140,12 @@ public class Asset extends BaseEntity {
     /**
      * 机房位置
      */
+    @ApiModelProperty("机房位置")
     private String            houseLocation;
     /**
      * 固件版本
      */
+    @ApiModelProperty("固件版本")
     private String            firmwareVersion;
     /**
      * 设备uuid
@@ -144,10 +154,12 @@ public class Asset extends BaseEntity {
     /**
      * 联系电话
      */
+    @ApiModelProperty("联系电话")
     private String            contactTel;
     /**
      * 邮箱
      */
+    @ApiModelProperty("邮箱")
     private String            email;
     /**
      * 上报来源,1-自动上报，2-人工上报
@@ -156,6 +168,7 @@ public class Asset extends BaseEntity {
     /**
      * 资产重要程度：1核心2重要3一般
      */
+    @ApiModelProperty("重要程度")
     private Integer           importanceDegree;
     /**
      * 描述
@@ -173,14 +186,17 @@ public class Asset extends BaseEntity {
     /**
      * 使用到期时间
      */
+    @ApiModelProperty("到期时间")
     private Long              serviceLife;
     /**
-     * 制造日期
+     * 购买日期
      */
+    @ApiModelProperty("购买日期")
     private Long              buyDate;
     /**
      * 保修期
      */
+    @ApiModelProperty("保修期")
     private Long              warranty;
     /**
      * 创建时间
@@ -193,6 +209,7 @@ public class Asset extends BaseEntity {
     /**
      * 备注
      */
+    @ApiModelProperty("描述")
     private String            memo;
     /**
      * 创建人

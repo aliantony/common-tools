@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> 网卡信息表 </p>
@@ -18,26 +19,32 @@ public class AssetNetworkCard extends BaseEntity {
     /**
      * 品牌
      */
+    @ApiModelProperty("pinp")
     private String  brand;
     /**
      * 型号
      */
+    @ApiModelProperty("型号")
     private String  model;
     /**
      * 序列号
      */
+    @ApiModelProperty("序列号")
     private String  serial;
     /**
      * IP地址
      */
+    @ApiModelProperty("IP地址")
     private String  ipAddress;
     /**
      * MAC地址
      */
+    @ApiModelProperty("MAC地址")
     private String  macAddress;
     /**
      * 默认网关
      */
+    @ApiModelProperty("默认网关")
     private String  defaultGateway;
     /**
      * 网络地址
@@ -46,6 +53,7 @@ public class AssetNetworkCard extends BaseEntity {
     /**
      * 子网掩码
      */
+    @ApiModelProperty("子网掩码")
     private String  subnetMask;
     /**
      * 创建时间

@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> 内存表 </p>
@@ -18,18 +19,22 @@ public class AssetMemory extends BaseEntity {
     /**
      * 内存容量
      */
+    @ApiModelProperty("容量")
     private Integer capacity;
     /**
      * 内存类型：1未知，2-ddr2,3-ddr3,4-ddr4
      */
+    @ApiModelProperty("内存类型")
     private Integer transferType;
     /**
      * 内存品牌
      */
+    @ApiModelProperty("品牌")
     private String  brand;
     /**
      * 内存序列号
      */
+    @ApiModelProperty("序列号")
     private String  serial;
 
     public Double getFrequency() {
@@ -43,18 +48,22 @@ public class AssetMemory extends BaseEntity {
     /**
      * 内存主频(MHz)
      */
+    @ApiModelProperty("内存主频")
     private Double  frequency;
     /**
      * 插槽类型:0-SDRAM,1-SIMM,2-DIMM,3-RIMM
      */
+    @ApiModelProperty("插槽类型")
     private Integer slotType;
     /**
      * 是否带散热片:0-不带，1-带
      */
+    @ApiModelProperty("是否带散热")
     private Integer heatsink;
     /**
      * 针脚数
      */
+    @ApiModelProperty("针脚数")
     private Integer stitch;
     /**
      * 购买日期

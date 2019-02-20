@@ -8,6 +8,7 @@ import java.util.Objects;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.poi.ss.formula.functions.Odd;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -200,8 +201,8 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                     oldMemory.setStitch(assetMemory.getStitch());
                     List<AssetMemoryRequest> newMemoryList = assetOuterRequest.getMemory();
                     if (CollectionUtils.isNotEmpty(newMemoryList)) {
+                        AssetMemory newMemory = new AssetMemory();
                         for (AssetMemoryRequest assetMemoryRequest : newMemoryList) {
-                            AssetMemory newMemory = new AssetMemory();
                             newMemory.setId(DataTypeUtils.stringToInteger(assetMemoryRequest.getId()));
                             newMemory.setBrand(assetMemoryRequest.getBrand());
                             newMemory.setTransferType(assetMemoryRequest.getTransferType());
@@ -226,6 +227,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
             if (CollectionUtils.isNotEmpty(cpuList)) {
                 for (AssetCpu cpu : cpuList) {
                     AssetCpu oldCpu = new AssetCpu();
+                    oldCpu.setId(cpu.getId());
                     oldCpu.setBrand(cpu.getBrand());
                     oldCpu.setModel(cpu.getModel());
                     oldCpu.setSerial(cpu.getSerial());
@@ -234,8 +236,9 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                     oldCpu.setCoreSize(cpu.getCoreSize());
                     List<AssetCpuRequest> newCpuList = assetOuterRequest.getCpu();
                     if (CollectionUtils.isNotEmpty(newCpuList)) {
+                        AssetCpu newCpu = new AssetCpu();
                         for (AssetCpuRequest cpuRequest : newCpuList) {
-                            AssetCpu newCpu = new AssetCpu();
+                            newCpu.setId(DataTypeUtils.stringToInteger(cpuRequest.getId()));
                             newCpu.setBrand(cpuRequest.getBrand());
                             newCpu.setModel(cpuRequest.getModel());
                             newCpu.setSerial(cpuRequest.getSerial());
@@ -257,6 +260,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
             if (CollectionUtils.isNotEmpty(hardDiskList)) {
                 for (AssetHardDisk hardDisk : hardDiskList) {
                     AssetHardDisk oldHardDisk = new AssetHardDisk();
+                    oldHardDisk.setId(hardDisk.getId());
                     oldHardDisk.setBrand(hardDisk.getBrand());
                     oldHardDisk.setModel(hardDisk.getModel());
                     oldHardDisk.setSerial(hardDisk.getSerial());
@@ -266,8 +270,9 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                     oldHardDisk.setBuyDate(hardDisk.getBuyDate());
                     List<AssetHardDiskRequest> newHardDiskList = assetOuterRequest.getHardDisk();
                     if (CollectionUtils.isNotEmpty(newHardDiskList)) {
+                        AssetHardDisk newHardDisk = new AssetHardDisk();
                         for (AssetHardDiskRequest hardDiskRequest : newHardDiskList) {
-                            AssetHardDisk newHardDisk = new AssetHardDisk();
+                            newHardDisk.setId(DataTypeUtils.stringToInteger(newAssetRequest.getId()));
                             newHardDisk.setBrand(hardDiskRequest.getBrand());
                             newHardDisk.setModel(hardDiskRequest.getModel());
                             newHardDisk.setSerial(hardDiskRequest.getSerial());
@@ -288,8 +293,9 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
             List<List<Map<String, Object>>> assetMainboardCompareResult = new ArrayList<>();
             List<AssetMainborad> mainboardList = mainboradDao.findMainboardByAssetId(businessId);
             if (CollectionUtils.isNotEmpty(mainboardList)) {
+                AssetMainborad oldMainborad = new AssetMainborad();
                 for (AssetMainborad mainborad : mainboardList) {
-                    AssetMainborad oldMainborad = new AssetMainborad();
+                    oldMainborad.setId(mainborad.getId());
                     oldMainborad.setBrand(mainborad.getBrand());
                     oldMainborad.setModel(mainborad.getModel());
                     oldMainborad.setSerial(mainborad.getSerial());
@@ -297,8 +303,9 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                     oldMainborad.setBiosDate(mainborad.getBiosDate());
                     List<AssetMainboradRequest> newMainboardList = assetOuterRequest.getMainboard();
                     if (CollectionUtils.isNotEmpty(newMainboardList)) {
+                        AssetMainborad newMainboard = new AssetMainborad();
                         for (AssetMainboradRequest mainboradRequest : newMainboardList) {
-                            AssetMainborad newMainboard = new AssetMainborad();
+                            newMainboard.setId(DataTypeUtils.stringToInteger(mainboradRequest.getId()));
                             newMainboard.setBrand(mainboradRequest.getBrand());
                             newMainboard.setModel(mainboradRequest.getModel());
                             newMainboard.setSerial(mainboradRequest.getSerial());
@@ -317,8 +324,9 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
             List<List<Map<String, Object>>> assetNetworkCompareResult = new ArrayList<>();
             List<AssetNetworkCard> networkCardList = networkCardDao.findNetworkCardByAssetId(businessId);
             if (CollectionUtils.isNotEmpty(networkCardList)) {
+                AssetNetworkCard oldNetworkCard = new AssetNetworkCard();
                 for (AssetNetworkCard networkCard : networkCardList) {
-                    AssetNetworkCard oldNetworkCard = new AssetNetworkCard();
+                    oldNetworkCard.setId(networkCard.getId());
                     oldNetworkCard.setBrand(networkCard.getBrand());
                     oldNetworkCard.setModel(networkCard.getModel());
                     oldNetworkCard.setSerial(networkCard.getSerial());
@@ -328,8 +336,9 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                     oldNetworkCard.setDefaultGateway(networkCard.getDefaultGateway());
                     List<AssetNetworkCardRequest> newNetworkCardList = assetOuterRequest.getNetworkCard();
                     if (CollectionUtils.isNotEmpty(newNetworkCardList)) {
+                        AssetNetworkCard newNetworkCard = new AssetNetworkCard();
                         for (AssetNetworkCardRequest networkCardRequest : newNetworkCardList) {
-                            AssetNetworkCard newNetworkCard = new AssetNetworkCard();
+                            newNetworkCard.setId(DataTypeUtils.stringToInteger(networkCardRequest.getId()));
                             newNetworkCard.setBrand(networkCardRequest.getBrand());
                             newNetworkCard.setModel(networkCardRequest.getModel());
                             newNetworkCard.setSerial(networkCardRequest.getSerial());
@@ -355,15 +364,16 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                 for (AssetSoftwareRelation softwareRelation : oldSoftwareRelationList) {
                     RelateSoftware oldRelateSoftware = new RelateSoftware();
                     oldRelateSoftware.setSoftwareId(softwareRelation.getSoftwareId());
+                    AssetSoftwareLicense assetSoftwareLicense = softwareLicenseDao.getById(DataTypeUtils.stringToInteger(softwareRelation.getSoftwareId()));
                     oldRelateSoftware.setLicenseSecretKey(
-                        softwareLicenseDao.getById(softwareRelation.getSoftwareId()).getLicenseSecretKey());
+                            assetSoftwareLicense == null ? null : assetSoftwareLicense.getLicenseSecretKey());
                     oldRelateSoftware.setMulPort(softwareRelation.getPort());
                     oldRelateSoftware.setDescription(softwareRelation.getMemo());
                     if (CollectionUtils.isNotEmpty(newAssetOuterRequestList)) {
+                        RelateSoftware newRelateSoftware = new RelateSoftware();
                         for (AssetSoftwareRelationRequest newAssetSoftwareRelationRequest : newAssetOuterRequestList) {
                             if (oldRelateSoftware.getSoftwareId()
                                 .equals(newAssetSoftwareRelationRequest.getSoftwareId())) {
-                                RelateSoftware newRelateSoftware = new RelateSoftware();
                                 newRelateSoftware
                                     .setLicenseSecretKey(newAssetSoftwareRelationRequest.getLicenseSecretKey());
                                 newRelateSoftware.setMulPort(newAssetSoftwareRelationRequest.getPort());

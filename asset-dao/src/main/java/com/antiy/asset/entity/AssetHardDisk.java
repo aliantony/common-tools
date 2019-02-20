@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> 硬盘表 </p>
@@ -20,30 +21,37 @@ public class AssetHardDisk extends BaseEntity {
     /**
      * 硬盘品牌
      */
+    @ApiModelProperty("品牌")
     private String            brand;
     /**
      * 硬盘型号
      */
+    @ApiModelProperty("型号")
     private String            model;
     /**
      * 序列号
      */
+    @ApiModelProperty("序列号")
     private String            serial;
     /**
      * 接口类型:1SATA、2IDE、3ATA、4SCSI、5光纤通道
      */
+    @ApiModelProperty("接口类型")
     private Integer           interfaceType;
     /**
      * 容量 (MB)
      */
+    @ApiModelProperty("容量")
     private Integer           capacity;
     /**
      * 磁盘类型,1 HDD,2,SSD
      */
+    @ApiModelProperty("磁盘类型")
     private Integer           diskType;
     /**
      * 购买日期
      */
+    @ApiModelProperty("购买日期")
     private Long              buyDate;
     /**
      * 使用次数

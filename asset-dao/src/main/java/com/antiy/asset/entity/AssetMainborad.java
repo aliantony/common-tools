@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> 主板表 </p>
@@ -18,22 +19,27 @@ public class AssetMainborad extends BaseEntity {
     /**
      * 品牌
      */
+    @ApiModelProperty("品牌")
     private String  brand;
     /**
      * 型号
      */
+    @ApiModelProperty("型号")
     private String  model;
     /**
      * 序列号
      */
+    @ApiModelProperty("序列号")
     private String  serial;
     /**
      * BIOS版本
      */
+    @ApiModelProperty("BIOS版本")
     private String  biosVersion;
     /**
      * BIOS日期
      */
+    @ApiModelProperty("BIOS日期")
     private Long    biosDate;
     /**
      * 创建时间

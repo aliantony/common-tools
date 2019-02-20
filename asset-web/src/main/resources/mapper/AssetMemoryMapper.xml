@@ -11,7 +11,7 @@
         <result column="serial" property="serial"/>
         <result column="frequency" property="frequency"/>
         <result column="slot_type" property="slotType"/>
-        <result column="is_heatsink" property="isHeatsink"/>
+        <result column="is_heatsink" property="heatsink"/>
         <result column="stitch" property="stitch"/>
         <result column="buy_date" property="buyDate"/>
         <result column="warranty_date" property="warrantyDate"/>
@@ -26,7 +26,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id as assetId, capacity, brand, serial, frequency, slot_type as slotType, is_heatsink as isHeatsink, stitch, buy_date as buyDate, warranty_date as warrantyDate, transfer_type as transferType, telephone, gmt_create as gmtCreate, gmt_modified as gmtModified, memo, create_user as createUser, modify_user as modifyUser, status
+        id, asset_id as assetId, capacity, brand, serial, frequency, slot_type as slotType, is_heatsink as heatsink, stitch, buy_date as buyDate, warranty_date as warrantyDate, transfer_type as transferType, telephone, gmt_create as gmtCreate, gmt_modified as gmtModified, memo, create_user as createUser, modify_user as modifyUser, status
     </sql>
 
     <sql id="Table_Name">
@@ -53,7 +53,7 @@
         <if test=" slotType != null">
             slot_type,
         </if>
-        <if test=" isHeatsink != null">
+        <if test=" heatsink != null">
             is_heatsink,
         </if>
         <if test=" stitch != null">
@@ -110,8 +110,8 @@
         <if test=" slotType != null">
             #{slotType },
         </if>
-        <if test=" isHeatsink != null">
-            #{isHeatsink },
+        <if test=" heatsink != null">
+            #{heatsink },
         </if>
         <if test=" stitch != null">
             #{stitch },
@@ -167,8 +167,8 @@
         <if test=" slotType != null">
             slot_type = #{slotType },
         </if>
-        <if test=" isHeatsink != null">
-            is_heatsink = #{isHeatsink },
+        <if test=" heatsink != null">
+            is_heatsink = #{heatsink },
         </if>
         <if test=" stitch != null">
             stitch = #{stitch },
@@ -218,8 +218,8 @@
         <if test=" slotType != null">
             and slot_type = #{slotType }
         </if>
-        <if test=" isHeatsink != null">
-            and is_heatsink = #{isHeatsink }
+        <if test=" heatsink != null">
+            and is_heatsink = #{heatsink }
         </if>
         <if test=" stitch != null">
             and stitch = #{stitch }
@@ -328,8 +328,8 @@
             <if test=" slotType != null">
                 and slot_type = #{slotType }
             </if>
-            <if test=" isHeatsink != null">
-                and is_heatsink = #{isHeatsink }
+            <if test=" heatsink != null">
+                and is_heatsink = #{heatsink }
             </if>
             <if test=" stitch != null">
                 and stitch = #{stitch }
@@ -370,8 +370,8 @@
             <if test=" slotType != null">
                 and slot_type = #{slotType }
             </if>
-            <if test=" isHeatsink != null">
-                and is_heatsink = #{isHeatsink }
+            <if test=" heatsink != null">
+                and is_heatsink = #{heatsink }
             </if>
             <if test=" stitch != null">
                 and stitch = #{stitch }
@@ -425,7 +425,7 @@
             #{memory.brand},
             #{memory.frequency},
             #{memory.slotType},
-            #{memory.isHeatsink},
+            #{memory.heatsink},
             #{memory.stitch},
             #{memory.buyDate},
             #{memory.warrantyDate},
@@ -438,9 +438,10 @@
     </insert>
     <select id="findMemoryByAssetId" resultMap="BaseResultMap"
             parameterType="int">
-        select brand, transfer_type, serial, capacity, frequency, slot_type, is_heatsink, stitch from
+        select id, brand, transfer_type, serial, capacity, frequency, slot_type, is_heatsink, stitch from
         <include refid="Table_Name"></include>
         where asset_id = #{assetId}
+        and gmt_create = ( select max( gmt_create ) from <include refid="Table_Name"></include> )
         and status = 1
     </select>
 </mapper>
