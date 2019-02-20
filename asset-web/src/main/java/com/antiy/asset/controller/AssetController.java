@@ -1,12 +1,14 @@
 package com.antiy.asset.controller;
 
 import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.AssetCategoryModelResponse;
 import com.antiy.asset.vo.response.AssetCountColumnarResponse;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
@@ -15,6 +17,9 @@ import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author zhangyajun
@@ -35,9 +41,11 @@ import java.util.List;
 public class AssetController {
 
     @Resource
-    public IAssetService   iAssetService;
+    public IAssetService               iAssetService;
     @Resource
-    private ActivityClient activityClient;
+    private ActivityClient             activityClient;
+    @Resource
+    private IAssetCategoryModelService assetCategoryModelService;
 
     /**
      * 保存
@@ -53,9 +61,6 @@ public class AssetController {
         return iAssetService.saveAsset(asset);
     }
 
-
-
-
     /**
      * 批量查询
      *
@@ -67,6 +72,11 @@ public class AssetController {
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
     public ActionResponse queryList(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
+        // 品类型号及其子品类
+        if (StringUtils.isNotBlank(asset.getCategoryModel())) {
+            asset.setCategoryModels(DataTypeUtils.integerArrayToStringArray(assetCategoryModelService
+                .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(asset.getCategoryModel()))));
+        }
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
 
@@ -288,7 +298,7 @@ public class AssetController {
     @PreAuthorize(value = "hasAuthority('asset:asset:importSafety')")
     public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file,
                                        AssetImportRequest importRequest) throws Exception {
-        String originalFilename = file.getOriginalFilename ();
+        String originalFilename = file.getOriginalFilename();
         return ActionResponse.success(iAssetService.importSecurity(file, importRequest));
     }
 

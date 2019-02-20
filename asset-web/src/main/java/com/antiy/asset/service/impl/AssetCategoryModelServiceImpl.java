@@ -12,6 +12,8 @@ import javax.annotation.Resource;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -212,6 +214,17 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Override
     public List<AssetCategoryModelResponse> findAssetCategoryModelById(Integer id) throws Exception {
         return responseConverter.convert(recursionSearch(id),AssetCategoryModelResponse.class);
+    }
+    @Override
+    public List<Integer> findAssetCategoryModelIdsById(Integer id) throws Exception {
+        List<AssetCategoryModelResponse> categoryModelResponses = responseConverter.convert(recursionSearch(id),AssetCategoryModelResponse.class);
+        List<Integer> categoryModels = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(categoryModelResponses)) {
+            categoryModelResponses.stream().forEach(assetCategoryModelResponse -> {
+                categoryModels.add(DataTypeUtils.stringToInteger(assetCategoryModelResponse.getStringId()));
+            });
+        }
+        return categoryModels;
     }
 
     /**

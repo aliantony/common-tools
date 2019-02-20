@@ -1291,24 +1291,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         // 网络设备
         List<AssetNetworkEquipment> assetNetworkEquipmentList = assetNetworkEquipmentDao.getByWhere(param);
-        if (assetNetworkEquipmentList != null && !assetNetworkEquipmentList.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(assetNetworkEquipmentList)) {
             assetOuterResponse.setAssetNetworkEquipment(
                 BeanConvert.convertBean(assetNetworkEquipmentList.get(0), AssetNetworkEquipmentResponse.class));
         }
         // 安全设备
         List<AssetSafetyEquipment> assetSafetyEquipmentList = assetSafetyEquipmentDao.getByWhere(param);
-        if (assetSafetyEquipmentList != null && !assetSafetyEquipmentList.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(assetSafetyEquipmentList)) {
             assetOuterResponse.setAssetSafetyEquipment(
                 BeanConvert.convertBean(assetSafetyEquipmentList.get(0), AssetSafetyEquipmentResponse.class));
         }
         // 存储介质
         List<AssetStorageMedium> assetStorageMediumList = assetStorageMediumDao.getByWhere(param);
-        if (assetStorageMediumList != null && !assetStorageMediumList.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(assetStorageMediumList)) {
             assetOuterResponse.setAssetStorageMedium(
                 BeanConvert.convertBean(assetStorageMediumList.get(0), AssetStorageMediumResponse.class));
         }
+        // 软件列表
         if (condition.getIsNeedSoftware()) {
-            // 软件列表
             List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
                 .getSoftByAssetId(DataTypeUtils.stringToInteger(condition.getPrimaryKey()));
             assetOuterResponse.setAssetSoftware(BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class));

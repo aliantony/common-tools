@@ -79,4 +79,10 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @return
      */
     List<AssetCategoryModelResponse> findAssetCategoryModelById(Integer id) throws Exception;
+    /**
+     * 通过名称查询下一级的品类ID
+     *
+     * @return
+     */
+    List<Integer> findAssetCategoryModelIdsById(Integer id) throws Exception;
 }

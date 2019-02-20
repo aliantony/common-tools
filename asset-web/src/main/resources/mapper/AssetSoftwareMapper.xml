@@ -847,10 +847,10 @@
             or c.serial LIKE CONCAT('%',#{multipleQuery},'%'))
         </if>
         <if test=" installType != null">
-            and a.install_type = #{installType}
+            and (a.install_type = #{installType} or c.install_type = #{installType})
         </if>
         <if test=" assetId != null">
-            and a.asset_id = #{assetId}
+            and a.asset_id = #{assetId}c
         </if>
         group by
         a.id
