@@ -209,6 +209,11 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             AssetCategoryModelResponse.class);
     }
 
+    @Override
+    public List<AssetCategoryModelResponse> findAssetCategoryModelById(Integer id) throws Exception {
+        return responseConverter.convert(recursionSearch(id),AssetCategoryModelResponse.class);
+    }
+
     /**
      * 删除品类及其子品类,若存在资产则不能删（进行递归）
      * @return ActionResponse

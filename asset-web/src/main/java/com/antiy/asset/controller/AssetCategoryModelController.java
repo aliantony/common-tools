@@ -104,6 +104,22 @@ public class AssetCategoryModelController {
     }
 
     /**
+     *
+     * @param condition 主键
+     * @return
+     */
+    @ApiOperation(value = "通过ID查询品类型号及其子品类型号", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/get/id", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:categorymodel:getById')")
+    public ActionResponse getById(@RequestBody @ApiParam(value = "QueryCondition") QueryCondition condition)
+                                                                                                            throws Exception {
+        ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "id不能为空");
+        return ActionResponse.success(iAssetCategoryModelService.findAssetCategoryModelById(Integer.parseInt(condition
+            .getPrimaryKey())));
+    }
+
+    /**
      * 查询硬件第二级数据接口
      *
      * @return
@@ -112,8 +128,21 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/second", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:categorymodel:getCategoryByName')")
-    public ActionResponse getCategoryByName() throws Exception {
+    public ActionResponse getAssetCategoryByName() throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.getCategoryByName("硬件"));
+    }
+
+    /**
+     * 查询软件第二级数据接口
+     *
+     * @return
+     */
+    @ApiOperation(value = "查询软甲第二级数据接口", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/software", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:categorymodel:getCategoryByName')")
+    public ActionResponse getSoftwareCategoryByName() throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.getCategoryByName("软件"));
     }
 
     /**
