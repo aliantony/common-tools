@@ -173,6 +173,15 @@
         <include refid="Table_Name"></include>
         where id = #{id}
     </select>
+    <!-- 根据主键查询 -->
+    <select id="getByDescTime" resultType="com.antiy.asset.entity.AssetChangeRecord" parameterType="java.lang.Integer">
+
+
+        select * from   <include refid="Table_Name"></include>
+        where    business_id = #{businessId}
+        order by gmt_create desc
+        limit 1
+    </select>
 
 
     <delete id="deleteById" parameterType="java.lang.Integer">

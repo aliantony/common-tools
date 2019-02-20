@@ -1,36 +1,10 @@
 package com.antiy.asset.service.impl;
 
-import java.io.*;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.zip.CRC32;
-import java.util.zip.CheckedOutputStream;
-import java.util.zip.ZipOutputStream;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import com.antiy.asset.service.IAssetCategoryModelService;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
@@ -52,6 +26,30 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -406,8 +404,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     } else {
                         ParamterExceptionUtils.isTrue(false, "资产名称重复");
                     }
-                    logger.error("录入失败");
-                    e.printStackTrace();
+                    logger.error("录入失败",e);
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     e.printStackTrace();

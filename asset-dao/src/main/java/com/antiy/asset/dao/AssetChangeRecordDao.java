@@ -14,4 +14,5 @@ import com.antiy.common.base.IBaseDao;
  */
 public interface AssetChangeRecordDao extends IBaseDao<AssetChangeRecord> {
 
+    AssetChangeRecord  getByDescTime(Integer id);
 }

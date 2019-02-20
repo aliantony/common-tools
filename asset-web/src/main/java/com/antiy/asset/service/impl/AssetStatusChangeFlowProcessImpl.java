@@ -1,23 +1,25 @@
 package com.antiy.asset.service.impl;
 
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSONArray;
+import com.antiy.asset.dao.AssetChangeRecordDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetChangeRecord;
+import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.AssetStatusJumpEnum;
+import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.utils.BusinessExceptionUtils;
+import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LoginUserUtil;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * @auther: zhangyajun
@@ -29,6 +31,10 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
 
     @Resource
     AssetDao assetDao;
+    @Resource
+    AssetChangeRecordDao assetChangeRecordDao;
+    @Resource
+    IAssetService assetService;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
@@ -55,7 +61,14 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
             && analyzeInfo!= null &&  !analyzeInfo.get("baseline")) {
             asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         }
+
         assetDao.update(asset);
+
+        //更新硬件
+        AssetChangeRecord changeRecord = assetChangeRecordDao.getByDescTime (DataTypeUtils.stringToInteger (assetStatusReqeust.getAssetId ()));
+        String changeVal = changeRecord.getChangeVal ();
+        AssetOuterRequest outerRequest = JsonUtil.json2Object (changeVal, AssetOuterRequest.class);
+        Integer integer = assetService.changeAsset (outerRequest);
 
         return ActionResponse.success();
     }
