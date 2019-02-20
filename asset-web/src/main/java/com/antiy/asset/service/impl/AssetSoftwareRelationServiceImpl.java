@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import com.antiy.asset.entity.AssetSoftwareRelationMapper;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.enums.InstallStatus;
+import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.asset.vo.response.AssetResponse;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.stereotype.Service;
@@ -125,11 +126,10 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<AssetSoftwareRelation> relationList = BeanConvert.convert(assetSoftwareRelationList,
             AssetSoftwareRelation.class);
         relationList.stream().forEach(relation -> {
-            if (relation.getInstallType() == 2) {
+            if (relation.getInstallType().equals(InstallType.AUTOMATIC.getCode())) {
                 relation.setInstallStatus(InstallStatus.INSTALLING.getCode());
             }
         });
-        assetSoftwareRelationDao.installSoftware(relationList);
-        return null;
+        return assetSoftwareRelationDao.installSoftware(relationList);
     }
 }
