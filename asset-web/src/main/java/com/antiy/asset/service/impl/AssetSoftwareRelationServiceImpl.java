@@ -130,7 +130,6 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 relation.setInstallStatus(InstallStatus.INSTALLING.getCode());
             }
         });
-        assetSoftwareRelationDao.installSoftware(relationList);
-        return null;
+        return assetSoftwareRelationDao.installSoftware(relationList);
     }
 }
