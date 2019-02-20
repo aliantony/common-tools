@@ -110,7 +110,7 @@ public class AssetCategoryModelController {
      */
     @ApiOperation(value = "通过ID查询品类型号及其子品类型号", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/get/id", method = RequestMethod.POST)
+    @RequestMapping(value = "/get/id", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:categorymodel:getById')")
     public ActionResponse getById(@RequestBody @ApiParam(value = "QueryCondition") QueryCondition condition)
                                                                                                             throws Exception {
