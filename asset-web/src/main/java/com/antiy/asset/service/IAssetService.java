@@ -93,7 +93,6 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     Integer changeStatusById(String id, Integer targetStatus) throws Exception;
 
-
     /**
      * 批量保存
      *
@@ -157,7 +156,6 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     AssetCountResponse countCategory() throws Exception;
 
-
     /**
      * 通过ID列表查询资产列表
      *
@@ -179,11 +177,11 @@ public interface IAssetService extends IBaseService<Asset> {
      * @param assetOuterRequest 资产信息
      */
     Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception;
+
     /**
-     * 1-计算设备 2-网络设备 3-安全设备 4-存储介质 5-其他设备
      * @param type 导出模板的类型
      */
-    void exportTemplate(int type) throws Exception;
+    void exportTemplate(Integer[] type) throws Exception;
 
     /**
      * @param assetQuery 导出模板的条件
@@ -197,6 +195,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     String importPc(MultipartFile file, AssetImportRequest areaId) throws Exception;
+
     /**
      * 硬件导入网络设备
      * @param file
@@ -204,6 +203,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     String importNet(MultipartFile file, AssetImportRequest areaId) throws Exception;
+
     /**
      * 硬件导入安全设备
      * @param file
@@ -211,6 +211,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     String importSecurity(MultipartFile file, AssetImportRequest areaId) throws Exception;
+
     /**
      * 硬件导存储设备
      * @param file
@@ -218,6 +219,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     String importStory(MultipartFile file, AssetImportRequest areaId) throws Exception;
+
     /**
      * 硬件其他设备
      * @param file

@@ -1,8 +1,12 @@
 package com.antiy.asset.service.impl;
 
+import java.io.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedOutputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +23,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
@@ -1545,28 +1551,55 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     /**
-     * 1-计算设备 2-网络设备 3-安全设备 4-存储设备 5-其他设备
-     * @param type 导出模板的类型
+     * @param types 导出模板的类型
      */
     @Override
-    public void exportTemplate(int type) throws Exception {
-        switch (type) {
-            case 1:
-                exportToClient(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备");
-                break;
-            case 2:
-                exportToClient(NetworkDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备");
-                break;
-            case 3:
-                exportToClient(SafetyEquipmentEntiy.class, "安全设备信息模板.xlsx", "安全设备");
-                break;
-            case 4:
-                exportToClient(StorageDeviceEntity.class, "存储设备信息模板.xlsx", "存储设备");
-                break;
-            case 5:
-                exportToClient(OtherDeviceEntity.class, "其他设备信息模板.xlsx", "其他设备");
-                break;
+    public void exportTemplate(Integer[] types) throws Exception {
+        List<AssetCategoryModel> list = assetCategoryModelDao.getNextLevelCategoryByName("硬件");
+        Map<String, Class> map = new HashMap();
+        map.put("计算设备", ComputeDeviceEntity.class);
+        map.put("网络设备", NetworkDeviceEntity.class);
+        map.put("安全设备", SafetyEquipmentEntiy.class);
+        map.put("存储设备", StorageDeviceEntity.class);
+        map.put("其他设备", OtherDeviceEntity.class);
+        File dictionry = new File("/temp/模板");
+        if (!dictionry.exists()) {
+            dictionry.mkdirs();
         }
+        File[] files = new File[types.length];
+        File file = new File("/temp/模板.zip");
+        int m = 0;
+        for (AssetCategoryModel assetCategoryModel : list) {
+            for (Integer type : types) {
+                if (assetCategoryModel.getId().equals(type)) {
+                    String categoryName = assetCategoryModel.getName();
+                    ExcelUtils.exportTemplet(map.get(assetCategoryModel.getName()), categoryName + "信息模板.xlsx",
+                        categoryName, "/temp/模板/");
+                    files[m++] = new File("/temp/模板/" + categoryName + "信息模板.xlsx");
+
+                }
+            }
+        }
+        file.createNewFile();
+        ZipUtil.compress(file, files);
+        FileInputStream fileInputStream = new FileInputStream(file);
+        byte[] buffer = new byte[1024];
+        int i = 0;
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+            .getResponse();
+        response.reset();
+        response.addHeader("Content-Disposition", "attachment;filename="
+                                                  + new String(file.getName().getBytes("UTF-8"), "ISO-8859-1"));
+        response.addHeader("Content-Length", "" + file.length());
+        response.setContentType("application/octet-stream");
+        OutputStream ous = new BufferedOutputStream(response.getOutputStream());
+        while ((i = fileInputStream.read(buffer)) != -1) {
+            ous.write(buffer, 0, i);
+        }
+        ous.flush();
+        ous.close();
+        file.delete();
+
     }
 
     @Override
