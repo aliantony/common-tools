@@ -1,5 +1,8 @@
 package com.antiy.asset.util;
 
+import com.antiy.common.utils.LogUtils;
+import org.slf4j.Logger;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,18 +13,23 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class ZipUtil {
-    static final int BUFFER = 8192;
+    static final int            BUFFER = 8192;
+    private static final Logger logger = LogUtils.get();
 
-    public static void compress(File outFile, File[] pathName) {
+    /**
+     *
+     * @param outFile 输出文件
+     * @param files 压缩的文件
+     */
+    public static void compress(File outFile, File[] files) {
         ZipOutputStream out;
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(outFile);
-            CheckedOutputStream cos = new CheckedOutputStream(fileOutputStream,
-                    new CRC32());
+            CheckedOutputStream cos = new CheckedOutputStream(fileOutputStream, new CRC32());
             out = new ZipOutputStream(cos);
             String basedir = "";
-            for (int i=0;i<pathName.length;i++){
-                compress(new File(pathName[i].getAbsolutePath()), out, basedir);
+            for (int i = 0; i < files.length; i++) {
+                compress(new File(files[i].getAbsolutePath()), out, basedir);
             }
             out.close();
         } catch (Exception e) {
@@ -48,10 +56,10 @@ public class ZipUtil {
     private static void compress(File file, ZipOutputStream out, String basedir) {
         /* 判断是目录还是文件 */
         if (file.isDirectory()) {
-            System.out.println("压缩：" + basedir + file.getName());
+            logger.info("压缩：" + basedir + file.getName());
             compressDirectory(file, out, basedir);
         } else {
-            System.out.println("压缩：" + basedir + file.getName());
+            logger.info("压缩：" + basedir + file.getName());
             compressFile(file, out, basedir);
         }
     }
