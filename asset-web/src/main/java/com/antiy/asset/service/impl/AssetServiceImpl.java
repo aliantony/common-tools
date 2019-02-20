@@ -1690,7 +1690,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMemory.setFrequency(entity.getMemoryFrequency());
                 assetMemory.setCapacity(entity.getMemoryCapacity());
                 assetMemory.setStitch(entity.getStitch());
-                assetMemory.setIsHeatsink(entity.getHeatsink());
+                assetMemory.setHeatsink (entity.getHeatsink());
                 assetMemory.setTransferType(entity.getTransferType());
                 for (int i = 0; i < entity.getMemoryNum(); i++) {
                     assetMemoryDao.insert(assetMemory);
