@@ -1,9 +1,11 @@
 package com.antiy.asset.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -196,9 +198,20 @@ public class AssetSoftwareRelationController {
     @ApiOperation(value = "安装软件", notes = "安装软件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/software/install", method = RequestMethod.POST)
-    public ActionResponse installSoftware(@ApiParam(value = "softwareQuery") @RequestBody List<AssetSoftwareRelationRequest> assetSoftwareRelationList) throws Exception {
-        iAssetSoftwareRelationService.installSoftware(assetSoftwareRelationList);
+    public ActionResponse installSoftware(@ApiParam(value = "softwareQuery") @RequestBody AssetSoftwareRelationList assetSoftwareRelationList) throws Exception {
+        iAssetSoftwareRelationService.installSoftware(assetSoftwareRelationList.getAssetSoftwareRelationRequestList());
         return ActionResponse.success();
     }
 
+}
+class AssetSoftwareRelationList {
+    private List<AssetSoftwareRelationRequest> assetSoftwareRelationRequestList;
+
+    public List<AssetSoftwareRelationRequest> getAssetSoftwareRelationRequestList() {
+        return assetSoftwareRelationRequestList;
+    }
+
+    public void setAssetSoftwareRelationRequestList(List<AssetSoftwareRelationRequest> assetSoftwareRelationRequestList) {
+        this.assetSoftwareRelationRequestList = assetSoftwareRelationRequestList;
+    }
 }

@@ -1562,8 +1562,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (!dictionaryFile.exists()) {
             dictionaryFile.mkdirs();
         }
+        //创造模板文件
         File[] files = new File[types.length];
-        File file = new File("/temp" + currentTime + "/模板.zip");
+        //创造压缩文件
+        File zip = new File("/temp" + currentTime + "/模板.zip");
         Map<Integer, AssetCategoryModel> categoryModelMap = new HashMap<>();
         for (AssetCategoryModel assetCategoryModel : list) {
             categoryModelMap.put(assetCategoryModel.getId(), assetCategoryModel);
@@ -1572,11 +1574,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         for (Integer type : types) {
             AssetCategoryModel assetCategoryModel = categoryModelMap.get(type);
             if (Objects.nonNull(assetCategoryModel)) {
+                //生成模板文件
                 String categoryName = assetCategoryModel.getName();
                 ExcelUtils.exportTemplet(map.get(assetCategoryModel.getName()), categoryName + "信息模板.xlsx",
                     categoryName, dictionary + "/");
                 files[m++] = new File(dictionary + "/" + categoryName + "信息模板.xlsx");
             } else {
+                //输入参数有错，删除临时文件
                 for (File fil : files) {
                     if (Objects.nonNull(fil)) {
                         loggerIsDelete(fil);
@@ -1587,13 +1591,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 throw new BusinessException("存在错误的品类ID");
             }
         }
-        file.createNewFile();
+        zip.createNewFile();
         // 压缩文件为zip压缩包
-        ZipUtil.compress(file, files);
+        ZipUtil.compress(zip, files);
         // 将文件流发送到客户端
-        sendStreamToClient(file);
+        sendStreamToClient(zip);
         // 记录临时文件删除是否成功
-        loggerIsDelete(file);
+        loggerIsDelete(zip);
         for (File fil : files) {
             loggerIsDelete(fil);
         }
