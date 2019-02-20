@@ -112,8 +112,7 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/get/id", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:categorymodel:getById')")
-    public ActionResponse getById(@RequestBody @ApiParam(value = "QueryCondition") QueryCondition condition)
-                                                                                                            throws Exception {
+    public ActionResponse getById(@ApiParam(value = "QueryCondition") QueryCondition condition) throws Exception {
         ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "id不能为空");
         return ActionResponse.success(iAssetCategoryModelService.findAssetCategoryModelById(Integer.parseInt(condition
             .getPrimaryKey())));

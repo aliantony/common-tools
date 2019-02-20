@@ -29,6 +29,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer changeStatus(Map<String, Object> map) throws Exception;
+
     /**
      * 通过资产ID修改资产状态
      *
@@ -74,14 +75,15 @@ public interface AssetDao extends IBaseDao<Asset> {
      *
      * @return
      */
-    List<Map<String, Long>> countManufacturer(@Param("areaIds") List<Integer> areaIds);
+    List<Map<String, Long>> countManufacturer(@Param("areaIds") List<Integer> areaIds,
+                                              @Param("assetStatusList") List<Integer> statusList);
 
     /**
      * 统计状态数量
      *
      * @return
      */
-    List<Map<String, Long>> countStatus(@Param("areaIds")List<Integer> areaIds);
+    List<Map<String, Long>> countStatus(@Param("areaIds") List<Integer> areaIds);
 
     /**
      * 通过ID列表查询资产列表
