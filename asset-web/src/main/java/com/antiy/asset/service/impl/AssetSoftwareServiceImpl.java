@@ -7,6 +7,7 @@ import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareLicense;
 import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetPortProtocolService;
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
 import com.antiy.asset.service.IAssetSoftwareService;
@@ -94,6 +95,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private IAssetSoftwareLicenseService                                     iAssetSoftwareLicenseService;
 
     @Resource
+    private IAssetCategoryModelService                                       iAssetCategoryModelService;
+
+    @Resource
     private TransactionTemplate                                              transactionTemplate;
 
     @Resource
@@ -106,7 +110,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private SoftwareEntityConvert                                            softwareEntityConvert;
 
     private static final Logger                                              LOGGER = LogUtils
-        .get(AssetSoftwareServiceImpl.class);
+                                                                                        .get(AssetSoftwareServiceImpl.class);
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -120,7 +124,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetSoftwareLicense.class);
                     // AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
                     // AssetPortProtocol.class);
-                    if (CheckRepeatName (assetSoftware.getName ())) {
+                    if (CheckRepeatName(assetSoftware.getName())) {
                         ParamterExceptionUtils.isTrue(false, "资产名称重复");
                     }
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -170,7 +174,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     return DataTypeUtils.stringToInteger(sid);
                 } catch (RequestParamValidateException e) {
                     transactionStatus.setRollbackOnly();
-                        ParamterExceptionUtils.isTrue(false, "资产名称重复");
+                    ParamterExceptionUtils.isTrue(false, "资产名称重复");
                     logger.error("录入失败");
                     e.printStackTrace();
                 } catch (Exception e) {
@@ -282,8 +286,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param request
      */
     private void updateLicense(AssetSoftwareRequest request) throws Exception {
-        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter
-            .convert(request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
+        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter.convert(
+            request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
         assetSoftwareLicense.setSoftwareId(request.getId());
         // 写入业务日志
         LogHandle.log(assetSoftwareLicense.toString(), AssetEventEnum.SOFT_INSERT.getName(),
@@ -304,7 +308,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query,
-                                                             Map<String, WaitingTaskReponse> waitingTasks) throws Exception {
+                                                             Map<String, WaitingTaskReponse> waitingTasks)
+                                                                                                          throws Exception {
         List<AssetSoftware> assetSoftware = assetSoftwareDao.findListAssetSoftware(query);
         Map<Integer, Long> softAssetCount = null;
         if (query.getQueryAssetCount()) {
@@ -320,9 +325,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             protected void convert(AssetSoftware assetSoftware, AssetSoftwareResponse assetSoftwareResponse) {
                 super.convert(assetSoftware, assetSoftwareResponse);
                 if (MapUtils.isNotEmpty(finalSoftAssetCount)) {
-                    assetSoftwareResponse.setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null
-                        ? finalSoftAssetCount.get(assetSoftware.getId()).intValue()
-                        : 0);
+                    assetSoftwareResponse
+                        .setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null ? finalSoftAssetCount
+                            .get(assetSoftware.getId()).intValue() : 0);
                 }
 
                 if (MapUtils.isNotEmpty(waitingTasks)) {
@@ -352,8 +357,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     public Map<String, WaitingTaskReponse> getAllSoftWaitingTask(String definitionKeyType) {
         // 1.获取当前用户的所有代办任务
         ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
-        activityWaitingQuery.setUser(
-            aesEncoder.encode(LoginUserUtil.getLoginUser().getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+        activityWaitingQuery.setUser(aesEncoder.encode(LoginUserUtil.getLoginUser().getStringId(), LoginUserUtil
+            .getLoginUser().getUsername()));
         activityWaitingQuery.setProcessDefinitionKey(definitionKeyType);
         ActionResponse<List<WaitingTaskReponse>> actionResponse = activityClient
             .queryAllWaitingTask(activityWaitingQuery);
@@ -361,8 +366,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             actionResponse != null && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode()),
             "获取工作流异常");
         List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
-        return waitingTaskReponses.stream()
-            .collect(Collectors.toMap(WaitingTaskReponse::getBusinessId, Function.identity(), (key1, key2) -> key2));
+        return waitingTaskReponses.stream().collect(
+            Collectors.toMap(WaitingTaskReponse::getBusinessId, Function.identity(), (key1, key2) -> key2));
     }
 
     @Override
@@ -371,123 +376,67 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return assetSoftwareDao.findManufacturerName(manufacturerName, list);
     }
 
-    /**
-     * 查询出品类和其子品类
-     *
-     * @param id 查询的品类id
-     */
-    public List<AssetCategoryModel> recursionSearch(List<AssetCategoryModel> list, Integer id) throws Exception {
-        List<AssetCategoryModel> result = new ArrayList();
-        for (AssetCategoryModel assetCategoryModel : list) {
-            if (Objects.equals(id, assetCategoryModel.getId())) {
-                result.add(assetCategoryModel);
-            }
-        }
-        recursion(result, list, id);
-        return result;
-    }
-
-    /**
-     * 递归查询出所有的品类和其子品类
-     *
-     * @param result 查询的结果集
-     * @param list 查询的数据集
-     * @param id 递归的参数
-     */
-    private void recursion(List<AssetCategoryModel> result, List<AssetCategoryModel> list, Integer id) {
-        for (AssetCategoryModel AssetCategoryModel : list) {
-            if (Objects.equals(AssetCategoryModel.getParentId(), Objects.toString(id))) {
-                result.add(AssetCategoryModel);
-                recursion(result, list, AssetCategoryModel.getId());
-            }
-        }
-    }
-
     @Override
     public AssetCountResponse countManufacturer() throws Exception {
         int maxNum = 5;
-        List<Map<String, Long>> list = assetSoftwareDao.countManufacturer();
-        if (list.size() > maxNum) {
-            list.sort(new Comparator<Map<String, Long>>() {
-                @Override
-                public int compare(Map<String, Long> o1, Map<String, Long> o2) {
-                    return (int) (o2.get("value") - o1.get("value"));
-                }
-            });
-        }
-        Map result = new HashMap();
-        int i = 0;
-        long sum = 0;
-        for (Map map : list) {
-            if (i < maxNum) {
-                result.put(map.get("key"), map.get("value"));
-                i++;
-            } else {
-                sum = sum + (Long) map.get("value");
-            }
-        }
-        if (sum != 0) {
-            result.put("其他", sum);
-        }
-        AssetCountResponse assetCountResponse = new AssetCountResponse();
-        assetCountResponse.setMap(ArrayTypeUtil.ObjectArrayToEntryArray(result.entrySet().toArray()));
-        return assetCountResponse;
+        List status=StatusEnumUtil.getSoftwareNotRetireStatusList();
+        List<Map<String, Long>> list = assetSoftwareDao.countManufacturer(status);
+        return CountTypeUtil.getAssetCountResponse(maxNum, list);
     }
 
     @Override
     public AssetCountColumnarResponse countStatus() throws Exception {
         List<Map<String, Long>> list = assetSoftwareDao.countStatus();
         Map<String, Long> result = new HashMap();
+        // 初始化result
         for (SoftwareStatusEnum assetStatusEnum : SoftwareStatusEnum.values()) {
             result.put(assetStatusEnum.getMsg(), 0L);
         }
+        // 将查询结果的值放入结果集
         for (Map map : list) {
             SoftwareStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode((Integer) map.get("key"));
             if (assetStatusEnum != null) {
                 result.put(assetStatusEnum.getMsg(), (Long) map.get("value"));
             }
         }
-        String keys[] = new String[SoftwareStatusEnum.values().length];
-        Long values[] = new Long[SoftwareStatusEnum.values().length];
-        int i = 0;
-        for (Map.Entry<String, Long> entry : result.entrySet()) {
-            keys[i] = entry.getKey();
-            values[i] = entry.getValue();
-        }
-        AssetCountColumnarResponse assetCountColumnarResponse = new AssetCountColumnarResponse();
-        assetCountColumnarResponse.setKeys(ArrayTypeUtil.ObjectArrayToStringArray(result.keySet().toArray()));
-        assetCountColumnarResponse.setValues(ArrayTypeUtil.ObjectArrayToLongArray(result.values().toArray()));
-        return assetCountColumnarResponse;
+        return CountTypeUtil.getAssetCountColumnarResponse(result);
     }
 
     @Override
     public AssetCountResponse countCategory() throws Exception {
-        List<AssetCategoryModel> categoryModelList1 = assetCategoryModelDao.getNextLevelCategoryByName("软件");
+        // 查询第二级分类id
+        List<AssetCategoryModel> secondCategoryModelList = assetCategoryModelDao.getNextLevelCategoryByName("软件");
         HashMap<String, Long> result = new HashMap<>();
         List<AssetCategoryModel> categoryModelDaoAll = assetCategoryModelDao.getAll();
         if (CollectionUtils.isNotEmpty(categoryModelDaoAll)) {
-            for (AssetCategoryModel a : categoryModelList1) {
-                List<AssetCategoryModel> search = recursionSearch(categoryModelDaoAll, a.getId());
-                String[] list = new String[search.size()];
-                for (int i = 0; i < search.size(); i++) {
-                    list[i] = search.get(i).getStringId();
-                }
-                List status = new ArrayList();
-                for (int i = 1; i <= 4; i++) {
-                    status.add(i);
-                }
-                AssetSoftwareQuery assetSoftwareQuery = new AssetSoftwareQuery();
-                assetSoftwareQuery.setCategoryModels(list);
-                assetSoftwareQuery.setSoftwareStatusList(status);
-                Long sum = assetSoftwareDao.findCountByCategoryModel(assetSoftwareQuery);
-                result.put(a.getName(), sum);
+            for (AssetCategoryModel secondCategoryModel : secondCategoryModelList) {
+                // 查询第二级每个分类下所有的分类id，并添加至list集合
+                List<AssetCategoryModel> search = iAssetCategoryModelService.recursionSearch(categoryModelDaoAll,
+                    secondCategoryModel.getId());
+                // 设置查询资产条件参数，包括，状态，资产品类型号
+                AssetSoftwareQuery assetSoftwareQuery = setAssetSoftwareQueryParam(search);
+                // 将查询结果放置结果集
+                result
+                    .put(secondCategoryModel.getName(), assetSoftwareDao.findCountByCategoryModel(assetSoftwareQuery));
             }
-            AssetCountResponse assetCountResponse = new AssetCountResponse();
-            assetCountResponse.setMap(ArrayTypeUtil.ObjectArrayToEntryArray(result.entrySet().toArray()));
-            return assetCountResponse;
+            return CountTypeUtil.getAssetCountResponse(result);
         }
         return null;
     }
+
+    private AssetSoftwareQuery setAssetSoftwareQueryParam(List<AssetCategoryModel> search) {
+        String[] list = new String[search.size()];
+        for (int i = 0; i < search.size(); i++) {
+            list[i] = search.get(i).getStringId();
+        }
+        List status = StatusEnumUtil.getSoftwareNotRetireStatusList();
+        AssetSoftwareQuery assetSoftwareQuery = new AssetSoftwareQuery();
+        assetSoftwareQuery.setCategoryModels(list);
+        assetSoftwareQuery.setSoftwareStatusList(status);
+        return assetSoftwareQuery;
+    }
+
+
 
     @Override
     public AssetSoftwareDetailResponse querySoftWareDetail(SoftwareQuery softwareQuery) throws Exception {
@@ -563,9 +512,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     private boolean CheckRepeatName(String name) throws Exception {
-        AssetSoftwareQuery assetQuery = new AssetSoftwareQuery ();
-        assetQuery.setAssetName (name);
-        Integer countAsset = assetSoftwareDao.findCountCheck (assetQuery);
+        AssetSoftwareQuery assetQuery = new AssetSoftwareQuery();
+        assetQuery.setAssetName(name);
+        Integer countAsset = assetSoftwareDao.findCountCheck(assetQuery);
         if (countAsset >= 1) {
             return true;
         }
@@ -573,7 +522,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery) throws Exception {
+    public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery)
+                                                                                                          throws Exception {
         return new PageResult<>(softwareQuery.getPageSize(), this.findAssetInstallCount(softwareQuery),
             softwareQuery.getCurrentPage(), this.findAssetInstallList(softwareQuery));
     }
@@ -695,19 +645,19 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,
                             AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
-        assetSoftwareQuery.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        assetSoftwareQuery.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser()
+            .getAreaIdsOfCurrentUser()));
         assetSoftwareQuery.setQueryAssetCount(true);
         assetSoftwareQuery.setPageSize(-1);
-        Map<String,WaitingTaskReponse> waitingTasks = getAllSoftWaitingTask("soft");
-        List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery,waitingTasks);
+        Map<String, WaitingTaskReponse> waitingTasks = getAllSoftWaitingTask("soft");
+        List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery, waitingTasks);
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setSheetName("资产信息表");
         List<ExportSoftwareEntity> softwareEntities = softwareEntityConvert.convert(list, ExportSoftwareEntity.class);
         downloadVO.setDownloadList(softwareEntities);
-        if(downloadVO.getDownloadList() != null){
+        if (downloadVO.getDownloadList() != null) {
             excelDownloadUtil.excelDownload(response, s, downloadVO);
-        }else {
+        } else {
             throw new BusinessException("导出数据为空");
         }
 
@@ -747,8 +697,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param assetSoftwareDetailResponse
      * @throws Exception
      */
-    private void querySoftwarePort(SoftwareQuery softwareQuery,
-                                   AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+    private void querySoftwarePort(SoftwareQuery softwareQuery, AssetSoftwareDetailResponse assetSoftwareDetailResponse)
+                                                                                                                        throws Exception {
         AssetPortProtocolQuery assetPortProtocolQuery = new AssetPortProtocolQuery();
         assetPortProtocolQuery.setAssetSoftId(softwareQuery.getPrimaryKey());
         assetPortProtocolQuery.setPageSize(Constants.MAX_PAGESIZE);

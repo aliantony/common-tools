@@ -209,12 +209,18 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             AssetCategoryModelResponse.class);
     }
 
+    @Override
+    public List<AssetCategoryModelResponse> findAssetCategoryModelById(Integer id) throws Exception {
+        return responseConverter.convert(recursionSearch(assetCategoryModelDao.getAll(), id),
+            AssetCategoryModelResponse.class);
+    }
+
     /**
      * 删除品类及其子品类,若存在资产则不能删（进行递归）
      * @return ActionResponse
      */
     public ActionResponse deleteAllById(Serializable id) throws Exception {
-        List<AssetCategoryModel> list = recursionSearch((Integer) id);
+        List<AssetCategoryModel> list = recursionSearch(assetCategoryModelDao.getAll(), (Integer) id);
         AssetQuery assetQuery = new AssetQuery();
         String[] ids = new String[list.size()];
         for (int i = 0; i < list.size(); i++) {
@@ -245,8 +251,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      *
      * @param id 查询的部门id
      */
-    private List<AssetCategoryModel> recursionSearch(Integer id) throws Exception {
-        List<AssetCategoryModel> list = assetCategoryModelDao.getAll();
+    public List<AssetCategoryModel> recursionSearch(List<AssetCategoryModel> list, Integer id) throws Exception {
         List<AssetCategoryModel> result = new ArrayList();
         for (AssetCategoryModel assetCategoryModel : list) {
             if (Objects.equals(assetCategoryModel.getId(), id)) {

@@ -6,6 +6,7 @@ import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -24,6 +25,7 @@ public class AssetChangeRecordRequest extends BasicRequest implements ObjectVali
      *  1--硬件资产，2--软件资产
      */
     @ApiModelProperty("1--硬件资产，2--软件资产")
+    @NotNull(message = "类型不能为空：1--硬件资产，2--软件资产")
     private Integer type;
     /**
      *  状态,1未删除,0已删除
