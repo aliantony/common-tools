@@ -461,7 +461,7 @@
         select
         a.id, size, operation_system, a.category_model,
         a.name, upload_software_name, path, version,
-        manufacturer, a.description, asset_group,
+        manufacturer, a.description, asset_group,service_life,
         software_label, software_status, authorization,
         report_source, protocol, language, a.release_time,
         publisher, a.gmt_create, a.memo, a.gmt_modified,
