@@ -32,7 +32,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id as assetId, interface_size as interfaceSize, is_wireless as isWireless,port_size as portSize, port_Size as portSize, cpu_version as cpuVersion, cpu_size as cpuSize, ios, inner_ip as innerIp, outer_ip as outerIp, mac_address as macAddress, subnet_mask as subnetMask, expect_bandwidth as expectBandwidth, register, dram_size as dramSize, flash_size as flashSize, ncrm_size as ncrmSize, firmware_version as firmwareVersion, create_user AS createUser, modify_user AS modifyUser, status
+        id, asset_id as assetId, interface_size as interfaceSize, is_wireless as isWireless,port_size as portSize,cpu_version as cpuVersion, cpu_size as cpuSize, ios, inner_ip as innerIp, outer_ip as outerIp, mac_address as macAddress, subnet_mask as subnetMask, expect_bandwidth as expectBandwidth, register, dram_size as dramSize, flash_size as flashSize, ncrm_size as ncrmSize, firmware_version as firmwareVersion, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
 
     <sql id="Table_Name">
