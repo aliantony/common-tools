@@ -9,7 +9,6 @@
         <result column="interface_size" property="interfaceSize"/>
         <result column="port_size" property="portSize"/>
         <result column="is_wireless" property="isWireless"/>
-        <result column="port_Size" property="portSize"/>
         <result column="cpu_version" property="cpuVersion"/>
         <result column="firmware_version" property="firmwareVersion"/>
         <result column="cpu_size" property="cpuSize"/>
@@ -55,9 +54,6 @@
         </if>
         <if test=" isWireless != null">
             is_wireless,
-        </if>
-        <if test=" portSize != null">
-            port_Size,
         </if>
         <if test=" cpuVersion != null">
             cpu_version,
@@ -131,9 +127,6 @@
         <if test=" isWireless != null">
             #{isWireless },
         </if>
-        <if test=" portSize != null">
-            #{portSize },
-        </if>
         <if test=" cpuVersion != null">
             #{cpuVersion },
         </if>
@@ -206,9 +199,7 @@
         <if test=" isWireless != null">
             is_wireless = #{isWireless },
         </if>
-        <if test=" portSize != null">
-            port_Size = #{portSize },
-        </if>
+
         <if test=" cpuVersion != null">
             cpu_version = #{cpuVersion },
         </if>
