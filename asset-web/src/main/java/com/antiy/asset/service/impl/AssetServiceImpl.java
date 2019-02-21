@@ -1535,14 +1535,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // TODO 下发智甲
 
         // 通知工作流
-        ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
-        if (Objects.isNull(manualStartActivityRequest)) {
-            manualStartActivityRequest = new ManualStartActivityRequest();
-        }
-        manualStartActivityRequest.setBusinessId(asset.getStringId());
-        manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
-        manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
-        activityClient.manualStartProcess(manualStartActivityRequest);
+//        ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
+//        if (Objects.isNull(manualStartActivityRequest)) {
+//            manualStartActivityRequest = new ManualStartActivityRequest();
+//        }
+//        manualStartActivityRequest.setBusinessId(asset.getStringId());
+//        manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
+//        manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
+//        activityClient.manualStartProcess(manualStartActivityRequest);
         return assetCount;
     }
 
@@ -1606,7 +1606,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     }
 
-    private void sendStreamToClient(File file) throws IOException {
+    private void sendStreamToClient(File file) throws Exception {
         FileInputStream fileInputStream = new FileInputStream(file);
         byte[] buffer = new byte[1024];
         int i = 0;

@@ -1,17 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.poi.ss.formula.functions.Odd;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
@@ -29,6 +17,15 @@ import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * <p> 变更记录表 服务实现类 </p>
@@ -77,6 +74,8 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
         AssetOuterRequest assetOuterRequest = request.getAssetOuterRequest();
 
         assetChangeRecord.setChangeVal(JsonUtil.object2Json(assetOuterRequest));
+        assetChangeRecord.setGmtCreate (System.currentTimeMillis ());
+        assetChangeRecord.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
         assetChangeRecordDao.insert(assetChangeRecord);
         ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
         if (Objects.isNull(manualStartActivityRequest)) {
