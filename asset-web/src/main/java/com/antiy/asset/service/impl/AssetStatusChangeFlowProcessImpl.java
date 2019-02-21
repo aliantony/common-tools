@@ -22,9 +22,10 @@ import javax.annotation.Resource;
 import java.util.Map;
 
 /**
+ *
  * @auther: zhangyajun
  * @date: 2019/1/23 15:38
- * @description:
+ * @description: 硬件资产状态跃迁
  */
 @Service
 public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeProcessImpl {
@@ -61,7 +62,7 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
             && analyzeInfo!= null &&  !analyzeInfo.get("baseline")) {
             asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         }
-
+        //更新资产状态
         assetDao.update(asset);
 
         //更新硬件
