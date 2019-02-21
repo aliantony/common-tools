@@ -48,6 +48,16 @@ public class CompareUtils {
                         map2.put("old", field1[i].get(class1));
                         map2.put("new", field2[j].get(class2));
                         map2.put("label", label);
+                        Object oldValue = field1[i].get(class1);
+                        Object newValue = field2[j].get(class2);
+                        if (oldValue!= null && !oldValue.equals(newValue)){
+                            map2.put("operation",  "更改" );
+                        }else if (oldValue != null && newValue == null){
+                            map2.put("operation",  "删除" );
+                        }else if (oldValue == null && newValue != null){
+                            map2.put("operation",  "新增" );
+                        }
+
                         list.add(map2);
                     }
                     break;
