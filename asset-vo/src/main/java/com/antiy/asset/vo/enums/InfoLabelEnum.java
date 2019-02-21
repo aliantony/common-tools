@@ -8,12 +8,12 @@ package com.antiy.asset.vo.enums;
 public enum InfoLabelEnum implements CodeEnum {
     COMMONINFO(1,"通用信息"),
     BUSINESSINFO(2,"业务信息"),
-    CPU(3,"CPU"),
-    MEMORY(4,"内存"),
-    HARDDISK(5,"硬盘"),
-    MAINBORAD(6,"主板"),
-    NETWORKCARD(7,"网卡"),
-    RELATESOFTWARE(8,"关联软件"),
+    CPU(3,"部件-CPU"),
+    MEMORY(4,"部件-内存"),
+    HARDDISK(5,"部件-硬盘"),
+    MAINBORAD(6,"部件-主板"),
+    NETWORKCARD(7,"部件-网卡"),
+    RELATESOFTWARE(8,"软件关联"),
     ;
     // code
     private Integer code;

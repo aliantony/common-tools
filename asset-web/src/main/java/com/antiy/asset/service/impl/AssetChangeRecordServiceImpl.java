@@ -217,6 +217,8 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                                     CompareUtils.compareClass(oldMemory, newMemory, InfoLabelEnum.MEMORY.getMsg()));
                             }
                         }
+                    }else {
+                        break;
                     }
                 }
             }
@@ -250,6 +252,8 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                                     .add(CompareUtils.compareClass(oldCpu, newCpu, InfoLabelEnum.CPU.getMsg()));
                             }
                         }
+                    }else {
+                        break;
                     }
                 }
             }
@@ -285,6 +289,8 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                                     InfoLabelEnum.HARDDISK.getMsg()));
                             }
                         }
+                    }else {
+                        break;
                     }
                 }
             }
@@ -316,6 +322,8 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                                     InfoLabelEnum.MAINBORAD.getMsg()));
                             }
                         }
+                    }else {
+                        break;
                     }
                 }
             }
@@ -351,6 +359,8 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                                     InfoLabelEnum.NETWORKCARD.getMsg()));
                             }
                         }
+                    }else {
+                        break;
                     }
                 }
             }
@@ -382,6 +392,8 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                                     newAssetSoftwareRelationRequest, InfoLabelEnum.RELATESOFTWARE.getMsg()));
                             }
                         }
+                    }else {
+                        break;
                     }
                 }
             }
