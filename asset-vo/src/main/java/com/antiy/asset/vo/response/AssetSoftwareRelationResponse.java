@@ -63,7 +63,7 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
      * 安装时间
      */
     @ApiModelProperty("安装时间")
-    private Integer installTime;
+    private Long installTime;
 
     public String getAssetId() {
         return assetId;
@@ -137,11 +137,11 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
         this.installStatus = installStatus;
     }
 
-    public Integer getInstallTime() {
+    public Long getInstallTime() {
         return installTime;
     }
 
-    public void setInstallTime(Integer installTime) {
+    public void setInstallTime(Long installTime) {
         this.installTime = installTime;
     }
 }

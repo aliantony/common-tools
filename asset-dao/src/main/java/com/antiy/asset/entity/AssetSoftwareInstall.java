@@ -71,7 +71,7 @@ public class AssetSoftwareInstall {
      * 安装时间
      */
     @ApiModelProperty("安装时间")
-    private Integer installTime;
+    private Long installTime;
     /**
      * 责任人主键
      */
@@ -196,11 +196,11 @@ public class AssetSoftwareInstall {
         this.installStatus = installStatus;
     }
 
-    public Integer getInstallTime() {
+    public Long getInstallTime() {
         return installTime;
     }
 
-    public void setInstallTime(Integer installTime) {
+    public void setInstallTime(Long installTime) {
         this.installTime = installTime;
     }
 
