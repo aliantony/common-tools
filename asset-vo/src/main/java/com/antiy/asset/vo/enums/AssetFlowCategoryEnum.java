@@ -1,7 +1,7 @@
 package com.antiy.asset.vo.enums;
 
 /**
- * 硬件流程枚举
+ * 资产流程枚举
  *
  * @Auther: zhangyajun
  * @Date: 2019/1/14 11:36
@@ -12,7 +12,8 @@ public enum AssetFlowCategoryEnum {
                                                   "硬件资产登记流程"), SOFTWARE_REGISTER("SOFTWARE_REGISTER",
                                                                             "软件资产登记流程"), HARDWARE_CHANGE("HARDWARE_CHANGE",
                                                                                                     "硬件资产变更流程"),HARDWARE_RETIRE("HARDWARE_RETIRE",
-            "硬件资产退役流程"),HARDWARE_IMPL_RETIRE("HARDWARE_COMPLETE_RETIRE",
+            "硬件资产退役流程"),SOFTWARE_RETIRE("SOFTWARE_RETIRE",
+            "软件资产退役流程"),HARDWARE_IMPL_RETIRE("HARDWARE_COMPLETE_RETIRE",
             "硬件资产实施退役流程");
 
     AssetFlowCategoryEnum(String code, String msg) {

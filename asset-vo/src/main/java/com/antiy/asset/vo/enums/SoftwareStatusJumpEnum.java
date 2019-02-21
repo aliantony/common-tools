@@ -8,7 +8,8 @@ package com.antiy.asset.vo.enums;
  **/
 public enum SoftwareStatusJumpEnum {
     WATI_REGSIST(SoftwareStatusEnum.WATI_REGSIST, SoftwareStatusEnum.WAIT_ANALYZE, SoftwareStatusEnum.NOT_REGSIST),
-    WAIT_ANALYZE(SoftwareStatusEnum.WAIT_ANALYZE, SoftwareStatusEnum.ALLOW_INSTALL,SoftwareStatusEnum.WATI_REGSIST);
+    WAIT_ANALYZE(SoftwareStatusEnum.WAIT_ANALYZE, SoftwareStatusEnum.ALLOW_INSTALL,SoftwareStatusEnum.WATI_REGSIST),
+    ALLOW_INSTALL(SoftwareStatusEnum.ALLOW_INSTALL, SoftwareStatusEnum.RETIRE, SoftwareStatusEnum.ALLOW_INSTALL);
 
     // code
     private SoftwareStatusEnum currentStatus;

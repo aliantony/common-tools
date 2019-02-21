@@ -444,15 +444,37 @@
     </update>
 
     <update id="installSoftware" parameterType="java.util.List">
-        <foreach collection="list" index="index" item="item" separator=";">
-            update
-              asset_software_relation
-            set
-                install_type = #{item.installType},
-                install_status = #{item.installStatus},
-                install_time = #{item.installTime}
-            where id = #{item.id}
-        </foreach>
+        update
+        asset_software_relation
+        <trim prefix="set" suffixOverrides=",">
+
+            <trim prefix="install_type = case" suffix="end,">
+                <foreach collection="list" item="cus">
+                    <if test="cus.installType != null">
+                        when id=#{cus.id} then #{cus.installType}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="install_status = case" suffix="end,">
+                <foreach collection="list" item="cus">
+                    <if test="cus.installStatus!=null">
+                        when id=#{cus.id} then #{cus.installStatus}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="install_time = case" suffix="end,">
+                <foreach collection="list" item="cus">
+                    <if test="cus.installTime!=null">
+                        when id=#{cus.id} then #{cus.installTime}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            <foreach collection="list" separator="or" item="cus">
+                id = #{cus.id}
+            </foreach>
+        </where>
     </update>
 
     <select id="getReleationByAssetId" resultType="com.antiy.asset.entity.AssetSoftwareRelation"
