@@ -130,7 +130,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
                     assetSoftware.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
-                    assetSoftware.setReportSource(2);
+//                    assetSoftware.setReportSource(2);
                     assetSoftwareDao.insert(assetSoftware);
                     String sid = String.valueOf(assetSoftware.getId());
                     // protocol.setAssetSoftId(sid);
@@ -176,12 +176,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 } catch (RequestParamValidateException e) {
                     transactionStatus.setRollbackOnly();
                     ParamterExceptionUtils.isTrue(false, "资产名称重复");
-                    logger.error("录入失败");
-                    e.printStackTrace();
+                    logger.error("录入失败",e);
+
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
-                    e.printStackTrace();
-                    logger.error("录入失败");
+
+                    logger.error("录入失败",e);
                 }
                 return 0;
             }

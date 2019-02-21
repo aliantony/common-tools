@@ -9,7 +9,6 @@
         <result column="interface_size" property="interfaceSize"/>
         <result column="port_size" property="portSize"/>
         <result column="is_wireless" property="isWireless"/>
-        <result column="port_Size" property="portSize"/>
         <result column="cpu_version" property="cpuVersion"/>
         <result column="firmware_version" property="firmwareVersion"/>
         <result column="cpu_size" property="cpuSize"/>
@@ -32,7 +31,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id as assetId, interface_size as interfaceSize, is_wireless as isWireless,port_size as portSize, port_Size as portSize, cpu_version as cpuVersion, cpu_size as cpuSize, ios, inner_ip as innerIp, outer_ip as outerIp, mac_address as macAddress, subnet_mask as subnetMask, expect_bandwidth as expectBandwidth, register, dram_size as dramSize, flash_size as flashSize, ncrm_size as ncrmSize, firmware_version as firmwareVersion, create_user AS createUser, modify_user AS modifyUser, status
+        id, asset_id as assetId, interface_size as interfaceSize, is_wireless as isWireless,port_size as portSize,cpu_version as cpuVersion, cpu_size as cpuSize, ios, inner_ip as innerIp, outer_ip as outerIp, mac_address as macAddress, subnet_mask as subnetMask, expect_bandwidth as expectBandwidth, register, dram_size as dramSize, flash_size as flashSize, ncrm_size as ncrmSize, firmware_version as firmwareVersion, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
 
     <sql id="Table_Name">
@@ -55,9 +54,6 @@
         </if>
         <if test=" isWireless != null">
             is_wireless,
-        </if>
-        <if test=" portSize != null">
-            port_Size,
         </if>
         <if test=" cpuVersion != null">
             cpu_version,
@@ -131,9 +127,6 @@
         <if test=" isWireless != null">
             #{isWireless },
         </if>
-        <if test=" portSize != null">
-            #{portSize },
-        </if>
         <if test=" cpuVersion != null">
             #{cpuVersion },
         </if>
@@ -206,9 +199,7 @@
         <if test=" isWireless != null">
             is_wireless = #{isWireless },
         </if>
-        <if test=" portSize != null">
-            port_Size = #{portSize },
-        </if>
+
         <if test=" cpuVersion != null">
             cpu_version = #{cpuVersion },
         </if>

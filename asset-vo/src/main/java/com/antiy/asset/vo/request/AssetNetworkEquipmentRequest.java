@@ -38,7 +38,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * 端口数目
      */
     @ApiModelProperty("端口数目")
-    private Integer porteSize;
+    private Integer portSize;
     /**
      * 是否无线:0-否,1-是
      */
@@ -142,12 +142,12 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
         this.ios = ios;
     }
 
-    public Integer getPorteSize() {
-        return porteSize;
+    public Integer getPortSize() {
+        return portSize;
     }
 
-    public void setPorteSize(Integer porteSize) {
-        this.porteSize = porteSize;
+    public void setPortSize(Integer portSize) {
+        this.portSize = portSize;
     }
 
     public String getId() {
