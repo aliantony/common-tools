@@ -9,7 +9,7 @@ package com.antiy.asset.vo.enums;
 public enum AssetStatusChangeEnum {
 
     NET_IN(AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_SETTING, AssetStatusEnum.NET_IN),
-    WAIT_SETTING(AssetStatusEnum.WAIT_RETIRE, AssetStatusEnum.WAIT_SETTING, AssetStatusEnum.NET_IN);
+    WAIT_SETTING(AssetStatusEnum.WAIT_SETTING, AssetStatusEnum.WAIT_SETTING, AssetStatusEnum.NET_IN);
     // code
     private AssetStatusEnum currentStatus;
 
