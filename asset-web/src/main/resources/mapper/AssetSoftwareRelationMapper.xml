@@ -447,7 +447,6 @@
         update
         asset_software_relation
         <trim prefix="set" suffixOverrides=",">
-
             <trim prefix="install_type = case" suffix="end,">
                 <foreach collection="list" item="cus">
                     <if test="cus.installType != null">
