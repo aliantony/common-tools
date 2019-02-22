@@ -17,6 +17,7 @@ import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
@@ -132,7 +133,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         StringBuilder assetNameBuilder = new StringBuilder();
         for (Integer assetId : assetIdArr) {
             List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
-            ParamterExceptionUtils.isTrue(assetGroupNameList.size() < 10, "资产关联的资产组不能超过10个");
+            // 资产关联的资产组不能超过10个
+            ParamterExceptionUtils.isTrue(assetGroupNameList.size() <= Constants.MAX_ASSET_RELATION_GROUP_COUNT,
+                "资产关联的资产组不能超过10个");
             String assetGroupName = assetGroupNameList.toString();
             if (assetGroupNameList.size() > 0) {
                 assetNameBuilder.append(assetGroupNameList.toString(), 1, assetGroupName.length() - 1);
