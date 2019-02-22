@@ -217,6 +217,25 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
+    public AssetCategoryModelNodeResponse queryCategoryNode(int type) throws Exception {
+        AssetCategoryModelQuery query = new AssetCategoryModelQuery();
+        query.setAssetType(type);
+        query.setPageSize(-1);
+        List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
+        assetCategoryModels.add(getRootCategory());
+        NodeUtilsConverter<AssetCategoryModel, AssetCategoryModelNodeResponse> nodeConverter = new NodeUtilsConverter<>();
+        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(
+            assetCategoryModels, AssetCategoryModelNodeResponse.class);
+        return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
+    }
+
+    private AssetCategoryModel getRootCategory() throws Exception {
+        AssetCategoryModelQuery assetCategoryModelQuery = new AssetCategoryModelQuery();
+        assetCategoryModelQuery.setName(ROOT_CATEGORY);
+        return assetCategoryModelDao.findListAssetCategoryModel(assetCategoryModelQuery).get(0);
+    }
+
+    @Override
     public List<AssetCategoryModelResponse> getCategoryByName(String name) throws Exception {
         return responseConverter.convert(assetCategoryModelDao.getNextLevelCategoryByName(name),
             AssetCategoryModelResponse.class);
