@@ -543,6 +543,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     public String importExcel(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class,
             file, 0, 0);
+
         List<AssetSoftwareEntity> resultDataList = importResult.getDataList();
         int success = 0;
         // int repeat=0;
@@ -641,7 +642,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         LogHandle.log(resultDataList.toString(), AssetEventEnum.SOFT_EXPORT.getName(),
             AssetEventEnum.SOFT_EXPORT.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", resultDataList.toString());
-        return stringBuilder.toString();
+        return stringBuilder.append (importResult.getMsg ()).toString();
     }
 
     private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,
