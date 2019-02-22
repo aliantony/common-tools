@@ -203,6 +203,6 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator {
 
     @Override
     public void validate() throws RequestParamValidateException {
-            ParamterExceptionUtils.isTrue(!(manualStartActivityRequest == null && activityHandleRequest ==null), "流程数据不能为空");
+            ParamterExceptionUtils.isTrue(!(manualStartActivityRequest == null && activityHandleRequest == null), "流程数据不能为空");
     }
 }
