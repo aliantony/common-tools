@@ -17,6 +17,7 @@ import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.WaitingTaskReponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
  * @auther: zhangbing
@@ -41,6 +42,7 @@ public class ActivityClientImpl implements ActivityClient {
     @Override
     @AssetLog(description = "人工登记启动工作流", operationType = AssetLogOperationType.CREATE)
     public ActionResponse manualStartProcess(ManualStartActivityRequest request) {
+        ParamterExceptionUtils.isNull(request,"启动流程参数不能为空");
         return (ActionResponse) baseClient.post(request, new ParameterizedTypeReference<ActionResponse>() {
         }, manualStartProcessUrl);
     }
@@ -48,6 +50,7 @@ public class ActivityClientImpl implements ActivityClient {
     @Override
     @AssetLog(description = "处理工作流", operationType = AssetLogOperationType.ADD)
     public ActionResponse completeTask(ActivityHandleRequest request) {
+        ParamterExceptionUtils.isNull(request,"处理流程参数不能为空");
         return (ActionResponse) baseClient.post(request, new ParameterizedTypeReference<ActionResponse>() {
         }, completeTaskUrl);
     }
