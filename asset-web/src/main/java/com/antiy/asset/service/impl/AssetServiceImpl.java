@@ -890,7 +890,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public AssetCountColumnarResponse countStatus() throws Exception {
         List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<Map<String, Long>> searchResult = assetDao.countStatus(ids);
-        Map<String, Long> result = new HashMap();
+        Map<String, Long> result = new HashMap<>();
         // 初始化result
         for (AssetStatusEnum assetStatusEnum : AssetStatusEnum.values()) {
             result.put(assetStatusEnum.getMsg(), 0L);
@@ -2347,8 +2347,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetQuery.setAreaIds(
             ArrayTypeUtil.ObjectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         assetQuery.setPageSize(-1);
-        List<AssetResponse> list = this.findListAsset(assetQuery);
-        List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
+        List<AssetResponse> result = this.findListAsset(assetQuery);
+        List<AssetEntity> assetEntities = assetEntityConvert.convert(result, AssetEntity.class);
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setSheetName("资产信息表");
         downloadVO.setDownloadList(assetEntities);

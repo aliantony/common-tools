@@ -4,17 +4,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.antiy.asset.dao.AssetChangeRecordDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetChangeRecord;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.AssetStatusJumpEnum;
-import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
@@ -64,17 +61,17 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         }
         //更新资产状态
         assetDao.update(asset);
-
-        //更新硬件
-
-        if (AssetFlowCategoryEnum.HARDWARE_CHANGE.equals(assetStatusReqeust.getAssetFlowCategoryEnum())){
-            AssetChangeRecord changeRecord = assetChangeRecordDao.getByDescTime (DataTypeUtils.stringToInteger (assetStatusReqeust.getAssetId ()));
-            if (changeRecord != null){
-                String changeVal = changeRecord.getChangeVal ();
-                AssetOuterRequest outerRequest = JsonUtil.json2Object (changeVal, AssetOuterRequest.class);
-                assetService.changeAsset (outerRequest);
-            }
-        }
+//
+//        //更新硬件
+//
+//        if (AssetFlowCategoryEnum.HARDWARE_CHANGE.equals(assetStatusReqeust.getAssetFlowCategoryEnum())){
+//            AssetChangeRecord changeRecord = assetChangeRecordDao.getByDescTime (DataTypeUtils.stringToInteger (assetStatusReqeust.getAssetId ()));
+//            if (changeRecord != null){
+//                String changeVal = changeRecord.getChangeVal ();
+//                AssetOuterRequest outerRequest = JsonUtil.json2Object (changeVal, AssetOuterRequest.class);
+//                assetService.changeAsset (outerRequest);
+//            }
+//        }
 
         return ActionResponse.success();
     }
