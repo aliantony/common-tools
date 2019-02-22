@@ -23,7 +23,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetChangeRecord", description = "变更记录表 ")
 @RestController
-@RequestMapping("/api/v1/assetchangerecord")
+@RequestMapping("/api/v1/asset/changerecord")
 public class AssetChangeRecordController {
     private static final Logger      logger = LogUtils.get();
 
