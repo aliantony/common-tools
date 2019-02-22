@@ -643,7 +643,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         LogHandle.log(resultDataList.toString(), AssetEventEnum.SOFT_EXPORT.getName(),
             AssetEventEnum.SOFT_EXPORT.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", resultDataList.toString());
-        return stringBuilder.append (importResult.getMsg ()).append(builder).toString();
+        return stringBuilder.append(builder).append (importResult.getMsg ()).toString();
     }
 
     private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,
