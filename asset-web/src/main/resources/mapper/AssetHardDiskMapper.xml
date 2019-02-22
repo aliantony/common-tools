@@ -210,7 +210,7 @@
         and status = 1
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetHardDisk">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetHardDisk" useGeneratedKeys="true" keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -374,7 +374,7 @@
         select id, brand, model, serial, capacity, interface_type, disk_type, buy_date from
         <include refid="Table_Name"></include>
         where asset_id = #{assetId}
-        and gmt_create = ( select max( gmt_create ) from <include refid="Table_Name"></include> where asset_id = #{assetId}  )
         and status = 1
+        order by id desc limit 1
     </select>
 </mapper>

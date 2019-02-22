@@ -340,7 +340,7 @@
         select id, brand, model, serial, main_frequency, thread_size, core_size from
         <include refid="Table_Name"></include>
         where asset_id = #{assetId}
-        and gmt_create = ( select max( gmt_create ) from <include refid="Table_Name"></include> WHERE asset_id = #{assetId} )
         and status = 1
+        order by id desc limit 1
     </select>
 </mapper>
