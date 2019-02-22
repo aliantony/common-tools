@@ -322,6 +322,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetHardDiskDao.insert(assetHardDisk);
                             }
                         }
+
+                        // 保存变更信息
+                        AssetChangeRecord assetChangeRecord = new AssetChangeRecord();
+                        assetChangeRecord.setBusinessId(DataTypeUtils.stringToInteger(aid));
+                        assetChangeRecord.setType(AssetTypeEnum.HARDWARE.getCode());
+                        assetChangeRecord.setChangeVal(JsonUtil.object2Json(request));
+                        assetChangeRecord.setGmtCreate(System.currentTimeMillis());
+                        assetChangeRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        assetChangeRecordDao.insert(assetChangeRecord);
+
                     } else {
 
                         AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest();
@@ -379,6 +389,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         LogUtils.info(logger, AssetEventEnum.ASSET_OTHERS_INSERT.getName() + " {}",
                             assetOthersRequest.toString());
                     }
+
+                    // 保存变更信息
+                    AssetChangeRecord assetChangeRecord = new AssetChangeRecord();
+                    assetChangeRecord.setBusinessId(DataTypeUtils.stringToInteger(aid));
+                    assetChangeRecord.setType(AssetTypeEnum.HARDWARE.getCode());
+                    assetChangeRecord.setChangeVal(JsonUtil.object2Json(request));
+                    assetChangeRecord.setGmtCreate(System.currentTimeMillis());
+                    assetChangeRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetChangeRecordDao.insert(assetChangeRecord);
+
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(aid);
@@ -408,6 +428,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return 0;
             }
         });
+
+
 
         int i = aid;
 
