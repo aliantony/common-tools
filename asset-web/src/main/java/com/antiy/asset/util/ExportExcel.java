@@ -326,9 +326,9 @@ public class ExportExcel {
             return;
         }
         Cell cell = row.createCell(column);
-        if (this.sheet.getColumnWidth(column) < val.toString().getBytes().length * 256) {
-            this.sheet.setColumnWidth(column, val.toString().getBytes().length * 256);
-        }
+        /*if (this.sheet.getColumnWidth(column) < val.toString().getBytes().length * 255) {
+            this.sheet.setColumnWidth(column, val.toString().getBytes().length * 255);
+        }*/
         CellStyle style = styles.get("data" + (align >= 1 && align <= 3 ? align : ""));
         cell.setCellStyle(style);
         try {
