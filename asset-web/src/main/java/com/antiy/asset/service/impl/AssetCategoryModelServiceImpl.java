@@ -201,7 +201,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public ActionResponse delete(Serializable id) throws Exception {
         AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getById(id);
         // 判断是否自定义品类
-        BusinessExceptionUtils.isTrue(checkIsDefault(assetCategoryModel),"系统内置品类不能更新或删除");
+        BusinessExceptionUtils.isTrue(checkIsDefault(assetCategoryModel), "系统内置品类不能更新或删除");
         return deleteAllById(id);
     }
 
@@ -255,22 +255,17 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             ids[i] = Objects.toString(list.get(i).getId());
         }
         assetQuery.setCategoryModels(ids);
-        if (checkExistAsset(assetQuery)) {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "存在资产，不能删除");
+        BusinessExceptionUtils.isTrue(!checkExistAsset(assetQuery), "存在资产，不能删除");
+        BusinessExceptionUtils.isEmpty(list, "品类不存在，删除失败");
+        // 删除品类及其子品类
+        Integer result = assetCategoryModelDao.delete(list);
+        if (!Objects.equals(0, result)) {
+            // 写入业务日志
+            LogHandle.log(list.toString(), AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
+                AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", list.toString());
         }
-        if (CollectionUtils.isNotEmpty(list)) {
-            // 删除品类及其子品类
-            Integer result = assetCategoryModelDao.delete(list);
-            if (!Objects.equals(0, result)) {
-                // 写入业务日志
-                LogHandle.log(list.toString(), AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
-                    AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", list.toString());
-            }
-            return ActionResponse.success(result);
-        } else {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "品类不存在，删除失败");
-        }
+        return ActionResponse.success(result);
     }
 
     private boolean checkExistAsset(AssetQuery assetQuery) throws Exception {
