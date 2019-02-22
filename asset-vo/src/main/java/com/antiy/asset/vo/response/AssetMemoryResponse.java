@@ -53,7 +53,7 @@ public class AssetMemoryResponse extends BaseResponse {
      * 是否带散热片:0-不带，1-带
      */
     @ApiModelProperty("是否带散热片:0-不带，1-带")
-    private Boolean isHeatsink;
+    private Integer heatsink;
     /**
      * 针脚数
      */
@@ -118,12 +118,12 @@ public class AssetMemoryResponse extends BaseResponse {
         this.slotType = slotType;
     }
 
-    public Boolean getHeatsink() {
-        return isHeatsink;
+    public Integer getHeatsink() {
+        return heatsink;
     }
 
-    public void setHeatsink(Boolean heatsink) {
-        isHeatsink = heatsink;
+    public void setHeatsink(Integer heatsink) {
+        this.heatsink = heatsink;
     }
 
     public Integer getStitch() {
