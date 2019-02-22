@@ -67,9 +67,11 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
 
         //更新硬件
         AssetChangeRecord changeRecord = assetChangeRecordDao.getByDescTime (DataTypeUtils.stringToInteger (assetStatusReqeust.getAssetId ()));
-        String changeVal = changeRecord.getChangeVal ();
-        AssetOuterRequest outerRequest = JsonUtil.json2Object (changeVal, AssetOuterRequest.class);
-        Integer integer = assetService.changeAsset (outerRequest);
+        if (changeRecord != null && AssetFlowCategoryEnum.HARDWARE_CHANGE.equals(assetStatusReqeust.getAssetFlowCategoryEnum())){
+            String changeVal = changeRecord.getChangeVal ();
+            AssetOuterRequest outerRequest = JsonUtil.json2Object (changeVal, AssetOuterRequest.class);
+            assetService.changeAsset (outerRequest);
+        }
 
         return ActionResponse.success();
     }
