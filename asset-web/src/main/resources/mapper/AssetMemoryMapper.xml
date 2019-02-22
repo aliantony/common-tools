@@ -441,7 +441,7 @@
         select id, brand, transfer_type, serial, capacity, frequency, slot_type, is_heatsink, stitch from
         <include refid="Table_Name"></include>
         where asset_id = #{assetId}
-        and gmt_create = ( select max( gmt_create ) from <include refid="Table_Name"></include> where asset_id = #{assetId} )
         and status = 1
+        order by id desc limit 1
     </select>
 </mapper>
