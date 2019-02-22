@@ -1299,13 +1299,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetGroupRelationDao.insertBatch(assetGroupRelations);
                     }
                     // asset.setAssetGroup(stringBuffer.toString());
-                    if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
-                        //待配置
-                        asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
-                    } else {
-                        //待登记
-                        asset.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
-                    }
+                    //待配置
+                    asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
                     // 1. 更新资产主表
