@@ -4,6 +4,8 @@ import com.antiy.asset.entity.AssetChangeRecord;
 import com.antiy.asset.vo.query.AssetChangeRecordQuery;
 import com.antiy.common.base.IBaseDao;
 
+import java.util.List;
+
 /**
  * <p>
  * 变更记录表
@@ -22,5 +24,5 @@ public interface AssetChangeRecordDao extends IBaseDao<AssetChangeRecord> {
      * @param query
      * @return
      */
-    String findChangeValByBusinessId(AssetChangeRecordQuery query);
+    List<String> findChangeValByBusinessId(AssetChangeRecordQuery query);
 }

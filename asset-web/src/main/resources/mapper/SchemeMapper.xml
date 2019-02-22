@@ -386,8 +386,8 @@
             <if test=" type != null">
                 and type = #{type}
             </if>
-            and gmt_create = ( select max( gmt_create ) from scheme where asset_id = #{assetId}  )
             and status = 1
+            order by id desc limit 1
         </trim>
     </select>
 </mapper>

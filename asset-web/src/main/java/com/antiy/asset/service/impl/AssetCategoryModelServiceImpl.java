@@ -13,7 +13,6 @@ import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -112,6 +111,10 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         return parent;
     }
 
+    /**
+     * 判断父品类是否新增满足条件
+     * @param parent
+     */
     private void checkParentCategory(AssetCategoryModel parent) {
         BusinessExceptionUtils.isNull(parent, "父类型不存在");
         BusinessExceptionUtils.isTrue(!parent.getName().equals(ROOT_CATEGORY), "不能在第一，二级新增节点");
@@ -140,6 +143,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         return ActionResponse.success(result);
     }
 
+    /**
+     * 判断父品类的资产类型和子品类的资产类型是否一致
+     */
     private boolean checkParentType(AssetCategoryModel updateCategory, AssetCategoryModel assetCategoryModelById)
                                                                                                                  throws Exception {
         AssetCategoryModel parent = getParentCategory(updateCategory);
@@ -181,6 +187,11 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             this.findListAssetCategoryModel(query));
     }
 
+    /**
+     * 判断是否是自定义的品类
+     * @param request
+     * @return 判断是否重名
+     */
     private boolean checkNameRepeat(AssetCategoryModelRequest request) throws Exception {
         if (Objects.nonNull(request.getName())) {
             AssetCategoryModelQuery assetDepartmentQuery = new AssetCategoryModelQuery();
@@ -210,10 +221,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
         query.setPageSize(-1);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
-        NodeUtilsConverter<AssetCategoryModel, AssetCategoryModelNodeResponse> nodeConverter = new NodeUtilsConverter<>();
-        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(
-            assetCategoryModels, AssetCategoryModelNodeResponse.class);
-        return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
+        return getAssetCategoryModelNodeResponse(assetCategoryModels);
     }
 
     @Override
@@ -223,12 +231,21 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         query.setPageSize(-1);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         assetCategoryModels.add(getRootCategory());
+        return getAssetCategoryModelNodeResponse(assetCategoryModels);
+    }
+
+    private AssetCategoryModelNodeResponse getAssetCategoryModelNodeResponse(List<AssetCategoryModel> assetCategoryModels) {
         NodeUtilsConverter<AssetCategoryModel, AssetCategoryModelNodeResponse> nodeConverter = new NodeUtilsConverter<>();
         List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(
             assetCategoryModels, AssetCategoryModelNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
 
+    /**
+     * 获取根节点
+     * @return
+     * @throws Exception
+     */
     private AssetCategoryModel getRootCategory() throws Exception {
         AssetCategoryModelQuery assetCategoryModelQuery = new AssetCategoryModelQuery();
         assetCategoryModelQuery.setName(ROOT_CATEGORY);
@@ -236,7 +253,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public List<AssetCategoryModelResponse> getCategoryByName(String name) throws Exception {
+    public List<AssetCategoryModelResponse> getNextLevelCategoryByName(String name) throws Exception {
         return responseConverter.convert(assetCategoryModelDao.getNextLevelCategoryByName(name),
             AssetCategoryModelResponse.class);
     }
