@@ -1,10 +1,14 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -13,7 +17,7 @@ import java.util.List;
  * @since 2018-12-27
  */
 
-public class AssetOuterRequest extends BasicRequest {
+public class AssetOuterRequest extends BasicRequest implements ObjectValidator {
 
     /**
      * 资产主表信息
@@ -80,10 +84,12 @@ public class AssetOuterRequest extends BasicRequest {
     @Valid
     private List<AssetSoftwareRelationRequest> assetSoftwareRelationList;
 
-    @ApiModelProperty(value = "流程数据")
+    @ApiModelProperty(value = "启动流程数据")
     @Valid
-    ManualStartActivityRequest                 activityRequest;
-
+    private ManualStartActivityRequest         manualStartActivityRequest;
+    @ApiModelProperty(value = "处理流程数据")
+    @Valid
+    private ActivityHandleRequest              activityHandleRequest;
     /**
      * 其他设备
      */
@@ -91,12 +97,20 @@ public class AssetOuterRequest extends BasicRequest {
     @Valid
     private AssetOthersRequest                 assetOthersRequest;
 
-    public ManualStartActivityRequest getActivityRequest() {
-        return activityRequest;
+    public ActivityHandleRequest getActivityHandleRequest() {
+        return activityHandleRequest;
     }
 
-    public void setActivityRequest(ManualStartActivityRequest activityRequest) {
-        this.activityRequest = activityRequest;
+    public void setActivityHandleRequest(ActivityHandleRequest activityHandleRequest) {
+        this.activityHandleRequest = activityHandleRequest;
+    }
+
+    public ManualStartActivityRequest getManualStartActivityRequest() {
+        return manualStartActivityRequest;
+    }
+
+    public void setManualStartActivityRequest(ManualStartActivityRequest manualStartActivityRequest) {
+        this.manualStartActivityRequest = manualStartActivityRequest;
     }
 
     public AssetRequest getAsset() {
@@ -185,5 +199,10 @@ public class AssetOuterRequest extends BasicRequest {
 
     public void setAssetOthersRequest(AssetOthersRequest assetOthersRequest) {
         this.assetOthersRequest = assetOthersRequest;
+    }
+
+    @Override
+    public void validate() throws RequestParamValidateException {
+            ParamterExceptionUtils.isTrue(!(manualStartActivityRequest == null && activityHandleRequest == null), "流程数据不能为空");
     }
 }

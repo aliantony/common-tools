@@ -41,7 +41,11 @@ public class AssetStatusJumpController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ActionResponse statusJump(@ApiParam(value = "assetStatusReqeust") @RequestBody(required = false) AssetStatusReqeust assetStatusReqeust) throws Exception {
         if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
-            .equals(AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode())) {
+            .equals(AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode())
+            || AssetFlowCategoryEnum.SOFTWARE_RETIRE.getCode()
+                .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
+            || AssetFlowCategoryEnum.HARDWARE_UNINSTALL.getCode()
+                .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             return AssetStatusChangeFactory.getStatusChangeProcess(SoftWareStatusChangeProcessImpl.class)
                 .changeStatus(assetStatusReqeust);
         } else {
