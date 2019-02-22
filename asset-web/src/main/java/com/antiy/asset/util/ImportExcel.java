@@ -299,7 +299,7 @@ public class ImportExcel {
                 if (val == null && ef.required()) {
                     failNums++;
                     sb.append("数据不能为空,第").append(dataRow.getRowNum()).append("行，第").append(column)
-                            .append("列").append(ef.title()).append("\n");
+                            .append("列").append(ef.title()).append(",");
                     log.error("数据不能为空,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title() + " "
                             + val);
                     flag = false;
@@ -335,7 +335,7 @@ public class ImportExcel {
                             failNums++;
                             flag = false;
                             sb.append("数据格式错误,第").append(dataRow.getRowNum()).append("行，第").append(column).append("列")
-                                .append(ef.title()).append(val).append("\n");
+                                .append(ef.title()).append(val).append(",");
                             log.error("数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title() + " " + val);
                             break;
                         }
@@ -347,7 +347,7 @@ public class ImportExcel {
                             flag = false;
                             failNums++;
                             sb.append("数据格式错误,第").append(dataRow.getRowNum()).append("行，第").append(column).append("列")
-                                .append(ef.title()).append(val).append("\n");
+                                .append(ef.title()).append(val).append(",");
                             log.error(
                                 "数据格式错误,第" + dataRow.getRowNum() + "行，第" + column + "列：" + ef.title() + " " + val);
                             break;
