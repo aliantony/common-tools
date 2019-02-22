@@ -23,7 +23,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetChangeRecord", description = "变更记录表 ")
 @RestController
-@RequestMapping("/api/v1/assetchangerecord")
+@RequestMapping("/api/v1/asset/changerecord")
 public class AssetChangeRecordController {
     private static final Logger      logger = LogUtils.get();
 
@@ -39,8 +39,7 @@ public class AssetChangeRecordController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetChangeRecord") @RequestBody AssetChangeRecordRequest assetChangeRecordRequest) throws Exception {
-        iAssetChangeRecordService.saveAssetChangeRecord(assetChangeRecordRequest);
-        return ActionResponse.success();
+        return iAssetChangeRecordService.saveAssetChangeRecord(assetChangeRecordRequest);
     }
 
     /**

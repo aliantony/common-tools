@@ -1,8 +1,22 @@
 package com.antiy.asset.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.annotation.Resource;
+
+import com.alibaba.druid.support.json.JSONUtils;
+import com.antiy.common.base.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.service.IAssetChangeRecordService;
 import com.antiy.asset.util.CompareUtils;
 import com.antiy.asset.util.DataTypeUtils;
@@ -11,21 +25,9 @@ import com.antiy.asset.vo.enums.InfoLabelEnum;
 import com.antiy.asset.vo.query.AssetChangeRecordQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetChangeRecordResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * <p> 变更记录表 服务实现类 </p>
@@ -67,15 +69,17 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
     private BaseConverter<AssetChangeRecordRequest, AssetChangeRecord>  requestConverter;
     @Resource
     private BaseConverter<AssetChangeRecord, AssetChangeRecordResponse> responseConverter;
+    @Resource
+    private AreaClient                                                  areaClient;
 
     @Override
-    public Integer saveAssetChangeRecord(AssetChangeRecordRequest request) throws Exception {
+    public ActionResponse saveAssetChangeRecord(AssetChangeRecordRequest request) throws Exception {
         AssetChangeRecord assetChangeRecord = requestConverter.convert(request, AssetChangeRecord.class);
         AssetOuterRequest assetOuterRequest = request.getAssetOuterRequest();
 
         assetChangeRecord.setChangeVal(JsonUtil.object2Json(assetOuterRequest));
-        assetChangeRecord.setGmtCreate (System.currentTimeMillis ());
-        assetChangeRecord.setCreateUser (LoginUserUtil.getLoginUser ().getId ());
+        assetChangeRecord.setGmtCreate(System.currentTimeMillis());
+        assetChangeRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetChangeRecordDao.insert(assetChangeRecord);
         ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
         if (Objects.isNull(manualStartActivityRequest)) {
@@ -90,8 +94,12 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
         }
         manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
         manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
-        activityClient.manualStartProcess(manualStartActivityRequest);
-        return assetChangeRecord.getId();
+        ActionResponse actionResponse = activityClient.manualStartProcess(manualStartActivityRequest);
+        if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+        }
+        return ActionResponse.success(assetChangeRecord.getId());
     }
 
     @Override
@@ -149,7 +157,9 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
 
             // 业务信息
             Asset oldAssetBusinessInfo = new Asset();
-            oldAssetBusinessInfo.setAreaId(oldAsset.getAreaId());
+            // 远程调用（通过区域ID查询名称）
+            SysAreaVO oldSysAreaVO = JsonUtil.json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())),SysAreaVO.class);
+            oldAssetBusinessInfo.setAreaName(oldSysAreaVO.getFullName());
             oldAssetBusinessInfo.setResponsibleUserId(oldAsset.getResponsibleUserId());
             oldAssetBusinessInfo.setContactTel(oldAsset.getContactTel());
             oldAssetBusinessInfo.setEmail(oldAsset.getEmail());
@@ -165,7 +175,8 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
             oldAssetBusinessInfo.setDescrible(oldAsset.getDescrible());
 
             Asset newAssetBusinessInfo = new Asset();
-            newAssetBusinessInfo.setAreaId(newAsset.getAreaId());
+            SysAreaVO newSysAreaVO = JsonUtil.json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(newAsset.getAreaId())),SysAreaVO.class);
+            oldAssetBusinessInfo.setAreaName(newSysAreaVO.getFullName());
             newAssetBusinessInfo.setResponsibleUserId(newAsset.getResponsibleUserId());
             newAssetBusinessInfo.setContactTel(newAsset.getContactTel());
             newAssetBusinessInfo.setEmail(newAsset.getEmail());
@@ -216,7 +227,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                                     CompareUtils.compareClass(oldMemory, newMemory, InfoLabelEnum.MEMORY.getMsg()));
                             }
                         }
-                    }else {
+                    } else {
                         break;
                     }
                 }
@@ -251,7 +262,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                                     .add(CompareUtils.compareClass(oldCpu, newCpu, InfoLabelEnum.CPU.getMsg()));
                             }
                         }
-                    }else {
+                    } else {
                         break;
                     }
                 }
@@ -288,7 +299,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                                     InfoLabelEnum.HARDDISK.getMsg()));
                             }
                         }
-                    }else {
+                    } else {
                         break;
                     }
                 }
@@ -321,7 +332,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                                     InfoLabelEnum.MAINBORAD.getMsg()));
                             }
                         }
-                    }else {
+                    } else {
                         break;
                     }
                 }
@@ -358,7 +369,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                                     InfoLabelEnum.NETWORKCARD.getMsg()));
                             }
                         }
-                    }else {
+                    } else {
                         break;
                     }
                 }
@@ -373,9 +384,10 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                 for (AssetSoftwareRelation softwareRelation : oldSoftwareRelationList) {
                     RelateSoftware oldRelateSoftware = new RelateSoftware();
                     oldRelateSoftware.setSoftwareId(softwareRelation.getSoftwareId());
-                    AssetSoftwareLicense assetSoftwareLicense = softwareLicenseDao.getById(DataTypeUtils.stringToInteger(softwareRelation.getSoftwareId()));
+                    AssetSoftwareLicense assetSoftwareLicense = softwareLicenseDao
+                        .getById(DataTypeUtils.stringToInteger(softwareRelation.getSoftwareId()));
                     oldRelateSoftware.setLicenseSecretKey(
-                            assetSoftwareLicense == null ? null : assetSoftwareLicense.getLicenseSecretKey());
+                        assetSoftwareLicense == null ? null : assetSoftwareLicense.getLicenseSecretKey());
                     oldRelateSoftware.setMulPort(softwareRelation.getPort());
                     oldRelateSoftware.setDescription(softwareRelation.getMemo());
                     if (CollectionUtils.isNotEmpty(newAssetOuterRequestList)) {
@@ -391,7 +403,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
                                     newAssetSoftwareRelationRequest, InfoLabelEnum.RELATESOFTWARE.getMsg()));
                             }
                         }
-                    }else {
+                    } else {
                         break;
                     }
                 }

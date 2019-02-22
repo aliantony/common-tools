@@ -543,9 +543,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     public String importExcel(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class,
             file, 0, 0);
+
         List<AssetSoftwareEntity> resultDataList = importResult.getDataList();
         int success = 0;
-        // int repeat=0;
+         int repeat=0;
         int error = 0;
         StringBuilder builder = new StringBuilder();
         for (AssetSoftwareEntity entity : resultDataList) {
@@ -554,14 +555,19 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 builder.append("序号").append(entity.getOrderNumber()).append("软件名称为空");
                 continue;
             }
+            if (CheckRepeatName (entity.getName())) {
+                repeat++;
+                builder.append("序号").append(entity.getOrderNumber()).append("软件名称重复");
+                continue;
+            }
             if (StringUtils.isBlank(entity.getVersion())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("软件版本");
+                builder.append("序号").append(entity.getOrderNumber()).append("软件版本为空");
                 continue;
             }
             if (StringUtils.isBlank(entity.getCategory())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("软件品类");
+                builder.append("序号").append(entity.getOrderNumber()).append("软件品类为空");
                 continue;
             }
             if (StringUtils.isBlank(entity.getFilePath())) {
@@ -612,6 +618,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+            assetOperationRecord.setOriginStatus (SoftwareStatusEnum.WATI_REGSIST.getCode ());
             assetOperationRecordDao.insert(assetOperationRecord);
 
             Map<String, Object> formData = new HashMap();
@@ -631,17 +638,17 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
 
         String res = "导入成功" + success + "条";
-        // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
+         res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
-        if (error > 0) {
-            stringBuilder.append("其中").append(builder);
-        }
+//        if (error > 0) {
+//            stringBuilder.append("其中").append(builder);
+//        }
         // 写入业务日志
         LogHandle.log(resultDataList.toString(), AssetEventEnum.SOFT_EXPORT.getName(),
             AssetEventEnum.SOFT_EXPORT.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", resultDataList.toString());
-        return stringBuilder.toString();
+        return stringBuilder.append(builder).append (importResult.getMsg ()).toString();
     }
 
     private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,

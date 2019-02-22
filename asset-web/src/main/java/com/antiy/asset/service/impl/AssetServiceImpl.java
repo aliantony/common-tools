@@ -1872,22 +1872,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         re += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(re);
-        if (error + repeat > 0) {
-            stringBuilder.append(re).append("其中").append(builder);
-            return stringBuilder.toString();
-        }
-        return stringBuilder.toString();
+//        if (error + repeat > 0) {
+//            stringBuilder.append(re).append("其中").append(builder);
+//        }
+        return stringBuilder.append(builder).append (result.getMsg ()).toString();
     }
 
     @Override
     public String importNet(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-        ImportResult<NetworkDeviceEntity> importResult = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class,
+        ImportResult<NetworkDeviceEntity> result = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class,
             file, 0, 0);
         int success = 0;
         int repeat = 0;
         int error = 0;
         StringBuilder builder = new StringBuilder();
-        List<NetworkDeviceEntity> entities = importResult.getDataList();
+        List<NetworkDeviceEntity> entities = result.getDataList();
         for (NetworkDeviceEntity networkDeviceEntity : entities) {
             if (StringUtils.isBlank(networkDeviceEntity.getName())) {
                 error++;
@@ -1996,11 +1995,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         re += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(re);
-        if (error + repeat > 0) {
-            stringBuilder.append(re).append("其中").append(builder);
-        }
+//        if (error + repeat > 0) {
+//            stringBuilder.append(re).append("其中").append(builder);
+//        }
 
-        return stringBuilder.toString();
+        return stringBuilder.append(builder).append (result.getMsg ()).toString();
     }
 
     @Override
@@ -2111,18 +2110,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
-        if (error > 0) {
-            stringBuilder.append(res).append("其中").append(builder);
-        }
+//        if (error > 0) {
+//            stringBuilder.append(res).append("其中").append(builder);
+//        }
 
-        return stringBuilder.toString();
+        return stringBuilder.append(builder).append (result.getMsg ()).toString();
 
     }
 
     @Override
     public String importStory(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-        ImportResult<StorageDeviceEntity> re = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 0, 0);
-        List<StorageDeviceEntity> resultDataList = re.getDataList();
+        ImportResult<StorageDeviceEntity> result = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 0, 0);
+        List<StorageDeviceEntity> resultDataList = result.getDataList();
         int success = 0;
         int repeat = 0;
         int error = 0;
@@ -2224,17 +2223,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
-        if (error + repeat > 0) {
-            stringBuilder.append("其中").append(builder);
-        }
+//        if (error + repeat > 0) {
+//            stringBuilder.append("其中").append(builder);
+//        }
 
-        return stringBuilder.toString();
+        return stringBuilder.append(builder).append (result.getMsg ()).toString();
     }
 
     @Override
     public String importOhters(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-        ImportResult<OtherDeviceEntity> re = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 0, 0);
-        List<OtherDeviceEntity> resultDataList = re.getDataList();
+        ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 0, 0);
+        List<OtherDeviceEntity> resultDataList = result.getDataList();
         int success = 0;
         int repeat = 0;
         int error = 0;
@@ -2320,11 +2319,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
-        if (error + repeat > 0) {
-            stringBuilder.append("其中").append(builder);
-        }
+//        if (error + repeat > 0) {
+//            stringBuilder.append("其中").append(builder);
+//        }
 
-        return stringBuilder.toString();
+        return stringBuilder.append(builder).append (result.getMsg ()).toString();
     }
 
     private void exportToClient(Class clazz, String fileName, String title) {
