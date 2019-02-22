@@ -70,7 +70,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             .getUsername()));
     }
 
-    boolean checkNameRepeat(AssetDepartmentRequest request) throws Exception {
+    private boolean checkNameRepeat(AssetDepartmentRequest request) throws Exception {
         if (Objects.nonNull(request.getName())) {
             AssetDepartmentQuery assetDepartmentQuery = new AssetDepartmentQuery();
             assetDepartmentQuery.setName(request.getName());
@@ -183,16 +183,13 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Override
     public ActionResponse deleteAllById(Serializable id) throws Exception {
         List<AssetDepartment> list = recursionSearch((Integer) id);
-        if (CollectionUtils.isNotEmpty(list)) {
-            int result = assetDepartmentDao.delete(list);
-            // 写入业务日志
-            LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
-                AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
-            return ActionResponse.success(result >= 1 ? 1 : 0);
-        } else {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该部门不存在");
-        }
+        BusinessExceptionUtils.isEmpty(list, "该部门不存在");
+        int result = assetDepartmentDao.delete(list);
+        // 写入业务日志
+        LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
+            AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
+        return ActionResponse.success(result >= 1 ? 1 : 0);
     }
 
     @Override
@@ -212,18 +209,15 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         AssetDepartment assetDepartment = new AssetDepartment();
         assetDepartment.setId((Integer) id);
         list.add(assetDepartment);
-        if (CollectionUtils.isNotEmpty(list)) {
-            Integer result = assetDepartmentDao.delete(list);
-            if (!Objects.equals(result, 0)) {
-                // 写入业务日志
-                LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
-                    AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
-            }
-            return ActionResponse.success(result);
-        } else {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该部门不存在");
+        BusinessExceptionUtils.isEmpty(list, "该部门不存在");
+        Integer result = assetDepartmentDao.delete(list);
+        if (!Objects.equals(result, 0)) {
+            // 写入业务日志
+            LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
+                AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
         }
+        return ActionResponse.success(result);
     }
 }
 
