@@ -613,6 +613,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+            assetOperationRecord.setOriginStatus (SoftwareStatusEnum.WATI_REGSIST.getCode ());
             assetOperationRecordDao.insert(assetOperationRecord);
 
             Map<String, Object> formData = new HashMap();
@@ -635,14 +636,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
-        if (error > 0) {
-            stringBuilder.append("其中").append(builder);
-        }
+//        if (error > 0) {
+//            stringBuilder.append("其中").append(builder);
+//        }
         // 写入业务日志
         LogHandle.log(resultDataList.toString(), AssetEventEnum.SOFT_EXPORT.getName(),
             AssetEventEnum.SOFT_EXPORT.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", resultDataList.toString());
-        return stringBuilder.append (importResult.getMsg ()).toString();
+        return stringBuilder.append (importResult.getMsg ()).append(builder).toString();
     }
 
     private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,
