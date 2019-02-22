@@ -1883,10 +1883,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         re += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(re);
-        // if (error + repeat > 0) {
-        // stringBuilder.append(re).append("其中").append(builder);
-        // }
-        return stringBuilder.append(builder).append(result.getMsg()).toString();
+//        if (error + repeat > 0) {
+//            stringBuilder.append(re).append("其中").append(builder);
+//        }
+        StringBuilder sb = new StringBuilder(result.getMsg ());
+        sb.delete (sb.lastIndexOf ("成"),sb.lastIndexOf ("."));
+        return stringBuilder.append(builder).append (sb).toString();
     }
 
     @Override
@@ -2006,11 +2008,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         re += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(re);
-        // if (error + repeat > 0) {
-        // stringBuilder.append(re).append("其中").append(builder);
-        // }
+//        if (error + repeat > 0) {
+//            stringBuilder.append(re).append("其中").append(builder);
+//        }
 
-        return stringBuilder.append(builder).append(result.getMsg()).toString();
+        StringBuilder sb = new StringBuilder(result.getMsg ());
+        sb.delete (sb.lastIndexOf ("成"),sb.lastIndexOf ("."));
+        return stringBuilder.append(builder).append (sb).toString();
     }
 
     @Override
@@ -2121,11 +2125,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
-        // if (error > 0) {
-        // stringBuilder.append(res).append("其中").append(builder);
-        // }
+//        if (error > 0) {
+//            stringBuilder.append(res).append("其中").append(builder);
+//        }
 
-        return stringBuilder.append(builder).append(result.getMsg()).toString();
+        StringBuilder sb = new StringBuilder(result.getMsg ());
+        sb.delete (sb.lastIndexOf ("成"),sb.lastIndexOf ("."));
+        return stringBuilder.append(builder).append (sb).toString();
 
     }
 
@@ -2235,11 +2241,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
-        // if (error + repeat > 0) {
-        // stringBuilder.append("其中").append(builder);
-        // }
+//        if (error + repeat > 0) {
+//            stringBuilder.append("其中").append(builder);
+//        }
 
-        return stringBuilder.append(builder).append(result.getMsg()).toString();
+        StringBuilder sb = new StringBuilder(result.getMsg ());
+        sb.delete (sb.lastIndexOf ("成"),sb.lastIndexOf ("."));
+        return stringBuilder.append(builder).append (sb).toString();
     }
 
     @Override
@@ -2335,7 +2343,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // stringBuilder.append("其中").append(builder);
         // }
 
-        return stringBuilder.append(builder).append(result.getMsg()).toString();
+        StringBuilder sb = new StringBuilder(result.getMsg ());
+        sb.delete (sb.lastIndexOf ("成"),sb.lastIndexOf ("."));return stringBuilder.append(builder).append (sb).toString();
     }
 
     private void exportToClient(Class clazz, String fileName, String title) {
