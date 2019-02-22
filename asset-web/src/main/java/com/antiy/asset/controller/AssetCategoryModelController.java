@@ -156,4 +156,17 @@ public class AssetCategoryModelController {
     public ActionResponse queryCategoryNode() throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.queryCategoryNode());
     }
+
+    /**
+     * 品类树查询
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过类型查询品类树", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/typeNode", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryCategoryNode')")
+    public ActionResponse queryCategoryNodeByType(@ApiParam(value = "1--软件 2--硬件") Integer type) throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.queryCategoryNode(type));
+    }
 }

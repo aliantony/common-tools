@@ -67,6 +67,13 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
     AssetCategoryModelNodeResponse queryCategoryNode() throws Exception;
 
     /**
+     * 通过类型查询品类树
+     * @param type 1--软件 2--硬件
+     * @return
+     */
+    AssetCategoryModelNodeResponse queryCategoryNode(int type) throws Exception;
+
+    /**
      * 通过名称查询下一级的品类
      *
      * @return
@@ -79,6 +86,7 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @return
      */
     List<AssetCategoryModelResponse> findAssetCategoryModelById(Integer id) throws Exception;
+
     /**
      * 通过名称查询下一级的品类ID
      *
