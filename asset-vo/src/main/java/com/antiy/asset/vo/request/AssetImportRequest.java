@@ -23,7 +23,6 @@ public class AssetImportRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("区域")
     @Encode
-    @NotNull(message = "区域不能为空")
     private String  areaId;
     /**
      * 用户

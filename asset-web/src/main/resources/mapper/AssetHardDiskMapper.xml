@@ -374,7 +374,7 @@
         select id, brand, model, serial, capacity, interface_type, disk_type, buy_date from
         <include refid="Table_Name"></include>
         where asset_id = #{assetId}
-        and gmt_create = ( select max( gmt_create ) from <include refid="Table_Name"></include> )
+        and gmt_create = ( select max( gmt_create ) from <include refid="Table_Name"></include> where asset_id = #{assetId}  )
         and status = 1
     </select>
 </mapper>

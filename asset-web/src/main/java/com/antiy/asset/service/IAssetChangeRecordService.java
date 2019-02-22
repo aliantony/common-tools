@@ -7,6 +7,7 @@ import com.antiy.asset.entity.AssetChangeRecord;
 import com.antiy.asset.vo.query.AssetChangeRecordQuery;
 import com.antiy.asset.vo.request.AssetChangeRecordRequest;
 import com.antiy.asset.vo.response.AssetChangeRecordResponse;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -23,7 +24,7 @@ public interface IAssetChangeRecordService extends IBaseService<AssetChangeRecor
      * @param request
      * @return
      */
-    Integer saveAssetChangeRecord(AssetChangeRecordRequest request) throws Exception;
+    ActionResponse saveAssetChangeRecord(AssetChangeRecordRequest request) throws Exception;
 
     /**
      * 修改

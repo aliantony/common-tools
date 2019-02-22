@@ -90,6 +90,12 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("归属区域")
     private String            areaId;
+
+    /**
+     * 行政区划名称
+     */
+    @ApiModelProperty("行政区划名称")
+    private String            areaName;
     /**
      * 品类型号
      */
@@ -242,6 +248,14 @@ public class Asset extends BaseEntity {
                + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty=" + warranty + ", gmtCreate="
                + gmtCreate + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
                + ", modifyUser=" + modifyUser + ", status=" + status + '}';
+    }
+
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
     }
 
     public String getResponsibleUserName() {

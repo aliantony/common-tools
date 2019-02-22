@@ -65,7 +65,7 @@ public class AssetChangeRecordRequest extends BasicRequest implements ObjectVali
      * 业务主键Id
      */
     @ApiModelProperty("业务主键Id")
-    @NotNull(message = "业务主键Id")
+    @NotNull(message = "业务主键Id不能为空")
     private Integer           businessId;
 
     public Integer getType() {
