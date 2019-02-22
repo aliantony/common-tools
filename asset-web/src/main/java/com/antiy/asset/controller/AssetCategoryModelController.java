@@ -128,7 +128,7 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/query/second", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:categorymodel:getCategoryByName')")
     public ActionResponse getAssetCategoryByName() throws Exception {
-        return ActionResponse.success(iAssetCategoryModelService.getCategoryByName("硬件"));
+        return ActionResponse.success(iAssetCategoryModelService.getNextLevelCategoryByName("硬件"));
     }
 
     /**
@@ -141,7 +141,7 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/query/software", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:categorymodel:getCategoryByName')")
     public ActionResponse getSoftwareCategoryByName() throws Exception {
-        return ActionResponse.success(iAssetCategoryModelService.getCategoryByName("软件"));
+        return ActionResponse.success(iAssetCategoryModelService.getNextLevelCategoryByName("软件"));
     }
 
     /**
