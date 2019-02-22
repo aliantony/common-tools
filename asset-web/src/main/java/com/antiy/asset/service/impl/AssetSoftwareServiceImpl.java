@@ -546,7 +546,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
         List<AssetSoftwareEntity> resultDataList = importResult.getDataList();
         int success = 0;
-        // int repeat=0;
+         int repeat=0;
         int error = 0;
         StringBuilder builder = new StringBuilder();
         for (AssetSoftwareEntity entity : resultDataList) {
@@ -555,14 +555,19 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 builder.append("序号").append(entity.getOrderNumber()).append("软件名称为空");
                 continue;
             }
+            if (CheckRepeatName (entity.getName())) {
+                repeat++;
+                builder.append("序号").append(entity.getOrderNumber()).append("软件名称重复");
+                continue;
+            }
             if (StringUtils.isBlank(entity.getVersion())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("软件版本");
+                builder.append("序号").append(entity.getOrderNumber()).append("软件版本为空");
                 continue;
             }
             if (StringUtils.isBlank(entity.getCategory())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("软件品类");
+                builder.append("序号").append(entity.getOrderNumber()).append("软件品类为空");
                 continue;
             }
             if (StringUtils.isBlank(entity.getFilePath())) {
@@ -633,7 +638,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
 
         String res = "导入成功" + success + "条";
-        // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
+         res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
 //        if (error > 0) {
