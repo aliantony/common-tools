@@ -50,17 +50,14 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Resource
     private AesEncoder                                              aesEncoder;
 
+    // 存在状态常量
+    private static final int                                        EXISTENCE_STATE = 1;
+
     @Override
     public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
+        request.setId(null);
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
-        AssetDepartment parent = assetDepartmentDao.getById(Integer.parseInt(assetDepartment.getParentId()));
-        if (checkNameRepeat(request)) {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该部门名已存在");
-        }
-        if (Objects.isNull(parent)) {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "父级部门不存在");
-        }
-        assetDepartment.setStatus(1);
+        checkParent(request, assetDepartment);
         assetDepartment.setGmtCreate(System.currentTimeMillis());
         Integer result = assetDepartmentDao.insert(assetDepartment);
         if (result != null && !Objects.equals(result, 0)) {
@@ -87,14 +84,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     public ActionResponse updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
         BusinessExceptionUtils.isTrue(!request.getId().equals(request.getParentId()), "上级部门不能为自身");
-        AssetDepartment parent = assetDepartmentDao.getById(Integer.parseInt(assetDepartment.getParentId()));
-        if (checkNameRepeat(request)) {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该部门名已存在");
-        }
-        if (Objects.isNull(parent)) {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "父级部门不存在");
-        }
-        assetDepartment.setStatus(1);
+        checkParent(request, assetDepartment);
         assetDepartment.setGmtModified(System.currentTimeMillis());
         Integer result = assetDepartmentDao.update(assetDepartment);
         if (!Objects.equals(result, 0)) {
@@ -104,6 +94,13 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName() + " {}", assetDepartment.toString());
         }
         return ActionResponse.success(result);
+    }
+
+    private void checkParent(AssetDepartmentRequest request, AssetDepartment assetDepartment) throws Exception {
+        AssetDepartment parent = assetDepartmentDao.getById(Integer.parseInt(assetDepartment.getParentId()));
+        BusinessExceptionUtils.isTrue(!checkNameRepeat(request), "该部门名已存在");
+        BusinessExceptionUtils.isNull(parent, "上级部门不存在");
+        assetDepartment.setStatus(EXISTENCE_STATE);
     }
 
     @Override
@@ -128,7 +125,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
      */
     private List<AssetDepartment> recursionSearch(Integer id) throws Exception {
         List<AssetDepartment> list = assetDepartmentDao.getAll();
-        List<AssetDepartment> result = new ArrayList();
+        List<AssetDepartment> result = new ArrayList<>();
         for (AssetDepartment assetDepartment : list) {
             if (Objects.equals(assetDepartment.getId(), id)) {
                 result.add(assetDepartment);
@@ -187,7 +184,12 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     public ActionResponse deleteAllById(Serializable id) throws Exception {
         List<AssetDepartment> list = recursionSearch((Integer) id);
         if (CollectionUtils.isNotEmpty(list)) {
-            return ActionResponse.success(assetDepartmentDao.delete(list) >= 1 ? 1 : 0);
+            int result = assetDepartmentDao.delete(list);
+            // 写入业务日志
+            LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
+                AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
+            return ActionResponse.success(result >= 1 ? 1 : 0);
         } else {
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "该部门不存在");
         }
