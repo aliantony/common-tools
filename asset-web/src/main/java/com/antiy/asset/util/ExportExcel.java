@@ -183,10 +183,10 @@ public class ExportExcel {
             }
             sheet.autoSizeColumn(i);
         }
-        /*for (int i = 0; i < headerList.size(); i++) {
+        for (int i = 0; i < headerList.size(); i++) {
             int colWidth = sheet.getColumnWidth(i) * 2;
             sheet.setColumnWidth(i, colWidth < 3000 ? 3000 : colWidth);
-        }*/
+        }
         logger.debug("workbook Initialize success.");
     }
 
