@@ -8,6 +8,7 @@ import java.util.Objects;
 import javax.annotation.Resource;
 
 import com.alibaba.druid.support.json.JSONUtils;
+import com.antiy.common.base.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -24,9 +25,6 @@ import com.antiy.asset.vo.enums.InfoLabelEnum;
 import com.antiy.asset.vo.query.AssetChangeRecordQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetChangeRecordResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -75,7 +73,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
     private AreaClient                                                  areaClient;
 
     @Override
-    public Integer saveAssetChangeRecord(AssetChangeRecordRequest request) throws Exception {
+    public ActionResponse saveAssetChangeRecord(AssetChangeRecordRequest request) throws Exception {
         AssetChangeRecord assetChangeRecord = requestConverter.convert(request, AssetChangeRecord.class);
         AssetOuterRequest assetOuterRequest = request.getAssetOuterRequest();
 
@@ -96,8 +94,12 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
         }
         manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
         manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
-        activityClient.manualStartProcess(manualStartActivityRequest);
-        return assetChangeRecord.getId();
+        ActionResponse actionResponse = activityClient.manualStartProcess(manualStartActivityRequest);
+        if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+        }
+        return ActionResponse.success(assetChangeRecord.getId());
     }
 
     @Override
