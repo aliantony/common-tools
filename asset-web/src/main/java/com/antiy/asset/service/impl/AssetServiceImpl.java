@@ -415,7 +415,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         if (i > 0) {
             // 启动流程
-            ManualStartActivityRequest activityRequest = request.getActivityRequest();
+            ManualStartActivityRequest activityRequest = request.getManualStartActivityRequest();
             activityRequest.setBusinessId(aid.toString());
             activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
             ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
@@ -1524,6 +1524,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         });
+
         /* // 状态变更 AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
          * assetStatusReqeust.setAssetStatus(AssetStatusEnum.NET_IN);
          * assetStatusReqeust.setAssetId(asset.getStringId()); assetStatusReqeust.setAgree(true);
