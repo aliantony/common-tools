@@ -1530,6 +1530,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 保存变更信息
         AssetChangeRecord assetChangeRecord = new AssetChangeRecord();
+        assetChangeRecord.setIsStore(1);
         assetChangeRecord.setBusinessId(DataTypeUtils.stringToInteger(asset.getStringId()));
         assetChangeRecord.setType(AssetTypeEnum.HARDWARE.getCode());
         assetChangeRecord.setChangeVal(JsonUtil.object2Json(assetOuterRequest));
