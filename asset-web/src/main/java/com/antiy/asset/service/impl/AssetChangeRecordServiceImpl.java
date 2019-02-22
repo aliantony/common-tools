@@ -81,7 +81,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
         assetChangeRecord.setGmtCreate(System.currentTimeMillis());
         assetChangeRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetChangeRecordDao.insert(assetChangeRecord);
-        ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
+        ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getManualStartActivityRequest();
         if (Objects.isNull(manualStartActivityRequest)) {
             manualStartActivityRequest = new ManualStartActivityRequest();
         }
