@@ -182,21 +182,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             AssetEventEnum.ASSET_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                         LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", requestAsset.toString());
 
-                        if (assetGroup != null && !assetGroup.isEmpty()) {
-
-                            for (AssetGroupRequest assetGroupRequest : assetGroup) {
-                                AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-                                assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
-                                assetGroupRelation.setAssetId(asset.getStringId());
-                                assetGroupRelation.setGmtCreate(System.currentTimeMillis());
-                                assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                                LogHandle.log(assetGroupRequest, AssetEventEnum.ASSET_GROUP_INSERT.getName(),
-                                    AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                                LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}",
-                                    assetGroupRequest.toString());
-                                assetGroupRelationDao.insert(assetGroupRelation);
-                            }
-                        }
+                        insertBatchAssetGroupRelation(asset, assetGroup);
 
                         aid = asset.getStringId();
 
@@ -422,21 +408,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetDao.insert(asset1);
                         aid = asset1.getStringId();
 
-                        if (assetGroup != null && !assetGroup.isEmpty()) {
-
-                            for (AssetGroupRequest assetGroupRequest : assetGroup) {
-                                AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-                                assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
-                                assetGroupRelation.setAssetId(asset1.getStringId());
-                                assetGroupRelation.setGmtCreate(System.currentTimeMillis());
-                                assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                                LogHandle.log(assetGroupRequest, AssetEventEnum.ASSET_GROUP_INSERT.getName(),
-                                    AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                                LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}",
-                                    assetGroupRequest.toString());
-                                assetGroupRelationDao.insert(assetGroupRelation);
-                            }
-                        }
+                        insertBatchAssetGroupRelation(asset1, assetGroup);
 
                         LogHandle.log(assetOthersRequest, AssetEventEnum.ASSET_OTHERS_INSERT.getName(),
                             AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
@@ -498,6 +470,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         return ActionResponse.success(aid);
+    }
+
+    private void insertBatchAssetGroupRelation(Asset asset1, List<AssetGroupRequest> assetGroup) {
+        if (assetGroup != null && !assetGroup.isEmpty()) {
+            List<AssetGroupRelation> groupRelations = new ArrayList<>();
+            assetGroup.forEach(assetGroupRequest -> {
+                AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
+                assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
+                assetGroupRelation.setAssetId(asset1.getStringId());
+                assetGroupRelation.setGmtCreate(System.currentTimeMillis());
+                assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                groupRelations.add(assetGroupRelation);
+                LogHandle.log(assetGroupRequest, AssetEventEnum.ASSET_GROUP_INSERT.getName(),
+                    AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}",
+                    assetGroupRequest.toString());
+            });
+            assetGroupRelationDao.insertBatch(groupRelations);
+        }
     }
 
     private boolean CheckRepeat(String number) throws Exception {
