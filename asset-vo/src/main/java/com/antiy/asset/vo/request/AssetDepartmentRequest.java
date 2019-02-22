@@ -7,6 +7,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * <p> AssetDepartmentRequest 请求对象 </p>
  *
@@ -21,24 +23,25 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
      */
     @ApiModelProperty("主键")
     @Encode
-    private String  id;
+    private String id;
 
     /**
      * 部门名
      */
     @ApiModelProperty("部门名")
-    private String  name;
+    private String name;
     /**
      * 上级部门
      */
     @ApiModelProperty("上级部门")
     @Encode
+    @NotNull(message = "上级部门不能为空")
     private String parentId;
     /**
      * 上级部门
      */
     @ApiModelProperty("备注")
-    private String  memo;
+    private String memo;
 
     public String getId() {
         return id;
