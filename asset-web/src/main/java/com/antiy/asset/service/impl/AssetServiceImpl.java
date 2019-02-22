@@ -486,7 +486,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         if (i > 0) {
             // 启动流程
-            ManualStartActivityRequest activityRequest = request.getActivityRequest();
+            ManualStartActivityRequest activityRequest = request.getManualStartActivityRequest();
             activityRequest.setBusinessId(aid.toString());
             activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
             ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
