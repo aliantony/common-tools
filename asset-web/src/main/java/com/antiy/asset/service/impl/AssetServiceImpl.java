@@ -63,60 +63,75 @@ import com.antiy.common.utils.*;
 public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetService {
 
     @Resource
-    private AssetDao                                  assetDao;
+    private AssetDao                                                           assetDao;
     @Resource
-    private AssetMainboradDao                         assetMainboradDao;
+    private AssetMainboradDao                                                  assetMainboradDao;
     @Resource
-    private AssetMemoryDao                            assetMemoryDao;
+    private AssetMemoryDao                                                     assetMemoryDao;
     @Resource
-    private AssetHardDiskDao                          assetHardDiskDao;
+    private AssetHardDiskDao                                                   assetHardDiskDao;
     @Resource
-    private AssetCpuDao                               assetCpuDao;
+    private AssetCpuDao                                                        assetCpuDao;
     @Resource
-    private AssetNetworkCardDao                       assetNetworkCardDao;
+    private AssetNetworkCardDao                                                assetNetworkCardDao;
     @Resource
-    private AssetNetworkEquipmentDao                  assetNetworkEquipmentDao;
+    private AssetNetworkEquipmentDao                                           assetNetworkEquipmentDao;
     @Resource
-    private AssetSafetyEquipmentDao                   assetSafetyEquipmentDao;
+    private AssetSafetyEquipmentDao                                            assetSafetyEquipmentDao;
     @Resource
-    private AssetSoftwareDao                          assetSoftwareDao;
+    private AssetSoftwareDao                                                   assetSoftwareDao;
     @Resource
-    private AssetSoftwareLicenseDao                   assetSoftwareLicenseDao;
+    private AssetSoftwareLicenseDao                                            assetSoftwareLicenseDao;
     @Resource
-    private AssetCategoryModelDao                     assetCategoryModelDao;
+    private AssetCategoryModelDao                                              assetCategoryModelDao;
     @Resource
-    private TransactionTemplate                       transactionTemplate;
+    private TransactionTemplate                                                transactionTemplate;
     @Resource
-    private AssetSoftwareRelationDao                  assetSoftwareRelationDao;
+    private AssetSoftwareRelationDao                                           assetSoftwareRelationDao;
     @Resource
-    private AssetStorageMediumDao                     assetStorageMediumDao;
+    private AssetStorageMediumDao                                              assetStorageMediumDao;
     @Resource
-    private AssetOperationRecordDao                   assetOperationRecordDao;
+    private AssetOperationRecordDao                                            assetOperationRecordDao;
     @Resource
-    private BaseConverter<AssetRequest, Asset>        requestConverter;
+    private BaseConverter<AssetRequest, Asset>                                 requestConverter;
     @Resource
-    private BaseConverter<Asset, AssetResponse>       responseConverter;
+    private BaseConverter<Asset, AssetRequest>                                 assetToRequestConverter;
     @Resource
-    private BaseConverter<Asset, ComputeDeviceEntity> entityConverter;
+    private BaseConverter<AssetSoftwareRelation, AssetSoftwareRelationRequest> softRelationToRequestConverter;
     @Resource
-    private AssetUserDao                              assetUserDao;
+    private BaseConverter<AssetMainborad, AssetMainboradRequest>               mainboradToRequestConverter;
     @Resource
-    private AssetGroupRelationDao                     assetGroupRelationDao;
+    private BaseConverter<AssetCpu, AssetCpuRequest>                           cpuToRequestConverter;
     @Resource
-    private AssetChangeRecordDao                      assetChangeRecordDao;
+    private BaseConverter<AssetNetworkCard, AssetNetworkCardRequest>           networkCardToRequestConverter;
     @Resource
-    private ExcelDownloadUtil                         excelDownloadUtil;
+    private BaseConverter<AssetHardDisk, AssetHardDiskRequest>                 hardDiskToRequestConverter;
     @Resource
-    private AssetEntityConvert                        assetEntityConvert;
+    private BaseConverter<AssetMemory, AssetMemoryRequest>                     memoryToRequestConverter;
     @Resource
-    private IAssetCategoryModelService                iAssetCategoryModelService;
+    private BaseConverter<Asset, AssetResponse>                                responseConverter;
     @Resource
-    private AssetGroupDao                             assetGroupDao;
+    private BaseConverter<Asset, ComputeDeviceEntity>                          entityConverter;
     @Resource
-    private ActivityClient                            activityClient;
-    private static final Logger                       logger = LogUtils.get(AssetServiceImpl.class);
+    private AssetUserDao                                                       assetUserDao;
     @Resource
-    private AesEncoder                                aesEncoder;
+    private AssetGroupRelationDao                                              assetGroupRelationDao;
+    @Resource
+    private AssetChangeRecordDao                                               assetChangeRecordDao;
+    @Resource
+    private ExcelDownloadUtil                                                  excelDownloadUtil;
+    @Resource
+    private AssetEntityConvert                                                 assetEntityConvert;
+    @Resource
+    private IAssetCategoryModelService                                         iAssetCategoryModelService;
+    @Resource
+    private AssetGroupDao                                                      assetGroupDao;
+    @Resource
+    private ActivityClient                                                     activityClient;
+    private static final Logger                                                logger = LogUtils
+        .get(AssetServiceImpl.class);
+    @Resource
+    private AesEncoder                                                         aesEncoder;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -126,6 +141,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
+                    // 记录资产登记信息到变更记录表
+                    AssetOuterRequest assetOuterRequestToChangeRecord = new AssetOuterRequest();
                     String aid = "";
                     if (requestAsset != null) {
                         String number = requestAsset.getNumber();
@@ -150,7 +167,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                     throw new BusinessException("资产组名称获取失败");
                                 }
                             });
-
                         }
 
                         // asset.setAssetSource(2);
@@ -158,13 +174,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asset.setGmtCreate(System.currentTimeMillis());
                         asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                         assetDao.insert(asset);
-
-                        // 将资产副本存入变更记录表
-                        AssetChangeRecord assetChangeRecord = new AssetChangeRecord();
-                        assetChangeRecord.setChangeVal(JsonUtil.object2Json(request));
-                        assetChangeRecord.setGmtCreate(System.currentTimeMillis());
-                        assetChangeRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                        assetChangeRecordDao.insert(assetChangeRecord);
+                        AssetRequest assetRequest = assetToRequestConverter.convert(asset, AssetRequest.class);
+                        assetRequest.setId(DataTypeUtils.integerToString(asset.getId()));
+                        assetOuterRequestToChangeRecord.setAsset(assetRequest);
 
                         LogHandle.log(requestAsset, AssetEventEnum.ASSET_INSERT.getName(),
                             AssetEventEnum.ASSET_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
@@ -230,6 +242,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                         // 软件关联表
                         List<AssetSoftwareRelationRequest> computerReques = request.getAssetSoftwareRelationList();
+                        List<AssetSoftwareRelationRequest> softwareRelationRequestListToChangeRecord = new ArrayList<>();
+                        assetOuterRequestToChangeRecord.setAssetSoftwareRelationList(computerReques);
                         if (computerReques != null && computerReques.size() > 0) {
                             for (AssetSoftwareRelationRequest computerReque : computerReques) {
                                 AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
@@ -244,6 +258,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                                 // assetSoftwareRelation.setInstallType(computerReque.getInstallType());
                                 assetSoftwareRelationDao.insert(assetSoftwareRelation);
+                                AssetSoftwareRelationRequest assetSoftwareRelationRequest = softRelationToRequestConverter
+                                    .convert(assetSoftwareRelation, AssetSoftwareRelationRequest.class);
+                                assetSoftwareRelationRequest
+                                    .setId(DataTypeUtils.integerToString(assetSoftwareRelation.getId()));
+                                softwareRelationRequestListToChangeRecord.add(assetSoftwareRelationRequest);
                                 // if (StringUtils.isNotBlank(computerReque.getLicenseSecretKey())) {
                                 // AssetSoftwareLicense license = new AssetSoftwareLicense();
                                 // license.setSoftwareId(assetSoftwareRelation.getId());
@@ -252,9 +271,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 // license.setCreateUser(LoginUserUtil.getLoginUser().getId());
                                 // }
                             }
+                            assetOuterRequestToChangeRecord
+                                .setAssetSoftwareRelationList(softwareRelationRequestListToChangeRecord);
                         }
 
                         List<AssetNetworkCardRequest> networkCardRequestList = request.getNetworkCard();
+                        List<AssetNetworkCardRequest> networkRequestListToChangeRecord = new ArrayList<>();
                         if (networkCardRequestList != null && networkCardRequestList.size() > 0) {
                             List<AssetNetworkCard> networkCardList = BeanConvert.convert(networkCardRequestList,
                                 AssetNetworkCard.class);
@@ -268,10 +290,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_INSERT.getName() + " {}",
                                     assetNetworkCard.toString());
                                 assetNetworkCardDao.insert(assetNetworkCard);
-
+                                AssetNetworkCardRequest assetNetworkCardRequest = networkCardToRequestConverter
+                                    .convert(assetNetworkCard, AssetNetworkCardRequest.class);
+                                assetNetworkCardRequest.setId(DataTypeUtils.integerToString(assetNetworkCard.getId()));
+                                networkRequestListToChangeRecord.add(assetNetworkCardRequest);
                             }
+                            assetOuterRequestToChangeRecord.setNetworkCard(networkRequestListToChangeRecord);
                         }
                         List<AssetMainboradRequest> mainboradRequestList = request.getMainboard();
+                        List<AssetMainboradRequest> mainboardRequestListToChangeRecord = new ArrayList<>();
                         if (mainboradRequestList != null && mainboradRequestList.size() > 0) {
                             List<AssetMainborad> mainboradList = BeanConvert.convert(mainboradRequestList,
                                 AssetMainborad.class);
@@ -285,9 +312,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName() + " {}",
                                     assetMainborad.toString());
                                 assetMainboradDao.insert(assetMainborad);
+                                AssetMainboradRequest assetMainboradRequest = mainboradToRequestConverter
+                                    .convert(assetMainborad, AssetMainboradRequest.class);
+                                assetMainboradRequest.setId(DataTypeUtils.integerToString(assetMainborad.getId()));
+                                mainboardRequestListToChangeRecord.add(assetMainboradRequest);
                             }
+                            assetOuterRequestToChangeRecord.setMainboard(mainboardRequestListToChangeRecord);
                         }
                         List<AssetMemoryRequest> memoryRequestList = request.getMemory();
+                        List<AssetMemoryRequest> memoryRequestListToChangeRecord = new ArrayList<>();
                         if (memoryRequestList != null && memoryRequestList.size() > 0) {
                             List<AssetMemory> memoryList = BeanConvert.convert(memoryRequestList, AssetMemory.class);
                             for (AssetMemory assetMemory : memoryList) {
@@ -302,9 +335,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_INSERT.getName() + " {}",
                                     assetMemory.toString());
                                 assetMemoryDao.insert(assetMemory);
+                                AssetMemoryRequest assetMemoryRequest = memoryToRequestConverter.convert(assetMemory,
+                                    AssetMemoryRequest.class);
+                                assetMemoryRequest.setId(DataTypeUtils.integerToString(assetMemory.getId()));
+                                memoryRequestListToChangeRecord.add(assetMemoryRequest);
                             }
+                            assetOuterRequestToChangeRecord.setMemory(memoryRequestListToChangeRecord);
                         }
                         List<AssetCpuRequest> cpuRequestList = request.getCpu();
+                        List<AssetCpuRequest> cpuRequestListToChangeRecord = new ArrayList<>();
                         if (cpuRequestList != null && cpuRequestList.size() > 0) {
                             List<AssetCpu> assetCpuList = BeanConvert.convert(cpuRequestList, AssetCpu.class);
                             for (AssetCpu assetCpu : assetCpuList) {
@@ -318,10 +357,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 LogUtils.info(logger, AssetEventEnum.ASSET_CPU_INSERT.getName() + " {}",
                                     assetCpu.toString());
                                 assetCpuDao.insert(assetCpu);
-
+                                AssetCpuRequest assetCpuRequest = cpuToRequestConverter.convert(assetCpu,
+                                    AssetCpuRequest.class);
+                                assetCpuRequest.setId(DataTypeUtils.integerToString(assetCpu.getId()));
+                                cpuRequestListToChangeRecord.add(assetCpuRequest);
                             }
+                            assetOuterRequestToChangeRecord.setCpu(cpuRequestListToChangeRecord);
                         }
                         List<AssetHardDiskRequest> hardDisk = request.getHardDisk();
+                        List<AssetHardDiskRequest> hardDiskRequestListToChangeRecord = new ArrayList<>();
                         if (hardDisk != null && hardDisk.size() > 0) {
                             List<AssetHardDisk> hardDisks = BeanConvert.convert(hardDisk, AssetHardDisk.class);
                             for (AssetHardDisk assetHardDisk : hardDisks) {
@@ -335,7 +379,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 LogUtils.info(logger, AssetEventEnum.ASSET_DISK_INSERT.getName() + " {}",
                                     assetHardDisk.toString());
                                 assetHardDiskDao.insert(assetHardDisk);
+                                AssetHardDiskRequest assetHardDiskRequest = hardDiskToRequestConverter
+                                    .convert(assetHardDisk, AssetHardDiskRequest.class);
+                                assetHardDiskRequest.setId(DataTypeUtils.integerToString(assetHardDisk.getId()));
+                                hardDiskRequestListToChangeRecord.add(assetHardDiskRequest);
                             }
+                            assetOuterRequestToChangeRecord.setHardDisk(hardDiskRequestListToChangeRecord);
                         }
                     } else {
 
@@ -394,6 +443,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         LogUtils.info(logger, AssetEventEnum.ASSET_OTHERS_INSERT.getName() + " {}",
                             assetOthersRequest.toString());
                     }
+                    // 将资产副本存入变更记录表
+                    AssetChangeRecord assetChangeRecord = new AssetChangeRecord();
+                    assetChangeRecord.setBusinessId(
+                        DataTypeUtils.stringToInteger(assetOuterRequestToChangeRecord.getAsset().getId()));
+                    assetChangeRecord.setChangeVal(JsonUtil.object2Json(assetOuterRequestToChangeRecord));
+                    assetChangeRecord.setGmtCreate(System.currentTimeMillis());
+                    assetChangeRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetChangeRecordDao.insert(assetChangeRecord);
+
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(aid);

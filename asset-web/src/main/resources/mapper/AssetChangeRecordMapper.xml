@@ -238,7 +238,7 @@
         <include refid="Table_Name"></include>
         where type = #{type}
         and business_id = #{businessId}
-        and gmt_create = ( select max( gmt_create ) from <include refid="Table_Name"></include> where business_id = #{businessId})
         and status = 1
+        order by id desc limit 2
     </select>
 </mapper>

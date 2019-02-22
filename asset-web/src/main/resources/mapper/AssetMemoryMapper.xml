@@ -254,7 +254,7 @@
         and status = 1
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetMemory">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetMemory" useGeneratedKeys="true" keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
