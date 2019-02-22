@@ -1875,7 +1875,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 //        if (error + repeat > 0) {
 //            stringBuilder.append(re).append("其中").append(builder);
 //        }
-        return stringBuilder.append (result.getMsg ()).append(builder).toString();
+        return stringBuilder.append(builder).append (result.getMsg ()).toString();
     }
 
     @Override
@@ -1999,7 +1999,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 //            stringBuilder.append(re).append("其中").append(builder);
 //        }
 
-          return stringBuilder.append (result.getMsg ()).append(builder).toString();
+        return stringBuilder.append(builder).append (result.getMsg ()).toString();
     }
 
     @Override
@@ -2114,7 +2114,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 //            stringBuilder.append(res).append("其中").append(builder);
 //        }
 
-        return stringBuilder.append (result.getMsg ()).append(builder).toString();
+        return stringBuilder.append(builder).append (result.getMsg ()).toString();
 
     }
 
@@ -2227,7 +2227,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 //            stringBuilder.append("其中").append(builder);
 //        }
 
-        return stringBuilder.append (result.getMsg ()).append(builder).toString();
+        return stringBuilder.append(builder).append (result.getMsg ()).toString();
     }
 
     @Override
@@ -2323,7 +2323,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 //            stringBuilder.append("其中").append(builder);
 //        }
 
-        return stringBuilder.append (result.getMsg ()).append(builder).toString();
+        return stringBuilder.append(builder).append (result.getMsg ()).toString();
     }
 
     private void exportToClient(Class clazz, String fileName, String title) {
