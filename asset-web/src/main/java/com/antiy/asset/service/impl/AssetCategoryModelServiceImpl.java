@@ -128,8 +128,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public ActionResponse updateAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel updateCategory = categoryRequestConvert.convert(request, AssetCategoryModel.class);
         BusinessExceptionUtils.isTrue(!request.getStringId().equals(request.getParentId()), "上级品类不能为自身");
-        updateCategory.setId(DataTypeUtils.stringToInteger(request.getStringId()));
         BusinessExceptionUtils.isTrue(!checkNameRepeat(request), "该品类名已存在");
+        updateCategory.setId(DataTypeUtils.stringToInteger(request.getStringId()));
         AssetCategoryModel assetCategoryModelById = assetCategoryModelDao.getById(updateCategory.getId());
         // 判断是不是系统内置
         BusinessExceptionUtils.isTrue(checkIsDefault(assetCategoryModelById), "系统内置品类不能更新或删除");
@@ -288,10 +288,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         List<AssetCategoryModel> list = recursionSearch(assetCategoryModelDao.getAll(), (Integer) id);
         AssetQuery assetQuery = new AssetQuery();
         // 获取品类id数组
-        String[] ids = new String[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            ids[i] = Objects.toString(list.get(i).getId());
-        }
+        String[] ids = getIdList(list);
         assetQuery.setCategoryModels(ids);
         BusinessExceptionUtils.isTrue(!checkExistAsset(assetQuery), "存在资产，不能删除");
         BusinessExceptionUtils.isEmpty(list, "品类不存在，删除失败");
@@ -304,6 +301,14 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", list.toString());
         }
         return ActionResponse.success(result);
+    }
+
+    private String[] getIdList(List<AssetCategoryModel> list) {
+        String[] ids = new String[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            ids[i] = Objects.toString(list.get(i).getId());
+        }
+        return ids;
     }
 
     private boolean checkExistAsset(AssetQuery assetQuery) throws Exception {
