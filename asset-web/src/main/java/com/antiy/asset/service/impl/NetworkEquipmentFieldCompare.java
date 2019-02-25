@@ -6,28 +6,28 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.dao.AssetNetworkEquipmentDao;
-import com.antiy.asset.entity.AssetNetworkEquipment;
-import com.antiy.asset.intergration.UserClient;
-import com.antiy.asset.vo.request.AssetNetworkEquipmentRequest;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.poi.ss.formula.functions.Odd;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.alibaba.druid.support.json.JSONUtils;
 import com.antiy.asset.dao.AssetChangeRecordDao;
-import com.antiy.asset.dao.AssetSafetyEquipmentDao;
+import com.antiy.asset.dao.AssetNetworkEquipmentDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.util.CompareUtils;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.InfoLabelEnum;
+import com.antiy.asset.vo.request.AssetNetworkEquipmentRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.request.SysAreaVO;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.SysUser;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.JsonUtil;
-import org.springframework.stereotype.Service;
 
 /**
  * 网络设备字段对比
@@ -37,11 +37,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class NetworkEquipmentFieldCompare extends AbstractChangeRecordCompareImpl {
     @Resource
-    AssetNetworkEquipmentDao networkEquipmentDao;
+    AssetNetworkEquipmentDao                   networkEquipmentDao;
     @Resource
     private AreaClient                         areaClient;
     @Resource
-    private UserClient userClient;
+    RedisUtil                                  redisUtil;
     @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
 
@@ -49,7 +49,7 @@ public class NetworkEquipmentFieldCompare extends AbstractChangeRecordCompareImp
     private AssetChangeRecordDao               assetChangeRecordDao;
 
     @Override
-        List<Map<String, Object>> compareCommonBusinessInfo(Integer businessId) throws Exception {
+    List<Map<String, Object>> compareCommonBusinessInfo(Integer businessId) throws Exception {
         Integer hardware = 1;
         List<String> changeValStrList = super.getTwoRecentChangeVal(businessId, hardware);
         List<Map<String, Object>> changeValList = new ArrayList<>();
@@ -83,7 +83,10 @@ public class NetworkEquipmentFieldCompare extends AbstractChangeRecordCompareImp
             SysAreaVO oldSysAreaVO = JsonUtil
                 .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())), SysAreaVO.class);
             oldAssetBusinessInfo.setAreaName(oldSysAreaVO.getFullName());
-            oldAssetBusinessInfo.setResponsibleUserName((String) userClient.getInvokeResult(newAsset.getResponsibleUserId()));
+            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
+                DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
+            SysUser sysUser = redisUtil.getObject(key, SysUser.class);
+            oldAssetBusinessInfo.setResponsibleUserName(sysUser == null ? "" : sysUser.getName());
             oldAssetBusinessInfo.setContactTel(oldAsset.getContactTel());
             oldAssetBusinessInfo.setEmail(oldAsset.getEmail());
             oldAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());
@@ -96,8 +99,7 @@ public class NetworkEquipmentFieldCompare extends AbstractChangeRecordCompareImp
             SysAreaVO newSysAreaVO = JsonUtil
                 .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(newAsset.getAreaId())), SysAreaVO.class);
             oldAssetBusinessInfo.setAreaName(newSysAreaVO.getFullName());
-//            newAssetBusinessInfo.setResponsibleUserId(newAsset.getResponsibleUserId());
-            newAssetBusinessInfo.setResponsibleUserName((String) userClient.getInvokeResult(newAsset.getResponsibleUserId()));
+
             newAssetBusinessInfo.setContactTel(newAsset.getContactTel());
             newAssetBusinessInfo.setEmail(newAsset.getEmail());
             newAssetBusinessInfo.setAssetGroup(newAsset.getAssetGroup());
@@ -110,24 +112,23 @@ public class NetworkEquipmentFieldCompare extends AbstractChangeRecordCompareImp
                 newAssetBusinessInfo, InfoLabelEnum.BUSINESSINFO.getMsg());
 
             AssetNetworkEquipmentRequest oldNetworkEquipment = oldAssetOuterRequest.getNetworkEquipment();
-//            AssetNetworkEquipmentRequest networkEquipmentRequest = oldAssetOuterRequest.getNetworkEquipment();
-//            AssetNetworkEquipment oldNetworkEquipment = new AssetNetworkEquipment();
-//            oldNetworkEquipment.setPortSize(networkEquipmentRequest.getPortSize());
-//            oldNetworkEquipment.setInterfaceSize(networkEquipmentRequest.getInterfaceSize());
-//            oldNetworkEquipment.setIos(networkEquipmentRequest.getIos());
-//            oldNetworkEquipment.setFirmwareVersion(networkEquipmentRequest.getFirmwareVersion());
-//            oldNetworkEquipment.setIsWireless(networkEquipmentRequest.getIsWireless());
-//            oldNetworkEquipment.setInnerIp(networkEquipmentRequest.getInnerIp());
-//            oldNetworkEquipment.setOuterIp(networkEquipmentRequest.getOuterIp());
-//            oldNetworkEquipment.setMacAddress(networkEquipmentRequest.getMacAddress());
-//            oldNetworkEquipment.setSubnetMask(networkEquipmentRequest.getSubnetMask());
-//            oldNetworkEquipment.setExpectBandwidth(networkEquipmentRequest.getExpectBandwidth());
-//            oldNetworkEquipment.setRegister(networkEquipmentRequest.getRegister());
-//            oldNetworkEquipment.setSubnetMask(networkEquipmentRequest.getSubnetMask());
+            // AssetNetworkEquipmentRequest networkEquipmentRequest = oldAssetOuterRequest.getNetworkEquipment();
+            // AssetNetworkEquipment oldNetworkEquipment = new AssetNetworkEquipment();
+            // oldNetworkEquipment.setPortSize(networkEquipmentRequest.getPortSize());
+            // oldNetworkEquipment.setInterfaceSize(networkEquipmentRequest.getInterfaceSize());
+            // oldNetworkEquipment.setIos(networkEquipmentRequest.getIos());
+            // oldNetworkEquipment.setFirmwareVersion(networkEquipmentRequest.getFirmwareVersion());
+            // oldNetworkEquipment.setIsWireless(networkEquipmentRequest.getIsWireless());
+            // oldNetworkEquipment.setInnerIp(networkEquipmentRequest.getInnerIp());
+            // oldNetworkEquipment.setOuterIp(networkEquipmentRequest.getOuterIp());
+            // oldNetworkEquipment.setMacAddress(networkEquipmentRequest.getMacAddress());
+            // oldNetworkEquipment.setSubnetMask(networkEquipmentRequest.getSubnetMask());
+            // oldNetworkEquipment.setExpectBandwidth(networkEquipmentRequest.getExpectBandwidth());
+            // oldNetworkEquipment.setRegister(networkEquipmentRequest.getRegister());
+            // oldNetworkEquipment.setSubnetMask(networkEquipmentRequest.getSubnetMask());
             AssetNetworkEquipmentRequest newNetworkEquipment = newAssetOuterRequest.getNetworkEquipment();
             List<Map<String, Object>> networkEquipmentCompareResult = CompareUtils.compareClass(oldNetworkEquipment,
-                    newNetworkEquipment, InfoLabelEnum.BUSINESSINFO.getMsg());
-
+                newNetworkEquipment, InfoLabelEnum.BUSINESSINFO.getMsg());
 
             changeValList.addAll(assetCommonInoCompareResult);
             changeValList.addAll(assetBusinessInfoCompareResult);

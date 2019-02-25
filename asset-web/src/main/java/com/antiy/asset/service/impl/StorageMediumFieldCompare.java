@@ -12,15 +12,19 @@ import org.springframework.stereotype.Service;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.intergration.AreaClient;
-import com.antiy.asset.intergration.UserClient;
 import com.antiy.asset.util.CompareUtils;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.InfoLabelEnum;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.request.AssetStorageMediumRequest;
 import com.antiy.asset.vo.request.SysAreaVO;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.SysUser;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.JsonUtil;
 
 /**
@@ -35,7 +39,7 @@ public class StorageMediumFieldCompare extends AbstractChangeRecordCompareImpl {
     @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
     @Resource
-    private UserClient userClient;
+    RedisUtil                                  redisUtil;
 
     @Override
     List<Map<String, Object>> compareCommonBusinessInfo(Integer businessId) throws Exception {
@@ -72,7 +76,10 @@ public class StorageMediumFieldCompare extends AbstractChangeRecordCompareImpl {
             SysAreaVO oldSysAreaVO = JsonUtil
                 .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())), SysAreaVO.class);
             oldAssetBusinessInfo.setAreaName(oldSysAreaVO.getFullName());
-            oldAssetBusinessInfo.setResponsibleUserName((String) userClient.getInvokeResult(newAsset.getResponsibleUserId()));
+            String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
+                DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
+            SysUser oldSysUser = redisUtil.getObject(oldKey, SysUser.class);
+            oldAssetBusinessInfo.setResponsibleUserName(oldSysUser == null ? "" : oldSysUser.getName());
             oldAssetBusinessInfo.setContactTel(oldAsset.getContactTel());
             oldAssetBusinessInfo.setEmail(oldAsset.getEmail());
             oldAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());
@@ -85,7 +92,10 @@ public class StorageMediumFieldCompare extends AbstractChangeRecordCompareImpl {
             SysAreaVO newSysAreaVO = JsonUtil
                 .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(newAsset.getAreaId())), SysAreaVO.class);
             oldAssetBusinessInfo.setAreaName(newSysAreaVO.getFullName());
-            newAssetBusinessInfo.setResponsibleUserName((String) userClient.getInvokeResult(newAsset.getResponsibleUserId()));
+            String newKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
+                DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
+            SysUser newSysUser = redisUtil.getObject(newKey, SysUser.class);
+            newAssetBusinessInfo.setResponsibleUserName(newSysUser == null ? "" : newSysUser.getName());
             newAssetBusinessInfo.setContactTel(newAsset.getContactTel());
             newAssetBusinessInfo.setEmail(newAsset.getEmail());
             newAssetBusinessInfo.setAssetGroup(newAsset.getAssetGroup());
@@ -97,11 +107,10 @@ public class StorageMediumFieldCompare extends AbstractChangeRecordCompareImpl {
             List<Map<String, Object>> assetBusinessInfoCompareResult = CompareUtils.compareClass(oldAssetBusinessInfo,
                 newAssetBusinessInfo, InfoLabelEnum.BUSINESSINFO.getMsg());
 
-
             AssetStorageMediumRequest oldStorageMediumRequest = oldAssetOuterRequest.getAssetStorageMedium();
             AssetStorageMediumRequest newStorageMediumRequest = newAssetOuterRequest.getAssetStorageMedium();
             List<Map<String, Object>> storageEquipmentCompareResult = CompareUtils.compareClass(oldStorageMediumRequest,
-                    newStorageMediumRequest, InfoLabelEnum.BUSINESSINFO.getMsg());
+                newStorageMediumRequest, InfoLabelEnum.BUSINESSINFO.getMsg());
 
             changeValList.addAll(assetCommonInoCompareResult);
             changeValList.addAll(assetBusinessInfoCompareResult);

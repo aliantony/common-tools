@@ -6,10 +6,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.intergration.UserClient;
-import com.antiy.asset.vo.request.*;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.alibaba.druid.support.json.JSONUtils;
 import com.antiy.asset.dao.AssetChangeRecordDao;
@@ -17,11 +15,19 @@ import com.antiy.asset.dao.AssetNetworkEquipmentDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.util.CompareUtils;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.InfoLabelEnum;
+import com.antiy.asset.vo.request.AssetOthersRequest;
+import com.antiy.asset.vo.request.AssetOuterRequest;
+import com.antiy.asset.vo.request.AssetRequest;
+import com.antiy.asset.vo.request.SysAreaVO;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.SysUser;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.JsonUtil;
-import org.springframework.stereotype.Service;
 
 /**
  * 网络设备字段对比
@@ -31,11 +37,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class OtherEquipmentFieldCompare extends AbstractChangeRecordCompareImpl {
     @Resource
-    AssetNetworkEquipmentDao networkEquipmentDao;
+    AssetNetworkEquipmentDao                   networkEquipmentDao;
     @Resource
     private AreaClient                         areaClient;
     @Resource
-    private UserClient userClient;
+    RedisUtil                                  redisUtil;
     @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
 
@@ -77,7 +83,10 @@ public class OtherEquipmentFieldCompare extends AbstractChangeRecordCompareImpl 
             SysAreaVO oldSysAreaVO = JsonUtil
                 .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())), SysAreaVO.class);
             oldAssetBusinessInfo.setAreaName(oldSysAreaVO.getFullName());
-            oldAssetBusinessInfo.setResponsibleUserName((String) userClient.getInvokeResult(newAsset.getResponsibleUserId()));
+            String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
+                DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
+            SysUser oldSysUser = redisUtil.getObject(oldKey, SysUser.class);
+            oldAssetBusinessInfo.setResponsibleUserName(oldSysUser == null ? "" : oldSysUser.getName());
             oldAssetBusinessInfo.setContactTel(oldAsset.getContactTel());
             oldAssetBusinessInfo.setEmail(oldAsset.getEmail());
             oldAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());
@@ -90,7 +99,10 @@ public class OtherEquipmentFieldCompare extends AbstractChangeRecordCompareImpl 
             SysAreaVO newSysAreaVO = JsonUtil
                 .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(newAsset.getAreaId())), SysAreaVO.class);
             oldAssetBusinessInfo.setAreaName(newSysAreaVO.getFullName());
-            newAssetBusinessInfo.setResponsibleUserName((String) userClient.getInvokeResult(newAsset.getResponsibleUserId()));
+            String newKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
+                DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
+            SysUser newSysUser = redisUtil.getObject(newKey, SysUser.class);
+            newAssetBusinessInfo.setResponsibleUserName(newSysUser == null ? "" : newSysUser.getName());
             newAssetBusinessInfo.setContactTel(newAsset.getContactTel());
             newAssetBusinessInfo.setEmail(newAsset.getEmail());
             newAssetBusinessInfo.setAssetGroup(newAsset.getAssetGroup());
@@ -105,7 +117,7 @@ public class OtherEquipmentFieldCompare extends AbstractChangeRecordCompareImpl 
             AssetOthersRequest oldOtherEquipment = oldAssetOuterRequest.getAssetOthersRequest();
             AssetOthersRequest newOtherEquipment = newAssetOuterRequest.getAssetOthersRequest();
             List<Map<String, Object>> networkEquipmentCompareResult = CompareUtils.compareClass(oldOtherEquipment,
-                    newOtherEquipment, InfoLabelEnum.BUSINESSINFO.getMsg());
+                newOtherEquipment, InfoLabelEnum.BUSINESSINFO.getMsg());
 
             changeValList.addAll(assetCommonInoCompareResult);
             changeValList.addAll(assetBusinessInfoCompareResult);

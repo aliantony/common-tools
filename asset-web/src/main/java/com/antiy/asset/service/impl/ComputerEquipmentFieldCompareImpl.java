@@ -10,17 +10,19 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.druid.support.json.JSONUtils;
-import com.antiy.asset.dao.AssetChangeRecordDao;
 import com.antiy.asset.dao.AssetSoftwareLicenseDao;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.AreaClient;
-import com.antiy.asset.intergration.UserClient;
 import com.antiy.asset.util.CompareUtils;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.InfoLabelEnum;
 import com.antiy.asset.vo.request.*;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.SysUser;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.JsonUtil;
 
 /**
@@ -33,9 +35,9 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
     @Resource
     private AreaClient                         areaClient;
     @Resource
-    private UserClient                         userClient;
-    @Resource
     AssetSoftwareLicenseDao                    softwareLicenseDao;
+    @Resource
+    RedisUtil                                  redisUtil;
     @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
 
@@ -74,8 +76,10 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             SysAreaVO oldSysAreaVO = JsonUtil
                 .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())), SysAreaVO.class);
             oldAssetBusinessInfo.setAreaName(oldSysAreaVO.getFullName());
-            oldAssetBusinessInfo
-                .setResponsibleUserName((String) userClient.getInvokeResult(newAsset.getResponsibleUserId()));
+            String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
+                DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
+            SysUser oldSysUser = redisUtil.getObject(oldKey, SysUser.class);
+            oldAssetBusinessInfo.setResponsibleUserName(oldSysUser == null ? "" : oldSysUser.getName());
             oldAssetBusinessInfo.setContactTel(oldAsset.getContactTel());
             oldAssetBusinessInfo.setEmail(oldAsset.getEmail());
             oldAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());
@@ -93,8 +97,10 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             SysAreaVO newSysAreaVO = JsonUtil
                 .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(newAsset.getAreaId())), SysAreaVO.class);
             newAssetBusinessInfo.setAreaName(newSysAreaVO.getFullName());
-            newAssetBusinessInfo
-                .setResponsibleUserName((String) userClient.getInvokeResult(newAsset.getResponsibleUserId()));
+            String newKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
+                DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
+            SysUser newSysUser = redisUtil.getObject(newKey, SysUser.class);
+            newAssetBusinessInfo.setResponsibleUserName(newSysUser == null ? "" : newSysUser.getName());
             newAssetBusinessInfo.setContactTel(newAsset.getContactTel());
             newAssetBusinessInfo.setEmail(newAsset.getEmail());
             newAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());
