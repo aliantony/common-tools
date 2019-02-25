@@ -41,7 +41,7 @@ public class SafetyEquipmentFieldCompare extends AbstractChangeRecordCompareImpl
     @Resource
     private AreaClient                         areaClient;
     @Resource
-    RedisUtil                                  redisUtil;
+    private RedisUtil                                  redisUtil;
     @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
     @Resource
@@ -79,14 +79,14 @@ public class SafetyEquipmentFieldCompare extends AbstractChangeRecordCompareImpl
 
             // 业务信息
             Asset oldAssetBusinessInfo = new Asset();
-            // 远程调用（通过区域ID查询名称）
+            // redis调用（通过区域ID查询名称）
             SysAreaVO oldSysAreaVO = JsonUtil
                 .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())), SysAreaVO.class);
             oldAssetBusinessInfo.setAreaName(oldSysAreaVO.getFullName());
             String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
             SysUser sysUser = redisUtil.getObject(key, SysUser.class);
-            oldAssetBusinessInfo.setResponsibleUserName(sysUser == null ? "" : sysUser.getName());
+            oldAssetBusinessInfo.setResponsibleUserName(sysUser == null ? null : sysUser.getName());
             oldAssetBusinessInfo.setContactTel(oldAsset.getContactTel());
             oldAssetBusinessInfo.setEmail(oldAsset.getEmail());
             oldAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());
@@ -108,7 +108,7 @@ public class SafetyEquipmentFieldCompare extends AbstractChangeRecordCompareImpl
             String newKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
             SysUser newSysUser = redisUtil.getObject(newKey, SysUser.class);
-            newAssetBusinessInfo.setResponsibleUserName(newSysUser == null ? "" : sysUser.getName());
+            newAssetBusinessInfo.setResponsibleUserName(newSysUser == null ? null : newSysUser.getName());
             newAssetBusinessInfo.setContactTel(newAsset.getContactTel());
             newAssetBusinessInfo.setEmail(newAsset.getEmail());
             newAssetBusinessInfo.setAssetGroup(newAsset.getAssetGroup());

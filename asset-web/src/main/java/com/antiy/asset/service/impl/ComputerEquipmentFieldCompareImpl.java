@@ -35,9 +35,9 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
     @Resource
     private AreaClient                         areaClient;
     @Resource
-    AssetSoftwareLicenseDao                    softwareLicenseDao;
+    private AssetSoftwareLicenseDao                    softwareLicenseDao;
     @Resource
-    RedisUtil                                  redisUtil;
+    private RedisUtil                                  redisUtil;
     @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
 
@@ -72,14 +72,14 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
 
             // 业务信息
             Asset oldAssetBusinessInfo = new Asset();
-            // 远程调用（通过区域ID查询名称）
+            // redis调用（通过区域ID查询名称）
             SysAreaVO oldSysAreaVO = JsonUtil
                 .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())), SysAreaVO.class);
             oldAssetBusinessInfo.setAreaName(oldSysAreaVO.getFullName());
             String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
             SysUser oldSysUser = redisUtil.getObject(oldKey, SysUser.class);
-            oldAssetBusinessInfo.setResponsibleUserName(oldSysUser == null ? "" : oldSysUser.getName());
+            oldAssetBusinessInfo.setResponsibleUserName(oldSysUser == null ? null : oldSysUser.getName());
             oldAssetBusinessInfo.setContactTel(oldAsset.getContactTel());
             oldAssetBusinessInfo.setEmail(oldAsset.getEmail());
             oldAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());
@@ -100,7 +100,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             String newKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
             SysUser newSysUser = redisUtil.getObject(newKey, SysUser.class);
-            newAssetBusinessInfo.setResponsibleUserName(newSysUser == null ? "" : newSysUser.getName());
+            newAssetBusinessInfo.setResponsibleUserName(newSysUser == null ? null : newSysUser.getName());
             newAssetBusinessInfo.setContactTel(newAsset.getContactTel());
             newAssetBusinessInfo.setEmail(newAsset.getEmail());
             newAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());

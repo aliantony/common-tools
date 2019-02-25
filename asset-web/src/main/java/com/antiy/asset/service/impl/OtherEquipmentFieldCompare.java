@@ -41,7 +41,7 @@ public class OtherEquipmentFieldCompare extends AbstractChangeRecordCompareImpl 
     @Resource
     private AreaClient                         areaClient;
     @Resource
-    RedisUtil                                  redisUtil;
+    private RedisUtil                                  redisUtil;
     @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
 
@@ -79,7 +79,7 @@ public class OtherEquipmentFieldCompare extends AbstractChangeRecordCompareImpl 
 
             // 业务信息
             Asset oldAssetBusinessInfo = new Asset();
-            // 远程调用（通过区域ID查询名称）
+            // redis调用（通过区域ID查询名称）
             SysAreaVO oldSysAreaVO = JsonUtil
                 .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())), SysAreaVO.class);
             oldAssetBusinessInfo.setAreaName(oldSysAreaVO.getFullName());
