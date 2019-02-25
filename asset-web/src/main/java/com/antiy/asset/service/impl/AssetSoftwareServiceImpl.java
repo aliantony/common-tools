@@ -15,10 +15,7 @@ import com.antiy.asset.templet.AssetSoftwareEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
 import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.*;
-import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetOperationTableEnum;
-import com.antiy.asset.vo.enums.SoftwareStatusEnum;
+import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
@@ -580,7 +577,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
             AssetSoftware asset = new AssetSoftware();
 
-            if (entity.getAuthorization() == 2) {
+            if (entity.getAuthorization().equals (ReportType.FREESOFT.getCode ())) {
                 asset.setServiceLife(4070883661000L);
             } else {
                 asset.setServiceLife(entity.getServiceLife());
@@ -589,8 +586,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setMd5Code(entity.getMD5());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            // 可分析
-            asset.setSoftwareStatus(2);
+            asset.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode ());
             asset.setReleaseTime(entity.getReleaseTime());
             asset.setPath(entity.getFilePath());
             asset.setName(entity.getName());
@@ -618,7 +614,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             assetOperationRecord.setOriginStatus (SoftwareStatusEnum.WATI_REGSIST.getCode ());
             assetOperationRecordDao.insert(assetOperationRecord);
 
-            Map<String, Object> formData = new HashMap();
+            Map<String, Object> formData = new HashMap<> ();
             String[] userId = importRequest.getUserId();
             for (String analyzeBaselineUserId : userId) {
                 formData.put("analyzeBaselineUserId", analyzeBaselineUserId);
