@@ -6,6 +6,10 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.intergration.UserClient;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.SysUser;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -54,6 +58,10 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     private AssetGroupRelationDao                         assetGroupRelationDao;
     @Resource
     private SelectConvert                                 selectConvert;
+    @Resource
+    RedisUtil redisUtil;
+    @Resource
+    private UserClient userClient;
     @Resource
     private BaseConverter<AssetGroup, AssetGroupResponse> assetGroupToResponseConverter;
     @Resource
@@ -181,6 +189,10 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             }
             assetGroupResponse.setAssetDetail(assetDetail.toString());
             assetGroupResponse.setAssetList(assetList);
+            assetGroupResponse.setCreateUser(assetGroupResponse.getCreateUser());
+            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class, assetGroupResponse.getCreateUser());
+            SysUser sysUser = redisUtil.getObject(key,SysUser.class);
+            assetGroupResponse.setCreateUserName(sysUser == null ? "" : sysUser.getName());
         }
         return assetResponseList;
     }

@@ -204,7 +204,6 @@
         from
         <include refid="Table_Name"></include> agrelation
         LEFT JOIN asset_group agroup ON agroup.id = agrelation.asset_group_id
-        LEFT JOIN sys_user suser ON suser.id = agrelation.create_user
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" name != null and name != '' ">
                 and agroup.name like #{name}"%"
@@ -212,19 +211,18 @@
             <if test=" memo != null and memo != '' ">
                 and agroup.memo like #{memo}"%"
             </if>
-            <if test=" createUserName != null and createUserName != '' ">
-                and suser.username like #{createUserName}"%"
+            <if test=" createUser != null ">
+                and agroup.username = #{createUser}
             </if>
         </trim>
     </select>
 
     <select id="findQuery" resultMap="BaseResultMap"
             parameterType="com.antiy.common.base.ObjectQuery">
-        select agroup.name,suser.username,agroup.memo,agroup.gmt_create
+        select agroup.name,agroup.memo,agroup.gmt_create
         from
         <include refid="Table_Name"></include> agrelation
         LEFT JOIN asset_group agroup ON agroup.id = agrelation.asset_group_id
-        LEFT JOIN sys_user suser ON suser.id = agrelation.create_user
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" name != null and name != '' ">
                 and agroup.name like #{name}"%"
@@ -232,8 +230,8 @@
             <if test=" memo != null and memo != '' ">
                 and agroup.memo like #{memo}"%"
             </if>
-            <if test=" createUserName != null and createUserName != '' ">
-                and suser.username like #{createUserName}"%"
+            <if test=" createUser != null ">
+                and agroup.username = #{createUser}
             </if>
         </trim>
         <include refid="Page_List"></include>
