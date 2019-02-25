@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.Constants;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -49,11 +50,6 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     private BaseConverter<AssetDepartment, AssetDepartmentResponse> responseConverter;
     @Resource
     private AesEncoder                                              aesEncoder;
-
-    // 存在状态常量
-    private static final int                                        EXISTENCE_STATE = 1;
-
-    private static final int                                        ALL_PAGE        = -1;
 
     @Override
     public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
@@ -102,7 +98,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         AssetDepartment parent = assetDepartmentDao.getById(Integer.parseInt(assetDepartment.getParentId()));
         BusinessExceptionUtils.isTrue(!checkNameRepeat(request), "该部门名已存在");
         BusinessExceptionUtils.isNull(parent, "上级部门不存在");
-        assetDepartment.setStatus(EXISTENCE_STATE);
+        assetDepartment.setStatus(Constants.EXISTENCE_STATUS);
     }
 
     @Override
@@ -166,8 +162,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Override
     public AssetDepartmentNodeResponse findDepartmentNode() throws Exception {
         AssetDepartmentQuery query = new AssetDepartmentQuery();
-        query.setStatus(EXISTENCE_STATE);
-        query.setPageSize(ALL_PAGE);
+        query.setStatus(Constants.EXISTENCE_STATUS);
+        query.setPageSize(Constants.ALL_PAGE);
         List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
         NodeUtilsConverter nodeConverter = new NodeUtilsConverter();
         List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(assetDepartment,

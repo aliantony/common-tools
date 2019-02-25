@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--引入application中的属性-->
+    <springProperty scope="context" name="bootstrapServers" source="spring.kafka.bootstrap-servers"
+                    defaultValue="localhost"/>
+    <!--defaultValue 默认模块名称-->
+    <springProperty scope="context" name="moduleName" source="spring.application.name" defaultValue="csos-asset"/>
+    <property name="logPath" value="log"/>
+    <!--日志格式定义-->
+    <property name="generalPattern"
+              value="${moduleName} %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %X{requestId} %X{userId}  %X{userName} [%thread]  %logger %method- %msg%n"/>
+
+    <!--输出日志到控制台-->
+    <appender name="StdoutAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <pattern>${generalPattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!--输出日志到kafka-->
+    <appender name="KafkaAppender" class="com.antiy.common.config.log.RuntimeLogToKafkaAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <pattern>
+                    <pattern>
+                        {
+                        "moduleName":"${moduleName}",
+                        "timestamp":"%d{yyyy-MM-dd HH:mm:ss.SSS}",
+                        "level":"%level",
+                        "requestId":"%X{requestId}",
+                        "userId":"%X{userId}",
+                        "userName":"%X{userName}",
+                        "thread":"%thread",
+                        "logger":"%logger",
+                        "method":"%method",
+                        "msg":"%msg"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+        <topic>queue.csos.log.runtime</topic>
+        <bootstrapServers>${bootstrapServers}</bootstrapServers>
+    </appender>
+    <!--输出日志到文件-->
+    <!--SizeAndTimeBasedRollingPolicy 典型配置如下-->
+    <!--唯一需要注意的是 %i 标记，它的使用场景是这样的，如果log文件的大小达到了maxFileSize，但是时间还没有达到滚动点，
+    那么会创建新的log文件，并用一个递增的 %i 索引。-->
+    <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/${moduleName}/${moduleName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>${moduleName}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${generalPattern}</pattern>
+        </encoder>
+    </appender>
+
+
+    <root level="info">
+        <appender-ref ref="StdoutAppender"/>
+        <appender-ref ref="KafkaAppender"/>
+        <appender-ref ref="rollingFile"/>
+    </root>
+
+    <!--
+    additivity的作用在于当前logger是否使用上级logeer（一般是root logger）配置的appender进行输出。
+
+    false：表示只用当前logger的appender-ref。
+
+    true：表示当前logger的appender-ref和rootLogger的appender-ref都有效。
+
+    应用场景：在项目中依赖其他服务，但是其他服务把业务异常写入error.log中，如果不想找别人修改（别人也不一定为你修改），那么在logback-test.xml中配置，
+
+    <logger name="（包名或类名，也就是org.slf4j.LoggerFactory.getLogger(name)中的name）" level="DEBUG" additivity="false" />
+
+    其实就是自己吃掉其他服务的业务异常，要注意把业务异常转化为自己的业务异常。
+    -->
+
+    <logger name="com.antiy" level="info" additivity="false">
+        <appender-ref ref="StdoutAppender"/>
+        <appender-ref ref="KafkaAppender"/>
+        <appender-ref ref="rollingFile"/>
+    </logger>
+
+</configuration>

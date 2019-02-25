@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
@@ -39,7 +40,7 @@ public class CodeUtils {
                     codeMap.put(codeType.getCode(), code);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new BusinessException("初始化码表信息失败");
             }
             code = new HashMap(16);
             code.put(1, "是");

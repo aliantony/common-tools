@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.Constants;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -57,18 +58,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     private CategoryRequestConvert  categoryRequestConvert;
     @Resource
     private AesEncoder              aesEncoder;
-    // 存在状态常量
-    private static final int        EXISTENCE_STATE               = 1;
-    // 非系统默认常量
-    private static final int        NOT_SYSTEM_DEFAULT            = 1;
-    // 根节点名
-    private static final String     ROOT_CATEGORY                 = "品类型号";
-    // 硬件第一级节点
-    private static final String     FIRST_LEVEL_ASSET_CATEGORY    = "硬件";
-    // 软件第一级节点
-    private static final String     FIRST_LEVEL_SOFTWARE_CATEGORY = "软件";
-
-    private static final int        ALL_PAGE                      = -1;
 
     /**
      *
@@ -85,9 +74,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         checkParentCategory(parent);
         assetCategoryModel.setAssetType(parent.getAssetType());
         assetCategoryModel.setGmtCreate(System.currentTimeMillis());
-        assetCategoryModel.setStatus(EXISTENCE_STATE);
+        assetCategoryModel.setStatus(Constants.EXISTENCE_STATUS);
         // 新增的均为非系统内置的
-        assetCategoryModel.setIsDefault(NOT_SYSTEM_DEFAULT);
+        assetCategoryModel.setIsDefault(Constants.NOT_SYSTEM_DEFAULT_CATEGORY);
         Integer result = assetCategoryModelDao.insert(assetCategoryModel);
         if (!Objects.equals(0, result)) {
             // 写入业务日志
@@ -102,7 +91,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     /**
-     * 设置资产类型与父品类的资产类型一致
+     * 获取父品类
      * @param assetCategoryModel
      * @return
      */
@@ -119,21 +108,23 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      */
     private void checkParentCategory(AssetCategoryModel parent) {
         BusinessExceptionUtils.isNull(parent, "父类型不存在");
-        BusinessExceptionUtils.isTrue(!parent.getName().equals(ROOT_CATEGORY), "不能在第一，二级新增节点");
-        BusinessExceptionUtils.isTrue(!parent.getName().equals(FIRST_LEVEL_ASSET_CATEGORY), "不能在第一，二级新增节点");
-        BusinessExceptionUtils.isTrue(!parent.getName().equals(FIRST_LEVEL_SOFTWARE_CATEGORY), "不能在第一，二级新增节点");
+        BusinessExceptionUtils.isTrue(!parent.getName().equals(Constants.ROOT_CATEGORY_NAME), "不能在第一，二级新增节点");
+        BusinessExceptionUtils.isTrue(!parent.getName().equals(Constants.FIRST_LEVEL_ASSET_CATEGORY_NAME),
+            "不能在第一，二级新增节点");
+        BusinessExceptionUtils.isTrue(!parent.getName().equals(Constants.FIRST_LEVEL_SOFTWARE_CATEGORY_NAME),
+            "不能在第一，二级新增节点");
     }
 
     @Override
     public ActionResponse updateAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel updateCategory = categoryRequestConvert.convert(request, AssetCategoryModel.class);
         BusinessExceptionUtils.isTrue(!request.getStringId().equals(request.getParentId()), "上级品类不能为自身");
-        updateCategory.setId(DataTypeUtils.stringToInteger(request.getStringId()));
         BusinessExceptionUtils.isTrue(!checkNameRepeat(request), "该品类名已存在");
+        updateCategory.setId(DataTypeUtils.stringToInteger(request.getStringId()));
         AssetCategoryModel assetCategoryModelById = assetCategoryModelDao.getById(updateCategory.getId());
         // 判断是不是系统内置
         BusinessExceptionUtils.isTrue(checkIsDefault(assetCategoryModelById), "系统内置品类不能更新或删除");
-        updateCategory.setStatus(EXISTENCE_STATE);
+        updateCategory.setStatus(Constants.EXISTENCE_STATUS);
         BusinessExceptionUtils.isTrue(!checkParentType(updateCategory, assetCategoryModelById), "软硬件类型不同时不能更新");
         Integer result = assetCategoryModelDao.update(updateCategory);
         if (!Objects.equals(0, result)) {
@@ -167,7 +158,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     private Boolean checkIsDefault(AssetCategoryModel assetCategoryModel) {
         BusinessExceptionUtils.isNull(assetCategoryModel, "该类型不存在");
         if (assetCategoryModel.getIsDefault() != null) {
-            return Objects.equals(assetCategoryModel.getIsDefault(), NOT_SYSTEM_DEFAULT);
+            return Objects.equals(assetCategoryModel.getIsDefault(), Constants.NOT_SYSTEM_DEFAULT_CATEGORY);
         }
         return false;
     }
@@ -221,7 +212,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Override
     public AssetCategoryModelNodeResponse queryCategoryNode() throws Exception {
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
-        query.setPageSize(ALL_PAGE);
+        query.setPageSize(Constants.ALL_PAGE);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         return getAssetCategoryModelNodeResponse(assetCategoryModels);
     }
@@ -230,7 +221,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public AssetCategoryModelNodeResponse queryCategoryNode(int type) throws Exception {
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
         query.setAssetType(type);
-        query.setPageSize(ALL_PAGE);
+        query.setPageSize(Constants.ALL_PAGE);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         assetCategoryModels.add(getRootCategory());
         return getAssetCategoryModelNodeResponse(assetCategoryModels);
@@ -250,7 +241,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      */
     private AssetCategoryModel getRootCategory() throws Exception {
         AssetCategoryModelQuery assetCategoryModelQuery = new AssetCategoryModelQuery();
-        assetCategoryModelQuery.setName(ROOT_CATEGORY);
+        assetCategoryModelQuery.setName(Constants.ROOT_CATEGORY_NAME);
         return assetCategoryModelDao.findListAssetCategoryModel(assetCategoryModelQuery).get(0);
     }
 
@@ -288,10 +279,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         List<AssetCategoryModel> list = recursionSearch(assetCategoryModelDao.getAll(), (Integer) id);
         AssetQuery assetQuery = new AssetQuery();
         // 获取品类id数组
-        String[] ids = new String[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            ids[i] = Objects.toString(list.get(i).getId());
-        }
+        String[] ids = getIdList(list);
         assetQuery.setCategoryModels(ids);
         BusinessExceptionUtils.isTrue(!checkExistAsset(assetQuery), "存在资产，不能删除");
         BusinessExceptionUtils.isEmpty(list, "品类不存在，删除失败");
@@ -304,6 +292,14 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", list.toString());
         }
         return ActionResponse.success(result);
+    }
+
+    private String[] getIdList(List<AssetCategoryModel> list) {
+        String[] ids = new String[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            ids[i] = Objects.toString(list.get(i).getId());
+        }
+        return ids;
     }
 
     private boolean checkExistAsset(AssetQuery assetQuery) throws Exception {
