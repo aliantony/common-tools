@@ -126,6 +126,7 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("使用者")
     private String            responsibleUserId;
+
     /**
      * 使用者名称
      */
@@ -153,6 +154,11 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("固件版本")
     private String            firmwareVersion;
+    /**
+     * 软件版本
+     */
+    @ApiModelProperty("软件版本")
+    private String            softwareVersion;
     /**
      * 设备uuid
      */
@@ -624,5 +630,13 @@ public class Asset extends BaseEntity {
 
     public void setResponsibleUserId(String responsibleUserId) {
         this.responsibleUserId = responsibleUserId;
+    }
+
+    public String getSoftwareVersion() {
+        return softwareVersion;
+    }
+
+    public void setSoftwareVersion(String softwareVersion) {
+        this.softwareVersion = softwareVersion;
     }
 }

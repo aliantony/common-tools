@@ -106,7 +106,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private BaseConverter<Asset, AssetResponse>                                responseConverter;
     @Resource
-    private BaseConverter<Asset, ComputeDeviceEntity>                          entityConverter;
+    private BaseConverter<AssetSafetyEquipment, AssetSafetyEquipmentRequest>                     safetyEquipmentToRequestConverter;
+    @Resource
+    private BaseConverter<AssetStorageMedium, AssetStorageMediumRequest>                     storageMediumToRequestConverter;
+    @Resource
+    private BaseConverter<AssetNetworkEquipment , AssetNetworkEquipmentRequest>                     networkEquipmentToRequestConverter;
     @Resource
     private AssetUserDao                                                       assetUserDao;
     @Resource
@@ -136,6 +140,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Integer aid = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
+                int hardware = 1;
                 try {
                     // 记录资产登记信息到变更记录表
                     AssetOuterRequest assetOuterRequestToChangeRecord = new AssetOuterRequest();
@@ -173,6 +178,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
                         if (safetyEquipmentRequest != null) {
                             saveSafety(aid, safetyEquipmentRequest);
+                            AssetSafetyEquipment safetyEquipment = BeanConvert.convertBean(safetyEquipmentRequest,
+                                AssetSafetyEquipment.class);
+                            safetyEquipment.setAssetId(aid);
+                            safetyEquipment.setGmtCreate(System.currentTimeMillis());
+                            safetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            LogHandle.log(safetyEquipmentRequest, AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getName(),
+                                AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.info(logger, AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getName() + " {}",
+                                safetyEquipmentRequest.toString());
+                            assetSafetyEquipmentDao.insert(safetyEquipment);
+//                            AssetSafetyEquipmentRequest assetSafetyEquipmentRequest = safetyEquipmentToRequestConverter.convert(safetyEquipment,AssetSafetyEquipmentRequest.class);
+//                            assetSafetyEquipmentRequest.setId(DataTypeUtils.integerToString(safetyEquipment.getId()));
+//                            assetOuterRequestToChangeRecord.setSafetyEquipment(assetSafetyEquipmentRequest);
                         }
                         // 保存网络设备
                         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
@@ -371,6 +389,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         DataTypeUtils.stringToInteger(assetOuterRequestToChangeRecord.getAsset().getId()));
                     assetChangeRecord.setChangeVal(JsonUtil.object2Json(assetOuterRequestToChangeRecord));
                     assetChangeRecord.setGmtCreate(System.currentTimeMillis());
+                    assetChangeRecord.setGmtModified(System.currentTimeMillis());
+                    assetChangeRecord.setType(hardware);
                     assetChangeRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetChangeRecordDao.insert(assetChangeRecord);
 
