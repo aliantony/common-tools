@@ -1669,7 +1669,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private void sendStreamToClient(File file) throws Exception {
         FileInputStream fileInputStream = new FileInputStream(file);
         byte[] buffer = new byte[1024];
-        int i = 0;
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
             .getResponse();
         response.reset();
@@ -1678,8 +1677,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         response.addHeader("Content-Length", "" + file.length());
         response.setContentType("application/octet-stream");
         OutputStream ous = new BufferedOutputStream(response.getOutputStream());
-        while ((i = fileInputStream.read(buffer)) != -1) {
-            ous.write(buffer, 0, i);
+        int length;
+        while ((length = fileInputStream.read(buffer)) != -1) {
+            ous.write(buffer, 0, length);
         }
         ous.flush();
         ous.close();
