@@ -125,13 +125,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetSoftwareLicense.class);
                     // AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
                     // AssetPortProtocol.class);
-                    if (CheckRepeatName(assetSoftware.getName())) {
-                        ParamterExceptionUtils.isTrue(false, "资产名称重复");
-                    }
+
+                    ParamterExceptionUtils.isTrue(!CheckRepeatName(assetSoftware.getName()), "资产名称重复");
+
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
                     assetSoftware.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
-//                    assetSoftware.setReportSource(2);
                     assetSoftwareDao.insert(assetSoftware);
                     String sid = String.valueOf(assetSoftware.getId());
                     // protocol.setAssetSoftId(sid);
@@ -202,7 +201,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             }
         }
 
-        return ActionResponse.success(aesEncoder.encode(num.toString(), LoginUserUtil.getLoginUser().getUsername()));
+        return ActionResponse.success(num);
 
     }
 
@@ -517,10 +516,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         AssetSoftwareQuery assetQuery = new AssetSoftwareQuery();
         assetQuery.setAssetName(name);
         Integer countAsset = assetSoftwareDao.findCountCheck(assetQuery);
-        if (countAsset >= 1) {
-            return true;
-        }
-        return false;
+        return countAsset >= 1;
     }
 
     @Override
