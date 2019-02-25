@@ -18,7 +18,7 @@ import com.antiy.asset.vo.enums.InfoLabelEnum;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.request.AssetStorageMediumRequest;
-import com.antiy.asset.vo.request.SysAreaVO;
+import com.antiy.asset.vo.request.SysArea;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
@@ -75,9 +75,10 @@ public class StorageMediumFieldCompare extends AbstractChangeRecordCompareImpl {
             // 业务信息
             Asset oldAssetBusinessInfo = new Asset();
             // redis调用（通过区域ID查询名称）
-            SysAreaVO oldSysAreaVO = JsonUtil
-                .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())), SysAreaVO.class);
-            oldAssetBusinessInfo.setAreaName(oldSysAreaVO.getFullName());
+            String oldAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                    DataTypeUtils.stringToInteger(newAsset.getAreaId()));
+            SysArea oldSysArea = redisUtil.getObject(oldAreaKey, SysArea.class);
+            oldAssetBusinessInfo.setAreaName(oldSysArea.getFullName());
             String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
             SysUser oldSysUser = redisUtil.getObject(oldKey, SysUser.class);
@@ -91,9 +92,9 @@ public class StorageMediumFieldCompare extends AbstractChangeRecordCompareImpl {
             oldAssetBusinessInfo.setDescrible(oldAsset.getDescrible());
 
             Asset newAssetBusinessInfo = new Asset();
-            SysAreaVO newSysAreaVO = JsonUtil
-                .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(newAsset.getAreaId())), SysAreaVO.class);
-            oldAssetBusinessInfo.setAreaName(newSysAreaVO.getFullName());
+            SysArea newSysArea = JsonUtil
+                    .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(newAsset.getAreaId())), SysArea.class);
+            newAssetBusinessInfo.setAreaName(newSysArea.getFullName());
             String newKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
             SysUser newSysUser = redisUtil.getObject(newKey, SysUser.class);

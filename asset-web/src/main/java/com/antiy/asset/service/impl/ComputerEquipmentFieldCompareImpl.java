@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.antiy.asset.dao.AssetSoftwareLicenseDao;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.AreaClient;
@@ -75,9 +74,10 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             // 业务信息
             Asset oldAssetBusinessInfo = new Asset();
             // redis调用（通过区域ID查询名称）
-            SysAreaVO oldSysAreaVO = JsonUtil
-                .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())), SysAreaVO.class);
-            oldAssetBusinessInfo.setAreaName(oldSysAreaVO.getFullName());
+            String oldAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                    DataTypeUtils.stringToInteger(newAsset.getAreaId()));
+            SysArea oldSysArea = redisUtil.getObject(oldAreaKey, SysArea.class);
+            oldAssetBusinessInfo.setAreaName(oldSysArea.getFullName());
             // redis调用（通过用户ID查询姓名）
             String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
@@ -97,9 +97,10 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             oldAssetBusinessInfo.setDescrible(oldAsset.getDescrible());
 
             Asset newAssetBusinessInfo = new Asset();
-            SysAreaVO newSysAreaVO = JsonUtil
-                .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(newAsset.getAreaId())), SysAreaVO.class);
-            newAssetBusinessInfo.setAreaName(newSysAreaVO.getFullName());
+            String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                    DataTypeUtils.stringToInteger(newAsset.getAreaId()));
+            SysArea newSysArea = redisUtil.getObject(newAreaKey, SysArea.class);
+            newAssetBusinessInfo.setAreaName(newSysArea.getFullName());
             // redis调用（通过用户ID查询姓名）
             String newKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
