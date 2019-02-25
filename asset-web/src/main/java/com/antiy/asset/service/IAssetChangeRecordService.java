@@ -50,9 +50,36 @@ public interface IAssetChangeRecordService extends IBaseService<AssetChangeRecor
     /**
      * 通过ID查询变更信息
      * @param businessId
-     * @param type
      * @return
      */
-    List<Map<String, Object>> queryChangeFieldInfoById(Integer businessId, Integer type) throws Exception;
+    List<Map<String, Object>> queryComputerEquipmentById(Integer businessId) throws Exception;
+
+    /**
+     * 通过ID查询网络设备变更信息
+     * @param businessId
+     * @return
+     */
+    List<Map<String, Object>> queryNetworkEquipmentById(Integer businessId) throws Exception;
+
+    /**
+     * 通过ID查询存储设备变更信息
+     * @param businessId
+     * @return
+     */
+    List<Map<String, Object>> queryStorageEquipmentById(Integer businessId) throws Exception;
+
+    /**
+     * 通过ID查询安全设备变更信息
+     * @param businessId
+     * @return
+     */
+    List<Map<String, Object>> querySafetyEquipmentById(Integer businessId) throws Exception;
+
+    /**
+     * 通过ID查询其他设备变更信息
+     * @param businessId
+     * @return
+     */
+    List<Map<String, Object>> queryOtherEquipmentById(Integer businessId) throws Exception;
 
 }
