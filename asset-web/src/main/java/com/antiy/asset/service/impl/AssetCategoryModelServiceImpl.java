@@ -58,17 +58,17 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Resource
     private AesEncoder              aesEncoder;
     // 存在状态常量
-    private static final int        EXISTENCE_STATE               = 1;
+    private final int               EXISTENCE_STATE               = 1;
     // 非系统默认常量
-    private static final int        NOT_SYSTEM_DEFAULT            = 1;
+    private final int               NOT_SYSTEM_DEFAULT            = 1;
     // 根节点名
-    private static final String     ROOT_CATEGORY                 = "品类型号";
+    private final String            ROOT_CATEGORY                 = "品类型号";
     // 硬件第一级节点
-    private static final String     FIRST_LEVEL_ASSET_CATEGORY    = "硬件";
+    private final String            FIRST_LEVEL_ASSET_CATEGORY    = "硬件";
     // 软件第一级节点
-    private static final String     FIRST_LEVEL_SOFTWARE_CATEGORY = "软件";
+    private final String            FIRST_LEVEL_SOFTWARE_CATEGORY = "软件";
 
-    private static final int        ALL_PAGE                      = -1;
+    private final int               ALL_PAGE                      = -1;
 
     /**
      *
@@ -102,7 +102,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     /**
-     * 设置资产类型与父品类的资产类型一致
+     * 获取父品类
      * @param assetCategoryModel
      * @return
      */

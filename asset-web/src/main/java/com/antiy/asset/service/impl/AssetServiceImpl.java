@@ -130,7 +130,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                                                                             .get(AssetServiceImpl.class);
     @Resource
     private AesEncoder                                                         aesEncoder;
-    private static final int                                                   ALL_PAGE = -1;
+    private final int                                                          ALL_PAGE = -1;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {

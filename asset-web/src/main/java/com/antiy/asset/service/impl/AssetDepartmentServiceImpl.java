@@ -51,9 +51,9 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     private AesEncoder                                              aesEncoder;
 
     // 存在状态常量
-    private static final int                                        EXISTENCE_STATE = 1;
+    private final int                                               EXISTENCE_STATE = 1;
 
-    private static final int                                        ALL_PAGE        = -1;
+    private final int                                               ALL_PAGE        = -1;
 
     @Override
     public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
