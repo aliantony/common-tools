@@ -137,14 +137,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
 
         AssetRequest requestAsset = request.getAsset();
-        Integer aid = transactionTemplate.execute(new TransactionCallback<Integer>() {
+        Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 int hardware = 1;
                 try {
                     // 记录资产登记信息到变更记录表
                     AssetOuterRequest assetOuterRequestToChangeRecord = new AssetOuterRequest();
-                    String aid = "";
+                    String aid;
                     if (requestAsset != null) {
                         String number = requestAsset.getNumber();
                         ParamterExceptionUtils.isTrue(!CheckRepeat(number), "编号重复");
@@ -208,7 +208,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetSoftwareRelationRequest> computerReques = request.getAssetSoftwareRelationList();
                         List<AssetSoftwareRelationRequest> softwareRelationRequestListToChangeRecord = new ArrayList<>();
                         assetOuterRequestToChangeRecord.setAssetSoftwareRelationList(computerReques);
-                        if (computerReques != null && computerReques.size() > 0) {
+                        if ( CollectionUtils.isNotEmpty (computerReques)) {
                             for (AssetSoftwareRelationRequest computerReque : computerReques) {
                                 AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                                 assetSoftwareRelation.setAssetId(aid);
@@ -241,7 +241,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         List<AssetNetworkCardRequest> networkCardRequestList = request.getNetworkCard();
                         List<AssetNetworkCardRequest> networkRequestListToChangeRecord = new ArrayList<>();
-                        if (networkCardRequestList != null && networkCardRequestList.size() > 0) {
+                            if (CollectionUtils.isNotEmpty (networkCardRequestList) ) {
                             List<AssetNetworkCard> networkCardList = BeanConvert.convert(networkCardRequestList,
                                 AssetNetworkCard.class);
                             for (AssetNetworkCard assetNetworkCard : networkCardList) {
@@ -263,7 +263,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                         List<AssetMainboradRequest> mainboradRequestList = request.getMainboard();
                         List<AssetMainboradRequest> mainboardRequestListToChangeRecord = new ArrayList<>();
-                        if (mainboradRequestList != null && mainboradRequestList.size() > 0) {
+                        if (CollectionUtils.isNotEmpty (mainboradRequestList) ) {
+
                             List<AssetMainborad> mainboradList = BeanConvert.convert(mainboradRequestList,
                                 AssetMainborad.class);
                             for (AssetMainborad assetMainborad : mainboradList) {
@@ -285,7 +286,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                         List<AssetMemoryRequest> memoryRequestList = request.getMemory();
                         List<AssetMemoryRequest> memoryRequestListToChangeRecord = new ArrayList<>();
-                        if (memoryRequestList != null && memoryRequestList.size() > 0) {
+                            if (CollectionUtils.isNotEmpty (memoryRequestList)) {
                             List<AssetMemory> memoryList = BeanConvert.convert(memoryRequestList, AssetMemory.class);
                             for (AssetMemory assetMemory : memoryList) {
                                 ParamterExceptionUtils.isBlank(assetMemory.getBrand(), "内存品牌为空");
@@ -308,7 +309,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                         List<AssetCpuRequest> cpuRequestList = request.getCpu();
                         List<AssetCpuRequest> cpuRequestListToChangeRecord = new ArrayList<>();
-                        if (cpuRequestList != null && cpuRequestList.size() > 0) {
+                        if (CollectionUtils.isNotEmpty (cpuRequestList)) {
                             List<AssetCpu> assetCpuList = BeanConvert.convert(cpuRequestList, AssetCpu.class);
                             for (AssetCpu assetCpu : assetCpuList) {
                                 ParamterExceptionUtils.isBlank(assetCpu.getBrand(), "CPU品牌为空");
@@ -330,7 +331,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                         List<AssetHardDiskRequest> hardDisk = request.getHardDisk();
                         List<AssetHardDiskRequest> hardDiskRequestListToChangeRecord = new ArrayList<>();
-                        if (hardDisk != null && hardDisk.size() > 0) {
+                        if (CollectionUtils.isNotEmpty (hardDisk)) {
                             List<AssetHardDisk> hardDisks = BeanConvert.convert(hardDisk, AssetHardDisk.class);
                             for (AssetHardDisk assetHardDisk : hardDisks) {
                                 ParamterExceptionUtils.isBlank(assetHardDisk.getBrand(), "硬盘品牌为空");
@@ -351,7 +352,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetOuterRequestToChangeRecord.setHardDisk(hardDiskRequestListToChangeRecord);
                         }
                     } else {
-
+                        //保存其他资产
                         AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest();
 
                         String number = assetOthersRequest.getNumber();
@@ -424,12 +425,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         });
 
-        int i = aid;
 
-        if (i > 0) {
+
+        if (id!=null&&id > 0) {
             // 启动流程
             ManualStartActivityRequest activityRequest = request.getManualStartActivityRequest();
-            activityRequest.setBusinessId(aid.toString());
+            activityRequest.setBusinessId(String.valueOf (id));
             activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
             ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
             // 如果流程引擎为空,直接返回错误信息
@@ -439,7 +440,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
 
-        return ActionResponse.success(aid);
+        return ActionResponse.success(id);
     }
 
     private void SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
