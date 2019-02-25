@@ -45,7 +45,7 @@ public class ZipUtil {
     public static void compress(File outFile, String srcPathName) {
         File file = new File(srcPathName);
         if (!file.exists())
-            throw new RuntimeException(srcPathName + "不存在！");
+            throw new BusinessException(srcPathName + "不存在！");
         FileOutputStream fileOutputStream = null;
         CheckedOutputStream cos = null;
         ZipOutputStream out = null;
