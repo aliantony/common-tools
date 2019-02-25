@@ -133,13 +133,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
 
         AssetRequest requestAsset = request.getAsset();
-        Integer aid = transactionTemplate.execute(new TransactionCallback<Integer>() {
+        Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
                     // 记录资产登记信息到变更记录表
                     AssetOuterRequest assetOuterRequestToChangeRecord = new AssetOuterRequest();
-                    String aid = "";
+                    String aid;
                     if (requestAsset != null) {
                         String number = requestAsset.getNumber();
                         ParamterExceptionUtils.isTrue(!CheckRepeat(number), "编号重复");
@@ -333,7 +333,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetOuterRequestToChangeRecord.setHardDisk(hardDiskRequestListToChangeRecord);
                         }
                     } else {
-
+                        //保存其他资产
                         AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest();
 
                         String number = assetOthersRequest.getNumber();
@@ -404,12 +404,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         });
 
-        int i = aid;
 
-        if (i > 0) {
+
+        if (id!=null&&id > 0) {
             // 启动流程
             ManualStartActivityRequest activityRequest = request.getManualStartActivityRequest();
-            activityRequest.setBusinessId(aid.toString());
+            activityRequest.setBusinessId(String.valueOf (id));
             activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
             ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
             // 如果流程引擎为空,直接返回错误信息
@@ -419,7 +419,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
 
-        return ActionResponse.success(aid);
+        return ActionResponse.success(id);
     }
 
     private void SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
