@@ -1,31 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -52,6 +26,30 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -513,15 +511,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     String uid = null;
 
-    private boolean CheckUser(String user) throws Exception {
+    private String CheckUser(String user) throws Exception {
         AssetUserQuery assetUserQuery = new AssetUserQuery();
         assetUserQuery.setExportName(user);
         List<AssetUser> assetUsers = assetUserDao.queryUserList(assetUserQuery);
-        if (null != assetUsers && assetUsers.size() > 0) {
-            uid = assetUsers.get(0).getStringId();
-            return true;
+        if (CollectionUtils.isNotEmpty (assetUsers)){
+            return  assetUsers.get(0).getStringId();
         }
-        return false;
+        return "";
     }
 
     @Override
@@ -1718,6 +1715,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int success = 0;
         int repeat = 0;
         int error = 0;
+        String user=null;
         StringBuilder builder = new StringBuilder();
         List<ComputeDeviceEntity> dataList = result.getDataList();
         for (ComputeDeviceEntity entity : dataList) {
@@ -1748,14 +1746,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("序号").append(entity.getOrderNumber()).append("使用者为空");
                 continue;
             }
-            if (!CheckUser(entity.getUser())) {
+            if ("".equals (CheckUser(entity.getUser()))) {
                 error++;
                 builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
                 continue;
             }
 
             Asset asset = new Asset();
-            asset.setResponsibleUserId(uid);
+            asset.setResponsibleUserId(CheckUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(importRequest.getAreaId());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -1934,22 +1932,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         re += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(re);
-        if (error + repeat > 0) {
-            stringBuilder.append(re).append("其中").append(builder);
-            return stringBuilder.toString();
-        }
-        return stringBuilder.toString();
+//        if (error + repeat > 0) {
+//            stringBuilder.append(re).append("其中").append(builder);
+//            return stringBuilder.toString();
+//        }
+//        return stringBuilder.toString();
+
+        StringBuilder sb = new StringBuilder(result.getMsg ());
+        sb.delete (sb.lastIndexOf ("成"),sb.lastIndexOf ("."));
+        return stringBuilder.append(builder).append (sb).toString();
+
     }
 
     @Override
     public String importNet(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-        ImportResult<NetworkDeviceEntity> importResult = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class,
+        ImportResult<NetworkDeviceEntity> result = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class,
             file, 0, 0);
         int success = 0;
         int repeat = 0;
         int error = 0;
         StringBuilder builder = new StringBuilder();
-        List<NetworkDeviceEntity> entities = importResult.getDataList();
+        List<NetworkDeviceEntity> entities = result.getDataList();
         for (NetworkDeviceEntity networkDeviceEntity : entities) {
             if (StringUtils.isBlank(networkDeviceEntity.getName())) {
                 error++;
@@ -1973,14 +1976,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("序号").append(networkDeviceEntity.getOrderNumber()).append("使用者为空");
                 continue;
             }
-            if (!CheckUser(networkDeviceEntity.getUser())) {
+
+
+            if ("".equals (CheckUser(networkDeviceEntity.getUser()))) {
                 error++;
                 builder.append("序号").append(networkDeviceEntity.getOrderNumber()).append("没有此使用者");
                 continue;
             }
 
             Asset asset = new Asset();
-            asset.setResponsibleUserId(uid);
+            asset.setResponsibleUserId(CheckUser(networkDeviceEntity.getUser()));
             AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(importRequest.getAreaId());
@@ -2058,11 +2063,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         re += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(re);
-        if (error + repeat > 0) {
-            stringBuilder.append(re).append("其中").append(builder);
-        }
+//        if (error + repeat > 0) {
+//            stringBuilder.append(re).append("其中").append(builder);
+//        }
+//
+//        return stringBuilder.toString();
 
-        return stringBuilder.toString();
+        StringBuilder sb = new StringBuilder(result.getMsg ());
+        sb.delete (sb.lastIndexOf ("成"),sb.lastIndexOf ("."));
+        return stringBuilder.append(builder).append (sb).toString();
     }
 
     @Override
@@ -2091,25 +2100,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("序号").append(entity.getOrderNumber()).append("资产编号重复");
                 continue;
             }
-            if (!CheckUser(entity.getUser())) {
-                error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
-                continue;
-            }
 
             if (StringUtils.isBlank(entity.getUser())) {
                 error++;
                 builder.append("序号").append(entity.getOrderNumber()).append("使用者为空");
                 continue;
             }
-            if (!CheckUser(entity.getUser())) {
+            if ("".equals (CheckUser(entity.getUser()))) {
                 error++;
                 builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
                 continue;
             }
 
             Asset asset = new Asset();
-            asset.setResponsibleUserId(uid);
+            asset.setResponsibleUserId(CheckUser(entity.getUser()));
             AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(importRequest.getAreaId());
@@ -2173,18 +2177,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
-        if (error > 0) {
-            stringBuilder.append(res).append("其中").append(builder);
-        }
+//        if (error > 0) {
+//            stringBuilder.append(res).append("其中").append(builder);
+//        }
+//
+//        return stringBuilder.toString();
 
-        return stringBuilder.toString();
+        StringBuilder sb = new StringBuilder(result.getMsg ());
+        sb.delete (sb.lastIndexOf ("成"),sb.lastIndexOf ("."));
+        return stringBuilder.append(builder).append (sb).toString();
+
 
     }
 
     @Override
     public String importStory(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-        ImportResult<StorageDeviceEntity> re = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 0, 0);
-        List<StorageDeviceEntity> resultDataList = re.getDataList();
+        ImportResult<StorageDeviceEntity> result = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 0, 0);
+        List<StorageDeviceEntity> resultDataList = result.getDataList();
         int success = 0;
         int repeat = 0;
         int error = 0;
@@ -2212,14 +2221,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("序号").append(entity.getOrderNumber()).append("使用者为空");
                 continue;
             }
-            if (!CheckUser(entity.getUser())) {
+            if ("".equals (CheckUser(entity.getUser()))) {
                 error++;
                 builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
                 continue;
             }
 
             Asset asset = new Asset();
-            asset.setResponsibleUserId(uid);
+            asset.setResponsibleUserId(CheckUser(entity.getUser()));
             AssetStorageMedium assetSafetyEquipment = new AssetStorageMedium();
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(importRequest.getAreaId());
@@ -2286,17 +2295,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
-        if (error + repeat > 0) {
-            stringBuilder.append("其中").append(builder);
-        }
-
-        return stringBuilder.toString();
+//        if (error + repeat > 0) {
+//            stringBuilder.append("其中").append(builder);
+//        }
+//
+//        return stringBuilder.toString();
+        StringBuilder sb = new StringBuilder(result.getMsg ());
+        sb.delete (sb.lastIndexOf ("成"),sb.lastIndexOf ("."));
+        return stringBuilder.append(builder).append (sb).toString();
     }
 
     @Override
     public String importOhters(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-        ImportResult<OtherDeviceEntity> re = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 0, 0);
-        List<OtherDeviceEntity> resultDataList = re.getDataList();
+        ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 0, 0);
+        List<OtherDeviceEntity> resultDataList = result.getDataList();
         int success = 0;
         int repeat = 0;
         int error = 0;
@@ -2323,13 +2335,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("序号").append(entity.getOrderNumber()).append("使用者为空");
                 continue;
             }
-            if (!CheckUser(entity.getUser())) {
+            if ("".equals (CheckUser(entity.getUser()))) {
                 error++;
                 builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
                 continue;
             }
+
             Asset asset = new Asset();
-            asset.setResponsibleUserId(uid);
+            asset.setResponsibleUserId(CheckUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(importRequest.getAreaId());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -2382,11 +2395,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
-        if (error + repeat > 0) {
-            stringBuilder.append("其中").append(builder);
-        }
-
-        return stringBuilder.toString();
+//        if (error + repeat > 0) {
+//            stringBuilder.append("其中").append(builder);
+//        }
+//
+//        return stringBuilder.toString();
+        StringBuilder sb = new StringBuilder(result.getMsg ());
+        sb.delete (sb.lastIndexOf ("成"),sb.lastIndexOf ("."));
+        return stringBuilder.append(builder).append (sb).toString();
     }
 
     private void exportToClient(Class clazz, String fileName, String title) {

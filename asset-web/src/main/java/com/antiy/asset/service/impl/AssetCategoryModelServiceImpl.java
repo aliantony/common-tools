@@ -68,6 +68,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     // 软件第一级节点
     private static final String     FIRST_LEVEL_SOFTWARE_CATEGORY = "软件";
 
+    private static final int        ALL_PAGE                      = -1;
+
     /**
      *
      * @param request
@@ -219,7 +221,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Override
     public AssetCategoryModelNodeResponse queryCategoryNode() throws Exception {
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
-        query.setPageSize(-1);
+        query.setPageSize(ALL_PAGE);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         return getAssetCategoryModelNodeResponse(assetCategoryModels);
     }
@@ -228,7 +230,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public AssetCategoryModelNodeResponse queryCategoryNode(int type) throws Exception {
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
         query.setAssetType(type);
-        query.setPageSize(-1);
+        query.setPageSize(ALL_PAGE);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         assetCategoryModels.add(getRootCategory());
         return getAssetCategoryModelNodeResponse(assetCategoryModels);

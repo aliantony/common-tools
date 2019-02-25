@@ -49,13 +49,15 @@ public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangePr
         assetSoftware.setSoftwareStatus(softwareStatusEnum.getCode());
 
         // 判断软件退役分析流程中，指定资产信息是否影响基准
-        Map<String, Boolean> analyzeInfo = (Map<String, Boolean>) JSONArray
-                .parse(assetStatusReqeust.getSchemeRequest().getExtension());
+        if(null != assetStatusReqeust.getSchemeRequest()) {
+            Map<String, Boolean> analyzeInfo = (Map<String, Boolean>) JSONArray
+                    .parse(assetStatusReqeust.getSchemeRequest().getExtension());
 
-        // 如果是软件资产退役,并且不会影响基准，则会直接到退役状态
-        if (AssetFlowCategoryEnum.SOFTWARE_RETIRE.equals(assetStatusReqeust.getAssetFlowCategoryEnum())
-                && analyzeInfo!= null &&  !analyzeInfo.get("baseline")) {
-            assetSoftware.setSoftwareStatus(SoftwareStatusEnum.RETIRE.getCode());
+            // 如果是软件资产退役,并且不会影响基准，则会直接到退役状态
+            if (AssetFlowCategoryEnum.SOFTWARE_RETIRE.equals(assetStatusReqeust.getAssetFlowCategoryEnum())
+                    && analyzeInfo != null && !analyzeInfo.get("baseline")) {
+                assetSoftware.setSoftwareStatus(SoftwareStatusEnum.RETIRE.getCode());
+            }
         }
 
         assetSoftwareDao.update(assetSoftware);

@@ -53,6 +53,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     // 存在状态常量
     private static final int                                        EXISTENCE_STATE = 1;
 
+    private static final int                                        ALL_PAGE        = -1;
+
     @Override
     public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
         request.setId(null);
@@ -164,8 +166,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Override
     public AssetDepartmentNodeResponse findDepartmentNode() throws Exception {
         AssetDepartmentQuery query = new AssetDepartmentQuery();
-        query.setStatus(1);
-        query.setPageSize(-1);
+        query.setStatus(EXISTENCE_STATE);
+        query.setPageSize(ALL_PAGE);
         List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
         NodeUtilsConverter nodeConverter = new NodeUtilsConverter();
         List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(assetDepartment,
