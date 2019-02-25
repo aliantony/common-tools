@@ -1,12 +1,10 @@
 package com.antiy.asset.util;
 
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
@@ -14,7 +12,7 @@ import java.util.zip.ZipOutputStream;
 
 public class ZipUtil {
     static final int            BUFFER = 8192;
-    private static final Logger logger = LogUtils.get();
+    private static final Logger logger = LogUtils.get(ZipUtil.class);
 
     /**
      *
@@ -22,34 +20,47 @@ public class ZipUtil {
      * @param files 压缩的文件
      */
     public static void compress(File outFile, File[] files) {
-        ZipOutputStream out;
+        ZipOutputStream out = null;
+        FileOutputStream fileOutputStream = null;
+        CheckedOutputStream cos = null;
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(outFile);
-            CheckedOutputStream cos = new CheckedOutputStream(fileOutputStream, new CRC32());
+            fileOutputStream = new FileOutputStream(outFile);
+            cos = new CheckedOutputStream(fileOutputStream, new CRC32());
             out = new ZipOutputStream(cos);
             String basedir = "";
             for (int i = 0; i < files.length; i++) {
                 compress(new File(files[i].getAbsolutePath()), out, basedir);
             }
-            out.close();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BusinessException("文件压缩异常");
+        } finally {
+            CloseUtils.close(out);
+            CloseUtils.close(cos);
+            CloseUtils.close(fileOutputStream);
         }
     }
+
+    
 
     public static void compress(File outFile, String srcPathName) {
         File file = new File(srcPathName);
         if (!file.exists())
-            throw new RuntimeException(srcPathName + "不存在！");
+            throw new BusinessException(srcPathName + "不存在！");
+        FileOutputStream fileOutputStream = null;
+        CheckedOutputStream cos = null;
+        ZipOutputStream out = null;
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(outFile);
-            CheckedOutputStream cos = new CheckedOutputStream(fileOutputStream, new CRC32());
-            ZipOutputStream out = new ZipOutputStream(cos);
+            fileOutputStream = new FileOutputStream(outFile);
+            cos = new CheckedOutputStream(fileOutputStream, new CRC32());
+            out = new ZipOutputStream(cos);
             String basedir = "";
             compress(file, out, basedir);
-            out.close();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BusinessException("文件压缩异常");
+        } finally {
+            CloseUtils.close(out);
+            CloseUtils.close(cos);
+            CloseUtils.close(fileOutputStream);
         }
     }
 
@@ -66,9 +77,9 @@ public class ZipUtil {
 
     /** 压缩一个目录 */
     private static void compressDirectory(File dir, ZipOutputStream out, String basedir) {
-        if (!dir.exists())
+        if (!dir.exists()) {
             return;
-
+        }
         File[] files = dir.listFiles();
         for (int i = 0; i < files.length; i++) {
             /* 递归 */
@@ -81,8 +92,9 @@ public class ZipUtil {
         if (!file.exists()) {
             return;
         }
+        BufferedInputStream bis = null;
         try {
-            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+            bis = new BufferedInputStream(new FileInputStream(file));
             ZipEntry entry = new ZipEntry(basedir + file.getName());
             out.putNextEntry(entry);
             int count;
@@ -90,9 +102,10 @@ public class ZipUtil {
             while ((count = bis.read(data, 0, BUFFER)) != -1) {
                 out.write(data, 0, count);
             }
-            bis.close();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BusinessException("文件压缩异常");
+        } finally {
+            CloseUtils.close(bis);
         }
     }
 

@@ -8,7 +8,10 @@ import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
-import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetOperationTableEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -1649,24 +1652,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     }
 
-    private void sendStreamToClient(File file) throws Exception {
-        FileInputStream fileInputStream = new FileInputStream(file);
-        byte[] buffer = new byte[1024];
-        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-            .getResponse();
-        response.reset();
-        response.addHeader("Content-Disposition", "attachment;filename="
-                                                  + new String(file.getName().getBytes("UTF-8"), "ISO-8859-1"));
-        response.addHeader("Content-Length", "" + file.length());
-        response.setContentType("application/octet-stream");
-        OutputStream ous = new BufferedOutputStream(response.getOutputStream());
-        int length;
-        while ((length = fileInputStream.read(buffer)) != -1) {
-            ous.write(buffer, 0, length);
+    private void sendStreamToClient(File file) {
+        FileInputStream fileInputStream = null;
+        OutputStream ous = null;
+        try {
+            fileInputStream = new FileInputStream(file);
+            byte[] buffer = new byte[1024];
+            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getResponse();
+            response.reset();
+            response.addHeader("Content-Disposition",
+                "attachment;filename=" + new String(file.getName().getBytes("UTF-8"), "ISO-8859-1"));
+            response.addHeader("Content-Length", "" + file.length());
+            response.setContentType("application/octet-stream");
+            ous = new BufferedOutputStream(response.getOutputStream());
+            int length;
+            while ((length = fileInputStream.read(buffer)) != -1) {
+                ous.write(buffer, 0, length);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw new BusinessException("发送客户端失败");
+        } finally {
+            CloseUtils.close(ous);
+            CloseUtils.close(fileInputStream);
         }
-        ous.flush();
-        ous.close();
-        fileInputStream.close();
+
     }
 
     private Map<String, Class> initMap() {
@@ -1699,6 +1710,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int success = 0;
         int repeat = 0;
         int error = 0;
+        String user = null;
         StringBuilder builder = new StringBuilder();
         List<ComputeDeviceEntity> dataList = result.getDataList();
         for (ComputeDeviceEntity entity : dataList) {
@@ -2395,7 +2407,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                                                                                               throws Exception {
         assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToStringArray(LoginUserUtil.getLoginUser()
             .getAreaIdsOfCurrentUser().toArray()));
-        assetQuery.setPageSize(ALL_PAGE);
+        assetQuery.setPageSize(Constants.ALL_PAGE);
         List<AssetResponse> list = this.findListAsset(assetQuery);
         List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
         DownloadVO downloadVO = new DownloadVO();
