@@ -1666,24 +1666,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     }
 
-    private void sendStreamToClient(File file) throws Exception {
-        FileInputStream fileInputStream = new FileInputStream(file);
-        byte[] buffer = new byte[1024];
-        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-            .getResponse();
-        response.reset();
-        response.addHeader("Content-Disposition", "attachment;filename="
-                                                  + new String(file.getName().getBytes("UTF-8"), "ISO-8859-1"));
-        response.addHeader("Content-Length", "" + file.length());
-        response.setContentType("application/octet-stream");
-        OutputStream ous = new BufferedOutputStream(response.getOutputStream());
-        int length;
-        while ((length = fileInputStream.read(buffer)) != -1) {
-            ous.write(buffer, 0, length);
+    private void sendStreamToClient(File file) {
+        FileInputStream fileInputStream = null;
+        OutputStream ous = null;
+        try {
+            fileInputStream = new FileInputStream(file);
+            byte[] buffer = new byte[1024];
+            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getResponse();
+            response.reset();
+            response.addHeader("Content-Disposition",
+                "attachment;filename=" + new String(file.getName().getBytes("UTF-8"), "ISO-8859-1"));
+            response.addHeader("Content-Length", "" + file.length());
+            response.setContentType("application/octet-stream");
+            ous = new BufferedOutputStream(response.getOutputStream());
+            int length;
+            while ((length = fileInputStream.read(buffer)) != -1) {
+                ous.write(buffer, 0, length);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw new BusinessException("发送客户端失败");
+        } finally {
+            CloseUtils.close(ous);
+            CloseUtils.close(fileInputStream);
         }
-        ous.flush();
-        ous.close();
-        fileInputStream.close();
+
     }
 
     private Map<String, Class> initMap() {
