@@ -1335,18 +1335,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     List<AssetGroupRequest> assetGroup = assetOuterRequest.getAsset().getAssetGroups();
                     if (assetGroup != null && !assetGroup.isEmpty()) {
                         StringBuilder stringBuilder = new StringBuilder();
-                        assetGroup.forEach(assetGroupRequest -> {
+                        assetGroup.stream().forEach(assetGroupRequest -> {
                             try {
                                 String assetGroupName = assetGroupDao.getById(
-                                    DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
-                                // asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
-                            asset.setAssetGroup(stringBuilder.append(assetGroupName).substring(0,
-                                stringBuilder.length() - 1));
-                        } catch (Exception e) {
-                            throw new BusinessException("资产组名称获取失败");
-                        }
-                    })  ;
-                        asset.setAssetGroup(stringBuilder.toString());
+                                        DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
+                                asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",")
+                                        .substring(0, stringBuilder.length() - 1));
+                            } catch (Exception e) {
+                                throw new BusinessException("资产组名称获取失败");
+                            }
+                        });
                     }
                     StringBuffer stringBuffer = new StringBuffer();
                     List<AssetGroupRequest> assetGroups = assetOuterRequest.getAsset().getAssetGroups();
@@ -1588,25 +1586,33 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         });
-        /* // 状态变更 AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
-         * assetStatusReqeust.setAssetStatus(AssetStatusEnum.NET_IN);
-         * assetStatusReqeust.setAssetId(asset.getStringId()); assetStatusReqeust.setAgree(true);
-         * assetStatusReqeust.setSoftware(false);
-         * assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.HARDWARE_CHANGE);
-         * assetStatusReqeust.setManualStartActivityRequest(assetOuterRequest.getActivityRequest());
-         * AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeProcessImpl.class)
-         * .changeStatus(assetStatusReqeust); */
+        // 保存变更信息
+        AssetChangeRecord assetChangeRecord = new AssetChangeRecord();
+        assetChangeRecord.setIsStore(1);
+        assetChangeRecord.setBusinessId(DataTypeUtils.stringToInteger(asset.getStringId()));
+        assetChangeRecord.setType(AssetTypeEnum.HARDWARE.getCode());
+        assetChangeRecord.setChangeVal(JsonUtil.object2Json(assetOuterRequest));
+        assetChangeRecord.setGmtCreate(System.currentTimeMillis());
+        assetChangeRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetChangeRecordDao.insert(assetChangeRecord);
+        // 工作流
+        ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getManualStartActivityRequest();
+        if (!Objects.isNull(manualStartActivityRequest)) {
+            // 其他设备
+            if (assetOuterRequest.getAssetOthersRequest() != null) {
+                manualStartActivityRequest.setBusinessId(assetOuterRequest.getAssetOthersRequest().getId());
+            } else {
+                manualStartActivityRequest.setBusinessId(assetOuterRequest.getAsset().getId());
+            }
+            manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
+            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
+            //启动流程
+            activityClient.manualStartProcess(manualStartActivityRequest);
+        } else {
+            //处理流程
+            activityClient.completeTask(assetOuterRequest.getActivityHandleRequest());
+        }
         // TODO 下发智甲
-
-        // 通知工作流
-        // ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getActivityRequest();
-        // if (Objects.isNull(manualStartActivityRequest)) {
-        // manualStartActivityRequest = new ManualStartActivityRequest();
-        // }
-        // manualStartActivityRequest.setBusinessId(asset.getStringId());
-        // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
-        // manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
-        // activityClient.manualStartProcess(manualStartActivityRequest);
         return assetCount;
     }
 
