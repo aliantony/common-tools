@@ -13,6 +13,7 @@ import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetOperationTableEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -131,6 +132,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                                                                             .get(AssetServiceImpl.class);
     @Resource
     private AesEncoder                                                         aesEncoder;
+    private static final int                                                   ALL_PAGE = -1;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -2421,7 +2423,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                                                                                               throws Exception {
         assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToStringArray(LoginUserUtil.getLoginUser()
             .getAreaIdsOfCurrentUser().toArray()));
-        assetQuery.setPageSize(Constants.ALL_PAGE);
+        assetQuery.setPageSize(ALL_PAGE);
         List<AssetResponse> list = this.findListAsset(assetQuery);
         List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
         DownloadVO downloadVO = new DownloadVO();
