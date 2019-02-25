@@ -44,15 +44,17 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
     @Override
     List<Map<String, Object>> compareCommonBusinessInfo(Integer businessId) throws Exception {
         Integer hardware = 1;
+        Integer oldInfo = 1;
+        Integer newInfo = 0;
         List<String> changeValStrList = super.getTwoRecentChangeVal(businessId, hardware);
         List<Map<String, Object>> changeValList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(changeValStrList) && changeValStrList.size() > 1) {
             // 变更前的信息
-            AssetOuterRequest oldAssetOuterRequest = JsonUtil.json2Object(changeValStrList.get(1),
+            AssetOuterRequest oldAssetOuterRequest = JsonUtil.json2Object(changeValStrList.get(oldInfo),
                 AssetOuterRequest.class);
             // 变更后的信息
             Asset oldAsset = assetRequestToAssetConverter.convert(oldAssetOuterRequest.getAsset(), Asset.class);
-            AssetOuterRequest newAssetOuterRequest = JsonUtil.json2Object(changeValStrList.get(0),
+            AssetOuterRequest newAssetOuterRequest = JsonUtil.json2Object(changeValStrList.get(newInfo),
                 AssetOuterRequest.class);
             Asset newAsset = assetRequestToAssetConverter.convert(newAssetOuterRequest.getAsset(), Asset.class);
             // 拆分资产信息为通用信息和业务信息，便于前端显示
@@ -76,6 +78,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             SysAreaVO oldSysAreaVO = JsonUtil
                 .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())), SysAreaVO.class);
             oldAssetBusinessInfo.setAreaName(oldSysAreaVO.getFullName());
+            // redis调用（通过用户ID查询姓名）
             String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
             SysUser oldSysUser = redisUtil.getObject(oldKey, SysUser.class);
@@ -97,6 +100,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             SysAreaVO newSysAreaVO = JsonUtil
                 .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(newAsset.getAreaId())), SysAreaVO.class);
             newAssetBusinessInfo.setAreaName(newSysAreaVO.getFullName());
+            // redis调用（通过用户ID查询姓名）
             String newKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
             SysUser newSysUser = redisUtil.getObject(newKey, SysUser.class);

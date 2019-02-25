@@ -123,31 +123,31 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
 
     @Override
     public List<Map<String, Object>> queryNetworkEquipmentById(Integer businessId) throws Exception {
-        NetworkEquipmentFieldCompare networkEquipmentFieldCompare = new NetworkEquipmentFieldCompare();
+        NetworkEquipmentFieldCompare networkEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(NetworkEquipmentFieldCompare.class);
         return networkEquipmentFieldCompare.compareCommonBusinessInfo(businessId);
     }
 
     @Override
     public List<Map<String, Object>> queryStorageEquipmentById(Integer businessId) throws Exception {
-        StorageMediumFieldCompare storageMediumFieldCompare = new StorageMediumFieldCompare();
+        StorageMediumFieldCompare storageMediumFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(StorageMediumFieldCompare.class);
         return storageMediumFieldCompare.compareCommonBusinessInfo(businessId);
     }
 
     @Override
     public List<Map<String, Object>> querySafetyEquipmentById(Integer businessId) throws Exception {
-        SafetyEquipmentFieldCompare safetyEquipmentFieldCompare = new SafetyEquipmentFieldCompare();
+        SafetyEquipmentFieldCompare safetyEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(SafetyEquipmentFieldCompare.class);
         return safetyEquipmentFieldCompare.compareCommonBusinessInfo(businessId);
     }
 
     @Override
     public List<Map<String, Object>> queryOtherEquipmentById(Integer businessId) throws Exception {
-        OtherEquipmentFieldCompare otherEquipmentFieldCompare = new OtherEquipmentFieldCompare();
+        OtherEquipmentFieldCompare otherEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(OtherEquipmentFieldCompare.class);
         return otherEquipmentFieldCompare.compareCommonBusinessInfo(businessId);
     }
 
     @Override
     public List<Map<String, Object>> queryComputerEquipmentById(Integer businessId) throws Exception {
-        ComputerEquipmentFieldCompareImpl computerEquipmentFieldCompare = new ComputerEquipmentFieldCompareImpl();
+        ComputerEquipmentFieldCompareImpl computerEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(ComputerEquipmentFieldCompareImpl.class);
         return computerEquipmentFieldCompare.compareCommonBusinessInfo(businessId);
     }
 }

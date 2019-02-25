@@ -51,15 +51,17 @@ public class OtherEquipmentFieldCompare extends AbstractChangeRecordCompareImpl 
     @Override
     List<Map<String, Object>> compareCommonBusinessInfo(Integer businessId) throws Exception {
         Integer hardware = 1;
+        Integer oldInfo = 1;
+        Integer newInfo = 0;
         List<String> changeValStrList = super.getTwoRecentChangeVal(businessId, hardware);
         List<Map<String, Object>> changeValList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(changeValStrList) && changeValStrList.size() > 1) {
             // 变更前的信息
-            AssetOuterRequest oldAssetOuterRequest = JsonUtil.json2Object(changeValStrList.get(1),
+            AssetOuterRequest oldAssetOuterRequest = JsonUtil.json2Object(changeValStrList.get(oldInfo),
                 AssetOuterRequest.class);
             // 变更后的信息
             Asset oldAsset = assetRequestToAssetConverter.convert(oldAssetOuterRequest.getAsset(), Asset.class);
-            AssetOuterRequest newAssetOuterRequest = JsonUtil.json2Object(changeValStrList.get(0),
+            AssetOuterRequest newAssetOuterRequest = JsonUtil.json2Object(changeValStrList.get(newInfo),
                 AssetOuterRequest.class);
             Asset newAsset = assetRequestToAssetConverter.convert(newAssetOuterRequest.getAsset(), Asset.class);
             // 拆分资产信息为通用信息和业务信息，便于前端显示

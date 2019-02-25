@@ -17,7 +17,7 @@ import com.antiy.common.base.BaseRequest;
 public abstract class AbstractChangeRecordCompareImpl implements IChangeValCompare {
 
     @Resource
-    public  AssetChangeRecordDao assetChangeRecordDao;
+    private AssetChangeRecordDao assetChangeRecordDao;
 
     // 通用信息、业务信息
     abstract List<Map<String, Object>> compareCommonBusinessInfo(Integer businessId) throws Exception;
