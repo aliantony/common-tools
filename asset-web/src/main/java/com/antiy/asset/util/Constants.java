@@ -29,12 +29,12 @@ public class Constants {
      */
     public static final int     ALL_PAGE                           = -1;
     /**
-     *  存在状态常量
+     * 存在状态常量
      */
-    public static final int               EXISTENCE_STATUS               = 1;
+    public static final int     EXISTENCE_STATUS                   = 1;
     /**
-     *  品类型号非系统默认常量
+     * 品类型号非系统默认常量
      */
-    public static final int               NOT_SYSTEM_DEFAULT_CATEGORY               = 1;
+    public static final int     NOT_SYSTEM_DEFAULT_CATEGORY        = 1;
 
 }
