@@ -6,6 +6,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -123,6 +124,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             assetGroupRelation.setGmtCreate(System.currentTimeMillis());
             assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetGroupRelationList.add(assetGroupRelation);
+        }
+
+        if(CollectionUtils.isNotEmpty(assetGroupRelationList)){
             result = assetGroupRelationDao.insertBatch(assetGroupRelationList);
         }
 
