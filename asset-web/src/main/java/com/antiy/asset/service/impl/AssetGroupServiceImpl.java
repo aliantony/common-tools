@@ -84,6 +84,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
                 assetGroupRelation.setAssetId(assetId);
                 assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
+                assetGroupRelation.setGmtCreate(System.currentTimeMillis());
                 assetGroupRelationDao.insert(assetGroupRelation);
             }
         }
@@ -100,7 +101,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     public Integer updateAssetGroup(AssetGroupRequest request) throws Exception {
         AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
         assetGroup.setId(DataTypeUtils.stringToInteger(request.getId()));
-        assetGroup.setId(DataTypeUtils.stringToInteger(request.getId()));
+        assetGroup.setGmtModified(System.currentTimeMillis());
+        assetGroup.setModifyUser(LoginUserUtil.getLoginUser().getId());
         Integer[] assetIdArr = DataTypeUtils.stringArrayToIntegerArray(request.getAssetIds());
 
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
@@ -113,7 +115,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}", assetGroup.toString());
         }
-
+        int result = 0;
         for (Integer assetId : assetIdArr) {
             AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
             assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
@@ -121,9 +123,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             assetGroupRelation.setGmtCreate(System.currentTimeMillis());
             assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetGroupRelationList.add(assetGroupRelation);
+            result = assetGroupRelationDao.insertBatch(assetGroupRelationList);
         }
-
-        Integer result = assetGroupRelationDao.insertBatch(assetGroupRelationList);
 
         if (!Objects.equals(0, result)) {
             // 写入业务日志
