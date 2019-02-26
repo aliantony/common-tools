@@ -1,13 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.AssetOperationRecord;
@@ -25,6 +17,12 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.exception.BusinessException;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * <p> 资产操作记录表 服务实现类 </p>
@@ -123,6 +121,12 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
             allowInstall.setName(SoftwareStatusEnum.ALLOW_INSTALL.getMsg());
             allowInstall.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
             nameValueVoList.add(allowInstall);
+
+            map.put("originStatus", SoftwareStatusEnum.WAIT_RETIRE.getCode());
+            NameValueVo<AssetOperationRecordBarResponse> re = new NameValueVo<>();
+            re.setName(SoftwareStatusEnum.WAIT_RETIRE.getMsg());
+            re.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
+            nameValueVoList.add(re);
 
             map.put("originStatus", SoftwareStatusEnum.RETIRE.getCode());
             NameValueVo<AssetOperationRecordBarResponse> retire = new NameValueVo<>();
