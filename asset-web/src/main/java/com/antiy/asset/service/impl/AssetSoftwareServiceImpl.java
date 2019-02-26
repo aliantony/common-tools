@@ -173,12 +173,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 } catch (RequestParamValidateException e) {
                     transactionStatus.setRollbackOnly();
                     ParamterExceptionUtils.isTrue(false, "资产名称重复");
-                    logger.error("录入失败",e);
+                    logger.error("录入失败", e);
 
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
 
-                    logger.error("录入失败",e);
+                    logger.error("录入失败", e);
                 }
                 return 0;
             }
@@ -230,7 +230,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     /**
                      * // 2.更新license表 if (null != request.getSoftwareLicenseRequest() &&
                      * StringUtils.isNotBlank(request.getSoftwareLicenseRequest().getId())) { updateLicense(request); }
-                     * 
+                     *
                      * // 3.是否存在关联表Id和状态，如果存在，则更新关联表即可(更新某一个实例) if
                      * (StringUtils.isNotBlank(request.getAssetSoftwareRelationId()) && request.getSoftwareStatus() !=
                      * null) { AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
@@ -241,10 +241,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                      * releationIds = assetSoftwareRelationDao.getAllReleationId(null,
                      * DataTypeUtils.stringToInteger(request.getId())); if (CollectionUtils.isNotEmpty(releationIds)) {
                      * assetPortProtocolDao.deletePortProtocol(releationIds); }
-                     * 
+                     *
                      * // 5.移除关系表 assetSoftwareRelationDao.deleteSoftwareRelAsset(null,
                      * DataTypeUtils.stringToInteger(request.getId()));
-                     * 
+                     *
                      * // 5.插入关系表，并且插入端口数据 for (String assetId : request.getAssetIds()) { AssetSoftwareRelation
                      * assetSoftwareRelation = new AssetSoftwareRelation();
                      * assetSoftwareRelation.setSoftwareId(request.getId()); assetSoftwareRelation.setAssetId(assetId);
@@ -252,14 +252,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                      * assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                      * assetSoftwareRelationDao.insert(assetSoftwareRelation);
                      * ParamterExceptionUtils.isNull(assetSoftwareRelation.getId(), "更新软件失败");
-                     * 
+                     *
                      * // 批量插入端口信息 if (ArrayUtils.isNotEmpty(request.getAssetPortProtocolRequest().getPort())) {
                      * AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>()
                      * .convert(request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
                      * protocol.setAssetSoftId(assetSoftwareRelation.getStringId()); for (Integer port :
                      * request.getAssetPortProtocolRequest().getPort()) { protocol.setPort(port); // 插入端口信息
                      * assetPortProtocolDao.insert(protocol); } }
-                     * 
+                     *
                      * } }
                      */
                     // 写入业务日志
@@ -377,7 +377,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public AssetCountResponse countManufacturer() throws Exception {
         int maxNum = 5;
-        List status=StatusEnumUtil.getSoftwareNotRetireStatusList();
+        List status = StatusEnumUtil.getSoftwareNotRetireStatusList();
         List<Map<String, Long>> list = assetSoftwareDao.countManufacturer(status);
         return CountTypeUtil.getAssetCountResponse(maxNum, list);
     }
@@ -433,8 +433,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareQuery.setSoftwareStatusList(status);
         return assetSoftwareQuery;
     }
-
-
 
     @Override
     public AssetSoftwareDetailResponse querySoftWareDetail(SoftwareQuery softwareQuery) throws Exception {
@@ -540,7 +538,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
         List<AssetSoftwareEntity> resultDataList = importResult.getDataList();
         int success = 0;
-         int repeat=0;
+        int repeat = 0;
         int error = 0;
         StringBuilder builder = new StringBuilder();
         for (AssetSoftwareEntity entity : resultDataList) {
@@ -549,7 +547,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 builder.append("序号").append(entity.getOrderNumber()).append("软件名称为空");
                 continue;
             }
-            if (CheckRepeatName (entity.getName())) {
+            if (CheckRepeatName(entity.getName())) {
                 repeat++;
                 builder.append("序号").append(entity.getOrderNumber()).append("软件名称重复");
                 continue;
@@ -577,7 +575,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
             AssetSoftware asset = new AssetSoftware();
 
-            if (entity.getAuthorization().equals (ReportType.FREESOFT.getCode ())) {
+            if (entity.getAuthorization().equals(ReportType.FREESOFT.getCode())) {
                 asset.setServiceLife(4070883661000L);
             } else {
                 asset.setServiceLife(entity.getServiceLife());
@@ -586,7 +584,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setMd5Code(entity.getMD5());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            asset.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode ());
+            asset.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
             asset.setReleaseTime(entity.getReleaseTime());
             asset.setPath(entity.getFilePath());
             asset.setName(entity.getName());
@@ -611,10 +609,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             assetOperationRecord.setGmtCreate(System.currentTimeMillis());
-            assetOperationRecord.setOriginStatus (SoftwareStatusEnum.WATI_REGSIST.getCode ());
+            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
             assetOperationRecordDao.insert(assetOperationRecord);
 
-            Map<String, Object> formData = new HashMap<> ();
+            Map<String, Object> formData = new HashMap<>();
             String[] userId = importRequest.getUserId();
             for (String analyzeBaselineUserId : userId) {
                 formData.put("analyzeBaselineUserId", analyzeBaselineUserId);
@@ -631,19 +629,19 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
 
         String res = "导入成功" + success + "条";
-         res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
+        res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
-//        if (error > 0) {
-//            stringBuilder.append("其中").append(builder);
-//        }
+        // if (error > 0) {
+        // stringBuilder.append("其中").append(builder);
+        // }
         // 写入业务日志
         LogHandle.log(resultDataList.toString(), AssetEventEnum.SOFT_EXPORT.getName(),
             AssetEventEnum.SOFT_EXPORT.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", resultDataList.toString());
-        StringBuilder sb = new StringBuilder(importResult.getMsg ());
-        sb.delete (sb.lastIndexOf ("成"),sb.lastIndexOf ("."));
-        return stringBuilder.append(builder).append (sb).toString();
+        StringBuilder sb = new StringBuilder(importResult.getMsg());
+        sb.delete(sb.lastIndexOf("成"), sb.lastIndexOf("."));
+        return stringBuilder.append(builder).append(sb).toString();
     }
 
     private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,
@@ -658,7 +656,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         downloadVO.setSheetName("资产信息表");
         List<ExportSoftwareEntity> softwareEntities = softwareEntityConvert.convert(list, ExportSoftwareEntity.class);
         downloadVO.setDownloadList(softwareEntities);
-        if (downloadVO.getDownloadList() != null) {
+        if (Objects.nonNull(softwareEntities) && softwareEntities.size() > 0) {
             excelDownloadUtil.excelDownload(response, s, downloadVO);
         } else {
             throw new BusinessException("导出数据为空");
