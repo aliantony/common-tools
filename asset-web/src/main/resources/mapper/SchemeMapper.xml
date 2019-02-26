@@ -356,7 +356,7 @@
         </if>
     </select>
     <!--通过资产ID和状态查询方案信息-->
-    <select id="findSchemeByAssetIdAndStatus" resultType="Scheme" parameterType="int">
+    <select id="findSchemeByAssetIdAndStatus" resultMap="BaseResultMap" parameterType="int">
         select
         sch.file_info,
         sch.memo
