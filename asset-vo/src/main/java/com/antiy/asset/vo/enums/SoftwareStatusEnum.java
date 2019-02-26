@@ -13,7 +13,7 @@ public enum SoftwareStatusEnum {
     ALLOW_INSTALL(3, "可安装"),
     RETIRE(4, "已退役"),
     NOT_REGSIST(5, "不予登记"),
-    RETIRE_WAIT_ANALYZE(6,"退役待分析"),
+    WAIT_RETIRE(6,"待退役"),
     UNINSTALL_WAIT_ANALYZE(7,"卸载待分析");
 
     SoftwareStatusEnum(Integer code, String msg) {
