@@ -670,7 +670,7 @@
             and name =#{assetName}
         </if>
         <if test="assetStatus != null">
-            and asset_status =  #{assetStatus}
+            and asset_status = #{assetStatus}
         </if>
         <if test=" categoryModels != null and categoryModels.length > 0">
             and category_model in
@@ -810,9 +810,10 @@
         </where>
         ORDER BY
         <if test=" ids != null">
-            FIELD(`id`,  <foreach index="index" item="item" collection="ids" separator=",">
-            #{item}
-        </foreach>
+            FIELD(`id`,
+            <foreach index="index" item="item" collection="ids" separator=",">
+                #{item}
+            </foreach>
             ) DESC,
         </if>
         id desc
@@ -944,8 +945,20 @@
         a. buy_date,
         a.warranty,
         a.gmt_create,
-        group_concat( b.ip_address ) as ip,
-        group_concat( b.mac_address ) as mac
+        case
+        when a.category_model = 4 then
+            group_concat(b.ip_address)
+        when a.category_model = 6 then
+          (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id)
+        when a.category_model = 7 then
+          (select ip from asset_safety_equipment where asset_id = a.id)
+        else '' end as ip,
+        case
+        when a.category_model = 4 then
+          group_concat( b.mac_address )
+        when a.category_model = 6 then
+          (select mac_address from asset_network_equipment where asset_id = a.id)
+        else '' end as mac
         from
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1
@@ -959,9 +972,10 @@
             </trim>
             ORDER BY
             <if test=" ids != null">
-                FIELD(`id`,  <foreach index="index" item="item" collection="ids" separator=",">
-                #{item}
-            </foreach>
+                FIELD(`id`,
+                <foreach index="index" item="item" collection="ids" separator=",">
+                    #{item}
+                </foreach>
                 ) DESC,
             </if>
             id desc
@@ -1013,10 +1027,10 @@
         from
         asset
         where
-         id in
-         <foreach collection="array" open="(" close=")" separator="," item="item" index="index">
-             #{item}
-         </foreach>
+        id in
+        <foreach collection="array" open="(" close=")" separator="," item="item" index="index">
+            #{item}
+        </foreach>
         and status = 1
     </select>
 
