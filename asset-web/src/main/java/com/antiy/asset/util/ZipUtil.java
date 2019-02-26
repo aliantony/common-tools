@@ -11,7 +11,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class ZipUtil {
-    static final int            BUFFER = 8192;
+    private static final int            BUFFER = 8192;
     private static final Logger logger = LogUtils.get(ZipUtil.class);
 
     /**

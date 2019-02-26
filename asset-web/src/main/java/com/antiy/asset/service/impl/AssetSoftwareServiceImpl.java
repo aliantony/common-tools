@@ -651,7 +651,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareQuery.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser()
             .getAreaIdsOfCurrentUser()));
         assetSoftwareQuery.setQueryAssetCount(true);
-        assetSoftwareQuery.setPageSize(-1);
+        assetSoftwareQuery.setPageSize(com.antiy.asset.util.Constants.ALL_PAGE);
         Map<String, WaitingTaskReponse> waitingTasks = getAllSoftWaitingTask("soft");
         List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery, waitingTasks);
         DownloadVO downloadVO = new DownloadVO();
