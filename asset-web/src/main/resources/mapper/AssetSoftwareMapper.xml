@@ -661,8 +661,8 @@
                 </otherwise>
             </choose>
 
-            <if test="areaIds != null and areaIds.length > 0">
-                t1.area_id in
+            <if test="areaIds != null and areaIds.size > 0">
+                and t1.area_id in
                 <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
                     #{areaId}
                 </foreach>
