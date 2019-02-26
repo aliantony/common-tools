@@ -7,6 +7,7 @@
         <id column="id" property="id"/>
         <result column="asset_id" property="assetId"/>
         <result column="feature_library" property="featureLibrary"/>
+        <result column="ip" property="ip"/>
         <result column="strategy" property="strategy"/>
         <result column="memo" property="memo"/>
         <result column="create_user" property="createUser"/>
@@ -31,6 +32,9 @@
         </if>
         <if test=" featureLibrary != null">
             feature_library,
+        </if>
+        <if test=" ip != null">
+            ip,
         </if>
         <if test=" strategy != null">
             strategy,
@@ -62,6 +66,9 @@
         <if test=" featureLibrary != null">
             #{featureLibrary },
         </if>
+        <if test=" ip != null">
+            #{ip },
+        </if>
         <if test=" strategy != null">
             #{strategy },
         </if>
@@ -92,6 +99,9 @@
         <if test=" featureLibrary != null">
             feature_library = #{featureLibrary },
         </if>
+        <if test=" ip != null">
+            ip = #{ip },
+        </if>
         <if test=" strategy != null">
             strategy = #{strategy },
         </if>
@@ -121,6 +131,9 @@
         </if>
         <if test=" featureLibrary != null">
             and feature_library = #{featureLibrary }
+        </if>
+        <if test=" ip != null">
+            and ip = #{ip }
         </if>
         <if test=" strategy != null">
             and strategy = #{strategy }
