@@ -100,7 +100,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         } else if (AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode()
             .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
-                   || AssetFlowCategoryEnum.SOFTWARE_RETIRE.getCode()
+                   || AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE.getCode()
                        .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             // 软件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
@@ -113,7 +113,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         }
 
         // 4.调用工单系统(选择自己不发工单，选择它人发起工单)
-        if (null != assetStatusReqeust.getWorkOrderVO() && !LoginUserUtil.getLoginUser().getId().equals(assetStatusReqeust.getSchemeRequest().getPutintoUserId())) {
+        if (null != assetStatusReqeust.getWorkOrderVO()
+            && !LoginUserUtil.getLoginUser().getId().equals(assetStatusReqeust.getSchemeRequest().getPutintoUserId())) {
             actionResponse = workOrderClient.createWorkOrder(assetStatusReqeust.getWorkOrderVO());
             // 如果流程引擎为空,直接返回错误信息
             if (null == actionResponse
