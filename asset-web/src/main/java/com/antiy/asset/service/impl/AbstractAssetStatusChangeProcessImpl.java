@@ -112,8 +112,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
         }
 
-        // 4.调用工单系统
-        if (null != assetStatusReqeust.getWorkOrderVO()) {
+        // 4.调用工单系统(选择自己不发工单，选择它人发起工单)
+        if (null != assetStatusReqeust.getWorkOrderVO() && !LoginUserUtil.getLoginUser().getId().equals(assetStatusReqeust.getSchemeRequest().getPutintoUserId())) {
             actionResponse = workOrderClient.createWorkOrder(assetStatusReqeust.getWorkOrderVO());
             // 如果流程引擎为空,直接返回错误信息
             if (null == actionResponse
