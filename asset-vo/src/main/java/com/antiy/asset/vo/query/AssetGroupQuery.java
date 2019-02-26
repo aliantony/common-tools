@@ -26,10 +26,10 @@ public class AssetGroupQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("备注")
     private String memo;
     /**
-     * 创建人名称
+     * 创建人ID
      */
-    @ApiModelProperty("创建人名称")
-    private String createUserName;
+    @ApiModelProperty("创建人ID")
+    private String createUser;
 
     public String getName() {
         return name;
@@ -47,21 +47,18 @@ public class AssetGroupQuery extends ObjectQuery implements ObjectValidator {
         this.memo = memo;
     }
 
-    public String getCreateUserName() {
-        return createUserName;
+    public String getCreateUser() {
+        return createUser;
     }
 
-    public void setCreateUserName(String createUserName) {
-        this.createUserName = createUserName;
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
     }
 
     @Override
     public String toString() {
-        return "AssetGroupQuery{" +
-                "name='" + name + '\'' +
-                ", memo='" + memo + '\'' +
-                ", createUserName='" + createUserName + '\'' +
-                '}';
+        return "AssetGroupQuery{" + "name='" + name + '\'' + ", memo='" + memo + '\'' + ", createUser='" + createUser
+               + '\'' + '}';
     }
 
     @Override

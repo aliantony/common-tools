@@ -28,28 +28,28 @@ public class SoftwarStatusProcessor {
     @Resource
     private TransactionTemplate                  transactionTemplate;
 
-////    @Override
-//    public Integer changeStatus(SchemeRequest schemeRequest) {
-//        Scheme scheme = requestConverter.convert(schemeRequest, Scheme.class);
-//        scheme.setGmtCreate(System.currentTimeMillis());
-//        // 修改软件状态
-//        Map<String, Object> map = new HashMap<String, Object>();
-//        map.put("ids", new Object[] { schemeRequest.getAssetId() });
-//        map.put("targetStatus",
-//            AssetStatusJumpEnum.getNextStatus(schemeRequest.getAssetStatus(), schemeRequest.getIsAgree()));
-//        map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
-//        map.put("gmtModified", System.currentTimeMillis());
-//        Integer count = transactionTemplate.execute(transactionStatus -> {
-//            int row = 0;
-//            try {
-//                schemeDao.insert(scheme);
-//                super.saveOperationHistory(scheme);
-//                row = assetSoftwareRelationDao.changeSoftwareStatus(map);
-//            } catch (Exception e) {
-//                LOGGER.error("保存信息失败", e);
-//            }
-//            return row;
-//        });
-//        return count;
-//    }
+    //// @Override
+    // public Integer changeStatus(SchemeRequest schemeRequest) {
+    // Scheme scheme = requestConverter.convert(schemeRequest, Scheme.class);
+    // scheme.setGmtCreate(System.currentTimeMillis());
+    // // 修改软件状态
+    // Map<String, Object> map = new HashMap<String, Object>();
+    // map.put("ids", new Object[] { schemeRequest.getAssetId() });
+    // map.put("targetStatus",
+    // AssetStatusJumpEnum.getNextStatus(schemeRequest.getAssetStatus(), schemeRequest.getIsAgree()));
+    // map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
+    // map.put("gmtModified", System.currentTimeMillis());
+    // Integer count = transactionTemplate.execute(transactionStatus -> {
+    // int row = 0;
+    // try {
+    // schemeDao.insert(scheme);
+    // super.saveOperationHistory(scheme);
+    // row = assetSoftwareRelationDao.changeSoftwareStatus(map);
+    // } catch (Exception e) {
+    // LOGGER.error("保存信息失败", e);
+    // }
+    // return row;
+    // });
+    // return count;
+    // }
 }

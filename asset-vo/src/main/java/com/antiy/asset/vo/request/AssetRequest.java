@@ -127,6 +127,12 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     @Size(message = "固件版本不能超过11位", max = 11)
     private String                  firmwareVersion;
     /**
+     * 软件版本
+     */
+    @ApiModelProperty("软件版本")
+    @Size(message = "固件版本不能超过16位", max = 16)
+    private String            softwareVersion;
+    /**
      * 设备uuid
      */
     @ApiModelProperty("设备uuid")
@@ -446,5 +452,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
 
     public void setDescrible(String describle) {
         this.describle = describle;
+    }
+
+    public String getSoftwareVersion() {
+        return softwareVersion;
+    }
+
+    public void setSoftwareVersion(String softwareVersion) {
+        this.softwareVersion = softwareVersion;
     }
 }

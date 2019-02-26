@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.antiy.common.base.BaseEntity;
-import com.antiy.common.base.SysArea;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -14,7 +13,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author wangqian
  * @since 2019-01-10
  */
-public class SysAreaVO extends BaseEntity implements Serializable {
+public class SysArea extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,7 +40,7 @@ public class SysAreaVO extends BaseEntity implements Serializable {
     private Integer           status;
 
     @ApiModelProperty("子区域")
-    private List<SysArea>     child;
+    private List<com.antiy.common.base.SysArea>     child;
 
     public String getParentId() {
         return parentId;
@@ -99,11 +98,11 @@ public class SysAreaVO extends BaseEntity implements Serializable {
         this.status = status;
     }
 
-    public List<SysArea> getChild() {
+    public List<com.antiy.common.base.SysArea> getChild() {
         return child;
     }
 
-    public void setChild(List<SysArea> child) {
+    public void setChild(List<com.antiy.common.base.SysArea> child) {
         this.child = child;
     }
 

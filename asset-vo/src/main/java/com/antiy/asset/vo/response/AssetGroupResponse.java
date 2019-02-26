@@ -27,6 +27,10 @@ public class AssetGroupResponse extends BaseResponse {
      * 创建人名字
      */
     private String createUserName;
+    /**
+     * 创建人ID
+     */
+    private Integer createUser;
 
     /**
      * 资产信息
@@ -84,6 +88,14 @@ public class AssetGroupResponse extends BaseResponse {
 
     public void setAssetList(List<String> assetList) {
         this.assetList = assetList;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
     }
 
     @Override

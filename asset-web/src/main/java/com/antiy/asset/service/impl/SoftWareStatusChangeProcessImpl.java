@@ -2,24 +2,27 @@ package com.antiy.asset.service.impl;
 
 import static com.antiy.biz.file.FileHelper.logger;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 
-import com.alibaba.fastjson.JSONArray;
-import com.antiy.asset.vo.enums.*;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
+import com.antiy.asset.vo.enums.SoftwareStatusEnum;
+import com.antiy.asset.vo.enums.SoftwareStatusJumpEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-
-import java.util.Map;
 
 /**
  * @auther: zhangbing
@@ -49,13 +52,13 @@ public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangePr
         assetSoftware.setSoftwareStatus(softwareStatusEnum.getCode());
 
         // 判断软件退役分析流程中，指定资产信息是否影响基准
-        if(null != assetStatusReqeust.getSchemeRequest()) {
+        if (null != assetStatusReqeust.getSchemeRequest()) {
             Map<String, Boolean> analyzeInfo = (Map<String, Boolean>) JSONArray
-                    .parse(assetStatusReqeust.getSchemeRequest().getExtension());
+                .parse(assetStatusReqeust.getSchemeRequest().getExtension());
 
             // 如果是软件资产退役,并且不会影响基准，则会直接到退役状态
             if (AssetFlowCategoryEnum.SOFTWARE_RETIRE.equals(assetStatusReqeust.getAssetFlowCategoryEnum())
-                    && analyzeInfo != null && !analyzeInfo.get("baseline")) {
+                && analyzeInfo != null && !analyzeInfo.get("baseline")) {
                 assetSoftware.setSoftwareStatus(SoftwareStatusEnum.RETIRE.getCode());
             }
         }

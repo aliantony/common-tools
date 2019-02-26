@@ -8,7 +8,6 @@
         <result column="purpose" property="purpose"/>
         <result column="important_degree" property="importantDegree"/>
         <result column="name" property="name"/>
-        <result column="username" property="createUserName"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
@@ -219,7 +218,6 @@
         select count(1)
         from
         <include refid="Table_Name"></include> agroup
-        LEFT JOIN sys_user suser ON suser.id = agroup.create_user
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" name != null and name != '' ">
                 and agroup.name like #{name}"%"
@@ -227,8 +225,8 @@
             <if test=" memo != null and memo != '' ">
                 and agroup.memo like #{memo}"%"
             </if>
-            <if test=" createUserName != null and createUserName != '' ">
-                and suser.username like #{createUserName}"%"
+            <if test=" createUser != null">
+                and agroup.create_user = #{createUser}
             </if>
             and agroup.status = 1
         </trim>
@@ -236,10 +234,9 @@
 
     <select id="findQuery" resultMap="BaseResultMap"
             parameterType="com.antiy.common.base.ObjectQuery">
-        select agroup.id, agroup.name,suser.username,agroup.memo,agroup.gmt_create
+        select agroup.id, agroup.create_user,agroup.name,agroup.memo,agroup.gmt_create
         from
         <include refid="Table_Name"></include> agroup
-        LEFT JOIN sys_user suser ON suser.id = agroup.create_user
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" name != null and name != '' ">
                 and agroup.name like #{name}"%"
@@ -247,8 +244,8 @@
             <if test=" memo != null and memo != '' ">
                 and agroup.memo like #{memo}"%"
             </if>
-            <if test=" createUserName != null and createUserName != '' ">
-                and suser.username like #{createUserName}"%"
+            <if test=" createUser != null">
+                and agroup.create_user = #{createUser}
             </if>
             and agroup.status = 1
         </trim>

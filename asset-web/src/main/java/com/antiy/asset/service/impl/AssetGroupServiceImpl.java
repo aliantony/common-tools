@@ -25,9 +25,12 @@ import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
 import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.base.SysUser;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
@@ -54,6 +57,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     private AssetGroupRelationDao                         assetGroupRelationDao;
     @Resource
     private SelectConvert                                 selectConvert;
+    @Resource
+    RedisUtil                                             redisUtil;
     @Resource
     private BaseConverter<AssetGroup, AssetGroupResponse> assetGroupToResponseConverter;
     @Resource
@@ -181,6 +186,11 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             }
             assetGroupResponse.setAssetDetail(assetDetail.toString());
             assetGroupResponse.setAssetList(assetList);
+            assetGroupResponse.setCreateUser(assetGroupResponse.getCreateUser());
+            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
+                assetGroupResponse.getCreateUser());
+            SysUser sysUser = redisUtil.getObject(key, SysUser.class);
+            assetGroupResponse.setCreateUserName(sysUser == null ? "" : sysUser.getName());
         }
         return assetResponseList;
     }
