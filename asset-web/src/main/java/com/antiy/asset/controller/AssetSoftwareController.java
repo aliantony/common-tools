@@ -1,5 +1,17 @@
 package com.antiy.asset.controller;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
@@ -12,17 +24,8 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -200,7 +203,7 @@ public class AssetSoftwareController {
      * @return
      * @throws Exception
      */
-    @ApiOperation(value = "软件资产厂商查询", notes = "无查询条件")
+    @ApiOperation(value = "软件资产厂商查询（无效)", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/manufacturer", method = RequestMethod.GET)
     public ActionResponse<List<String>> queryAssetByManufacturer(@ApiParam(value = "manufacturerName") String manufacturerName) throws Exception {
