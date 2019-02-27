@@ -33,7 +33,7 @@ import com.antiy.common.utils.JsonUtil;
  * @create 2019-02-25 9:47
  **/
 @Service
-public class StorageMediumFieldCompare extends AbstractChangeRecordCompareImpl {
+public class StorageMediumFieldCompareImpl extends AbstractChangeRecordCompareImpl {
     @Resource
     private AreaClient                         areaClient;
     @Resource
