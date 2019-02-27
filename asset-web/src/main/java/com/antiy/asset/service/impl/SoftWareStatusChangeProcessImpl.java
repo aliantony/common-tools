@@ -21,6 +21,7 @@ import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
@@ -42,8 +43,25 @@ public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangePr
             return actionResponse;
         }
 
-        SoftwareStatusEnum softwareStatusEnum = SoftwareStatusJumpEnum
-            .getNextStatus(assetStatusReqeust.getSoftwareStatusEnum(), assetStatusReqeust.getAgree());
+        SoftwareStatusEnum softwareStatusEnum;
+
+        if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
+            .equals(AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE.getCode())) {
+            softwareStatusEnum = SoftwareStatusJumpEnum.getNextStatusRetire(assetStatusReqeust.getSoftwareStatusEnum(),
+                assetStatusReqeust.getAgree());
+        } else if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
+            .equals(AssetFlowCategoryEnum.SOFTWARE_IMPL_UNINSTALL.getCode())) {
+            softwareStatusEnum = SoftwareStatusJumpEnum
+                .getNextStatusUninstall(assetStatusReqeust.getSoftwareStatusEnum(), assetStatusReqeust.getAgree());
+        } else {
+            softwareStatusEnum = SoftwareStatusJumpEnum.getNextStatus(assetStatusReqeust.getSoftwareStatusEnum(),
+                assetStatusReqeust.getAgree());
+        }
+
+        if (softwareStatusEnum == null) {
+            throw new BusinessException("软件资产跃迁状态获取失败");
+        }
+
         // 软件表详情操作
         AssetSoftware assetSoftware = new AssetSoftware();
         assetSoftware.setId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));

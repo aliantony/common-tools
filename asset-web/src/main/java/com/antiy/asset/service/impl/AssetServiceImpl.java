@@ -178,20 +178,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
                         if (safetyEquipmentRequest != null) {
                             saveSafety(aid, safetyEquipmentRequest);
-                            AssetSafetyEquipment safetyEquipment = BeanConvert.convertBean(safetyEquipmentRequest,
-                                AssetSafetyEquipment.class);
-                            safetyEquipment.setAssetId(aid);
-                            safetyEquipment.setGmtCreate(System.currentTimeMillis());
-                            safetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                            LogHandle.log(safetyEquipmentRequest, AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getName(),
-                                AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                            LogUtils.info(logger, AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getName() + " {}",
-                                safetyEquipmentRequest.toString());
-                            assetSafetyEquipmentDao.insert(safetyEquipment);
                             assetOuterRequestToChangeRecord.setSafetyEquipment(safetyEquipmentRequest);
-//                            AssetSafetyEquipmentRequest assetSafetyEquipmentRequest = safetyEquipmentToRequestConverter.convert(safetyEquipment,AssetSafetyEquipmentRequest.class);
-//                            assetSafetyEquipmentRequest.setId(DataTypeUtils.integerToString(safetyEquipment.getId()));
-//                            assetOuterRequestToChangeRecord.setSafetyEquipment(assetSafetyEquipmentRequest);
                         }
                         // 保存网络设备
                         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
