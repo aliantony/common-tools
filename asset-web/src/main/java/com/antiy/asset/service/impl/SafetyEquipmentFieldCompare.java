@@ -37,15 +37,11 @@ import com.antiy.common.utils.JsonUtil;
 @Service
 public class SafetyEquipmentFieldCompare extends AbstractChangeRecordCompareImpl {
     @Resource
-    AssetSafetyEquipmentDao                    safetyEquipmentDao;
-    @Resource
     private AreaClient                         areaClient;
     @Resource
     private RedisUtil                                  redisUtil;
     @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
-    @Resource
-    private AssetChangeRecordDao               assetChangeRecordDao;
 
     @Override
     List<Map<String, Object>> compareCommonBusinessInfo(Integer businessId) throws Exception {
