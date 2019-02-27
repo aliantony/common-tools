@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Resource;
 
@@ -10,6 +9,9 @@ import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.enums.InstallStatus;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import com.sun.jersey.api.ParamException;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.stereotype.Service;
 
@@ -126,8 +128,18 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<AssetSoftwareRelation> relationList = BeanConvert.convert(assetSoftwareRelationList,
             AssetSoftwareRelation.class);
         relationList.stream().forEach(relation -> {
+            if (Objects.isNull(relation.getInstallType())) {
+                throw new BusinessException("安装类型不能为空");
+            }
             if (relation.getInstallType().equals(InstallType.AUTOMATIC.getCode())) {
                 relation.setInstallStatus(InstallStatus.INSTALLING.getCode());
+            } else {
+                if (Objects.isNull(relation.getInstallStatus())) {
+                    throw new BusinessException("手动安装的软件,安装状态不能为空");
+                }
+                if (Objects.isNull(relation.getInstallTime())) {
+                    throw new BusinessException("手动安装的软件,安装时间不能为空");
+                }
             }
         });
         return assetSoftwareRelationDao.installSoftware(relationList);
