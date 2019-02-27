@@ -167,7 +167,7 @@ public class AssetSoftwareRelationController {
      * @return
      * @throws Exception
      */
-    @ApiOperation(value = "自动安装软件", notes = "安装软件")
+    @ApiOperation(value = "（无效）自动安装软件", notes = "安装软件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/install/auto", method = RequestMethod.POST)
     public ActionResponse installAauto(@ApiParam(value = "softwareQuery") @RequestBody List<AssetSoftwareRelationRequest> assetSoftwareRelationList) throws Exception {
@@ -181,7 +181,7 @@ public class AssetSoftwareRelationController {
      * @return
      * @throws Exception
      */
-    @ApiOperation(value = "手动安装软件", notes = "安装软件")
+    @ApiOperation(value = "（无效）手动安装软件", notes = "安装软件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/software/artificial", method = RequestMethod.POST)
     public ActionResponse installArtificial(@ApiParam(value = "softwareQuery") @RequestBody List<AssetSoftwareRelationRequest> assetSoftwareRelationList) throws Exception {
