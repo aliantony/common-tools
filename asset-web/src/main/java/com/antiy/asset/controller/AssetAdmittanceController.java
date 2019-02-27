@@ -39,6 +39,7 @@ public class AssetAdmittanceController {
      * @param asset
      * @return actionResponse
      */
+
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
