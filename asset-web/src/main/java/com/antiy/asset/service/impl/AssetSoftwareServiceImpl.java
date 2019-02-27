@@ -387,14 +387,43 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         List<Map<String, Long>> list = assetSoftwareDao.countStatus();
         Map<String, Long> result = new HashMap();
         // 初始化result
-        for (SoftwareStatusEnum assetStatusEnum : SoftwareStatusEnum.values()) {
-            result.put(assetStatusEnum.getMsg(), 0L);
+        for (SoftwareStatusEnum softwareStatusEnum : SoftwareStatusEnum.values()) {
+            if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE)
+                || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE_ANALYZE)) {
+                String waitRetire = SoftwareStatusEnum.WAIT_RETIRE.getMsg();
+                result.put(waitRetire, 0L);
+            }
+            // 待分析和待卸载分析视为同一状态
+            else if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE)
+                     || softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL_WAIT_ANALYZE)) {
+                String waitAnalyze = SoftwareStatusEnum.WAIT_ANALYZE.getMsg();
+                result.put(waitAnalyze, 0L);
+            } else {
+                result.put(softwareStatusEnum.getMsg(), 0L);
+            }
         }
         // 将查询结果的值放入结果集
         for (Map map : list) {
-            SoftwareStatusEnum assetStatusEnum = SoftwareStatusEnum.getAssetByCode((Integer) map.get("key"));
-            if (assetStatusEnum != null) {
-                result.put(assetStatusEnum.getMsg(), (Long) map.get("value"));
+            SoftwareStatusEnum softwareStatusEnum = SoftwareStatusEnum.getAssetByCode((Integer) map.get("key"));
+            if (softwareStatusEnum != null) {
+                // 待退役和待退役分析视为同一状态
+                if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE)
+                    || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE_ANALYZE)) {
+                    String waitRetire = SoftwareStatusEnum.WAIT_RETIRE.getMsg();
+                    Long waitRetireNum = result.get(waitRetire);
+                    result.put(waitRetire, (waitRetireNum == null ? (Long) map.get("value")
+                        : (waitRetireNum + (Long) map.get("value"))));
+                }
+                // 待分析和待卸载分析视为同一状态
+                else if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE)
+                         || softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL_WAIT_ANALYZE)) {
+                    String waitAnalyze = SoftwareStatusEnum.WAIT_ANALYZE.getMsg();
+                    Long waitAnalyzeNum = result.get(waitAnalyze);
+                    result.put(waitAnalyze, (waitAnalyzeNum == null ? (Long) map.get("value")
+                        : (waitAnalyzeNum + (Long) map.get("value"))));
+                } else {
+                    result.put(softwareStatusEnum.getMsg(), (Long) map.get("value"));
+                }
             }
         }
         return CountTypeUtil.getAssetCountColumnarResponse(result);
