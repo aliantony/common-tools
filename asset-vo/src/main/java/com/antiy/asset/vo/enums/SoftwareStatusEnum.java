@@ -14,6 +14,7 @@ public enum SoftwareStatusEnum {
     RETIRE(4, "已退役"),
     NOT_REGSIST(5, "不予登记"),
     WAIT_RETIRE(6,"待退役"),
+    WAIT_RETIRE_ANALYZE(8,"退役待分析"),
     UNINSTALL_WAIT_ANALYZE(7,"卸载待分析");
 
     SoftwareStatusEnum(Integer code, String msg) {
