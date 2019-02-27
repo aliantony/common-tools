@@ -123,25 +123,25 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
 
     @Override
     public List<Map<String, Object>> queryNetworkEquipmentById(Integer businessId) throws Exception {
-        NetworkEquipmentFieldCompare networkEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(NetworkEquipmentFieldCompare.class);
+        NetworkEquipmentFieldCompareImpl networkEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(NetworkEquipmentFieldCompareImpl.class);
         return networkEquipmentFieldCompare.compareCommonBusinessInfo(businessId);
     }
 
     @Override
     public List<Map<String, Object>> queryStorageEquipmentById(Integer businessId) throws Exception {
-        StorageMediumFieldCompare storageMediumFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(StorageMediumFieldCompare.class);
+        StorageMediumFieldCompareImpl storageMediumFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(StorageMediumFieldCompareImpl.class);
         return storageMediumFieldCompare.compareCommonBusinessInfo(businessId);
     }
 
     @Override
     public List<Map<String, Object>> querySafetyEquipmentById(Integer businessId) throws Exception {
-        SafetyEquipmentFieldCompare safetyEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(SafetyEquipmentFieldCompare.class);
+        SafetyEquipmentFieldCompareImpl safetyEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(SafetyEquipmentFieldCompareImpl.class);
         return safetyEquipmentFieldCompare.compareCommonBusinessInfo(businessId);
     }
 
     @Override
     public List<Map<String, Object>> queryOtherEquipmentById(Integer businessId) throws Exception {
-        OtherEquipmentFieldCompare otherEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(OtherEquipmentFieldCompare.class);
+        OtherEquipmentFieldCompareImpl otherEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(OtherEquipmentFieldCompareImpl.class);
         return otherEquipmentFieldCompare.compareCommonBusinessInfo(businessId);
     }
 
