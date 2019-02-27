@@ -3,6 +3,8 @@ package com.antiy.asset.vo.enums;
 import org.apache.commons.lang.StringUtils;
 
 /**
+ * 软件状态枚举
+ *
  * @Auther: zhangyajun
  * @Date: 2019/1/19 10:21
  * @Description:
@@ -13,9 +15,10 @@ public enum SoftwareStatusEnum {
     ALLOW_INSTALL(3, "可安装"),
     RETIRE(4, "已退役"),
     NOT_REGSIST(5, "不予登记"),
-    WAIT_RETIRE(6,"待退役"),
-    WAIT_RETIRE_ANALYZE(8,"退役待分析"),
-    UNINSTALL_WAIT_ANALYZE(7,"卸载待分析");
+    WAIT_RETIRE(6, "待退役"),
+    WAIT_ANALYZE_RETIRE(7,"退役待分析"),
+    WAIT_ANALYZE_UNINSTALL(8,"卸载待分析"),
+    UNINSTALL(9,"已卸载");
 
     SoftwareStatusEnum(Integer code, String msg) {
         this.code = code;

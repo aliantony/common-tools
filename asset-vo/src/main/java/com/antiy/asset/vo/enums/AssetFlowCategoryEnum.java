@@ -15,7 +15,8 @@ public enum AssetFlowCategoryEnum {
     SOFTWARE_RETIRE("SOFTWARE_RETIRE","软件资产退役流程"),
     HARDWARE_IMPL_RETIRE("HARDWARE_COMPLETE_RETIRE","硬件资产实施退役流程"),
     SOFTWARE_IMPL_RETIRE("HARDWARE_COMPLETE_RETIRE","软件资产实施退役流程"),
-    HARDWARE_UNINSTALL("HARDWARE_UNINSTALL","软件卸载");
+    SOFTWARE_IMPL_UNINSTALL("HARDWARE_COMPLETE_RETIRE","软件资产实施卸载流程"),
+    SOFTWARE_UNINSTALL("SOFTWARE_UNINSTALL","软件卸载流程");
 
     AssetFlowCategoryEnum(String code, String msg) {
         this.code = code;
