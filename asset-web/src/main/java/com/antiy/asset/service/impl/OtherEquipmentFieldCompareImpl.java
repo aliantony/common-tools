@@ -18,11 +18,11 @@ import com.antiy.asset.vo.enums.InfoLabelEnum;
 import com.antiy.asset.vo.request.AssetOthersRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
-import com.antiy.asset.vo.request.SysAreaVO;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.SysArea;
 import com.antiy.common.base.SysUser;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.JsonUtil;
@@ -33,7 +33,7 @@ import com.antiy.common.utils.JsonUtil;
  * @create 2019-02-25 9:47
  **/
 @Service
-public class OtherEquipmentFieldCompare extends AbstractChangeRecordCompareImpl {
+public class OtherEquipmentFieldCompareImpl extends AbstractChangeRecordCompareImpl {
     @Resource
     private AreaClient                         areaClient;
     @Resource
@@ -73,9 +73,9 @@ public class OtherEquipmentFieldCompare extends AbstractChangeRecordCompareImpl 
             // 业务信息
             Asset oldAssetBusinessInfo = new Asset();
             // 远程调用（通过区域ID查询名称）
-            SysAreaVO oldSysAreaVO = JsonUtil
-                .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())), SysAreaVO.class);
-            oldAssetBusinessInfo.setAreaName(oldSysAreaVO.getFullName());
+            SysArea oldSysArea = JsonUtil
+                .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())), SysArea.class);
+            oldAssetBusinessInfo.setAreaName(oldSysArea.getFullName());
             String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
             SysUser oldSysUser = redisUtil.getObject(oldKey, SysUser.class);
@@ -89,9 +89,9 @@ public class OtherEquipmentFieldCompare extends AbstractChangeRecordCompareImpl 
             oldAssetBusinessInfo.setDescrible(oldAsset.getDescrible());
 
             Asset newAssetBusinessInfo = new Asset();
-            SysAreaVO newSysAreaVO = JsonUtil
-                .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(newAsset.getAreaId())), SysAreaVO.class);
-            oldAssetBusinessInfo.setAreaName(newSysAreaVO.getFullName());
+            SysArea newSysArea = JsonUtil
+                .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(newAsset.getAreaId())), SysArea.class);
+            oldAssetBusinessInfo.setAreaName(newSysArea.getFullName());
             String newKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
             SysUser newSysUser = redisUtil.getObject(newKey, SysUser.class);
