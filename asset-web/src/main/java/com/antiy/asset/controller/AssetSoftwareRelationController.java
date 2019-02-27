@@ -107,7 +107,7 @@ public class AssetSoftwareRelationController {
      * @param baseRequest
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
+    @ApiOperation(value = "(无效)通过ID删除接口", notes = "主键封装对象")
     @PreAuthorize("hasAuthority('asset:softwarerelation:deleteById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete", method = RequestMethod.POST)

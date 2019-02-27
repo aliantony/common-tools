@@ -1,31 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -49,6 +23,30 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -246,7 +244,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         List<AssetNetworkCardRequest> networkCardRequestList = request.getNetworkCard();
                         List<AssetNetworkCardRequest> networkRequestListToChangeRecord = new ArrayList<>();
+
                             if (CollectionUtils.isNotEmpty (networkCardRequestList) ) {
+                                List<AssetNetworkCard> network = new ArrayList<>();
                             List<AssetNetworkCard> networkCardList = BeanConvert.convert(networkCardRequestList,
                                 AssetNetworkCard.class);
                             for (AssetNetworkCard assetNetworkCard : networkCardList) {
@@ -258,18 +258,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                     AssetEventEnum.ASSET_NETWORK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                                 LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_INSERT.getName() + " {}",
                                     assetNetworkCard.toString());
-                                assetNetworkCardDao.insert(assetNetworkCard);
+                                network.add (assetNetworkCard);
                                 AssetNetworkCardRequest assetNetworkCardRequest = networkCardToRequestConverter
                                     .convert(assetNetworkCard, AssetNetworkCardRequest.class);
                                 assetNetworkCardRequest.setId(DataTypeUtils.integerToString(assetNetworkCard.getId()));
                                 networkRequestListToChangeRecord.add(assetNetworkCardRequest);
                             }
+                                assetNetworkCardDao.insertBatch (network);
                             assetOuterRequestToChangeRecord.setNetworkCard(networkRequestListToChangeRecord);
                         }
                         List<AssetMainboradRequest> mainboradRequestList = request.getMainboard();
                         List<AssetMainboradRequest> mainboardRequestListToChangeRecord = new ArrayList<>();
                         if (CollectionUtils.isNotEmpty (mainboradRequestList) ) {
-
+                            List<AssetMainborad> mainboard = new ArrayList<>();
                             List<AssetMainborad> mainboradList = BeanConvert.convert(mainboradRequestList,
                                 AssetMainborad.class);
                             for (AssetMainborad assetMainborad : mainboradList) {
@@ -281,18 +282,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                     AssetEventEnum.ASSET_MAINBORAD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                                 LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName() + " {}",
                                     assetMainborad.toString());
-                                assetMainboradDao.insert(assetMainborad);
+                                mainboard.add (assetMainborad);
                                 AssetMainboradRequest assetMainboradRequest = mainboradToRequestConverter
                                     .convert(assetMainborad, AssetMainboradRequest.class);
                                 assetMainboradRequest.setId(DataTypeUtils.integerToString(assetMainborad.getId()));
                                 mainboardRequestListToChangeRecord.add(assetMainboradRequest);
                             }
+                            assetMainboradDao.insertBatch (mainboard);
                             assetOuterRequestToChangeRecord.setMainboard(mainboardRequestListToChangeRecord);
                         }
                         List<AssetMemoryRequest> memoryRequestList = request.getMemory();
                         List<AssetMemoryRequest> memoryRequestListToChangeRecord = new ArrayList<>();
                             if (CollectionUtils.isNotEmpty (memoryRequestList)) {
                             List<AssetMemory> memoryList = BeanConvert.convert(memoryRequestList, AssetMemory.class);
+                                List<AssetMemory> memory= new ArrayList<>();
                             for (AssetMemory assetMemory : memoryList) {
                                 ParamterExceptionUtils.isBlank(assetMemory.getBrand(), "内存品牌为空");
                                 ParamterExceptionUtils.isNull(assetMemory.getFrequency(), "内存主频为空");
@@ -304,18 +307,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                     AssetEventEnum.ASSET_MEMORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                                 LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_INSERT.getName() + " {}",
                                     assetMemory.toString());
-                                assetMemoryDao.insert(assetMemory);
+                                memory.add (assetMemory);
+
                                 AssetMemoryRequest assetMemoryRequest = memoryToRequestConverter.convert(assetMemory,
                                     AssetMemoryRequest.class);
                                 assetMemoryRequest.setId(DataTypeUtils.integerToString(assetMemory.getId()));
                                 memoryRequestListToChangeRecord.add(assetMemoryRequest);
                             }
+                                assetMemoryDao.insertBatch (memory);
                             assetOuterRequestToChangeRecord.setMemory(memoryRequestListToChangeRecord);
                         }
                         List<AssetCpuRequest> cpuRequestList = request.getCpu();
                         List<AssetCpuRequest> cpuRequestListToChangeRecord = new ArrayList<>();
                         if (CollectionUtils.isNotEmpty (cpuRequestList)) {
                             List<AssetCpu> assetCpuList = BeanConvert.convert(cpuRequestList, AssetCpu.class);
+                            List<AssetCpu> cpu= new ArrayList<>();
                             for (AssetCpu assetCpu : assetCpuList) {
                                 ParamterExceptionUtils.isBlank(assetCpu.getBrand(), "CPU品牌为空");
                                 ParamterExceptionUtils.isNull(assetCpu.getMainFrequency(), "CPU主频为空");
@@ -326,17 +332,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                     AssetEventEnum.ASSET_CPU_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                                 LogUtils.info(logger, AssetEventEnum.ASSET_CPU_INSERT.getName() + " {}",
                                     assetCpu.toString());
-                                assetCpuDao.insert(assetCpu);
+
+                                cpu.add (assetCpu);
                                 AssetCpuRequest assetCpuRequest = cpuToRequestConverter.convert(assetCpu,
                                     AssetCpuRequest.class);
                                 assetCpuRequest.setId(DataTypeUtils.integerToString(assetCpu.getId()));
                                 cpuRequestListToChangeRecord.add(assetCpuRequest);
                             }
+                            assetCpuDao.insertBatch (cpu);
                             assetOuterRequestToChangeRecord.setCpu(cpuRequestListToChangeRecord);
                         }
                         List<AssetHardDiskRequest> hardDisk = request.getHardDisk();
                         List<AssetHardDiskRequest> hardDiskRequestListToChangeRecord = new ArrayList<>();
                         if (CollectionUtils.isNotEmpty (hardDisk)) {
+                            List<AssetHardDisk> assetHardDisks = new ArrayList<>();
                             List<AssetHardDisk> hardDisks = BeanConvert.convert(hardDisk, AssetHardDisk.class);
                             for (AssetHardDisk assetHardDisk : hardDisks) {
                                 ParamterExceptionUtils.isBlank(assetHardDisk.getBrand(), "硬盘品牌为空");
@@ -348,12 +357,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                     AssetEventEnum.ASSET_DISK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                                 LogUtils.info(logger, AssetEventEnum.ASSET_DISK_INSERT.getName() + " {}",
                                     assetHardDisk.toString());
-                                assetHardDiskDao.insert(assetHardDisk);
+                                assetHardDisks.add (assetHardDisk);
+
                                 AssetHardDiskRequest assetHardDiskRequest = hardDiskToRequestConverter
                                     .convert(assetHardDisk, AssetHardDiskRequest.class);
                                 assetHardDiskRequest.setId(DataTypeUtils.integerToString(assetHardDisk.getId()));
                                 hardDiskRequestListToChangeRecord.add(assetHardDiskRequest);
                             }
+                            assetHardDiskDao.insertBatch (assetHardDisks);
                             assetOuterRequestToChangeRecord.setHardDisk(hardDiskRequestListToChangeRecord);
                         }
                     } else {
@@ -1816,7 +1827,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String id = asset.getStringId();
 
             if (StringUtils.isNotBlank(entity.getMemoryBrand()) && !Objects.isNull(entity.getMemoryCapacity())
-                && !Objects.isNull(entity.getMemoryFrequency()) && entity.getMemoryNum() > 0) {
+                && !Objects.isNull(entity.getMemoryFrequency()) &&  !Objects.isNull(entity.getMemoryNum())&&entity.getMemoryNum() > 0) {
                 AssetMemory assetMemory = new AssetMemory();
                 assetMemory.setAssetId(id);
                 assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -1829,9 +1840,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMemory.setStitch(entity.getStitch());
                 assetMemory.setHeatsink(entity.getHeatsink());
                 assetMemory.setTransferType(entity.getTransferType());
+                List<AssetMemory> assetMemoryList = new ArrayList<> ();
                 for (int i = 0; i < entity.getMemoryNum(); i++) {
-                    assetMemoryDao.insert(assetMemory);
+                    assetMemoryList.add (assetMemory);
                 }
+                assetMemoryDao.insertBatch (assetMemoryList);
             }
             // else {
             // builder.append("序号").append(entity.getOrderNumber()).append ("没有添加内存：内存品牌，内存容量，内存主频，内存数量>0")
@@ -1852,10 +1865,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetHardDisk.setInterfaceType(entity.getHardDiskInterfaceType());
                 assetHardDisk.setDiskType(entity.getHardDiskType());
 
+                List<AssetHardDisk> assetHardDisks = new ArrayList<> ();
                 for (int i = 0; i < entity.getHardDiskNum(); i++) {
-                    assetHardDiskDao.insert(assetHardDisk);
-
+                    assetHardDisks.add (assetHardDisk);
                 }
+                assetHardDiskDao.insertBatch (assetHardDisks);
+
 
             }
 
@@ -1871,12 +1886,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMainborad.setModel(entity.getMainboradModel());
                 assetMainborad.setBiosVersion(entity.getMainboradBiosVersion());
                 assetMainborad.setBiosDate(entity.getMainboradBiosDate());
-
+                List<AssetMainborad> assetMainborads = new ArrayList<> ();
                 for (int i = 0; i < entity.getMainboradNum(); i++) {
-                    assetMainboradDao.insert(assetMainborad);
-
+                    assetMainborads.add (assetMainborad);
                 }
-
+                assetMainboradDao.insertBatch (assetMainborads);
             }
             if (StringUtils.isNotBlank(entity.getCpuBrand()) && !Objects.isNull(entity.getCpuNum())
                 && entity.getCpuNum() > 0 && !Objects.isNull(entity.getCpuMainFrequency())) {
@@ -1890,11 +1904,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetCpu.setMainFrequency(entity.getCpuMainFrequency());
                 assetCpu.setThreadSize(entity.getCpuThreadSize());
                 assetCpu.setCoreSize(entity.getCpuCoreSize());
-
+                List<AssetCpu> assetCpus = new ArrayList<> ();
                 for (int i = 0; i < entity.getCpuNum(); i++) {
-                    assetCpuDao.insert(assetCpu);
 
+                    assetCpus.add (assetCpu);
                 }
+                assetCpuDao.insertBatch (assetCpus);
             }
             if (StringUtils.isNotBlank(entity.getNetworkBrand()) && !Objects.isNull(entity.getNetworkNum())
                 && entity.getNetworkNum() > 0) {

@@ -97,7 +97,10 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     private void checkParent(AssetDepartmentRequest request, AssetDepartment assetDepartment) throws Exception {
         AssetDepartment parent = assetDepartmentDao.getById(Integer.parseInt(assetDepartment.getParentId()));
         BusinessExceptionUtils.isTrue(!checkNameRepeat(request), "该部门名已存在");
-        BusinessExceptionUtils.isNull(parent, "上级部门不存在");
+        String root_parent = "0";// 根节点的父节点为0
+        if (!request.getParentId().equals(root_parent)) {
+            BusinessExceptionUtils.isNull(parent, "上级部门不存在");
+        }
         assetDepartment.setStatus(Constants.EXISTENCE_STATUS);
     }
 
