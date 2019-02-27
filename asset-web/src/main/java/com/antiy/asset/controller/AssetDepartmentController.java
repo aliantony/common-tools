@@ -69,7 +69,7 @@ public class AssetDepartmentController {
      * @param assetDepartment
      * @return actionResponse
      */
-    @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
+    @ApiOperation(value = "(无效)批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetDepartmentResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:department:queryList')")
@@ -109,7 +109,7 @@ public class AssetDepartmentController {
         return iAssetDepartmentService.deleteAllById(Integer.parseInt(condition.getPrimaryKey()));
     }
 
-    @ApiOperation(value = "通过ID查询所有部门信息及子部门信息", notes = "主键封装对象")
+    @ApiOperation(value = "(无效)通过ID查询所有部门信息及子部门信息", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetDepartmentResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/get/id", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:department:getByID')")
