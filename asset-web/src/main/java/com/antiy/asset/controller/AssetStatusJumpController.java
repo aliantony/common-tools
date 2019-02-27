@@ -1,6 +1,5 @@
 package com.antiy.asset.controller;
 
-import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +12,6 @@ import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.utils.LogUtils;
 
 import io.swagger.annotations.*;
 
@@ -27,8 +25,6 @@ import io.swagger.annotations.*;
 @RestController
 @RequestMapping("/api/v1/asset/statusjump")
 public class AssetStatusJumpController {
-    private static final Logger logger = LogUtils.get();
-
     /**
      * 资产状态跃迁
      *
@@ -44,7 +40,7 @@ public class AssetStatusJumpController {
             .equals(AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode())
             || AssetFlowCategoryEnum.SOFTWARE_RETIRE.getCode()
                 .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
-            || AssetFlowCategoryEnum.HARDWARE_UNINSTALL.getCode()
+            || AssetFlowCategoryEnum.SOFTWARE_UNINSTALL.getCode()
                 .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             return AssetStatusChangeFactory.getStatusChangeProcess(SoftWareStatusChangeProcessImpl.class)
                 .changeStatus(assetStatusReqeust);

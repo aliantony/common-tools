@@ -47,7 +47,7 @@ public class AssetSoftwareRelationController {
      * @param assetSoftwareRelationRequest
      * @return actionResponse
      */
-    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
+    @ApiOperation(value = "(无效)保存接口", notes = "传入实体对象信息")
     @PreAuthorize("hasAuthority('asset:softwarerelation:saveSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
@@ -62,7 +62,7 @@ public class AssetSoftwareRelationController {
      * @param assetSoftwareRelationRequest
      * @return actionResponse
      */
-    @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
+    @ApiOperation(value = "(无效)修改接口", notes = "传入实体对象信息")
     @PreAuthorize("hasAuthority('asset:softwarerelation:updateSingle')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
@@ -77,7 +77,7 @@ public class AssetSoftwareRelationController {
      * @param assetSoftwareRelationQuery
      * @return actionResponse
      */
-    @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
+    @ApiOperation(value = "(无效)批量查询接口", notes = "传入查询条件")
     @PreAuthorize("hasAuthority('asset:softwarerelation:queryList')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareRelationResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
@@ -92,7 +92,7 @@ public class AssetSoftwareRelationController {
      * @param queryCondition
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
+    @ApiOperation(value = "(无效)通过ID查询", notes = "主键封装对象")
     @PreAuthorize("hasAuthority('asset:softwarerelation:queryById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareRelationResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query", method = RequestMethod.GET)

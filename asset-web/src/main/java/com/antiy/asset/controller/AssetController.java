@@ -7,8 +7,10 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.AssetCategoryModelResponse;
+import com.antiy.asset.vo.request.ActivityHandleRequest;
+import com.antiy.asset.vo.request.AssetImportRequest;
+import com.antiy.asset.vo.request.AssetOuterRequest;
+import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.AssetCountColumnarResponse;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
@@ -17,8 +19,6 @@ import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author zhangyajun
@@ -298,7 +295,6 @@ public class AssetController {
     @PreAuthorize(value = "hasAuthority('asset:asset:importSafety')")
     public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file,
                                        AssetImportRequest importRequest) throws Exception {
-        String originalFilename = file.getOriginalFilename();
         return ActionResponse.success(iAssetService.importSecurity(file, importRequest));
     }
 

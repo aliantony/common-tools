@@ -1,5 +1,26 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
@@ -34,25 +55,6 @@ import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -389,13 +391,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // 初始化result
         for (SoftwareStatusEnum softwareStatusEnum : SoftwareStatusEnum.values()) {
             if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE)
-                || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE_ANALYZE)) {
+                || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE)) {
                 String waitRetire = SoftwareStatusEnum.WAIT_RETIRE.getMsg();
                 result.put(waitRetire, 0L);
             }
             // 待分析和待卸载分析视为同一状态
             else if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE)
-                     || softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL_WAIT_ANALYZE)) {
+                     || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL)) {
                 String waitAnalyze = SoftwareStatusEnum.WAIT_ANALYZE.getMsg();
                 result.put(waitAnalyze, 0L);
             } else {
@@ -408,7 +410,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             if (softwareStatusEnum != null) {
                 // 待退役和待退役分析视为同一状态
                 if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE)
-                    || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE_ANALYZE)) {
+                    || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE)) {
                     String waitRetire = SoftwareStatusEnum.WAIT_RETIRE.getMsg();
                     Long waitRetireNum = result.get(waitRetire);
                     result.put(waitRetire, (waitRetireNum == null ? (Long) map.get("value")
@@ -416,7 +418,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 }
                 // 待分析和待卸载分析视为同一状态
                 else if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE)
-                         || softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL_WAIT_ANALYZE)) {
+                         || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL)) {
                     String waitAnalyze = SoftwareStatusEnum.WAIT_ANALYZE.getMsg();
                     Long waitAnalyzeNum = result.get(waitAnalyze);
                     result.put(waitAnalyze, (waitAnalyzeNum == null ? (Long) map.get("value")
