@@ -63,7 +63,7 @@ public class AssetCategoryModelController {
      * @param assetCategoryModel
      * @return actionResponse
      */
-    @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
+    @ApiOperation(value = "(无效)批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryList')")
@@ -108,7 +108,7 @@ public class AssetCategoryModelController {
      * @param condition 主键
      * @return
      */
-    @ApiOperation(value = "通过ID查询品类型号及其子品类型号", notes = "主键封装对象")
+    @ApiOperation(value = "(无效)通过ID查询品类型号及其子品类型号", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/get/id", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:categorymodel:getById')")
@@ -136,7 +136,7 @@ public class AssetCategoryModelController {
      *
      * @return
      */
-    @ApiOperation(value = "查询软甲第二级数据接口", notes = "主键封装对象")
+    @ApiOperation(value = "查询软件第二级数据接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/software", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:categorymodel:getCategoryByName')")

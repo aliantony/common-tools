@@ -118,7 +118,7 @@ public class AssetController {
      * @param request 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
+    @ApiOperation(value = "(无效)通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:deleteById')")
@@ -162,7 +162,7 @@ public class AssetController {
      * @param targetStatus
      * @return actionResponse
      */
-    @ApiOperation(value = "批量修改资产状态接口", notes = "传入资产状态和资产ID数组")
+    @ApiOperation(value = "(无效)批量修改资产状态接口", notes = "传入资产状态和资产ID数组")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/changeStatus/batch", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:changeStatus')")
@@ -179,7 +179,7 @@ public class AssetController {
      * @param targetStatus
      * @return actionResponse
      */
-    @ApiOperation(value = "通过资产ID修改资产状态", notes = "传入资产ID")
+    @ApiOperation(value = "(无效)通过资产ID修改资产状态", notes = "传入资产ID")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/changeStatusById", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:changeStatusById')")
@@ -210,7 +210,7 @@ public class AssetController {
      * @param ids
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID数组查询资产列表", notes = "传入资产ID数组")
+    @ApiOperation(value = "(无效)通过ID数组查询资产列表", notes = "传入资产ID数组")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{ids}", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetByIds')")
@@ -332,7 +332,7 @@ public class AssetController {
         return ActionResponse.success(iAssetService.importOhters(file, importRequest));
     }
 
-    @ApiOperation(value = "启动流程", notes = "启动流程")
+    @ApiOperation(value = "(无效)启动流程", notes = "启动流程")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/start/process", method = RequestMethod.POST)
     public ActionResponse manualStartProcess(@ApiParam @RequestBody ManualStartActivityRequest manualStartActivityRequest) throws Exception {
@@ -341,7 +341,7 @@ public class AssetController {
         return ActionResponse.success();
     }
 
-    @ApiOperation(value = "处理流程", notes = "处理流程")
+    @ApiOperation(value = "(无效)处理流程", notes = "处理流程")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/deal/process", method = RequestMethod.POST)
     public ActionResponse completeTask(@ApiParam @RequestBody ActivityHandleRequest activityHandleRequest) throws Exception {
