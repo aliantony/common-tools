@@ -35,7 +35,7 @@ public class AssetLinkRelationController {
      * @param assetLinkRelation
      * @return actionResponse
      */
-    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
+    @ApiOperation(value = "（无效）保存接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:linkrelation:saveSingle')")
@@ -50,7 +50,7 @@ public class AssetLinkRelationController {
      * @param assetLinkRelation
      * @return actionResponse
      */
-    @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
+    @ApiOperation(value = "（无效）修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:linkrelation:updateSingle')")
@@ -65,7 +65,7 @@ public class AssetLinkRelationController {
      * @param assetLinkRelation
      * @return actionResponse
      */
-    @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
+    @ApiOperation(value = "（无效）批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('asset:linkrelation:queryList')")
@@ -79,7 +79,7 @@ public class AssetLinkRelationController {
      * @param query 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
+    @ApiOperation(value = "（无效）通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('asset:linkrelation:queryById')")
@@ -94,7 +94,7 @@ public class AssetLinkRelationController {
      * @param query 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
+    @ApiOperation(value = "（无效）通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:linkrelation:deleteById')")
