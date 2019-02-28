@@ -13,11 +13,13 @@ public class AccessExport {
      */
     @ExcelField(value = "number", align = 1, title = "资产编号", type = 0)
     private String  number;
+
+    private Integer admittanceStatus;
     /**
      * 资产准入状态
      */
-    @ExcelField(value = "admittanceStatus", align = 1, title = "资产准入状态", type = 0)
-    private Integer admittanceStatus;
+    @ExcelField(value = "admittanceStatusString", align = 1, title = "资产准入状态", type = 0)
+    private String admittanceStatusString;
     /**
      * 资产组
      */
@@ -80,6 +82,14 @@ public class AccessExport {
 
     public void setAdmittanceStatus(Integer admittanceStatus) {
         this.admittanceStatus = admittanceStatus;
+    }
+
+    public String getAdmittanceStatusString() {
+        return admittanceStatusString;
+    }
+
+    public void setAdmittanceStatusString(String admittanceStatusString) {
+        this.admittanceStatusString = admittanceStatusString;
     }
 
     public AccessExport() {
