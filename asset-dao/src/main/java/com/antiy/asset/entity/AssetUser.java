@@ -78,15 +78,6 @@ public class AssetUser extends BaseEntity {
      */
     private Integer status;
 
-    /**
-     * 详细地址
-     */
-    private String  detailAddress;
-
-    /**
-     * 职位
-     */
-    private String  position;
 
     public String getDetailAddress() {
         return detailAddress;
@@ -216,21 +207,8 @@ public class AssetUser extends BaseEntity {
         this.memo = memo;
     }
 
-    public String getDetailAddress() {
-        return detailAddress;
-    }
 
-    public void setDetailAddress(String detailAddress) {
-        this.detailAddress = detailAddress;
-    }
 
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
 
     @Override
     public String toString() {
