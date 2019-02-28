@@ -170,15 +170,19 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      */
     private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) {
         Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
-        JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+        if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0){
+            JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+        }
         scheme.setGmtCreate(System.currentTimeMillis());
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         if (null != assetStatusReqeust.getWorkOrderVO()) {
             scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
             scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));
             scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
-            scheme.setPutintoUserId(DataTypeUtils.stringToInteger(aesEncoder.decode(
-                assetStatusReqeust.getWorkOrderVO().getExecuteUserId(), LoginUserUtil.getLoginUser().getUsername())));
+            if (scheme.getPutintoUserId() == null){
+                scheme.setPutintoUserId(DataTypeUtils.stringToInteger(aesEncoder.decode(
+                        assetStatusReqeust.getWorkOrderVO().getExecuteUserId(), LoginUserUtil.getLoginUser().getUsername())));
+            }
         }
         scheme.setAssetId(assetStatusReqeust.getAssetId());
         return scheme;
