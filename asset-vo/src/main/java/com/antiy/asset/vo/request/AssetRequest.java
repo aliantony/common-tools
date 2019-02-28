@@ -61,7 +61,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 资产名称
      */
     @ApiModelProperty("资产名称")
-    @NotNull(message = "资产名称不能为空")
+    @NotBlank(message = "资产名称不能为空")
     @Size(message = "资产名字不能超过32位", max = 32)
     private String                  name;
     /**
