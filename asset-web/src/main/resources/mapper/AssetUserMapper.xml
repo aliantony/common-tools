@@ -12,6 +12,8 @@
         <result column="weixin" property="weixin"/>
         <result column="mobile" property="mobile"/>
         <result column="address" property="address"/>
+        <result column="detail_address" property="detailAddress"/>
+        <result column="position" property="position"/>
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="gmt_create" property="gmtCreate"/>
@@ -22,7 +24,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, department_id AS departmentId, email, qq, weixin, mobile, address, create_user AS createUser, modify_user AS modifyUser, gmt_create AS gmtCreate, gmt_modified AS gmtModified, status,memo
+        id, name, department_id AS departmentId, email, qq, weixin, mobile, address,detail_address as detailAddress, position , create_user AS createUser, modify_user AS modifyUser, gmt_create AS gmtCreate, gmt_modified AS gmtModified, status,memo
     </sql>
 
     <sql id="Table_Name">
@@ -51,6 +53,12 @@
         </if>
         <if test=" address != null">
             address,
+        </if>
+        <if test=" detailAddress != null">
+            detail_address,
+        </if>
+        <if test=" position != null">
+            position,
         </if>
         <if test=" createUser != null">
             create_user,
@@ -94,6 +102,12 @@
         <if test=" address != null">
             #{address },
         </if>
+        <if test=" detailAddress != null">
+            #{detailAddress},
+        </if>
+        <if test=" position != null">
+            #{position},
+        </if>
         <if test=" createUser != null">
             #{createUser },
         </if>
@@ -135,6 +149,12 @@
         </if>
         <if test=" address != null">
             address = #{address },
+        </if>
+        <if test=" detailAddress != null">
+            detail_address = #{detailAddress},
+        </if>
+        <if test=" position != null">
+            position = #{position},
         </if>
         <if test=" createUser != null">
             create_user = #{createUser },
@@ -317,6 +337,8 @@
         a.weixin,
         a.mobile,
         a.address,
+        detail_address as detailAddress,
+        position ,
         a.memo
         from
         asset_user a left join asset_department b on a.department_id = b.id
@@ -326,7 +348,7 @@
         </trim>
     </select>
     <!--查询资产表的使用者信息-->
-    <select id="findUserInAsset" resultType="AssetUser" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findUserInAsset" resultType="com.antiy.asset.entity.AssetUser" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
             au.name,
             au.id
@@ -344,6 +366,8 @@
         weixin,
         mobile,
         address,
+        detail_address,
+        position,
         create_user,
         gmt_create,
         status,
@@ -358,6 +382,8 @@
             #{user.weixin },
             #{user.mobile },
             #{user.address },
+            #{user.detailAddress},
+            #{user.position} ,
             #{user.createUser },
             #{user.gmtCreate },
             #{user.status },
@@ -369,7 +395,7 @@
     <select id="queryUserList" resultType="com.antiy.asset.entity.AssetUser">
         select a.id, a.name, a.department_id AS departmentId,
         b.name as departmentName,
-        a.email, a.qq, a.weixin, a.mobile, a.address, a.create_user AS createUser, a.modify_user AS modifyUser,
+        a.email, a.qq, a.weixin, a.mobile, a.address,detail_address as detailAddress, position, a.create_user AS createUser, a.modify_user AS modifyUser,
         a.gmt_create AS gmtCreate, a.gmt_modified AS gmtModified, a.status,a.memo
         from asset_user a left join asset_department b on a.department_id = b.id
         where 1 = 1

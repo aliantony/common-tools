@@ -50,6 +50,14 @@ public class AssetUser extends BaseEntity {
      */
     private String  address;
     /**
+     * 详细地址
+     */
+    private String  detailAddress;
+    /**
+     * 职位
+     */
+    private String  position;
+    /**
      * 创建人
      */
     private Integer createUser;
@@ -182,11 +190,41 @@ public class AssetUser extends BaseEntity {
         this.memo = memo;
     }
 
+    public String getDetailAddress() {
+        return detailAddress;
+    }
+
+    public void setDetailAddress(String detailAddress) {
+        this.detailAddress = detailAddress;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
     @Override
     public String toString() {
-        return "AssetUser{" + ", name=" + name + ", departmentId=" + departmentId + ", email=" + email + ", qq=" + qq
-               + ", weixin=" + weixin + ", mobile=" + mobile + ", address=" + address + ", createUser=" + createUser
-               + ", modifyUser=" + modifyUser + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified
-               + ", status=" + status + "}";
+        return "AssetUser{" +
+                "name='" + name + '\'' +
+                ", memo='" + memo + '\'' +
+                ", departmentId='" + departmentId + '\'' +
+                ", departmentName='" + departmentName + '\'' +
+                ", email='" + email + '\'' +
+                ", qq='" + qq + '\'' +
+                ", weixin='" + weixin + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", address='" + address + '\'' +
+                ", detailAddress='" + detailAddress + '\'' +
+                ", position='" + position + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", status=" + status +
+                '}';
     }
 }

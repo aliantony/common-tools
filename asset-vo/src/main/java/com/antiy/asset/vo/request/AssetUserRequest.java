@@ -72,6 +72,32 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("住址")
     private String address;
+    /**
+     * 详细地址
+     */
+    @ApiModelProperty("详细地址")
+    private String detailAddress;
+    /**
+     * 职位
+     */
+    @ApiModelProperty("职位")
+    private String position;
+
+    public String getDetailAddress() {
+        return detailAddress;
+    }
+
+    public void setDetailAddress(String detailAddress) {
+        this.detailAddress = detailAddress;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
 
     public String getDepartmentName() {
         return departmentName;

@@ -1,6 +1,7 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
+import io.swagger.annotations.ApiModelProperty;
 
 public class AssetUserEntity {
 
@@ -51,10 +52,36 @@ public class AssetUserEntity {
     @ExcelField(value = "address", align = 1, title = "地址", type = 0)
     private String  address;
     /**
+     * 详细地址
+     */
+    @ExcelField(value = "detailAddress", align = 1, title = "详细地址", type = 0)
+    private String detailAddress;
+    /**
+     * 职位
+     */
+    @ExcelField(value = "position", align = 1, title = "职位", type = 0)
+    private String position;
+    /**
      * 备注
      */
     @ExcelField(value = "memo", align = 1, title = "备注", type = 0)
     private String  memo;
+
+    public String getDetailAddress() {
+        return detailAddress;
+    }
+
+    public void setDetailAddress(String detailAddress) {
+        this.detailAddress = detailAddress;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
 
     public String getMemo() {
         return memo;
