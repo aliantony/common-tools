@@ -103,31 +103,6 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
         this.position = position;
     }
 
-    @ApiModelProperty(value = "详细住址")
-    @Length(message = "最大长度不能超过255", max = 255)
-    private String detailAddress;
-
-    @ApiModelProperty(value = "职位")
-    @Pattern(regexp = "^[\u4e00-\u9fa5a-zA-Z]+$", message = "职位只能是中英文")
-    @Length(message = "最大长度不能超过64", max = 64)
-    private String position;
-
-    public String getDetailAddress() {
-        return detailAddress;
-    }
-
-    public void setDetailAddress(String detailAddress) {
-        this.detailAddress = detailAddress;
-    }
-
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
     public String getDepartmentName() {
         return departmentName;
     }

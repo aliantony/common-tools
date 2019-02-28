@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.enums.AdmittanceStatusEnum;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,6 +83,9 @@ public class AssetAdmittanceController {
         assetQuery.setPageSize(-1);
         List<AssetResponse> assetList = assetService.findListAsset(assetQuery);
         List<AccessExport> accessExportList = BeanConvert.convert(assetList, AccessExport.class);
+        accessExportList.stream().forEach(asset -> {
+            asset.setAdmittanceStatusString(AdmittanceStatusEnum.getAdmittanceStatusEnum(asset.getAdmittanceStatus()));
+        });
         ExcelUtils.exportToClient(AccessExport.class, "资产准入管理.xlsx", "", accessExportList);
         return ActionResponse.success();
     }
