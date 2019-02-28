@@ -23,7 +23,7 @@ public class CountTypeUtil {
             // 处理返回结果，若结果条数大于maxNum，则归为其他
             setResultMap(maxNum, list, result);
             AssetCountResponse assetCountResponse = new AssetCountResponse();
-            assetCountResponse.setMap(ArrayTypeUtil.ObjectArrayToEntryArray(result.entrySet().toArray()));
+            assetCountResponse.setMap(ArrayTypeUtil.objectArrayToEntryArray(result.entrySet().toArray()));
             return assetCountResponse;
         }
         return null;
@@ -35,7 +35,7 @@ public class CountTypeUtil {
      */
     public static AssetCountResponse getAssetCountResponse(Map<String, Long> result) {
         AssetCountResponse assetCountResponse = new AssetCountResponse();
-        assetCountResponse.setMap(ArrayTypeUtil.ObjectArrayToEntryArray(result.entrySet().toArray()));
+        assetCountResponse.setMap(ArrayTypeUtil.objectArrayToEntryArray(result.entrySet().toArray()));
         return assetCountResponse;
     }
 
@@ -62,8 +62,8 @@ public class CountTypeUtil {
      */
     public static AssetCountColumnarResponse getAssetCountColumnarResponse(Map<String, Long> result) {
         AssetCountColumnarResponse assetCountColumnarResponse = new AssetCountColumnarResponse();
-        assetCountColumnarResponse.setKeys(ArrayTypeUtil.ObjectArrayToStringArray(result.keySet().toArray()));
-        assetCountColumnarResponse.setValues(ArrayTypeUtil.ObjectArrayToLongArray(result.values().toArray()));
+        assetCountColumnarResponse.setKeys(ArrayTypeUtil.objectArrayToStringArray(result.keySet().toArray()));
+        assetCountColumnarResponse.setValues(ArrayTypeUtil.objectArrayToLongArray(result.values().toArray()));
         return assetCountColumnarResponse;
     }
 }

@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import com.antiy.asset.util.Constants;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -69,9 +70,10 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     }
 
     private boolean checkNameRepeat(AssetDepartmentRequest request) throws Exception {
-        if (Objects.nonNull(request.getName())) {
+        if (StringUtils.isNotEmpty(request.getName())) {
             AssetDepartmentQuery assetDepartmentQuery = new AssetDepartmentQuery();
             assetDepartmentQuery.setName(request.getName());
+            //根据id是否为null进行不同的查询重名操作
             return assetDepartmentDao.findRepeatName(
                 request.getId() == null ? null : DataTypeUtils.stringToInteger(request.getId()), request.getName()) >= 1;
         }
@@ -229,7 +231,7 @@ class DepartmentRequestConvert extends BaseConverter<AssetDepartmentRequest, Ass
     @Override
     protected void convert(AssetDepartmentRequest assetDepartmentRequest, AssetDepartment assetDepartment) {
         try {
-            assetDepartment.setId(Integer.parseInt(assetDepartmentRequest.getId()));
+            assetDepartment.setId(Integer.valueOf(assetDepartmentRequest.getId()));
         } catch (Exception e) {
             logger.error("String转Integer出错");
         }

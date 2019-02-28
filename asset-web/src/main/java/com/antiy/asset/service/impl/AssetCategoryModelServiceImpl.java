@@ -187,8 +187,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      */
     private boolean checkNameRepeat(AssetCategoryModelRequest request) throws Exception {
         if (Objects.nonNull(request.getName())) {
-            AssetCategoryModelQuery assetDepartmentQuery = new AssetCategoryModelQuery();
-            assetDepartmentQuery.setName(request.getName());
+            AssetCategoryModelQuery assetCategoryModelQuery = new AssetCategoryModelQuery();
+            assetCategoryModelQuery.setName(request.getName());
             return assetCategoryModelDao.findRepeatName(
                 request.getStringId() == null ? null : DataTypeUtils.stringToInteger(request.getStringId()),
                 request.getName()) >= 1;
@@ -208,7 +208,10 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         BusinessExceptionUtils.isTrue(checkIsDefault(assetCategoryModel), "系统内置品类不能更新或删除");
         return deleteAllById(id);
     }
-
+    /**
+     * 查询品类树
+     * @return
+     */
     @Override
     public AssetCategoryModelNodeResponse queryCategoryNode() throws Exception {
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
@@ -216,7 +219,11 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         return getAssetCategoryModelNodeResponse(assetCategoryModels);
     }
-
+    /**
+     * 通过类型查询品类树
+     * @param type 1--软件 2--硬件
+     * @return
+     */
     @Override
     public AssetCategoryModelNodeResponse queryCategoryNode(int type) throws Exception {
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
