@@ -4,6 +4,7 @@ import static com.antiy.biz.file.FileHelper.logger;
 
 import javax.annotation.Resource;
 
+import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.AssetOperationRecord;
@@ -22,6 +23,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
@@ -107,10 +109,10 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         }
 
         // 如果流程引擎为空,直接返回错误信息
-        if (null == actionResponse
-            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
-        }
+        // if (null == actionResponse
+        // || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+        // return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+        // }
 
         // 4.调用工单系统(选择自己不发工单，选择它人发起工单)
         if (null != assetStatusReqeust.getWorkOrderVO()
@@ -167,6 +169,10 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      */
     private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) {
         Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
+        Object fileInfo = JSONObject.parse(scheme.getFileInfo());
+        if (fileInfo == null) {
+            throw new BusinessException("文件数据格式不对，请提交正确的JSON格式");
+        }
         scheme.setGmtCreate(System.currentTimeMillis());
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         if (null != assetStatusReqeust.getWorkOrderVO()) {
