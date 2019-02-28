@@ -13,7 +13,7 @@ import java.util.Objects;
 public class ArrayTypeUtil {
     private static final Logger logger = LogUtils.get();
 
-    public static Integer[] ObjectArrayToIntegerArray(Object[] objects) {
+    public static Integer[] objectArrayToIntegerArray(Object[] objects) {
         Integer[] integers = new Integer[objects.length];
         for (int i = 0; i < objects.length; i++) {
             try {
@@ -26,7 +26,7 @@ public class ArrayTypeUtil {
         return integers;
     }
 
-    public static String[] ObjectArrayToStringArray(Object[] objects) {
+    public static String[] objectArrayToStringArray(Object[] objects) {
         String[] strings = new String[objects.length];
         for (int i = 0; i < objects.length; i++) {
             try {
@@ -38,7 +38,7 @@ public class ArrayTypeUtil {
         }
         return strings;
     }
-    public static Map.Entry[] ObjectArrayToEntryArray(Object[] objects) {
+    public static Map.Entry[] objectArrayToEntryArray(Object[] objects) {
         Map.Entry[] strings = new Map.Entry[objects.length];
         for (int i = 0; i < objects.length; i++) {
             try {
@@ -50,7 +50,7 @@ public class ArrayTypeUtil {
         }
         return strings;
     }
-    public static Long[] ObjectArrayToLongArray(Object[] objects) {
+    public static Long[] objectArrayToLongArray(Object[] objects) {
         Long[] strings = new Long[objects.length];
         for (int i = 0; i < objects.length; i++) {
             try {
