@@ -4,6 +4,8 @@ import static com.antiy.biz.file.FileHelper.logger;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.util.HtmlUtils;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.SchemeDao;
@@ -168,7 +170,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      */
     private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) {
         Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
-        JSONObject.parse(scheme.getFileInfo());
+        JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
         scheme.setGmtCreate(System.currentTimeMillis());
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         if (null != assetStatusReqeust.getWorkOrderVO()) {
