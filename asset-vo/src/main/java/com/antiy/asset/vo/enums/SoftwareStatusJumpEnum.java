@@ -10,6 +10,7 @@ public enum SoftwareStatusJumpEnum {
     WATI_REGSIST(SoftwareStatusEnum.WATI_REGSIST, SoftwareStatusEnum.WAIT_ANALYZE, SoftwareStatusEnum.NOT_REGSIST),
     WAIT_ANALYZE(SoftwareStatusEnum.WAIT_ANALYZE, SoftwareStatusEnum.ALLOW_INSTALL,SoftwareStatusEnum.WATI_REGSIST),
     ALLOW_INSTALL_RETIRE(SoftwareStatusEnum.ALLOW_INSTALL, SoftwareStatusEnum.WAIT_ANALYZE_RETIRE, SoftwareStatusEnum.ALLOW_INSTALL),
+    WAIT_ANALYZE_RETIRE(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE, SoftwareStatusEnum.WAIT_RETIRE, SoftwareStatusEnum.WAIT_ANALYZE_RETIRE),
     ALLOW_INSTALL_UNINSTALL(SoftwareStatusEnum.ALLOW_INSTALL, SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL, SoftwareStatusEnum.ALLOW_INSTALL);
 
     // code
