@@ -4,7 +4,6 @@ import com.antiy.asset.annotation.ExcelField;
 
 public class AssetUserEntity {
 
-
     /**
      * 姓名
      */
@@ -19,7 +18,7 @@ public class AssetUserEntity {
      * 部门名
      */
     @ExcelField(value = "departmentName", align = 1, title = "所属部门", type = 0, required = true)
-    private String departmentName;
+    private String  departmentName;
     /**
      * 电子邮箱
      */
@@ -55,6 +54,34 @@ public class AssetUserEntity {
      */
     @ExcelField(value = "memo", align = 1, title = "备注", type = 0)
     private String  memo;
+
+    /**
+     * 详细住址
+     */
+    @ExcelField(value = "detailAddress", align = 1, title = "详细住址", type = 0)
+    private String  detailAddress;
+
+    /**
+     * 职位
+     */
+    @ExcelField(value = "position", align = 1, title = "职位", type = 0)
+    private String  position;
+
+    public String getDetailAddress() {
+        return detailAddress;
+    }
+
+    public void setDetailAddress(String detailAddress) {
+        this.detailAddress = detailAddress;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
 
     public String getMemo() {
         return memo;

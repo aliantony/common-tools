@@ -18,11 +18,14 @@
         <result column="gmt_modified" property="gmtModified"/>
         <result column="status" property="status"/>
         <result column="memo" property="memo"/>
+        <result column="detail_address" property="detailAddress"/>
+        <result column="position" property="position"/>
 
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, name, department_id AS departmentId, email, qq, weixin, mobile, address, create_user AS createUser, modify_user AS modifyUser, gmt_create AS gmtCreate, gmt_modified AS gmtModified, status,memo
+        ,detail_address as detailAddress,position
     </sql>
 
     <sql id="Table_Name">
@@ -70,6 +73,13 @@
         <if test=" memo != null">
             memo,
         </if>
+
+        <if test="detailAddress != null">
+            detail_address,
+        </if>
+        <if test=" position != null">
+            position,
+        </if>
     </sql>
 
     <sql id="IF_Value_Column_List">
@@ -112,6 +122,14 @@
         <if test=" memo != null">
             #{memo },
         </if>
+
+        <if test="detailAddress != null">
+            #{detailAddress},
+        </if>
+
+        <if test="position != null">
+            #{position},
+        </if>
     </sql>
 
     <sql id="Set_Column_List">
@@ -153,6 +171,14 @@
         </if>
         <if test=" memo != null">
             memo = #{memo },
+        </if>
+
+        <if test="detailAddress != null">
+            detail_address = #{detailAddress},
+        </if>
+
+        <if test="position != null">
+            position = #{position},
         </if>
     </sql>
 
@@ -317,7 +343,9 @@
         a.weixin,
         a.mobile,
         a.address,
-        a.memo
+        a.memo,
+        a.detail_address as detailAddress,
+        a.position
         from
         asset_user a left join asset_department b on a.department_id = b.id
         <trim prefix="WHERE" prefixOverrides="AND|OR">
@@ -347,7 +375,7 @@
         create_user,
         gmt_create,
         status,
-        memo)
+        memo,detail_address,position)
         values
         <foreach collection="list" item="user" separator=",">
             (
@@ -361,7 +389,9 @@
             #{user.createUser },
             #{user.gmtCreate },
             #{user.status },
-            #{user.memo}
+            #{user.memo},
+            #{user.detailAddress},
+            #{user.position}
             )
         </foreach>
     </insert>
@@ -370,7 +400,8 @@
         select a.id, a.name, a.department_id AS departmentId,
         b.name as departmentName,
         a.email, a.qq, a.weixin, a.mobile, a.address, a.create_user AS createUser, a.modify_user AS modifyUser,
-        a.gmt_create AS gmtCreate, a.gmt_modified AS gmtModified, a.status,a.memo
+        a.gmt_create AS gmtCreate, a.gmt_modified AS gmtModified, a.status,a.memo,a.detail_address as detailAddress,
+        a.position
         from asset_user a left join asset_department b on a.department_id = b.id
         where 1 = 1
         <if test=" departmentId != null">

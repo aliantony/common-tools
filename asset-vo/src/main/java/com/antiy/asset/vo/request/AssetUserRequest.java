@@ -1,14 +1,15 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * <p> AssetUserRequest 请求对象 </p>
@@ -61,6 +62,7 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
      * 微信
      */
     @ApiModelProperty("微信")
+    @Pattern(message = "只能是英文字母和数字", regexp = "^[a-zA-Z0-9]+$")
     private String weixin;
     /**
      * 手机号
@@ -72,6 +74,31 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("住址")
     private String address;
+
+    @ApiModelProperty(value = "详细住址")
+    @Max(message = "最大长度不能超过255", value = 255)
+    private String detailAddress;
+
+    @ApiModelProperty(value = "职位")
+    @Pattern(regexp = "^[\u4e00-\u9fa5a-zA-Z]+$", message = "职位只能是中英文")
+    @Max(message = "最大长度不能超过64", value = 64)
+    private String position;
+
+    public String getDetailAddress() {
+        return detailAddress;
+    }
+
+    public void setDetailAddress(String detailAddress) {
+        this.detailAddress = detailAddress;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
 
     public String getDepartmentName() {
         return departmentName;
