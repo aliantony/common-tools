@@ -17,6 +17,8 @@ import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
+import com.antiy.common.upload.ExcelUploadUtil;
+import com.antiy.common.upload.UploadVO;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
@@ -284,6 +286,8 @@ public class AssetController {
         return ActionResponse.success(iAssetService.importNet(file, importRequest));
     }
 
+    @Resource
+    private ExcelUploadUtil excelUploadUtil;
     /**
      * 硬件资产-导入安全设备
      *
@@ -295,6 +299,7 @@ public class AssetController {
     @PreAuthorize(value = "hasAuthority('asset:asset:importSafety')")
     public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file,
                                        AssetImportRequest importRequest) throws Exception {
+        List<UploadVO> object = excelUploadUtil.excelUpload(file);
         return ActionResponse.success(iAssetService.importSecurity(file, importRequest));
     }
 

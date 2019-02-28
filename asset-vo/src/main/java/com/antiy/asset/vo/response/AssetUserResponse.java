@@ -33,7 +33,7 @@ public class AssetUserResponse extends BaseResponse {
      * 部门名
      */
     @ApiModelProperty("部门名")
-    private String departmentName;
+    private String  departmentName;
     /**
      * 电子邮箱
      */
@@ -84,6 +84,28 @@ public class AssetUserResponse extends BaseResponse {
      */
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
+
+    @ApiModelProperty(value = "详细住址")
+    private String  detailAddress;
+
+    @ApiModelProperty(value = "职位")
+    private String  position;
+
+    public String getDetailAddress() {
+        return detailAddress;
+    }
+
+    public void setDetailAddress(String detailAddress) {
+        this.detailAddress = detailAddress;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
 
     public String getDepartmentName() {
         return departmentName;

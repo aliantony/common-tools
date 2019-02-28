@@ -61,7 +61,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 资产名称
      */
     @ApiModelProperty("资产名称")
-    @NotNull(message = "资产名称不能为空")
+    @NotBlank(message = "资产名称不能为空")
     @Size(message = "资产名字不能超过32位", max = 32)
     private String                  name;
     /**
@@ -143,7 +143,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("责任人主键")
     @Encode
-    @NotNull(message = "责任人不能为空")
+    @NotBlank(message = "责任人不能为空")
     private String                  responsibleUserId;
 
     /**
