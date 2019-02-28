@@ -949,15 +949,15 @@
         when a.category_model = 4 then
             group_concat(b.ip_address)
         when a.category_model = 6 then
-          (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id)
+          (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
         when a.category_model = 7 then
-          (select ip from asset_safety_equipment where asset_id = a.id)
+          (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
         else '' end as ip,
         case
         when a.category_model = 4 then
           group_concat( b.mac_address )
         when a.category_model = 6 then
-          (select mac_address from asset_network_equipment where asset_id = a.id)
+          (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
         else '' end as mac
         from
         asset a
