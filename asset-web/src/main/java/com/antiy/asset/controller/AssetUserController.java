@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import com.antiy.common.utils.LoginUserUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +25,7 @@ import com.antiy.asset.vo.response.AssetUserResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
@@ -71,6 +72,9 @@ public class AssetUserController {
         ImportResult<AssetUserEntity> importResult = ExcelUtils.importExcelFromClient(AssetUserEntity.class, file, 0,
             0);
         List<AssetUserEntity> assetUserEntityList = importResult.getDataList();
+        if (CollectionUtils.isEmpty(assetUserEntityList)) {
+            return ActionResponse.success();
+        }
         List<AssetUser> assetUserList = BeanConvert.convert(assetUserEntityList, AssetUser.class);
         assetUserList.stream().forEach(assetUser -> {
             assetUser.setDepartmentId(iAssetDepartmentService.getIdByName(assetUser.getDepartmentName()));
@@ -94,6 +98,7 @@ public class AssetUserController {
     public void exportTemplet() throws Exception {
         ExcelUtils.exportTemplet(AssetUserEntity.class, "用户信息表", "用户信息");
     }
+
     /**
      * 导出用户信息
      * @return
@@ -106,7 +111,7 @@ public class AssetUserController {
     public void exportData(@ApiParam(value = "assetUser") AssetUserQuery assetUser) throws Exception {
         if (!Objects.isNull(assetUser.getDepartmentId())) {
             List<AssetDepartmentResponse> responses = iAssetDepartmentService
-                    .findAssetDepartmentById(DataTypeUtils.stringToInteger(assetUser.getDepartmentId()));
+                .findAssetDepartmentById(DataTypeUtils.stringToInteger(assetUser.getDepartmentId()));
             String[] ids = new String[responses.size()];
             for (int i = 0; i < responses.size(); i++) {
                 ids[i] = responses.get(i).getStringId();
