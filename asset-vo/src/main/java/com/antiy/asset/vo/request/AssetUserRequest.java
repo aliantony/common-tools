@@ -3,6 +3,7 @@ package com.antiy.asset.vo.request;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
@@ -10,6 +11,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * <p> AssetUserRequest 请求对象 </p>
@@ -76,12 +78,12 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
     private String address;
 
     @ApiModelProperty(value = "详细住址")
-    @Max(message = "最大长度不能超过255", value = 255)
+    @Length(message = "最大长度不能超过255", max = 255)
     private String detailAddress;
 
     @ApiModelProperty(value = "职位")
     @Pattern(regexp = "^[\u4e00-\u9fa5a-zA-Z]+$", message = "职位只能是中英文")
-    @Max(message = "最大长度不能超过64", value = 64)
+    @Length(message = "最大长度不能超过64", max = 64)
     private String position;
 
     public String getDetailAddress() {
