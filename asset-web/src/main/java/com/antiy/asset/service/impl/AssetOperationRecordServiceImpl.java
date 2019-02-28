@@ -1,5 +1,14 @@
 package com.antiy.asset.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.AssetOperationRecord;
@@ -17,12 +26,6 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.exception.BusinessException;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * <p> 资产操作记录表 服务实现类 </p>
@@ -171,7 +174,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
                 for (Scheme scheme : schemeList) {
                     AssetStatusBarResponse assetStatusBarResponse = new AssetStatusBarResponse();
-                    assetStatusBarResponse.setFileInfo(scheme.getFileInfo());
+                    assetStatusBarResponse.setFileInfo(JSONObject.parse(scheme.getFileInfo()).toString());
                     assetStatusBarResponse.setMemo(scheme.getMemo());
                     fileInfoList.add(assetStatusBarResponse);
                 }
