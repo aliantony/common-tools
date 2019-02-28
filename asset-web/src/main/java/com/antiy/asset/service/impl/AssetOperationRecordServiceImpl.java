@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.AssetOperationRecordDao;
@@ -174,7 +175,10 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
                 for (Scheme scheme : schemeList) {
                     AssetStatusBarResponse assetStatusBarResponse = new AssetStatusBarResponse();
-                    assetStatusBarResponse.setFileInfo(JSONObject.parse(scheme.getFileInfo()).toString());
+                    if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0){
+                        JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+                    }
+                    assetStatusBarResponse.setFileInfo(scheme.getFileInfo());
                     assetStatusBarResponse.setMemo(scheme.getMemo());
                     fileInfoList.add(assetStatusBarResponse);
                 }

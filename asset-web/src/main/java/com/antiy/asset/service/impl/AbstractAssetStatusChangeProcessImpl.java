@@ -4,6 +4,9 @@ import static com.antiy.biz.file.FileHelper.logger;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.util.HtmlUtils;
+
+import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.AssetOperationRecord;
@@ -107,10 +110,10 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         }
 
         // 如果流程引擎为空,直接返回错误信息
-        if (null == actionResponse
-            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
-        }
+         if (null == actionResponse
+         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+         return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+         }
 
         // 4.调用工单系统(选择自己不发工单，选择它人发起工单)
         if (null != assetStatusReqeust.getWorkOrderVO()
@@ -167,14 +170,19 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      */
     private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) {
         Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
+        if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0){
+            JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+        }
         scheme.setGmtCreate(System.currentTimeMillis());
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         if (null != assetStatusReqeust.getWorkOrderVO()) {
             scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
             scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));
             scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
-            scheme.setPutintoUserId(DataTypeUtils.stringToInteger(aesEncoder.decode(
-                assetStatusReqeust.getWorkOrderVO().getExecuteUserId(), LoginUserUtil.getLoginUser().getUsername())));
+            if (scheme.getPutintoUserId() == null){
+                scheme.setPutintoUserId(DataTypeUtils.stringToInteger(aesEncoder.decode(
+                        assetStatusReqeust.getWorkOrderVO().getExecuteUserId(), LoginUserUtil.getLoginUser().getUsername())));
+            }
         }
         scheme.setAssetId(assetStatusReqeust.getAssetId());
         return scheme;

@@ -1011,8 +1011,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<Integer> list = new ArrayList<>();
         search.stream().forEach(x -> list.add(x.getId()));
         AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setCategoryModels(ArrayTypeUtil.ObjectArrayToStringArray(list.toArray()));
-        assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToStringArray(areaIds.toArray()));
+        assetQuery.setCategoryModels(ArrayTypeUtil.objectArrayToStringArray(list.toArray()));
+        assetQuery.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
         List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
         assetQuery.setAssetStatusList(status);
         return assetQuery;
@@ -2445,7 +2445,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private void exportData(Class clazz, String fileName, AssetQuery assetQuery, HttpServletResponse response)
                                                                                                               throws Exception {
-        assetQuery.setAreaIds(ArrayTypeUtil.ObjectArrayToStringArray(LoginUserUtil.getLoginUser()
+        assetQuery.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser()
             .getAreaIdsOfCurrentUser().toArray()));
         assetQuery.setPageSize(ALL_PAGE);
         List<AssetResponse> list = this.findListAsset(assetQuery);
@@ -2473,11 +2473,11 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
             assetEntity.setAssetStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
         }
         assetEntity.setCategoryModelName(asset.getCategoryModelName());
-        assetEntity.setGmtCreate(LongToDateString(asset.getGmtCreate()));
+        assetEntity.setGmtCreate(longToDateString(asset.getGmtCreate()));
         super.convert(asset, assetEntity);
     }
 
-    private String LongToDateString(Long datetime) {
+    private String longToDateString(Long datetime) {
         if (Objects.nonNull(datetime) && !Objects.equals(datetime, 0L)) {
             return DateUtils.getDataString(new Date(datetime), DateUtils.WHOLE_FORMAT);
         }
