@@ -400,7 +400,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                      || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL)) {
                 String waitAnalyze = SoftwareStatusEnum.WAIT_ANALYZE.getMsg();
                 result.put(waitAnalyze, 0L);
-            } else {
+            } else if (!softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL)) {
                 result.put(softwareStatusEnum.getMsg(), 0L);
             }
         }
@@ -423,7 +423,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     Long waitAnalyzeNum = result.get(waitAnalyze);
                     result.put(waitAnalyze, (waitAnalyzeNum == null ? (Long) map.get("value")
                         : (waitAnalyzeNum + (Long) map.get("value"))));
-                } else {
+                } else if (!softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL)) {
                     result.put(softwareStatusEnum.getMsg(), (Long) map.get("value"));
                 }
             }
