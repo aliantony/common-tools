@@ -11,7 +11,7 @@ public enum SoftwareStatusJumpEnum {
     WAIT_ANALYZE(SoftwareStatusEnum.WAIT_ANALYZE, SoftwareStatusEnum.ALLOW_INSTALL,SoftwareStatusEnum.WATI_REGSIST),
     WAIT_RETIRE(SoftwareStatusEnum.WAIT_RETIRE, SoftwareStatusEnum.RETIRE,SoftwareStatusEnum.WAIT_ANALYZE_RETIRE),
     ALLOW_INSTALL_RETIRE(SoftwareStatusEnum.ALLOW_INSTALL, SoftwareStatusEnum.WAIT_ANALYZE_RETIRE, SoftwareStatusEnum.ALLOW_INSTALL),
-    WAIT_ANALYZE_RETIRE(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE, SoftwareStatusEnum.WAIT_RETIRE, SoftwareStatusEnum.WAIT_ANALYZE_RETIRE),
+    WAIT_ANALYZE_RETIRE(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE, SoftwareStatusEnum.WAIT_RETIRE, SoftwareStatusEnum.ALLOW_INSTALL),
     ALLOW_INSTALL_UNINSTALL(SoftwareStatusEnum.ALLOW_INSTALL, SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL, SoftwareStatusEnum.ALLOW_INSTALL);
 
     // code
