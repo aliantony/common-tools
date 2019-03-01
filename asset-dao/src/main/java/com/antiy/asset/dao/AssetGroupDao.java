@@ -29,4 +29,11 @@ public interface AssetGroupDao extends IBaseDao<AssetGroup> {
      * @return
      */
     Boolean removeDuplicate(String assetName) throws Exception;
+
+    /**
+     * 查询下拉项的资产组信息
+     *
+     * @return
+     */
+    List<AssetGroup> findCreateUser() throws Exception;
 }
