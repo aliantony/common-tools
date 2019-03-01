@@ -208,6 +208,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         BusinessExceptionUtils.isTrue(checkIsDefault(assetCategoryModel), "系统内置品类不能更新或删除");
         return deleteAllById(id);
     }
+
     /**
      * 查询品类树
      * @return
@@ -219,6 +220,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         return getAssetCategoryModelNodeResponse(assetCategoryModels);
     }
+
     /**
      * 通过类型查询品类树
      * @param type 1--软件 2--硬件
@@ -231,7 +233,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         query.setPageSize(Constants.ALL_PAGE);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         assetCategoryModels.add(getRootCategory());
-        return getAssetCategoryModelNodeResponse(assetCategoryModels);
+        return getAssetCategoryModelNodeResponse(assetCategoryModels).getChildrenNode().get(0);
     }
 
     private AssetCategoryModelNodeResponse getAssetCategoryModelNodeResponse(List<AssetCategoryModel> assetCategoryModels) {

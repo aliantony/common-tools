@@ -6,13 +6,13 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetCategoryModelNodeResponse extends AssetCategoryModelResponse {
     @ApiModelProperty(value = "子节点")
-    private List<AssetCategoryModelResponse> childrenNode;
+    private List<AssetCategoryModelNodeResponse> childrenNode;
 
-    public List<AssetCategoryModelResponse> getChildrenNode() {
+    public List<AssetCategoryModelNodeResponse> getChildrenNode() {
         return childrenNode;
     }
 
-    public void setChildrenNode(List<AssetCategoryModelResponse> childrenNode) {
+    public void setChildrenNode(List<AssetCategoryModelNodeResponse> childrenNode) {
         this.childrenNode = childrenNode;
     }
 
