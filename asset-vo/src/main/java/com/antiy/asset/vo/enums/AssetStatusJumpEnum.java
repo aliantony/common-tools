@@ -11,7 +11,7 @@ public enum AssetStatusJumpEnum {
     WATI_REGSIST(AssetStatusEnum.WATI_REGSIST, AssetStatusEnum.WAIT_SETTING, AssetStatusEnum.NOT_REGSIST),
     WAIT_SETTING(AssetStatusEnum.WAIT_SETTING, AssetStatusEnum.WAIT_VALIDATE, AssetStatusEnum.WATI_REGSIST),
     WAIT_VALIDATE(AssetStatusEnum.WAIT_VALIDATE, AssetStatusEnum.WAIT_NET, AssetStatusEnum.WAIT_SETTING),
-    WAIT_NET(AssetStatusEnum.WAIT_NET, AssetStatusEnum.WAIT_CHECK, AssetStatusEnum.WAIT_SETTING),
+    WAIT_NET(AssetStatusEnum.WAIT_NET, AssetStatusEnum.WAIT_CHECK, AssetStatusEnum.WAIT_VALIDATE),
     WAIT_CHECK(AssetStatusEnum.WAIT_CHECK, AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_NET),
     NET_IN(AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_RETIRE, AssetStatusEnum.WAIT_VALIDATE),
     WAIT_RETIRE(AssetStatusEnum.WAIT_RETIRE, AssetStatusEnum.RETIRE, AssetStatusEnum.NET_IN);
