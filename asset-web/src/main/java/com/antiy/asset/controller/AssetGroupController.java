@@ -92,16 +92,16 @@ public class AssetGroupController {
     }
 
     /**
-     * 通过ID查询创建人
+     * 查询下拉项的资产组创建人
      *
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID查询创建人", notes = "主键封装对象")
+    @ApiOperation(value = "查询下拉项的资产组创建人", notes = "")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/createUser", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:group:queryCreateUser')")
     public ActionResponse queryCreateUser() throws Exception {
-        return ActionResponse.success();
+        return ActionResponse.success(iAssetGroupService.queryCreateUser());
     }
 
     /**

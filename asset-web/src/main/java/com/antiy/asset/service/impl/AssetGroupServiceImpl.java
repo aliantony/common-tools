@@ -217,6 +217,21 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             .convert(assetGroupDao.getById(Integer.valueOf(id)), AssetGroupResponse.class);
         return assetGroupResponse;
     }
+
+    @Override
+    public List<SelectResponse> queryCreateUser() throws Exception {
+        List<SelectResponse> selectResponseList = new ArrayList<>();
+        for (AssetGroup assetGroup : assetGroupDao.findCreateUser()){
+            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
+                    assetGroup.getCreateUser());
+            SysUser sysUser = redisUtil.getObject(key, SysUser.class);
+            SelectResponse selectResponse = new SelectResponse();
+            selectResponse.setId(DataTypeUtils.integerToString(assetGroup.getCreateUser()));
+            selectResponse.setValue(sysUser.getUsername());
+            selectResponseList.add(selectResponse);
+        }
+        return selectResponseList;
+    }
 }
 
 @Component
