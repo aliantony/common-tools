@@ -335,7 +335,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 }
             }
         };
-        return baseConverter.convert(assetSoftware, AssetSoftwareResponse.class);
+        List<AssetSoftwareResponse> objects = baseConverter.convert(assetSoftware, AssetSoftwareResponse.class);
+        if (!Objects.isNull(waitingTasks) && !waitingTasks.isEmpty()) {
+            objects.forEach(object -> {
+                object.setWaitingTaskReponse(waitingTasks.get(object.getStringId()));
+            });
+        }
+        return objects;
     }
 
     public Integer findCountAssetSoftware(AssetSoftwareQuery query) throws Exception {
