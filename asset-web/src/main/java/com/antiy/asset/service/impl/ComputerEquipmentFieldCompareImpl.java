@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetSoftwareLicenseDao;
 import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.util.CompareUtils;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.InfoLabelEnum;
@@ -31,8 +30,6 @@ import com.antiy.common.utils.JsonUtil;
  **/
 @Service
 public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompareImpl {
-    @Resource
-    private AreaClient                         areaClient;
     @Resource
     private AssetSoftwareLicenseDao                    softwareLicenseDao;
     @Resource
@@ -153,7 +150,6 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                             if (oldMemory.getId().equals(newMemory.getId())) {
                                 assetMemoryCompareResult.add(
                                     CompareUtils.compareClass(oldMemory, newMemory, InfoLabelEnum.MEMORY.getMsg()));
-
                             }
                         }
                     } else {
@@ -344,6 +340,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             changeValList.addAll(assetBusinessInfoCompareResult);
             if (CollectionUtils.isNotEmpty(assetMemoryCompareResult)) {
                 for (List<Map<String, Object>> listMap : assetMemoryCompareResult) {
+
                     changeValList.addAll(listMap);
                 }
             }
