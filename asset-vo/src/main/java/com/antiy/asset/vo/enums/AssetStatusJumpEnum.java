@@ -14,7 +14,8 @@ public enum AssetStatusJumpEnum {
     WAIT_NET(AssetStatusEnum.WAIT_NET, AssetStatusEnum.WAIT_CHECK, AssetStatusEnum.WAIT_VALIDATE),
     WAIT_CHECK(AssetStatusEnum.WAIT_CHECK, AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_NET),
     NET_IN(AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_RETIRE, AssetStatusEnum.WAIT_VALIDATE),
-    WAIT_RETIRE(AssetStatusEnum.WAIT_RETIRE, AssetStatusEnum.RETIRE, AssetStatusEnum.NET_IN);
+    WAIT_RETIRE(AssetStatusEnum.WAIT_RETIRE, AssetStatusEnum.RETIRE, AssetStatusEnum.NET_IN),
+    NOT_REGSIST(AssetStatusEnum.NOT_REGSIST,AssetStatusEnum.NOT_REGSIST,AssetStatusEnum.NOT_REGSIST);
     // code
     private AssetStatusEnum currentStatus;
 
