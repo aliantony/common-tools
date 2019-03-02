@@ -2,9 +2,8 @@ package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
 import com.antiy.common.encoder.Encode;
-import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Date;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> 资产主表 </p>
@@ -81,6 +80,8 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("安装方式")
     private Integer           installType;
+    @ApiModelProperty("安装方式")
+    private String           installTypeName;
     /**
      * 序列号
      */
@@ -182,6 +183,11 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("重要程度")
     private Integer           importanceDegree;
+    /**
+     * 资产重要程度：1核心2重要3一般
+     */
+    @ApiModelProperty("重要程度")
+    private String           importanceDegreeName;
     /**
      * 描述
      */
@@ -638,5 +644,21 @@ public class Asset extends BaseEntity {
 
     public void setSoftwareVersion(String softwareVersion) {
         this.softwareVersion = softwareVersion;
+    }
+
+    public String getImportanceDegreeName() {
+        return importanceDegreeName;
+    }
+
+    public void setImportanceDegreeName(String importanceDegreeName) {
+        this.importanceDegreeName = importanceDegreeName;
+    }
+
+    public String getInstallTypeName() {
+        return installTypeName;
+    }
+
+    public void setInstallTypeName(String installTypeName) {
+        this.installTypeName = installTypeName;
     }
 }
