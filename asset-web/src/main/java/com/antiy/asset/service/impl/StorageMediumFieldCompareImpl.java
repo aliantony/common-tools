@@ -107,15 +107,16 @@ public class StorageMediumFieldCompareImpl extends AbstractChangeRecordCompareIm
 
             List<Map<String, Object>> assetBusinessInfoCompareResult = CompareUtils.compareClass(oldAssetBusinessInfo,
                 newAssetBusinessInfo, InfoLabelEnum.BUSINESSINFO.getMsg());
-
+            List<Map<String, Object>> storageEquipmentCompareResult = null;
             AssetStorageMediumRequest oldStorageMediumRequest = oldAssetOuterRequest.getAssetStorageMedium();
             AssetStorageMediumRequest newStorageMediumRequest = newAssetOuterRequest.getAssetStorageMedium();
-            List<Map<String, Object>> storageEquipmentCompareResult = CompareUtils.compareClass(oldStorageMediumRequest,
-                newStorageMediumRequest, InfoLabelEnum.BUSINESSINFO.getMsg());
-
+            if (newStorageMediumRequest != null && oldStorageMediumRequest != null) {
+                storageEquipmentCompareResult = CompareUtils.compareClass(oldStorageMediumRequest,
+                    newStorageMediumRequest, InfoLabelEnum.BUSINESSINFO.getMsg());
+                changeValList.addAll(storageEquipmentCompareResult);
+            }
             changeValList.addAll(assetCommonInoCompareResult);
             changeValList.addAll(assetBusinessInfoCompareResult);
-            changeValList.addAll(storageEquipmentCompareResult);
         }
         return changeValList;
     }

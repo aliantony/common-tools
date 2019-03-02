@@ -108,9 +108,11 @@ public class OtherEquipmentFieldCompareImpl extends AbstractChangeRecordCompareI
 
             AssetOthersRequest oldOtherEquipment = oldAssetOuterRequest.getAssetOthersRequest();
             AssetOthersRequest newOtherEquipment = newAssetOuterRequest.getAssetOthersRequest();
-            List<Map<String, Object>> networkEquipmentCompareResult = CompareUtils.compareClass(oldOtherEquipment,
-                newOtherEquipment, InfoLabelEnum.BUSINESSINFO.getMsg());
-
+            List<Map<String, Object>> networkEquipmentCompareResult = null;
+            if (newOtherEquipment != null && oldOtherEquipment != null) {
+                networkEquipmentCompareResult = CompareUtils.compareClass(oldOtherEquipment, newOtherEquipment,
+                    InfoLabelEnum.BUSINESSINFO.getMsg());
+            }
             changeValList.addAll(assetCommonInoCompareResult);
             changeValList.addAll(assetBusinessInfoCompareResult);
             changeValList.addAll(networkEquipmentCompareResult);

@@ -119,12 +119,14 @@ public class NetworkEquipmentFieldCompareImpl extends AbstractChangeRecordCompar
             // oldNetworkEquipment.setRegister(networkEquipmentRequest.getRegister());
             // oldNetworkEquipment.setSubnetMask(networkEquipmentRequest.getSubnetMask());
             AssetNetworkEquipmentRequest newNetworkEquipment = newAssetOuterRequest.getNetworkEquipment();
-            List<Map<String, Object>> networkEquipmentCompareResult = CompareUtils.compareClass(oldNetworkEquipment,
-                newNetworkEquipment, InfoLabelEnum.BUSINESSINFO.getMsg());
-
+            List<Map<String, Object>> networkEquipmentCompareResult = null;
+            if (newNetworkEquipment != null && oldNetworkEquipment != null) {
+                networkEquipmentCompareResult = CompareUtils.compareClass(oldNetworkEquipment, newNetworkEquipment,
+                    InfoLabelEnum.BUSINESSINFO.getMsg());
+                changeValList.addAll(networkEquipmentCompareResult);
+            }
             changeValList.addAll(assetCommonInoCompareResult);
             changeValList.addAll(assetBusinessInfoCompareResult);
-            changeValList.addAll(networkEquipmentCompareResult);
         }
         return changeValList;
     }
