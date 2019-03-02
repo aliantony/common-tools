@@ -11,10 +11,12 @@ import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetChangeRecord;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.service.IAssetChangeRecordService;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.AssetChangeRecordQuery;
 import com.antiy.asset.vo.request.AssetChangeRecordRequest;
@@ -26,6 +28,7 @@ import com.antiy.common.base.*;
 import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
  * <p> 变更记录表 服务实现类 </p>
@@ -69,6 +72,8 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
     private BaseConverter<AssetChangeRecord, AssetChangeRecordResponse> responseConverter;
     @Resource
     private AreaClient                                                  areaClient;
+    @Resource
+    private AssetCategoryModelDao                                       categoryModelDao;
 
     @Override
     public ActionResponse saveAssetChangeRecord(AssetChangeRecordRequest request) throws Exception {
@@ -123,31 +128,78 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
 
     @Override
     public List<Map<String, Object>> queryNetworkEquipmentById(Integer businessId) throws Exception {
-        NetworkEquipmentFieldCompareImpl networkEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(NetworkEquipmentFieldCompareImpl.class);
+        NetworkEquipmentFieldCompareImpl networkEquipmentFieldCompare = AssetChangeRecordFactory
+            .getAssetChangeRecordProcess(NetworkEquipmentFieldCompareImpl.class);
         return networkEquipmentFieldCompare.compareCommonBusinessInfo(businessId);
     }
 
     @Override
     public List<Map<String, Object>> queryStorageEquipmentById(Integer businessId) throws Exception {
-        StorageMediumFieldCompareImpl storageMediumFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(StorageMediumFieldCompareImpl.class);
+        StorageMediumFieldCompareImpl storageMediumFieldCompare = AssetChangeRecordFactory
+            .getAssetChangeRecordProcess(StorageMediumFieldCompareImpl.class);
         return storageMediumFieldCompare.compareCommonBusinessInfo(businessId);
     }
 
     @Override
     public List<Map<String, Object>> querySafetyEquipmentById(Integer businessId) throws Exception {
-        SafetyEquipmentFieldCompareImpl safetyEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(SafetyEquipmentFieldCompareImpl.class);
+        SafetyEquipmentFieldCompareImpl safetyEquipmentFieldCompare = AssetChangeRecordFactory
+            .getAssetChangeRecordProcess(SafetyEquipmentFieldCompareImpl.class);
         return safetyEquipmentFieldCompare.compareCommonBusinessInfo(businessId);
     }
 
     @Override
     public List<Map<String, Object>> queryOtherEquipmentById(Integer businessId) throws Exception {
-        OtherEquipmentFieldCompareImpl otherEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(OtherEquipmentFieldCompareImpl.class);
+        OtherEquipmentFieldCompareImpl otherEquipmentFieldCompare = AssetChangeRecordFactory
+            .getAssetChangeRecordProcess(OtherEquipmentFieldCompareImpl.class);
         return otherEquipmentFieldCompare.compareCommonBusinessInfo(businessId);
     }
 
     @Override
+    public List<Map<String, Object>> queryUniformChangeInfo(Integer businessId, Integer categoryModelId) throws Exception {
+        ParamterExceptionUtils.isNull(businessId,"业务ID不能为空");
+        ParamterExceptionUtils.isNull(categoryModelId,"品类型号ID不能为空");
+        int  secondNodeId = this.getParentCategory(categoryModelDao.getById(categoryModelId)).getId();
+        List<Map<String, Object>> mapList;
+        switch (secondNodeId){
+            case 4:
+                mapList = this.queryComputerEquipmentById(businessId);
+                break;
+            case 5:
+                mapList = this.queryNetworkEquipmentById(businessId);
+                break;
+            case 6:
+                mapList = this.queryStorageEquipmentById(businessId);
+                break;
+            case 7:
+                mapList = this.querySafetyEquipmentById(businessId);
+                break;
+            case 8:
+                mapList = this.queryOtherEquipmentById(businessId);
+                break;
+                default:
+                    return null;
+        }
+        return mapList;
+    }
+
+    @Override
     public List<Map<String, Object>> queryComputerEquipmentById(Integer businessId) throws Exception {
-        ComputerEquipmentFieldCompareImpl computerEquipmentFieldCompare = AssetChangeRecordFactory.getAssetChangeRecordProcess(ComputerEquipmentFieldCompareImpl.class);
+        ComputerEquipmentFieldCompareImpl computerEquipmentFieldCompare = AssetChangeRecordFactory
+            .getAssetChangeRecordProcess(ComputerEquipmentFieldCompareImpl.class);
         return computerEquipmentFieldCompare.compareCommonBusinessInfo(businessId);
+    }
+
+    private AssetCategoryModel getParentCategory(AssetCategoryModel categoryModel) {
+
+        List<AssetCategoryModel> allCategory = categoryModelDao.findAllCategory();
+        if (DataTypeUtils.stringToInteger(categoryModel.getParentId()) == 2) {
+            return categoryModel;
+        }
+
+        AssetCategoryModel tblCategory = allCategory.stream()
+            .filter(x -> Objects.equals(x.getId(), DataTypeUtils.stringToInteger(categoryModel.getParentId())))
+            .findFirst().get();
+
+        return getParentCategory(tblCategory);
     }
 }

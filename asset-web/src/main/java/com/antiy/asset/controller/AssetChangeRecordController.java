@@ -148,7 +148,7 @@ public class AssetChangeRecordController {
     @ApiOperation(value = "通过ID查询变更信息统一接口", notes = "业务ID")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class, responseContainer = "actionResponse") })
     @RequestMapping(value = "/queryUniformChangeInfo", method = RequestMethod.GET)
-    public ActionResponse queryUniformChangeInfo(@ApiParam(value = "资产ID") Integer businessId, @ApiParam(value = "品类型号") Integer category) throws Exception {
-        return ActionResponse.success();
+    public ActionResponse queryUniformChangeInfo(@ApiParam(value = "业务ID") Integer businessId, @ApiParam(value = "品类型号ID") Integer categoryModelId) throws Exception {
+        return ActionResponse.success(iAssetChangeRecordService.queryUniformChangeInfo(businessId, categoryModelId));
     }
 }

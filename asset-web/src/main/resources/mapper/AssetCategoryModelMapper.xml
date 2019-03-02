@@ -373,4 +373,11 @@
         )
     </select>
 
+    <select id="findAllCategory" resultMap="BaseResultMap">
+        select
+        id, parent_id
+        from
+        <include refid="Table_Name"></include>
+        where status=1
+    </select>
 </mapper>
