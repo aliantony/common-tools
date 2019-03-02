@@ -158,8 +158,25 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                         .add(CompareUtils.compareClass(oldMemory, newMemory, InfoLabelEnum.MEMORY.getMsg()));
                 }
             } else if (newMemoryList != null) {
+                oldMemory.setBrand(memoryList.get(0).getBrand());
+                oldMemory.setTransferType(memoryList.get(0).getTransferType());
+                oldMemory.setSerial(memoryList.get(0).getSerial());
+                oldMemory.setCapacity(memoryList.get(0).getCapacity());
+                oldMemory.setFrequency(memoryList.get(0).getFrequency());
+                oldMemory.setSlotType(memoryList.get(0).getSlotType());
+                oldMemory.setHeatsink(memoryList.get(0).getHeatsink());
+                oldMemory.setStitch(memoryList.get(0).getStitch());
+
+                newMemory.setBrand(newMemoryList.get(0).getBrand());
+                newMemory.setTransferType(newMemoryList.get(0).getTransferType());
+                newMemory.setSerial(newMemoryList.get(0).getSerial());
+                newMemory.setCapacity(newMemoryList.get(0).getCapacity());
+                newMemory.setFrequency(newMemoryList.get(0).getFrequency());
+                newMemory.setSlotType(newMemoryList.get(0).getSlotType());
+                newMemory.setHeatsink(newMemoryList.get(0).getHeatsink());
+                newMemory.setStitch(newMemoryList.get(0).getStitch());
                 assetMemoryCompareResult.add(
-                    CompareUtils.compareClass(memoryList.get(0), newMemoryList.get(0), InfoLabelEnum.MEMORY.getMsg()));
+                    CompareUtils.compareClass(oldMemory, newMemory, InfoLabelEnum.MEMORY.getMsg()));
             }
 
             // 提取CPU字段变更信息
