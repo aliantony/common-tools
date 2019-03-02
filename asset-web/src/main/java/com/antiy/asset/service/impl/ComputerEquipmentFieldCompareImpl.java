@@ -343,16 +343,16 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                 changeValList.addAll(getMaps(assetMemoryCompareResult, InfoLabelEnum.MEMORY.getMsg()));
             }
             if (CollectionUtils.isNotEmpty(assetCpuCompareResult)) {
-                changeValList.addAll(getMaps(assetMemoryCompareResult, InfoLabelEnum.CPU.getMsg()));
+                changeValList.addAll(getMaps(assetCpuCompareResult, InfoLabelEnum.CPU.getMsg()));
             }
             if (CollectionUtils.isNotEmpty(assetHardDiskCompareResult)) {
-                changeValList.addAll(getMaps(assetMemoryCompareResult, InfoLabelEnum.HARDDISK.getMsg()));
+                changeValList.addAll(getMaps(assetHardDiskCompareResult, InfoLabelEnum.HARDDISK.getMsg()));
             }
             if (CollectionUtils.isNotEmpty(assetMainboardCompareResult)) {
-                changeValList.addAll(getMaps(assetMemoryCompareResult, InfoLabelEnum.MAINBORAD.getMsg()));
+                changeValList.addAll(getMaps(assetMainboardCompareResult, InfoLabelEnum.MAINBORAD.getMsg()));
             }
             if (CollectionUtils.isNotEmpty(assetNetworkCompareResult)) {
-                changeValList.addAll(getMaps(assetMemoryCompareResult, InfoLabelEnum.NETWORKCARD.getMsg()));
+                changeValList.addAll(getMaps(assetNetworkCompareResult, InfoLabelEnum.NETWORKCARD.getMsg()));
             }
 
             if (CollectionUtils.isNotEmpty(relateSoftewareCompareResult)) {
