@@ -188,9 +188,9 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                     newCpu.setCoreSize(assetCpuRequest.getCoreSize());
                     assetCpuCompareResult.add(CompareUtils.compareClass(oldCpu, newCpu, InfoLabelEnum.CPU.getMsg()));
                 }
-            } else if (newCpuList != null) {
+            } else if (newCpuList != null && newCpuList.size() > 0) {
                 assetCpuCompareResult.add(
-                    CompareUtils.compareClass(memoryList.get(0), newMemoryList.get(0), InfoLabelEnum.MEMORY.getMsg()));
+                    CompareUtils.compareClass(cpuRequestList.get(0), newCpuList.get(0), InfoLabelEnum.MEMORY.getMsg()));
             }
 
             // 提取硬盘字段变更信息
@@ -225,9 +225,9 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                     assetHardDiskCompareResult
                         .add(CompareUtils.compareClass(oldHardDisk, newHardDisk, InfoLabelEnum.HARDDISK.getMsg()));
                 }
-            } else if (newHardDiskList != null) {
+            } else if (newHardDiskList != null && newHardDiskList.size() > 0) {
                 assetHardDiskCompareResult.add(
-                    CompareUtils.compareClass(memoryList.get(0), newMemoryList.get(0), InfoLabelEnum.MEMORY.getMsg()));
+                    CompareUtils.compareClass(hardDiskRequestList.get(0), newHardDiskList.get(0), InfoLabelEnum.MEMORY.getMsg()));
             }
 
             // 提取主板字段变更信息
@@ -258,9 +258,9 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                     assetMainboardCompareResult
                         .add(CompareUtils.compareClass(oldMainborad, newMainboard, InfoLabelEnum.MAINBORAD.getMsg()));
                 }
-            } else if (newMainboardList != null) {
+            } else if (newMainboardList != null && newMainboardList.size() > 0) {
                 assetMainboardCompareResult.add(
-                    CompareUtils.compareClass(memoryList.get(0), newMemoryList.get(0), InfoLabelEnum.MEMORY.getMsg()));
+                    CompareUtils.compareClass(mainboradRequestList.get(0), newMainboardList.get(0), InfoLabelEnum.MEMORY.getMsg()));
             }
 
             // 提取网卡字段变更信息
@@ -295,9 +295,9 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                     assetNetworkCompareResult.add(
                         CompareUtils.compareClass(oldNetworkCard, newNetworkCard, InfoLabelEnum.NETWORKCARD.getMsg()));
                 }
-            } else if (newNetworkCardList != null) {
+            } else if (newNetworkCardList != null && newNetworkCardList.size() > 0) {
                 assetNetworkCompareResult.add(
-                    CompareUtils.compareClass(memoryList.get(0), newMemoryList.get(0), InfoLabelEnum.MEMORY.getMsg()));
+                    CompareUtils.compareClass(networkCardList.get(0), newNetworkCardList.get(0), InfoLabelEnum.MEMORY.getMsg()));
             }
 
             // 提取关联软件变更信息
