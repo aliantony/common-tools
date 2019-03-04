@@ -326,15 +326,12 @@ public class ExportExcel {
             return;
         }
         Cell cell = row.createCell(column);
-        /*if (this.sheet.getColumnWidth(column) < val.toString().getBytes().length * 255) {
-            this.sheet.setColumnWidth(column, val.toString().getBytes().length * 255);
-        }*/
+        /* if (this.sheet.getColumnWidth(column) < val.toString().getBytes().length * 255) {
+         * this.sheet.setColumnWidth(column, val.toString().getBytes().length * 255); } */
         CellStyle style = styles.get("data" + (align >= 1 && align <= 3 ? align : ""));
         cell.setCellStyle(style);
         try {
-            if (val == null) {
-                cell.setCellValue("");
-            } else if (val instanceof String) {
+            if (val instanceof String) {
                 cell.setCellValue((String) val);
             } else if (val instanceof Integer) {
                 cell.setCellValue((Integer) val);
@@ -350,11 +347,7 @@ public class ExportExcel {
             }
         } catch (Exception e) {
             logger.info("Set cell value [" + row.getRowNum() + "," + column + "] error: " + e.toString());
-            if (val != null) {
-                cell.setCellValue(val.toString());
-            } else {
-                cell.setCellValue("");
-            }
+            cell.setCellValue(val.toString());
         }
 
     }
