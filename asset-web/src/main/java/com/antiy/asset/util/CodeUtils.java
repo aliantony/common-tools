@@ -35,7 +35,9 @@ public class CodeUtils {
                     List<Code> list = redisUtil.getObjectList(ke, Code.class);
                     code = new HashMap<>(16);
                     for (Code cod : list) {
-                        code.put(Integer.parseInt(cod.getCode()), cod.getValue());
+                        if (!cod.getCode().contains(",")) {
+                            code.put(Integer.parseInt(cod.getCode()), cod.getValue());
+                        }
                     }
                     codeMap.put(codeType.getCode(), code);
                 }
