@@ -233,7 +233,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         query.setPageSize(Constants.ALL_PAGE);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         assetCategoryModels.add(getRootCategory());
-        return getAssetCategoryModelNodeResponse(assetCategoryModels).getChildrenNode().get(0);
+        AssetCategoryModelNodeResponse assetCategoryModelNodeResponse = getAssetCategoryModelNodeResponse(assetCategoryModels);
+        return assetCategoryModelNodeResponse == null ? null : assetCategoryModelNodeResponse.getChildrenNode().get(0);
     }
 
     private AssetCategoryModelNodeResponse getAssetCategoryModelNodeResponse(List<AssetCategoryModel> assetCategoryModels) {
