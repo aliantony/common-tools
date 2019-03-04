@@ -82,4 +82,11 @@ public interface IAssetChangeRecordService extends IBaseService<AssetChangeRecor
      */
     List<Map<String, Object>> queryOtherEquipmentById(Integer businessId) throws Exception;
 
+    /**
+     * 通过ID查询其他设备变更信息
+     * @param businessId
+     * @return
+     */
+    List<Map<String, Object>> queryUniformChangeInfo(Integer businessId, Integer categoryModelId) throws Exception;
+
 }

@@ -9,9 +9,7 @@ import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.antiy.asset.entity.Asset;
-import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.util.CompareUtils;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.InfoLabelEnum;
@@ -35,11 +33,9 @@ import com.antiy.common.utils.JsonUtil;
 @Service
 public class StorageMediumFieldCompareImpl extends AbstractChangeRecordCompareImpl {
     @Resource
-    private AreaClient                         areaClient;
-    @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
     @Resource
-    private RedisUtil                                  redisUtil;
+    private RedisUtil                          redisUtil;
 
     @Override
     List<Map<String, Object>> compareCommonBusinessInfo(Integer businessId) throws Exception {
@@ -76,7 +72,7 @@ public class StorageMediumFieldCompareImpl extends AbstractChangeRecordCompareIm
             Asset oldAssetBusinessInfo = new Asset();
             // redis调用（通过区域ID查询名称）
             String oldAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                    DataTypeUtils.stringToInteger(newAsset.getAreaId()));
+                DataTypeUtils.stringToInteger(newAsset.getAreaId()));
             SysArea oldSysArea = redisUtil.getObject(oldAreaKey, SysArea.class);
             oldAssetBusinessInfo.setAreaName(oldSysArea.getFullName());
             String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
@@ -92,8 +88,10 @@ public class StorageMediumFieldCompareImpl extends AbstractChangeRecordCompareIm
             oldAssetBusinessInfo.setDescrible(oldAsset.getDescrible());
 
             Asset newAssetBusinessInfo = new Asset();
-            SysArea newSysArea = JsonUtil
-                    .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(newAsset.getAreaId())), SysArea.class);
+            // redis调用（通过区域ID查询名称）
+            String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                DataTypeUtils.stringToInteger(newAsset.getAreaId()));
+            SysArea newSysArea = redisUtil.getObject(newAreaKey, SysArea.class);
             newAssetBusinessInfo.setAreaName(newSysArea.getFullName());
             String newKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
@@ -109,15 +107,16 @@ public class StorageMediumFieldCompareImpl extends AbstractChangeRecordCompareIm
 
             List<Map<String, Object>> assetBusinessInfoCompareResult = CompareUtils.compareClass(oldAssetBusinessInfo,
                 newAssetBusinessInfo, InfoLabelEnum.BUSINESSINFO.getMsg());
-
+            List<Map<String, Object>> storageEquipmentCompareResult = null;
             AssetStorageMediumRequest oldStorageMediumRequest = oldAssetOuterRequest.getAssetStorageMedium();
             AssetStorageMediumRequest newStorageMediumRequest = newAssetOuterRequest.getAssetStorageMedium();
-            List<Map<String, Object>> storageEquipmentCompareResult = CompareUtils.compareClass(oldStorageMediumRequest,
-                newStorageMediumRequest, InfoLabelEnum.BUSINESSINFO.getMsg());
-
+            if (newStorageMediumRequest != null && oldStorageMediumRequest != null) {
+                storageEquipmentCompareResult = CompareUtils.compareClass(oldStorageMediumRequest,
+                    newStorageMediumRequest, InfoLabelEnum.BUSINESSINFO.getMsg());
+                changeValList.addAll(storageEquipmentCompareResult);
+            }
             changeValList.addAll(assetCommonInoCompareResult);
             changeValList.addAll(assetBusinessInfoCompareResult);
-            changeValList.addAll(storageEquipmentCompareResult);
         }
         return changeValList;
     }

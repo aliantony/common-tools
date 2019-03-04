@@ -9,9 +9,7 @@ import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.antiy.asset.entity.Asset;
-import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.util.CompareUtils;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.InfoLabelEnum;
@@ -34,8 +32,6 @@ import com.antiy.common.utils.JsonUtil;
  **/
 @Service
 public class OtherEquipmentFieldCompareImpl extends AbstractChangeRecordCompareImpl {
-    @Resource
-    private AreaClient                         areaClient;
     @Resource
     RedisUtil                                  redisUtil;
     @Resource
@@ -72,9 +68,10 @@ public class OtherEquipmentFieldCompareImpl extends AbstractChangeRecordCompareI
 
             // 业务信息
             Asset oldAssetBusinessInfo = new Asset();
-            // 远程调用（通过区域ID查询名称）
-            SysArea oldSysArea = JsonUtil
-                .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(oldAsset.getAreaId())), SysArea.class);
+            // redis调用（通过区域ID查询名称）
+            String oldAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                DataTypeUtils.stringToInteger(newAsset.getAreaId()));
+            SysArea oldSysArea = redisUtil.getObject(oldAreaKey, SysArea.class);
             oldAssetBusinessInfo.setAreaName(oldSysArea.getFullName());
             String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
@@ -89,8 +86,10 @@ public class OtherEquipmentFieldCompareImpl extends AbstractChangeRecordCompareI
             oldAssetBusinessInfo.setDescrible(oldAsset.getDescrible());
 
             Asset newAssetBusinessInfo = new Asset();
-            SysArea newSysArea = JsonUtil
-                .json2Object(JSONUtils.toJSONString(areaClient.getInvokeResult(newAsset.getAreaId())), SysArea.class);
+            // redis调用（通过区域ID查询名称）
+            String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                DataTypeUtils.stringToInteger(newAsset.getAreaId()));
+            SysArea newSysArea = redisUtil.getObject(newAreaKey, SysArea.class);
             oldAssetBusinessInfo.setAreaName(newSysArea.getFullName());
             String newKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
@@ -109,9 +108,11 @@ public class OtherEquipmentFieldCompareImpl extends AbstractChangeRecordCompareI
 
             AssetOthersRequest oldOtherEquipment = oldAssetOuterRequest.getAssetOthersRequest();
             AssetOthersRequest newOtherEquipment = newAssetOuterRequest.getAssetOthersRequest();
-            List<Map<String, Object>> networkEquipmentCompareResult = CompareUtils.compareClass(oldOtherEquipment,
-                newOtherEquipment, InfoLabelEnum.BUSINESSINFO.getMsg());
-
+            List<Map<String, Object>> networkEquipmentCompareResult = null;
+            if (newOtherEquipment != null && oldOtherEquipment != null) {
+                networkEquipmentCompareResult = CompareUtils.compareClass(oldOtherEquipment, newOtherEquipment,
+                    InfoLabelEnum.BUSINESSINFO.getMsg());
+            }
             changeValList.addAll(assetCommonInoCompareResult);
             changeValList.addAll(assetBusinessInfoCompareResult);
             changeValList.addAll(networkEquipmentCompareResult);

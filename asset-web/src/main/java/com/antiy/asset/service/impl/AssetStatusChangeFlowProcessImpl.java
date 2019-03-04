@@ -13,6 +13,7 @@ import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.LoginUserUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -50,14 +51,16 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         asset.setGmtModified(System.currentTimeMillis());
         asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
 
-        // 判断资产变更流程中的的分析信息中是否影响基准
-        Map<String, Boolean> analyzeInfo = (Map<String, Boolean>) JSONArray
-            .parse(assetStatusReqeust.getSchemeRequest().getExtension());
+        if(assetStatusReqeust.getSchemeRequest() != null && StringUtils.isNotBlank(assetStatusReqeust.getSchemeRequest().getExtension())) {
+            // 判断资产变更流程中的的分析信息中是否影响基准
+            Map<String, Boolean> analyzeInfo = (Map<String, Boolean>) JSONArray
+                    .parse(assetStatusReqeust.getSchemeRequest().getExtension());
 
-        // 如果是硬件资产变更,并且不会影响基准，则会直接到已入网状态
-        if (AssetFlowCategoryEnum.HARDWARE_CHANGE.equals(assetStatusReqeust.getAssetFlowCategoryEnum())
-            && analyzeInfo!= null &&  !analyzeInfo.get("baseline")) {
-            asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+            // 如果是硬件资产变更,并且不会影响基准，则会直接到已入网状态
+            if (AssetFlowCategoryEnum.HARDWARE_CHANGE.equals(assetStatusReqeust.getAssetFlowCategoryEnum())
+                    && analyzeInfo != null && !analyzeInfo.get("baseline")) {
+                asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+            }
         }
         //更新资产状态
         assetDao.update(asset);

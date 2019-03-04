@@ -68,66 +68,6 @@ public class AssetChangeRecordController {
     }
 
     /**
-     * 通过ID查询计算设备变更信息
-     * @param businessId
-     * @return actionResponse
-     */
-    @ApiOperation(value = "通过ID查询计算设备变更信息", notes = "业务ID")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/queryComputer/id", method = RequestMethod.GET)
-    public ActionResponse queryComputerEquipmentById(@ApiParam(value = "businessId") Integer businessId) throws Exception {
-        return ActionResponse.success(iAssetChangeRecordService.queryComputerEquipmentById(businessId));
-    }
-
-    /**
-     * 通过ID查询网络设备变更信息
-     * @param businessId
-     * @return actionResponse
-     */
-    @ApiOperation(value = "通过ID查询网络设备变更信息", notes = "业务ID")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/queryNetworkEquipment/id", method = RequestMethod.GET)
-    public ActionResponse queryNetworkEquipmentById(@ApiParam(value = "businessId") Integer businessId) throws Exception {
-        return ActionResponse.success(iAssetChangeRecordService.queryNetworkEquipmentById(businessId));
-    }
-
-    /**
-     * 通过ID查询存储设备变更信息
-     * @param businessId
-     * @return actionResponse
-     */
-    @ApiOperation(value = "通过ID查询存储设备变更信息", notes = "业务ID")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class, responseContainer = "actionResponse") })
-    @RequestMapping(value = "/queryStorageEquipment/id", method = RequestMethod.GET)
-    public ActionResponse queryStorageEquipmentById(@ApiParam(value = "businessId") Integer businessId) throws Exception {
-        return ActionResponse.success(iAssetChangeRecordService.queryStorageEquipmentById(businessId));
-    }
-
-    /**
-     * 通过ID查询安全设备变更信息
-     * @param businessId
-     * @return actionResponse
-     */
-    @ApiOperation(value = "通过ID查询安全设备变更信息", notes = "业务ID")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class, responseContainer = "actionResponse") })
-    @RequestMapping(value = "/querySafetyEquipment/id", method = RequestMethod.GET)
-    public ActionResponse querySafetyEquipmentById(@ApiParam(value = "businessId") Integer businessId) throws Exception {
-        return ActionResponse.success(iAssetChangeRecordService.querySafetyEquipmentById(businessId));
-    }
-
-    /**
-     * 通过ID查询其他设备变更信息
-     * @param businessId
-     * @return actionResponse
-     */
-    @ApiOperation(value = "通过ID查询其他设备变更信息", notes = "业务ID")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class, responseContainer = "actionResponse") })
-    @RequestMapping(value = "/queryOtherEquipment/id", method = RequestMethod.GET)
-    public ActionResponse queryOtherEquipmentById(@ApiParam(value = "businessId") Integer businessId) throws Exception {
-        return ActionResponse.success(iAssetChangeRecordService.queryOtherEquipmentById(businessId));
-    }
-
-    /**
      * 通过ID删除
      * @param id
      * @return actionResponse
@@ -138,5 +78,17 @@ public class AssetChangeRecordController {
     public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetChangeRecordService.deleteById(id));
+    }
+
+    /**
+     * 通过ID查询变更信息统一接口
+     * @param businessId
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过ID查询变更信息统一接口", notes = "业务ID")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class, responseContainer = "actionResponse") })
+    @RequestMapping(value = "/queryUniformChangeInfo", method = RequestMethod.GET)
+    public ActionResponse queryUniformChangeInfo(@ApiParam(value = "业务ID") Integer businessId, @ApiParam(value = "品类型号ID") Integer categoryModelId) throws Exception {
+        return ActionResponse.success(iAssetChangeRecordService.queryUniformChangeInfo(businessId, categoryModelId));
     }
 }

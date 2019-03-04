@@ -15,9 +15,9 @@ import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.util.CompareUtils;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.InfoLabelEnum;
-import com.antiy.asset.vo.request.AssetOthersRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
+import com.antiy.asset.vo.request.AssetSafetyEquipmentRequest;
 import com.antiy.asset.vo.request.SysArea;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
@@ -123,14 +123,16 @@ public class SafetyEquipmentFieldCompareImpl extends AbstractChangeRecordCompare
             List<Map<String, Object>> assetBusinessInfoCompareResult = CompareUtils.compareClass(oldAssetBusinessInfo,
                 newAssetBusinessInfo, InfoLabelEnum.BUSINESSINFO.getMsg());
 
-            AssetOthersRequest oldNetworkEquipment = oldAssetOuterRequest.getAssetOthersRequest();
-            AssetOthersRequest newNetworkEquipment = newAssetOuterRequest.getAssetOthersRequest();
-            List<Map<String, Object>> networkEquipmentCompareResult = CompareUtils.compareClass(oldNetworkEquipment,
-                newNetworkEquipment, InfoLabelEnum.BUSINESSINFO.getMsg());
-
+            AssetSafetyEquipmentRequest oldSafetyEquipmentRequest = oldAssetOuterRequest.getSafetyEquipment();
+            AssetSafetyEquipmentRequest newSafetyEquipmentRequest = newAssetOuterRequest.getSafetyEquipment();
+            List<Map<String, Object>> safetyEquipmentCompareResult = null;
+            if (newSafetyEquipmentRequest != null && oldSafetyEquipmentRequest != null) {
+                safetyEquipmentCompareResult = CompareUtils.compareClass(oldSafetyEquipmentRequest,
+                    newSafetyEquipmentRequest, InfoLabelEnum.BUSINESSINFO.getMsg());
+                changeValList.addAll(safetyEquipmentCompareResult);
+            }
             changeValList.addAll(assetCommonInoCompareResult);
             changeValList.addAll(assetBusinessInfoCompareResult);
-            changeValList.addAll(networkEquipmentCompareResult);
         }
         return changeValList;
     }
