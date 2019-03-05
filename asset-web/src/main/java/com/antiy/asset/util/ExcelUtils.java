@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.antiy.common.exception.BusinessException;
+import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
@@ -106,6 +107,8 @@ public class ExcelUtils {
             throw new BusinessException("文件导入异常");
         } catch (IOException e) {
             throw new BusinessException("文件导入异常");
+        } catch (OLE2NotOfficeXmlFileException e) {
+            throw new BusinessException("模板选择错误");
         }
         return ir;
     }
@@ -151,7 +154,7 @@ public class ExcelUtils {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
             .getResponse();
         try {
-            new ExportExcel(title, clazz,2).exportTempleteToClient(response, filename);
+            new ExportExcel(title, clazz, 2).exportTempleteToClient(response, filename);
         } catch (IOException e) {
             throw new BusinessException("模板导出异常");
         }

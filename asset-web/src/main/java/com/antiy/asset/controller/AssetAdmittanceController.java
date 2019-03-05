@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.antiy.asset.vo.enums.AdmittanceStatusEnum;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,6 +83,9 @@ public class AssetAdmittanceController {
         assetQuery.setAdmittanceStatus(status);
         assetQuery.setPageSize(-1);
         List<AssetResponse> assetList = assetService.findListAsset(assetQuery);
+        if (!CollectionUtils.isNotEmpty(assetList)) {
+            return ActionResponse.success("没有数据可以导出");
+        }
         List<AccessExport> accessExportList = BeanConvert.convert(assetList, AccessExport.class);
         accessExportList.stream().forEach(asset -> {
             asset.setAdmittanceStatusString(AdmittanceStatusEnum.getAdmittanceStatusEnum(asset.getAdmittanceStatus()));
