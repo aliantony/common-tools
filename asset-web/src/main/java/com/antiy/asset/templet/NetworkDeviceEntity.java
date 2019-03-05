@@ -34,11 +34,7 @@ public class NetworkDeviceEntity {
      */
     @ExcelField(value = "serial", align = 1, title = "序列号")
     private String serial;
-    /**
-     * 使用者
-     */
-    @ExcelField(value = "area", align = 1, title = "所属区域")
-    private String area;
+
     /**
      * 使用者
      */
@@ -210,14 +206,6 @@ public class NetworkDeviceEntity {
 
     public void setSerial(String serial) {
         this.serial = serial;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
     }
 
     public String getUser() {
