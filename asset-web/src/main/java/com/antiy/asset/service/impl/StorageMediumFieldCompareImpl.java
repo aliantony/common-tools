@@ -74,7 +74,9 @@ public class StorageMediumFieldCompareImpl extends AbstractChangeRecordCompareIm
             String oldAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                 DataTypeUtils.stringToInteger(newAsset.getAreaId()));
             SysArea oldSysArea = redisUtil.getObject(oldAreaKey, SysArea.class);
-            oldAssetBusinessInfo.setAreaName(oldSysArea.getFullName());
+            if(oldSysArea != null) {
+                oldAssetBusinessInfo.setAreaName(oldSysArea.getFullName());
+            }
             String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
             SysUser oldSysUser = redisUtil.getObject(oldKey, SysUser.class);

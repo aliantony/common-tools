@@ -1,17 +1,20 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.validator.constraints.Length;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.springframework.security.config.http.MatcherType.regex;
 
 /**
  * <p> AssetUserRequest 请求对象 </p>
@@ -64,7 +67,6 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
      * 微信
      */
     @ApiModelProperty("微信")
-    @Pattern(message = "只能是英文字母和数字", regexp = "^[a-zA-Z0-9]+$")
     private String weixin;
     /**
      * 手机号
@@ -185,7 +187,11 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
 
     @Override
     public void validate() throws RequestParamValidateException {
-
+        if(StringUtils.isNotBlank(weixin)){
+            Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+$");
+            Matcher matcher = pattern.matcher(weixin);
+            ParamterExceptionUtils.isTrue(matcher.matches(),"微信只能是英文字母和数字");
+        }
     }
 
     @Override

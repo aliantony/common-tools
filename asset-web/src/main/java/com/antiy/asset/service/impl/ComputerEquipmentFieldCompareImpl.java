@@ -78,7 +78,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             String oldAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                 DataTypeUtils.stringToInteger(newAsset.getAreaId()));
             SysArea oldSysArea = redisUtil.getObject(oldAreaKey, SysArea.class);
-            oldAssetBusinessInfo.setAreaName(oldSysArea.getFullName());
+            oldAssetBusinessInfo.setAreaName(oldSysArea != null ? oldSysArea.getFullName() : null);
             // redis调用（通过用户ID查询姓名）
             String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                 DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
@@ -157,7 +157,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                     assetMemoryCompareResult
                         .add(CompareUtils.compareClass(oldMemory, newMemory, InfoLabelEnum.MEMORY.getMsg()));
                 }
-            } else if (newMemoryList != null) {
+            } else if (CollectionUtils.isNotEmpty(memoryList)) {
                 oldMemory.setBrand(memoryList.get(0).getBrand());
                 oldMemory.setTransferType(memoryList.get(0).getTransferType());
                 oldMemory.setSerial(memoryList.get(0).getSerial());
