@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.*;
 
+import com.antiy.common.exception.BusinessException;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -145,14 +146,14 @@ public class ImportExcel {
      */
     public ImportExcel(String filePath, InputStream is, int headerNum, int sheetIndex) throws IOException {
         if (StringUtils.isBlank(filePath)) {
-            throw new RuntimeException("导入文档为空!");
+            throw new BusinessException("导入文档为空!");
         } else if (filePath.toLowerCase().endsWith(XLS) || filePath.toLowerCase().endsWith(XLSX)) {
             this.wb = new XSSFWorkbook(is);
         } else {
-            throw new RuntimeException("文档格式不正确!");
+            throw new BusinessException("文档格式不正确!");
         }
         if (this.wb.getNumberOfSheets() < sheetIndex) {
-            throw new RuntimeException("文档中没有工作表!");
+            throw new BusinessException("文档中没有工作表!");
         }
         this.sheet = this.wb.getSheetAt(sheetIndex);
         this.headerNum = headerNum;
