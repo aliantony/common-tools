@@ -327,10 +327,10 @@
                 and parent_id = #{parentId }
             </if>
             <if test=" status != null">
-               and status = #{status }
+                and status = #{status }
             </if>
             <if test=" status == null">
-               and status = 1
+                and status = 1
             </if>
         </trim>
         <if test="pageSize !=-1">
@@ -345,6 +345,7 @@
         <if test="id!=null">
             and id!=#{id}
         </if>
+        and status =1
     </select>
     <select id="getNextLevelCategoryByName" resultType="com.antiy.asset.entity.AssetCategoryModel"
             parameterType="java.lang.String">
