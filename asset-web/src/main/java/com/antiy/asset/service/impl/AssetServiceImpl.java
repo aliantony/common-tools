@@ -233,7 +233,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         List<AssetNetworkCardRequest> networkCardRequestList = request.getNetworkCard();
                         List<AssetNetworkCardRequest> networkRequestListToChangeRecord = new ArrayList<>();
-
+                        //网卡
                             if (CollectionUtils.isNotEmpty (networkCardRequestList) ) {
                                 List<AssetNetworkCard> network = new ArrayList<>();
                             List<AssetNetworkCard> networkCardList = BeanConvert.convert(networkCardRequestList,
@@ -250,12 +250,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 network.add (assetNetworkCard);
                                 AssetNetworkCardRequest assetNetworkCardRequest = networkCardToRequestConverter
                                     .convert(assetNetworkCard, AssetNetworkCardRequest.class);
-                                assetNetworkCardRequest.setId(DataTypeUtils.integerToString(assetNetworkCard.getId()));
+                                assetNetworkCardRequest.setId(assetNetworkCard.getStringId());
                                 networkRequestListToChangeRecord.add(assetNetworkCardRequest);
                             }
                                 assetNetworkCardDao.insertBatch (network);
                             assetOuterRequestToChangeRecord.setNetworkCard(networkRequestListToChangeRecord);
                         }
+                        //主板
                         List<AssetMainboradRequest> mainboradRequestList = request.getMainboard();
                         List<AssetMainboradRequest> mainboardRequestListToChangeRecord = new ArrayList<>();
                         if (CollectionUtils.isNotEmpty (mainboradRequestList) ) {
@@ -274,12 +275,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 mainboard.add (assetMainborad);
                                 AssetMainboradRequest assetMainboradRequest = mainboradToRequestConverter
                                     .convert(assetMainborad, AssetMainboradRequest.class);
-                                assetMainboradRequest.setId(DataTypeUtils.integerToString(assetMainborad.getId()));
+                                assetMainboradRequest.setId(assetMainborad.getStringId());
                                 mainboardRequestListToChangeRecord.add(assetMainboradRequest);
                             }
                             assetMainboradDao.insertBatch (mainboard);
                             assetOuterRequestToChangeRecord.setMainboard(mainboardRequestListToChangeRecord);
                         }
+                        //内存
                         List<AssetMemoryRequest> memoryRequestList = request.getMemory();
                         List<AssetMemoryRequest> memoryRequestListToChangeRecord = new ArrayList<>();
                             if (CollectionUtils.isNotEmpty (memoryRequestList)) {
@@ -300,12 +302,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                                 AssetMemoryRequest assetMemoryRequest = memoryToRequestConverter.convert(assetMemory,
                                     AssetMemoryRequest.class);
-                                assetMemoryRequest.setId(DataTypeUtils.integerToString(assetMemory.getId()));
+                                assetMemoryRequest.setId(assetMemory.getStringId());
                                 memoryRequestListToChangeRecord.add(assetMemoryRequest);
                             }
                                 assetMemoryDao.insertBatch (memory);
                             assetOuterRequestToChangeRecord.setMemory(memoryRequestListToChangeRecord);
                         }
+                        //CPU
                         List<AssetCpuRequest> cpuRequestList = request.getCpu();
                         List<AssetCpuRequest> cpuRequestListToChangeRecord = new ArrayList<>();
                         if (CollectionUtils.isNotEmpty (cpuRequestList)) {
@@ -325,12 +328,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 cpu.add (assetCpu);
                                 AssetCpuRequest assetCpuRequest = cpuToRequestConverter.convert(assetCpu,
                                     AssetCpuRequest.class);
-                                assetCpuRequest.setId(DataTypeUtils.integerToString(assetCpu.getId()));
+                                assetCpuRequest.setId(assetCpu.getStringId());
                                 cpuRequestListToChangeRecord.add(assetCpuRequest);
                             }
                             assetCpuDao.insertBatch (cpu);
                             assetOuterRequestToChangeRecord.setCpu(cpuRequestListToChangeRecord);
                         }
+                        //硬盘
                         List<AssetHardDiskRequest> hardDisk = request.getHardDisk();
                         List<AssetHardDiskRequest> hardDiskRequestListToChangeRecord = new ArrayList<>();
                         if (CollectionUtils.isNotEmpty (hardDisk)) {
@@ -350,7 +354,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                                 AssetHardDiskRequest assetHardDiskRequest = hardDiskToRequestConverter
                                     .convert(assetHardDisk, AssetHardDiskRequest.class);
-                                assetHardDiskRequest.setId(DataTypeUtils.integerToString(assetHardDisk.getId()));
+                                assetHardDiskRequest.setId(assetHardDisk.getStringId());
                                 hardDiskRequestListToChangeRecord.add(assetHardDiskRequest);
                             }
                             assetHardDiskDao.insertBatch (assetHardDisks);
@@ -383,6 +387,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         aid = asset1.getStringId();
 
                         insertBatchAssetGroupRelation(asset1, assetGroup);
+
+                        AssetRequest assetRequest = assetToRequestConverter.convert(asset1,AssetRequest.class);
+                        assetRequest.setId(asset1.getStringId());
+                        assetOuterRequestToChangeRecord.setAsset(assetRequest);
 
                         LogHandle.log(assetOthersRequest, AssetEventEnum.ASSET_OTHERS_INSERT.getName(),
                             AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
