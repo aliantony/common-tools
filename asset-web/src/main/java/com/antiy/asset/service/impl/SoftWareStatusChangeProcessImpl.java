@@ -47,7 +47,7 @@ public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangePr
 
         if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
             .equals(AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE.getCode())) {
-            softwareStatusEnum = SoftwareStatusJumpEnum.getNextStatusRetire(assetStatusReqeust.getSoftwareStatusEnum(),
+            softwareStatusEnum = SoftwareStatusJumpEnum.getNextStatus(assetStatusReqeust.getSoftwareStatusEnum(),
                 assetStatusReqeust.getAgree());
         } else if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
             .equals(AssetFlowCategoryEnum.SOFTWARE_IMPL_UNINSTALL.getCode())) {
