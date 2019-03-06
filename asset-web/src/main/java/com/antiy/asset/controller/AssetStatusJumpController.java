@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.antiy.asset.service.impl.AssetStatusChangeFactory;
 import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
 import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
-import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
 
@@ -36,12 +35,7 @@ public class AssetStatusJumpController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ActionResponse statusJump(@ApiParam(value = "assetStatusReqeust") @RequestBody(required = false) AssetStatusReqeust assetStatusReqeust) throws Exception {
-        if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
-            .equals(AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode())
-            || AssetFlowCategoryEnum.SOFTWARE_RETIRE.getCode()
-                .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
-            || AssetFlowCategoryEnum.SOFTWARE_UNINSTALL.getCode()
-                .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+        if (assetStatusReqeust.getSoftware()) {
             return AssetStatusChangeFactory.getStatusChangeProcess(SoftWareStatusChangeProcessImpl.class)
                 .changeStatus(assetStatusReqeust);
         } else {
