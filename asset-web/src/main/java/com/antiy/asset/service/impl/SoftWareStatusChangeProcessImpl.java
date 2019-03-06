@@ -75,7 +75,7 @@ public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangePr
                 .parse(assetStatusReqeust.getSchemeRequest().getExtension());
 
             // 如果是软件资产退役,并且不会影响基准，则会直接到退役状态
-            if (AssetFlowCategoryEnum.SOFTWARE_RETIRE.equals(assetStatusReqeust.getAssetFlowCategoryEnum())
+            if (AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE.equals(assetStatusReqeust.getAssetFlowCategoryEnum())
                 && analyzeInfo != null && !analyzeInfo.get("baseline")) {
                 assetSoftware.setSoftwareStatus(SoftwareStatusEnum.RETIRE.getCode());
             }
