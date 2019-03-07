@@ -99,7 +99,6 @@ public class AssetSoftwareEntity {
     @ExcelField(value = "description", align = 1, title = "软件描述", type = 0)
     private String            description;
 
-
     public Integer getAuthorization() {
         return authorization;
     }
