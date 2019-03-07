@@ -164,13 +164,7 @@ public class AssetSoftwareEntity {
         this.serial = serial;
     }
 
-    public Integer getSize() {
-        return size;
-    }
 
-    public void setSize(Integer size) {
-        this.size = size;
-    }
 
     public String getOperationSystem() {
         return operationSystem;
@@ -204,13 +198,7 @@ public class AssetSoftwareEntity {
         this.description = description;
     }
 
-    public Integer getOrderNumber() {
-        return orderNumber;
-    }
 
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
-    }
 
 //    public String getAgreement() {
 //        return agreement;

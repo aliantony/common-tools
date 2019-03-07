@@ -167,13 +167,7 @@ public class OtherDeviceEntity {
         this.memo = memo;
     }
 
-    public Integer getOrderNumber() {
-        return orderNumber;
-    }
 
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
-    }
 
     public String getNumber() {
         return number;

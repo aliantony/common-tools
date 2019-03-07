@@ -316,13 +316,7 @@ public class ComputeDeviceEntity {
         this.assetGroup = assetGroup;
     }
 
-    public Integer getOrderNumber() {
-        return orderNumber;
-    }
 
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
-    }
 
     public String getName() {
         return name;

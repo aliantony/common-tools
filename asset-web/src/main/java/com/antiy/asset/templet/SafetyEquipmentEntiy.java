@@ -34,14 +34,6 @@ public class SafetyEquipmentEntiy {
     @ExcelField(value = "area", align = 1, title = "所属区域", type = 1)
     private String area;
 
-    public Integer getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-
     /**
      * 使用者
      */
