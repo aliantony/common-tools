@@ -82,18 +82,23 @@ public class AssetSoftwareEntity {
      */
     @ExcelField(value = "releaseTime", align = 1, title = "发布时间", type = 0, isDate = true)
     private Long              releaseTime;
+    /**
+     * 软件地址
+     */
+    @ExcelField(value = "filePath", align = 1, title = "软件地址", type = 0)
+    private String            filePath;
+    /**
+     * 软件大小
+     */
+    @ExcelField(value = "size", align = 1, title = "软件大小", type = 0)
+    private Integer           size;
 
     /**
      * 软件描述
      */
     @ExcelField(value = "description", align = 1, title = "软件描述", type = 0)
     private String            description;
-    /**
-     * 软件描述
-     */
-    @ExcelField(value = "size", align = 1, title = "软件描述", type = 0)
-    private Integer           size;
-    private String            filePath;
+
 
     public Integer getAuthorization() {
         return authorization;
