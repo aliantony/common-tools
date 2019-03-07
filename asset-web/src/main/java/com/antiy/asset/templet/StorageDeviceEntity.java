@@ -11,6 +11,15 @@ public class StorageDeviceEntity {
      */
     @ExcelField(value = "order_number", align = 1, title = "序号" )
     private Integer orderNumber;
+
+    public Integer getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
     /**
      * 资产编号
      */
