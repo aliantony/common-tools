@@ -103,13 +103,6 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      */
     AssetSoftwareDetailResponse querySoftWareDetail(SoftwareQuery softwareQuery) throws Exception;
 
-    /**
-     * 导出
-     * @param query
-     * @param response
-     * @throws Exception
-     */
-    void downloadSoftware(AssetSoftwareQuery query, HttpServletResponse response) throws Exception;
 
     /**
      * 通过ID修改软件状态
