@@ -316,13 +316,7 @@ public class ComputeDeviceEntity {
         this.assetGroup = assetGroup;
     }
 
-    public Integer getOrderNumber() {
-        return orderNumber;
-    }
 
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
-    }
 
     public String getName() {
         return name;
@@ -754,5 +748,13 @@ public class ComputeDeviceEntity {
 
     public void setTransferType(Integer transferType) {
         this.transferType = transferType;
+    }
+
+    public Integer getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
     }
 }

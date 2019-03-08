@@ -50,11 +50,11 @@ public class AssetSoftwareEntity {
     @ExcelField(value = "operationSystem", align = 1, title = "兼容系统", type = 0)
     private String            operationSystem;
 
-//    /**
-//     * 协议
-//     */
-//    @ExcelField(value = "agreement", align = 1, title = "协议", type = 0)
-//    private String            agreement;
+    // /**
+    // * 协议
+    // */
+    // @ExcelField(value = "agreement", align = 1, title = "协议", type = 0)
+    // private String agreement;
     /**
      * 1-免费软件，2-商业软件
      */
@@ -83,15 +83,14 @@ public class AssetSoftwareEntity {
     @ExcelField(value = "releaseTime", align = 1, title = "发布时间", type = 0, isDate = true)
     private Long              releaseTime;
     /**
-     * 文件地址
+     * 软件地址
      */
-    @ExcelField(value = "file_path", align = 1, title = "文件地址", type = 0)
+    @ExcelField(value = "filePath", align = 1, title = "软件地址", type = 0)
     private String            filePath;
-
     /**
-     * 软件大小(M)
+     * 软件大小
      */
-    @ExcelField(value = "size", align = 1, title = "软件大小(M)", type = 0)
+    @ExcelField(value = "size", align = 1, title = "软件大小", type = 0)
     private Integer           size;
 
     /**
@@ -165,13 +164,7 @@ public class AssetSoftwareEntity {
         this.serial = serial;
     }
 
-    public Integer getSize() {
-        return size;
-    }
 
-    public void setSize(Integer size) {
-        this.size = size;
-    }
 
     public String getOperationSystem() {
         return operationSystem;
@@ -205,13 +198,7 @@ public class AssetSoftwareEntity {
         this.description = description;
     }
 
-    public Integer getOrderNumber() {
-        return orderNumber;
-    }
 
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
-    }
 
 //    public String getAgreement() {
 //        return agreement;
@@ -229,11 +216,27 @@ public class AssetSoftwareEntity {
         this.MD5 = MD5;
     }
 
+    public Integer getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
     public String getFilePath() {
         return filePath;
     }
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
     }
 }
