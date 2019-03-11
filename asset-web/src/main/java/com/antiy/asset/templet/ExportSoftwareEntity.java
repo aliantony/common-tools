@@ -29,6 +29,8 @@ public class ExportSoftwareEntity {
     @ApiModelProperty("状态")
     private String  status;
 
+
+
     /**
      * 上传时间
      */

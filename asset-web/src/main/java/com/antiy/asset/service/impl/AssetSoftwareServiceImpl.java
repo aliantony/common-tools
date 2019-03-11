@@ -495,27 +495,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    public void downloadSoftware(AssetSoftwareQuery query, HttpServletResponse response) throws Exception {
-        query.setPageSize(Constants.MAX_PAGESIZE);
-        PageResult<AssetSoftwareResponse> pageResult = this.findPageAssetSoftware(query);
-        List<AssetSoftwareResponse> items = pageResult.getItems();
-        while (!CollectionUtils.isNotEmpty(items)) {
-
-            // 如果返回数据小于当前页，那么直接退出循环
-            pageResult.setCurrentPage(getNextPage(pageResult));
-            if (items.size() < pageResult.getPageSize()) {
-                break;
-            }
-            query.setCurrentPage(pageResult.getCurrentPage());
-            items = this.findPageAssetSoftware(query).getItems();
-        }
-        DownloadVO downloadVO = new DownloadVO();
-        downloadVO.setDownloadList(Collections.singletonList(items));
-        excelDownloadUtil.excelDownload(response, "软件导出", downloadVO);
-
-    }
-
-    @Override
     public void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
         exportData(AssetSoftwareEntity.class, "软件信息表", assetSoftwareQuery, response);
     }

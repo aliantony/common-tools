@@ -33,6 +33,7 @@ public class SafetyEquipmentEntiy {
      */
     @ExcelField(value = "area", align = 1, title = "所属区域", type = 1)
     private String area;
+
     /**
      * 使用者
      */

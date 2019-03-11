@@ -177,7 +177,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     }
 
     /**
-     * 删除部门及子部门，并将这些部门下的人员部门信息置为null
+     * 删除部门及子部门
      *
      * @param id
      * @return 影响的数据库行数
@@ -201,7 +201,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     }
 
     /**
-     * 删除部门，并将这些部门下的人员部门信息置为null
+     * 删除部门
      *
      * @param id
      * @return 影响的数据库行数
