@@ -1,13 +1,11 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.entity.Asset;
+import java.util.List;
+
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.vo.query.AssetGroupRelationQuery;
-import com.antiy.asset.vo.response.AssetGroupResponse;
 import com.antiy.common.base.IBaseDao;
-
-import java.util.List;
 
 /**
  * <p>
@@ -67,7 +65,7 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
     Integer findCountDetailByGroupId(Integer id) throws Exception;
 
     /**
-     * 通过资产D查询资产组名称
+     * 通过资产ID查询资产组名称
      * @param id
      * @return
      */
