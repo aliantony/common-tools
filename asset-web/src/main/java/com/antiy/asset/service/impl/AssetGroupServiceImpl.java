@@ -95,6 +95,16 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}", assetGroup.toString());
         }
+
+        Map<String, Object> map = new HashMap<>();
+        StringBuilder assetNameBuilder = new StringBuilder();
+        if(ArrayUtils.isNotEmpty(request.getAssetIds())){
+            for (String assetId : request.getAssetIds()) {
+                List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(DataTypeUtils.stringToInteger(assetId));
+                String assetGroupName = assetGroupNameList.toString();
+                updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
+            }
+        }
         return aesEncoder.encode(assetGroup.getStringId(), LoginUserUtil.getLoginUser().getUsername());
     }
 
@@ -147,17 +157,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             ParamterExceptionUtils.isTrue(assetGroupNameList.size() <= Constants.MAX_ASSET_RELATION_GROUP_COUNT,
                 "资产关联的资产组不能超过10个");
             String assetGroupName = assetGroupNameList.toString();
-            if (assetGroupNameList.size() > 0) {
-                assetNameBuilder.append(assetGroupNameList.toString(), 1, assetGroupName.length() - 1);
-                map.put("assetGroupName", assetNameBuilder.toString());
-                map.put("assetId", assetId);
-                assetDao.updateAssetGroupNameWithAssetId(map);
-                assetNameBuilder.delete(0,assetNameBuilder.length());
-                // 写入业务日志
-                LogHandle.log(assetGroupNameList.toString(), AssetEventEnum.ASSET_MODIFY.getName(),
-                    AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
-                LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetGroupNameList.toString());
-            }
+            updateAssetGroupName(map, assetNameBuilder, assetId.toString(), assetGroupNameList, assetGroupName);
         }
 
         // -----------------------------更新资产主表的资产组字段内容end-----------------------------
@@ -232,6 +232,28 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             selectResponseList.add(selectResponse);
         }
         return selectResponseList;
+    }
+
+    /**
+     * 更新资产主表资产组信息
+     * @param map
+     * @param assetNameBuilder
+     * @param assetId
+     * @param assetGroupNameList
+     * @param assetGroupName
+     */
+    private void updateAssetGroupName(Map<String, Object> map, StringBuilder assetNameBuilder, String assetId, List<String> assetGroupNameList, String assetGroupName) {
+        if (assetGroupNameList.size() > 0) {
+            assetNameBuilder.append(assetGroupNameList.toString(), 1, assetGroupName.length() - 1);
+            map.put("assetGroupName", assetNameBuilder.toString());
+            map.put("assetId", assetId);
+            assetDao.updateAssetGroupNameWithAssetId(map);
+            assetNameBuilder.delete(0,assetNameBuilder.length());
+            // 写入业务日志
+            LogHandle.log(assetGroupNameList.toString(), AssetEventEnum.ASSET_MODIFY.getName(),
+                    AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetGroupNameList.toString());
+        }
     }
 }
 
