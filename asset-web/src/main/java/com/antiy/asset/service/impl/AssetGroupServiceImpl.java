@@ -90,17 +90,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             }
         }
 
-        //绑定当前资产组
-        AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-        assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        assetGroupRelation.setCreateUserName(LoginUserUtil.getLoginUser().getUsername());
-        assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
-        assetGroupRelation.setAssetId(DataTypeUtils.integerToString(assetGroup.getId()));
-        assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
-        assetGroupRelation.setGmtCreate(System.currentTimeMillis());
-        assetGroupRelationDao.insert(assetGroupRelation);
-
-
         if (!Objects.equals(0, result)) { // 写入业务日志
             LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_INSERT.getName(),
                 AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
