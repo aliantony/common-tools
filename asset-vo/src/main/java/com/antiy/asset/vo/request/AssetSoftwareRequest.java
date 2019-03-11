@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.antiy.common.base.BasicRequest;
@@ -126,7 +125,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 0-免费软件，1-商业软件
      */
     @ApiModelProperty(value = "软件是否免费")
-    @NotNull(message = "软件是否免费不能为空")
     private Integer                     authorization;
     /**
      * 上报来源:1-自动上报，2-人工上报
