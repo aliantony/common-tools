@@ -1,7 +1,6 @@
 package com.antiy.asset.controller;
 
 import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
@@ -17,11 +16,8 @@ import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
-import com.antiy.common.upload.ExcelUploadUtil;
-import com.antiy.common.upload.UploadVO;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,8 +39,7 @@ public class AssetController {
     public IAssetService               iAssetService;
     @Resource
     private ActivityClient             activityClient;
-    @Resource
-    private IAssetCategoryModelService assetCategoryModelService;
+
 
     /**
      * 保存
@@ -71,11 +66,6 @@ public class AssetController {
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
     public ActionResponse queryList(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
-        // 品类型号及其子品类
-        if (StringUtils.isNotBlank(asset.getCategoryModel())) {
-            asset.setCategoryModels(DataTypeUtils.integerArrayToStringArray(assetCategoryModelService
-                .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(asset.getCategoryModel()))));
-        }
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
 
@@ -286,8 +276,6 @@ public class AssetController {
         return ActionResponse.success(iAssetService.importNet(file, importRequest));
     }
 
-    @Resource
-    private ExcelUploadUtil excelUploadUtil;
     /**
      * 硬件资产-导入安全设备
      *
@@ -299,7 +287,6 @@ public class AssetController {
     @PreAuthorize(value = "hasAuthority('asset:asset:importSafety')")
     public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file,
                                        AssetImportRequest importRequest) throws Exception {
-        List<UploadVO> object = excelUploadUtil.excelUpload(file);
         return ActionResponse.success(iAssetService.importSecurity(file, importRequest));
     }
 
