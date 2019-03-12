@@ -540,7 +540,7 @@
             and type = #{type }
         </if>
         <if test=" name != null">
-            and name LIKE CONCAT('%',#{name},'%')
+            and name LIKE CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
         </if>
         <if test=" serial != null">
             and serial = #{serial }
@@ -648,13 +648,13 @@
         </if>
 
         <if test=" multipleQuery != null">
-            and (name LIKE CONCAT('%',#{multipleQuery},'%')
-            or number LIKE CONCAT('%',#{multipleQuery},'%')
-            or serial LIKE CONCAT('%',#{multipleQuery},'%')
+            and (name LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or number LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or serial LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
-            CONCAT('%',#{multipleQuery},'%') and b.status = 1)
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_card b where asset.id = b.asset_id and mac_address like
-            CONCAT('%',#{multipleQuery},'%') and b.status = 1)
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             )
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
@@ -664,7 +664,7 @@
             </foreach>
         </if>
         <if test="name != null">
-            and name like CONCAT('%',#{name},'%')
+            and name like CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
         </if>
         <if test="assetName != null">
             and name =#{assetName}
@@ -691,13 +691,13 @@
             and number = #{number}
         </if>
         <if test=" uuid != null">
-            and uuid like CONCAT('%', #{uuid}, '%')
+            and uuid like CONCAT('%', replace(replace(#{uuid},'%','\%'),'_','\_'), '%')
         </if>
         <if test=" serial != null">
-            and serial like CONCAT('%', #{serial}, '%')
+            and serial like CONCAT('%', replace(replace(#{uuid},'%','\%'),'_','\_')#{serial}, '%')
         </if>
         <if test=" manufacturer != null">
-            and manufacturer like CONCAT('%',#{manufacturer}, '%')
+            and manufacturer like CONCAT('%',replace(replace(#{manufacturer},'%','\%'),'_','\_'), '%')
         </if>
         <if test=" operationSystem != null">
             and operation_system = #{operationSystem}
