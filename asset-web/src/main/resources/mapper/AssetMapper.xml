@@ -653,7 +653,17 @@
             or serial LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and inner_ip like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and outer_ip like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and ip like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_card b where asset.id = b.asset_id and mac_address like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and mac_address like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and mac like
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             )
         </if>
