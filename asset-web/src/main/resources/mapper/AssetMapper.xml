@@ -958,7 +958,7 @@
           group_concat( b.mac_address )
         when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
           (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
-        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
           (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
         else '' end as mac
         from
