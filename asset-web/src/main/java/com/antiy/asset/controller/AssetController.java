@@ -21,6 +21,8 @@ import com.antiy.common.upload.ExcelUploadUtil;
 import com.antiy.common.upload.UploadVO;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +30,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author zhangyajun
@@ -43,8 +47,7 @@ public class AssetController {
     public IAssetService               iAssetService;
     @Resource
     private ActivityClient             activityClient;
-    @Resource
-    private IAssetCategoryModelService assetCategoryModelService;
+
 
     /**
      * 保存
@@ -71,11 +74,6 @@ public class AssetController {
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
     public ActionResponse queryList(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
-        // 品类型号及其子品类
-        if (StringUtils.isNotBlank(asset.getCategoryModel())) {
-            asset.setCategoryModels(DataTypeUtils.integerArrayToStringArray(assetCategoryModelService
-                .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(asset.getCategoryModel()))));
-        }
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
 
