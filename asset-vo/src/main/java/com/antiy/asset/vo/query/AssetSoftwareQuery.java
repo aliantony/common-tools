@@ -391,7 +391,7 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     }
 
     public String getMultipleQuery() {
-        return multipleQuery;
+        return (multipleQuery != null && multipleQuery.contains("%")) ? multipleQuery.replace("%", "\\%") : multipleQuery;
     }
 
     public void setMultipleQuery(String multipleQuery) {

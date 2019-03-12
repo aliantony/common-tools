@@ -118,7 +118,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 资产状态
      */
-    @ApiModelProperty("资产状态")
+    @ApiModelProperty("资产状态[列表]")
     private List<Integer> assetStatusList;
 
     /**
@@ -321,7 +321,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     }
 
     public String getMultipleQuery() {
-        return multipleQuery;
+        return (multipleQuery != null && multipleQuery.contains("%")) ? multipleQuery.replace("%", "\\%") : multipleQuery;
     }
 
     public void setMultipleQuery(String multipleQuery) {
