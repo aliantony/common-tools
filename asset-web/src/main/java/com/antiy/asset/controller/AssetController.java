@@ -1,7 +1,6 @@
 package com.antiy.asset.controller;
 
 import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
@@ -17,22 +16,15 @@ import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
-import com.antiy.common.upload.ExcelUploadUtil;
-import com.antiy.common.upload.UploadVO;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author zhangyajun
@@ -284,8 +276,6 @@ public class AssetController {
         return ActionResponse.success(iAssetService.importNet(file, importRequest));
     }
 
-    @Resource
-    private ExcelUploadUtil excelUploadUtil;
     /**
      * 硬件资产-导入安全设备
      *
@@ -297,7 +287,6 @@ public class AssetController {
     @PreAuthorize(value = "hasAuthority('asset:asset:importSafety')")
     public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file,
                                        AssetImportRequest importRequest) throws Exception {
-        List<UploadVO> object = excelUploadUtil.excelUpload(file);
         return ActionResponse.success(iAssetService.importSecurity(file, importRequest));
     }
 

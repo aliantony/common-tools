@@ -28,11 +28,7 @@ public class SafetyEquipmentEntiy {
      */
     @ExcelField(value = "serial", align = 1, title = "序列号", type = 0)
     private String serial;
-    /**
-     * 所属区域
-     */
-    @ExcelField(value = "area", align = 1, title = "所属区域", type = 1)
-    private String area;
+
 
     /**
      * 使用者
@@ -121,14 +117,6 @@ public class SafetyEquipmentEntiy {
 
     public void setSerial(String serial) {
         this.serial = serial;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
     }
 
     public String getUser() {

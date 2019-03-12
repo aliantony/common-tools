@@ -40,11 +40,6 @@ public class StorageDeviceEntity {
      */
     @ExcelField(value = "serial", align = 1, title = "序列号")
     private String  serial;
-    /**
-     * 归属区域
-     */
-    @ExcelField(value = "area", align = 1, title = "归属区域",type = 1)
-    private String  area;
 
     /**
      * 使用者
@@ -168,13 +163,6 @@ public class StorageDeviceEntity {
         this.serial = serial;
     }
 
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
 
     public String getUser() {
         return user;
