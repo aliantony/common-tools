@@ -856,7 +856,7 @@
         asset_software_relation a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1
         left join asset c on c.id = a.asset_id and c.status = 1 and c.id is not null
-        left join asset_user d on c.responsible_user_id = d.id and d.status = 1
+        left join asset_user d on c.responsible_user_id = d.id
         where 1 = 1
 
         and a.software_id = #{id}
