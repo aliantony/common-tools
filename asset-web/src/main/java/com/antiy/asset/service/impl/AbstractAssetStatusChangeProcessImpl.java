@@ -130,6 +130,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             && !LoginUserUtil.getLoginUser().getId().equals(assetStatusReqeust.getSchemeRequest().getPutintoUserId())) {
             // 参数校验
             WorkOrderVO workOrderVO = assetStatusReqeust.getWorkOrderVO();
+            workOrderVO.setOrderType(1);
             if (assetStatusReqeust.getSoftware()) {
                 SoftwareStatusEnum softwareStatusEnum = this.getNextSoftwareStatus(assetStatusReqeust);
                 if (SoftwareStatusEnum.WAIT_ANALYZE_RETIRE.getCode().equals(softwareStatusEnum.getCode())) {
