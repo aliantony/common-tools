@@ -826,10 +826,25 @@
         c.name,
         d.id as userId,
         d.name as userName,
-        group_concat( b.ip_address ) as ip,
-        group_concat( b.mac_address ) as mac,
+        case
+        when group_concat(b.ip_address) is not null then
+        group_concat(b.ip_address)
+        when (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is not null then
+        (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
+        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as ip,
+        case
+        when group_concat( b.mac_address ) is not null then
+        group_concat( b.mac_address )
+        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
+        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as mac,
         c.serial,
         c.category_model as categoryModel,
+        (select name from asset_category_model where id = c.category_model) as categoryModelName,
         c.manufacturer,
         a.install_time as installTime,
         a.install_status as installStatus,
@@ -849,9 +864,24 @@
             and a.install_status = #{installStatus}
         </if>
         <if test=" multipleQuery != null">
-            and (c.name LIKE CONCAT('%',#{multipleQuery},'%')
-            or c.number LIKE CONCAT('%',#{multipleQuery},'%')
-            or c.serial LIKE CONCAT('%',#{multipleQuery},'%'))
+            and (name LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or number LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or serial LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and inner_ip like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and outer_ip like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and ip like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and mac_address like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and mac_address like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and mac like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            )
         </if>
         <if test=" installType != null">
             and (a.install_type = #{installType} or c.install_type = #{installType})
