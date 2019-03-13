@@ -465,7 +465,7 @@
         software_label, software_status, authorization,
         report_source, protocol, language, a.release_time,
         publisher, a.gmt_create, a.memo, a.gmt_modified,
-        a.create_user,a.modify_user, a.status,, a.buy_date,
+        a.create_user,a.modify_user, a.status, a.buy_date,
         b.name as category_model_name,md5_code,serial
         from
         <include refid="Table_Name"></include>
