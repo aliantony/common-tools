@@ -110,11 +110,14 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public Integer updateAssetGroup(AssetGroupRequest request) throws Exception {
-        // 判重
-        String assetName = request.getName();
-        Boolean removeDuplicateResult = assetGroupDao.removeDuplicate(assetName);
-        if (removeDuplicateResult) {
-            throw new BusinessException("资产组名称重复");
+        String groupName = assetGroupDao.getById(DataTypeUtils.stringToInteger(request.getId())).getName();
+        if (!request.getName().equals(groupName)) {
+            // 判重
+            String assetName = request.getName();
+            Boolean removeDuplicateResult = assetGroupDao.removeDuplicate(assetName);
+            if (removeDuplicateResult) {
+                throw new BusinessException("资产组名称重复");
+            }
         }
         AssetGroup assetGroup = (AssetGroup) BeanConvert.convert(request, AssetGroup.class);
         assetGroup.setId(DataTypeUtils.stringToInteger(request.getId()));
