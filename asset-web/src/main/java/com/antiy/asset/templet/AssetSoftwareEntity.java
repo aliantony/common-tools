@@ -11,12 +11,6 @@ import com.antiy.asset.annotation.ExcelField;
 
 public class AssetSoftwareEntity {
 
-    private static final long serialVersionUID = 1L;
-    /**
-     * 序号
-     */
-    @ExcelField(value = "order_number", align = 1, title = "序号")
-    private Integer           orderNumber;
     /**
      * 软件名称
      */
@@ -50,11 +44,7 @@ public class AssetSoftwareEntity {
     @ExcelField(value = "operationSystem", align = 1, title = "兼容系统", type = 0)
     private String            operationSystem;
 
-    // /**
-    // * 协议
-    // */
-    // @ExcelField(value = "agreement", align = 1, title = "协议", type = 0)
-    // private String agreement;
+
     /**
      * 1-免费软件，2-商业软件
      */
@@ -87,6 +77,7 @@ public class AssetSoftwareEntity {
      */
     @ExcelField(value = "filePath", align = 1, title = "软件地址", type = 0)
     private String            filePath;
+
     /**
      * 软件大小
      */
@@ -164,7 +155,13 @@ public class AssetSoftwareEntity {
         this.serial = serial;
     }
 
+    public Integer getSize() {
+        return size;
+    }
 
+    public void setSize(Integer size) {
+        this.size = size;
+    }
 
     public String getOperationSystem() {
         return operationSystem;
@@ -198,30 +195,12 @@ public class AssetSoftwareEntity {
         this.description = description;
     }
 
-
-
-//    public String getAgreement() {
-//        return agreement;
-//    }
-//
-//    public void setAgreement(String agreement) {
-//        this.agreement = agreement;
-//    }
-
     public String getMD5() {
         return MD5;
     }
 
     public void setMD5(String MD5) {
         this.MD5 = MD5;
-    }
-
-    public Integer getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
     }
 
     public String getFilePath() {
@@ -232,11 +211,5 @@ public class AssetSoftwareEntity {
         this.filePath = filePath;
     }
 
-    public Integer getSize() {
-        return size;
-    }
 
-    public void setSize(Integer size) {
-        this.size = size;
-    }
 }

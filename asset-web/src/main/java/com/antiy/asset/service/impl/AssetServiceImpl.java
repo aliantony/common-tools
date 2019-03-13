@@ -1,32 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import com.antiy.asset.util.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -50,6 +23,30 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -1782,16 +1779,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public String importPc(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<ComputeDeviceEntity> result = ExcelUtils.importExcelFromClient(ComputeDeviceEntity.class, file, 0,
             0);
+        if (Objects.isNull (result.getDataList ())){
+            return result.getMsg ();
+        }
         int success = 0;
         int repeat = 0;
         int error = 0;
+        int a=1;
         String user = null;
         StringBuilder builder = new StringBuilder();
         List<ComputeDeviceEntity> dataList = result.getDataList();
+        if (dataList.size ()==0){
+            return "上传失败，模板内无数据，请填写数据后再次上传";
+        }
         for (ComputeDeviceEntity entity : dataList) {
+
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("资产名称为空");
+                builder.append("第").append(a).append("行").append(entity.getOrderNumber()).append("资产名称为空");
                 continue;
             }
             if (StringUtils.isBlank(entity.getUser())) {
@@ -2000,6 +2005,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
             activityClient.manualStartProcess(manualStartActivityRequest);
             success++;
+            a++;
         }
 
         String re = "导入成功" + success + "条";
@@ -2022,11 +2028,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public String importNet(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<NetworkDeviceEntity> result = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class, file, 0,
             0);
+        if (Objects.isNull (result.getDataList ())){
+            return result.getMsg ();
+        }
         int success = 0;
         int repeat = 0;
         int error = 0;
         StringBuilder builder = new StringBuilder();
         List<NetworkDeviceEntity> entities = result.getDataList();
+        if (entities.size ()==0){
+            return "上传失败，模板内无数据，请填写数据后再次上传";
+        }
         for (NetworkDeviceEntity networkDeviceEntity : entities) {
             if (StringUtils.isBlank(networkDeviceEntity.getName())) {
                 error++;
@@ -2149,13 +2161,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public String importSecurity(MultipartFile file, AssetImportRequest importRequest) throws Exception {
+
         ImportResult<SafetyEquipmentEntiy> result = ExcelUtils.importExcelFromClient(SafetyEquipmentEntiy.class, file,
             0, 0);
+
+        StringBuilder builder = new StringBuilder();
+        if (Objects.isNull (result.getDataList ())){
+            return result.getMsg ();
+        }
+        List<SafetyEquipmentEntiy> resultDataList = result.getDataList();
+        if (resultDataList.size ()==0){
+            return "上传失败，模板内无数据，请填写数据后再次上传";
+        }
         int success = 0;
         int repeat = 0;
         int error = 0;
-        StringBuilder builder = new StringBuilder();
-        List<SafetyEquipmentEntiy> resultDataList = result.getDataList();
         for (SafetyEquipmentEntiy entity : resultDataList) {
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
@@ -2266,7 +2286,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public String importStory(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<StorageDeviceEntity> result = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 0,
             0);
+        if (Objects.isNull (result.getDataList ())){
+            return result.getMsg ();
+        }
         List<StorageDeviceEntity> resultDataList = result.getDataList();
+        if (resultDataList.size ()==0){
+            return "上传失败，模板内无数据，请填写数据后再次上传";
+        }
         int success = 0;
         int repeat = 0;
         int error = 0;
@@ -2284,7 +2310,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeat(entity.getNumber())) {
+            if (CheckRepeat(entity.getName())) {
                 repeat++;
                 builder.append("序号").append(entity.getOrderNumber()).append("资产编号重复");
                 continue;
@@ -2381,7 +2407,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public String importOhters(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 0, 0);
+        if (Objects.isNull (result.getDataList ())){
+            return result.getMsg ();
+        }
         List<OtherDeviceEntity> resultDataList = result.getDataList();
+        if (resultDataList.size ()==0){
+            return "上传失败，模板内无数据，请填写数据后再次上传";
+        }
         int success = 0;
         int repeat = 0;
         int error = 0;

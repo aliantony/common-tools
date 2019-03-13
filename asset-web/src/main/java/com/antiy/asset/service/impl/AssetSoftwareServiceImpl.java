@@ -1,26 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
@@ -55,6 +34,25 @@ import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -550,41 +548,47 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     public String importExcel(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class,
             file, 0, 0);
-
+        if (Objects.isNull (importResult.getDataList ())){
+            return importResult.getMsg ();
+        }
         List<AssetSoftwareEntity> resultDataList = importResult.getDataList();
+        if (resultDataList.size ()==0){
+            return "上传失败，模板内无数据，请填写数据后再次上传";
+        }
         int success = 0;
         int repeat = 0;
         int error = 0;
+        int a=1;
         StringBuilder builder = new StringBuilder();
         for (AssetSoftwareEntity entity : resultDataList) {
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("软件名称为空");
+                a++;
+                builder.append("第").append(a).append("行").append("软件名称为空");
                 continue;
             }
             if (CheckRepeatName(entity.getName())) {
                 repeat++;
-                builder.append("序号").append(entity.getOrderNumber()).append("软件名称重复");
+                a++;
+                builder.append("第").append(a).append("行").append("软件名称重复");
                 continue;
             }
             if (StringUtils.isBlank(entity.getVersion())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("软件版本为空");
+                a++;
+                builder.append("第").append(a).append("行").append("软件版本为空");
                 continue;
             }
             if (StringUtils.isBlank(entity.getCategory())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("软件品类为空");
-                continue;
-            }
-            if (StringUtils.isBlank(entity.getFilePath())) {
-                error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("文件地址为空");
+                a++;
+                builder.append("第").append(a).append("行").append("软件品类为空");
                 continue;
             }
             if (Objects.isNull(entity.getServiceLife()) && entity.getAuthorization() == 1) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("到期时间为空");
+                a++;
+                builder.append("第").append(a).append("行").append("到期时间为空");
                 continue;
             }
 
@@ -601,7 +605,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             asset.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
             asset.setReleaseTime(entity.getReleaseTime());
-            asset.setPath(entity.getFilePath());
             asset.setName(entity.getName());
             asset.setVersion(entity.getVersion());
             asset.setManufacturer(entity.getManufacturer());
@@ -612,7 +615,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             asset.setMemo(entity.getDescription());
             asset.setDescription(entity.getDescription());
             asset.setCategoryModel(entity.getCategory());
-            asset.setSize(entity.getSize());
+
 
             assetSoftwareDao.insert(asset);
             // 记录资产操作流程
@@ -641,6 +644,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
             activityClient.manualStartProcess(manualStartActivityRequest);
             success++;
+            a++;
         }
 
         String res = "导入成功" + success + "条";

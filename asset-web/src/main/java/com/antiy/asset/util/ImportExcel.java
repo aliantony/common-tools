@@ -1,16 +1,8 @@
 package com.antiy.asset.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.util.*;
-
+import com.antiy.asset.annotation.ExcelField;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LogUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -22,8 +14,15 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.antiy.asset.annotation.ExcelField;
-import com.antiy.common.utils.LogUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * @Description: 导入excel
@@ -161,6 +160,8 @@ public class ImportExcel {
         log.debug("Initialize success.");
     }
 
+
+
     /**
      * 初始化注解列表
      *
@@ -286,6 +287,13 @@ public class ImportExcel {
         initAnnotationList(clazz);
         List<T> dataList = new ArrayList<>();
         boolean flag = true;
+        Row firstRow = this.getRow(0);
+        int length = clazz.getDeclaredFields ().length;
+        int numberOfCells = firstRow.getPhysicalNumberOfCells ();
+        if (length!=numberOfCells){
+            sb.append("模板不匹配,请重新选择对应模板！");
+            return null;
+        }
         for (int i = getDataRownum(); i < lastRowNum; i++) {
             // 数据行
             Row dataRow = this.getRow(i);
@@ -297,6 +305,7 @@ public class ImportExcel {
             }
             // 反射创建实例对象
             T data = clazz.newInstance();
+
             // 列号
             int column = 0;
             for (Object[] os : annotationList) {
@@ -386,6 +395,8 @@ public class ImportExcel {
         totalNums = successNums + failNums;
         return dataList;
     }
+
+
 
     /**
      * 判断是否是空白行
