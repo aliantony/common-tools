@@ -59,7 +59,7 @@ public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangePr
         //资产状态判断
         AssetSoftware software = assetSoftwareDao.getById(assetStatusReqeust.getAssetId());
         if (softwareStatusEnum.getCode().equals(software.getSoftwareStatus())){
-            throw new BusinessException("请勿重复提交");
+            throw new BusinessException("请勿重复提交，当前资产状态是：" + assetStatusReqeust.getSoftwareStatusEnum().getMsg());
         }
 
         ActionResponse actionResponse = super.changeStatus(assetStatusReqeust);

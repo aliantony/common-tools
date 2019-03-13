@@ -457,7 +457,7 @@
     </update>
 
     <!-- 根据主键查询 -->
-    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         a.id, size, operation_system, a.category_model,
         a.name, upload_software_name, path, version,

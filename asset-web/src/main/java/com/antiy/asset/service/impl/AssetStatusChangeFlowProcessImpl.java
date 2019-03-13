@@ -40,7 +40,7 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         // 资产状态判断
         Asset asesetStatus = assetDao.getById(assetStatusReqeust.getAssetId());
         if (assetStatusEnum.getCode().equals(asesetStatus.getAssetStatus())) {
-            throw new BusinessException("请勿重复提交");
+            throw new BusinessException("请勿重复提交，当前资产状态是：" + assetStatusReqeust.getAssetStatus().getMsg());
         }
         ActionResponse actionResponse = super.changeStatus(assetStatusReqeust);
         if (null == actionResponse
@@ -48,6 +48,13 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
             return actionResponse;
         }
 
+        //检查资产主表的首次入网时间，为空时写入入网时间
+        if (AssetStatusEnum.NET_IN.getCode().equals(assetStatusEnum.getCode())){
+            Asset currentAsset = assetDao.getById(assetStatusReqeust.getAssetId());
+            if (currentAsset == null){
+                asset.setFirstEnterNett(System.currentTimeMillis());
+            }
+        }
         asset.setAssetStatus(assetStatusEnum.getCode());
         asset.setId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
         asset.setGmtModified(System.currentTimeMillis());
