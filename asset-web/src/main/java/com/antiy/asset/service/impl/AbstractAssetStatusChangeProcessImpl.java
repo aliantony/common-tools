@@ -116,21 +116,21 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                    || AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE.getCode()
                        .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             // 软件完成流程
-            actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
+//            actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         }
 
         // 如果流程引擎为空,直接返回错误信息
-        if (null == actionResponse
-            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
-        }
+//        if (null == actionResponse
+//            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+//            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+//        }
 
         // 4.调用工单系统(选择自己不发工单，选择它人发起工单)
         if (null != assetStatusReqeust.getWorkOrderVO()
             && !LoginUserUtil.getLoginUser().getId().equals(assetStatusReqeust.getSchemeRequest().getPutintoUserId())) {
             // 参数校验
             WorkOrderVO workOrderVO = assetStatusReqeust.getWorkOrderVO();
-            workOrderVO.setOrderType(1);
+            workOrderVO.setOrderSource(1);
             if (assetStatusReqeust.getSoftware()) {
                 SoftwareStatusEnum softwareStatusEnum = this.getNextSoftwareStatus(assetStatusReqeust);
                 if (SoftwareStatusEnum.WAIT_RETIRE.getCode().equals(softwareStatusEnum.getCode())) {
