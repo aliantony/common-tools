@@ -274,10 +274,10 @@
     <select id="removeDuplicate" resultType="boolean"
             parameterType="string">
         select
-          count(1)
+        count(1)
         from
         <include refid="Table_Name"></include>
-        where exists (select name from <include refid="Table_Name"></include> where name = #{name} and status = 1))
+        where name = #{name} and status = 1
     </select>
     <select id="findCreateUser" resultMap="BaseResultMap">
         select distinct create_user from
