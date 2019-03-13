@@ -367,9 +367,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // 保存其他资产
                         AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest();
 
-                        String number = assetOthersRequest.getNumber();
+                        if (StringUtils.isNotBlank (assetOthersRequest.getNumber())){
 
-                        ParamterExceptionUtils.isTrue(!CheckRepeat(number), "编号重复");
+                            ParamterExceptionUtils.isTrue(!CheckRepeat(assetOthersRequest.getNumber()), "编号重复");
+                        }
+
 
                         String name = assetOthersRequest.getName();
 
@@ -434,8 +436,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     logger.error("录入失败", e);
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
-                    e.printStackTrace();
                     logger.error("录入失败", e);
+                    BusinessExceptionUtils.isTrue (e.getMessage().equals("资产组名称获取失败"),"资产组名称获取失败");
                 }
                 return 0;
             }
