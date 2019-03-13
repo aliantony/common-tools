@@ -501,7 +501,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuilder stringBuilder = new StringBuilder();
         assetGroup.forEach(assetGroupRequest -> {
             try {
-                String assetGroupName = assetGroupDao.getById(assetGroupRequest.getId())
+                String assetGroupName = assetGroupDao.getById(DataTypeUtils.stringToInteger(assetGroupRequest.getId()))
                     .getName();
                 asset.setAssetGroup(
                     stringBuilder.append(assetGroupName).append(",").substring(0, stringBuilder.length() - 1));
