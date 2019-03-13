@@ -116,18 +116,18 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                    || AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE.getCode()
                        .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             // 软件完成流程
-//            actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
+            actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         }
 
         // 如果流程引擎为空,直接返回错误信息
-//        if (null == actionResponse
-//            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-//            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
-//        }
+        if (null == actionResponse
+            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+        }
 
         // 4.调用工单系统(选择自己不发工单，选择它人发起工单)
         if (null != assetStatusReqeust.getWorkOrderVO()
-            && !LoginUserUtil.getLoginUser().getId().equals(assetStatusReqeust.getSchemeRequest().getPutintoUserId())) {
+                && !LoginUserUtil.getLoginUser().getId().equals(assetStatusReqeust.getSchemeRequest().getPutintoUserId())) {
             // 参数校验
             WorkOrderVO workOrderVO = assetStatusReqeust.getWorkOrderVO();
             workOrderVO.setOrderSource(1);
@@ -135,19 +135,24 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                 SoftwareStatusEnum softwareStatusEnum = this.getNextSoftwareStatus(assetStatusReqeust);
                 if (SoftwareStatusEnum.WAIT_RETIRE.getCode().equals(softwareStatusEnum.getCode())) {
                     workOrderVO.setName(AssetOperationTableEnum.SOFTWARE.getMsg()
-                                        + SoftwareStatusEnum.WAIT_ANALYZE_RETIRE.getMsg() + "工单");
+                            + SoftwareStatusEnum.WAIT_ANALYZE_RETIRE.getMsg() + "工单");
+                    workOrderVO.setOrderType(WorkOrderTypeEnum.SOFTWARE_DECOMMISSIONING_ANALYSIS.getCode());
                 }
             } else {
                 // 硬件
                 AssetStatusEnum assetStatusEnum = this.getNextAssetStatus(assetStatusReqeust);
                 if (AssetStatusEnum.WAIT_VALIDATE.getCode().equals(assetStatusEnum.getCode())) {
                     workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg() + "工单");
+                    workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_VERIFY.getCode());
                 } else if (AssetStatusEnum.WAIT_NET.getCode().equals(assetStatusEnum.getCode())) {
                     workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg() + "工单");
+                    workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_ENTRY_INTO_NETWORK.getCode());
                 } else if (AssetStatusEnum.WAIT_CHECK.getCode().equals(assetStatusEnum.getCode())) {
                     workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg() + "工单");
+                    workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_BE_CHECKED.getCode());
                 } else {
                     workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + "工单");
+                    workOrderVO.setOrderType(WorkOrderTypeEnum.DEFAULT.getCode());
                 }
 
             }
