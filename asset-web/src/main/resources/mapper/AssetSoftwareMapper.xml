@@ -513,7 +513,7 @@
             <trim prefixOverrides="and|or">
                 <choose>
                     <when test="taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
-                        and (asset_software.status = 1 or id in
+                        and (asset_software.status = 1 or asset_software.id in
                         <foreach index="index" item="item" collection="taskBussinessIds" open="(" separator=","
                                  close=")">
                             #{item}
@@ -599,7 +599,7 @@
             <trim prefixOverrides="and|or">
                 <choose>
                     <when test="taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
-                        and (asset_software.status = 1 or id in
+                        and (asset_software.status = 1 or asset_software.id in
                         <foreach index="index" item="item" collection="taskBussinessIds" open="(" separator=","
                                  close=")">
                             #{item}
@@ -625,13 +625,13 @@
         </where>
         order by
         <if test="ids!= null and ids.size() > 0">
-            FIELD(`id`,
+            FIELD(`asset_software.id`,
             <foreach index="index" item="item" collection="ids" separator=",">
                 #{item}
             </foreach>
             ) desc,
         </if>
-        id desc
+        asset_software.id desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
