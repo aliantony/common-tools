@@ -40,7 +40,7 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         // 资产状态判断
         Asset asesetStatus = assetDao.getById(assetStatusReqeust.getAssetId());
         if (assetStatusEnum.getCode().equals(asesetStatus.getAssetStatus())) {
-            throw new BusinessException("请勿重复提交");
+            throw new BusinessException("请勿重复提交，当前资产状态是：" + assetStatusReqeust.getAssetStatus().getMsg());
         }
         ActionResponse actionResponse = super.changeStatus(assetStatusReqeust);
         if (null == actionResponse
