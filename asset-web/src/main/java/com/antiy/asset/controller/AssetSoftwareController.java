@@ -96,7 +96,7 @@ public class AssetSoftwareController {
     @PreAuthorize(value = "hasAuthority('asset:software:queryById')")
     public ActionResponse queryById(@ApiParam(value = "assetSoftware") QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareService.getById(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey())));
+        return ActionResponse.success(iAssetSoftwareService.getById(queryCondition.getPrimaryKey()));
     }
 
     /**
@@ -263,7 +263,7 @@ public class AssetSoftwareController {
         ParamterExceptionUtils.isBlank(softwareQuery.getId(), "软件ID不能为空");
         SoftwareInstallResponse softwareInstallResponse = new SoftwareInstallResponse();
         softwareInstallResponse.setAssetSoftware(
-            BeanConvert.convertBean(iAssetSoftwareService.getById(DataTypeUtils.stringToInteger(softwareQuery.getId())),
+            BeanConvert.convertBean(iAssetSoftwareService.getById(softwareQuery.getId()),
                 AssetSoftwareResponse.class));
         softwareInstallResponse
             .setAssetSoftwareInstallResponseList(iAssetSoftwareService.findAssetInstallList(softwareQuery));
