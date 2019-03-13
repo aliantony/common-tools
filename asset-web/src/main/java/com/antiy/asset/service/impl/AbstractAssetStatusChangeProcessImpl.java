@@ -152,7 +152,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                     workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_BE_CHECKED.getCode());
                 } else {
                     workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + "工单");
-                    workOrderVO.setOrderType(WorkOrderTypeEnum.DEFAULT.getCode());
+                    workOrderVO.setOrderType(WorkOrderTypeEnum.OTHER.getCode());
                 }
 
             }
