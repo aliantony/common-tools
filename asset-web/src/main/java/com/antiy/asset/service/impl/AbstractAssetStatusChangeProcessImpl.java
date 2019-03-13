@@ -144,9 +144,9 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                 if (AssetStatusEnum.WAIT_VALIDATE.getCode().equals(assetStatusEnum.getCode())) {
                     workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg() + "工单");
                     workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_VERIFY.getCode());
-                } else if (AssetStatusEnum.WAIT_NET.getCode().equals(assetStatusEnum.getCode())) {
+                } else if (AssetStatusEnum.NET_IN.getCode().equals(assetStatusEnum.getCode())) {
                     workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg() + "工单");
-                    workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_ENTRY_INTO_NETWORK.getCode());
+                    workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_BE_DECOMMISSIONED.getCode());
                 } else if (AssetStatusEnum.WAIT_CHECK.getCode().equals(assetStatusEnum.getCode())) {
                     workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg() + "工单");
                     workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_BE_CHECKED.getCode());
