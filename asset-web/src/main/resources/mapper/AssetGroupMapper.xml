@@ -277,7 +277,7 @@
           count(1)
         from
         <include refid="Table_Name"></include>
-        where name = #{name}
+        where name = #{name} and status = 1
     </select>
     <select id="findCreateUser" resultMap="BaseResultMap">
         select distinct create_user from
