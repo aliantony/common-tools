@@ -437,7 +437,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
-                    BusinessExceptionUtils.isTrue (e.getMessage().equals("资产组名称获取失败"),"资产组名称获取失败");
+                    BusinessExceptionUtils.isTrue (!e.getMessage().equals("资产组名称获取失败"),"资产组名称获取失败");
                 }
                 return 0;
             }
