@@ -225,6 +225,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getStartTime(), "工单开始时间不能为空");
             ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getEndTime(), "工单结束时间不能为空");
             ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getWorkLevel(), "工单级别不能为空");
+            ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getExecuteUserId(), "执行人不能为空");
             scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
             scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));
             scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
