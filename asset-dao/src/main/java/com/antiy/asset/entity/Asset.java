@@ -91,7 +91,6 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("归属区域")
     private String            areaId;
-
     /**
      * 行政区划名称
      */
