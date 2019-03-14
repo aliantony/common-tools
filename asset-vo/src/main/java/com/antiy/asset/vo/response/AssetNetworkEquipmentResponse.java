@@ -25,11 +25,6 @@ public class AssetNetworkEquipmentResponse extends BaseResponse {
     @ApiModelProperty("接口数目")
     private Integer interfaceSize;
     /**
-     * 端口数目
-     */
-    @ApiModelProperty("端口数目")
-    private Integer porteSize;
-    /**
      * 是否无线:0-否,1-是
      */
     @ApiModelProperty("是否无线:0-否,1-是")
@@ -90,13 +85,57 @@ public class AssetNetworkEquipmentResponse extends BaseResponse {
      */
     @ApiModelProperty("固件版本")
     private String  firmwareVersion;
+    /**
+     * cpu版本
+     */
+    @ApiModelProperty("cpu版本")
+    private String  cpuVersion;
+    /**
+     * cpu大小
+     */
+    @ApiModelProperty("cpu大小")
+    private Integer cpuSize;
+    /**
+     * ios
+     */
+    @ApiModelProperty("ios")
+    private String  ios;
+    /**
+     * 端口数目
+     */
+    @ApiModelProperty("端口数目")
+    private Integer portSize;
 
-    public Integer getPorteSize() {
-        return porteSize;
+    public String getCpuVersion() {
+        return cpuVersion;
     }
 
-    public void setPorteSize(Integer porteSize) {
-        this.porteSize = porteSize;
+    public void setCpuVersion(String cpuVersion) {
+        this.cpuVersion = cpuVersion;
+    }
+
+    public Integer getCpuSize() {
+        return cpuSize;
+    }
+
+    public void setCpuSize(Integer cpuSize) {
+        this.cpuSize = cpuSize;
+    }
+
+    public String getIos() {
+        return ios;
+    }
+
+    public void setIos(String ios) {
+        this.ios = ios;
+    }
+
+    public Integer getPortSize() {
+        return portSize;
+    }
+
+    public void setPortSize(Integer portSize) {
+        this.portSize = portSize;
     }
 
     public String getFirmwareVersion() {
@@ -227,6 +266,11 @@ public class AssetNetworkEquipmentResponse extends BaseResponse {
                 ", flashSize=" + flashSize +
                 ", ncrmSize=" + ncrmSize +
                 ", status=" + status +
+                ", firmwareVersion='" + firmwareVersion + '\'' +
+                ", cpuVersion='" + cpuVersion + '\'' +
+                ", cpuSize=" + cpuSize +
+                ", ios='" + ios + '\'' +
+                ", portSize=" + portSize +
                 '}';
     }
 }
