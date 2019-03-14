@@ -1,32 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -42,7 +15,10 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
@@ -50,6 +26,30 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import com.antiy.common.utils.DataTypeUtils;
 
 /**
@@ -137,6 +137,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         .get(AssetServiceImpl.class);
     @Resource
     private AesEncoder                                                         aesEncoder;
+    @Resource
+    private RedisUtil                                                          redisUtil;
     private static final int                                                   ALL_PAGE = -1;
 
     @Override
@@ -581,6 +583,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         List<Asset> asset = assetDao.findListAsset(query);
+        if (CollectionUtils.isNotEmpty(asset)) {
+            asset.stream().forEach(a -> {
+                try {
+                    String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                            DataTypeUtils.stringToInteger(a.getAreaId()));
+                    SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+                    a.setAreaName(sysArea.getFullName());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
         List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
         if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
             objects.forEach(object -> {
