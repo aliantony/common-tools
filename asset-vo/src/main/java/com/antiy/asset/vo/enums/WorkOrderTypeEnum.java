@@ -87,7 +87,7 @@ public enum WorkOrderTypeEnum {
     /**
      * 类型硬件待退役
      */
-    HARDWARE_TO_BE_DECOMMISSIONED(18, "类型硬件待退役");
+    HARDWARE_TO_BE_DECOMMISSIONED(18, "硬件待退役");
     /**
      * code
      */
