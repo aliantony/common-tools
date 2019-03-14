@@ -174,6 +174,11 @@ public class AssetResponse extends BaseResponse {
     @Encode
     private String                   areaId;
     /**
+     * 行政区划名称
+     */
+    @ApiModelProperty("行政区划名称")
+    private String                   areaName;
+    /**
      * 物理位置
      */
     @ApiModelProperty("物理位置")
@@ -193,6 +198,14 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("资产流程信息")
     private WaitingTaskReponse       waitingTaskReponse;
+
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
+    }
 
     public Integer getInstallType() {
         return installType;
@@ -472,5 +485,47 @@ public class AssetResponse extends BaseResponse {
 
     public void setHouseLocation(String houseLocation) {
         this.houseLocation = houseLocation;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetResponse{" +
+                "number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", assetGroup='" + assetGroup + '\'' +
+                ", assetGroups=" + assetGroups +
+                ", ip='" + ip + '\'' +
+                ", mac='" + mac + '\'' +
+                ", serial='" + serial + '\'' +
+                ", categoryModel='" + categoryModel + '\'' +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", assetStatus=" + assetStatus +
+                ", operationSystem='" + operationSystem + '\'' +
+                ", systemBit=" + systemBit +
+                ", firmwareVersion='" + firmwareVersion + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", responsibleUserId='" + responsibleUserId + '\'' +
+                ", responsibleUserName='" + responsibleUserName + '\'' +
+                ", contactTel='" + contactTel + '\'' +
+                ", email='" + email + '\'' +
+                ", assetSource=" + assetSource +
+                ", importanceDegree=" + importanceDegree +
+                ", describle='" + describle + '\'' +
+                ", parentId=" + parentId +
+                ", tags='" + tags + '\'' +
+                ", serviceLife=" + serviceLife +
+                ", buyDate=" + buyDate +
+                ", warranty=" + warranty +
+                ", admittanceStatus=" + admittanceStatus +
+                ", gmtCreate=" + gmtCreate +
+                ", firstEnterNett=" + firstEnterNett +
+                ", areaId='" + areaId + '\'' +
+                ", areaName='" + areaName + '\'' +
+                ", location='" + location + '\'' +
+                ", houseLocation='" + houseLocation + '\'' +
+                ", installType=" + installType +
+                ", waitingTaskReponse=" + waitingTaskReponse +
+                '}';
     }
 }
