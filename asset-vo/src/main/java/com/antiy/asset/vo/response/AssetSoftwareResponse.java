@@ -163,6 +163,9 @@ public class AssetSoftwareResponse extends BaseResponse {
      */
     private Long               buyDate;
 
+    @ApiModelProperty("协议")
+    private String             protocol;
+
     @ApiModelProperty(value = "代办任务信息")
     private WaitingTaskReponse waitingTaskReponse;
 
@@ -172,6 +175,14 @@ public class AssetSoftwareResponse extends BaseResponse {
 
     public void setWaitingTaskReponse(WaitingTaskReponse waitingTaskReponse) {
         this.waitingTaskReponse = waitingTaskReponse;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
     }
 
     public Long getServiceLife() {
