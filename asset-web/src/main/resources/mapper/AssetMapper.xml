@@ -925,7 +925,6 @@
         select * from (select
         a.id,
         a.area_id,
-        (select full_name from csos_user.sys_area where id = a.area_id) as area_name,
         a.asset_group,
         a.category_model,
         a.admittance_status,
