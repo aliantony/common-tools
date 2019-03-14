@@ -28,7 +28,6 @@
         <result column="install_type" property="installType"/>
         <result column="serial" property="serial"/>
         <result column="area_id" property="areaId"/>
-        <result column="area_name" property="areaName"/>
         <result column="category_model" property="categoryModel"/>
         <result column="manufacturer" property="manufacturer"/>
         <result column="asset_status" property="assetStatus"/>
@@ -64,7 +63,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_group, number, name, ethernet_port, serial_port, install_type, serial, area_id,area_name, category_model, manufacturer, asset_status, admittance_status, operation_system, system_bit, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, contact_tel, email, asset_source, importance_degree, describle, parent_id, tags, first_enter_nett, is_innet, service_life, buy_date, warranty, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_group, number, name, ethernet_port, serial_port, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, system_bit, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, contact_tel, email, asset_source, importance_degree, describle, parent_id, tags, first_enter_nett, is_innet, service_life, buy_date, warranty, gmt_create, gmt_modified, memo, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -612,6 +611,8 @@
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
+
+
         <if test=" areaIds != null and ids == null">
             and area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
@@ -623,8 +624,16 @@
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
                 #{item}
             </foreach>
-
-            or id in
+            <choose>
+                <!--enterControl 为true表示从工作台进入-->
+                <when test="enterControl">
+                  and
+                </when>
+                <otherwise>
+                    or
+                </otherwise>
+            </choose>
+             id in
             <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
                 #{item}
             </foreach>
@@ -925,7 +934,6 @@
         select * from (select
         a.id,
         a.area_id,
-        (select full_name from csos_user.sys_area where id = a.area_id) as area_name,
         a.asset_group,
         a.category_model,
         a.admittance_status,

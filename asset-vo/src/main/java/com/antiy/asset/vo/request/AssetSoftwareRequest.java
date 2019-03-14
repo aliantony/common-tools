@@ -1,16 +1,18 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.Arrays;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Arrays;
+
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -80,11 +82,13 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 上传的软件名称
      */
     @ApiModelProperty(value = "上传的软件名称")
+    @NotBlank(message = "上次的软件名称不能为空")
     private String                      uploadSoftwareName;
     /**
      * 安装包路径
      */
     @ApiModelProperty(value = "安装包路径")
+    @NotBlank(message = "安装包路径不能为空")
     private String                      path;
     /**
      * 版本
