@@ -1,18 +1,16 @@
 package com.antiy.asset.vo.request;
 
-import java.util.Arrays;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.Arrays;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -44,6 +42,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * MD5/SHA
      */
     @ApiModelProperty("MD5/SHA")
+    @Size(message = "MD5/SHA不超过64位", max = 64)
     private String                      md5Code;
     /**
      * 主键
@@ -60,6 +59,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 操作系统(WINDOWS7-32-64,WINDOWS8-64)
      */
     @ApiModelProperty(value = "操作系统")
+    @Size(message = "操作系统不能超过32位", max = 32)
     @NotBlank(message = "操作系统不能为空")
     private String                      operationSystem;
     /**
@@ -96,6 +96,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 厂商
      */
     @ApiModelProperty(value = "厂商")
+    @Size(message = "资产厂商不能超过32位", max = 32)
     private String                      manufacturer;
     /**
      * 软件描述
@@ -108,6 +109,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 序列号
      */
     @ApiModelProperty(value = "序列号")
+    @Size(message = "资产序列号不能超过32位", max = 32)
     private String                      serial;
 
     /**
