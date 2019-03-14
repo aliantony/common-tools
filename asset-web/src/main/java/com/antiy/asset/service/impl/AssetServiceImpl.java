@@ -1,31 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -49,6 +23,31 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -150,8 +149,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     AssetOuterRequest assetOuterRequestToChangeRecord = new AssetOuterRequest();
                     String aid;
                     if (requestAsset != null) {
-                        String number = requestAsset.getNumber();
-                        ParamterExceptionUtils.isTrue(!CheckRepeat(number), "编号重复");
+                        if (StringUtils.isNotBlank (requestAsset.getNumber())){
+
+                            ParamterExceptionUtils.isTrue(!CheckRepeat(requestAsset.getNumber()), "编号重复");
+                        }
 
                         String name = requestAsset.getName();
                         ParamterExceptionUtils.isTrue(!CheckRepeatName(name), "资产名称重复");
@@ -366,9 +367,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // 保存其他资产
                         AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest();
 
-                        String number = assetOthersRequest.getNumber();
+                        if (StringUtils.isNotBlank (assetOthersRequest.getNumber())){
 
-                        ParamterExceptionUtils.isTrue(!CheckRepeat(number), "编号重复");
+                            ParamterExceptionUtils.isTrue(!CheckRepeat(assetOthersRequest.getNumber()), "编号重复");
+                        }
+
 
                         String name = assetOthersRequest.getName();
 
@@ -433,8 +436,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     logger.error("录入失败", e);
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
-                    e.printStackTrace();
                     logger.error("录入失败", e);
+                    BusinessExceptionUtils.isTrue (!e.getMessage().equals("资产组名称获取失败"),"资产组名称获取失败");
                 }
                 return 0;
             }
@@ -1372,7 +1375,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetGroup.stream().forEach(assetGroupRequest -> {
                             try {
                                 String assetGroupName = assetGroupDao
-                                    .getById(DataTypeUtils.stringToInteger(assetGroupRequest.getId())).getName();
+                                    .getById(assetGroupRequest.getId()).getName();
                                 asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
                                     stringBuilder.length() - 1));
                             } catch (Exception e) {
@@ -1787,7 +1790,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int success = 0;
         int repeat = 0;
         int error = 0;
-        int a=1;
+        int a=0;
         String user = null;
         StringBuilder builder = new StringBuilder();
         List<ComputeDeviceEntity> dataList = result.getDataList();
@@ -1798,34 +1801,47 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
-                builder.append("第").append(a).append("行").append(entity.getOrderNumber()).append("资产名称为空");
-                continue;
-            }
-            if (StringUtils.isBlank(entity.getUser())) {
-                error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("使用者为空");
+                a++;
+                builder.append("第").append(a).append("行").append("资产名称为空");
                 continue;
             }
 
-            if (StringUtils.isBlank(entity.getNumber())) {
-                error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("资产编号为空");
-                continue;
-            }
-
-            if (CheckRepeat(entity.getNumber())) {
+            if (CheckRepeatName (entity.getName())) {
                 repeat++;
-                builder.append("序号").append(entity.getOrderNumber()).append("资产编号重复");
+                a++;
+                builder.append("第").append(a).append("行").append("资产名称重复");
+                continue;
+            }
+
+            if (StringUtils.isBlank(entity.getUser())) {
+                error++;
+                a++;
+                builder.append("序号").append(a).append("行").append("使用者为空");
+                continue;
+            }
+//
+//            if (StringUtils.isBlank(entity.getNumber())) {
+//                error++;
+//                builder.append("序号").append(a).append("行").append("资产编号为空");
+//                continue;
+//            }
+
+            if (StringUtils.isNotBlank (entity.getNumber())&&CheckRepeat(entity.getNumber())) {
+                repeat++;
+                a++;
+                builder.append("序号").append(a).append("行").append("资产编号重复");
                 continue;
             }
             if (StringUtils.isBlank(entity.getUser())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("使用者为空");
+                a++;
+                builder.append("序号").append(a).append("行").append("使用者为空");
                 continue;
             }
             if ("".equals(CheckUser(entity.getUser()))) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
+                a++;
+                builder.append("序号").append(a).append("行").append("没有此使用者");
                 continue;
             }
 
@@ -1881,7 +1897,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMemoryDao.insertBatch(assetMemoryList);
             }
             // else {
-            // builder.append("序号").append(entity.getOrderNumber()).append ("没有添加内存：内存品牌，内存容量，内存主频，内存数量>0")
+            // builder.append("序号").append(a).append("行").append ("没有添加内存：内存品牌，内存容量，内存主频，内存数量>0")
             // }
 
             if (StringUtils.isNotBlank(entity.getHardDiskBrand()) && !Objects.isNull(entity.getHardDisCapacityl())
@@ -2036,6 +2052,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int success = 0;
         int repeat = 0;
         int error = 0;
+        int a = 0;
         StringBuilder builder = new StringBuilder();
         List<NetworkDeviceEntity> entities = result.getDataList();
         if (entities.size ()==0){
@@ -2044,30 +2061,37 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         for (NetworkDeviceEntity networkDeviceEntity : entities) {
             if (StringUtils.isBlank(networkDeviceEntity.getName())) {
                 error++;
-                builder.append("序号").append(networkDeviceEntity.getOrderNumber()).append("资产名称为空");
+                a++;
+                builder.append("第").append(a).append("行").append("资产名称为空");
                 continue;
             }
-            if (StringUtils.isBlank(networkDeviceEntity.getNumber())) {
-                error++;
-                builder.append("序号").append(networkDeviceEntity.getOrderNumber()).append("资产编号为空");
+            if (CheckRepeatName (networkDeviceEntity.getName())) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("资产名称重复");
                 continue;
             }
 
-            if (CheckRepeat(networkDeviceEntity.getNumber())) {
+
+            if (StringUtils.isNotBlank(networkDeviceEntity.getNumber())&&CheckRepeat(networkDeviceEntity.getNumber())) {
                 repeat++;
-                builder.append("序号").append(networkDeviceEntity.getOrderNumber()).append("资产编号重复");
+                a++;
+                builder.append("第").append(a).append("行").append("资产编号重复");
                 continue;
             }
+
 
             if (StringUtils.isBlank(networkDeviceEntity.getUser())) {
                 error++;
-                builder.append("序号").append(networkDeviceEntity.getOrderNumber()).append("使用者为空");
+                a++;
+                builder.append("第").append(a).append("行").append("使用者为空");
                 continue;
             }
 
             if ("".equals(CheckUser(networkDeviceEntity.getUser()))) {
                 error++;
-                builder.append("序号").append(networkDeviceEntity.getOrderNumber()).append("没有此使用者");
+                a++;
+                builder.append("第").append(a).append("行").append("没有此使用者");
                 continue;
             }
 
@@ -2142,7 +2166,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getName());
             manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
             activityClient.manualStartProcess(manualStartActivityRequest);
-
+            a++;
             success++;
         }
 
@@ -2178,32 +2202,39 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int success = 0;
         int repeat = 0;
         int error = 0;
+        int a = 0;
         for (SafetyEquipmentEntiy entity : resultDataList) {
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("资产名称为空");
+                a++;
+                builder.append("第").append(a).append("行").append("资产名称为空");
                 continue;
             }
-            if (StringUtils.isBlank(entity.getNumber())) {
-                error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("资产编号为空");
+            if (CheckRepeatName (entity.getName())) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("资产名称重复");
                 continue;
             }
 
-            if (CheckRepeat(entity.getNumber())) {
+            if (StringUtils.isNotBlank (entity.getNumber())&&CheckRepeat(entity.getNumber())) {
                 repeat++;
-                builder.append("序号").append(entity.getOrderNumber()).append("资产编号重复");
+                a++;
+                builder.append("第").append(a).append("行").append("资产编号重复");
                 continue;
             }
+
 
             if (StringUtils.isBlank(entity.getUser())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("使用者为空");
+                a++;
+                builder.append("第").append(a).append("行").append("使用者为空");
                 continue;
             }
             if ("".equals(CheckUser(entity.getUser()))) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
+                a++;
+                builder.append("第").append(a).append("行").append("没有此使用者");
                 continue;
             }
 
@@ -2266,6 +2297,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
             activityClient.manualStartProcess(manualStartActivityRequest);
             success++;
+            a++;
         }
 
         String res = "导入成功" + success + "条";
@@ -2298,33 +2330,40 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int success = 0;
         int repeat = 0;
         int error = 0;
+        int a = 0;
         StringBuilder builder = new StringBuilder();
         for (StorageDeviceEntity entity : resultDataList) {
 
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("资产名称为空");
+                a++;
+                builder.append("第").append(a).append("行").append("资产名称为空");
                 continue;
             }
-            if (StringUtils.isBlank(entity.getNumber())) {
-                error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("资产编号为空");
+            if (CheckRepeatName (entity.getName())) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("资产名称重复");
                 continue;
             }
 
-            if (CheckRepeat(entity.getName())) {
+            if (StringUtils.isNotBlank(entity.getNumber())&&CheckRepeat(entity.getNumber())) {
                 repeat++;
-                builder.append("序号").append(entity.getOrderNumber()).append("资产编号重复");
+                a++;
+                builder.append("第").append(a).append("行").append("资产编号重复");
                 continue;
             }
+
             if (StringUtils.isBlank(entity.getUser())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("使用者为空");
+                a++;
+                builder.append("第").append(a).append("行").append("使用者为空");
                 continue;
             }
             if ("".equals(CheckUser(entity.getUser()))) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
+                a++;
+                builder.append("第").append(a).append("行").append("没有此使用者");
                 continue;
             }
 
@@ -2390,6 +2429,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
             activityClient.manualStartProcess(manualStartActivityRequest);
             success++;
+            a++;
         }
 
         String res = "导入成功" + success + "条";
@@ -2419,32 +2459,39 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int success = 0;
         int repeat = 0;
         int error = 0;
+        int a = 0;
         StringBuilder builder = new StringBuilder();
         for (OtherDeviceEntity entity : resultDataList) {
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("资产名称为空");
+                a++;
+                builder.append("第").append(a).append("行").append("资产名称为空");
                 continue;
             }
-            if (StringUtils.isBlank(entity.getNumber())) {
-                error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("资产编号为空");
+            if (CheckRepeatName (entity.getName())) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("资产名称重复");
                 continue;
             }
 
-            if (CheckRepeat(entity.getNumber())) {
+            if (StringUtils.isNotBlank(entity.getNumber())&&CheckRepeat(entity.getNumber())) {
                 repeat++;
-                builder.append("序号").append(entity.getOrderNumber()).append("资产编号重复");
+                a++;
+                builder.append("第").append(a).append("行").append("资产编号重复");
                 continue;
             }
+
             if (StringUtils.isBlank(entity.getUser())) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("使用者为空");
+                a++;
+                builder.append("第").append(a).append("行").append("使用者为空");
                 continue;
             }
             if ("".equals(CheckUser(entity.getUser()))) {
                 error++;
-                builder.append("序号").append(entity.getOrderNumber()).append("没有此使用者");
+                a++;
+                builder.append("第").append(a).append("行").append("没有此使用者");
                 continue;
             }
 
@@ -2496,6 +2543,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
             activityClient.manualStartProcess(manualStartActivityRequest);
             success++;
+            a++;
         }
 
         String res = "导入成功" + success + "条";

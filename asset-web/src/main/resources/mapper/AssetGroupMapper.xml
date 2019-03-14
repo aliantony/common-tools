@@ -274,7 +274,7 @@
     <select id="removeDuplicate" resultType="boolean"
             parameterType="string">
         select
-          count(1)
+        count(1)
         from
         <include refid="Table_Name"></include>
         where name = #{name} and status = 1

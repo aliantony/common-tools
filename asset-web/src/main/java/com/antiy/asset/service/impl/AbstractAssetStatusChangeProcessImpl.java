@@ -7,9 +7,13 @@ import javax.annotation.Resource;
 import org.springframework.web.util.HtmlUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetOperationRecordDao;
+import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.SchemeDao;
+import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
+import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.WorkOrderClient;
@@ -20,13 +24,16 @@ import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.asset.vo.request.SchemeRequest;
+import com.antiy.asset.vo.request.WorkOrderVO;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
  * @auther: zhangbing
@@ -37,9 +44,12 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
 
     @Resource
     private AssetOperationRecordDao              assetOperationRecordDao;
-
     @Resource
     private SchemeDao                            schemeDao;
+    @Resource
+    private AssetDao                             assetDao;
+    @Resource
+    AssetSoftwareDao                             assetSoftwareDao;
     @Resource
     private BaseConverter<SchemeRequest, Scheme> schemeRequestToSchemeConverter;
 
@@ -110,14 +120,50 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         }
 
         // 如果流程引擎为空,直接返回错误信息
-         if (null == actionResponse
-         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-         return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
-         }
+        if (null == actionResponse
+            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+        }
 
         // 4.调用工单系统(选择自己不发工单，选择它人发起工单)
         if (null != assetStatusReqeust.getWorkOrderVO()
-            && !LoginUserUtil.getLoginUser().getId().equals(assetStatusReqeust.getSchemeRequest().getPutintoUserId())) {
+                && !LoginUserUtil.getLoginUser().getId().toString().equals(assetStatusReqeust.getSchemeRequest().getPutintoUserId())) {
+            // 参数校验
+            WorkOrderVO workOrderVO = assetStatusReqeust.getWorkOrderVO();
+            workOrderVO.setOrderSource(1);
+            if (assetStatusReqeust.getSoftware()) {
+                SoftwareStatusEnum softwareStatusEnum = this.getNextSoftwareStatus(assetStatusReqeust);
+                if (SoftwareStatusEnum.WAIT_RETIRE.getCode().equals(softwareStatusEnum.getCode())) {
+                    workOrderVO.setName(AssetOperationTableEnum.SOFTWARE.getMsg()
+                            + SoftwareStatusEnum.WAIT_ANALYZE_RETIRE.getMsg() + "工单");
+                    workOrderVO.setOrderType(WorkOrderTypeEnum.SOFTWARE_DECOMMISSIONING_ANALYSIS.getCode());
+                }
+            } else {
+                // 硬件
+                AssetStatusEnum assetStatusEnum = this.getNextAssetStatus(assetStatusReqeust);
+                if (AssetStatusEnum.WAIT_VALIDATE.getCode().equals(assetStatusEnum.getCode())) {
+                    workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg());
+                    workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_VERIFY.getCode());
+                } else if (AssetStatusEnum.WAIT_RETIRE.getCode().equals(assetStatusEnum.getCode())) {
+                    workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg());
+                    workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_BE_DECOMMISSIONED.getCode());
+                } else if (AssetStatusEnum.WAIT_CHECK.getCode().equals(assetStatusEnum.getCode())) {
+                    workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg());
+                    workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_BE_CHECKED.getCode());
+                } else {
+                    workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg());
+                    workOrderVO.setOrderType(WorkOrderTypeEnum.OTHER.getCode());
+                }
+
+            }
+            ParamterExceptionUtils.isNull(workOrderVO.getName(), "工单名称不能为空");
+            ParamterExceptionUtils.isNull(workOrderVO.getOrderSource(), "工单来源不能为空");
+            ParamterExceptionUtils.isNull(workOrderVO.getOrderType(), "工单类型不能为空");
+            ParamterExceptionUtils.isNull(workOrderVO.getWorkLevel(), "工单级别不能为空");
+            ParamterExceptionUtils.isNull(workOrderVO.getContent(), "工单内容不能为空");
+            ParamterExceptionUtils.isNull(workOrderVO.getExecuteUserId(), "执行人不能为空");
+            ParamterExceptionUtils.isNull(workOrderVO.getStartTime(), "工单开始时间不能为空");
+            ParamterExceptionUtils.isNull(workOrderVO.getEndTime(), "工单结束时间不能为空");
             actionResponse = workOrderClient.createWorkOrder(assetStatusReqeust.getWorkOrderVO());
             // 如果流程引擎为空,直接返回错误信息
             if (null == actionResponse
@@ -170,21 +216,65 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      */
     private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) {
         Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
-        if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0){
+        if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
             JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
         }
         scheme.setGmtCreate(System.currentTimeMillis());
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         if (null != assetStatusReqeust.getWorkOrderVO()) {
+            ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getStartTime(), "工单开始时间不能为空");
+            ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getEndTime(), "工单结束时间不能为空");
+            ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getWorkLevel(), "工单级别不能为空");
+            ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getExecuteUserId(), "执行人不能为空");
             scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
             scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));
             scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
-            if (scheme.getPutintoUserId() == null){
-                scheme.setPutintoUserId(DataTypeUtils.stringToInteger(aesEncoder.decode(
-                        assetStatusReqeust.getWorkOrderVO().getExecuteUserId(), LoginUserUtil.getLoginUser().getUsername())));
+            if (scheme.getPutintoUserId() == null) {
+                scheme.setPutintoUserId(DataTypeUtils
+                    .stringToInteger(aesEncoder.decode(assetStatusReqeust.getWorkOrderVO().getExecuteUserId(),
+                        LoginUserUtil.getLoginUser().getUsername())));
             }
         }
         scheme.setAssetId(assetStatusReqeust.getAssetId());
         return scheme;
+    }
+
+    protected SoftwareStatusEnum getNextSoftwareStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
+        SoftwareStatusEnum softwareStatusEnum;
+        if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
+            .equals(AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE.getCode())) {
+            softwareStatusEnum = SoftwareStatusJumpEnum.getNextStatus(assetStatusReqeust.getSoftwareStatusEnum(),
+                assetStatusReqeust.getAgree());
+        } else if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
+            .equals(AssetFlowCategoryEnum.SOFTWARE_IMPL_UNINSTALL.getCode())) {
+            softwareStatusEnum = SoftwareStatusJumpEnum
+                .getNextStatusUninstall(assetStatusReqeust.getSoftwareStatusEnum(), assetStatusReqeust.getAgree());
+        } else {
+            softwareStatusEnum = SoftwareStatusJumpEnum.getNextStatus(assetStatusReqeust.getSoftwareStatusEnum(),
+                assetStatusReqeust.getAgree());
+        }
+
+        if (softwareStatusEnum == null) {
+            throw new BusinessException("软件资产跃迁状态获取失败");
+        }
+
+        // 资产状态判断
+        AssetSoftware software = assetSoftwareDao.getById(assetStatusReqeust.getAssetId());
+        if (softwareStatusEnum.getCode().equals(software.getSoftwareStatus())) {
+            throw new BusinessException("请勿重复提交，当前资产状态是：" + assetStatusReqeust.getSoftwareStatusEnum().getMsg());
+        }
+
+        return softwareStatusEnum;
+    }
+
+    protected AssetStatusEnum getNextAssetStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
+        AssetStatusEnum assetStatusEnum = AssetStatusJumpEnum.getNextStatus(assetStatusReqeust.getAssetStatus(),
+            assetStatusReqeust.getAgree());
+        // 资产状态判断
+        Asset asesetStatus = assetDao.getById(assetStatusReqeust.getAssetId());
+        if (assetStatusEnum.getCode().equals(asesetStatus.getAssetStatus())) {
+            throw new BusinessException("请勿重复提交，当前资产状态是：" + assetStatusReqeust.getAssetStatus().getMsg());
+        }
+        return assetStatusEnum;
     }
 }

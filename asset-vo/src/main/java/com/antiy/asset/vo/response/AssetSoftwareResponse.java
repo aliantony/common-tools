@@ -158,6 +158,10 @@ public class AssetSoftwareResponse extends BaseResponse {
      * 到期时间
      */
     private Long               serviceLife;
+    /**
+     * 购买日期
+     */
+    private Long               buyDate;
 
     @ApiModelProperty(value = "代办任务信息")
     private WaitingTaskReponse waitingTaskReponse;
@@ -394,4 +398,11 @@ public class AssetSoftwareResponse extends BaseResponse {
         this.status = status;
     }
 
+    public Long getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(Long buyDate) {
+        this.buyDate = buyDate;
+    }
 }

@@ -16,12 +16,10 @@ import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
-import com.antiy.asset.vo.enums.SoftwareStatusJumpEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
@@ -37,38 +35,14 @@ public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangePr
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
-        SoftwareStatusEnum softwareStatusEnum;
-
-        if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
-                .equals(AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE.getCode())) {
-            softwareStatusEnum = SoftwareStatusJumpEnum.getNextStatus(assetStatusReqeust.getSoftwareStatusEnum(),
-                    assetStatusReqeust.getAgree());
-        } else if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
-                .equals(AssetFlowCategoryEnum.SOFTWARE_IMPL_UNINSTALL.getCode())) {
-            softwareStatusEnum = SoftwareStatusJumpEnum
-                    .getNextStatusUninstall(assetStatusReqeust.getSoftwareStatusEnum(), assetStatusReqeust.getAgree());
-        } else {
-            softwareStatusEnum = SoftwareStatusJumpEnum.getNextStatus(assetStatusReqeust.getSoftwareStatusEnum(),
-                    assetStatusReqeust.getAgree());
-        }
-
-        if (softwareStatusEnum == null) {
-            throw new BusinessException("软件资产跃迁状态获取失败");
-        }
-
-        //资产状态判断
-        AssetSoftware software = assetSoftwareDao.getById(assetStatusReqeust.getAssetId());
-        if (softwareStatusEnum.getCode().equals(software.getSoftwareStatus())){
-            throw new BusinessException("请勿重复提交，当前资产状态是：" + assetStatusReqeust.getSoftwareStatusEnum().getMsg());
-        }
+        //获取软件状态
+        SoftwareStatusEnum softwareStatusEnum = super.getNextSoftwareStatus(assetStatusReqeust);
 
         ActionResponse actionResponse = super.changeStatus(assetStatusReqeust);
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             return actionResponse;
         }
-
-
 
         // 软件表详情操作
         AssetSoftware assetSoftware = new AssetSoftware();

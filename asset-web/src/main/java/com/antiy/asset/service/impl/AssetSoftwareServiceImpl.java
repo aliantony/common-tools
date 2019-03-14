@@ -473,7 +473,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     public AssetSoftwareDetailResponse querySoftWareDetail(SoftwareQuery softwareQuery) throws Exception {
 
         // 1 获取软件资产详情
-        AssetSoftware assetSoftware = this.getById(DataTypeUtils.stringToInteger(softwareQuery.getPrimaryKey()));
+        AssetSoftware assetSoftware = this.getById(softwareQuery.getPrimaryKey());
         AssetSoftwareDetailResponse assetSoftwareDetailResponse = assetSoftwareDetailConverter.convert(assetSoftware,
             AssetSoftwareDetailResponse.class);
 
@@ -558,7 +558,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         int success = 0;
         int repeat = 0;
         int error = 0;
-        int a=1;
+        int a=0;
         StringBuilder builder = new StringBuilder();
         for (AssetSoftwareEntity entity : resultDataList) {
             if (StringUtils.isBlank(entity.getName())) {

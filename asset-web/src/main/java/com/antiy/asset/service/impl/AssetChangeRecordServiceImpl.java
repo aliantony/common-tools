@@ -155,12 +155,13 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
     }
 
     @Override
-    public List<Map<String, Object>> queryUniformChangeInfo(Integer businessId, Integer categoryModelId) throws Exception {
-        ParamterExceptionUtils.isNull(businessId,"业务ID不能为空");
-        ParamterExceptionUtils.isNull(categoryModelId,"品类型号ID不能为空");
-        int  secondNodeId = this.getParentCategory(categoryModelDao.getById(categoryModelId)).getId();
+    public List<Map<String, Object>> queryUniformChangeInfo(Integer businessId,
+                                                            Integer categoryModelId) throws Exception {
+        ParamterExceptionUtils.isNull(businessId, "业务ID不能为空");
+        ParamterExceptionUtils.isNull(categoryModelId, "品类型号ID不能为空");
+        int secondNodeId = this.getParentCategory(categoryModelDao.getById(categoryModelId)).getId();
         List<Map<String, Object>> mapList;
-        switch (secondNodeId){
+        switch (secondNodeId) {
             case 4:
                 mapList = this.queryComputerEquipmentById(businessId);
                 break;
@@ -176,8 +177,8 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
             case 8:
                 mapList = this.queryOtherEquipmentById(businessId);
                 break;
-                default:
-                    return null;
+            default:
+                return null;
         }
         return mapList;
     }
@@ -189,6 +190,12 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
         return computerEquipmentFieldCompare.compareCommonBusinessInfo(businessId);
     }
 
+    /**
+     * 获取二级分类品类型号信息
+     *
+     * @param categoryModel
+     * @return
+     */
     private AssetCategoryModel getParentCategory(AssetCategoryModel categoryModel) {
 
         List<AssetCategoryModel> allCategory = categoryModelDao.findAllCategory();

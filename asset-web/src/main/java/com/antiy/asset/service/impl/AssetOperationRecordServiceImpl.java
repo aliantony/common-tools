@@ -177,8 +177,8 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
                     AssetStatusBarResponse assetStatusBarResponse = new AssetStatusBarResponse();
                     if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0){
                         JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+                        assetStatusBarResponse.setFileInfo(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
                     }
-                    assetStatusBarResponse.setFileInfo(scheme.getFileInfo());
                     assetStatusBarResponse.setMemo(scheme.getMemo());
                     fileInfoList.add(assetStatusBarResponse);
                 }
