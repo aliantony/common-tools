@@ -1790,7 +1790,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int success = 0;
         int repeat = 0;
         int error = 0;
-        int a=1;
+        int a=0;
         String user = null;
         StringBuilder builder = new StringBuilder();
         List<ComputeDeviceEntity> dataList = result.getDataList();
@@ -1826,7 +1826,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 //                continue;
 //            }
 
-            if (StringUtils.isBlank(entity.getNumber())&&CheckRepeat(entity.getNumber())) {
+            if (StringUtils.isNotBlank (entity.getNumber())&&CheckRepeat(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("序号").append(a).append("行").append("资产编号重复");
@@ -2052,7 +2052,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int success = 0;
         int repeat = 0;
         int error = 0;
-        int a = 1;
+        int a = 0;
         StringBuilder builder = new StringBuilder();
         List<NetworkDeviceEntity> entities = result.getDataList();
         if (entities.size ()==0){
@@ -2073,7 +2073,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
 
-            if (StringUtils.isBlank(networkDeviceEntity.getNumber())&&CheckRepeat(networkDeviceEntity.getNumber())) {
+            if (StringUtils.isNotBlank(networkDeviceEntity.getNumber())&&CheckRepeat(networkDeviceEntity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复");
@@ -2202,7 +2202,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int success = 0;
         int repeat = 0;
         int error = 0;
-        int a = 1;
+        int a = 0;
         for (SafetyEquipmentEntiy entity : resultDataList) {
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
@@ -2217,7 +2217,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (StringUtils.isBlank(entity.getNumber())&&CheckRepeat(entity.getNumber())) {
+            if (StringUtils.isNotBlank (entity.getNumber())&&CheckRepeat(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复");
@@ -2330,7 +2330,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int success = 0;
         int repeat = 0;
         int error = 0;
-        int a = 1;
+        int a = 0;
         StringBuilder builder = new StringBuilder();
         for (StorageDeviceEntity entity : resultDataList) {
 
@@ -2347,7 +2347,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (StringUtils.isBlank(entity.getNumber())&&CheckRepeat(entity.getNumber())) {
+            if (StringUtils.isNotBlank(entity.getNumber())&&CheckRepeat(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复");
@@ -2459,7 +2459,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int success = 0;
         int repeat = 0;
         int error = 0;
-        int a = 1;
+        int a = 0;
         StringBuilder builder = new StringBuilder();
         for (OtherDeviceEntity entity : resultDataList) {
             if (StringUtils.isBlank(entity.getName())) {
@@ -2475,7 +2475,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (StringUtils.isBlank(entity.getNumber())&&CheckRepeat(entity.getNumber())) {
+            if (StringUtils.isNotBlank(entity.getNumber())&&CheckRepeat(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复");
