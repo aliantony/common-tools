@@ -15,7 +15,10 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
@@ -23,7 +26,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
-import com.antiy.common.utils.DataTypeUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
@@ -134,6 +136,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         .get(AssetServiceImpl.class);
     @Resource
     private AesEncoder                                                         aesEncoder;
+    @Resource
+    private RedisUtil                                                          redisUtil;
     private static final int                                                   ALL_PAGE = -1;
 
     @Override
@@ -149,7 +153,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     AssetOuterRequest assetOuterRequestToChangeRecord = new AssetOuterRequest();
                     String aid;
                     if (requestAsset != null) {
-                        if (StringUtils.isNotBlank (requestAsset.getNumber())){
+                        if (StringUtils.isNotBlank(requestAsset.getNumber())) {
 
                             ParamterExceptionUtils.isTrue(!CheckRepeat(requestAsset.getNumber()), "编号重复");
                         }
@@ -367,11 +371,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // 保存其他资产
                         AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest();
 
-                        if (StringUtils.isNotBlank (assetOthersRequest.getNumber())){
+                        if (StringUtils.isNotBlank(assetOthersRequest.getNumber())) {
 
                             ParamterExceptionUtils.isTrue(!CheckRepeat(assetOthersRequest.getNumber()), "编号重复");
                         }
-
 
                         String name = assetOthersRequest.getName();
 
@@ -437,7 +440,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
-                    BusinessExceptionUtils.isTrue (!e.getMessage().equals("资产组名称获取失败"),"资产组名称获取失败");
+                    BusinessExceptionUtils.isTrue(!e.getMessage().equals("资产组名称获取失败"), "资产组名称获取失败");
                 }
                 return 0;
             }
@@ -573,6 +576,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setIds(processMap.keySet().toArray(new String[] {}));
         }
         List<Asset> asset = assetDao.findListAsset(query);
+        if (CollectionUtils.isNotEmpty(asset)) {
+            asset.stream().forEach(a -> {
+                try {
+                    String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                            DataTypeUtils.stringToInteger(a.getAreaId()));
+                    SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+                    a.setAreaName(sysArea.getFullName());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
         List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
         if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
             objects.forEach(object -> {
@@ -1374,8 +1389,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         StringBuilder stringBuilder = new StringBuilder();
                         assetGroup.stream().forEach(assetGroupRequest -> {
                             try {
-                                String assetGroupName = assetGroupDao
-                                    .getById(assetGroupRequest.getId()).getName();
+                                String assetGroupName = assetGroupDao.getById(assetGroupRequest.getId()).getName();
                                 asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
                                     stringBuilder.length() - 1));
                             } catch (Exception e) {
@@ -1784,17 +1798,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public String importPc(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<ComputeDeviceEntity> result = ExcelUtils.importExcelFromClient(ComputeDeviceEntity.class, file, 0,
             0);
-        if (Objects.isNull (result.getDataList ())){
-            return result.getMsg ();
+        if (Objects.isNull(result.getDataList())) {
+            return result.getMsg();
         }
         int success = 0;
         int repeat = 0;
         int error = 0;
-        int a=0;
+        int a = 0;
         String user = null;
         StringBuilder builder = new StringBuilder();
         List<ComputeDeviceEntity> dataList = result.getDataList();
-        if (dataList.size ()==0){
+        if (dataList.size() == 0) {
             return "上传失败，模板内无数据，请填写数据后再次上传";
         }
         for (ComputeDeviceEntity entity : dataList) {
@@ -1806,7 +1820,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatName (entity.getName())) {
+            if (CheckRepeatName(entity.getName())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产名称重复");
@@ -1819,14 +1833,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("序号").append(a).append("行").append("使用者为空");
                 continue;
             }
-//
-//            if (StringUtils.isBlank(entity.getNumber())) {
-//                error++;
-//                builder.append("序号").append(a).append("行").append("资产编号为空");
-//                continue;
-//            }
+            //
+            // if (StringUtils.isBlank(entity.getNumber())) {
+            // error++;
+            // builder.append("序号").append(a).append("行").append("资产编号为空");
+            // continue;
+            // }
 
-            if (StringUtils.isNotBlank (entity.getNumber())&&CheckRepeat(entity.getNumber())) {
+            if (StringUtils.isNotBlank(entity.getNumber()) && CheckRepeat(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("序号").append(a).append("行").append("资产编号重复");
@@ -2046,8 +2060,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public String importNet(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<NetworkDeviceEntity> result = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class, file, 0,
             0);
-        if (Objects.isNull (result.getDataList ())){
-            return result.getMsg ();
+        if (Objects.isNull(result.getDataList())) {
+            return result.getMsg();
         }
         int success = 0;
         int repeat = 0;
@@ -2055,7 +2069,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int a = 0;
         StringBuilder builder = new StringBuilder();
         List<NetworkDeviceEntity> entities = result.getDataList();
-        if (entities.size ()==0){
+        if (entities.size() == 0) {
             return "上传失败，模板内无数据，请填写数据后再次上传";
         }
         for (NetworkDeviceEntity networkDeviceEntity : entities) {
@@ -2065,21 +2079,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产名称为空");
                 continue;
             }
-            if (CheckRepeatName (networkDeviceEntity.getName())) {
+            if (CheckRepeatName(networkDeviceEntity.getName())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产名称重复");
                 continue;
             }
 
-
-            if (StringUtils.isNotBlank(networkDeviceEntity.getNumber())&&CheckRepeat(networkDeviceEntity.getNumber())) {
+            if (StringUtils.isNotBlank(networkDeviceEntity.getNumber())
+                && CheckRepeat(networkDeviceEntity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复");
                 continue;
             }
-
 
             if (StringUtils.isBlank(networkDeviceEntity.getUser())) {
                 error++;
@@ -2192,11 +2205,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             0, 0);
 
         StringBuilder builder = new StringBuilder();
-        if (Objects.isNull (result.getDataList ())){
-            return result.getMsg ();
+        if (Objects.isNull(result.getDataList())) {
+            return result.getMsg();
         }
         List<SafetyEquipmentEntiy> resultDataList = result.getDataList();
-        if (resultDataList.size ()==0){
+        if (resultDataList.size() == 0) {
             return "上传失败，模板内无数据，请填写数据后再次上传";
         }
         int success = 0;
@@ -2210,20 +2223,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产名称为空");
                 continue;
             }
-            if (CheckRepeatName (entity.getName())) {
+            if (CheckRepeatName(entity.getName())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产名称重复");
                 continue;
             }
 
-            if (StringUtils.isNotBlank (entity.getNumber())&&CheckRepeat(entity.getNumber())) {
+            if (StringUtils.isNotBlank(entity.getNumber()) && CheckRepeat(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复");
                 continue;
             }
-
 
             if (StringUtils.isBlank(entity.getUser())) {
                 error++;
@@ -2320,11 +2332,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public String importStory(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<StorageDeviceEntity> result = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 0,
             0);
-        if (Objects.isNull (result.getDataList ())){
-            return result.getMsg ();
+        if (Objects.isNull(result.getDataList())) {
+            return result.getMsg();
         }
         List<StorageDeviceEntity> resultDataList = result.getDataList();
-        if (resultDataList.size ()==0){
+        if (resultDataList.size() == 0) {
             return "上传失败，模板内无数据，请填写数据后再次上传";
         }
         int success = 0;
@@ -2340,14 +2352,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产名称为空");
                 continue;
             }
-            if (CheckRepeatName (entity.getName())) {
+            if (CheckRepeatName(entity.getName())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产名称重复");
                 continue;
             }
 
-            if (StringUtils.isNotBlank(entity.getNumber())&&CheckRepeat(entity.getNumber())) {
+            if (StringUtils.isNotBlank(entity.getNumber()) && CheckRepeat(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复");
@@ -2449,11 +2461,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public String importOhters(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 0, 0);
-        if (Objects.isNull (result.getDataList ())){
-            return result.getMsg ();
+        if (Objects.isNull(result.getDataList())) {
+            return result.getMsg();
         }
         List<OtherDeviceEntity> resultDataList = result.getDataList();
-        if (resultDataList.size ()==0){
+        if (resultDataList.size() == 0) {
             return "上传失败，模板内无数据，请填写数据后再次上传";
         }
         int success = 0;
@@ -2468,14 +2480,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产名称为空");
                 continue;
             }
-            if (CheckRepeatName (entity.getName())) {
+            if (CheckRepeatName(entity.getName())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产名称重复");
                 continue;
             }
 
-            if (StringUtils.isNotBlank(entity.getNumber())&&CheckRepeat(entity.getNumber())) {
+            if (StringUtils.isNotBlank(entity.getNumber()) && CheckRepeat(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复");
