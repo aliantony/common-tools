@@ -28,7 +28,6 @@
         <result column="install_type" property="installType"/>
         <result column="serial" property="serial"/>
         <result column="area_id" property="areaId"/>
-        <result column="area_name" property="areaName"/>
         <result column="category_model" property="categoryModel"/>
         <result column="manufacturer" property="manufacturer"/>
         <result column="asset_status" property="assetStatus"/>
