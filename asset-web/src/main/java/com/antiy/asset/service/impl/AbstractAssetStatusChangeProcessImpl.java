@@ -142,16 +142,16 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                 // 硬件
                 AssetStatusEnum assetStatusEnum = this.getNextAssetStatus(assetStatusReqeust);
                 if (AssetStatusEnum.WAIT_VALIDATE.getCode().equals(assetStatusEnum.getCode())) {
-                    workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg() + "工单");
+                    workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg());
                     workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_VERIFY.getCode());
                 } else if (AssetStatusEnum.WAIT_RETIRE.getCode().equals(assetStatusEnum.getCode())) {
-                    workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg() + "工单");
+                    workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg());
                     workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_BE_DECOMMISSIONED.getCode());
                 } else if (AssetStatusEnum.WAIT_CHECK.getCode().equals(assetStatusEnum.getCode())) {
-                    workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg() + "工单");
+                    workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg());
                     workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_BE_CHECKED.getCode());
                 } else {
-                    workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + "工单");
+                    workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg());
                     workOrderVO.setOrderType(WorkOrderTypeEnum.OTHER.getCode());
                 }
 
