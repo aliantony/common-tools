@@ -177,9 +177,13 @@
     </sql>
 
     <sql id="Where_Column_List">
+        <if test=" exportName != null">
+            AND  name =#{exportName}
+        </if>
         <if test=" name != null">
             AND name like concat('%',#{name },'%')
         </if>
+
         <if test=" departmentId != null">
             AND department_id = #{departmentId }
         </if>
@@ -408,9 +412,7 @@
         <if test=" name != null">
             AND a.name like concat('%',replace(replace(#{name },'%','\%'),'_','\_'),'%')
         </if>
-        <if test=" exportName != null">
-            AND a.name =#{exportName}
-        </if>
+
         <if test=" email != null">
             AND a.email  like concat('%',  replace(replace(#{email },'%','\%'),'_','\_'),'%')
         </if>

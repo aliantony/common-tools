@@ -547,7 +547,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private String CheckUser(String user) throws Exception {
         AssetUserQuery assetUserQuery = new AssetUserQuery();
         assetUserQuery.setExportName(user);
-        List<AssetUser> assetUsers = assetUserDao.queryUserList(assetUserQuery);
+        List<AssetUser> assetUsers = assetUserDao.findListAssetUser(assetUserQuery);
         if (CollectionUtils.isNotEmpty(assetUsers)) {
             return assetUsers.get(0).getStringId();
         }
