@@ -16,51 +16,51 @@ public class NetworkDeviceEntity {
      * 资产编号
      */
     @ExcelField(value = "number", align = 1, title = "资产编号")
-    private String                  number;
+    private String  number;
     /**
      * 资产名称
      */
     @ExcelField(value = "name", align = 1, title = "名称")
-    private String name;
+    private String  name;
     /**
      * 厂商
      */
     @ExcelField(value = "manufacturer", align = 1, title = "厂商")
-    private String manufacturer;
+    private String  manufacturer;
     /**
      * 序列号
      */
     @ExcelField(value = "serial", align = 1, title = "序列号")
-    private String serial;
+    private String  serial;
 
     /**
      * 使用者
      */
     @ExcelField(value = "user", align = 1, title = "使用者")
-    private String user;
+    private String  user;
 
     /**
      * 联系电话
      */
     @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0)
-    private String telephone;
+    private String  telephone;
 
     /**
      * 邮箱
      */
     @ExcelField(value = "email", align = 1, title = "邮箱", type = 0)
-    private String email;
+    private String  email;
 
     /**
      * 物理位置
      */
     @ExcelField(value = "location", align = 1, title = "物理位置")
-    private String location;
+    private String  location;
     /**
      * 机房位置
      */
     @ExcelField(value = "house_location", align = 1, title = "机房位置")
-    private String houseLocation;
+    private String  houseLocation;
     /**
      * 端口数目
      */
@@ -75,13 +75,13 @@ public class NetworkDeviceEntity {
      * IOS
      */
     @ExcelField(value = "IOS", align = 1, title = "IOS")
-    private String ios;
+    private String  ios;
 
     /**
      * 固件版本
      */
     @ExcelField(value = "firmware_version", align = 1, title = "固件版本")
-    private String firmwareVersion;
+    private String  firmwareVersion;
     /**
      * 是否无线
      */
@@ -91,22 +91,22 @@ public class NetworkDeviceEntity {
      * 内网IP
      */
     @ExcelField(value = "inner_ip", align = 1, title = "内网IP")
-    private String innerIp;
+    private String  innerIp;
     /**
      * 外网IP
      */
     @ExcelField(value = "outer_ip", align = 1, title = "外网IP")
-    private String outerIp;
+    private String  outerIp;
     /**
      * mac地址
      */
     @ExcelField(value = "mac", align = 1, title = "mac地址")
-    private String mac;
+    private String  mac;
     /**
      * 子网掩码
      */
     @ExcelField(value = "subnet_mask", align = 1, title = "子网掩码")
-    private String subnetMask;
+    private String  subnetMask;
     /**
      * 预计带宽
      */
@@ -129,45 +129,45 @@ public class NetworkDeviceEntity {
      * cpu版本
      */
     @ExcelField(value = "cpu_version", align = 1, title = "cpu版本")
-    private String cpuVersion;
+    private String  cpuVersion;
 
     /**
      * dram大小
      */
     @ExcelField(value = "dram_size", align = 1, title = "dram大小")
-    private Float dramSize;
+    private Float   dramSize;
 
     /**
      * flash大小
      */
     @ExcelField(value = "flash_size", align = 1, title = "flash大小")
-    private Float flashSize;
+    private Float   flashSize;
 
     /**
      * NCRM大小
      */
     @ExcelField(value = "ncrm_size", align = 1, title = "NCRM大小")
-    private Float ncrmSize;
+    private Float   ncrmSize;
     /**
      * 购买日期
      */
     @ExcelField(value = "buy_date", align = 1, title = "购买日期", isDate = true)
-    private Long butDate;
+    private Long    butDate;
     /**
      * 到期时间
      */
     @ExcelField(value = "due_date", align = 1, title = "到期时间", isDate = true)
-    private Long dueDate;
+    private Long    dueDate;
     /**
      * 保修期
      */
     @ExcelField(value = "warranty", align = 1, title = "保修期", isDate = true)
-    private Long warranty;
+    private Long    warranty;
     /**
      * 描述
      */
     @ExcelField(value = "memo", align = 1, title = "描述")
-    private String memo;
+    private String  memo;
 
     public Integer getOrderNumber() {
         return orderNumber;
@@ -224,7 +224,6 @@ public class NetworkDeviceEntity {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
     public String getLocation() {
         return location;
