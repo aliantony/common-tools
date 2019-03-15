@@ -13,7 +13,6 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.enums.AssetStatusJumpEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
@@ -33,8 +32,7 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
-        AssetStatusEnum assetStatusEnum = AssetStatusJumpEnum.getNextStatus(assetStatusReqeust.getAssetStatus(),
-            assetStatusReqeust.getAgree());
+        AssetStatusEnum assetStatusEnum = super.getNextAssetStatus(assetStatusReqeust);
         Asset asset = new Asset();
         ActionResponse actionResponse = super.changeStatus(assetStatusReqeust);
         if (null == actionResponse
