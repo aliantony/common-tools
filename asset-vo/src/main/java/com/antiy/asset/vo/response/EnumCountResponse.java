@@ -13,9 +13,9 @@ import java.util.List;
  * 枚举统计返回
  */
 public class EnumCountResponse {
-    @ApiModelProperty("枚举名")
+    @ApiModelProperty("枚举名，用于展示")
     private String msg;
-    @ApiModelProperty("枚举code")
+    @ApiModelProperty("用于做查询的参数")
     private List<String> code;
     @ApiModelProperty("统计的数量")
     private long number;

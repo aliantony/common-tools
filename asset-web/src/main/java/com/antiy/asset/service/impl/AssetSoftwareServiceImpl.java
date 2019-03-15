@@ -381,11 +381,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    public AssetCountResponse countManufacturer() throws Exception {
+    public List<EnumCountResponse> countManufacturer() throws Exception {
         int maxNum = 5;
-        List status = StatusEnumUtil.getSoftwareNotRetireStatusList();
-        List<Map<String, Long>> list = assetSoftwareDao.countManufacturer(status);
-        return CountTypeUtil.getAssetCountResponse(maxNum, list);
+        List<Integer> status = StatusEnumUtil.getSoftwareNotRetireStatusList();
+        List<Map<String, Object>> list =  assetSoftwareDao.countManufacturer(status);
+        return CountTypeUtil.getEnumCountResponse(maxNum, list);
+
     }
 
     @Override
