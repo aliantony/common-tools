@@ -6,10 +6,7 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
-import com.antiy.asset.vo.response.AssetCountColumnarResponse;
-import com.antiy.asset.vo.response.AssetCountResponse;
-import com.antiy.asset.vo.response.AssetOuterResponse;
-import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -146,7 +143,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      * @throws Exception
      */
-    AssetCountColumnarResponse countStatus() throws Exception;
+    List<EnumCountResponse> countStatus() throws Exception;
 
     /**
      * 按第二级品类统计数量
@@ -154,7 +151,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      * @throws Exception
      */
-    AssetCountResponse countCategory() throws Exception;
+    List<EnumCountResponse> countCategory() throws Exception;
 
     /**
      * 通过ID列表查询资产列表
