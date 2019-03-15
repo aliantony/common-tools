@@ -224,7 +224,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         AssetSoftware software = assetSoftwareDao.getById(request.getId());
         Integer softwareStatus = software.getSoftwareStatus();
         ParamterExceptionUtils.isNull(request.getActivityRequest(), "activityRequest参数不能为空");
-        if (request.getActivityRequest() != null && softwareStatus.equals(request.getSoftwareStatus())
+        if (request.getActivityRequest() != null && softwareStatus.equals(SoftwareStatusEnum.RETIRE.getCode())
             || softwareStatus.equals(SoftwareStatusEnum.NOT_REGSIST.getCode())) {
             ActionResponse actionResponse = activityClient.manualStartProcess(request.getActivityRequest());
             // 如果流程引擎为空,直接返回-1
