@@ -223,6 +223,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // 如果软件已退役，修改资产状态为待分析，并启动登记流程
         AssetSoftware software = assetSoftwareDao.getById(request.getId());
         Integer softwareStatus = software.getSoftwareStatus();
+        ParamterExceptionUtils.isNull(request.getActivityRequest(), "activityRequest参数不能为空");
         if (request.getActivityRequest() != null && softwareStatus.equals(SoftwareStatusEnum.RETIRE)
             || softwareStatus.equals(SoftwareStatusEnum.NOT_REGSIST.getCode())) {
             ActionResponse actionResponse = activityClient.manualStartProcess(request.getActivityRequest());
