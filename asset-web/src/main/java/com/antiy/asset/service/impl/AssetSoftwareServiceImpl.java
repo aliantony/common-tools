@@ -1,5 +1,26 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
@@ -34,25 +55,6 @@ import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -218,12 +220,25 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public Integer updateAssetSoftware(AssetSoftwareRequest request) throws Exception {
+        // 如果软件已退役，修改资产状态为待分析，并启动登记流程
+        AssetSoftware software = assetSoftwareDao.getById(request.getId());
+        Integer softwareStatus = software.getSoftwareStatus();
+        if (request.getActivityRequest() != null && softwareStatus.equals(SoftwareStatusEnum.RETIRE)
+            || softwareStatus.equals(SoftwareStatusEnum.NOT_REGSIST.getCode())) {
+            ActionResponse actionResponse = activityClient.manualStartProcess(request.getActivityRequest());
+            // 如果流程引擎为空,直接返回-1
+            if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                return -1;
+            }
+            // 设置软件状态为待分析
+            request.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
+        }
         Integer count = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
                     // 1.更新软件信息
-                    request.setSoftwareStatus(3); // 软件变更需要改状态到带配置
                     AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
                     assetSoftware.setId(DataTypeUtils.stringToInteger(request.getId()));
                     int assetSoftwareCount = assetSoftwareDao.update(assetSoftware);
