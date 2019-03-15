@@ -75,6 +75,11 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("厂商")
     private String        manufacturer;
     /**
+     * 厂商列表
+     */
+    @ApiModelProperty("厂商列表")
+    private List<String> manufacturers;
+    /**
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
     @ApiModelProperty("资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役")
@@ -156,6 +161,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("结束时间")
     private Long          endTime;
 
+    public List<String> getManufacturers() {
+        return manufacturers;
+    }
+
+    public void setManufacturers(List<String> manufacturers) {
+        this.manufacturers = manufacturers;
+    }
     @ApiModelProperty(value = "是否从控制台进入，默认false 不从控制台进入，true为控制台进入")
     private Boolean       enterControl = false;
 

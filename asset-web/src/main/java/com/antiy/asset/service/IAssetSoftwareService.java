@@ -77,7 +77,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @return
      * @throws Exception
      */
-    AssetCountResponse countManufacturer() throws Exception;
+    List<EnumCountResponse> countManufacturer() throws Exception;
 
     /**
      * 按状态统计数量

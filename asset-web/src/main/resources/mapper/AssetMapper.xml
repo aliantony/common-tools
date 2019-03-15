@@ -719,6 +719,12 @@
         <if test=" manufacturer != null">
             and manufacturer like CONCAT('%',replace(replace(#{manufacturer},'%','\%'),'_','\_'), '%')
         </if>
+        <if test=" manufacturers != null">
+            and manufacturer in
+            <foreach collection="manufacturers" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
         <if test=" operationSystem != null">
             and operation_system = #{operationSystem}
         </if>
