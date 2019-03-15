@@ -75,7 +75,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      *
      * @return
      */
-    List<Map<String, Long>> countManufacturer(@Param("areaIds") List<Integer> areaIds,
+    List<Map<String, Object>> countManufacturer(@Param("areaIds") List<Integer> areaIds,
                                               @Param("assetStatusList") List<Integer> statusList);
 
     /**
