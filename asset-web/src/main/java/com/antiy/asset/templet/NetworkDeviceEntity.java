@@ -1,14 +1,12 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
-import lombok.Data;
 
 /**
  * 网络设备
  */
-@Data
+
 public class NetworkDeviceEntity {
-    private static final long serialVersionUID = 1L;
     /**
      * 序号
      */
@@ -52,11 +50,6 @@ public class NetworkDeviceEntity {
      */
     @ExcelField(value = "email", align = 1, title = "邮箱", type = 0)
     private String email;
-    /**
-     * 资产组
-     */
-    @ExcelField(value = "asset_group", align = 1, title = "资产组", type = 1)
-    private String assetGroup;
 
     /**
      * 物理位置
@@ -232,13 +225,6 @@ public class NetworkDeviceEntity {
         this.email = email;
     }
 
-    public String getAssetGroup() {
-        return assetGroup;
-    }
-
-    public void setAssetGroup(String assetGroup) {
-        this.assetGroup = assetGroup;
-    }
 
     public String getLocation() {
         return location;
