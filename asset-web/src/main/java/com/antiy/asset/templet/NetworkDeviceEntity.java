@@ -1,14 +1,12 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
-import lombok.Data;
 
 /**
  * 网络设备
  */
-@Data
+
 public class NetworkDeviceEntity {
-    private static final long serialVersionUID = 1L;
     /**
      * 序号
      */
