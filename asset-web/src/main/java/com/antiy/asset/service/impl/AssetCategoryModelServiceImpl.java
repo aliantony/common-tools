@@ -43,8 +43,8 @@ import com.antiy.common.utils.LogUtils;
  * @since 2019-01-02
  */
 @Service
-public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel> implements
-                                                                                      IAssetCategoryModelService {
+public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel>
+                                           implements IAssetCategoryModelService {
 
     @Resource
     private AssetCategoryModelDao   assetCategoryModelDao;
@@ -82,11 +82,11 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             // 写入业务日志
             LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_INSERT.getName(),
                 AssetEventEnum.ASSET_CATEGORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils
-                .info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}", assetCategoryModel.toString());
+            LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}",
+                assetCategoryModel.toString());
         }
-        return ActionResponse.success(aesEncoder.encode(assetCategoryModel.getStringId(), LoginUserUtil.getLoginUser()
-            .getUsername()));
+        return ActionResponse
+            .success(aesEncoder.encode(assetCategoryModel.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
 
     }
 
@@ -139,8 +139,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     /**
      * 判断父品类的资产类型和子品类的资产类型是否一致
      */
-    private boolean checkParentType(AssetCategoryModel updateCategory, AssetCategoryModel assetCategoryModelById)
-                                                                                                                 throws Exception {
+    private boolean checkParentType(AssetCategoryModel updateCategory,
+                                    AssetCategoryModel assetCategoryModelById) throws Exception {
         AssetCategoryModel parent = getParentCategory(updateCategory);
         checkParentCategory(parent);
         if (!parent.getAssetType().equals(assetCategoryModelById.getAssetType())) {
@@ -174,8 +174,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query)
-                                                                                                           throws Exception {
+    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetCategoryModel(query), query.getCurrentPage(),
             this.findListAssetCategoryModel(query));
     }
@@ -233,14 +232,15 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         query.setPageSize(Constants.ALL_PAGE);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         assetCategoryModels.add(getRootCategory());
-        AssetCategoryModelNodeResponse assetCategoryModelNodeResponse = getAssetCategoryModelNodeResponse(assetCategoryModels);
+        AssetCategoryModelNodeResponse assetCategoryModelNodeResponse = getAssetCategoryModelNodeResponse(
+            assetCategoryModels);
         return assetCategoryModelNodeResponse == null ? null : assetCategoryModelNodeResponse.getChildrenNode().get(0);
     }
 
     private AssetCategoryModelNodeResponse getAssetCategoryModelNodeResponse(List<AssetCategoryModel> assetCategoryModels) {
         NodeUtilsConverter<AssetCategoryModel, AssetCategoryModelNodeResponse> nodeConverter = new NodeUtilsConverter<>();
-        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(
-            assetCategoryModels, AssetCategoryModelNodeResponse.class);
+        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter
+            .columnToNode(assetCategoryModels, AssetCategoryModelNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
 
@@ -269,8 +269,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 
     @Override
     public List<Integer> findAssetCategoryModelIdsById(Integer id) throws Exception {
-        List<AssetCategoryModelResponse> categoryModelResponses = responseConverter.convert(
-            recursionSearch(assetCategoryModelDao.getAll(), id), AssetCategoryModelResponse.class);
+        List<AssetCategoryModelResponse> categoryModelResponses = responseConverter
+            .convert(recursionSearch(assetCategoryModelDao.getAll(), id), AssetCategoryModelResponse.class);
         List<Integer> categoryModels = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(categoryModelResponses)) {
             categoryModelResponses.stream().forEach(assetCategoryModelResponse -> {
@@ -350,12 +350,26 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             }
         }
     }
+
+    /**
+     * 获取品类型号中的列表id
+     * @param search
+     * @return
+     */
+    public List<String> getCategoryIdList(List<AssetCategoryModel> search) {
+        List<String> list = new ArrayList<>();
+        for (AssetCategoryModel assetCategoryModel : search) {
+            list.add(assetCategoryModel.getStringId());
+        }
+        return list;
+    }
 }
 
 @Component
 class CategoryResponseConvert extends BaseConverter<AssetCategoryModel, AssetCategoryModelResponse> {
     @Override
-    protected void convert(AssetCategoryModel assetCategoryModel, AssetCategoryModelResponse assetCategoryModelResponse) {
+    protected void convert(AssetCategoryModel assetCategoryModel,
+                           AssetCategoryModelResponse assetCategoryModelResponse) {
         assetCategoryModelResponse.setParentId(Objects.toString(assetCategoryModel.getParentId()));
         super.convert(assetCategoryModel, assetCategoryModelResponse);
     }
