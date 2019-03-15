@@ -15,9 +15,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetSafetyEquipmentQuery extends ObjectQuery implements ObjectValidator {
     /**
-     * 特征库配置
+     * 特征库版本
      */
-    @ApiModelProperty("特征库配置")
+    @ApiModelProperty("特征库版本")
     private String featureLibrary;
     /**
      * 策略配置
