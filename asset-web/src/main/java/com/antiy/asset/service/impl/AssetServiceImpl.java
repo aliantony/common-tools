@@ -27,6 +27,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -50,6 +51,7 @@ import java.io.OutputStream;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import com.antiy.common.utils.DataTypeUtils;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -575,12 +577,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
             query.setIds(processMap.keySet().toArray(new String[] {}));
         }
+
+        // 如果是控制台进入，并且待办任务返回为空，则直接返回
+        if (query.getEnterControl() && MapUtils.isEmpty(processMap)) {
+            return null;
+        }
+
         List<Asset> asset = assetDao.findListAsset(query);
         if (CollectionUtils.isNotEmpty(asset)) {
             asset.stream().forEach(a -> {
                 try {
                     String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                            DataTypeUtils.stringToInteger(a.getAreaId()));
+                        DataTypeUtils.stringToInteger(a.getAreaId()));
                     SysArea sysArea = redisUtil.getObject(key, SysArea.class);
                     a.setAreaName(sysArea.getFullName());
                 } catch (Exception e) {
@@ -605,6 +613,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
         if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
             query.setIds(processMap.keySet().toArray(new String[] {}));
+        }
+
+        // 如果是从工作台进入，并且没有待办任务，则直接返回空即可
+        if (query.getEnterControl() && MapUtils.isEmpty(processMap)) {
+            return 0;
         }
         return assetDao.findCount(query);
     }
@@ -650,8 +663,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setIds(processMap.keySet().toArray(new String[] {}));
         }
 
-        return new PageResult<>(query.getPageSize(), this.findCountAsset(query), query.getCurrentPage(),
-            this.findListAsset(query));
+        // 如果count为0 直接返回结果即可
+        int count = this.findCountAsset(query);
+        if (count < 1) {
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+        }
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.findListAsset(query));
     }
 
     @Override
@@ -996,54 +1013,68 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public AssetCountResponse countManufacturer() throws Exception {
+    public List<EnumCountResponse> countManufacturer() throws Exception {
         int maxNum = 5;
         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
-        List<Map<String, Long>> list = assetDao.countManufacturer(areaIds, status);
-        return CountTypeUtil.getAssetCountResponse(maxNum, list);
+        List<Map<String, Object>> list = assetDao.countManufacturer(areaIds, status);
+        return CountTypeUtil.getEnumCountResponse(maxNum, list);
     }
 
     @Override
-    public AssetCountColumnarResponse countStatus() throws Exception {
+    public List<EnumCountResponse> countStatus() throws Exception {
         List<Integer> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<Map<String, Long>> searchResult = assetDao.countStatus(ids);
-        Map<String, Long> result = new HashMap();
+        Map<AssetStatusEnum, EnumCountResponse> resultMap = new HashMap<>();
+        List<EnumCountResponse> resultList = new ArrayList<>();
         // 初始化result
         for (AssetStatusEnum assetStatusEnum : AssetStatusEnum.values()) {
-            result.put(assetStatusEnum.getMsg(), 0L);
+            EnumCountResponse enumCountResponse = new EnumCountResponse(assetStatusEnum.getMsg(),
+                assetStatusEnum.getCode() + "", 0);
+            resultMap.put(assetStatusEnum, enumCountResponse);
         }
         // 将查询结果的值放入结果集
         for (Map map : searchResult) {
             AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode((Integer) map.get("key"));
             if (assetStatusEnum != null) {
-                result.put(assetStatusEnum.getMsg(), (Long) map.get("value"));
+                EnumCountResponse enumCountResponse = resultMap.get(assetStatusEnum);
+                enumCountResponse.setNumber((long) map.get("value"));
             }
         }
-        return CountTypeUtil.getAssetCountColumnarResponse(result);
+        for (AssetStatusEnum assetStatusEnum : AssetStatusEnum.values()) {
+            resultList.add(resultMap.get(assetStatusEnum));
+        }
+        return resultList;
+
     }
 
     @Override
-    public AssetCountResponse countCategory() throws Exception {
+    public List<EnumCountResponse> countCategory() throws Exception {
         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         // 查询第二级分类id
         List<AssetCategoryModel> secondCategoryModelList = assetCategoryModelDao.getNextLevelCategoryByName("硬件");
         List<AssetCategoryModel> categoryModelDaoAll = assetCategoryModelDao.getAll();
         if (CollectionUtils.isNotEmpty(secondCategoryModelList)) {
-            HashMap<String, Long> result = new HashMap<>();
+            List<EnumCountResponse> resultList = new ArrayList<>();
             for (AssetCategoryModel secondCategoryModel : secondCategoryModelList) {
+                EnumCountResponse enumCountResponse = new EnumCountResponse();
                 // 查询第二级每个分类下所有的分类id，并添加至list集合
                 List<AssetCategoryModel> search = iAssetCategoryModelService.recursionSearch(categoryModelDaoAll,
                     secondCategoryModel.getId());
+                enumCountResponse.setCode(iAssetCategoryModelService.getCategoryIdList(search));
                 // 设置查询资产条件参数，包括区域id，状态，资产品类型号
                 AssetQuery assetQuery = setAssetQueryParam(areaIds, search);
                 // 将查询结果放置结果集
-                result.put(secondCategoryModel.getName(), (long) assetDao.findCountByCategoryModel(assetQuery));
+                enumCountResponse.setNumber((long) assetDao.findCountByCategoryModel(assetQuery));
+                enumCountResponse.setMsg(secondCategoryModel.getName());
+                resultList.add(enumCountResponse);
             }
-            return CountTypeUtil.getAssetCountResponse(result);
+            return resultList;
         }
         return null;
     }
+
+
 
     private AssetQuery setAssetQueryParam(List<Integer> areaIds, List<AssetCategoryModel> search) {
         List<Integer> list = new ArrayList<>();

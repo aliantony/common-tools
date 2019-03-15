@@ -77,7 +77,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @return
      * @throws Exception
      */
-    AssetCountResponse countManufacturer() throws Exception;
+    List<EnumCountResponse> countManufacturer() throws Exception;
 
     /**
      * 按状态统计数量
@@ -85,7 +85,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @return
      * @throws Exception
      */
-    AssetCountColumnarResponse countStatus() throws Exception;
+    List<EnumCountResponse> countStatus() throws Exception;
 
     /**
      * 按第二级品类统计数量
@@ -93,7 +93,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @return
      * @throws Exception
      */
-    AssetCountResponse countCategory() throws Exception;
+    List<EnumCountResponse> countCategory() throws Exception;
 
     /**
      * 软件详情查询

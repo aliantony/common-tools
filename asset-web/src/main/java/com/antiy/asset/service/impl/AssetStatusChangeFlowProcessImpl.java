@@ -13,11 +13,9 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.enums.AssetStatusJumpEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LoginUserUtil;
 
 /**
@@ -34,24 +32,18 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
-        AssetStatusEnum assetStatusEnum = AssetStatusJumpEnum.getNextStatus(assetStatusReqeust.getAssetStatus(),
-            assetStatusReqeust.getAgree());
+        AssetStatusEnum assetStatusEnum = super.getNextAssetStatus(assetStatusReqeust);
         Asset asset = new Asset();
-        // 资产状态判断
-        Asset asesetStatus = assetDao.getById(assetStatusReqeust.getAssetId());
-        if (assetStatusEnum.getCode().equals(asesetStatus.getAssetStatus())) {
-            throw new BusinessException("请勿重复提交，当前资产状态是：" + assetStatusReqeust.getAssetStatus().getMsg());
-        }
         ActionResponse actionResponse = super.changeStatus(assetStatusReqeust);
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             return actionResponse;
         }
 
-        //检查资产主表的首次入网时间，为空时写入入网时间
-        if (AssetStatusEnum.NET_IN.getCode().equals(assetStatusEnum.getCode())){
+        // 检查资产主表的首次入网时间，为空时写入入网时间
+        if (AssetStatusEnum.NET_IN.getCode().equals(assetStatusEnum.getCode())) {
             Asset currentAsset = assetDao.getById(assetStatusReqeust.getAssetId());
-            if (currentAsset == null){
+            if (currentAsset == null) {
                 asset.setFirstEnterNett(System.currentTimeMillis());
             }
         }

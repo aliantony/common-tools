@@ -19,10 +19,15 @@ public class AssetSafetyEquipmentResponse extends BaseResponse {
     @Encode
     private String  assetId;
     /**
-     * 特征库配置
+     * 特征库版本
      */
-    @ApiModelProperty("特征库配置")
+    @ApiModelProperty("特征库版本")
     private String  featureLibrary;
+    /**
+     * mac
+     */
+    @ApiModelProperty("mac")
+    private String  mac;
     /**
      * 策略配置
      */
@@ -116,5 +121,13 @@ public class AssetSafetyEquipmentResponse extends BaseResponse {
 
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
     }
 }

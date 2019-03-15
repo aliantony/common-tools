@@ -16,7 +16,11 @@ public class AssetSafetyEquipment extends BaseEntity {
      */
     private String assetId;
     /**
-     * 特征库配置
+     * mac
+     */
+    private String mac;
+    /**
+     * 特征库版本
      */
     private String  featureLibrary;
     /**
@@ -159,5 +163,13 @@ public class AssetSafetyEquipment extends BaseEntity {
                 ", gmtModified=" + gmtModified +
                 ", status=" + status +
                 '}';
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
     }
 }

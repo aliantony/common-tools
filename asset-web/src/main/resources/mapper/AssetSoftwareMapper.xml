@@ -365,6 +365,12 @@
         <if test=" serial != null">
             and serial=#{serial},
         </if>
+        <if test="assetIds != null and assetIds.size() > 0">
+            and software_status in
+            <foreach collection="softwareStatusList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
     </sql>
 
     <!--资产条件查询-->

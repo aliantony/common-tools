@@ -96,4 +96,11 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
 
     List<AssetCategoryModel> recursionSearch(List<AssetCategoryModel> list, Integer id) throws Exception;
 
+    /**
+     * 获取品类型号中的列表id
+     * @param search
+     * @return
+     */
+    List<String> getCategoryIdList(List<AssetCategoryModel> search);
+
 }

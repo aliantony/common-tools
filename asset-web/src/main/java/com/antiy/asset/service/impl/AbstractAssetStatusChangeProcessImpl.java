@@ -135,7 +135,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                 SoftwareStatusEnum softwareStatusEnum = this.getNextSoftwareStatus(assetStatusReqeust);
                 if (SoftwareStatusEnum.WAIT_RETIRE.getCode().equals(softwareStatusEnum.getCode())) {
                     workOrderVO.setName(AssetOperationTableEnum.SOFTWARE.getMsg()
-                            + SoftwareStatusEnum.WAIT_ANALYZE_RETIRE.getMsg() + "工单");
+                                        + SoftwareStatusEnum.WAIT_RETIRE.getMsg());
                     workOrderVO.setOrderType(WorkOrderTypeEnum.SOFTWARE_DECOMMISSIONING_ANALYSIS.getCode());
                 }
             } else {
@@ -261,7 +261,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         // 资产状态判断
         AssetSoftware software = assetSoftwareDao.getById(assetStatusReqeust.getAssetId());
         if (softwareStatusEnum.getCode().equals(software.getSoftwareStatus())) {
-            throw new BusinessException("请勿重复提交，当前资产状态是：" + assetStatusReqeust.getSoftwareStatusEnum().getMsg());
+            throw new BusinessException("请勿重复提交，当前资产状态是：" + softwareStatusEnum.getMsg());
         }
 
         return softwareStatusEnum;
@@ -273,7 +273,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         // 资产状态判断
         Asset asesetStatus = assetDao.getById(assetStatusReqeust.getAssetId());
         if (assetStatusEnum.getCode().equals(asesetStatus.getAssetStatus())) {
-            throw new BusinessException("请勿重复提交，当前资产状态是：" + assetStatusReqeust.getAssetStatus().getMsg());
+            throw new BusinessException("请勿重复提交，当前资产状态是：" + assetStatusEnum.getMsg());
         }
         return assetStatusEnum;
     }

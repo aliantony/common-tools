@@ -1,5 +1,26 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
@@ -34,25 +55,6 @@ import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -218,12 +220,25 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public Integer updateAssetSoftware(AssetSoftwareRequest request) throws Exception {
+        // 如果软件已退役，修改资产状态为待分析，并启动登记流程
+        AssetSoftware software = assetSoftwareDao.getById(request.getId());
+        Integer softwareStatus = software.getSoftwareStatus();
+        if (request.getActivityRequest() != null && softwareStatus.equals(SoftwareStatusEnum.RETIRE)
+            || softwareStatus.equals(SoftwareStatusEnum.NOT_REGSIST.getCode())) {
+            ActionResponse actionResponse = activityClient.manualStartProcess(request.getActivityRequest());
+            // 如果流程引擎为空,直接返回-1
+            if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                return -1;
+            }
+            // 设置软件状态为待分析
+            request.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
+        }
         Integer count = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
                     // 1.更新软件信息
-                    request.setSoftwareStatus(3); // 软件变更需要改状态到带配置
                     AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
                     assetSoftware.setId(DataTypeUtils.stringToInteger(request.getId()));
                     int assetSoftwareCount = assetSoftwareDao.update(assetSoftware);
@@ -381,78 +396,116 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    public AssetCountResponse countManufacturer() throws Exception {
+    public List<EnumCountResponse> countManufacturer() throws Exception {
         int maxNum = 5;
-        List status = StatusEnumUtil.getSoftwareNotRetireStatusList();
-        List<Map<String, Long>> list = assetSoftwareDao.countManufacturer(status);
-        return CountTypeUtil.getAssetCountResponse(maxNum, list);
+        List<Integer> status = StatusEnumUtil.getSoftwareNotRetireStatusList();
+        List<Map<String, Object>> list =  assetSoftwareDao.countManufacturer(status);
+        return CountTypeUtil.getEnumCountResponse(maxNum, list);
+
     }
 
     @Override
-    public AssetCountColumnarResponse countStatus() throws Exception {
+    public List<EnumCountResponse> countStatus() throws Exception {
+        List<EnumCountResponse> resultList = new ArrayList<>();
         List<Map<String, Long>> list = assetSoftwareDao.countStatus();
-        Map<String, Long> result = new HashMap();
+        Map<SoftwareStatusEnum, EnumCountResponse> resultMap = new HashMap<>();
         // 初始化result
-        for (SoftwareStatusEnum softwareStatusEnum : SoftwareStatusEnum.values()) {
-            if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE)
-                || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE)) {
-                String waitRetire = SoftwareStatusEnum.WAIT_RETIRE.getMsg();
-                result.put(waitRetire, 0L);
-            }
-            // 待分析和待卸载分析视为同一状态
-            else if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE)
-                     || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL)) {
-                String waitAnalyze = SoftwareStatusEnum.WAIT_ANALYZE.getMsg();
-                result.put(waitAnalyze, 0L);
-            } else if (!softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL)) {
-                result.put(softwareStatusEnum.getMsg(), 0L);
-            }
-        }
+        initResultMap(resultMap);
         // 将查询结果的值放入结果集
+        searchResultToMap(resultList, list, resultMap);
+        // 将结果集中的数据放至结果列表中
+        resultMapToResultList(resultList, resultMap);
+        return resultList;
+    }
+
+    private void resultMapToResultList(List<EnumCountResponse> resultList,
+                                       Map<SoftwareStatusEnum, EnumCountResponse> resultMap) {
+        for (Map.Entry<SoftwareStatusEnum, EnumCountResponse> entry : resultMap.entrySet()) {
+            resultList.add(entry.getValue());
+        }
+    }
+
+    private void searchResultToMap(List<EnumCountResponse> resultList, List<Map<String, Long>> list,
+                                   Map<SoftwareStatusEnum, EnumCountResponse> resultMap) {
         for (Map map : list) {
             SoftwareStatusEnum softwareStatusEnum = SoftwareStatusEnum.getAssetByCode((Integer) map.get("key"));
             if (softwareStatusEnum != null) {
                 // 待退役和待退役分析视为同一状态
                 if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE)
                     || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE)) {
-                    String waitRetire = SoftwareStatusEnum.WAIT_RETIRE.getMsg();
-                    Long waitRetireNum = result.get(waitRetire);
-                    result.put(waitRetire,
-                        (waitRetireNum == null ? (Long) map.get("value") : (waitRetireNum + (Long) map.get("value"))));
+                    processList(resultList, resultMap, map, SoftwareStatusEnum.WAIT_RETIRE);
                 }
                 // 待分析和待卸载分析视为同一状态
                 else if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE)
                          || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL)) {
-                    String waitAnalyze = SoftwareStatusEnum.WAIT_ANALYZE.getMsg();
-                    Long waitAnalyzeNum = result.get(waitAnalyze);
-                    result.put(waitAnalyze, (waitAnalyzeNum == null ? (Long) map.get("value")
-                        : (waitAnalyzeNum + (Long) map.get("value"))));
+                    processList(resultList, resultMap, map, SoftwareStatusEnum.WAIT_ANALYZE);
                 } else if (!softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL)) {
-                    result.put(softwareStatusEnum.getMsg(), (Long) map.get("value"));
+                    EnumCountResponse e = resultMap.get(softwareStatusEnum);
+                    e.setNumber((Long) map.get("value"));
                 }
             }
         }
-        return CountTypeUtil.getAssetCountColumnarResponse(result);
+    }
+
+    private void initResultMap(Map<SoftwareStatusEnum, EnumCountResponse> resultMap) {
+        for (SoftwareStatusEnum softwareStatusEnum : SoftwareStatusEnum.values()) {
+            EnumCountResponse enumCountResponse;
+            if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE)
+                || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE)) {
+                String waitRetire = SoftwareStatusEnum.WAIT_RETIRE.getMsg();
+                List<String> codeList = new ArrayList<>();
+                codeList.add(SoftwareStatusEnum.WAIT_RETIRE.getCode() + "");
+                codeList.add(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE.getCode() + "");
+                enumCountResponse = new EnumCountResponse(SoftwareStatusEnum.WAIT_RETIRE.getMsg(), codeList, 0);
+                resultMap.put(SoftwareStatusEnum.WAIT_RETIRE, enumCountResponse);
+            }
+            // 待分析和待卸载分析视为同一状态
+            else if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE)
+                     || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL)) {
+                String waitAnalyze = SoftwareStatusEnum.WAIT_ANALYZE.getMsg();
+                List<String> codeList = new ArrayList<>();
+                codeList.add(SoftwareStatusEnum.WAIT_ANALYZE.getCode() + "");
+                codeList.add(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL.getCode() + "");
+                enumCountResponse = new EnumCountResponse(SoftwareStatusEnum.WAIT_ANALYZE.getMsg(), codeList, 0);
+                resultMap.put(SoftwareStatusEnum.WAIT_ANALYZE, enumCountResponse);
+            } else if (!softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL)) {
+                enumCountResponse = new EnumCountResponse(softwareStatusEnum.getMsg(),
+                    softwareStatusEnum.getCode() + "", 0);
+                resultMap.put(softwareStatusEnum, enumCountResponse);
+            }
+        }
+    }
+
+    private void processList(List<EnumCountResponse> resultList, Map<SoftwareStatusEnum, EnumCountResponse> resultMap,
+                             Map map, SoftwareStatusEnum softwareStatusEnum) {
+        EnumCountResponse e = resultMap.get(softwareStatusEnum);
+        Long waitAnalyzeNum = e.getNumber();
+        e.setNumber(waitAnalyzeNum == null ? (Long) map.get("value") : (waitAnalyzeNum + (Long) map.get("value")));
     }
 
     @Override
-    public AssetCountResponse countCategory() throws Exception {
+    public List<EnumCountResponse> countCategory() throws Exception {
         // 查询第二级分类id
+        List<EnumCountResponse> resultList = new ArrayList<>();
         List<AssetCategoryModel> secondCategoryModelList = assetCategoryModelDao.getNextLevelCategoryByName("软件");
         HashMap<String, Long> result = new HashMap<>();
         List<AssetCategoryModel> categoryModelDaoAll = assetCategoryModelDao.getAll();
         if (CollectionUtils.isNotEmpty(categoryModelDaoAll)) {
             for (AssetCategoryModel secondCategoryModel : secondCategoryModelList) {
+                EnumCountResponse enumCountResponse = new EnumCountResponse();
                 // 查询第二级每个分类下所有的分类id，并添加至list集合
                 List<AssetCategoryModel> search = iAssetCategoryModelService.recursionSearch(categoryModelDaoAll,
                     secondCategoryModel.getId());
+                List<String> idList = iAssetCategoryModelService.getCategoryIdList(search);
+                enumCountResponse.setCode(idList);
                 // 设置查询资产条件参数，包括，状态，资产品类型号
                 AssetSoftwareQuery assetSoftwareQuery = setAssetSoftwareQueryParam(search);
                 // 将查询结果放置结果集
-                result.put(secondCategoryModel.getName(),
-                    assetSoftwareDao.findCountByCategoryModel(assetSoftwareQuery));
+                enumCountResponse.setMsg(secondCategoryModel.getName());
+                enumCountResponse.setNumber(assetSoftwareDao.findCountByCategoryModel(assetSoftwareQuery));
+                resultList.add(enumCountResponse);
             }
-            return CountTypeUtil.getAssetCountResponse(result);
+            return resultList;
         }
         return null;
     }
@@ -548,17 +601,17 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     public String importExcel(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class,
             file, 0, 0);
-        if (Objects.isNull (importResult.getDataList ())){
-            return importResult.getMsg ();
+        if (Objects.isNull(importResult.getDataList())) {
+            return importResult.getMsg();
         }
         List<AssetSoftwareEntity> resultDataList = importResult.getDataList();
-        if (resultDataList.size ()==0){
+        if (resultDataList.size() == 0) {
             return "上传失败，模板内无数据，请填写数据后再次上传";
         }
         int success = 0;
         int repeat = 0;
         int error = 0;
-        int a=0;
+        int a = 0;
         StringBuilder builder = new StringBuilder();
         for (AssetSoftwareEntity entity : resultDataList) {
             if (StringUtils.isBlank(entity.getName())) {
@@ -615,7 +668,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             asset.setMemo(entity.getDescription());
             asset.setDescription(entity.getDescription());
             asset.setCategoryModel(entity.getCategory());
-
 
             assetSoftwareDao.insert(asset);
             // 记录资产操作流程
