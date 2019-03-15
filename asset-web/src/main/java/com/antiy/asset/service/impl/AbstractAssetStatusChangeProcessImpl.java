@@ -135,7 +135,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                 SoftwareStatusEnum softwareStatusEnum = this.getNextSoftwareStatus(assetStatusReqeust);
                 if (SoftwareStatusEnum.WAIT_RETIRE.getCode().equals(softwareStatusEnum.getCode())) {
                     workOrderVO.setName(AssetOperationTableEnum.SOFTWARE.getMsg()
-                            + SoftwareStatusEnum.WAIT_ANALYZE_RETIRE.getMsg() + "工单");
+                                        + SoftwareStatusEnum.WAIT_RETIRE.getMsg());
                     workOrderVO.setOrderType(WorkOrderTypeEnum.SOFTWARE_DECOMMISSIONING_ANALYSIS.getCode());
                 }
             } else {
