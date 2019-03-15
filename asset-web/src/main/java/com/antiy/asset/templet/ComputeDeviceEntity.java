@@ -30,11 +30,7 @@ public class ComputeDeviceEntity {
     @ExcelField(value = "manufacturer", align = 1, title = "厂商")
     private String  manufacturer;
 
-    /**
-     * 资产组
-     */
-    @ExcelField(value = "asset_group", align = 1, title = "资产组",type =1)
-    private String            assetGroup;
+
     /**
      * 序列号
      */
@@ -307,14 +303,6 @@ public class ComputeDeviceEntity {
      */
     @ExcelField(value = "network_default_gateway", align = 1, title = "网卡默认网关")
     private String  networkDefaultGateway;
-
-    public String getAssetGroup() {
-        return assetGroup;
-    }
-
-    public void setAssetGroup(String assetGroup) {
-        this.assetGroup = assetGroup;
-    }
 
 
 

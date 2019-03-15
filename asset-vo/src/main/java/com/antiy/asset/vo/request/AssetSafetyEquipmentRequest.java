@@ -26,9 +26,14 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
     @Encode
     private String assetId;
     /**
-     * 特征库配置
+     * mac
      */
-    @ApiModelProperty("特征库配置")
+    @ApiModelProperty("mac")
+    private String mac;
+    /**
+     * 特征库版本
+     */
+    @ApiModelProperty("特征库版本")
     private String featureLibrary;
     /**
      * 策略配置
@@ -97,4 +102,11 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
 
     }
 
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
 }
