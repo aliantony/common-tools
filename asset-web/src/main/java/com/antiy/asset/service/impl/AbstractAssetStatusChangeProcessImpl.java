@@ -261,7 +261,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         // 资产状态判断
         AssetSoftware software = assetSoftwareDao.getById(assetStatusReqeust.getAssetId());
         if (softwareStatusEnum.getCode().equals(software.getSoftwareStatus())) {
-            throw new BusinessException("请勿重复提交，当前资产状态是：" + assetStatusReqeust.getSoftwareStatusEnum().getMsg());
+            throw new BusinessException("请勿重复提交，当前资产状态是：" + softwareStatusEnum.getMsg());
         }
 
         return softwareStatusEnum;
@@ -273,7 +273,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         // 资产状态判断
         Asset asesetStatus = assetDao.getById(assetStatusReqeust.getAssetId());
         if (assetStatusEnum.getCode().equals(asesetStatus.getAssetStatus())) {
-            throw new BusinessException("请勿重复提交，当前资产状态是：" + assetStatusReqeust.getAssetStatus().getMsg());
+            throw new BusinessException("请勿重复提交，当前资产状态是：" + assetStatusEnum.getMsg());
         }
         return assetStatusEnum;
     }
