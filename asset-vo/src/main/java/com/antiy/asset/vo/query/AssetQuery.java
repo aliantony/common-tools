@@ -1,14 +1,15 @@
 package com.antiy.asset.vo.query;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Arrays;
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> Asset 查询条件 </p>
@@ -166,6 +167,16 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     public void setManufacturers(List<String> manufacturers) {
         this.manufacturers = manufacturers;
+    }
+    @ApiModelProperty(value = "是否从控制台进入，默认false 不从控制台进入，true为控制台进入")
+    private Boolean       enterControl = false;
+
+    public Boolean getEnterControl() {
+        return enterControl;
+    }
+
+    public void setEnterControl(Boolean enterControl) {
+        this.enterControl = enterControl;
     }
 
     public Long getFirstEnterNett() {
