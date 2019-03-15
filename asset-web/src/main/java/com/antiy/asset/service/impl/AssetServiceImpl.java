@@ -163,6 +163,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         String name = requestAsset.getName();
                         ParamterExceptionUtils.isTrue(!CheckRepeatName(name), "资产名称重复");
 
+                        String areaId = requestAsset.getAreaId ();
+
+                        String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                                DataTypeUtils.stringToInteger(areaId));
+
+                        SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+
+                        BusinessExceptionUtils.isTrue(!Objects.isNull (assetUserDao.getById (DataTypeUtils.stringToInteger (requestAsset.getResponsibleUserId ()))), "使用者不存在，或已经注销");
+
+                        BusinessExceptionUtils.isTrue (!Objects.isNull (assetCategoryModelDao.getById (DataTypeUtils.stringToInteger (requestAsset.getCategoryModel ()))), "品类型号不存在，或已经注销");
+
+                        BusinessExceptionUtils.isTrue (!Objects.isNull (sysArea), "当前区域不存在，或已经注销");
+
+
                         List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
                         Asset asset = requestConverter.convert(requestAsset, Asset.class);
 
@@ -442,7 +456,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
-                    BusinessExceptionUtils.isTrue(!e.getMessage().equals("资产组名称获取失败"), "资产组名称获取失败");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals ("资产组名称获取失败",e.getMessage()), "资产组名称获取失败");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals ("使用者不存在，或已经注销",e.getMessage()), "使用者不存在，或已经注销");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals ("品类型号不存在，或已经注销",e.getMessage()), "品类型号不存在，或已经注销");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals ("当前区域不存在，或已经注销",e.getMessage()), "品类型号不存在，或已经注销");
                 }
                 return 0;
             }
