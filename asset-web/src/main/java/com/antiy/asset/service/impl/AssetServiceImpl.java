@@ -1013,12 +1013,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public AssetCountResponse countManufacturer() throws Exception {
+    public List<EnumCountResponse> countManufacturer() throws Exception {
         int maxNum = 5;
         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
-        List<Map<String, Long>> list = assetDao.countManufacturer(areaIds, status);
-        return CountTypeUtil.getAssetCountResponse(maxNum, list);
+        List<Map<String, Object>> list = assetDao.countManufacturer(areaIds, status);
+        return CountTypeUtil.getEnumCountResponse(maxNum, list);
     }
 
     @Override
