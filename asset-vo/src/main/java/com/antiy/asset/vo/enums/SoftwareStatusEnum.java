@@ -11,7 +11,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public enum SoftwareStatusEnum {
     WATI_REGSIST(1, "待登记"),
-    WAIT_ANALYZE(2, "登记待分析"),
+    WAIT_ANALYZE(2, "待分析"),
     ALLOW_INSTALL(3, "可安装"),
     RETIRE(4, "已退役"),
     NOT_REGSIST(5, "不予登记"),
