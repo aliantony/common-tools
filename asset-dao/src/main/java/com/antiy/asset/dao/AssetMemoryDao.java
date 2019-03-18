@@ -4,6 +4,7 @@ import com.antiy.asset.entity.AssetCpu;
 import com.antiy.asset.entity.AssetMemory;
 import com.antiy.asset.vo.query.AssetMemoryQuery;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface AssetMemoryDao extends IBaseDao<AssetMemory> {
 
     List<AssetMemory> findListAssetMemory(AssetMemoryQuery query) throws Exception;
 
-    Integer updateBatch(List<AssetMemory> assetMemoryList) throws Exception;
+    Integer updateBatch(@Param(value = "list") List<AssetMemory> assetMemoryList) throws Exception;
 
     Integer insertBatch(List<AssetMemory> assetMemoryList);
 

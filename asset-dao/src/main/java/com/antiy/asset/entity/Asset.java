@@ -130,6 +130,7 @@ public class Asset extends BaseEntity {
     /**
      * 使用者名称
      */
+    @ApiModelProperty("使用者")
     private String            responsibleUserName;
     /**
      * 物理位置
@@ -190,6 +191,7 @@ public class Asset extends BaseEntity {
     /**
      * 描述
      */
+    @ApiModelProperty("描述")
     private String            describle;
 
     /**

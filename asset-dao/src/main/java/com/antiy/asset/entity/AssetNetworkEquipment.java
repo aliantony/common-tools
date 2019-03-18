@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -18,62 +19,77 @@ public class AssetNetworkEquipment extends BaseEntity {
     /**
      * 接口数目
      */
+    @ApiModelProperty("接口数目")
     private Integer interfaceSize;
     /**
      * 是否无线:0-否,1-是
      */
+    @ApiModelProperty("是否无线")
     private Integer isWireless;
     /**
      * 端口数目
      */
+    @ApiModelProperty("端口数目")
     private Integer portSize;
     /**
      * cpu版本
      */
+    @ApiModelProperty("CPU版本")
     private String  cpuVersion;
     /**
      * cpu大小
      */
+    @ApiModelProperty("CPU")
     private Integer cpuSize;
     /**
      * ios
      */
+    @ApiModelProperty("IOS")
     private String  ios;
     /**
      * 内网IP
      */
+    @ApiModelProperty("内网IP")
     private String  innerIp;
     /**
      * 外网IP
      */
+    @ApiModelProperty("外网IP")
     private String  outerIp;
     /**
      * MAC地址
      */
+    @ApiModelProperty("MAC地址")
     private String  macAddress;
     /**
      * 子网掩码
      */
+    @ApiModelProperty("子网掩码")
     private String  subnetMask;
     /**
      * 预计带宽(M)
      */
+    @ApiModelProperty("预计带宽")
     private Integer expectBandwidth;
     /**
      * 配置寄存器(GB)
      */
+    @ApiModelProperty("配置寄存器")
     private Integer register;
     /**
      * DRAM大小
      */
+    @ApiModelProperty("DRAM大小")
     private Float   dramSize;
     /**
      * FLASH大小
      */
+    @ApiModelProperty("FLASH大小")
     private Float   flashSize;
     /**
      * NCRM大小
      */
+    @ApiModelProperty("NCRM大小")
     private Float   ncrmSize;
     /**
      * 创建人
@@ -90,6 +106,7 @@ public class AssetNetworkEquipment extends BaseEntity {
     /**
      * 备注
      */
+    @ApiModelProperty("描述")
     private String  memo;
     /**
      * 更新时间

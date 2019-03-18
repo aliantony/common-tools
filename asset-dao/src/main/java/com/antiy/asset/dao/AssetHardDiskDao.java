@@ -4,6 +4,7 @@ import com.antiy.asset.entity.AssetCpu;
 import com.antiy.asset.entity.AssetHardDisk;
 import com.antiy.asset.vo.query.AssetHardDiskQuery;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface AssetHardDiskDao extends IBaseDao<AssetHardDisk> {
 
     List<AssetHardDisk> findListAssetHardDisk(AssetHardDiskQuery query) throws Exception;
 
-    Integer updateBatch(List<AssetHardDisk> assetHardDiskList) throws Exception;
+    Integer updateBatch(@Param(value = "list") List<AssetHardDisk> assetHardDiskList) throws Exception;
 
     Integer insertBatch(List<AssetHardDisk> assetHardDiskList);
 

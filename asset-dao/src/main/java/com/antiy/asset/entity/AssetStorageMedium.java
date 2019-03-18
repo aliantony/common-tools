@@ -2,6 +2,8 @@ package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p></p>
  *
@@ -18,6 +20,7 @@ public class AssetStorageMedium extends BaseEntity {
     /**
      * 最大存储量
      */
+    @ApiModelProperty("最大存储量")
     private String  maximumStorage;
     /**
      * 单机磁盘数

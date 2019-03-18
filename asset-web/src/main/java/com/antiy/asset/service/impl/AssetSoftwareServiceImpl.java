@@ -36,6 +36,7 @@ import com.antiy.asset.templet.AssetSoftwareEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
 import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.*;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.AssetImportRequest;
@@ -51,10 +52,7 @@ import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.utils.DateUtils;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.antiy.common.utils.ParamterExceptionUtils;
+import com.antiy.common.utils.*;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -120,12 +118,15 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 try {
                     AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
 
+
+
                     // AssetSoftwareLicense license = BeanConvert.convertBean(request.getSoftwareLicenseRequest(),
                     // AssetSoftwareLicense.class);
                     // AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
                     // AssetPortProtocol.class);
 
                     ParamterExceptionUtils.isTrue(!CheckRepeatName(assetSoftware.getName()), "资产名称重复");
+                    BusinessExceptionUtils.isTrue (!Objects.isNull (assetCategoryModelDao.getById (com.antiy.common.utils.DataTypeUtils.stringToInteger (assetSoftware.getCategoryModel ()))), "品类型号不存在，或已经注销");
 
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
@@ -179,7 +180,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
-
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals ("品类型号不存在，或已经注销",e.getMessage()), "品类型号不存在，或已经注销");
                     logger.error("录入失败", e);
                 }
                 return 0;
@@ -223,8 +224,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // 如果软件已退役，修改资产状态为待分析，并启动登记流程
         AssetSoftware software = assetSoftwareDao.getById(request.getId());
         Integer softwareStatus = software.getSoftwareStatus();
-        if (request.getActivityRequest() != null && softwareStatus.equals(SoftwareStatusEnum.RETIRE)
+        if (request.getActivityRequest() != null && softwareStatus.equals(SoftwareStatusEnum.RETIRE.getCode())
             || softwareStatus.equals(SoftwareStatusEnum.NOT_REGSIST.getCode())) {
+            ParamterExceptionUtils.isNull(request.getActivityRequest(), "activityRequest参数不能为空");
             ActionResponse actionResponse = activityClient.manualStartProcess(request.getActivityRequest());
             // 如果流程引擎为空,直接返回-1
             if (null == actionResponse
@@ -614,6 +616,22 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         int a = 0;
         StringBuilder builder = new StringBuilder();
         for (AssetSoftwareEntity entity : resultDataList) {
+            if (StringUtils.isBlank(entity.getCategory())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("软件品类为空");
+                continue;
+            }
+
+            AssetCategoryModel categoryModel = assetCategoryModelDao.getById (com.antiy.common.utils.DataTypeUtils.stringToInteger (entity.getCategory ()));
+
+            if (Objects.isNull(categoryModel)){
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("选择的品类型号不存在，或已经注销！");
+                continue;
+            }
+
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
                 a++;
@@ -632,12 +650,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 builder.append("第").append(a).append("行").append("软件版本为空");
                 continue;
             }
-            if (StringUtils.isBlank(entity.getCategory())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("软件品类为空");
-                continue;
-            }
+
             if (Objects.isNull(entity.getServiceLife()) && entity.getAuthorization() == 1) {
                 error++;
                 a++;
