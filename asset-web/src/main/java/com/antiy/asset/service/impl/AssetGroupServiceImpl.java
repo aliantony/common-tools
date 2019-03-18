@@ -110,7 +110,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public Integer updateAssetGroup(AssetGroupRequest request) throws Exception {
-        String groupName = assetGroupDao.getById(DataTypeUtils.stringToInteger(request.getId())).getName();
+        String groupName = assetGroupDao.getById(request.getId()).getName();
         if (!request.getName().equals(groupName)) {
             // 判重
             String assetName = request.getName();
@@ -224,7 +224,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public AssetGroupResponse findGroupById(String id) throws Exception {
         AssetGroupResponse assetGroupResponse = assetGroupToResponseConverter
-            .convert(assetGroupDao.getById(Integer.valueOf(id)), AssetGroupResponse.class);
+            .convert(assetGroupDao.getById(id), AssetGroupResponse.class);
         return assetGroupResponse;
     }
 
