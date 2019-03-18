@@ -116,6 +116,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 try {
                     AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
 
+
+
                     // AssetSoftwareLicense license = BeanConvert.convertBean(request.getSoftwareLicenseRequest(),
                     // AssetSoftwareLicense.class);
                     // AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
@@ -612,6 +614,22 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         int a = 0;
         StringBuilder builder = new StringBuilder();
         for (AssetSoftwareEntity entity : resultDataList) {
+            if (StringUtils.isBlank(entity.getCategory())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("软件品类为空");
+                continue;
+            }
+
+            AssetCategoryModel categoryModel = assetCategoryModelDao.getById (com.antiy.common.utils.DataTypeUtils.stringToInteger (entity.getCategory ()));
+
+            if (Objects.isNull(categoryModel)){
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("选择的品类型号不存在，或已经注销！");
+                continue;
+            }
+
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
                 a++;
@@ -630,12 +648,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 builder.append("第").append(a).append("行").append("软件版本为空");
                 continue;
             }
-            if (StringUtils.isBlank(entity.getCategory())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("软件品类为空");
-                continue;
-            }
+
             if (Objects.isNull(entity.getServiceLife()) && entity.getAuthorization() == 1) {
                 error++;
                 a++;
