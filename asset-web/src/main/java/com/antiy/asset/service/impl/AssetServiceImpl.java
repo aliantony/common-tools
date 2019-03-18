@@ -398,6 +398,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         Asset asset1 = BeanConvert.convertBean(assetOthersRequest, Asset.class);
 
+                        BusinessExceptionUtils.isTrue(!Objects.isNull (assetUserDao.getById (DataTypeUtils.stringToInteger (assetOthersRequest.getResponsibleUserId ()))), "使用者不存在，或已经注销");
+
+                        BusinessExceptionUtils.isTrue (!Objects.isNull (assetCategoryModelDao.getById (DataTypeUtils.stringToInteger (assetOthersRequest.getCategoryModel ()))), "品类型号不存在，或已经注销");
+
+                        String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                                DataTypeUtils.stringToInteger(assetOthersRequest.getAreaId ()));
+
+                        SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+
+                        BusinessExceptionUtils.isTrue (!Objects.isNull (sysArea), "当前区域不存在，或已经注销");
+
                         List<AssetGroupRequest> assetGroup = assetOthersRequest.getAssetGroups();
 
                         if (CollectionUtils.isNotEmpty(assetGroup)) {
@@ -447,11 +458,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     return Integer.parseInt(aid);
                 } catch (RequestParamValidateException e) {
                     transactionStatus.setRollbackOnly();
-                    if (e.getMessage().equals("编号重复")) {
-                        ParamterExceptionUtils.isTrue(false, "编号重复");
-                    } else {
-                        ParamterExceptionUtils.isTrue(false, "资产名称重复");
-                    }
+                    ParamterExceptionUtils.isTrue(!StringUtils.equals ("编号重复",e.getMessage()), "编号重复");
+                    ParamterExceptionUtils.isTrue(!StringUtils.equals ("资产名称重复",e.getMessage()), "资产名称重复");
                     logger.error("录入失败", e);
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
