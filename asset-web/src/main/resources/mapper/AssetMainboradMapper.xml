@@ -320,6 +320,16 @@
             )
         </foreach>
     </insert>
+    <update id="updateBatch" parameterType="java.util.List">
+        <foreach collection="list" separator=";" index="index" item="item">
+            update
+            <include refid="Table_Name"></include>
+            <trim prefix="SET" suffixOverrides=",">
+                <include refid="Set_Column_List"></include>
+            </trim>
+            where id = #{item.id}
+        </foreach>
+    </update>
     <select id="findMainboardByAssetId" resultMap="BaseResultMap"
             parameterType="int">
         select id, brand, model, serial, bios_version, bios_date from

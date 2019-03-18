@@ -3,6 +3,7 @@ package com.antiy.asset.dao;
 import com.antiy.asset.entity.AssetNetworkCard;
 import com.antiy.asset.vo.query.AssetNetworkCardQuery;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface AssetNetworkCardDao extends IBaseDao<AssetNetworkCard> {
 
     List<AssetNetworkCard> findListAssetNetworkCard(AssetNetworkCardQuery query) throws Exception;
 
-    Integer updateBatch(List<AssetNetworkCard> assetNetworkCardList) throws Exception;
+    Integer updateBatch(@Param(value = "list") List<AssetNetworkCard> assetNetworkCardList) throws Exception;
 
     Integer insertBatch(List<AssetNetworkCard> assetNetworkCardList);
 
