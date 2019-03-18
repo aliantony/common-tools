@@ -88,7 +88,7 @@ public class NetworkEquipmentFieldCompareImpl extends AbstractChangeRecordCompar
             oldAssetBusinessInfo.setHouseLocation(oldAsset.getHouseLocation());
             oldAssetBusinessInfo.setDescrible(oldAsset.getDescrible());
             oldAssetBusinessInfo.setBuyDate(oldAsset.getBuyDate());
-            oldAssetBusinessInfo.setWarranty(newAsset.getWarranty());
+            oldAssetBusinessInfo.setWarranty(oldAsset.getWarranty());
 
             Asset newAssetBusinessInfo = new Asset();
             // redis调用（通过区域ID查询名称）
