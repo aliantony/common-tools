@@ -1,32 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -54,6 +27,31 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -176,7 +174,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         BusinessExceptionUtils.isTrue (!Objects.isNull (assetCategoryModelDao.getById (DataTypeUtils.stringToInteger (requestAsset.getCategoryModel ()))), "品类型号不存在，或已经注销");
 
-                        BusinessExceptionUtils.isTrue (!Objects.isNull (sysArea), "当前区域不存在，或已经注销");
+                        BusinessExceptionUtils.isTrue (!Objects.isNull (sysArea), "选择区域不存在，或已经注销");
 
 
                         List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
@@ -409,7 +407,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
 
-                        BusinessExceptionUtils.isTrue (!Objects.isNull (sysArea), "当前区域不存在，或已经注销");
+                        BusinessExceptionUtils.isTrue (!Objects.isNull (sysArea), "选择区域不存在，或已经注销");
 
                         List<AssetGroupRequest> assetGroup = assetOthersRequest.getAssetGroups();
 
@@ -469,7 +467,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     BusinessExceptionUtils.isTrue(!StringUtils.equals ("资产组名称获取失败",e.getMessage()), "资产组名称获取失败");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals ("使用者不存在，或已经注销",e.getMessage()), "使用者不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals ("品类型号不存在，或已经注销",e.getMessage()), "品类型号不存在，或已经注销");
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals ("当前区域不存在，或已经注销",e.getMessage()), "品类型号不存在，或已经注销");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals ("选择区域不存在，或已经注销",e.getMessage()), "品类型号不存在，或已经注销");
                 }
                 return 0;
             }
@@ -1854,6 +1852,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public String importPc(MultipartFile file, AssetImportRequest importRequest) throws Exception {
+
+        String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                DataTypeUtils.stringToInteger(importRequest.getAreaId ()));
+
+        SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+        if (Objects.isNull(sysArea)){
+            return "上传失败，选择区域不存在，或已被注销！";
+        }
         ImportResult<ComputeDeviceEntity> result = ExcelUtils.importExcelFromClient(ComputeDeviceEntity.class, file, 0,
             0);
         if (Objects.isNull(result.getDataList())) {
@@ -1863,7 +1869,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int repeat = 0;
         int error = 0;
         int a = 0;
-        String user = null;
         StringBuilder builder = new StringBuilder();
         List<ComputeDeviceEntity> dataList = result.getDataList();
         if (dataList.size() == 0) {
@@ -2116,6 +2121,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public String importNet(MultipartFile file, AssetImportRequest importRequest) throws Exception {
+        String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                DataTypeUtils.stringToInteger(importRequest.getAreaId ()));
+
+        SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+        if (Objects.isNull(sysArea)){
+            return "上传失败，选择区域不存在，或已被注销！";
+        }
         ImportResult<NetworkDeviceEntity> result = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class, file, 0,
             0);
         if (Objects.isNull(result.getDataList())) {
@@ -2258,7 +2270,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public String importSecurity(MultipartFile file, AssetImportRequest importRequest) throws Exception {
+        String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                DataTypeUtils.stringToInteger(importRequest.getAreaId ()));
 
+        SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+        if (Objects.isNull(sysArea)){
+            return "上传失败，选择区域不存在，或已被注销！";
+        }
         ImportResult<SafetyEquipmentEntiy> result = ExcelUtils.importExcelFromClient(SafetyEquipmentEntiy.class, file,
             0, 0);
 
@@ -2388,6 +2406,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public String importStory(MultipartFile file, AssetImportRequest importRequest) throws Exception {
+        String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                DataTypeUtils.stringToInteger(importRequest.getAreaId ()));
+
+        SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+        if (Objects.isNull(sysArea)){
+            return "上传失败，选择区域不存在，或已被注销！";
+        }
         ImportResult<StorageDeviceEntity> result = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 0,
             0);
         if (Objects.isNull(result.getDataList())) {
@@ -2518,6 +2543,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public String importOhters(MultipartFile file, AssetImportRequest importRequest) throws Exception {
+        String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                DataTypeUtils.stringToInteger(importRequest.getAreaId ()));
+
+        SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+        if (Objects.isNull(sysArea)){
+            return "上传失败，选择区域不存在，或已被注销！";
+        }
         ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 0, 0);
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
