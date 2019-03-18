@@ -58,7 +58,7 @@ public class AssetAdmittanceController {
     @ApiOperation(value = "准入管理", notes = "准入管理")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/access/anagement", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:asset:accessManagement ')")
+    @PreAuthorize(value = "hasAuthority('asset:admittance:accessManagement')")
     public ActionResponse anagement(@RequestBody AdmittanceRequest admittance) throws Exception {
         ParamterExceptionUtils.isNull(admittance, "资产不能为空");
         ParamterExceptionUtils.isNull(admittance.getStringId(), "资产主键不能为空");
@@ -77,7 +77,7 @@ public class AssetAdmittanceController {
     @ApiOperation(value = "准入管理导出", notes = "准入管理")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/access/export", method = RequestMethod.GET)
-    @PreAuthorize(value = "hasAuthority('asset:asset:export ')")
+    @PreAuthorize(value = "hasAuthority('asset:admittance:export')")
     public ActionResponse export(@ApiParam(value = "asset") @RequestParam(required = false) Integer status) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setAdmittanceStatus(status);

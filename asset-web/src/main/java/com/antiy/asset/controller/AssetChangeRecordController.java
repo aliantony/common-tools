@@ -38,6 +38,7 @@ public class AssetChangeRecordController {
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
+    // @PreAuthorize(value = "hasAuthority('asset:changerecord:saveSingle')")
     public ActionResponse saveSingle(@ApiParam(value = "assetChangeRecord") @RequestBody AssetChangeRecordRequest assetChangeRecordRequest) throws Exception {
         return iAssetChangeRecordService.saveAssetChangeRecord(assetChangeRecordRequest);
     }
@@ -88,6 +89,7 @@ public class AssetChangeRecordController {
     @ApiOperation(value = "通过ID查询变更信息统一接口", notes = "业务ID")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class, responseContainer = "actionResponse") })
     @RequestMapping(value = "/queryUniformChangeInfo", method = RequestMethod.GET)
+    // @PreAuthorize(value = "hasAuthority('asset:changerecord:queryUniformChangeInfo')")
     public ActionResponse queryUniformChangeInfo(@ApiParam(value = "业务ID") Integer businessId, @ApiParam(value = "品类型号ID") Integer categoryModelId) throws Exception {
         return ActionResponse.success(iAssetChangeRecordService.queryUniformChangeInfo(businessId, categoryModelId));
     }

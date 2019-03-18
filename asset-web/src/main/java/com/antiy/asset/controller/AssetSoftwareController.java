@@ -120,6 +120,7 @@ public class AssetSoftwareController {
      * @return actionResponse
      */
     @ApiOperation(value = "导出模板文件", notes = "主键封装对象")
+    @PreAuthorize(value = "hasAuthority('asset:software:export')")
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
     public void export() throws Exception {
         iAssetSoftwareService.exportTemplate();
@@ -128,7 +129,7 @@ public class AssetSoftwareController {
     @ApiOperation(value = "查询厂商接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/pulldown/manufacturer", method = RequestMethod.GET)
-    @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
+    @PreAuthorize(value = "hasAuthority('asset:software:pulldownManufacturer')")
     public ActionResponse<List<String>> pulldownManufacturer() throws Exception {
         return ActionResponse.success(iAssetSoftwareService.pulldownManufacturer());
     }
@@ -141,6 +142,7 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "导出数据文件", notes = "主键封装对象")
     @RequestMapping(value = "/export/file", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:software:exportFile')")
     public void exportFile(@ApiParam(value = "assetSoftwareQuery") AssetSoftwareQuery assetSoftwareQuery,
                            HttpServletResponse response) throws Exception {
         iAssetSoftwareService.exportData(assetSoftwareQuery, response);
@@ -154,7 +156,8 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "导入软件excel文件", notes = "导入软件excel文件")
     @RequestMapping(value = "/import/file", method = RequestMethod.POST)
-    public ActionResponse exportFile(@ApiParam(value = "multipartFile") MultipartFile multipartFile,
+    @PreAuthorize(value = "hasAuthority('asset:software:importExcel')")
+    public ActionResponse importExcel(@ApiParam(value = "multipartFile") MultipartFile multipartFile,
                                      AssetImportRequest importRequest) throws Exception {
 
         return ActionResponse.success(iAssetSoftwareService.importExcel(multipartFile, importRequest));
@@ -169,6 +172,7 @@ public class AssetSoftwareController {
     @ApiOperation(value = "软件资产按二级品类型号统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/category", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:software:countAssetByCategory')")
     public ActionResponse countAssetByCategory() throws Exception {
         return ActionResponse.success(iAssetSoftwareService.countCategory());
     }
@@ -181,6 +185,7 @@ public class AssetSoftwareController {
     @ApiOperation(value = "软件资产按状态统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountColumnarResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/status", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:software:countAssetByStatus')")
     public ActionResponse countAssetByStatus() throws Exception {
         return ActionResponse.success(iAssetSoftwareService.countStatus());
     }
@@ -193,6 +198,7 @@ public class AssetSoftwareController {
     @ApiOperation(value = "软件资产按厂商统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/manufacturer", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:software:countAssetByManufacturer')")
     public ActionResponse countAssetByManufacturer() throws Exception {
         return ActionResponse.success(iAssetSoftwareService.countManufacturer());
     }
@@ -219,6 +225,7 @@ public class AssetSoftwareController {
     @ApiOperation(value = "软件详情查询", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/detail", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:software:querySoftwareDetail')")
     public ActionResponse<AssetSoftwareDetailResponse> querySoftwareDetail(@ApiParam(value = "softwareQuery") SoftwareQuery softwareQuery) throws Exception {
         ParamterExceptionUtils.isBlank(softwareQuery.getPrimaryKey(), "软件资产Id不能为空");
         return ActionResponse.success(iAssetSoftwareService.querySoftWareDetail(softwareQuery));
@@ -233,6 +240,7 @@ public class AssetSoftwareController {
     @ApiOperation(value = "软件安装列表查询", notes = "软件安装列表查询")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/install", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:software:queryInstallList')")
     public ActionResponse queryInstallList(@ApiParam(value = "softwareQuery") AssetSoftwareQuery softwareQuery) throws Exception {
         return ActionResponse.success(iAssetSoftwareService.findPageInstall(softwareQuery));
     }
@@ -246,6 +254,7 @@ public class AssetSoftwareController {
     @ApiOperation(value = "软件对应的硬件安装列表查询", notes = "软件安装列表查询")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/assetinstall", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:software:queryAssetInstallList')")
     public ActionResponse queryAssetInstallList(@ApiParam(value = "softwareQuery") AssetSoftwareQuery softwareQuery) throws Exception {
         return ActionResponse.success(iAssetSoftwareService.findPageAssetInstall(softwareQuery));
     }
@@ -259,6 +268,7 @@ public class AssetSoftwareController {
     @ApiOperation(value = "自动安装、人工安装进度", notes = "自动安装、人工安装进度")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/installSchedule", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:software:queryInstallSchedule')")
     public ActionResponse queryInstallSchedule(@ApiParam(value = "softwareQuery") AssetSoftwareQuery softwareQuery) throws Exception {
         ParamterExceptionUtils.isBlank(softwareQuery.getId(), "软件ID不能为空");
         SoftwareInstallResponse softwareInstallResponse = new SoftwareInstallResponse();
