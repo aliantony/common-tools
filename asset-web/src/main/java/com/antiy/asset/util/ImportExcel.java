@@ -31,53 +31,53 @@ import java.util.*;
  */
 public class ImportExcel {
 
-    private static Logger        log         = LogUtils.get(ImportExcel.class);
-    private static String        XLS         = ".xls";
-    private static String        XLSX        = ".xlsx";
+    private static Logger  log         = LogUtils.get(ImportExcel.class);
+    private static String  XLS         = ".xls";
+    private static String  XLSX        = ".xlsx";
     /**
      * 导入信息
      */
-    private StringBuilder sb          = new StringBuilder();
+    private StringBuilder  sb          = new StringBuilder();
     /**
      * 空白条数
      */
-    private int           blankNums   = 0;
+    private int            blankNums   = 0;
     /**
      * 失败条数
      */
-    private int           failNums    = 0;
+    private int            failNums    = 0;
     /**
      * 成功条数
      */
-    private int           successNums = 0;
+    private int            successNums = 0;
     /**
      * 总条数
      */
-    private int           totalNums   = 0;
+    private int            totalNums   = 0;
     /**
      * 工作薄对象
      */
-    private XSSFWorkbook         wb;
+    private XSSFWorkbook   wb;
 
     /**
      * 工作表对象
      */
-    private XSSFSheet            sheet;
+    private XSSFSheet      sheet;
 
     /**
      * 标题行号
      */
-    private int                  headerNum;
+    private int            headerNum;
 
     /**
      * 最后一样行号
      */
-    private int                  lastRowNum;
+    private int            lastRowNum;
 
     /**
      * 注解列表Obejct{excelField, field/method}
      */
-    private List<Object[]>       annotationList;
+    private List<Object[]> annotationList;
 
     /**
      * 构造方法
@@ -159,8 +159,6 @@ public class ImportExcel {
         this.lastRowNum = this.sheet.getLastRowNum() + headerNum + 1;
         log.debug("Initialize success.");
     }
-
-
 
     /**
      * 初始化注解列表
@@ -288,16 +286,22 @@ public class ImportExcel {
         List<T> dataList = new ArrayList<>();
         boolean flag = true;
         Row firstRow = this.getRow(0);
-        int length = clazz.getDeclaredFields ().length;
-        int numberOfCells = firstRow.getPhysicalNumberOfCells ();
-        if (length!=numberOfCells){
+        int length = 0;
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(ExcelField.class)) {
+                length++;
+            }
+        }
+        int numberOfCells = firstRow.getPhysicalNumberOfCells();
+        if (length != numberOfCells) {
             sb.append("模板不匹配,请重新选择对应模板！");
             return null;
         }
         for (int i = getDataRownum(); i < lastRowNum; i++) {
             // 数据行
             Row dataRow = this.getRow(i);
-            //是否是空行
+            // 是否是空行
             if (isRowEmpty(dataRow)) {
                 blankNums++;
                 sb.append("数据有误，第").append(i).append("行为空行");
@@ -311,13 +315,12 @@ public class ImportExcel {
             for (Object[] os : annotationList) {
                 Object val = this.getCellValue(dataRow, column++);
                 ExcelField ef = (ExcelField) os[0];
-                //必填字段校验
+                // 必填字段校验
                 if (val == null && ef.required()) {
                     failNums++;
-                    sb.append("数据不能为空,第").append(dataRow.getRowNum()).append("行，第").append(column)
-                            .append("列").append(ef.title()).append(",");
-                    log.error("数据不能为空,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title() + " "
-                            + val);
+                    sb.append("数据不能为空,第").append(dataRow.getRowNum()).append("行，第").append(column).append("列")
+                        .append(ef.title()).append(",");
+                    log.error("数据不能为空,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title() + " " + val);
                     flag = false;
                     break;
                 }
@@ -350,8 +353,8 @@ public class ImportExcel {
                         } catch (Exception e) {
                             failNums++;
                             flag = false;
-                            sb.append("数据格式错误,第").append(i).append("行，第").append(column).append("列")
-                                .append(ef.title()).append(":").append(val).append(",");
+                            sb.append("数据格式错误,第").append(i).append("行，第").append(column).append("列").append(ef.title())
+                                .append(":").append(val).append(",");
                             log.error("数据格式错误,第" + i + "行，第" + column + "列" + ef.title() + " " + val);
                             break;
                         }
@@ -362,10 +365,9 @@ public class ImportExcel {
                         } catch (NumberFormatException e) {
                             flag = false;
                             failNums++;
-                            sb.append("数据格式错误,第").append(i).append("行，第").append(column).append("列")
-                                .append(ef.title()).append(val).append(",");
-                            log.error(
-                                "数据格式错误,第" + i + "行，第" + column + "列：" + ef.title() + " " + val);
+                            sb.append("数据格式错误,第").append(i).append("行，第").append(column).append("列").append(ef.title())
+                                .append(val).append(",");
+                            log.error("数据格式错误,第" + i + "行，第" + column + "列：" + ef.title() + " " + val);
                             break;
                         }
                     } else if (valType == Double.class) {
@@ -396,8 +398,6 @@ public class ImportExcel {
         return dataList;
     }
 
-
-
     /**
      * 判断是否是空白行
      *
@@ -423,8 +423,8 @@ public class ImportExcel {
      * @return
      */
     public String getResultMsg() {
-        sb.append("成功条数:").append(successNums).append(",").append("空白条数:").append(blankNums).append(",")
-            .append("失败条数:").append(failNums).append(",").append("总条数:").append(totalNums).append(".");
+        sb.append("成功条数:").append(successNums).append(",").append("空白条数:").append(blankNums).append(",").append("失败条数:")
+            .append(failNums).append(",").append("总条数:").append(totalNums).append(".");
         String resultString = sb.toString();
         sb.delete(0, sb.length());
         return resultString;
