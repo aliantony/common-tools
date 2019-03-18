@@ -2,6 +2,8 @@ package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p> 安全设备详情表 </p>
  *
@@ -16,8 +18,9 @@ public class AssetSafetyEquipment extends BaseEntity {
      */
     private String assetId;
     /**
-     * mac
+     * MAC地址
      */
+    @ApiModelProperty("MAC地址")
     private String mac;
     /**
      * 特征库版本
@@ -28,12 +31,13 @@ public class AssetSafetyEquipment extends BaseEntity {
      */
     private String  strategy;
     /**
-     * 策略配置
+     * 软件版本
      */
     private String  softwareVersion;
     /**
-     * 策略配置
+     * IP地址
      */
+    @ApiModelProperty("IP地址")
     private String  ip;
     /**
      * 备注

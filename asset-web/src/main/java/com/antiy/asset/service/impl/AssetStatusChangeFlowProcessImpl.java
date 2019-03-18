@@ -41,11 +41,10 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         }
 
         // 检查资产主表的首次入网时间，为空时写入入网时间
-        if (AssetStatusEnum.NET_IN.getCode().equals(assetStatusEnum.getCode())) {
-            Asset currentAsset = assetDao.getById(assetStatusReqeust.getAssetId());
-            if (currentAsset == null) {
-                asset.setFirstEnterNett(System.currentTimeMillis());
-            }
+
+        Asset currentAsset = assetDao.getById(assetStatusReqeust.getAssetId());
+        if (currentAsset != null && currentAsset.getFirstEnterNett() == null) {
+            asset.setFirstEnterNett(System.currentTimeMillis());
         }
         asset.setAssetStatus(assetStatusEnum.getCode());
         asset.setId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));

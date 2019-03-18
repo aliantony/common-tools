@@ -26,6 +26,11 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
     @Encode
     private String assetId;
     /**
+     * IP
+     */
+    @ApiModelProperty("IP")
+    private String ip;
+    /**
      * mac
      */
     @ApiModelProperty("mac")
@@ -86,15 +91,19 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
         this.memo = memo;
     }
 
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
     @Override
     public String toString() {
-        return "AssetSafetyEquipmentRequest{" +
-                "id='" + id + '\'' +
-                ", assetId='" + assetId + '\'' +
-                ", featureLibrary='" + featureLibrary + '\'' +
-                ", strategy='" + strategy + '\'' +
-                ", memo='" + memo + '\'' +
-                '}';
+        return "AssetSafetyEquipmentRequest{" + "id='" + id + '\'' + ", assetId='" + assetId + '\'' + ", ip='" + ip
+               + '\'' + ", mac='" + mac + '\'' + ", featureLibrary='" + featureLibrary + '\'' + ", strategy='"
+               + strategy + '\'' + ", memo='" + memo + '\'' + '}';
     }
 
     @Override

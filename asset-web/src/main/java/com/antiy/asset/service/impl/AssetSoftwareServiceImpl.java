@@ -1,5 +1,26 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
@@ -32,25 +53,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -115,6 +117,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
                     AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
+
+
 
                     // AssetSoftwareLicense license = BeanConvert.convertBean(request.getSoftwareLicenseRequest(),
                     // AssetSoftwareLicense.class);
@@ -220,9 +224,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // 如果软件已退役，修改资产状态为待分析，并启动登记流程
         AssetSoftware software = assetSoftwareDao.getById(request.getId());
         Integer softwareStatus = software.getSoftwareStatus();
-        ParamterExceptionUtils.isNull(request.getActivityRequest(), "activityRequest参数不能为空");
         if (request.getActivityRequest() != null && softwareStatus.equals(SoftwareStatusEnum.RETIRE.getCode())
             || softwareStatus.equals(SoftwareStatusEnum.NOT_REGSIST.getCode())) {
+            ParamterExceptionUtils.isNull(request.getActivityRequest(), "activityRequest参数不能为空");
             ActionResponse actionResponse = activityClient.manualStartProcess(request.getActivityRequest());
             // 如果流程引擎为空,直接返回-1
             if (null == actionResponse
@@ -612,6 +616,22 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         int a = 0;
         StringBuilder builder = new StringBuilder();
         for (AssetSoftwareEntity entity : resultDataList) {
+            if (StringUtils.isBlank(entity.getCategory())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("软件品类为空");
+                continue;
+            }
+
+            AssetCategoryModel categoryModel = assetCategoryModelDao.getById (com.antiy.common.utils.DataTypeUtils.stringToInteger (entity.getCategory ()));
+
+            if (Objects.isNull(categoryModel)){
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("选择的品类型号不存在，或已经注销！");
+                continue;
+            }
+
             if (StringUtils.isBlank(entity.getName())) {
                 error++;
                 a++;
@@ -630,12 +650,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 builder.append("第").append(a).append("行").append("软件版本为空");
                 continue;
             }
-            if (StringUtils.isBlank(entity.getCategory())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("软件品类为空");
-                continue;
-            }
+
             if (Objects.isNull(entity.getServiceLife()) && entity.getAuthorization() == 1) {
                 error++;
                 a++;

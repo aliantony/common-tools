@@ -10,6 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetNetworkEquipment;
 import com.antiy.asset.util.CompareUtils;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.InfoLabelEnum;
@@ -40,15 +41,17 @@ public class NetworkEquipmentFieldCompareImpl extends AbstractChangeRecordCompar
     @Override
     List<Map<String, Object>> compareCommonBusinessInfo(Integer businessId) throws Exception {
         Integer hardware = 1;
+        int old = 0;
+        int fresh = 1;
         List<String> changeValStrList = super.getTwoRecentChangeVal(businessId, hardware);
         List<Map<String, Object>> changeValList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(changeValStrList) && changeValStrList.size() > 1) {
             // 变更前的信息
-            AssetOuterRequest oldAssetOuterRequest = JsonUtil.json2Object(changeValStrList.get(1),
+            AssetOuterRequest oldAssetOuterRequest = JsonUtil.json2Object(changeValStrList.get(old),
                 AssetOuterRequest.class);
             // 变更后的信息
             Asset oldAsset = assetRequestToAssetConverter.convert(oldAssetOuterRequest.getAsset(), Asset.class);
-            AssetOuterRequest newAssetOuterRequest = JsonUtil.json2Object(changeValStrList.get(0),
+            AssetOuterRequest newAssetOuterRequest = JsonUtil.json2Object(changeValStrList.get(fresh),
                 AssetOuterRequest.class);
             Asset newAsset = assetRequestToAssetConverter.convert(newAssetOuterRequest.getAsset(), Asset.class);
             // 拆分资产信息为通用信息和业务信息，便于前端显示
@@ -84,6 +87,8 @@ public class NetworkEquipmentFieldCompareImpl extends AbstractChangeRecordCompar
             oldAssetBusinessInfo.setLocation(oldAsset.getLocation());
             oldAssetBusinessInfo.setHouseLocation(oldAsset.getHouseLocation());
             oldAssetBusinessInfo.setDescrible(oldAsset.getDescrible());
+            oldAssetBusinessInfo.setBuyDate(oldAsset.getBuyDate());
+            oldAssetBusinessInfo.setWarranty(oldAsset.getWarranty());
 
             Asset newAssetBusinessInfo = new Asset();
             // redis调用（通过区域ID查询名称）
@@ -99,36 +104,71 @@ public class NetworkEquipmentFieldCompareImpl extends AbstractChangeRecordCompar
             newAssetBusinessInfo.setLocation(newAsset.getLocation());
             newAssetBusinessInfo.setHouseLocation(newAsset.getHouseLocation());
             newAssetBusinessInfo.setDescrible(newAsset.getDescrible());
+            newAssetBusinessInfo.setBuyDate(newAsset.getBuyDate());
+            newAssetBusinessInfo.setServiceLife(newAsset.getServiceLife());
+            newAssetBusinessInfo.setWarranty(newAsset.getWarranty());
 
             List<Map<String, Object>> assetBusinessInfoCompareResult = CompareUtils.compareClass(oldAssetBusinessInfo,
                 newAssetBusinessInfo, InfoLabelEnum.BUSINESSINFO.getMsg());
 
-            AssetNetworkEquipmentRequest oldNetworkEquipment = oldAssetOuterRequest.getNetworkEquipment();
-            // AssetNetworkEquipmentRequest networkEquipmentRequest = oldAssetOuterRequest.getNetworkEquipment();
-            // AssetNetworkEquipment oldNetworkEquipment = new AssetNetworkEquipment();
-            // oldNetworkEquipment.setPortSize(networkEquipmentRequest.getPortSize());
-            // oldNetworkEquipment.setInterfaceSize(networkEquipmentRequest.getInterfaceSize());
-            // oldNetworkEquipment.setIos(networkEquipmentRequest.getIos());
-            // oldNetworkEquipment.setFirmwareVersion(networkEquipmentRequest.getFirmwareVersion());
-            // oldNetworkEquipment.setIsWireless(networkEquipmentRequest.getIsWireless());
-            // oldNetworkEquipment.setInnerIp(networkEquipmentRequest.getInnerIp());
-            // oldNetworkEquipment.setOuterIp(networkEquipmentRequest.getOuterIp());
-            // oldNetworkEquipment.setMacAddress(networkEquipmentRequest.getMacAddress());
-            // oldNetworkEquipment.setSubnetMask(networkEquipmentRequest.getSubnetMask());
-            // oldNetworkEquipment.setExpectBandwidth(networkEquipmentRequest.getExpectBandwidth());
-            // oldNetworkEquipment.setRegister(networkEquipmentRequest.getRegister());
-            // oldNetworkEquipment.setSubnetMask(networkEquipmentRequest.getSubnetMask());
-            AssetNetworkEquipmentRequest newNetworkEquipment = newAssetOuterRequest.getNetworkEquipment();
-            List<Map<String, Object>> networkEquipmentCompareResult = null;
-            if (newNetworkEquipment != null && oldNetworkEquipment != null) {
-                networkEquipmentCompareResult = CompareUtils.compareClass(oldNetworkEquipment, newNetworkEquipment,
-                    InfoLabelEnum.BUSINESSINFO.getMsg());
-                changeValList.addAll(networkEquipmentCompareResult);
-            }
+            // 组合数据
             changeValList.addAll(assetCommonInoCompareResult);
             changeValList.addAll(assetBusinessInfoCompareResult);
+            changeValList.addAll(getDetailCompareResult(oldAssetOuterRequest, newAssetOuterRequest));
         }
         return changeValList;
+    }
+
+    /**
+     * 获取详细信息字段的对比结果
+     * @param oldAssetOuterRequest
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     */
+    private List<Map<String, Object>> getDetailCompareResult(AssetOuterRequest oldAssetOuterRequest,
+                                                             AssetOuterRequest newAssetOuterRequest) throws IllegalAccessException {
+        AssetNetworkEquipmentRequest oldNetworkEquipmentRequest = oldAssetOuterRequest.getNetworkEquipment();
+        AssetNetworkEquipmentRequest newWorkEquipmentRequest = newAssetOuterRequest.getNetworkEquipment();
+        AssetNetworkEquipment oldNetworkEquipment = new AssetNetworkEquipment();
+
+        oldNetworkEquipment.setPortSize(oldNetworkEquipmentRequest.getPortSize());
+        oldNetworkEquipment.setInterfaceSize(oldNetworkEquipmentRequest.getInterfaceSize());
+        oldNetworkEquipment.setIos(oldNetworkEquipmentRequest.getIos());
+        oldNetworkEquipment.setFirmwareVersion(oldNetworkEquipmentRequest.getFirmwareVersion());
+        oldNetworkEquipment.setIsWireless(oldNetworkEquipmentRequest.getIsWireless());
+        oldNetworkEquipment.setInnerIp(oldNetworkEquipmentRequest.getInnerIp());
+        oldNetworkEquipment.setOuterIp(oldNetworkEquipmentRequest.getOuterIp());
+        oldNetworkEquipment.setMacAddress(oldNetworkEquipmentRequest.getMacAddress());
+        oldNetworkEquipment.setSubnetMask(oldNetworkEquipmentRequest.getSubnetMask());
+        oldNetworkEquipment.setRegister(oldNetworkEquipmentRequest.getRegister());
+        oldNetworkEquipment.setSubnetMask(oldNetworkEquipmentRequest.getSubnetMask());
+        oldNetworkEquipment.setExpectBandwidth(oldNetworkEquipmentRequest.getExpectBandwidth());
+        oldNetworkEquipment.setCpuSize(oldNetworkEquipmentRequest.getCpuSize());
+        oldNetworkEquipment.setCpuVersion(oldNetworkEquipmentRequest.getCpuVersion());
+        oldNetworkEquipment.setDramSize(oldNetworkEquipmentRequest.getDramSize());
+        oldNetworkEquipment.setFlashSize(oldNetworkEquipmentRequest.getFlashSize());
+        oldNetworkEquipment.setNcrmSize(oldNetworkEquipmentRequest.getNcrmSize());
+
+        AssetNetworkEquipment newNetworkEquipment = new AssetNetworkEquipment();
+        newNetworkEquipment.setPortSize(newWorkEquipmentRequest.getPortSize());
+        newNetworkEquipment.setInterfaceSize(newWorkEquipmentRequest.getInterfaceSize());
+        newNetworkEquipment.setIos(newWorkEquipmentRequest.getIos());
+        newNetworkEquipment.setFirmwareVersion(newWorkEquipmentRequest.getFirmwareVersion());
+        newNetworkEquipment.setIsWireless(newWorkEquipmentRequest.getIsWireless());
+        newNetworkEquipment.setInnerIp(newWorkEquipmentRequest.getInnerIp());
+        newNetworkEquipment.setOuterIp(newWorkEquipmentRequest.getOuterIp());
+        newNetworkEquipment.setMacAddress(newWorkEquipmentRequest.getMacAddress());
+        newNetworkEquipment.setSubnetMask(newWorkEquipmentRequest.getSubnetMask());
+        newNetworkEquipment.setRegister(newWorkEquipmentRequest.getRegister());
+        newNetworkEquipment.setSubnetMask(newWorkEquipmentRequest.getSubnetMask());
+        newNetworkEquipment.setExpectBandwidth(newWorkEquipmentRequest.getExpectBandwidth());
+        newNetworkEquipment.setCpuSize(newWorkEquipmentRequest.getCpuSize());
+        newNetworkEquipment.setCpuVersion(newWorkEquipmentRequest.getCpuVersion());
+        newNetworkEquipment.setDramSize(newWorkEquipmentRequest.getDramSize());
+        newNetworkEquipment.setFlashSize(newWorkEquipmentRequest.getFlashSize());
+        newNetworkEquipment.setNcrmSize(newWorkEquipmentRequest.getNcrmSize());
+
+        return CompareUtils.compareClass(oldNetworkEquipment, newNetworkEquipment, InfoLabelEnum.BUSINESSINFO.getMsg());
     }
 
     @Override

@@ -1,12 +1,12 @@
 package com.antiy.asset.util;
 
-import io.swagger.annotations.ApiModelProperty;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @link 原文：https://blog.csdn.net/liu_ling1216/article/details/80207985
@@ -23,9 +23,9 @@ public class CompareUtils {
      * @throws ClassNotFoundException
      * @throws IllegalAccessException
      */
-    public static List<Map<String, Object>> compareClass(Object class1, Object class2, String label) throws ClassNotFoundException,
-                                                                                          IllegalAccessException {
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+    public static List<Map<String, Object>> compareClass(Object class1, Object class2,
+                                                         String label) throws IllegalAccessException {
+        List<Map<String, Object>> list = new ArrayList<>();
         // 获取对象的class
         Class<?> clazz1 = class1.getClass();
         Class<?> clazz2 = class2.getClass();
@@ -50,14 +50,13 @@ public class CompareUtils {
                         map2.put("label", label);
                         Object oldValue = field1[i].get(class1);
                         Object newValue = field2[j].get(class2);
-                        if (oldValue!= null && !oldValue.equals(newValue)){
-                            map2.put("operation",  "更改" );
-                        }else if (oldValue != null && newValue == null){
-                            map2.put("operation",  "删除" );
-                        }else if (oldValue == null && newValue != null){
-                            map2.put("operation",  "新增" );
+                        if (oldValue != null && newValue != null && !oldValue.equals(newValue)) {
+                            map2.put("operation", "更改");
+                        } else if (oldValue != null && newValue == null) {
+                            map2.put("operation", "删除");
+                        } else if (oldValue == null && newValue != null) {
+                            map2.put("operation", "新增");
                         }
-
                         list.add(map2);
                     }
                     break;
