@@ -228,7 +228,92 @@
             #{status },
         </if>
     </sql>
-
+    <sql id="ValueBatch">
+        <if test=" item.size != null">
+            #{item.size },
+        </if>
+        <if test=" item.operationSystem != null">
+            #{item.operationSystem },
+        </if>
+        <if test=" item.categoryModel != null">
+            #{item.categoryModel },
+        </if>
+        <if test=" item.name != null">
+            #{item.name },
+        </if>
+        <if test=" item.uploadSoftwareName != null">
+            #{item.uploadSoftwareName },
+        </if>
+        <if test=" item.path != null">
+            #{item.path },
+        </if>
+        <if test=" item.version != null">
+            #{item.version },
+        </if>
+        <if test=" item.manufacturer != null">
+            #{item.manufacturer },
+        </if>
+        <if test=" item.description != null">
+            #{item.description },
+        </if>
+        <if test=" item.assetGroup != null">
+            #{item.assetGroup },
+        </if>
+        <if test=" item.softwareLabel != null">
+            #{item.softwareLabel },
+        </if>
+        <if test=" item.softwareStatus != null">
+            #{item.softwareStatus },
+        </if>
+        <if test=" item.authorization != null">
+            #{item.authorization },
+        </if>
+        <if test=" item.reportSource != null">
+            #{item.reportSource },
+        </if>
+        <if test=" item.protocol != null">
+            #{item.protocol },
+        </if>
+        <if test=" item.serviceLife != null">
+            #{item.serviceLife },
+        </if>
+        <if test=" item.buyDate != null">
+            #{item.buyDate },
+        </if>
+        <if test=" item.language != null">
+            #{item.language },
+        </if>
+        <if test=" item.releaseTime != null">
+            #{item.releaseTime },
+        </if>
+        <if test=" item.serial != null">
+            #{item.serial },
+        </if>
+        <if test=" item.md5Code != null">
+            #{item.md5Code },
+        </if>
+        <if test=" item.publisher != null">
+            #{item.publisher },
+        </if>
+        <if test=" item.gmtCreate != null">
+            #{item.gmtCreate },
+        </if>
+        <if test=" item.memo != null">
+            #{item.memo },
+        </if>
+        <if test=" item.gmtModified != null">
+            #{item.gmtModified },
+        </if>
+        <if test=" item.createUser != null">
+            #{item.createUser },
+        </if>
+        <if test=" item.modifyUser != null">
+            #{item.modifyUser },
+        </if>
+        <if test=" item.status != null">
+            #{item.status },
+        </if>
+    </sql>
     <sql id="Set_Column_List">
         <if test=" size != null">
             size = #{size },
@@ -518,7 +603,15 @@
         <where>
             <trim prefixOverrides="and|or">
                 <choose>
-                    <when test="taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
+                    <when test="enterControl==true and taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
+                        and asset_software.id in
+                        <foreach index="index" item="item" collection="taskBussinessIds" open="(" separator=","
+                                 close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+
+                    <when test="enterControl!=true and taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
                         and (asset_software.status = 1 or asset_software.id in
                         <foreach index="index" item="item" collection="taskBussinessIds" open="(" separator=","
                                  close=")">
@@ -604,7 +697,15 @@
         <where>
             <trim prefixOverrides="and|or">
                 <choose>
-                    <when test="taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
+                    <!--enterControl 表示从控制台进入-->
+                    <when test="enterControl==true and taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
+                        and asset_software.id in
+                        <foreach index="index" item="item" collection="taskBussinessIds" open="(" separator=","
+                                 close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+                    <when test="enterControl!=true and taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
                         and (asset_software.status = 1 or asset_software.id in
                         <foreach index="index" item="item" collection="taskBussinessIds" open="(" separator=","
                                  close=")">
@@ -715,6 +816,22 @@
         where status = 1
     </select>
 
+    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetSoftware" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        INSERT INTO
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <foreach collection="assetList" item="item" separator=",">
+                <include refid="ValueBatch"></include>
+            </foreach>
+        </trim>
+
+
+    </insert>
+
     <select id="findCountInstall" resultType="java.lang.Integer"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select
@@ -801,7 +918,7 @@
         count(1) as count
         from
         asset_software_relation a
-        left join asset_network_card b on a.id = b.asset_id and b.status = 1
+        left join asset_network_card b on a.asset_id = b.asset_id and b.status = 1
         left join asset c on c.id = a.asset_id and c.status = 1
         left join asset_user d on c.responsible_user_id = d.id and d.status = 1
         where 1 = 1
@@ -811,8 +928,7 @@
         </if>
         <if test=" multipleQuery != null">
             and (c.name LIKE CONCAT('%',#{multipleQuery},'%')
-            or c.number LIKE CONCAT('%',#{multipleQuery},'%')
-            or c.serial LIKE CONCAT('%',#{multipleQuery},'%'))
+            or c.number LIKE CONCAT('%',#{multipleQuery},'%'))
         </if>
         <if test=" installType != null">
             and a.install_type = #{installType}
@@ -835,7 +951,8 @@
         case
         when group_concat(b.ip_address) is not null then
         group_concat(b.ip_address)
-        when (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is not null then
+        when (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is not
+        null then
         (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
         when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
@@ -860,7 +977,7 @@
         end as installType
         from
         asset_software_relation a
-        left join asset_network_card b on a.id = b.asset_id and b.status = 1
+        left join asset_network_card b on a.asset_id = b.asset_id and b.status = 1
         left join asset c on c.id = a.asset_id and c.status = 1 and c.id is not null
         left join asset_user d on c.responsible_user_id = d.id
         where 1 = 1
@@ -881,6 +998,7 @@
         </if>
         group by
         a.id
+        order by c.first_enter_nett desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>

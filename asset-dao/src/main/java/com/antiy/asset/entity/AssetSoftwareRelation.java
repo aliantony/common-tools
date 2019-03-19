@@ -14,12 +14,12 @@ public class AssetSoftwareRelation extends BaseEntity {
     /**
      * 资产主键
      */
-    private String assetId;
+    private String  assetId;
 
     /**
      * 软件主键
      */
-    private String softwareId;
+    private String  softwareId;
     /**
      * 软件资产状态：1待登记2待分析3可安装4已退役5不予登记
      */
@@ -39,7 +39,7 @@ public class AssetSoftwareRelation extends BaseEntity {
     /**
      * 安装方式1人工2自动
      */
-    private Integer installType;
+    private String  installType;
     /**
      * 安装状态0失败、1成功，2安装中
      */
@@ -71,11 +71,11 @@ public class AssetSoftwareRelation extends BaseEntity {
     /**
      * 安装时间
      */
-    private Long installTime;
+    private Long    installTime;
     /**
      * 责任人主键
      */
-    private String userId;
+    private String  userId;
     /**
      * 责任人
      */
@@ -125,11 +125,11 @@ public class AssetSoftwareRelation extends BaseEntity {
         return port;
     }
 
-    public Integer getInstallType() {
+    public String getInstallType() {
         return installType;
     }
 
-    public void setInstallType(Integer installType) {
+    public void setInstallType(String installType) {
         this.installType = installType;
     }
 
@@ -219,24 +219,11 @@ public class AssetSoftwareRelation extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetSoftwareRelation{" +
-                "assetId='" + assetId + '\'' +
-                ", softwareId='" + softwareId + '\'' +
-                ", softwareStatus=" + softwareStatus +
-                ", protocol='" + protocol + '\'' +
-                ", port='" + port + '\'' +
-                ", licenseSecretKey='" + licenseSecretKey + '\'' +
-                ", installType=" + installType +
-                ", installStatus=" + installStatus +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", memo='" + memo + '\'' +
-                ", createUser=" + createUser +
-                ", modifyUser=" + modifyUser +
-                ", status=" + status +
-                ", installTime=" + installTime +
-                ", userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                '}';
+        return "AssetSoftwareRelation{" + "assetId='" + assetId + '\'' + ", softwareId='" + softwareId + '\''
+               + ", softwareStatus=" + softwareStatus + ", protocol='" + protocol + '\'' + ", port='" + port + '\''
+               + ", licenseSecretKey='" + licenseSecretKey + '\'' + ", installType=" + installType + ", installStatus="
+               + installStatus + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo='" + memo + '\''
+               + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status + ", installTime="
+               + installTime + ", userId='" + userId + '\'' + ", userName='" + userName + '\'' + '}';
     }
 }

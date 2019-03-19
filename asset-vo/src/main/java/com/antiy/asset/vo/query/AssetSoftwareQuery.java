@@ -1,13 +1,14 @@
 package com.antiy.asset.vo.query;
 
+import java.util.List;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetSoftware 查询条件 </p>
@@ -145,6 +146,17 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty(value = "流程引擎当前代办任务Id")
     private List<String>  taskBussinessIds;
+
+    @ApiModelProperty(value = "是否从控制台进入，默认false 不从控制台进入，true为控制台进入")
+    private Boolean       enterControl    = false;
+
+    public Boolean getEnterControl() {
+        return enterControl;
+    }
+
+    public void setEnterControl(Boolean enterControl) {
+        this.enterControl = enterControl;
+    }
 
     public List<String> getTaskBussinessIds() {
         return taskBussinessIds;

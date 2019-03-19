@@ -14,12 +14,12 @@ public class AssetSoftwareEntity {
     /**
      * 软件名称
      */
-    @ExcelField(value = "name", align = 1, title = "软件名称", type = 0)
+    @ExcelField(value = "name", align = 1, title = "软件名称", type = 0,required = true)
     private String            name;
     /**
      * 软件品类
      */
-    @ExcelField(value = "category", align = 1, title = "软件品类", type = 0, dictType = "software_category")
+    @ExcelField(value = "category", align = 1, title = "软件品类", type = 0, dictType = "software_category",required = true)
     private String            category;
     /**
      * 软件名称
@@ -35,7 +35,7 @@ public class AssetSoftwareEntity {
     /**
      * 软件版本
      */
-    @ExcelField(value = "version", align = 1, title = "软件版本", type = 0)
+    @ExcelField(value = "version", align = 1, title = "软件版本", type = 0,required = true)
     private String            version;
 
     /**
@@ -65,24 +65,14 @@ public class AssetSoftwareEntity {
     /**
      * 到期时间
      */
-    @ExcelField(value = "service_life", align = 1, title = "到期时间", isDate = true)
+    @ExcelField(value = "service_life", align = 1, title = "到期时间", isDate = true,required = true)
     private Long              serviceLife;
     /**
      * 发布时间
      */
     @ExcelField(value = "releaseTime", align = 1, title = "发布时间", type = 0, isDate = true)
     private Long              releaseTime;
-    /**
-     * 软件地址
-     */
-    @ExcelField(value = "filePath", align = 1, title = "软件地址", type = 0)
-    private String            filePath;
 
-    /**
-     * 软件大小
-     */
-    @ExcelField(value = "size", align = 1, title = "软件大小", type = 0)
-    private Integer           size;
 
     /**
      * 软件描述
@@ -101,7 +91,7 @@ public class AssetSoftwareEntity {
     @Override
     public String toString() {
         return "AssetSoftwareEntity{" + "name='" + name + '\'' + ", manufacturer='" + manufacturer + '\''
-               + ", serial='" + serial + '\'' + ", size=" + size + ", operationSystem='" + operationSystem + '\''
+               + ", serial='" + serial + '\''  + ", operationSystem='" + operationSystem + '\''
                + ", category=" + category + ", version='" + version + '\'' + ", description='" + description + '\''
                + ", authorization=" + authorization + ", releaseTime=" + releaseTime + ", buyDate=" + buyDate
                + ", serviceLife=" + serviceLife + '}';
@@ -155,13 +145,7 @@ public class AssetSoftwareEntity {
         this.serial = serial;
     }
 
-    public Integer getSize() {
-        return size;
-    }
 
-    public void setSize(Integer size) {
-        this.size = size;
-    }
 
     public String getOperationSystem() {
         return operationSystem;
@@ -203,13 +187,6 @@ public class AssetSoftwareEntity {
         this.MD5 = MD5;
     }
 
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
 
 
 }
