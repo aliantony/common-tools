@@ -518,7 +518,15 @@
         <where>
             <trim prefixOverrides="and|or">
                 <choose>
-                    <when test="taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
+                    <when test="enterControl==true and taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
+                        and asset_software.id in
+                        <foreach index="index" item="item" collection="taskBussinessIds" open="(" separator=","
+                                 close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+
+                    <when test="enterControl!=true and taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
                         and (asset_software.status = 1 or asset_software.id in
                         <foreach index="index" item="item" collection="taskBussinessIds" open="(" separator=","
                                  close=")">
@@ -604,7 +612,15 @@
         <where>
             <trim prefixOverrides="and|or">
                 <choose>
-                    <when test="taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
+                    <!--enterControl 表示从控制台进入-->
+                    <when test="enterControl==true and taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
+                        and asset_software.id in
+                        <foreach index="index" item="item" collection="taskBussinessIds" open="(" separator=","
+                                 close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+                    <when test="enterControl!=true and taskBussinessIds!= null and taskBussinessIds.size() > 0 and ids == null and id == null">
                         and (asset_software.status = 1 or asset_software.id in
                         <foreach index="index" item="item" collection="taskBussinessIds" open="(" separator=","
                                  close=")">
@@ -834,7 +850,8 @@
         case
         when group_concat(b.ip_address) is not null then
         group_concat(b.ip_address)
-        when (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is not null then
+        when (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is not
+        null then
         (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
         when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
