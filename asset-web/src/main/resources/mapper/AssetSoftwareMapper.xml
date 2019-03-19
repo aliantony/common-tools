@@ -811,8 +811,7 @@
         </if>
         <if test=" multipleQuery != null">
             and (c.name LIKE CONCAT('%',#{multipleQuery},'%')
-            or c.number LIKE CONCAT('%',#{multipleQuery},'%')
-            or c.serial LIKE CONCAT('%',#{multipleQuery},'%'))
+            or c.number LIKE CONCAT('%',#{multipleQuery},'%'))
         </if>
         <if test=" installType != null">
             and a.install_type = #{installType}
@@ -881,6 +880,7 @@
         </if>
         group by
         a.id
+        order by c.first_enter_nett desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>

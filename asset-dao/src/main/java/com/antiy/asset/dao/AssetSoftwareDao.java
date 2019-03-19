@@ -3,6 +3,7 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
@@ -66,7 +67,7 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
 
     List<AssetSoftware> findInstallList(AssetSoftwareQuery softwareQuery);
 
-    List<AssetSoftwareInstallResponse> findAssetInstallList(AssetSoftwareQuery softwareQuery);
+    List<AssetSoftwareInstall> findAssetInstallList(AssetSoftwareQuery softwareQuery);
 
     Integer findAssetInstallCount(AssetSoftwareQuery softwareQuery);
 
