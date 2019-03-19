@@ -318,9 +318,9 @@ public class ImportExcel {
                 // 必填字段校验
                 if (val == null && ef.required()) {
                     failNums++;
-                    sb.append("数据不能为空,第").append(dataRow.getRowNum()).append("行，第").append(column).append("列")
+                    sb.append("数据不能为空,第").append(i+1).append("行，第").append(column).append("列")
                         .append(ef.title()).append(",");
-                    log.error("数据不能为空,第" + dataRow.getRowNum() + "行，第" + column + "列" + ef.title() + " " + val);
+                    log.error("数据不能为空,第" + (i+1) + "行，第" + column + "列" + ef.title() + " " + val);
                     flag = false;
                     break;
                 }
@@ -353,9 +353,9 @@ public class ImportExcel {
                         } catch (Exception e) {
                             failNums++;
                             flag = false;
-                            sb.append("数据格式错误,第").append(i).append("行，第").append(column).append("列").append(ef.title())
+                            sb.append("数据格式错误,第").append(i+1).append("行，第").append(column).append("列").append(ef.title())
                                 .append(":").append(val).append(",");
-                            log.error("数据格式错误,第" + i + "行，第" + column + "列" + ef.title() + " " + val);
+                            log.error("数据格式错误,第" + (i+1) + "行，第" + column + "列" + ef.title() + " " + val);
                             break;
                         }
                     } else if (valType == Long.class) {
@@ -365,9 +365,9 @@ public class ImportExcel {
                         } catch (NumberFormatException e) {
                             flag = false;
                             failNums++;
-                            sb.append("数据格式错误,第").append(i).append("行，第").append(column).append("列").append(ef.title())
+                            sb.append("数据格式错误,第").append(i+1).append("行，第").append(column).append("列").append(ef.title())
                                 .append(val).append(",");
-                            log.error("数据格式错误,第" + i + "行，第" + column + "列：" + ef.title() + " " + val);
+                            log.error("数据格式错误,第" + (i+1) + "行，第" + column + "列：" + ef.title() + " " + val);
                             break;
                         }
                     } else if (valType == Double.class) {
