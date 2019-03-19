@@ -14,12 +14,12 @@ public class AssetSoftwareEntity {
     /**
      * 软件名称
      */
-    @ExcelField(value = "name", align = 1, title = "软件名称", type = 0)
+    @ExcelField(value = "name", align = 1, title = "软件名称", type = 0,required = true)
     private String            name;
     /**
      * 软件品类
      */
-    @ExcelField(value = "category", align = 1, title = "软件品类", type = 0, dictType = "software_category")
+    @ExcelField(value = "category", align = 1, title = "软件品类", type = 0, dictType = "software_category",required = true)
     private String            category;
     /**
      * 软件名称
@@ -35,7 +35,7 @@ public class AssetSoftwareEntity {
     /**
      * 软件版本
      */
-    @ExcelField(value = "version", align = 1, title = "软件版本", type = 0)
+    @ExcelField(value = "version", align = 1, title = "软件版本", type = 0,required = true)
     private String            version;
 
     /**
@@ -65,7 +65,7 @@ public class AssetSoftwareEntity {
     /**
      * 到期时间
      */
-    @ExcelField(value = "service_life", align = 1, title = "到期时间", isDate = true)
+    @ExcelField(value = "service_life", align = 1, title = "到期时间", isDate = true,required = true)
     private Long              serviceLife;
     /**
      * 发布时间

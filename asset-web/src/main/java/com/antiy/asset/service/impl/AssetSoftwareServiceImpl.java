@@ -628,12 +628,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         StringBuilder builder = new StringBuilder();
         List<AssetSoftware> assetList = new ArrayList<> ();
         for (AssetSoftwareEntity entity : resultDataList) {
-            if (StringUtils.isBlank(entity.getCategory())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("软件品类为空");
-                continue;
-            }
+//            if (StringUtils.isBlank(entity.getCategory())) {
+//                error++;
+//                a++;
+//                builder.append("第").append(a).append("行").append("软件品类为空");
+//                continue;
+//            }
 
             AssetCategoryModel categoryModel = assetCategoryModelDao
                 .getById(com.antiy.common.utils.DataTypeUtils.stringToInteger(entity.getCategory()));
@@ -641,54 +641,51 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             if (Objects.isNull(categoryModel)) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("选择的品类型号不存在，或已经注销！");
+                builder.append("第").append(a).append("行").append("选择的品类型号不存在，或已经注销！，");
                 continue;
             }
 
-            if (StringUtils.isBlank(entity.getName())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("软件名称为空");
-                continue;
-            }
+//            if (StringUtils.isBlank(entity.getName())) {
+//                error++;
+//                a++;
+//                builder.append("第").append(a).append("行").append("软件名称为空");
+//                continue;
+//            }
             if (CheckRepeatName(entity.getName())) {
                 repeat++;
                 a++;
-                builder.append("第").append(a).append("行").append("软件名称重复");
-                continue;
-            }
-            if (StringUtils.isBlank(entity.getVersion())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("软件版本为空");
+                builder.append("第").append(a).append("行").append("软件名称重复，");
                 continue;
             }
 
-            if (Objects.isNull(entity.getServiceLife()) ) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("到期时间为空");
-                continue;
-            }
+//
+//            if (Objects.isNull(entity.getServiceLife()) ) {
+//                error++;
+//                a++;
+//                builder.append("第").append(a).append("行").append("到期时间为空");
+//                continue;
+//            }
+            if (repeat+error==0){
 
-            AssetSoftware asset = new AssetSoftware();
-            asset.setServiceLife(entity.getServiceLife());
-            asset.setGmtCreate(System.currentTimeMillis());
-            asset.setMd5Code(entity.getMD5());
-            asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            asset.setSoftwareStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
-            asset.setReleaseTime(entity.getReleaseTime());
-            asset.setName(entity.getName());
-            asset.setVersion(entity.getVersion());
-            asset.setManufacturer(entity.getManufacturer());
-            asset.setOperationSystem(entity.getOperationSystem());
-            asset.setSerial(entity.getSerial());
-            asset.setBuyDate(entity.getBuyDate());
-            asset.setAuthorization(entity.getAuthorization());
-            asset.setMemo(entity.getDescription());
-            asset.setDescription(entity.getDescription());
-            asset.setCategoryModel(entity.getCategory());
-            assetList.add (asset);
+                AssetSoftware asset = new AssetSoftware();
+                asset.setServiceLife(entity.getServiceLife());
+                asset.setGmtCreate(System.currentTimeMillis());
+                asset.setMd5Code(entity.getMD5());
+                asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                asset.setSoftwareStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
+                asset.setReleaseTime(entity.getReleaseTime());
+                asset.setName(entity.getName());
+                asset.setVersion(entity.getVersion());
+                asset.setManufacturer(entity.getManufacturer());
+                asset.setOperationSystem(entity.getOperationSystem());
+                asset.setSerial(entity.getSerial());
+                asset.setBuyDate(entity.getBuyDate());
+                asset.setAuthorization(entity.getAuthorization());
+                asset.setMemo(entity.getDescription());
+                asset.setDescription(entity.getDescription());
+                asset.setCategoryModel(entity.getCategory());
+                assetList.add (asset);
+            }
 
 
 
@@ -730,7 +727,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
 }
 
-        String res = "导入成功" + success + "条";
+        String res = "导入成功" + success + "条。";
 //        res += repeat > 0 ? ", " + repeat + "条软件名称重复" : "";
 //        res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
