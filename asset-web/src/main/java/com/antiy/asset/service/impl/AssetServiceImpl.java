@@ -1504,14 +1504,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetCpu> updateCpuList = Lists.newArrayList();
                         for (AssetCpu assetCpu : assetCpuList) {
                             assetCpu.setStatus(1);
+                            assetCpu.setAssetId(asset.getStringId());
                             // 修改的
-                            if (StringUtils.isNotBlank(assetCpu.getAssetId())) {
+                            if (StringUtils.isNotBlank(assetCpu.getStringId())) {
                                 assetCpu.setModifyUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
                                 assetCpu.setGmtModified(System.currentTimeMillis());
                                 updateCpuList.add(assetCpu);
                             } else {// 新增的
-                                assetCpu.setAssetId(asset.getStringId());
                                 assetCpu.setGmtCreate(System.currentTimeMillis());
                                 assetCpu.setCreateUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
@@ -1549,14 +1549,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetNetworkCard> updateNetworkList = Lists.newArrayList();
                         for (AssetNetworkCard assetNetworkCard : assetNetworkCardList) {
                             assetNetworkCard.setStatus(1);
+                            assetNetworkCard.setAssetId(asset.getStringId());
                             // 修改的
-                            if (StringUtils.isNotBlank(assetNetworkCard.getAssetId())) {
+                            if (StringUtils.isNotBlank(assetNetworkCard.getStringId())) {
                                 assetNetworkCard.setModifyUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
                                 assetNetworkCard.setGmtModified(System.currentTimeMillis());
                                 updateNetworkList.add(assetNetworkCard);
                             } else {// 新增的
-                                assetNetworkCard.setAssetId(asset.getStringId());
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
@@ -1595,14 +1595,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetMainborad> updateMainboradList = Lists.newArrayList();
                         for (AssetMainborad mainborad : assetMainborad) {
                             mainborad.setStatus(1);
+                            mainborad.setAssetId(asset.getStringId());
                             // 修改的
-                            if (StringUtils.isNotBlank(mainborad.getAssetId())) {
+                            if (StringUtils.isNotBlank(mainborad.getStringId())) {
                                 mainborad.setModifyUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
                                 mainborad.setGmtModified(System.currentTimeMillis());
                                 updateMainboradList.add(mainborad);
                             } else {// 新增的
-                                mainborad.setAssetId(asset.getStringId());
                                 mainborad.setGmtCreate(System.currentTimeMillis());
                                 mainborad.setCreateUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
@@ -1641,14 +1641,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetMemory> updateMemoryList = Lists.newArrayList();
                         for (AssetMemory memory : assetMemoryList) {
                             memory.setStatus(1);
+                            memory.setAssetId(asset.getStringId());
                             // 修改的
-                            if (StringUtils.isNotBlank(memory.getAssetId())) {
+                            if (StringUtils.isNotBlank(memory.getStringId())) {
                                 memory.setModifyUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
                                 memory.setGmtModified(System.currentTimeMillis());
                                 updateMemoryList.add(memory);
                             } else {// 新增的
-                                memory.setAssetId(asset.getStringId());
                                 memory.setGmtCreate(System.currentTimeMillis());
                                 memory.setCreateUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
@@ -1686,14 +1686,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetHardDisk> updateHardDiskList = Lists.newArrayList();
                         for (AssetHardDisk assetHardDisk : assetHardDiskList) {
                             assetHardDisk.setStatus(1);
+                            assetHardDisk.setAssetId(asset.getStringId());
                             // 修改的
-                            if (StringUtils.isNotBlank(assetHardDisk.getAssetId())) {
+                            if (StringUtils.isNotBlank(assetHardDisk.getStringId())) {
                                 assetHardDisk.setModifyUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
                                 assetHardDisk.setGmtModified(System.currentTimeMillis());
                                 updateHardDiskList.add(assetHardDisk);
                             } else {// 新增的
-                                assetHardDisk.setAssetId(asset.getStringId());
                                 assetHardDisk.setGmtCreate(System.currentTimeMillis());
                                 assetHardDisk.setCreateUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);

@@ -172,7 +172,7 @@
     </sql>
 
 
-    <insert id="insert"   parameterType="com.antiy.asset.entity.AssetCpu" useGeneratedKeys="true" keyProperty="id" >
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetCpu" useGeneratedKeys="true" keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -292,7 +292,39 @@
             update
             <include refid="Table_Name"></include>
             <trim prefix="SET" suffixOverrides=",">
-                <include refid="Set_Column_List"></include>
+                <if test=" item.assetId != null">
+                    asset_id = #{item.assetId },
+                </if>
+                <if test=" item.serial != null">
+                    serial = #{item.serial },
+                </if>
+                <if test=" item.brand != null">
+                    brand = #{item.brand },
+                </if>
+                <if test=" item.model != null">
+                    model = #{item.model },
+                </if>
+                <if test=" item.mainFrequency != null">
+                    main_frequency = #{item.mainFrequency },
+                </if>
+                <if test=" item.threadSize != null">
+                    thread_size = #{item.threadSize },
+                </if>
+                <if test=" item.coreSize != null">
+                    core_size = #{item.coreSize },
+                </if>
+                <if test=" item.gmtModified != null">
+                    gmt_modified = #{item.gmtModified },
+                </if>
+                <if test=" item.memo != null">
+                    memo = #{item.memo },
+                </if>
+                <if test=" item.modifyUser != null">
+                    modify_user = #{item.modifyUser },
+                </if>
+                <if test=" item.status != null">
+                    status = #{item.status },
+                </if>
             </trim>
             where id = #{item.id}
         </foreach>
