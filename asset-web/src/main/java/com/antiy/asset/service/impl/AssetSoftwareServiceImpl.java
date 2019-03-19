@@ -118,15 +118,16 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 try {
                     AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
 
-
-
                     // AssetSoftwareLicense license = BeanConvert.convertBean(request.getSoftwareLicenseRequest(),
                     // AssetSoftwareLicense.class);
                     // AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
                     // AssetPortProtocol.class);
 
                     ParamterExceptionUtils.isTrue(!CheckRepeatName(assetSoftware.getName()), "资产名称重复");
-                    BusinessExceptionUtils.isTrue (!Objects.isNull (assetCategoryModelDao.getById (com.antiy.common.utils.DataTypeUtils.stringToInteger (assetSoftware.getCategoryModel ()))), "品类型号不存在，或已经注销");
+                    BusinessExceptionUtils.isTrue(
+                        !Objects.isNull(assetCategoryModelDao.getById(
+                            com.antiy.common.utils.DataTypeUtils.stringToInteger(assetSoftware.getCategoryModel()))),
+                        "品类型号不存在，或已经注销");
 
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
@@ -180,7 +181,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals ("品类型号不存在，或已经注销",e.getMessage()), "品类型号不存在，或已经注销");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals("品类型号不存在，或已经注销", e.getMessage()),
+                        "品类型号不存在，或已经注销");
                     logger.error("录入失败", e);
                 }
                 return 0;
@@ -367,7 +369,19 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     public PageResult<AssetSoftwareResponse> findPageAssetSoftware(AssetSoftwareQuery query) throws Exception {
         Map<String, WaitingTaskReponse> waitingTasks = getAllSoftWaitingTask("soft");
         query.setTaskBussinessIds(new ArrayList<>(waitingTasks.keySet()));
-        return new PageResult<>(query.getPageSize(), this.findCountAssetSoftware(query), query.getCurrentPage(),
+
+        // 如果从控制台进入，并且流程引擎返回数据为空，则直接返回
+        if (MapUtils.isEmpty(waitingTasks) && query.getEnterControl()) {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
+        }
+
+        // 如果count 小于等于0，则表示没数据，也直接返回
+        int count = this.findCountAssetSoftware(query);
+        if (count <= 0) {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
+        }
+
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
             this.findListAssetSoftware(query, waitingTasks));
     }
 
@@ -401,7 +415,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     public List<EnumCountResponse> countManufacturer() throws Exception {
         int maxNum = 5;
         List<Integer> status = StatusEnumUtil.getSoftwareNotRetireStatusList();
-        List<Map<String, Object>> list =  assetSoftwareDao.countManufacturer(status);
+        List<Map<String, Object>> list = assetSoftwareDao.countManufacturer(status);
         return CountTypeUtil.getEnumCountResponse(maxNum, list);
 
     }
@@ -623,9 +637,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 continue;
             }
 
-            AssetCategoryModel categoryModel = assetCategoryModelDao.getById (com.antiy.common.utils.DataTypeUtils.stringToInteger (entity.getCategory ()));
+            AssetCategoryModel categoryModel = assetCategoryModelDao
+                .getById(com.antiy.common.utils.DataTypeUtils.stringToInteger(entity.getCategory()));
 
-            if (Objects.isNull(categoryModel)){
+            if (Objects.isNull(categoryModel)) {
                 error++;
                 a++;
                 builder.append("第").append(a).append("行").append("选择的品类型号不存在，或已经注销！");
@@ -735,6 +750,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareQuery.setQueryAssetCount(true);
         assetSoftwareQuery.setPageSize(com.antiy.asset.util.Constants.ALL_PAGE);
         Map<String, WaitingTaskReponse> waitingTasks = getAllSoftWaitingTask("soft");
+
+        // 如果流程引擎返回数据未空，并且导出的时候从工作台进入，则直接返回
+        if (MapUtils.isEmpty(waitingTasks) && assetSoftwareQuery.getEnterControl()) {
+            return;
+        }
+
         List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery, waitingTasks);
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setSheetName("资产信息表");
