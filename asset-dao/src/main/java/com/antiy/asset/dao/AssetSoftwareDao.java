@@ -73,4 +73,5 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
 
     Integer findCountInstall(AssetSoftwareQuery query);
 
+    Integer insertBatch(List<AssetSoftware> assetList);
 }

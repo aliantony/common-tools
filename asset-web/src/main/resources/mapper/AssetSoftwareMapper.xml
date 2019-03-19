@@ -228,7 +228,92 @@
             #{status },
         </if>
     </sql>
-
+    <sql id="ValueBatch">
+        <if test=" item.size != null">
+            #{item.size },
+        </if>
+        <if test=" item.operationSystem != null">
+            #{item.operationSystem },
+        </if>
+        <if test=" item.categoryModel != null">
+            #{item.categoryModel },
+        </if>
+        <if test=" item.name != null">
+            #{item.name },
+        </if>
+        <if test=" item.uploadSoftwareName != null">
+            #{item.uploadSoftwareName },
+        </if>
+        <if test=" item.path != null">
+            #{item.path },
+        </if>
+        <if test=" item.version != null">
+            #{item.version },
+        </if>
+        <if test=" item.manufacturer != null">
+            #{item.manufacturer },
+        </if>
+        <if test=" item.description != null">
+            #{item.description },
+        </if>
+        <if test=" item.assetGroup != null">
+            #{item.assetGroup },
+        </if>
+        <if test=" item.softwareLabel != null">
+            #{item.softwareLabel },
+        </if>
+        <if test=" item.softwareStatus != null">
+            #{item.softwareStatus },
+        </if>
+        <if test=" item.authorization != null">
+            #{item.authorization },
+        </if>
+        <if test=" item.reportSource != null">
+            #{item.reportSource },
+        </if>
+        <if test=" item.protocol != null">
+            #{item.protocol },
+        </if>
+        <if test=" item.serviceLife != null">
+            #{item.serviceLife },
+        </if>
+        <if test=" item.buyDate != null">
+            #{item.buyDate },
+        </if>
+        <if test=" item.language != null">
+            #{item.language },
+        </if>
+        <if test=" item.releaseTime != null">
+            #{item.releaseTime },
+        </if>
+        <if test=" item.serial != null">
+            #{item.serial },
+        </if>
+        <if test=" item.md5Code != null">
+            #{item.md5Code },
+        </if>
+        <if test=" item.publisher != null">
+            #{item.publisher },
+        </if>
+        <if test=" item.gmtCreate != null">
+            #{item.gmtCreate },
+        </if>
+        <if test=" item.memo != null">
+            #{item.memo },
+        </if>
+        <if test=" item.gmtModified != null">
+            #{item.gmtModified },
+        </if>
+        <if test=" item.createUser != null">
+            #{item.createUser },
+        </if>
+        <if test=" item.modifyUser != null">
+            #{item.modifyUser },
+        </if>
+        <if test=" item.status != null">
+            #{item.status },
+        </if>
+    </sql>
     <sql id="Set_Column_List">
         <if test=" size != null">
             size = #{size },
@@ -730,6 +815,22 @@
         select distinct manufacturer from asset_software
         where status = 1
     </select>
+
+    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetSoftware" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        INSERT INTO
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <foreach collection="assetList" item="item" separator=",">
+                <include refid="ValueBatch"></include>
+            </foreach>
+        </trim>
+
+
+    </insert>
 
     <select id="findCountInstall" resultType="java.lang.Integer"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
