@@ -126,7 +126,7 @@ public class AssetCategoryModelController {
     @ApiOperation(value = "查询硬件第二级数据接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/second", method = RequestMethod.GET)
-//    @PreAuthorize(value = "hasAuthority('asset:categorymodel:second')")
+//    @PreAuthorize(value = "hasAuthority('asset:categorymodel:getAssetCategoryByName')")
     public ActionResponse getAssetCategoryByName() throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.getNextLevelCategoryByName("硬件"));
     }
@@ -139,7 +139,7 @@ public class AssetCategoryModelController {
     @ApiOperation(value = "查询软件第二级数据接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/software", method = RequestMethod.GET)
-//    @PreAuthorize(value = "hasAuthority('asset:categorymodel:software')")
+//    @PreAuthorize(value = "hasAuthority('asset:categorymodel:getSoftwareCategoryByName')")
     public ActionResponse getSoftwareCategoryByName() throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.getNextLevelCategoryByName("软件"));
     }

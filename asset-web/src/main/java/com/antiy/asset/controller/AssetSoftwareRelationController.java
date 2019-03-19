@@ -198,6 +198,7 @@ public class AssetSoftwareRelationController {
     @ApiOperation(value = "安装软件", notes = "安装软件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/software/install", method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('asset:softwarerelation:installSoftware')")
     public ActionResponse installSoftware(@ApiParam(value = "softwareQuery") @RequestBody AssetSoftwareRelationList assetSoftwareRelationList) throws Exception {
         iAssetSoftwareRelationService.installSoftware(assetSoftwareRelationList.getAssetSoftwareRelationRequestList());
         return ActionResponse.success();

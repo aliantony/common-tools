@@ -105,7 +105,7 @@ public class AssetUserController {
      * @throws Exception
      */
     @ApiOperation(value = "导出用户信息", notes = "传入实体对象信息")
-    @PreAuthorize("hasAuthority('asset:user:exportTemplet')")
+    @PreAuthorize("hasAuthority('asset:user:exportData')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/exportData", method = RequestMethod.GET)
     public void exportData(@ApiParam(value = "assetUser") AssetUserQuery assetUser) throws Exception {
