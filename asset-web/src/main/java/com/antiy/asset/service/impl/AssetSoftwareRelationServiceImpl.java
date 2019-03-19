@@ -131,7 +131,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             if (Objects.isNull(relation.getInstallType())) {
                 throw new BusinessException("安装类型不能为空");
             }
-            if (InstallType.AUTOMATIC.getCode().equals(relation.getInstallType())) {
+            if (InstallType.AUTOMATIC.getCode().toString().equals(relation.getInstallType())) {
                 relation.setInstallStatus(InstallStatus.INSTALLING.getCode());
             } else {
                 if (Objects.isNull(relation.getInstallStatus())) {
