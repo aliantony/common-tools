@@ -304,7 +304,6 @@ public class ImportExcel {
             // 是否是空行
             if (isRowEmpty(dataRow)) {
                 blankNums++;
-                sb.append("数据有误，第").append(i).append("行为空行");
                 break;
             }
             // 反射创建实例对象
