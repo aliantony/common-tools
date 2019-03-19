@@ -406,7 +406,7 @@ public class ImportExcel {
      */
     public static boolean isRowEmpty(Row row) {
         if (row == null) {
-            return false;
+            return true;
         }
         for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
             Cell cell = row.getCell(c);
