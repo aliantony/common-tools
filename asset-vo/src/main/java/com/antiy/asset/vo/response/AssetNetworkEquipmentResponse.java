@@ -28,7 +28,7 @@ public class AssetNetworkEquipmentResponse extends BaseResponse {
      * 是否无线:0-否,1-是
      */
     @ApiModelProperty("是否无线:0-否,1-是")
-    private Boolean isWireless;
+    private Integer isWireless;
     /**
      * 内网IP
      */
@@ -162,11 +162,11 @@ public class AssetNetworkEquipmentResponse extends BaseResponse {
         this.interfaceSize = interfaceSize;
     }
 
-    public Boolean getWireless() {
+    public Integer getWireless() {
         return isWireless;
     }
 
-    public void setWireless(Boolean wireless) {
+    public void setWireless(Integer wireless) {
         isWireless = wireless;
     }
 

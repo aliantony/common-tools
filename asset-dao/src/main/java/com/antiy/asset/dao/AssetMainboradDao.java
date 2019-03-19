@@ -4,6 +4,7 @@ import com.antiy.asset.entity.AssetHardDisk;
 import com.antiy.asset.entity.AssetMainborad;
 import com.antiy.asset.vo.query.AssetMainboradQuery;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface AssetMainboradDao extends IBaseDao<AssetMainborad> {
      * @param assetMainborad
      * @return
      */
-    Integer updateBatch(List<AssetMainborad> assetMainborad);
+    Integer updateBatch(@Param(value = "list") List<AssetMainborad> assetMainborad);
 
     /**
      * 批量插入

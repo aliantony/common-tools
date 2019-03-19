@@ -3,6 +3,7 @@ package com.antiy.asset.dao;
 import com.antiy.asset.entity.AssetCpu;
 import com.antiy.asset.vo.query.AssetCpuQuery;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface AssetCpuDao extends IBaseDao<AssetCpu> {
 
     List<AssetCpu> findListAssetCpu(AssetCpuQuery query) throws Exception;
 
-    Integer updateBatch(List<AssetCpu> assetCpuList) throws Exception;
+    Integer updateBatch(@Param(value = "list") List<AssetCpu> assetCpuList) throws Exception;
 
     Integer insertBatch(List<AssetCpu> assetCpuList);
 
