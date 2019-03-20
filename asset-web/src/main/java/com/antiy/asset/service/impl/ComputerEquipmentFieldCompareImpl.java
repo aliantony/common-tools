@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareLicenseDao;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.util.CompareUtils;
@@ -17,6 +18,7 @@ import com.antiy.asset.util.StringUtils;
 import com.antiy.asset.vo.enums.AssetImportanceDegreeEnum;
 import com.antiy.asset.vo.enums.InfoLabelEnum;
 import com.antiy.asset.vo.enums.InstallType;
+import com.antiy.asset.vo.enums.TransferTypeMemoryEnum;
 import com.antiy.asset.vo.request.*;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
@@ -35,6 +37,8 @@ import com.antiy.common.utils.JsonUtil;
 public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompareImpl {
     @Resource
     private AssetSoftwareLicenseDao            softwareLicenseDao;
+    @Resource
+    private AssetSoftwareDao                   softwareDao;
     @Resource
     private RedisUtil                          redisUtil;
     @Resource
@@ -525,19 +529,21 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
 
     /**
      * 构建内存比较数据
-     * @param newMemory
+     * @param memory
      * @param request
      */
-    private void buildMemoryCompareData(AssetMemory newMemory, AssetMemoryRequest request) {
-        newMemory.setId(DataTypeUtils.stringToInteger(request.getId()));
-        newMemory.setBrand(request.getBrand());
-        newMemory.setTransferType(request.getTransferType());
-        newMemory.setSerial(request.getSerial());
-        newMemory.setCapacity(request.getCapacity());
-        newMemory.setFrequency(request.getFrequency());
-        newMemory.setSlotType(request.getSlotType());
-        newMemory.setHeatsink(request.getHeatsink());
-        newMemory.setStitch(request.getStitch());
+    private void buildMemoryCompareData(AssetMemory memory, AssetMemoryRequest request) {
+        memory.setId(DataTypeUtils.stringToInteger(request.getId()));
+        memory.setBrand(request.getBrand());
+        TransferTypeMemoryEnum transferTypeMemoryEnum = EnumUtil.getByCode(TransferTypeMemoryEnum.class,
+            request.getTransferType());
+        memory.setTransferTypeName(transferTypeMemoryEnum != null ? transferTypeMemoryEnum.getMsg() : null);
+        memory.setSerial(request.getSerial());
+        memory.setCapacity(request.getCapacity());
+        memory.setFrequency(request.getFrequency());
+        memory.setSlotType(request.getSlotType());
+        memory.setHeatsink(request.getHeatsink());
+        memory.setStitch(request.getStitch());
     }
 
     /**
@@ -608,7 +614,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
      */
     private void buildSoftwareRelationCompareData(RelateSoftware relateSoftware,
                                                   AssetSoftwareRelationRequest request) throws Exception {
-        relateSoftware.setSoftwareId(request.getSoftwareId());
+        relateSoftware.setSoftName(softwareDao.getById(request.getSoftwareId()).getName());
         AssetSoftwareLicense assetSoftwareLicense = softwareLicenseDao
             .getById(DataTypeUtils.stringToInteger(request.getSoftwareId()));
         relateSoftware
