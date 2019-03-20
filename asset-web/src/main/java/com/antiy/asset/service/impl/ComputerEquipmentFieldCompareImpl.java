@@ -624,7 +624,8 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
         relateSoftware
             .setLicenseSecretKey(assetSoftwareLicense == null ? null : assetSoftwareLicense.getLicenseSecretKey());
         relateSoftware.setMulPort(request.getPort());
-        relateSoftware.setDescription(request.getMemo());
+        relateSoftware.setDescription(
+            org.apache.commons.lang.StringUtils.isNotEmpty(request.getMemo()) ? request.getMemo().trim() : null);
     }
 
     private List<Map<String, Object>> getMaps(List<List<Map<String, Object>>> assetMemoryCompareResult, String msg) {
