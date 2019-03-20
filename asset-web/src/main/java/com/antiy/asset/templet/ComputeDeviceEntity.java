@@ -8,20 +8,21 @@ import lombok.Data;
  */
 @Data
 public class ComputeDeviceEntity {
-    /**
-     * 序号
-     */
-    @ExcelField(value = "order_number", align = 1, title = "序号" )
-    private Integer orderNumber;
+
     /**
      * 资产编号
      */
     @ExcelField(value = "number", align = 1, title = "资产编号")
     private String                  number;
     /**
+     * area
+     */
+    @ExcelField(value = "area", align = 1, title = "所属区域",required = true)
+    private String                  area;
+    /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "名称")
+    @ExcelField(value = "name", align = 1, title = "名称",required = true)
     private String  name;
 
     /**
@@ -40,7 +41,7 @@ public class ComputeDeviceEntity {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者")
+    @ExcelField(value = "user", align = 1, title = "使用者",required = true)
     private String  user;
 
     /**
@@ -58,7 +59,7 @@ public class ComputeDeviceEntity {
     /**
      * 物理位置
      */
-    @ExcelField(value = "location", align = 1, title = "物理位置")
+    @ExcelField(value = "location", align = 1, title = "物理位置",required = true)
     private String  location;
 
     /**
@@ -82,7 +83,7 @@ public class ComputeDeviceEntity {
     /**
      * 重要程度
      */
-    @ExcelField(value = "importance_degree", align = 1, title = "重要程度", dictType = "major_type")
+    @ExcelField(value = "importance_degree", align = 1, title = "重要程度", dictType = "major_type",required = true)
     private String  importanceDegree;
 
     /**
@@ -94,7 +95,7 @@ public class ComputeDeviceEntity {
     /**
      * 使用到期时间
      */
-    @ExcelField(value = "due_time", align = 1, title = "到期时间", isDate = true)
+    @ExcelField(value = "due_time", align = 1, title = "到期时间", isDate = true,required = true)
     private Long  dueTime;
     /**
      * 保修
@@ -263,11 +264,11 @@ public class ComputeDeviceEntity {
      */
     @ExcelField(value = "cpu_core_size", align = 1, title = "cpu核心数")
     private Integer  cpuCoreSize;
-    /**
-     * 网卡数量
-     */
-    @ExcelField(value = "network_num", align = 1, title = "网卡数量")
-    private Integer  networkNum;
+//    /**
+//     * 网卡数量
+//     */
+//    @ExcelField(value = "network_num", align = 1, title = "网卡数量")
+//    private Integer  networkNum;
     /**
      * 网卡品牌
      */
@@ -658,13 +659,13 @@ public class ComputeDeviceEntity {
         this.cpuCoreSize = cpuCoreSize;
     }
 
-    public Integer getNetworkNum() {
-        return networkNum;
-    }
-
-    public void setNetworkNum(Integer networkNum) {
-        this.networkNum = networkNum;
-    }
+//    public Integer getNetworkNum() {
+//        return networkNum;
+//    }
+//
+//    public void setNetworkNum(Integer networkNum) {
+//        this.networkNum = networkNum;
+//    }
 
     public String getNetworkBrand() {
         return networkBrand;
@@ -738,11 +739,11 @@ public class ComputeDeviceEntity {
         this.transferType = transferType;
     }
 
-    public Integer getOrderNumber() {
-        return orderNumber;
+    public String getArea() {
+        return area;
     }
 
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
+    public void setArea(String area) {
+        this.area = area;
     }
 }
