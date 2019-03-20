@@ -39,10 +39,13 @@ public class ActivityClientImpl implements ActivityClient {
     @Value("${waitingTaskUrl}")
     private String     waitingTaskUrl;
 
+    @Value("${startProcessWithoutFormBatchUrl}")
+    private String     startProcessWithoutFormBatchUrl;
+
     @Override
     @AssetLog(description = "人工登记启动工作流", operationType = AssetLogOperationType.CREATE)
     public ActionResponse manualStartProcess(ManualStartActivityRequest request) {
-        ParamterExceptionUtils.isNull(request,"启动流程参数不能为空");
+        ParamterExceptionUtils.isNull(request, "启动流程参数不能为空");
         return (ActionResponse) baseClient.post(request, new ParameterizedTypeReference<ActionResponse>() {
         }, manualStartProcessUrl);
     }
@@ -50,7 +53,7 @@ public class ActivityClientImpl implements ActivityClient {
     @Override
     @AssetLog(description = "处理工作流", operationType = AssetLogOperationType.ADD)
     public ActionResponse completeTask(ActivityHandleRequest request) {
-        ParamterExceptionUtils.isNull(request,"处理流程参数不能为空");
+        ParamterExceptionUtils.isNull(request, "处理流程参数不能为空");
         return (ActionResponse) baseClient.post(request, new ParameterizedTypeReference<ActionResponse>() {
         }, completeTaskUrl);
     }
@@ -61,5 +64,13 @@ public class ActivityClientImpl implements ActivityClient {
         return (ActionResponse) baseClient.post(activityWaitingQuery,
             new ParameterizedTypeReference<ActionResponse<List<WaitingTaskReponse>>>() {
             }, waitingTaskUrl);
+    }
+
+    @Override
+    @AssetLog(description = "批量启动任务")
+    public ActionResponse startProcessWithoutFormBatch(List<ManualStartActivityRequest> startProcessRequests) {
+        return (ActionResponse) baseClient.post(startProcessRequests,
+            new ParameterizedTypeReference<ActionResponse<List<WaitingTaskReponse>>>() {
+            }, startProcessWithoutFormBatchUrl);
     }
 }
