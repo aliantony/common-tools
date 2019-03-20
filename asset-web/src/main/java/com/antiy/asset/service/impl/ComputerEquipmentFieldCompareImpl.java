@@ -521,11 +521,13 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
     private void processRelateSofwareComponent(List<List<Map<String, Object>>> assetRelateSoftwareCompareResult,
                                                RelateSoftware newRelateSoftware, RelateSoftware oldRelateSoftware,
                                                Map<String, AssetSoftwareRelationRequest> newRelateSoftwareMap) throws Exception {
-        Set<Map.Entry<String, AssetSoftwareRelationRequest>> mapEntrySet = newRelateSoftwareMap.entrySet();
-        for (Map.Entry<String, AssetSoftwareRelationRequest> mapEntry : mapEntrySet) {
-            buildSoftwareRelationCompareData(newRelateSoftware, mapEntry.getValue());
-            assetRelateSoftwareCompareResult.add(
-                CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware, InfoLabelEnum.RELATESOFTWARE.getMsg()));
+        if (newRelateSoftwareMap.size() > 0) {
+            Set<Map.Entry<String, AssetSoftwareRelationRequest>> mapEntrySet = newRelateSoftwareMap.entrySet();
+            for (Map.Entry<String, AssetSoftwareRelationRequest> mapEntry : mapEntrySet) {
+                buildSoftwareRelationCompareData(newRelateSoftware, mapEntry.getValue());
+                assetRelateSoftwareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
+                    InfoLabelEnum.RELATESOFTWARE.getMsg()));
+            }
         }
     }
 
