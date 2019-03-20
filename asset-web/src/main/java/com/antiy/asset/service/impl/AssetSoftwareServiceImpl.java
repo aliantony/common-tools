@@ -626,14 +626,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         int error = 0;
         int a = 5;
         StringBuilder builder = new StringBuilder();
-        List<AssetSoftware> assetList = new ArrayList<> ();
+        List<AssetSoftware> assetList = new ArrayList<>();
         for (AssetSoftwareEntity entity : resultDataList) {
-//            if (StringUtils.isBlank(entity.getCategory())) {
-//                error++;
-//                a++;
-//                builder.append("第").append(a).append("行").append("软件品类为空");
-//                continue;
-//            }
+            // if (StringUtils.isBlank(entity.getCategory())) {
+            // error++;
+            // a++;
+            // builder.append("第").append(a).append("行").append("软件品类为空");
+            // continue;
+            // }
 
             AssetCategoryModel categoryModel = assetCategoryModelDao
                 .getById(com.antiy.common.utils.DataTypeUtils.stringToInteger(entity.getCategory()));
@@ -645,12 +645,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 continue;
             }
 
-//            if (StringUtils.isBlank(entity.getName())) {
-//                error++;
-//                a++;
-//                builder.append("第").append(a).append("行").append("软件名称为空");
-//                continue;
-//            }
+            // if (StringUtils.isBlank(entity.getName())) {
+            // error++;
+            // a++;
+            // builder.append("第").append(a).append("行").append("软件名称为空");
+            // continue;
+            // }
             if (CheckRepeatName(entity.getName())) {
                 repeat++;
                 a++;
@@ -658,14 +658,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 continue;
             }
 
-//
-//            if (Objects.isNull(entity.getServiceLife()) ) {
-//                error++;
-//                a++;
-//                builder.append("第").append(a).append("行").append("到期时间为空");
-//                continue;
-//            }
-            if (repeat+error==0){
+            //
+            // if (Objects.isNull(entity.getServiceLife()) ) {
+            // error++;
+            // a++;
+            // builder.append("第").append(a).append("行").append("到期时间为空");
+            // continue;
+            // }
+            if (repeat + error == 0) {
 
                 AssetSoftware asset = new AssetSoftware();
                 asset.setServiceLife(entity.getServiceLife());
@@ -684,52 +684,49 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 asset.setMemo(entity.getDescription());
                 asset.setDescription(entity.getDescription());
                 asset.setCategoryModel(entity.getCategory());
-                assetList.add (asset);
+                assetList.add(asset);
             }
 
-
-
-//            Map<String, Object> formData = new HashMap<>();
-//            String[] userId = importRequest.getUserId();
-//            for (String analyzeBaselineUserId : userId) {
-//                formData.put("analyzeBaselineUserId", analyzeBaselineUserId);
-//                formData.put("discard", 0);
-//            }
-//
-//            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-//            manualStartActivityRequest.setBusinessId(asset.getStringId());
-//            manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-//            manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getName());
-//            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
-//            activityClient.manualStartProcess(manualStartActivityRequest);
+            // Map<String, Object> formData = new HashMap<>();
+            // String[] userId = importRequest.getUserId();
+            // for (String analyzeBaselineUserId : userId) {
+            // formData.put("analyzeBaselineUserId", analyzeBaselineUserId);
+            // formData.put("discard", 0);
+            // }
+            //
+            // ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+            // manualStartActivityRequest.setBusinessId(asset.getStringId());
+            // manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+            // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getName());
+            // manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
+            // activityClient.manualStartProcess(manualStartActivityRequest);
 
             a++;
         }
 
-        if (repeat+error==0){
+        if (repeat + error == 0) {
 
-    for (AssetSoftware assetSoftware : assetList) {
-        assetSoftwareDao.insert (assetSoftware);
-        // 记录资产操作流程
-        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        assetOperationRecord.setTargetObjectId(assetSoftware.getStringId());
-        assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
-        assetOperationRecord.setTargetStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
-        assetOperationRecord.setContent("导入软件资产");
-        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
-        assetOperationRecord.setOriginStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
-        assetOperationRecordDao.insert(assetOperationRecord);
-        success++;
-    }
+            for (AssetSoftware assetSoftware : assetList) {
+                assetSoftwareDao.insert(assetSoftware);
+                // 记录资产操作流程
+                AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+                assetOperationRecord.setTargetObjectId(assetSoftware.getStringId());
+                assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
+                assetOperationRecord.setTargetStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
+                assetOperationRecord.setContent("导入软件资产");
+                assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+                assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+                assetOperationRecord.setOriginStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
+                assetOperationRecordDao.insert(assetOperationRecord);
+                success++;
+            }
 
-
-}
+        }
 
         String res = "导入成功" + success + "条。";
-//        res += repeat > 0 ? ", " + repeat + "条软件名称重复" : "";
-//        res += error > 0 ? ", " + error + "条数据导入失败" : "";
+        // res += repeat > 0 ? ", " + repeat + "条软件名称重复" : "";
+        // res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
         // if (error > 0) {
         // stringBuilder.append("其中").append(builder);
@@ -776,6 +773,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public void exportTemplate() throws Exception {
+
         exportToClient(AssetSoftwareEntity.class, "软件信息模板.xlsx", "软件信息");
     }
 
@@ -785,7 +783,28 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     private void exportToClient(Class clazz, String fileName, String title) {
-        ExcelUtils.exportTemplet(clazz, fileName, title);
+        List<AssetSoftwareEntity> assetSoftwareEntities = new ArrayList<>();
+        initExampleData(assetSoftwareEntities);
+        String memo = "备注：时间填写规范统一为XXXX/XX/XX，必填项必须填写，否则会插入失败";
+        ExcelUtils.exportTemplet(clazz, fileName, title, memo, assetSoftwareEntities);
+    }
+
+    private void initExampleData(List<AssetSoftwareEntity> assetSoftwareEntities) {
+        AssetSoftwareEntity assetSoftwareEntity = new AssetSoftwareEntity();
+        assetSoftwareEntity.setName("智甲");
+        assetSoftwareEntity.setOperationSystem("WINDOW 8,WINDOW 10");
+        assetSoftwareEntity.setAuthorization(1);
+        assetSoftwareEntity.setBuyDate(System.currentTimeMillis());
+        assetSoftwareEntity.setCategory("10");
+        assetSoftwareEntity.setDescription(
+            "安天智甲终端防御系统（中文简称“智甲”，英文简称“IEP”）是一套专业终端安全防护产品。");
+        assetSoftwareEntity.setManufacturer("安天");
+        assetSoftwareEntity.setVersion("1.1.1");
+        assetSoftwareEntity.setServiceLife(System.currentTimeMillis());
+        assetSoftwareEntity.setSerial("425-0022172 EWIN95");
+        assetSoftwareEntity.setMD5("ASFFSDADQ2424r#@R#R");
+        assetSoftwareEntity.setReleaseTime(System.currentTimeMillis());
+        assetSoftwareEntities.add(assetSoftwareEntity);
     }
 
     private int getNextPage(PageResult pageResult) {
