@@ -1,10 +1,29 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.entity.AssetOperationRecord;
-import com.antiy.asset.entity.AssetSoftware;
-import com.antiy.asset.entity.AssetSoftwareLicense;
+import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetPortProtocolService;
@@ -15,7 +34,10 @@ import com.antiy.asset.templet.ExportSoftwareEntity;
 import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.*;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetOperationTableEnum;
+import com.antiy.asset.vo.enums.SoftwareStatusEnum;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
@@ -31,25 +53,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -106,6 +109,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     private static final Logger                                              LOGGER = LogUtils
         .get(AssetSoftwareServiceImpl.class);
+    @Resource
+    AssetChangeRecordDao                                                     assetChangeRecordDao;
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -279,6 +284,18 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                      *
                      * } }
                      */
+                    // 记录更新操作
+                    AssetChangeRecord assetChangeRecord = new AssetChangeRecord();
+                    assetChangeRecord.setType(2);
+                    assetChangeRecord.setStatus(1);
+                    assetChangeRecord.setBusinessId(DataTypeUtils.stringToInteger(request.getId()));
+                    assetChangeRecord.setChangeVal(JSONObject.toJSONString(request));
+                    assetChangeRecord.setIsStore(1);
+                    assetChangeRecord
+                        .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
+                    assetChangeRecord.setGmtCreate(System.currentTimeMillis());
+                    assetChangeRecordDao.insert(assetChangeRecord);
+
                     // 写入业务日志
                     LogHandle.log(assetSoftware.toString(), AssetEventEnum.SOFT_UPDATE.getName(),
                         AssetEventEnum.SOFT_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
