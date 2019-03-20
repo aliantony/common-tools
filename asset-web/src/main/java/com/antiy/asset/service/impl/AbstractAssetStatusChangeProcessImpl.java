@@ -101,6 +101,9 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             || AssetFlowCategoryEnum.SOFTWARE_UNINSTALL.getCode()
                 .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             // 启动流程
+            // 参数校验
+            ParamterExceptionUtils.isBlank(assetStatusReqeust.getManualStartActivityRequest().getBusinessId(),
+                "业务ID不能为空");
             assetStatusReqeust.getManualStartActivityRequest().setAssignee(LoginUserUtil.getLoginUser().getName());
             actionResponse = activityClient.manualStartProcess(assetStatusReqeust.getManualStartActivityRequest());
         } else if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode()
