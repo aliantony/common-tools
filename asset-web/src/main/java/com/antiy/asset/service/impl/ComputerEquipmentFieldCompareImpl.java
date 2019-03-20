@@ -639,7 +639,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
         }
         map.put("old", StringUtils.trim(tempOldList.toString(),"[","]"));
         map.put("new", StringUtils.trim(newOldList.toString(),"[","]"));
-        map.put("label", msg);
+        // map.put("label", msg);
         resultMap.add(map);
         return resultMap;
     }
