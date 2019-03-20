@@ -1,12 +1,12 @@
 package com.antiy.asset.intergration;
 
+import java.util.List;
+
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.WaitingTaskReponse;
 import com.antiy.common.base.ActionResponse;
-
-import java.util.List;
 
 /**
  * @auther: zhangbing
@@ -35,4 +35,9 @@ public interface ActivityClient {
      */
     ActionResponse<List<WaitingTaskReponse>> queryAllWaitingTask(ActivityWaitingQuery activityWaitingQuery);
 
+    /**
+     * 批量启动任务
+     * @return
+     */
+    ActionResponse startProcessWithoutFormBatch(List<ManualStartActivityRequest> startProcessRequests);
 }
