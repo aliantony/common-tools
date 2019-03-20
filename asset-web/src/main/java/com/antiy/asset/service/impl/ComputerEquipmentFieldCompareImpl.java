@@ -99,7 +99,8 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                 : null);
             oldAssetBusinessInfo.setFirmwareVersion(oldAsset.getFirmwareVersion());
             oldAssetBusinessInfo.setOperationSystem(oldAsset.getOperationSystem());
-            oldAssetBusinessInfo.setImportanceDegreeName(EnumUtil.getByCode(AssetImportanceDegreeEnum.class,oldAsset.getImportanceDegree()).getMsg());
+            oldAssetBusinessInfo.setImportanceDegreeName(
+                EnumUtil.getByCode(AssetImportanceDegreeEnum.class, oldAsset.getImportanceDegree()).getMsg());
             oldAssetBusinessInfo.setBuyDate(oldAsset.getBuyDate());
             oldAssetBusinessInfo.setServiceLife(oldAsset.getServiceLife());
             oldAssetBusinessInfo.setWarranty(oldAsset.getWarranty());
@@ -125,7 +126,8 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                 : null);
             newAssetBusinessInfo.setFirmwareVersion(newAsset.getFirmwareVersion());
             newAssetBusinessInfo.setOperationSystem(newAsset.getOperationSystem());
-            newAssetBusinessInfo.setImportanceDegreeName(EnumUtil.getByCode(AssetImportanceDegreeEnum.class,newAsset.getImportanceDegree()).getMsg());
+            newAssetBusinessInfo.setImportanceDegreeName(
+                EnumUtil.getByCode(AssetImportanceDegreeEnum.class, newAsset.getImportanceDegree()).getMsg());
             newAssetBusinessInfo.setBuyDate(newAsset.getBuyDate());
             newAssetBusinessInfo.setServiceLife(newAsset.getServiceLife());
             newAssetBusinessInfo.setWarranty(newAsset.getWarranty());
@@ -619,10 +621,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
     private void buildSoftwareRelationCompareData(RelateSoftware relateSoftware,
                                                   AssetSoftwareRelationRequest request) throws Exception {
         relateSoftware.setSoftName(softwareDao.getById(request.getSoftwareId()).getName());
-        AssetSoftwareLicense assetSoftwareLicense = softwareLicenseDao
-            .getById(DataTypeUtils.stringToInteger(request.getSoftwareId()));
-        relateSoftware
-            .setLicenseSecretKey(assetSoftwareLicense == null ? null : assetSoftwareLicense.getLicenseSecretKey());
+        relateSoftware.setLicenseSecretKey(request.getLicenseSecretKey());
         relateSoftware.setMulPort(request.getPort());
         relateSoftware.setDescription(
             org.apache.commons.lang.StringUtils.isNotEmpty(request.getMemo()) ? request.getMemo().trim() : null);
@@ -640,8 +639,8 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             }
 
         }
-        map.put("old", StringUtils.trim(tempOldList.toString(),"[","]"));
-        map.put("new", StringUtils.trim(newOldList.toString(),"[","]"));
+        map.put("old", StringUtils.trim(tempOldList.toString(), "[", "]"));
+        map.put("new", StringUtils.trim(newOldList.toString(), "[", "]"));
         // map.put("label", msg);
         resultMap.add(map);
         return resultMap;
