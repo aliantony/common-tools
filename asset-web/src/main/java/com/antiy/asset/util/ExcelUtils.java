@@ -183,8 +183,8 @@ public class ExcelUtils {
      * @param filename 文件名
      * @param title 文件标题
      */
-    public static void exportTempletToClient(Class<?> clazz, String filename, String title, String memo,
-                                             List<?> dataList) {
+    public static void exportTemplateToClient(Class<?> clazz, String filename, String title, String memo,
+                                              List<?> dataList) {
         ParamterExceptionUtils.isBlank(filename, "文件名不能为空");
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
             .getResponse();
@@ -202,7 +202,7 @@ public class ExcelUtils {
      * @param filename 文件名
      * @param title 文件标题
      */
-    public static void exportTempletToFile(Class<?> clazz, String filename, String title, String memo, String fileInfo,
+    public static void exportTemplateToFile(Class<?> clazz, String filename, String title, String memo, String fileInfo,
                                            List<?> dataList) {
         ParamterExceptionUtils.isBlank(filename, "文件名不能为空");
         try {
