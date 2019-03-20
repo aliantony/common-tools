@@ -786,7 +786,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         List<AssetSoftwareEntity> assetSoftwareEntities = new ArrayList<>();
         initExampleData(assetSoftwareEntities);
         String memo = "备注：时间填写规范统一为XXXX/XX/XX，必填项必须填写，否则会插入失败";
-        ExcelUtils.exportTemplet(clazz, fileName, title, memo, assetSoftwareEntities);
+        ExcelUtils.exportTempletToClient(clazz, fileName, title, memo, assetSoftwareEntities);
     }
 
     private void initExampleData(List<AssetSoftwareEntity> assetSoftwareEntities) {

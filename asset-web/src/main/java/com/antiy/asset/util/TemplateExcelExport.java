@@ -14,7 +14,9 @@ import org.slf4j.Logger;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -98,7 +100,7 @@ public class TemplateExcelExport {
         write(response.getOutputStream());
     }
 
-    private void write(ServletOutputStream outputStream) throws IOException {
+    private void write(OutputStream outputStream) throws IOException {
         this.wb.write(outputStream);
         this.wb.close();
         outputStream.flush();
@@ -218,7 +220,20 @@ public class TemplateExcelExport {
             }
         }
     }
-
+    /**
+     * 导出数据到文件
+     *
+     * @param dataList
+     */
+    public void exportToFile(String fileName, List<?> dataList) throws IOException {
+        if (!fileName.endsWith(XLS) && !fileName.endsWith(XLSX)) {
+            fileName = fileName + XLSX;
+        }
+        FileOutputStream os = new FileOutputStream(fileName);
+        // 填充数据
+        setDataList(dataList);
+        write(os);
+    }
     private void addCellList(Row row, List<String> dataList, CellStyle style) {
         for (int i = 0; i < dataList.size(); i++) {
             addCell(row, i, dataList.get(i), style);
