@@ -18,12 +18,14 @@ public class ManualStartActivityRequest {
      * 处理人
      */
     @ApiModelProperty(value = "启动人")
+    @NotBlank(message = "流程启动人不能为空")
     private String assignee;
 
     /**
      * 业务Id
      */
     @ApiModelProperty(value = "业务Id")
+    @NotBlank(message = "流程业务Id不能为空")
     private String businessId;
 
     /**
