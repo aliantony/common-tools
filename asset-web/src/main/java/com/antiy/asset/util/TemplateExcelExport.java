@@ -155,7 +155,9 @@ public class TemplateExcelExport {
             } else if (val instanceof Integer) {
                 cell.setCellValue(val.toString());
             } else if (val instanceof Float) {
-                cell.setCellValue(val.toString());
+                cell.setCellValue((Float) val);
+            } else if (val instanceof Double) {
+                cell.setCellValue((Double) val);
             }
 
         } catch (Exception e) {
