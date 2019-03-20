@@ -1,11 +1,14 @@
 package com.antiy.asset.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.vo.request.*;
+import com.google.gson.Gson;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,10 +19,6 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.ActivityHandleRequest;
-import com.antiy.asset.vo.request.AssetImportRequest;
-import com.antiy.asset.vo.request.AssetOuterRequest;
-import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.AssetCountColumnarResponse;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
@@ -76,8 +75,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/queryAssetCountByAreaIds", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetCountByAreaIds')")
-    public ActionResponse queryAssetCountByAreaIds(@ApiParam(value = "areaIds") ArrayList<Integer> areaIds) throws Exception {
-        return ActionResponse.success(iAssetService.queryAssetCountByAreaIds(areaIds));
+    public ActionResponse queryAssetCountByAreaIds(@ApiParam(value = "areaIds") Integer[] areaIds) throws Exception {
+        return ActionResponse.success(iAssetService.queryAssetCountByAreaIds(new ArrayList<>(Arrays.asList(areaIds))));
     }
 
     /**
