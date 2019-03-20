@@ -2751,7 +2751,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 移除区域信息不是当前用户的区域
         if (CollectionUtils.isNotEmpty(areaIds)) {
-            areaIds.removeIf(areaId -> LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().contains(areaId));
+            areaIds.removeIf(areaId -> !LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().contains(areaId));
         }
 
         // 如果移除以后全部为空，则直接返回0
