@@ -17,12 +17,12 @@ public class ComputeDeviceEntity {
     /**
      * area
      */
-    @ExcelField(value = "area", align = 1, title = "所属区域",required = true)
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)",required = true)
     private String                  area;
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "名称",required = true)
+    @ExcelField(value = "name", align = 1, title = "名称(必填)",required = true)
     private String  name;
 
     /**
@@ -41,7 +41,7 @@ public class ComputeDeviceEntity {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者",required = true)
+    @ExcelField(value = "user", align = 1, title = "使用者(必填)",required = true)
     private String  user;
 
     /**
@@ -59,7 +59,7 @@ public class ComputeDeviceEntity {
     /**
      * 物理位置
      */
-    @ExcelField(value = "location", align = 1, title = "物理位置",required = true)
+    @ExcelField(value = "location", align = 1, title = "物理位置(必填)",required = true)
     private String  location;
 
     /**
@@ -83,7 +83,7 @@ public class ComputeDeviceEntity {
     /**
      * 重要程度
      */
-    @ExcelField(value = "importance_degree", align = 1, title = "重要程度", dictType = "major_type",required = true)
+    @ExcelField(value = "importance_degree", align = 1, title = "重要程度(必填)", dictType = "major_type",required = true)
     private String  importanceDegree;
 
     /**
@@ -95,7 +95,7 @@ public class ComputeDeviceEntity {
     /**
      * 使用到期时间
      */
-    @ExcelField(value = "due_time", align = 1, title = "到期时间", isDate = true,required = true)
+    @ExcelField(value = "due_time", align = 1, title = "到期时间(必填)", isDate = true,required = true)
     private Long  dueTime;
     /**
      * 保修

@@ -99,7 +99,8 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                 : null);
             oldAssetBusinessInfo.setFirmwareVersion(oldAsset.getFirmwareVersion());
             oldAssetBusinessInfo.setOperationSystem(oldAsset.getOperationSystem());
-            oldAssetBusinessInfo.setImportanceDegreeName(EnumUtil.getByCode(AssetImportanceDegreeEnum.class,oldAsset.getImportanceDegree()).getMsg());
+            oldAssetBusinessInfo.setImportanceDegreeName(
+                EnumUtil.getByCode(AssetImportanceDegreeEnum.class, oldAsset.getImportanceDegree()).getMsg());
             oldAssetBusinessInfo.setBuyDate(oldAsset.getBuyDate());
             oldAssetBusinessInfo.setServiceLife(oldAsset.getServiceLife());
             oldAssetBusinessInfo.setWarranty(oldAsset.getWarranty());
@@ -125,7 +126,8 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                 : null);
             newAssetBusinessInfo.setFirmwareVersion(newAsset.getFirmwareVersion());
             newAssetBusinessInfo.setOperationSystem(newAsset.getOperationSystem());
-            newAssetBusinessInfo.setImportanceDegreeName(EnumUtil.getByCode(AssetImportanceDegreeEnum.class,newAsset.getImportanceDegree()).getMsg());
+            newAssetBusinessInfo.setImportanceDegreeName(
+                EnumUtil.getByCode(AssetImportanceDegreeEnum.class, newAsset.getImportanceDegree()).getMsg());
             newAssetBusinessInfo.setBuyDate(newAsset.getBuyDate());
             newAssetBusinessInfo.setServiceLife(newAsset.getServiceLife());
             newAssetBusinessInfo.setWarranty(newAsset.getWarranty());
@@ -521,11 +523,13 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
     private void processRelateSofwareComponent(List<List<Map<String, Object>>> assetRelateSoftwareCompareResult,
                                                RelateSoftware newRelateSoftware, RelateSoftware oldRelateSoftware,
                                                Map<String, AssetSoftwareRelationRequest> newRelateSoftwareMap) throws Exception {
-        Set<Map.Entry<String, AssetSoftwareRelationRequest>> mapEntrySet = newRelateSoftwareMap.entrySet();
-        for (Map.Entry<String, AssetSoftwareRelationRequest> mapEntry : mapEntrySet) {
-            buildSoftwareRelationCompareData(newRelateSoftware, mapEntry.getValue());
-            assetRelateSoftwareCompareResult.add(
-                CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware, InfoLabelEnum.RELATESOFTWARE.getMsg()));
+        if (newRelateSoftwareMap.size() > 0) {
+            Set<Map.Entry<String, AssetSoftwareRelationRequest>> mapEntrySet = newRelateSoftwareMap.entrySet();
+            for (Map.Entry<String, AssetSoftwareRelationRequest> mapEntry : mapEntrySet) {
+                buildSoftwareRelationCompareData(newRelateSoftware, mapEntry.getValue());
+                assetRelateSoftwareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
+                    InfoLabelEnum.RELATESOFTWARE.getMsg()));
+            }
         }
     }
 
@@ -617,12 +621,10 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
     private void buildSoftwareRelationCompareData(RelateSoftware relateSoftware,
                                                   AssetSoftwareRelationRequest request) throws Exception {
         relateSoftware.setSoftName(softwareDao.getById(request.getSoftwareId()).getName());
-        AssetSoftwareLicense assetSoftwareLicense = softwareLicenseDao
-            .getById(DataTypeUtils.stringToInteger(request.getSoftwareId()));
-        relateSoftware
-            .setLicenseSecretKey(assetSoftwareLicense == null ? null : assetSoftwareLicense.getLicenseSecretKey());
+        relateSoftware.setLicenseSecretKey(request.getLicenseSecretKey());
         relateSoftware.setMulPort(request.getPort());
-        relateSoftware.setDescription(request.getMemo());
+        relateSoftware.setDescription(
+            org.apache.commons.lang.StringUtils.isNotEmpty(request.getMemo()) ? request.getMemo().trim() : null);
     }
 
     private List<Map<String, Object>> getMaps(List<List<Map<String, Object>>> assetMemoryCompareResult, String msg) {
@@ -637,9 +639,9 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             }
 
         }
-        map.put("old", StringUtils.trim(tempOldList.toString(),"[","]"));
-        map.put("new", StringUtils.trim(newOldList.toString(),"[","]"));
-        map.put("label", msg);
+        map.put("old", StringUtils.trim(tempOldList.toString(), "[", "]"));
+        map.put("new", StringUtils.trim(newOldList.toString(), "[", "]"));
+        // map.put("label", msg);
         resultMap.add(map);
         return resultMap;
     }

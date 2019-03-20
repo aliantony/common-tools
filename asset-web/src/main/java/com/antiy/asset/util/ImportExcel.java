@@ -285,7 +285,7 @@ public class ImportExcel {
         initAnnotationList(clazz);
         List<T> dataList = new ArrayList<>();
         boolean flag = true;
-        Row firstRow = this.getRow(0);
+        Row firstRow = this.getRow(getDataRownum());
         int length = 0;
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
