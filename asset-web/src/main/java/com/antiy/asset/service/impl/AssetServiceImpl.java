@@ -1979,7 +1979,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (Objects.isNull(sysArea)) {
             return "上传失败，选择区域不存在，或已被注销！";
         }
-        ImportResult<ComputeDeviceEntity> result = ExcelUtils.importExcelFromClient(ComputeDeviceEntity.class, file, 0,
+        ImportResult<ComputeDeviceEntity> result = ExcelUtils.importExcelFromClient(ComputeDeviceEntity.class, file, 4,
             0);
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
@@ -1995,12 +1995,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         for (ComputeDeviceEntity entity : dataList) {
 
-            if (StringUtils.isBlank(entity.getName())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("资产名称为空");
-                continue;
-            }
+
 
             if (CheckRepeatName(entity.getName())) {
                 repeat++;
@@ -2009,12 +2004,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (StringUtils.isBlank(entity.getUser())) {
-                error++;
-                a++;
-                builder.append("序号").append(a).append("行").append("使用者为空");
-                continue;
-            }
+
             //
             // if (StringUtils.isBlank(entity.getNumber())) {
             // error++;
@@ -2028,12 +2018,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("序号").append(a).append("行").append("资产编号重复");
                 continue;
             }
-            if (StringUtils.isBlank(entity.getUser())) {
-                error++;
-                a++;
-                builder.append("序号").append(a).append("行").append("使用者为空");
-                continue;
-            }
+
             if ("".equals(CheckUser(entity.getUser()))) {
                 error++;
                 a++;
@@ -2156,8 +2141,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
                 assetCpuDao.insertBatch(assetCpus);
             }
-            if (StringUtils.isNotBlank(entity.getNetworkBrand()) && !Objects.isNull(entity.getNetworkNum())
-                && entity.getNetworkNum() > 0) {
+
+            if (StringUtils.isNotBlank(entity.getNetworkBrand()) ) {
                 AssetNetworkCard assetNetworkCard = new AssetNetworkCard();
                 assetNetworkCard.setAssetId(id);
                 assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -2167,27 +2152,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetNetworkCard.setModel(entity.getNetworkModel());
                 assetNetworkCard.setSubnetMask(entity.getNetworkSubnetMask());
                 assetNetworkCard.setDefaultGateway(entity.getNetworkDefaultGateway());
-
-                String ip = entity.getNetworkIpAddress();
-                String mac = entity.getNetworkMacAddress();
-                if (StringUtils.isNotBlank(ip) && StringUtils.isNotBlank(mac)) {
-
-                    String[] ips = ip.split(",");
-                    String[] macs = mac.split(",");
-                    for (int i = 0; i < entity.getNetworkNum(); i++) {
-
-                        assetNetworkCard.setMacAddress(macs[i]);
-                        assetNetworkCard.setIpAddress(ips[i]);
-                        assetNetworkCardDao.insert(assetNetworkCard);
-                    }
-                } else {
-                    for (int i = 0; i < entity.getNetworkNum(); i++) {
-
-                        assetNetworkCard.setMacAddress(ip);
-                        assetNetworkCard.setIpAddress(mac);
-                        assetNetworkCardDao.insert(assetNetworkCard);
-                    }
-                }
+                assetNetworkCard.setIpAddress (entity.getNetworkIpAddress ());
+                assetNetworkCard.setMacAddress (entity.getNetworkMacAddress ());
 
             }
 
