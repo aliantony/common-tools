@@ -6,19 +6,6 @@ import com.antiy.asset.annotation.ExcelField;
  * 存储介质
  */
 public class StorageDeviceEntity {
-    /**
-     * 序号
-     */
-    @ExcelField(value = "order_number", align = 1, title = "序号" )
-    private Integer orderNumber;
-
-    public Integer getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
-    }
 
     /**
      * 资产编号
@@ -28,7 +15,7 @@ public class StorageDeviceEntity {
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "资产名称")
+    @ExcelField(value = "name", align = 1, title = "资产名称",required = true)
     private String  name;
     /**
      * 厂商
@@ -44,7 +31,7 @@ public class StorageDeviceEntity {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者")
+    @ExcelField(value = "user", align = 1, title = "使用者",required = true)
     private String  user;
     /**
      * 联系电话
@@ -60,7 +47,7 @@ public class StorageDeviceEntity {
     /**
      * 物理位置
      */
-    @ExcelField(value = "location", align = 1, title = "物理位置")
+    @ExcelField(value = "location", align = 1, title = "物理位置",required = true)
     private String  location;
     /**
      * 机房位置
@@ -120,7 +107,7 @@ public class StorageDeviceEntity {
     /**
      * 到期时间
      */
-    @ExcelField(value = "due_date", align = 1, title = "到期时间", isDate = true)
+    @ExcelField(value = "due_date", align = 1, title = "到期时间", isDate = true,required = true)
     private Long    dueDate;
 
     /**
@@ -134,7 +121,11 @@ public class StorageDeviceEntity {
      */
     @ExcelField(value = "memo", align = 1, title = "描述")
     private String  memo;
-
+    /**
+     * area
+     */
+    @ExcelField(value = "area", align = 1, title = "所属区域",required = true)
+    private String                  area;
     public String getName() {
         return name;
     }
@@ -316,5 +307,13 @@ public class StorageDeviceEntity {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 }

@@ -4,10 +4,10 @@ import com.antiy.asset.annotation.ExcelField;
 
 public class SafetyEquipmentEntiy {
     /**
-     * 序号
+     * area
      */
-    @ExcelField(value = "order_number", align = 1, title = "序号" )
-    private Integer orderNumber;
+    @ExcelField(value = "area", align = 1, title = "所属区域",required = true)
+    private String                  area;
     /**
      * 资产编号
      */
@@ -16,7 +16,7 @@ public class SafetyEquipmentEntiy {
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "资产名称", type = 0)
+    @ExcelField(value = "name", align = 1, title = "资产名称", type = 0,required = true)
     private String name;
     /**
      * 厂商
@@ -33,7 +33,7 @@ public class SafetyEquipmentEntiy {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者")
+    @ExcelField(value = "user", align = 1, title = "使用者",required = true)
     private String user;
     /**
      * 联系电话
@@ -48,7 +48,7 @@ public class SafetyEquipmentEntiy {
     /**
      * 物理位置
      */
-    @ExcelField(value = "location", align = 1, title = "物理位置")
+    @ExcelField(value = "location", align = 1, title = "物理位置",required = true)
     private String location;
     /**
      * 机房位置
@@ -69,8 +69,13 @@ public class SafetyEquipmentEntiy {
     /**
      * ip地址
      */
-    @ExcelField(value = "ip", align = 1, title = "ip地址")
+    @ExcelField(value = "ip", align = 1, title = "ip地址",required = true)
     private String ip;
+    /**
+     * ip地址
+     */
+    @ExcelField(value = "mac", align = 1, title = "mac地址",required = true)
+    private String mac;
 
     /**
      * 购买日期
@@ -80,7 +85,7 @@ public class SafetyEquipmentEntiy {
     /**
      * 到期时间
      */
-    @ExcelField(value = "due_date", align = 1, title = "到期时间",isDate = true)
+    @ExcelField(value = "due_date", align = 1, title = "到期时间",isDate = true,required = true)
     private Long            dueDate;
     /**
      * 保修期
@@ -215,19 +220,27 @@ public class SafetyEquipmentEntiy {
         this.memo = memo;
     }
 
-    public Integer getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-
     public String getNumber() {
         return number;
     }
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 }

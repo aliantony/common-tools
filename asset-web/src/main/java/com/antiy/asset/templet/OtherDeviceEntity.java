@@ -4,10 +4,10 @@ import com.antiy.asset.annotation.ExcelField;
 
 public class OtherDeviceEntity {
     /**
-     * 序号
+     * area
      */
-    @ExcelField(value = "order_number", align = 1, title = "序号" )
-    private Integer orderNumber;
+    @ExcelField(value = "area", align = 1, title = "所属区域",required = true)
+    private String                  area;
     /**
      * 资产编号
      */
@@ -53,7 +53,7 @@ public class OtherDeviceEntity {
     /**
      * 到期时间
      */
-    @ExcelField(value = "due_date", align = 1, title = "到期时间",isDate = true)
+    @ExcelField(value = "due_date", align = 1, title = "到期时间",isDate = true,required = false)
     private Long            dueDate;
     /**
      * 保修期
@@ -67,13 +67,6 @@ public class OtherDeviceEntity {
     private String            memo;
 
 
-    public Integer getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
-    }
 
     public String getName() {
         return name;
@@ -163,5 +156,13 @@ public class OtherDeviceEntity {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 }
