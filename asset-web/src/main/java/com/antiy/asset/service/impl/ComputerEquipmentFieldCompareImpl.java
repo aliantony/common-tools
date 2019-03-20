@@ -28,6 +28,8 @@ import com.antiy.common.base.SysUser;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.JsonUtil;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * 计算设备字段对比
  * @author zhangyajun
@@ -620,7 +622,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
         relateSoftware
             .setLicenseSecretKey(assetSoftwareLicense == null ? null : assetSoftwareLicense.getLicenseSecretKey());
         relateSoftware.setMulPort(request.getPort());
-        // oldRelateSoftware.setDescription(assetSoftwareRelationRequest.getMemo());
+        relateSoftware.setDescription(request.getMemo());
     }
 
     private List<Map<String, Object>> getMaps(List<List<Map<String, Object>>> assetMemoryCompareResult, String msg) {
@@ -677,9 +679,13 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
      */
     class RelateSoftware {
         private String softwareId;
+        @ApiModelProperty("名称")
         private String softName;
+        @ApiModelProperty("许可秘钥")
         private String licenseSecretKey;
+        @ApiModelProperty("端口")
         private String mulPort;
+        @ApiModelProperty("描述")
         private String description;
 
         public String getSoftwareId() {

@@ -1,5 +1,6 @@
 package com.antiy.asset.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -75,7 +76,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/queryAssetCountByAreaIds", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetCountByAreaIds')")
-    public ActionResponse queryAssetCountByAreaIds(@ApiParam(value = "areaIds") List<Integer> areaIds) throws Exception {
+    public ActionResponse queryAssetCountByAreaIds(@ApiParam(value = "areaIds") ArrayList<Integer> areaIds) throws Exception {
         return ActionResponse.success(iAssetService.queryAssetCountByAreaIds(areaIds));
     }
 
