@@ -225,4 +225,11 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     String importOhters(MultipartFile file, AssetImportRequest areaId) throws Exception;
 
+    /**
+     * 通过区域Id查询当前区域是否存在资产
+     * @param areaIds
+     * @return
+     */
+    Integer queryAssetCountByAreaIds(List<Integer> areaIds);
+
 }

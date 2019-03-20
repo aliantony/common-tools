@@ -93,6 +93,14 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     List<Asset> queryAssetByIds(Integer[] ids);
 
+
+    /**
+     * 通过区域Id列表查询当前区域是否存在资产
+     * @param areaIds
+     * @return
+     */
+    Integer queryAssetCountByAreaIds(@Param(value = "areaIds") List<Integer> areaIds);
+
     /**
      * 通过ID更新资产组字段名称
      *
