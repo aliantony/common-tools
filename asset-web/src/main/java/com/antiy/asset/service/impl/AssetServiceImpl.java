@@ -2033,7 +2033,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (CheckRepeatName(networkDeviceEntity.getName())) {
                 repeat++;
                 a++;
-                builder.append("第").append(a).append("行").append("资产名称重复");
+                builder.append("第").append(a).append("行").append("资产名称重复，");
                 continue;
             }
 
@@ -2041,17 +2041,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 && CheckRepeat(networkDeviceEntity.getNumber())) {
                 repeat++;
                 a++;
-                builder.append("第").append(a).append("行").append("资产编号重复");
+                builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
 
             if ("".equals(CheckUser(networkDeviceEntity.getUser()))) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("没有此使用者");
+                builder.append("第").append(a).append("行").append("没有此使用者，");
                 continue;
             }
-
+            List<SysArea> areas = LoginUserUtil.getLoginUser ().getAreas ();
+            List<String> areasStrings = new ArrayList<> ();
+            for (SysArea area : areas) {
+                areasStrings.add (area.getFullName ());
+            }
+            if (!areasStrings.contains (networkDeviceEntity.getArea ())){
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("当前用户没有此所属区域，");
+                continue;
+            }
             if (repeat+error==0){
 
 
@@ -2145,7 +2155,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         }
 
-        String re = "导入成功" + success + "条";
+        String re = "导入成功" + success + "条。";
 //        re += repeat > 0 ? ", " + repeat + "条编号重复" : "";
 //        re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(re);
