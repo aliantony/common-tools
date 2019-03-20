@@ -12,7 +12,6 @@ import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
 import org.slf4j.Logger;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -153,6 +152,10 @@ public class TemplateExcelExport {
                 } else if (value.length() > 20) {
                     sheet.setColumnWidth(column, 3000 + (value.length() - 10) * 600);
                 }
+            } else if (val instanceof Integer) {
+                cell.setCellValue(val.toString());
+            } else if (val instanceof Float) {
+                cell.setCellValue(val.toString());
             }
 
         } catch (Exception e) {
@@ -163,8 +166,8 @@ public class TemplateExcelExport {
     }
 
     private void setDataList(List<?> list) {
-        Object data = list.get(0);
-        if (list != null && !list.isEmpty()) {
+        if (!list.isEmpty()) {
+            Object data = list.get(0);
             if (annotationList != null && annotationList.size() > 0) {
                 for (int i = 1; i <= 6; i++) {
                     int colunm = 0;
@@ -177,9 +180,7 @@ public class TemplateExcelExport {
                         addCellList(row, headerList, styles.get("templateHeader"));
                     } else if (i == 6) {
                         addCellList(row, headerList, styles.get("header"));
-                    } else if (i == 5) {
-
-                    } else {
+                    } else if (i != 5) {
                         for (Object[] object : annotationList) {
                             // 获取该属性注解
                             ExcelField excelField = (ExcelField) object[0];
@@ -201,7 +202,7 @@ public class TemplateExcelExport {
                                     value = "";
                                 }
                             } else if (excelField.isDate()) {
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/M/d");
                                 String s = Objects.toString(value);
                                 if (s != null && !s.equals("null") && !s.equals("")) {
                                     value = simpleDateFormat.format(new Date(Long.parseLong(Objects.toString(value))));
@@ -209,17 +210,14 @@ public class TemplateExcelExport {
                                     value = "";
                                 }
                             }
-                            if (i == 3) {
-                                addCell(row, colunm++, value, styles.get("templateData"));
-                            } else {
-                                addCell(row, colunm++, value, styles.get("data"));
-                            }
+                            addCell(row, colunm++, value, styles.get("templateData"));
                         }
                     }
                 }
             }
         }
     }
+
     /**
      * 导出数据到文件
      *
@@ -234,6 +232,7 @@ public class TemplateExcelExport {
         setDataList(dataList);
         write(os);
     }
+
     private void addCellList(Row row, List<String> dataList, CellStyle style) {
         for (int i = 0; i < dataList.size(); i++) {
             addCell(row, i, dataList.get(i), style);
@@ -264,7 +263,7 @@ public class TemplateExcelExport {
                 XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(dvConstraint,
                     addressList);
                 // 输入非法数据时，弹窗警告框
-                validation.setShowErrorBox(true);
+                // validation.setShowErrorBox(true);
                 validation.setShowPromptBox(true);
                 sheet.addValidationData(validation);
             }

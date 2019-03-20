@@ -1631,14 +1631,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public void exportTemplate(Integer[] types) throws Exception {
         List<AssetCategoryModel> categoryModelList = assetCategoryModelDao.getNextLevelCategoryByName("硬件");
-        Map<String, Class> map = initMap();
         // 根据时间戳创建文件夹，防止产生冲突
         Long currentTime = System.currentTimeMillis();
         // 创建临时文件夹
         String dictionary = "/temp" + currentTime + "/模板" + currentTime;
         File dictionaryFile = new File(dictionary);
         if (!dictionaryFile.exists()) {
-            dictionaryFile.mkdirs();
+            logger.info(dictionaryFile.getName() + "目录创建" + isSuccess(dictionaryFile.mkdirs()));
         }
         // 创造模板文件
         File[] files = new File[types.length];
@@ -1651,35 +1650,274 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             AssetCategoryModel assetCategoryModel = categoryModelMap.get(type);
             if (Objects.nonNull(assetCategoryModel)) {
                 // 生成模板文件
-                String categoryName = assetCategoryModel.getName();
-                ExcelUtils.exportTemplet(map.get(assetCategoryModel.getName()), categoryName + "信息模板.xlsx",
-                    categoryName, dictionary + "/");
+                String categoryName = exportTemplate(dictionary + "/", assetCategoryModel);
                 files[m++] = new File(dictionary + "/" + categoryName + "信息模板.xlsx");
+                logger.info(files[m - 1].getName() + "文件创建成功");
             } else {
                 // 输入参数有错，删除临时文件
-                for (File fil : files) {
-                    if (Objects.nonNull(fil)) {
-                        loggerIsDelete(fil);
-                    }
-                }
-                loggerIsDelete(dictionaryFile);
-                loggerIsDelete(dictionaryFile.getParentFile());
+                deleteTemp(dictionaryFile, files);
                 throw new BusinessException("存在错误的品类ID");
             }
         }
-        zip.createNewFile();
+        logger.info(zip.getName() + "文件创建" + isSuccess(zip.createNewFile()));
         // 压缩文件为zip压缩包
         ZipUtil.compress(zip, files);
         // 将文件流发送到客户端
         sendStreamToClient(zip);
         // 记录临时文件删除是否成功
         loggerIsDelete(zip);
+        deleteTemp(dictionaryFile, files);
+
+    }
+
+    private void deleteTemp(File dictionaryFile, File[] files) {
         for (File fil : files) {
-            loggerIsDelete(fil);
+            if (Objects.nonNull(fil)) {
+                loggerIsDelete(fil);
+            }
         }
         loggerIsDelete(dictionaryFile);
         loggerIsDelete(dictionaryFile.getParentFile());
+    }
 
+    private String exportTemplate(String dictionary, AssetCategoryModel assetCategoryModel) {
+        String categoryName = assetCategoryModel.getName();
+        switch (categoryName) {
+            case "计算设备":
+                exportComputeTemplate(dictionary);
+                break;
+            case "网络设备":
+                exportNetworkTemplate(dictionary);
+                break;
+            case "存储设备":
+                exportStorageTemplate(dictionary);
+                break;
+            case "安全设备":
+                exportSafetyTemplate(dictionary);
+                break;
+            case "其他设备":
+                exportOtherTemplate(dictionary);
+                break;
+        }
+
+        return categoryName;
+    }
+
+    private void exportOtherTemplate(String dictionary) {
+        // 初始化其它设备示例数据
+        List<OtherDeviceEntity> dataList = initOtherData();
+        ExcelUtils.exportTemplateToFile(OtherDeviceEntity.class, "其他设备信息模板.xlsx", "其他设备", "备注", dictionary + "/",
+            dataList);
+    }
+
+    private List<OtherDeviceEntity> initOtherData() {
+        List<OtherDeviceEntity> dataList = new ArrayList<>();
+        OtherDeviceEntity otherDeviceEntity = new OtherDeviceEntity();
+        otherDeviceEntity.setArea("四川省");
+        otherDeviceEntity.setBuyDate(System.currentTimeMillis());
+        otherDeviceEntity.setDueDate(System.currentTimeMillis());
+        otherDeviceEntity.setUser("留小查");
+        otherDeviceEntity.setTelephone("13541771234");
+        otherDeviceEntity.setSerial("ANFRWGDFETYRYF");
+        otherDeviceEntity.setEmail("32535694@163.com");
+        otherDeviceEntity.setName("触摸查询一体机");
+        otherDeviceEntity.setMemo("宣传展览导视查询畅销触控一体机，采用FULL HD全视角高清IPS硬屏");
+        otherDeviceEntity.setManufacturer("捷显");
+        otherDeviceEntity.setWarranty(System.currentTimeMillis());
+        otherDeviceEntity.setNumber("000001");
+        dataList.add(otherDeviceEntity);
+        return dataList;
+    }
+
+    private void exportSafetyTemplate(String dictionary) {
+        // 初始化安全设备示例数据
+        List<SafetyEquipmentEntiy> dataList = initSafetyData();
+        ExcelUtils.exportTemplateToFile(SafetyEquipmentEntiy.class, "安全设备信息模板.xlsx", "安全设备", "备注", dictionary + "/",
+            dataList);
+    }
+
+    private List<SafetyEquipmentEntiy> initSafetyData() {
+        List<SafetyEquipmentEntiy> dataList = new ArrayList<>();
+        SafetyEquipmentEntiy safetyEquipmentEntiy = new SafetyEquipmentEntiy();
+        safetyEquipmentEntiy.setArea("四川省");
+        safetyEquipmentEntiy.setBuyDate(System.currentTimeMillis());
+        safetyEquipmentEntiy.setDueDate(System.currentTimeMillis());
+        safetyEquipmentEntiy.setEmail("32535694@163.com");
+        safetyEquipmentEntiy.setFirmwareVersion("2.0");
+        safetyEquipmentEntiy.setWarranty(System.currentTimeMillis());
+        safetyEquipmentEntiy.setManufacturer("安天");
+        safetyEquipmentEntiy.setName("安天镇关威胁阻断系统   ");
+        safetyEquipmentEntiy
+            .setMemo("镇关采用高性能软硬件架构，以智能用户识别与智能应用识别为基础，实现了完全" + "以用户和应用为中心的控制策略，先进的APT防护技术能够有效防范0day攻击和社工渗透等新型威胁。");
+        safetyEquipmentEntiy.setMac("00-01-6C-06-A6-29");
+        safetyEquipmentEntiy.setTelephone("13541771234");
+        safetyEquipmentEntiy.setSoftwareVersion("2.2.1");
+        safetyEquipmentEntiy.setNumber("00001");
+        safetyEquipmentEntiy.setIp("192.168.1.9");
+        safetyEquipmentEntiy.setUser("留小查");
+        safetyEquipmentEntiy.setManufacturer("安天");
+        safetyEquipmentEntiy.setSerial("ANFRWGDFETYRYF");
+        safetyEquipmentEntiy.setLocation("成都市青羊区");
+        safetyEquipmentEntiy.setHouseLocation("501机房004号");
+        dataList.add(safetyEquipmentEntiy);
+        return dataList;
+    }
+
+    private void exportStorageTemplate(String dictionary) {
+        // 初始化存储设备示例数据
+        List<StorageDeviceEntity> dataList = initStorageData();
+        ExcelUtils.exportTemplateToFile(StorageDeviceEntity.class, "存储设备信息模板.xlsx", "存储设备", "备注", dictionary + "/",
+            dataList);
+    }
+
+    private List<StorageDeviceEntity> initStorageData() {
+        List<StorageDeviceEntity> dataList = new ArrayList<>();
+        StorageDeviceEntity storageDeviceEntity = new StorageDeviceEntity();
+        storageDeviceEntity.setArea("四川省");
+        storageDeviceEntity.setAverageTransmissionRate("4GB");
+        storageDeviceEntity.setBuyDate(System.currentTimeMillis());
+        storageDeviceEntity.setCapacity("256GB");
+        storageDeviceEntity.setDriveNum(3);
+        storageDeviceEntity.setDueDate(System.currentTimeMillis());
+        storageDeviceEntity.setEmail("32535694@163.com");
+        storageDeviceEntity.setHardDiskNum(1);
+        storageDeviceEntity.setFirmware("spi1");
+        storageDeviceEntity.setHighCache("6GB/S");
+        storageDeviceEntity.setHouseLocation("501机房004号");
+        storageDeviceEntity.setManufacturer("联想");
+        storageDeviceEntity.setMemo("私有云网络存储器nas文件共享数字备份 AS6202T 0TB 标机");
+        storageDeviceEntity.setName("华芸AS6202T");
+        storageDeviceEntity.setInnerInterface("SAS ，SSD");
+        storageDeviceEntity.setNumber("000001");
+        storageDeviceEntity.setSlotType("1");
+        storageDeviceEntity.setTelephone("13541771234");
+        storageDeviceEntity.setWarranty(System.currentTimeMillis());
+        storageDeviceEntity.setRaidSupport("0，1，5，6，10 ");
+        storageDeviceEntity.setUser("留小查");
+        storageDeviceEntity.setSerial("ANFRWGDFETYRYF");
+        storageDeviceEntity.setLocation("成都市青羊区");
+        dataList.add(storageDeviceEntity);
+        return dataList;
+
+    }
+
+    private void exportNetworkTemplate(String dictionary) {
+        // 初始化网络设备示例数据
+        List<NetworkDeviceEntity> dataList = initNetworkData();
+        ExcelUtils.exportTemplateToFile(NetworkDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备", "备注", dictionary + "/",
+            dataList);
+    }
+
+    private List<NetworkDeviceEntity> initNetworkData() {
+        List<NetworkDeviceEntity> dataList = new ArrayList<>();
+        NetworkDeviceEntity networkDeviceEntity = new NetworkDeviceEntity();
+        networkDeviceEntity.setWarranty(System.currentTimeMillis());
+        networkDeviceEntity.setButDate(System.currentTimeMillis());
+        networkDeviceEntity.setCpuSize(4);
+        networkDeviceEntity.setArea("成都市");
+        networkDeviceEntity.setMac("00-01-6C-06-A6-29");
+        networkDeviceEntity.setName("YTW-600-5A五端口迷你型网络延长器");
+        networkDeviceEntity.setDramSize(3.42f);
+        networkDeviceEntity.setEmail("32535694@163.com");
+        networkDeviceEntity.setExpectBandwidth(4);
+        networkDeviceEntity.setTelephone("13541771234");
+        networkDeviceEntity.setFirmwareVersion("1.1.1");
+        networkDeviceEntity.setUser("留小查");
+        networkDeviceEntity.setRegister(1);
+        networkDeviceEntity.setNumber("000001");
+        networkDeviceEntity.setIsWireless(1);
+        networkDeviceEntity.setCpuVersion("i7");
+        networkDeviceEntity.setIos("WDWFER");
+        networkDeviceEntity.setDueDate(System.currentTimeMillis());
+        networkDeviceEntity.setFlashSize(2.32f);
+        networkDeviceEntity.setPortSize(4);
+        networkDeviceEntity.setLocation("成都市青羊区");
+        networkDeviceEntity.setNcrmSize(4.22f);
+        networkDeviceEntity.setOuterIp("192.168.1.9");
+        networkDeviceEntity.setInnerIp("192.168.1.1");
+        networkDeviceEntity.setManufacturer("邮通");
+        networkDeviceEntity.setIsWireless(1);
+        networkDeviceEntity.setSerial("ANFRWGDFETYRYF");
+        networkDeviceEntity.setHouseLocation("501机房004号");
+        networkDeviceEntity.setCpuSize(3);
+        networkDeviceEntity.setInterfaceSize(4);
+        networkDeviceEntity.setSubnetMask("255.255.252.0");
+        networkDeviceEntity.setMemo("该产品的基本原理是通过信号整形，增加敏感度来实现距离延长的，其电压、波形完全符合以太网国际标准，不会对网络带来危害，请放心在五类或超五类非屏蔽网线上使用。");
+        dataList.add(networkDeviceEntity);
+        return dataList;
+    }
+
+    private void exportComputeTemplate(String dictionary) {
+        // 初始化计算设备示例数据
+        List<ComputeDeviceEntity> dataList = initComputeData();
+        ExcelUtils.exportTemplateToFile(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备", "备注", dictionary + "/",
+            dataList);
+    }
+
+    private List<ComputeDeviceEntity> initComputeData() {
+        List<ComputeDeviceEntity> dataList = new ArrayList<>();
+        ComputeDeviceEntity computeDeviceEntity = new ComputeDeviceEntity();
+        computeDeviceEntity.setEmail("32535694@163.com");
+        computeDeviceEntity.setArea("成都市");
+        computeDeviceEntity.setName("ThinkPad X1 隐士");
+        computeDeviceEntity.setLocation("成都市锦江区");
+        computeDeviceEntity.setWarranty(System.currentTimeMillis());
+        computeDeviceEntity.setDescription("搭载第八代英特尔®酷睿TM i7处理器，配备双内存插槽，最高支持64GB内存扩展");
+        computeDeviceEntity.setDueTime(System.currentTimeMillis());
+        computeDeviceEntity.setImportanceDegree("1");
+        computeDeviceEntity.setSerial("ADES-WRGD-EREW-TERF");
+        computeDeviceEntity.setHouseLocation("501机房004号");
+        computeDeviceEntity.setWarranty(System.currentTimeMillis());
+        computeDeviceEntity.setTelephone("13541771234");
+        computeDeviceEntity.setNumber("000001");
+        computeDeviceEntity.setUser("留小查");
+        computeDeviceEntity.setBuyDate(System.currentTimeMillis());
+        computeDeviceEntity.setTransferType(1);
+        computeDeviceEntity.setSlotType(2);
+        computeDeviceEntity.setHeatsink(2);
+        computeDeviceEntity.setFirmwareVersion("1.3.2");
+        computeDeviceEntity.setDueTime(System.currentTimeMillis());
+        computeDeviceEntity.setStitch(1);
+        computeDeviceEntity.setManufacturer("联想");
+        computeDeviceEntity.setOperationSystem("Window 10");
+
+        computeDeviceEntity.setCpuBrand("英特尔酷睿");
+        computeDeviceEntity.setCpuCoreSize(4);
+        computeDeviceEntity.setCpuMainFrequency(1.34f);
+        computeDeviceEntity.setCpuModel("i7");
+        computeDeviceEntity.setCpuSerial("WERD-fw2F-r3R2-Qee2");
+        computeDeviceEntity.setCpuThreadSize(1);
+
+        computeDeviceEntity.setHardDiskBrand("Lenovo");
+        computeDeviceEntity.setHardDisCapacityl(1);
+        computeDeviceEntity.setHardDiskInterfaceType(1);
+        computeDeviceEntity.setHardDiskSerial("Pd2d-d2E1-er2E-2eE2");
+        computeDeviceEntity.setHardDiskBuyDate(System.currentTimeMillis());
+        computeDeviceEntity.setHardDiskType(2);
+        computeDeviceEntity.setHardDiskModel("数据存储硬盘");
+
+        computeDeviceEntity.setNetworkBrand("intel");
+        computeDeviceEntity.setNetworkDefaultGateway("192.168.1.1");
+        computeDeviceEntity.setNetworkIpAddress("192.168.1.9");
+        computeDeviceEntity.setNetworkMacAddress("00-01-6C-06-A6-29");
+        computeDeviceEntity.setNetworkModel("全双工/半双工自适应");
+        computeDeviceEntity.setNetworkSerial("WDTEF2EER3IYVN");
+        computeDeviceEntity.setNetworkSubnetMask("255.255.252.0");
+
+        computeDeviceEntity.setMainboradBiosDate(System.currentTimeMillis());
+        computeDeviceEntity.setMainboradBiosVersion("3.2.3");
+        computeDeviceEntity.setMainboradBrand("微星（MSI）");
+        computeDeviceEntity.setMainboradModel("X299 GAMING PRO CARBON AC");
+        computeDeviceEntity.setMainboradSerial("WFETDHYTEGHD");
+
+        computeDeviceEntity.setMemoryBrand("影驰GAMER");
+        computeDeviceEntity.setMemoryFrequency(2.32);
+        computeDeviceEntity.setMemorySerial("dpfjwmadnwge");
+        computeDeviceEntity.setMemoryCapacity(5);
+        computeDeviceEntity.setHeatsink(1);
+
+        dataList.add(computeDeviceEntity);
+        return dataList;
     }
 
     private void sendStreamToClient(File file) {
@@ -1710,27 +1948,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     }
 
-    private Map<String, Class> initMap() {
-        Map<String, Class> map = new HashMap();
-        map.put("计算设备", ComputeDeviceEntity.class);
-        map.put("网络设备", NetworkDeviceEntity.class);
-        map.put("安全设备", SafetyEquipmentEntiy.class);
-        map.put("存储设备", StorageDeviceEntity.class);
-        map.put("其他设备", OtherDeviceEntity.class);
-        return map;
+    private void loggerIsDelete(File file) {
+        logger.info(file.getName() + "文件删除" + isSuccess(file.delete()));
     }
 
-    void loggerIsDelete(File file) {
-        logger.info(file.getName() + "文件删除" + isDeleteSuccess(file.delete()));
-    }
-
-    String isDeleteSuccess(Boolean isDelete) {
+    private String isSuccess(Boolean isDelete) {
         return isDelete ? "成功" : "失败";
-    }
-
-    @Override
-    public void exportData(AssetQuery assetQuery, HttpServletResponse response) throws Exception {
-        exportData(ComputeDeviceEntity.class, "资产信息表.xlsx", assetQuery, response);
     }
 
     @Override
@@ -1753,7 +1976,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int error = 0;
         int a = 6;
         StringBuilder builder = new StringBuilder();
-        List<ComputerVo> computerVos = new ArrayList<> ();
+        List<ComputerVo> computerVos = new ArrayList<>();
         List<ComputeDeviceEntity> dataList = result.getDataList();
         if (dataList.size() == 0) {
             return "上传失败，模板内无数据，请填写数据后再次上传";
@@ -1788,188 +2011,185 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            List<SysArea> areas = LoginUserUtil.getLoginUser ().getAreas ();
-            List<String> areasStrings = new ArrayList<> ();
+            List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
+            List<String> areasStrings = new ArrayList<>();
             for (SysArea area : areas) {
-                areasStrings.add (area.getFullName ());
+                areasStrings.add(area.getFullName());
             }
-            if (!areasStrings.contains (entity.getArea ())){
+            if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
                 builder.append("序号").append(a).append("行").append("当前用户没有此所属区域");
                 continue;
             }
 
+            if (repeat + error == 0) {
+                ComputerVo computerVo = new ComputerVo();
+                Asset asset = new Asset();
+                asset.setResponsibleUserId(CheckUser(entity.getUser()));
+                asset.setGmtCreate(System.currentTimeMillis());
+                asset.setAreaId(importRequest.getAreaId());
+                asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                asset.setResponsibleUserId(Objects.toString(LoginUserUtil.getLoginUser().getId()));
+                asset.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
+                asset.setAssetSource(ReportType.AUTOMATIC.getCode());
+                asset.setNumber(entity.getNumber());
+                asset.setName(entity.getName());
+                asset.setManufacturer(entity.getManufacturer());
+                asset.setFirmwareVersion(entity.getFirmwareVersion());
+                asset.setSerial(entity.getSerial());
+                asset.setContactTel(entity.getTelephone());
+                asset.setLocation(entity.getLocation());
+                asset.setHouseLocation(entity.getHouseLocation());
+                asset.setEmail(entity.getEmail());
+                asset.setBuyDate(entity.getBuyDate());
+                asset.setServiceLife(entity.getDueTime());
+                asset.setWarranty(entity.getWarranty());
+                asset.setDescrible(entity.getDescription());
+                asset.setMemo(importRequest.getMemo());
+                asset.setOperationSystem(entity.getOperationSystem());
+                asset.setContactTel(entity.getTelephone());
+                asset.setEmail(entity.getEmail());
+                asset.setCategoryModel("4");
+                computerVo.setAsset(asset);
+                // assetDao.insert(asset);
+                String id = asset.getStringId();
 
-            if (repeat+error==0){
-                ComputerVo computerVo = new ComputerVo ();
-    Asset asset = new Asset();
-    asset.setResponsibleUserId(CheckUser(entity.getUser()));
-    asset.setGmtCreate(System.currentTimeMillis());
-    asset.setAreaId(importRequest.getAreaId());
-    asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-    asset.setResponsibleUserId(Objects.toString(LoginUserUtil.getLoginUser().getId()));
-    asset.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
-    asset.setAssetSource(ReportType.AUTOMATIC.getCode());
-    asset.setNumber(entity.getNumber());
-    asset.setName(entity.getName());
-    asset.setManufacturer(entity.getManufacturer());
-    asset.setFirmwareVersion(entity.getFirmwareVersion());
-    asset.setSerial(entity.getSerial());
-    asset.setContactTel(entity.getTelephone());
-    asset.setLocation(entity.getLocation());
-    asset.setHouseLocation(entity.getHouseLocation());
-    asset.setEmail(entity.getEmail());
-    asset.setBuyDate(entity.getBuyDate());
-    asset.setServiceLife(entity.getDueTime());
-    asset.setWarranty(entity.getWarranty());
-    asset.setDescrible(entity.getDescription());
-    asset.setMemo(importRequest.getMemo());
-    asset.setOperationSystem(entity.getOperationSystem());
-    asset.setContactTel(entity.getTelephone());
-    asset.setEmail(entity.getEmail());
-    asset.setCategoryModel("4");
-    computerVo.setAsset (asset);
-//    assetDao.insert(asset);
-    String id = asset.getStringId();
+                if (StringUtils.isNotBlank(entity.getMemoryBrand()) && !Objects.isNull(entity.getMemoryCapacity())
+                    && !Objects.isNull(entity.getMemoryFrequency()) && !Objects.isNull(entity.getMemoryNum())
+                    && entity.getMemoryNum() > 0) {
+                    AssetMemory assetMemory = new AssetMemory();
+                    assetMemory.setAssetId(id);
+                    assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetMemory.setGmtCreate(System.currentTimeMillis());
+                    assetMemory.setSerial(entity.getMemorySerial());
+                    assetMemory.setBrand(entity.getMemoryBrand());
+                    assetMemory.setCapacity(entity.getMemoryCapacity());
+                    assetMemory.setFrequency(entity.getMemoryFrequency());
+                    assetMemory.setCapacity(entity.getMemoryCapacity());
+                    assetMemory.setStitch(entity.getStitch());
+                    assetMemory.setHeatsink(entity.getHeatsink());
+                    assetMemory.setTransferType(entity.getTransferType());
+                    List<AssetMemory> assetMemoryList = new ArrayList<>();
 
-    if (StringUtils.isNotBlank(entity.getMemoryBrand()) && !Objects.isNull(entity.getMemoryCapacity())
-            && !Objects.isNull(entity.getMemoryFrequency()) && !Objects.isNull(entity.getMemoryNum())
-            && entity.getMemoryNum() > 0) {
-        AssetMemory assetMemory = new AssetMemory();
-        assetMemory.setAssetId(id);
-        assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        assetMemory.setGmtCreate(System.currentTimeMillis());
-        assetMemory.setSerial(entity.getMemorySerial());
-        assetMemory.setBrand(entity.getMemoryBrand());
-        assetMemory.setCapacity(entity.getMemoryCapacity());
-        assetMemory.setFrequency(entity.getMemoryFrequency());
-        assetMemory.setCapacity(entity.getMemoryCapacity());
-        assetMemory.setStitch(entity.getStitch());
-        assetMemory.setHeatsink(entity.getHeatsink());
-        assetMemory.setTransferType(entity.getTransferType());
-        List<AssetMemory> assetMemoryList = new ArrayList<>();
+                    for (int i = 0; i < entity.getMemoryNum(); i++) {
+                        assetMemoryList.add(assetMemory);
+                        computerVo.setAssetMemoryList(assetMemoryList);
+                    }
+                    // assetMemoryDao.insertBatch(assetMemoryList);
+                }
+                // else {
+                // builder.append("序号").append(a).append("行").append ("没有添加内存：内存品牌，内存容量，内存主频，内存数量>0")
+                // }
 
-        for (int i = 0; i < entity.getMemoryNum(); i++) {
-            assetMemoryList.add(assetMemory);
-            computerVo.setAssetMemoryList (assetMemoryList);
-        }
-//        assetMemoryDao.insertBatch(assetMemoryList);
-    }
-    // else {
-    // builder.append("序号").append(a).append("行").append ("没有添加内存：内存品牌，内存容量，内存主频，内存数量>0")
-    // }
+                if (StringUtils.isNotBlank(entity.getHardDiskBrand()) && !Objects.isNull(entity.getHardDisCapacityl())
+                    && !Objects.isNull(entity.getHardDiskType()) && !Objects.isNull(entity.getHardDiskNum())
+                    && entity.getHardDiskNum() > 0) {
+                    AssetHardDisk assetHardDisk = new AssetHardDisk();
+                    assetHardDisk.setAssetId(id);
+                    assetHardDisk.setGmtCreate(System.currentTimeMillis());
+                    assetHardDisk.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetHardDisk.setSerial(entity.getHardDiskSerial());
+                    assetHardDisk.setBrand(entity.getHardDiskBrand());
+                    assetHardDisk.setModel(entity.getHardDiskModel());
+                    assetHardDisk.setCapacity(entity.getHardDisCapacityl());
+                    assetHardDisk.setBuyDate(entity.getHardDiskBuyDate());
+                    assetHardDisk.setInterfaceType(entity.getHardDiskInterfaceType());
+                    assetHardDisk.setDiskType(entity.getHardDiskType());
 
-    if (StringUtils.isNotBlank(entity.getHardDiskBrand()) && !Objects.isNull(entity.getHardDisCapacityl())
-            && !Objects.isNull(entity.getHardDiskType()) && !Objects.isNull(entity.getHardDiskNum())
-            && entity.getHardDiskNum() > 0) {
-        AssetHardDisk assetHardDisk = new AssetHardDisk();
-        assetHardDisk.setAssetId(id);
-        assetHardDisk.setGmtCreate(System.currentTimeMillis());
-        assetHardDisk.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        assetHardDisk.setSerial(entity.getHardDiskSerial());
-        assetHardDisk.setBrand(entity.getHardDiskBrand());
-        assetHardDisk.setModel(entity.getHardDiskModel());
-        assetHardDisk.setCapacity(entity.getHardDisCapacityl());
-        assetHardDisk.setBuyDate(entity.getHardDiskBuyDate());
-        assetHardDisk.setInterfaceType(entity.getHardDiskInterfaceType());
-        assetHardDisk.setDiskType(entity.getHardDiskType());
+                    List<AssetHardDisk> assetHardDisks = new ArrayList<>();
+                    for (int i = 0; i < entity.getHardDiskNum(); i++) {
+                        assetHardDisks.add(assetHardDisk);
+                        computerVo.setAssetHardDisks(assetHardDisks);
+                    }
+                    // assetHardDiskDao.insertBatch(assetHardDisks);
 
-        List<AssetHardDisk> assetHardDisks = new ArrayList<>();
-        for (int i = 0; i < entity.getHardDiskNum(); i++) {
-            assetHardDisks.add(assetHardDisk);
-            computerVo.setAssetHardDisks (assetHardDisks);
-        }
-//        assetHardDiskDao.insertBatch(assetHardDisks);
+                }
 
-    }
+                if (StringUtils.isNotBlank(entity.getMainboradBrand()) && !Objects.isNull(entity.getMainboradNum())
+                    && entity.getMainboradNum() > 0) {
 
-    if (StringUtils.isNotBlank(entity.getMainboradBrand()) && !Objects.isNull(entity.getMainboradNum())
-            && entity.getMainboradNum() > 0) {
+                    AssetMainborad assetMainborad = new AssetMainborad();
+                    assetMainborad.setAssetId(id);
+                    assetMainborad.setGmtCreate(System.currentTimeMillis());
+                    assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetMainborad.setSerial(entity.getMainboradSerial());
+                    assetMainborad.setBrand(entity.getMainboradBrand());
+                    assetMainborad.setModel(entity.getMainboradModel());
+                    assetMainborad.setBiosVersion(entity.getMainboradBiosVersion());
+                    assetMainborad.setBiosDate(entity.getMainboradBiosDate());
+                    List<AssetMainborad> assetMainborads = new ArrayList<>();
+                    for (int i = 0; i < entity.getMainboradNum(); i++) {
+                        assetMainborads.add(assetMainborad);
+                        computerVo.setAssetMainborads(assetMainborads);
+                    }
+                    // assetMainboradDao.insertBatch(assetMainborads);
+                }
+                if (StringUtils.isNotBlank(entity.getCpuBrand()) && !Objects.isNull(entity.getCpuNum())
+                    && entity.getCpuNum() > 0 && !Objects.isNull(entity.getCpuMainFrequency())) {
+                    AssetCpu assetCpu = new AssetCpu();
+                    assetCpu.setAssetId(id);
+                    assetCpu.setGmtCreate(System.currentTimeMillis());
+                    assetCpu.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetCpu.setSerial(entity.getCpuSerial());
+                    assetCpu.setBrand(entity.getCpuBrand());
+                    assetCpu.setModel(entity.getCpuModel());
+                    assetCpu.setMainFrequency(entity.getCpuMainFrequency());
+                    assetCpu.setThreadSize(entity.getCpuThreadSize());
+                    assetCpu.setCoreSize(entity.getCpuCoreSize());
+                    List<AssetCpu> assetCpus = new ArrayList<>();
+                    for (int i = 0; i < entity.getCpuNum(); i++) {
+                        assetCpus.add(assetCpu);
+                        computerVo.setAssetCpus(assetCpus);
+                    }
+                    // assetCpuDao.insertBatch(assetCpus);
+                }
 
-        AssetMainborad assetMainborad = new AssetMainborad();
-        assetMainborad.setAssetId(id);
-        assetMainborad.setGmtCreate(System.currentTimeMillis());
-        assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        assetMainborad.setSerial(entity.getMainboradSerial());
-        assetMainborad.setBrand(entity.getMainboradBrand());
-        assetMainborad.setModel(entity.getMainboradModel());
-        assetMainborad.setBiosVersion(entity.getMainboradBiosVersion());
-        assetMainborad.setBiosDate(entity.getMainboradBiosDate());
-        List<AssetMainborad> assetMainborads = new ArrayList<>();
-        for (int i = 0; i < entity.getMainboradNum(); i++) {
-            assetMainborads.add(assetMainborad);
-            computerVo.setAssetMainborads (assetMainborads);
-        }
-//        assetMainboradDao.insertBatch(assetMainborads);
-    }
-    if (StringUtils.isNotBlank(entity.getCpuBrand()) && !Objects.isNull(entity.getCpuNum())
-            && entity.getCpuNum() > 0 && !Objects.isNull(entity.getCpuMainFrequency())) {
-        AssetCpu assetCpu = new AssetCpu();
-        assetCpu.setAssetId(id);
-        assetCpu.setGmtCreate(System.currentTimeMillis());
-        assetCpu.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        assetCpu.setSerial(entity.getCpuSerial());
-        assetCpu.setBrand(entity.getCpuBrand());
-        assetCpu.setModel(entity.getCpuModel());
-        assetCpu.setMainFrequency(entity.getCpuMainFrequency());
-        assetCpu.setThreadSize(entity.getCpuThreadSize());
-        assetCpu.setCoreSize(entity.getCpuCoreSize());
-        List<AssetCpu> assetCpus = new ArrayList<>();
-        for (int i = 0; i < entity.getCpuNum(); i++) {
-            assetCpus.add(assetCpu);
-            computerVo.setAssetCpus (assetCpus);
-        }
-//        assetCpuDao.insertBatch(assetCpus);
-    }
+                if (StringUtils.isNotBlank(entity.getNetworkBrand())) {
+                    AssetNetworkCard assetNetworkCard = new AssetNetworkCard();
+                    assetNetworkCard.setAssetId(id);
+                    assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetNetworkCard.setGmtCreate(System.currentTimeMillis());
+                    assetNetworkCard.setSerial(entity.getNetworkSerial());
+                    assetNetworkCard.setBrand(entity.getNetworkBrand());
+                    assetNetworkCard.setModel(entity.getNetworkModel());
+                    assetNetworkCard.setSubnetMask(entity.getNetworkSubnetMask());
+                    assetNetworkCard.setDefaultGateway(entity.getNetworkDefaultGateway());
+                    assetNetworkCard.setIpAddress(entity.getNetworkIpAddress());
+                    assetNetworkCard.setMacAddress(entity.getNetworkMacAddress());
+                    computerVo.setAssetNetworkCard(assetNetworkCard);
+                }
 
-    if (StringUtils.isNotBlank(entity.getNetworkBrand()) ) {
-        AssetNetworkCard assetNetworkCard = new AssetNetworkCard();
-        assetNetworkCard.setAssetId(id);
-        assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        assetNetworkCard.setGmtCreate(System.currentTimeMillis());
-        assetNetworkCard.setSerial(entity.getNetworkSerial());
-        assetNetworkCard.setBrand(entity.getNetworkBrand());
-        assetNetworkCard.setModel(entity.getNetworkModel());
-        assetNetworkCard.setSubnetMask(entity.getNetworkSubnetMask());
-        assetNetworkCard.setDefaultGateway(entity.getNetworkDefaultGateway());
-        assetNetworkCard.setIpAddress (entity.getNetworkIpAddress ());
-        assetNetworkCard.setMacAddress (entity.getNetworkMacAddress ());
-        computerVo.setAssetNetworkCard (assetNetworkCard);
-    }
-
-}
-
-
+            }
 
             // 流程
 
-//            Map<String, Object> formData = new HashMap();
-//            String[] userIds = importRequest.getUserId();
-//            for (String configBaselineUserId : userIds) {
-//                formData.put("configBaselineUserId", configBaselineUserId);
-//                formData.put("discard", 0);
-//            }
-//            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-//            manualStartActivityRequest.setBusinessId(asset.getId().toString());
-//            manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-//            manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getName());
-//            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
-//            activityClient.manualStartProcess(manualStartActivityRequest);
-//            success++;
+            // Map<String, Object> formData = new HashMap();
+            // String[] userIds = importRequest.getUserId();
+            // for (String configBaselineUserId : userIds) {
+            // formData.put("configBaselineUserId", configBaselineUserId);
+            // formData.put("discard", 0);
+            // }
+            // ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+            // manualStartActivityRequest.setBusinessId(asset.getId().toString());
+            // manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+            // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getName());
+            // manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
+            // activityClient.manualStartProcess(manualStartActivityRequest);
+            // success++;
             a++;
         }
 
-        if (repeat+error==0){
+        if (repeat + error == 0) {
 
             for (ComputerVo computerVo : computerVos) {
-                Asset asset = computerVo.getAsset ();
-                assetDao.insert (asset);
-                assetCpuDao.insertBatch(computerVo.getAssetCpus ());
-                assetMainboradDao.insertBatch(computerVo.getAssetMainborads ());
-                assetHardDiskDao.insertBatch(computerVo.getAssetHardDisks ());
-                assetMemoryDao.insertBatch(computerVo.getAssetMemoryList ());
-                assetNetworkCardDao.insert (computerVo.getAssetNetworkCard ());
+                Asset asset = computerVo.getAsset();
+                assetDao.insert(asset);
+                assetCpuDao.insertBatch(computerVo.getAssetCpus());
+                assetMainboradDao.insertBatch(computerVo.getAssetMainborads());
+                assetHardDiskDao.insertBatch(computerVo.getAssetHardDisks());
+                assetMemoryDao.insertBatch(computerVo.getAssetMemoryList());
+                assetNetworkCardDao.insert(computerVo.getAssetNetworkCard());
                 // 记录资产操作流程
                 AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                 assetOperationRecord.setTargetObjectId(asset.getStringId());
@@ -1988,8 +2208,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         String res = "导入成功" + success + "条。";
-//        re += repeat > 0 ? ", " + repeat + "条编号重复" : ",";
-//        re += error > 0 ? ", " + error + "条数据导入失败" : ",";
+        // re += repeat > 0 ? ", " + repeat + "条编号重复" : ",";
+        // re += error > 0 ? ", " + error + "条数据导入失败" : ",";
         StringBuilder stringBuilder = new StringBuilder(res);
         // if (error + repeat > 0) {
         // stringBuilder.append(re).append("其中").append(builder);
@@ -2581,12 +2801,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetDao.queryAssetCountByAreaIds(areaIds);
     }
 
-    private void exportToClient(Class clazz, String fileName, String title) {
-        ExcelUtils.exportTemplet(clazz, fileName, title);
-    }
-
-    private void exportData(Class clazz, String fileName, AssetQuery assetQuery,
-                            HttpServletResponse response) throws Exception {
+    @Override
+    public void exportData(AssetQuery assetQuery, HttpServletResponse response) throws Exception {
         assetQuery.setAreaIds(
             ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         assetQuery.setPageSize(ALL_PAGE);

@@ -48,12 +48,12 @@ public class OtherDeviceEntity {
     /**
      * 购买日期
      */
-    @ExcelField(value = "buy_date", align = 1, title = "购买日期",isDate = true)
+    @ExcelField(value = "buyDate", align = 1, title = "购买日期",isDate = true)
     private Long            buyDate;
     /**
      * 到期时间
      */
-    @ExcelField(value = "due_date", align = 1, title = "到期时间",isDate = true,required = false)
+    @ExcelField(value = "dueDate", align = 1, title = "到期时间",isDate = true,required = false)
     private Long            dueDate;
     /**
      * 保修期

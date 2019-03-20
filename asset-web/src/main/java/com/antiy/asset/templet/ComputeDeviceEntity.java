@@ -65,37 +65,37 @@ public class ComputeDeviceEntity {
     /**
      * 机房位置
      */
-    @ExcelField(value = "house_location", align = 1, title = "机房位置")
+    @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
     private String  houseLocation;
 
     /**
      * 固件版本
      */
-    @ExcelField(value = "firmware_version", align = 1, title = "固件版本")
+    @ExcelField(value = "firmwareVersion", align = 1, title = "固件版本")
     private String  firmwareVersion;
 
     /**
      * 操作系统
      */
-    @ExcelField(value = "operation_system", align = 1, title = "操作系统")
+    @ExcelField(value = "operationSystem", align = 1, title = "操作系统")
     private String  operationSystem;
 
     /**
      * 重要程度
      */
-    @ExcelField(value = "importance_degree", align = 1, title = "重要程度(必填)", dictType = "major_type",required = true)
+    @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type",required = true)
     private String  importanceDegree;
 
     /**
      * 购买时间
      */
-    @ExcelField(value = "buy_date", align = 1, title = "购买时间", isDate = true)
+    @ExcelField(value = "buyDate", align = 1, title = "购买时间", isDate = true)
     private Long  buyDate;
 
     /**
      * 使用到期时间
      */
-    @ExcelField(value = "due_time", align = 1, title = "到期时间(必填)", isDate = true,required = true)
+    @ExcelField(value = "dueTime", align = 1, title = "到期时间(必填)", isDate = true,required = true)
     private Long  dueTime;
     /**
      * 保修
@@ -111,40 +111,40 @@ public class ComputeDeviceEntity {
     /**
      * 内存数量
      */
-    @ExcelField(value = "memory_num", align = 1, title = "内存数量")
+    @ExcelField(value = "memoryNum", align = 1, title = "内存数量")
     private Integer  memoryNum;
     /**
      * 内存品牌
      */
-    @ExcelField(value = "memory_brand", align = 1, title = "内存品牌")
+    @ExcelField(value = "memoryBrand", align = 1, title = "内存品牌")
     private String  memoryBrand;
 
     /**
      * 内存序列号
      */
-    @ExcelField(value = "memory_serial", align = 1, title = "内存序列号")
+    @ExcelField(value = "memorySerial", align = 1, title = "内存序列号")
     private String  memorySerial;
     /**
      * 内存容量
      */
-    @ExcelField(value = "memory_capacity", align = 1, title = "内存容量")
+    @ExcelField(value = "memoryCapacity", align = 1, title = "内存容量")
     private Integer  memoryCapacity;
 
     /**
      * 内存类型
      */
-    @ExcelField(value = "transfer_type", align = 1, title = "内存类型", dictType = "transfer_type")
+    @ExcelField(value = "transferType", align = 1, title = "内存类型", dictType = "transfer_type")
     private Integer  transferType;
     /**
      * 内存主频
      */
-    @ExcelField(value = "memory_frequency", align = 1, title = "内存主频")
+    @ExcelField(value = "memoryFrequency", align = 1, title = "内存主频")
     private Double  memoryFrequency;
 
     /**
      * 内存插槽类型
      */
-    @ExcelField(value = "slot_type", align = 1, title = "内存插槽类型", dictType = "slot_type")
+    @ExcelField(value = "slotType", align = 1, title = "内存插槽类型", dictType = "slot_type")
     private Integer  slotType;
 
     /**
@@ -160,109 +160,109 @@ public class ComputeDeviceEntity {
     /**
      * 硬盘数量
      */
-    @ExcelField(value = "hard_disk_num", align = 1, title = "硬盘数量")
+    @ExcelField(value = "hardDiskNum", align = 1, title = "硬盘数量")
     private Integer  hardDiskNum;
     /**
      * 硬盘品牌
      */
-    @ExcelField(value = "hard_disk_brand", align = 1, title = "硬盘品牌")
+    @ExcelField(value = "hardDiskBrand", align = 1, title = "硬盘品牌")
     private String  hardDiskBrand;
     /**
      * 硬盘型号
      */
-    @ExcelField(value = "hard_disk_model", align = 1, title = "硬盘型号")
+    @ExcelField(value = "hardDiskModel", align = 1, title = "硬盘型号")
     private String  hardDiskModel;
 
     /**
      * 硬盘序列号
      */
-    @ExcelField(value = "hard_disk_serial", align = 1, title = "硬盘序列号")
+    @ExcelField(value = "hardDiskSerial", align = 1, title = "硬盘序列号")
     private String  hardDiskSerial;
 
     /**
      * 硬盘容量
      */
-    @ExcelField(value = "hard_disk_capacity", align = 1, title = "硬盘容量")
+    @ExcelField(value = "hardDisCapacityl", align = 1, title = "硬盘容量")
     private Integer  hardDisCapacityl;
     /**
      * 硬盘接口类型
      */
-    @ExcelField(value = "hard_disk_interface_type", align = 1, title = "硬盘接口类型", dictType = "interface_type")
+    @ExcelField(value = "hardDiskInterfaceType", align = 1, title = "硬盘接口类型", dictType = "interface_type")
     private Integer  hardDiskInterfaceType;
     /**
      * 硬盘磁盘类型
      */
-    @ExcelField(value = "hard_disk_type", align = 1, title = "硬盘磁盘类型", dictType = "disk_type")
+    @ExcelField(value = "hardDiskType", align = 1, title = "硬盘磁盘类型", dictType = "disk_type")
     private Integer  hardDiskType;
     /**
      * 硬盘购买时间
      */
-    @ExcelField(value = "hard_disk_buy_date", align = 1, title = "硬盘购买时间", isDate = true)
+    @ExcelField(value = "hardDiskBuyDate", align = 1, title = "硬盘购买时间", isDate = true)
     private Long    hardDiskBuyDate;
     /**
      * 主板数量
      */
-    @ExcelField(value = "mainborad_num", align = 1, title = "主板数量")
+    @ExcelField(value = "mainboradNum", align = 1, title = "主板数量")
     private Integer  mainboradNum;
     /**
      * 主板品牌
      */
-    @ExcelField(value = "mainborad_brand", align = 1, title = "主板品牌")
+    @ExcelField(value = "mainboradBrand", align = 1, title = "主板品牌")
     private String  mainboradBrand;
     /**
      * 主板型号
      */
-    @ExcelField(value = "mainborad_model", align = 1, title = "主板型号")
+    @ExcelField(value = "mainboradModel", align = 1, title = "主板型号")
     private String  mainboradModel;
     /**
      * 主板序列号
      */
-    @ExcelField(value = "mainborad_serial", align = 1, title = "主板序列号")
+    @ExcelField(value = "mainboradSerial", align = 1, title = "主板序列号")
     private String  mainboradSerial;
     /**
      * 主板bios版本
      */
-    @ExcelField(value = "mainborad_bios_version", align = 1, title = "主板bios版本")
+    @ExcelField(value = "mainboradBiosVersion", align = 1, title = "主板bios版本")
     private String  mainboradBiosVersion;
     /**
      * 主板bios日期
      */
-    @ExcelField(value = "mainborad_bios_date", align = 1, title = "主板bios日期",isDate = true)
+    @ExcelField(value = "mainboradBiosDate", align = 1, title = "主板bios日期",isDate = true)
     private Long  mainboradBiosDate;
     /**
      * cpu数量
      */
-    @ExcelField(value = "cpu_num", align = 1, title = "cpu数量")
+    @ExcelField(value = "cpuNum", align = 1, title = "cpu数量")
     private Integer  cpuNum;
     /**
      * cpu品牌
      */
-    @ExcelField(value = "cpu_brand", align = 1, title = "cpu品牌")
+    @ExcelField(value = "cpuBrand", align = 1, title = "cpu品牌")
     private String  cpuBrand;
     /**
      * cpu型号
      */
-    @ExcelField(value = "cpu_model", align = 1, title = "cpu型号")
+    @ExcelField(value = "cpuModel", align = 1, title = "cpu型号")
     private String  cpuModel;
     /**
      * cpu序列号
      */
-    @ExcelField(value = "cpu_serial", align = 1, title = "cpu序列号")
+    @ExcelField(value = "cpuSerial", align = 1, title = "cpu序列号")
     private String  cpuSerial;
     /**
      * cpu主频
      */
-    @ExcelField(value = "cpu_main_frequency", align = 1, title = "cpu主频")
+    @ExcelField(value = "cpuMainFrequency", align = 1, title = "cpu主频")
     private Float  cpuMainFrequency;
     /**
      * cpu线程数
      */
-    @ExcelField(value = "cpu_thread_size", align = 1, title = "cpu线程数")
+    @ExcelField(value = "cpuThreadSize", align = 1, title = "cpu线程数")
     private Integer  cpuThreadSize;
     /**
      * cpu核心数
      */
-    @ExcelField(value = "cpu_core_size", align = 1, title = "cpu核心数")
+    @ExcelField(value = "cpuCoreSize", align = 1, title = "cpu核心数")
     private Integer  cpuCoreSize;
 //    /**
 //     * 网卡数量
@@ -272,37 +272,37 @@ public class ComputeDeviceEntity {
     /**
      * 网卡品牌
      */
-    @ExcelField(value = "network_brand", align = 1, title = "网卡品牌")
+    @ExcelField(value = "networkBrand", align = 1, title = "网卡品牌")
     private String  networkBrand;
     /**
      * 网卡型号
      */
-    @ExcelField(value = "network_model", align = 1, title = "网卡型号")
+    @ExcelField(value = "networkModel", align = 1, title = "网卡型号")
     private String  networkModel;
     /**
      * 网卡序列号
      */
-    @ExcelField(value = "network_serial", align = 1, title = "网卡序列号")
+    @ExcelField(value = "networkSerial", align = 1, title = "网卡序列号")
     private String  networkSerial;
     /**
      * 网卡ip地址
      */
-    @ExcelField(value = "network_ip_address", align = 1, title = "网卡ip地址")
+    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip地址")
     private String  networkIpAddress;
     /**
      * 网卡mac地址
      */
-    @ExcelField(value = "network_mac_address", align = 1, title = "网卡mac地址")
+    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac地址")
     private String  networkMacAddress;
     /**
      * 网卡子网掩码
      */
-    @ExcelField(value = "network_subnet_mask", align = 1, title = "网卡子网掩码")
+    @ExcelField(value = "networkSubnetMask", align = 1, title = "网卡子网掩码")
     private String  networkSubnetMask;
     /**
      * 网卡默认网关
      */
-    @ExcelField(value = "network_default_gateway", align = 1, title = "网卡默认网关")
+    @ExcelField(value = "networkDefaultGateway", align = 1, title = "网卡默认网关")
     private String  networkDefaultGateway;
 
 

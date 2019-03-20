@@ -6,7 +6,7 @@ public class SafetyEquipmentEntiy {
     /**
      * area
      */
-    @ExcelField(value = "area", align = 1, title = "所属区域",required = true)
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)",required = true)
     private String                  area;
     /**
      * 资产编号
@@ -16,7 +16,7 @@ public class SafetyEquipmentEntiy {
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "资产名称", type = 0,required = true)
+    @ExcelField(value = "name", align = 1, title = "资产名称(必填)", type = 0,required = true)
     private String name;
     /**
      * 厂商
@@ -33,7 +33,7 @@ public class SafetyEquipmentEntiy {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者",required = true)
+    @ExcelField(value = "user", align = 1, title = "使用者(必填)",required = true)
     private String user;
     /**
      * 联系电话
@@ -48,44 +48,44 @@ public class SafetyEquipmentEntiy {
     /**
      * 物理位置
      */
-    @ExcelField(value = "location", align = 1, title = "物理位置",required = true)
+    @ExcelField(value = "location", align = 1, title = "物理位置(必填)",required = true)
     private String location;
     /**
      * 机房位置
      */
-    @ExcelField(value = "house_location", align = 1, title = "机房位置")
+    @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
     private String houseLocation;
     /**
      * 固件版本
      */
-    @ExcelField(value = "firmware_version", align = 1, title = "固件版本")
+    @ExcelField(value = "firmwareVersion", align = 1, title = "固件版本")
     private String firmwareVersion;
     /**
      * 软件版本
      */
-    @ExcelField(value = "software_version", align = 1, title = "软件版本")
+    @ExcelField(value = "softwareVersion", align = 1, title = "软件版本")
     private String softwareVersion;
 
     /**
      * ip地址
      */
-    @ExcelField(value = "ip", align = 1, title = "ip地址",required = true)
+    @ExcelField(value = "ip", align = 1, title = "ip地址(必填)",required = true)
     private String ip;
     /**
      * ip地址
      */
-    @ExcelField(value = "mac", align = 1, title = "mac地址",required = true)
+    @ExcelField(value = "mac", align = 1, title = "mac地址(必填)",required = true)
     private String mac;
 
     /**
      * 购买日期
      */
-    @ExcelField(value = "buy_date", align = 1, title = "购买日期",isDate = true)
+    @ExcelField(value = "buyDate", align = 1, title = "购买日期",isDate = true)
     private Long            buyDate;
     /**
      * 到期时间
      */
-    @ExcelField(value = "due_date", align = 1, title = "到期时间",isDate = true,required = true)
+    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)",isDate = true,required = true)
     private Long            dueDate;
     /**
      * 保修期
