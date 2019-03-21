@@ -118,6 +118,7 @@ public class TemplateExcelExport {
         if (Objects.isNull(val)) {
             return;
         }
+        // 第四行备注信息需要合并单元格，进行了特殊处理
         if (rownum == 4) {
             CellRangeAddress cellAddresses = new CellRangeAddress(3, 3, 0, annotationList.size() - 1);
             sheet.addMergedRegion(cellAddresses);
@@ -147,6 +148,7 @@ public class TemplateExcelExport {
             if (val instanceof String) {
                 String value = (String) val;
                 cell.setCellValue(value);
+                // 根据样例数据的长度设置单元格的宽度
                 if (value.length() > 10 && value.length() <= 20) {
                     sheet.setColumnWidth(column, 3000 + (value.length() - 10) * 300);
                 } else if (value.length() > 20) {
@@ -175,14 +177,19 @@ public class TemplateExcelExport {
                     int colunm = 0;
                     Row row = addRow();
                     if (i == 1) {
+                        // 加载提示信息
                         addCell(row, 0, title + "的示例：", styles.get("memo"));
                     } else if (i == 4) {
+                        // 加载备注信息
                         addCell(row, 0, memo, styles.get("memo"));
                     } else if (i == 2) {
+                        // 加载模板头部数据
                         addCellList(row, headerList, styles.get("templateHeader"));
                     } else if (i == 6) {
+                        // 加载头部数据
                         addCellList(row, headerList, styles.get("header"));
                     } else if (i != 5) {
+                        // 加载样例数据
                         for (Object[] object : annotationList) {
                             // 获取该属性注解
                             ExcelField excelField = (ExcelField) object[0];
