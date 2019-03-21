@@ -35,7 +35,7 @@ public class TopologyServiceImpl implements ITopologyService {
     @Resource
     private AssetTopologyDao    assetTopologyDao;
 
-    static Lock                 reenLock = new ReentrantLock();
+    private static Lock                 reenLock = new ReentrantLock();
     private static final Logger logger   = LogUtils.get();
 
     @Override

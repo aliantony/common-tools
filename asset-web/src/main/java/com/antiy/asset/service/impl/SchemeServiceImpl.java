@@ -30,7 +30,7 @@ import com.antiy.common.utils.LoginUserUtil;
 public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchemeService {
 
     @Resource
-    SchemeDao                                     schemeDao;
+    private SchemeDao                                     schemeDao;
     @Resource
     private AesEncoder                            aesEncoder;
     @Resource
