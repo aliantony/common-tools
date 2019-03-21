@@ -1984,7 +1984,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<ComputerVo> computerVos = new ArrayList<>();
         List<ComputeDeviceEntity> dataList = result.getDataList();
         if (dataList.size() == 0) {
-            return "上传失败，模板内无数据，请填写数据后再次上传";
+            return  result.getMsg();
         }
         for (ComputeDeviceEntity entity : dataList) {
 
@@ -2212,7 +2212,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetNetworkEquipment> networkEquipments = new ArrayList<>();
         List<NetworkDeviceEntity> entities = result.getDataList();
         if (entities.size() == 0) {
-            return "上传失败，模板内无数据，请填写数据后再次上传";
+            return  result.getMsg();
         }
         for (NetworkDeviceEntity networkDeviceEntity : entities) {
 
@@ -2310,21 +2310,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetRecord(assets.get(i).getStringId());
                 // 流程
 
-                Map<String, Object> formData = new HashMap();
-                String[] userIds = importRequest.getUserId();
-                for (String configBaselineUserId : userIds) {
-                    formData.put("admittanceUserId", configBaselineUserId);
-                }
-                ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-                manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
-                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-                manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-                manualStartActivityRequest
-                    .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
-                manualStartActivityRequests.add(manualStartActivityRequest);
+//                Map<String, Object> formData = new HashMap();
+//                String[] userIds = importRequest.getUserId();
+//                for (String configBaselineUserId : userIds) {
+//                    formData.put("admittanceUserId", configBaselineUserId);
+//                }
+//                ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+//                manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
+//                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+//                manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
+//                manualStartActivityRequest
+//                    .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
+//                manualStartActivityRequests.add(manualStartActivityRequest);
                 success++;
             }
-            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+//            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String re = "导入成功" + success + "条。";
@@ -2354,7 +2354,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         List<SafetyEquipmentEntiy> resultDataList = result.getDataList();
         if (resultDataList.size() == 0) {
-            return "上传失败，模板内无数据，请填写数据后再次上传";
+            return  result.getMsg();
         }
         int success = 0;
         int repeat = 0;
@@ -2441,21 +2441,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetRecord(assets.get(i).getStringId());
                 // 流程
 
-                Map<String, Object> formData = new HashMap();
-                String[] userIds = importRequest.getUserId();
-                for (String configBaselineUserId : userIds) {
-                    formData.put("admittanceUserId", configBaselineUserId);
-                }
-                ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-                manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
-                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-                manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-                manualStartActivityRequest
-                    .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
-                manualStartActivityRequests.add(manualStartActivityRequest);
+//                Map<String, Object> formData = new HashMap();
+//                String[] userIds = importRequest.getUserId();
+//                for (String configBaselineUserId : userIds) {
+//                    formData.put("admittanceUserId", configBaselineUserId);
+//                }
+//                ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+//                manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
+//                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+//                manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
+//                manualStartActivityRequest
+//                    .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
+//                manualStartActivityRequests.add(manualStartActivityRequest);
                 success++;
             }
-            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+//            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
@@ -2483,7 +2483,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         List<StorageDeviceEntity> resultDataList = result.getDataList();
         if (resultDataList.size() == 0) {
-            return "上传失败，模板内无数据，请填写数据后再次上传";
+//            return "上传失败，模板内无数据，请填写数据后再次上传";
+            return  result.getMsg();
         }
         int success = 0;
         int repeat = 0;
@@ -2526,6 +2527,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("当前用户没有此所属区域，");
                 continue;
             }
+
+
 
             if (repeat + error == 0) {
 
@@ -2581,21 +2584,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetRecord(assets.get(i).getStringId());
                 // 流程
 
-                Map<String, Object> formData = new HashMap();
-                String[] userIds = importRequest.getUserId();
-                for (String configBaselineUserId : userIds) {
-                    formData.put("admittanceUserId", configBaselineUserId);
-                }
-                ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-                manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
-                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-                manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-                manualStartActivityRequest
-                    .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
-                manualStartActivityRequests.add(manualStartActivityRequest);
-                success++;
+//                Map<String, Object> formData = new HashMap();
+////            zichanguanliyuan
+////                    LoginUserUtil.getCommonInfo ().getToken ()
+//                String[] userIds = importRequest.getUserId();
+//                for (String configBaselineUserId : userIds) {
+//                    formData.put("admittanceUserId", configBaselineUserId);
+//                }
+//                ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+//                manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
+//                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+//                manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
+//                manualStartActivityRequest
+//                    .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
+//                manualStartActivityRequests.add(manualStartActivityRequest);
+//                success++;
             }
-            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+//            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String res = "导入成功" + success + "条";
@@ -2610,6 +2615,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuilder sb = new StringBuilder(result.getMsg());
         sb.delete(sb.lastIndexOf("成"), sb.lastIndexOf("."));
         return stringBuilder.append(builder).append(sb).toString();
+//        return builder.append (result.getMsg ()).toString ();
     }
 
     @Override
@@ -2621,7 +2627,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         List<OtherDeviceEntity> resultDataList = result.getDataList();
         if (resultDataList.size() == 0) {
-            return "上传失败，模板内无数据，请填写数据后再次上传";
+            return  result.getMsg();
         }
         int success = 0;
         int repeat = 0;
@@ -2695,21 +2701,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetDao.insert(asset);
                 assetRecord(asset.getStringId());
                 // 流程
-                Map<String, Object> formData = new HashMap();
-                String[] userIds = importRequest.getUserId();
-                for (String configBaselineUserId : userIds) {
-                    formData.put("admittanceUserId", configBaselineUserId);
-                }
-                ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-                manualStartActivityRequest.setBusinessId(asset.getStringId());
-                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-                manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-                manualStartActivityRequest
-                    .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
-                manualStartActivityRequests.add(manualStartActivityRequest);
-                success++;
+//                Map<String, Object> formData = new HashMap();
+//                String[] userIds = importRequest.getUserId();
+//                for (String configBaselineUserId : userIds) {
+//                    formData.put("admittanceUserId", configBaselineUserId);
+//                }
+//                ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+//                manualStartActivityRequest.setBusinessId(asset.getStringId());
+//                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+//                manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
+//                manualStartActivityRequest
+//                    .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
+//                manualStartActivityRequests.add(manualStartActivityRequest);
+//                success++;
             }
-            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+//            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String res = "导入成功" + success + "条";

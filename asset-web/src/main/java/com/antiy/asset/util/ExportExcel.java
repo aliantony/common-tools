@@ -58,7 +58,7 @@ public class ExportExcel {
     /**
      * 注解列表（Object[]{ ExcelField, Field/Method }）
      */
-    List<Object[]>                 annotationList = Lists.newArrayList();
+    private List<Object[]>         annotationList = Lists.newArrayList();
 
     /**
      * 构造方法
@@ -167,15 +167,15 @@ public class ExportExcel {
             // sheet.trackAllColumnsForAutoSizing();
             // 为码表类型，设置下拉框
             if (type == 2 && annotationList.size() > 0
-                    && StringUtils.isNotBlank(((ExcelField) annotationList.get(i)[0]).dictType())) {
+                && StringUtils.isNotBlank(((ExcelField) annotationList.get(i)[0]).dictType())) {
                 XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper(sheet);
                 XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint) dvHelper
-                        .createExplicitListConstraint(
-                                CodeUtils.getCodeArray(((ExcelField) annotationList.get(i)[0]).dictType()));
+                    .createExplicitListConstraint(
+                        CodeUtils.getCodeArray(((ExcelField) annotationList.get(i)[0]).dictType()));
                 // 设置区域边界
                 CellRangeAddressList addressList = new CellRangeAddressList(1, 100000, i, i);
                 XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(dvConstraint,
-                        addressList);
+                    addressList);
                 // 输入非法数据时，弹窗警告框
                 validation.setShowErrorBox(true);
                 validation.setShowPromptBox(true);
@@ -378,7 +378,7 @@ public class ExportExcel {
                                     value = ReflectionUtils.invokeGetterMethod(data, ((Field) object[1]).getName());
                                 } else if (object[1] instanceof Method) {
                                     value = ReflectionUtils.invokeMethod(data, ((Method) object[1]).getName(),
-                                            new Class[] {}, new Object[] {});
+                                        new Class[] {}, new Object[] {});
                                 }
                             }
                         } catch (Exception e) {
@@ -388,7 +388,7 @@ public class ExportExcel {
                         if (StringUtils.isNotBlank(excelField.dictType())) {
                             if (value != null) {
                                 value = CodeUtils.getCodeName(excelField.dictType(),
-                                        Integer.parseInt(value.toString()));
+                                    Integer.parseInt(value.toString()));
                             } else {
                                 value = "";
                             }
@@ -453,7 +453,7 @@ public class ExportExcel {
         response.reset();
         response.setContentType("application/octet-stream; charset=utf-8");
         response.setHeader("Content-Disposition",
-                "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
+            "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
         // 填充数据
         setDataList(dataList);
         write(response.getOutputStream());
@@ -502,7 +502,7 @@ public class ExportExcel {
         response.reset();
         response.setContentType("application/octet-stream; charset=utf-8");
         response.setHeader("Content-Disposition",
-                "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
+            "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
         write(response.getOutputStream());
     }
 }
