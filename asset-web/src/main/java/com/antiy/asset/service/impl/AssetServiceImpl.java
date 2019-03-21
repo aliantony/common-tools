@@ -4,15 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.ActivityWaitingQuery;
-import com.antiy.asset.vo.query.AssetDetialCondition;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.query.AssetUserQuery;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
@@ -134,6 +132,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private IAssetCategoryModelService                                         assetCategoryModelService;
     @Resource
     private ActivityClient                                                     activityClient;
+    @Resource
+    private AreaClient                                                         areaClient;
     private static final Logger                                                logger   = LogUtils
         .get(AssetServiceImpl.class);
     @Resource
@@ -1990,21 +1990,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (CheckRepeatName(entity.getName())) {
                 repeat++;
                 a++;
-                builder.append("第").append(a).append("行").append("资产名称重复");
+                builder.append("第").append(a).append("行").append("资产名称重复，");
                 continue;
             }
 
             if (CheckRepeat(entity.getNumber())) {
                 repeat++;
                 a++;
-                builder.append("序号").append(a).append("行").append("资产编号重复");
+                builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
 
             if ("".equals(CheckUser(entity.getUser()))) {
                 error++;
                 a++;
-                builder.append("序号").append(a).append("行").append("没有此使用者");
+                builder.append("第").append(a).append("行").append("没有此使用者，");
                 continue;
             }
 
@@ -2016,7 +2016,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
-                builder.append("序号").append(a).append("行").append("当前用户没有此所属区域");
+                builder.append("第").append(a).append("行").append("当前用户没有此所属区域，");
                 continue;
             }
 
@@ -2307,6 +2307,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetNetworkEquipmentDao.insert(networkEquipments.get(i));
                 assetRecord(assets.get(i).getStringId());
                 // 流程
+//                ActivityCodeAndAreaIdQuery codeAndAreaIdQuery = new ActivityCodeAndAreaIdQuery ();
+//                codeAndAreaIdQuery.setRoleCode ("zichanguanliyuan");
+//                codeAndAreaIdQuery.setAuthorization ( LoginUserUtil.getCommonInfo ().getToken ());
+//                List<SysUser> sysUsers = areaClient.queryCdeAndAreaId (codeAndAreaIdQuery);
 
                 // Map<String, Object> formData = new HashMap();
                 // String[] userIds = importRequest.getUserId();
@@ -2580,8 +2584,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 流程
 
                 // Map<String, Object> formData = new HashMap();
-                //// zichanguanliyuan
-                //// LoginUserUtil.getCommonInfo ().getToken ()
+
                 // String[] userIds = importRequest.getUserId();
                 // for (String configBaselineUserId : userIds) {
                 // formData.put("admittanceUserId", configBaselineUserId);
