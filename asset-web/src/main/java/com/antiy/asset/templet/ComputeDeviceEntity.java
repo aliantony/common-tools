@@ -116,7 +116,7 @@ public class ComputeDeviceEntity {
     /**
      * 内存品牌
      */
-    @ExcelField(value = "memoryBrand", align = 1, title = "内存品牌")
+    @ExcelField(value = "memoryBrand", align = 1, title = "内存品牌(必填)")
     private String  memoryBrand;
 
     /**
@@ -127,7 +127,7 @@ public class ComputeDeviceEntity {
     /**
      * 内存容量
      */
-    @ExcelField(value = "memoryCapacity", align = 1, title = "内存容量")
+    @ExcelField(value = "memoryCapacity", align = 1, title = "内存容量(必填)")
     private Integer memoryCapacity;
 
     /**
@@ -165,7 +165,7 @@ public class ComputeDeviceEntity {
     /**
      * 硬盘品牌
      */
-    @ExcelField(value = "hardDiskBrand", align = 1, title = "硬盘品牌")
+    @ExcelField(value = "hardDiskBrand", align = 1, title = "硬盘品牌(必填)")
     private String  hardDiskBrand;
     /**
      * 硬盘型号
@@ -182,7 +182,7 @@ public class ComputeDeviceEntity {
     /**
      * 硬盘容量
      */
-    @ExcelField(value = "hardDisCapacityl", align = 1, title = "硬盘容量")
+    @ExcelField(value = "hardDisCapacityl", align = 1, title = "硬盘容量(必填)")
     private Integer hardDisCapacityl;
     /**
      * 硬盘接口类型
@@ -207,7 +207,7 @@ public class ComputeDeviceEntity {
     /**
      * 主板品牌
      */
-    @ExcelField(value = "mainboradBrand", align = 1, title = "主板品牌")
+    @ExcelField(value = "mainboradBrand", align = 1, title = "主板品牌(必填)")
     private String  mainboradBrand;
     /**
      * 主板型号
@@ -237,7 +237,7 @@ public class ComputeDeviceEntity {
     /**
      * cpu品牌
      */
-    @ExcelField(value = "cpuBrand", align = 1, title = "cpu品牌")
+    @ExcelField(value = "cpuBrand", align = 1, title = "cpu品牌(必填)")
     private String  cpuBrand;
     /**
      * cpu型号
@@ -252,7 +252,7 @@ public class ComputeDeviceEntity {
     /**
      * cpu主频
      */
-    @ExcelField(value = "cpuMainFrequency", align = 1, title = "cpu主频")
+    @ExcelField(value = "cpuMainFrequency", align = 1, title = "cpu主频(必填)")
     private Float   cpuMainFrequency;
     /**
      * cpu线程数
@@ -272,7 +272,7 @@ public class ComputeDeviceEntity {
     /**
      * 网卡品牌
      */
-    @ExcelField(value = "networkBrand", align = 1, title = "网卡品牌")
+    @ExcelField(value = "networkBrand", align = 1, title = "网卡品牌(必填)")
     private String  networkBrand;
     /**
      * 网卡型号
@@ -287,12 +287,12 @@ public class ComputeDeviceEntity {
     /**
      * 网卡ip地址
      */
-    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip地址")
+    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip地址(必填)")
     private String  networkIpAddress;
     /**
      * 网卡mac地址
      */
-    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac地址")
+    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac地址(必填)")
     private String  networkMacAddress;
     /**
      * 网卡子网掩码
