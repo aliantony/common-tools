@@ -18,7 +18,7 @@ public class ComputeDeviceEntity {
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "名称(必填)", required = true)
+    @ExcelField(value = "name", align = 1, title = "资产名称(必填)", required = true)
     private String  name;
 
     /**
