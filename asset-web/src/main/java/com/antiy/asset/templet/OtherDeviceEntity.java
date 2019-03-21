@@ -6,7 +6,7 @@ public class OtherDeviceEntity {
     /**
      * area
      */
-    @ExcelField(value = "area", align = 1, title = "所属区域",required = true)
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)",required = true)
     private String                  area;
     /**
      * 资产编号
@@ -16,7 +16,7 @@ public class OtherDeviceEntity {
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "资产名称")
+    @ExcelField(value = "name", align = 1, title = "资产名称(必填)")
     private String name;
     /**
      * 厂商

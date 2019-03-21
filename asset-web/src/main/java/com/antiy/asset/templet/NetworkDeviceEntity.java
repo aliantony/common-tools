@@ -11,7 +11,7 @@ public class NetworkDeviceEntity {
     /**
      * area
      */
-    @ExcelField(value = "area", align = 1, title = "所属区域",required = true)
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)",required = true)
     private String                  area;
     /**
      * 资产编号
@@ -21,7 +21,7 @@ public class NetworkDeviceEntity {
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "资产名称",required = true)
+    @ExcelField(value = "name", align = 1, title = "资产名称(必填)",required = true)
     private String  name;
     /**
      * 厂商
@@ -37,7 +37,7 @@ public class NetworkDeviceEntity {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者",required = true)
+    @ExcelField(value = "user", align = 1, title = "使用者(必填)",required = true)
     private String  user;
 
     /**
@@ -55,7 +55,7 @@ public class NetworkDeviceEntity {
     /**
      * 物理位置
      */
-    @ExcelField(value = "location", align = 1, title = "物理位置",required = true)
+    @ExcelField(value = "location", align = 1, title = "物理位置(必填)",required = true)
     private String  location;
     /**
      * 机房位置
@@ -157,7 +157,7 @@ public class NetworkDeviceEntity {
     /**
      * 到期时间
      */
-    @ExcelField(value = "dueDate", align = 1, title = "到期时间", isDate = true,required = true)
+    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true,required = true)
     private Long    dueDate;
     /**
      * 保修期
