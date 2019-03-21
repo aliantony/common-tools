@@ -12,7 +12,6 @@ import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
 import org.slf4j.Logger;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -119,6 +118,7 @@ public class TemplateExcelExport {
         if (Objects.isNull(val)) {
             return;
         }
+        // 第四行备注信息需要合并单元格，进行了特殊处理
         if (rownum == 4) {
             CellRangeAddress cellAddresses = new CellRangeAddress(3, 3, 0, annotationList.size() - 1);
             sheet.addMergedRegion(cellAddresses);
@@ -148,11 +148,18 @@ public class TemplateExcelExport {
             if (val instanceof String) {
                 String value = (String) val;
                 cell.setCellValue(value);
+                // 根据样例数据的长度设置单元格的宽度
                 if (value.length() > 10 && value.length() <= 20) {
                     sheet.setColumnWidth(column, 3000 + (value.length() - 10) * 300);
                 } else if (value.length() > 20) {
                     sheet.setColumnWidth(column, 3000 + (value.length() - 10) * 600);
                 }
+            } else if (val instanceof Integer) {
+                cell.setCellValue(val.toString());
+            } else if (val instanceof Float) {
+                cell.setCellValue((Float) val);
+            } else if (val instanceof Double) {
+                cell.setCellValue((Double) val);
             }
 
         } catch (Exception e) {
@@ -163,23 +170,26 @@ public class TemplateExcelExport {
     }
 
     private void setDataList(List<?> list) {
-        Object data = list.get(0);
-        if (list != null && !list.isEmpty()) {
+        if (!list.isEmpty()) {
+            Object data = list.get(0);
             if (annotationList != null && annotationList.size() > 0) {
                 for (int i = 1; i <= 6; i++) {
                     int colunm = 0;
                     Row row = addRow();
                     if (i == 1) {
+                        // 加载提示信息
                         addCell(row, 0, title + "的示例：", styles.get("memo"));
                     } else if (i == 4) {
+                        // 加载备注信息
                         addCell(row, 0, memo, styles.get("memo"));
                     } else if (i == 2) {
+                        // 加载模板头部数据
                         addCellList(row, headerList, styles.get("templateHeader"));
                     } else if (i == 6) {
+                        // 加载头部数据
                         addCellList(row, headerList, styles.get("header"));
-                    } else if (i == 5) {
-
-                    } else {
+                    } else if (i != 5) {
+                        // 加载样例数据
                         for (Object[] object : annotationList) {
                             // 获取该属性注解
                             ExcelField excelField = (ExcelField) object[0];
@@ -201,7 +211,7 @@ public class TemplateExcelExport {
                                     value = "";
                                 }
                             } else if (excelField.isDate()) {
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/M/d");
                                 String s = Objects.toString(value);
                                 if (s != null && !s.equals("null") && !s.equals("")) {
                                     value = simpleDateFormat.format(new Date(Long.parseLong(Objects.toString(value))));
@@ -209,17 +219,14 @@ public class TemplateExcelExport {
                                     value = "";
                                 }
                             }
-                            if (i == 3) {
-                                addCell(row, colunm++, value, styles.get("templateData"));
-                            } else {
-                                addCell(row, colunm++, value, styles.get("data"));
-                            }
+                            addCell(row, colunm++, value, styles.get("templateData"));
                         }
                     }
                 }
             }
         }
     }
+
     /**
      * 导出数据到文件
      *
@@ -234,6 +241,7 @@ public class TemplateExcelExport {
         setDataList(dataList);
         write(os);
     }
+
     private void addCellList(Row row, List<String> dataList, CellStyle style) {
         for (int i = 0; i < dataList.size(); i++) {
             addCell(row, i, dataList.get(i), style);
@@ -264,7 +272,7 @@ public class TemplateExcelExport {
                 XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(dvConstraint,
                     addressList);
                 // 输入非法数据时，弹窗警告框
-                validation.setShowErrorBox(true);
+                // validation.setShowErrorBox(true);
                 validation.setShowPromptBox(true);
                 sheet.addValidationData(validation);
             }

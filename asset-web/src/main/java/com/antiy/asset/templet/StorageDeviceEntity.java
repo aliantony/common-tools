@@ -11,11 +11,11 @@ public class StorageDeviceEntity {
      * 资产编号
      */
     @ExcelField(value = "number", align = 1, title = "资产编号")
-    private String                  number;
+    private String  number;
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "资产名称",required = true)
+    @ExcelField(value = "name", align = 1, title = "资产名称(必填)", required = true)
     private String  name;
     /**
      * 厂商
@@ -31,28 +31,35 @@ public class StorageDeviceEntity {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者",required = true)
+    @ExcelField(value = "user", align = 1, title = "使用者(必填)", required = true)
     private String  user;
+
+    /**
+     * area
+     */
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)", required = true)
+    private String  area;
+
     /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话",type = 0)
+    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0)
     private String  telephone;
     /**
      * 邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱",type = 0)
+    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0)
     private String  email;
 
     /**
      * 物理位置
      */
-    @ExcelField(value = "location", align = 1, title = "物理位置",required = true)
+    @ExcelField(value = "location", align = 1, title = "物理位置(必填)", required = true)
     private String  location;
     /**
      * 机房位置
      */
-    @ExcelField( align = 1, title = "机房位置")
+    @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
     private String  houseLocation;
     /**
      * 最大存储量
@@ -62,27 +69,27 @@ public class StorageDeviceEntity {
     /**
      * 单机磁盘数
      */
-    @ExcelField(value = "hard_disk_num", align = 1, title = "单机磁盘数")
+    @ExcelField(value = "hardDiskNum", align = 1, title = "单机磁盘数")
     private Integer hardDiskNum;
     /**
      * 内部接口
      */
-    @ExcelField(value = "inner_interface", align = 1, title = "内部接口")
+    @ExcelField(value = "innerInterface", align = 1, title = "内部接口")
     private String  innerInterface;
     /**
      * RAID支持
      */
-    @ExcelField(value = "raid_support", align = 1, title = "RAID支持")
+    @ExcelField(value = "raidSupport", align = 1, title = "RAID支持")
     private String  raidSupport;
     /**
      * high_cache
      */
-    @ExcelField(value = "high_cache", align = 1, title = "高速缓存")
+    @ExcelField(value = "highCache", align = 1, title = "高速缓存")
     private String  highCache;
     /**
      * 平均传输率
      */
-    @ExcelField(value = "average_transmission_rate ", align = 1, title = "平均传输率")
+    @ExcelField(value = "averageTransmissionRate ", align = 1, title = "平均传输率")
     private String  averageTransmissionRate;
     /**
      * 固件
@@ -92,22 +99,22 @@ public class StorageDeviceEntity {
     /**
      * OS版本
      */
-    @ExcelField(value = "os_version", align = 1, title = "OS版本")
+    @ExcelField(value = "slotType", align = 1, title = "OS版本")
     private String  slotType;
     /**
      * 驱动器数量
      */
-    @ExcelField(value = "drive_num", align = 1, title = "驱动器数量")
+    @ExcelField(value = "driveNum", align = 1, title = "驱动器数量")
     private Integer driveNum;
     /**
      * 购买时间
      */
-    @ExcelField(value = "buy_date", align = 1, title = "购买时间", isDate = true)
+    @ExcelField(value = "buyDate", align = 1, title = "购买时间", isDate = true)
     private Long    buyDate;
     /**
      * 到期时间
      */
-    @ExcelField(value = "due_date", align = 1, title = "到期时间", isDate = true,required = true)
+    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true, required = true)
     private Long    dueDate;
 
     /**
@@ -121,11 +128,7 @@ public class StorageDeviceEntity {
      */
     @ExcelField(value = "memo", align = 1, title = "描述")
     private String  memo;
-    /**
-     * area
-     */
-    @ExcelField(value = "area", align = 1, title = "所属区域",required = true)
-    private String                  area;
+
     public String getName() {
         return name;
     }
@@ -149,7 +152,6 @@ public class StorageDeviceEntity {
     public void setSerial(String serial) {
         this.serial = serial;
     }
-
 
     public String getUser() {
         return user;
@@ -175,7 +177,6 @@ public class StorageDeviceEntity {
         this.email = email;
     }
 
-
     public String getLocation() {
         return location;
     }
@@ -183,8 +184,6 @@ public class StorageDeviceEntity {
     public void setLocation(String location) {
         this.location = location;
     }
-
-
 
     public String getCapacity() {
         return capacity;
@@ -286,8 +285,6 @@ public class StorageDeviceEntity {
         this.houseLocation = houseLocation;
     }
 
-
-
     public Integer getHardDiskNum() {
         return hardDiskNum;
     }
@@ -299,7 +296,6 @@ public class StorageDeviceEntity {
     public void setHighCache(String highCache) {
         this.highCache = highCache;
     }
-
 
     public String getNumber() {
         return number;

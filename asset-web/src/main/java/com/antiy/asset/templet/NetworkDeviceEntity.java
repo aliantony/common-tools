@@ -9,11 +9,6 @@ import com.antiy.asset.annotation.ExcelField;
 public class NetworkDeviceEntity {
 
     /**
-     * area
-     */
-    @ExcelField(value = "area", align = 1, title = "所属区域",required = true)
-    private String                  area;
-    /**
      * 资产编号
      */
     @ExcelField(value = "number", align = 1, title = "资产编号")
@@ -21,7 +16,7 @@ public class NetworkDeviceEntity {
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "资产名称",required = true)
+    @ExcelField(value = "name", align = 1, title = "资产名称(必填)", required = true)
     private String  name;
     /**
      * 厂商
@@ -37,8 +32,14 @@ public class NetworkDeviceEntity {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者",required = true)
+    @ExcelField(value = "user", align = 1, title = "使用者(必填)", required = true)
     private String  user;
+
+    /**
+     * area
+     */
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)", required = true)
+    private String  area;
 
     /**
      * 联系电话
@@ -55,48 +56,48 @@ public class NetworkDeviceEntity {
     /**
      * 物理位置
      */
-    @ExcelField(value = "location", align = 1, title = "物理位置",required = true)
+    @ExcelField(value = "location", align = 1, title = "物理位置(必填)", required = true)
     private String  location;
     /**
      * 机房位置
      */
-    @ExcelField(value = "house_location", align = 1, title = "机房位置")
+    @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
     private String  houseLocation;
     /**
      * 端口数目
      */
-    @ExcelField(value = "port_size", align = 1, title = "端口数目")
+    @ExcelField(value = "portSize", align = 1, title = "端口数目")
     private Integer portSize;
     /**
      * 接口数目
      */
-    @ExcelField(value = "interface_size", align = 1, title = "接口数目")
+    @ExcelField(value = "interfaceSize", align = 1, title = "接口数目")
     private Integer interfaceSize;
     /**
      * IOS
      */
-    @ExcelField(value = "IOS", align = 1, title = "IOS")
+    @ExcelField(value = "ios", align = 1, title = "IOS")
     private String  ios;
 
     /**
      * 固件版本
      */
-    @ExcelField(value = "firmware_version", align = 1, title = "固件版本")
+    @ExcelField(value = "firmwareVersion", align = 1, title = "固件版本")
     private String  firmwareVersion;
     /**
      * 是否无线
      */
-    @ExcelField(value = "is_wireless", align = 1, title = "是否无线", dictType = "yesorno")
+    @ExcelField(value = "isWireless", align = 1, title = "是否无线", dictType = "yesorno")
     private Integer isWireless;
     /**
      * 内网IP
      */
-    @ExcelField(value = "inner_ip", align = 1, title = "内网IP")
+    @ExcelField(value = "innerIp", align = 1, title = "内网IP")
     private String  innerIp;
     /**
      * 外网IP
      */
-    @ExcelField(value = "outer_ip", align = 1, title = "外网IP")
+    @ExcelField(value = "outerIp", align = 1, title = "外网IP")
     private String  outerIp;
     /**
      * mac地址
@@ -106,12 +107,12 @@ public class NetworkDeviceEntity {
     /**
      * 子网掩码
      */
-    @ExcelField(value = "subnet_mask", align = 1, title = "子网掩码")
+    @ExcelField(value = "subnetMask", align = 1, title = "子网掩码")
     private String  subnetMask;
     /**
      * 预计带宽
      */
-    @ExcelField(value = "expect_bandwidth", align = 1, title = "预计带宽")
+    @ExcelField(value = "expectBandwidth", align = 1, title = "预计带宽")
     private Integer expectBandwidth;
 
     /**
@@ -123,41 +124,41 @@ public class NetworkDeviceEntity {
     /**
      * cpu大小
      */
-    @ExcelField(value = "cpu", align = 1, title = "cpu大小")
+    @ExcelField(value = "cpuSize", align = 1, title = "cpu大小")
     private Integer cpuSize;
 
     /**
      * cpu版本
      */
-    @ExcelField(value = "cpu_version", align = 1, title = "cpu版本")
+    @ExcelField(value = "cpuVersion", align = 1, title = "cpu版本")
     private String  cpuVersion;
 
     /**
      * dram大小
      */
-    @ExcelField(value = "dram_size", align = 1, title = "dram大小")
+    @ExcelField(value = "dramSize", align = 1, title = "dram大小")
     private Float   dramSize;
 
     /**
      * flash大小
      */
-    @ExcelField(value = "flash_size", align = 1, title = "flash大小")
+    @ExcelField(value = "flashSize", align = 1, title = "flash大小")
     private Float   flashSize;
 
     /**
      * NCRM大小
      */
-    @ExcelField(value = "ncrm_size", align = 1, title = "NCRM大小")
+    @ExcelField(value = "ncrmSize", align = 1, title = "NCRM大小")
     private Float   ncrmSize;
     /**
      * 购买日期
      */
-    @ExcelField(value = "buy_date", align = 1, title = "购买日期", isDate = true)
+    @ExcelField(value = "butDate", align = 1, title = "购买日期", isDate = true)
     private Long    butDate;
     /**
      * 到期时间
      */
-    @ExcelField(value = "due_date", align = 1, title = "到期时间", isDate = true,required = true)
+    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true, required = true)
     private Long    dueDate;
     /**
      * 保修期
@@ -169,7 +170,6 @@ public class NetworkDeviceEntity {
      */
     @ExcelField(value = "memo", align = 1, title = "描述")
     private String  memo;
-
 
     public String getName() {
         return name;

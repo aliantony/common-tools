@@ -1,29 +1,8 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-
+import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.entity.AssetOperationRecord;
-import com.antiy.asset.entity.AssetSoftware;
-import com.antiy.asset.entity.AssetSoftwareLicense;
+import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetPortProtocolService;
@@ -34,11 +13,12 @@ import com.antiy.asset.templet.ExportSoftwareEntity;
 import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.*;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.ActivityWaitingQuery;
-import com.antiy.asset.vo.query.AssetPortProtocolQuery;
-import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
-import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetOperationTableEnum;
+import com.antiy.asset.vo.enums.SoftwareStatusEnum;
+import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.request.ManualStartActivityRequest;
@@ -52,6 +32,25 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -283,9 +282,18 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                      *
                      * } }
                      */
-                    // 记录操作历史
-                    AssetOperationRecord assetOperationRecord = convertAssetOperationRecord(request);
-                    assetOperationRecordDao.insert(assetOperationRecord);
+                    // 记录更新操作
+                    AssetChangeRecord assetChangeRecord = new AssetChangeRecord();
+                    assetChangeRecord.setType(2);
+                    assetChangeRecord.setStatus(1);
+                    assetChangeRecord.setBusinessId(DataTypeUtils.stringToInteger(request.getId()));
+                    assetChangeRecord.setChangeVal(JSONObject.toJSONString(request));
+                    assetChangeRecord.setIsStore(1);
+                    assetChangeRecord
+                        .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
+                    assetChangeRecord.setGmtCreate(System.currentTimeMillis());
+                    assetChangeRecordDao.insert(assetChangeRecord);
+
                     // 写入业务日志
                     LogHandle.log(assetSoftware.toString(), AssetEventEnum.SOFT_UPDATE.getName(),
                         AssetEventEnum.SOFT_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
@@ -302,20 +310,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // activityClient.completeTask(request.getRequest());
         return count;
     }
-
-    private AssetOperationRecord convertAssetOperationRecord(AssetSoftwareRequest request) {
-        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.RETIRE.getCode());
-            assetOperationRecord.setContent(
-                    SoftwareFlowEnum.SOFTWARE_RETIRE_REGISTER.getMsg());
-        assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
-        assetOperationRecord.setTargetObjectId(request.getId());
-        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
-        assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
-        assetOperationRecord.setProcessResult(1);
-        assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        return assetOperationRecord;
 
     /**
      * 更新lincense
@@ -649,12 +643,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         StringBuilder builder = new StringBuilder();
         List<AssetSoftware> assetList = new ArrayList<>();
         for (AssetSoftwareEntity entity : resultDataList) {
-            // if (StringUtils.isBlank(entity.getCategory())) {
-            // error++;
-            // a++;
-            // builder.append("第").append(a).append("行").append("软件品类为空");
-            // continue;
-            // }
 
             AssetCategoryModel categoryModel = assetCategoryModelDao
                 .getById(com.antiy.common.utils.DataTypeUtils.stringToInteger(entity.getCategory()));
@@ -666,12 +654,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 continue;
             }
 
-            // if (StringUtils.isBlank(entity.getName())) {
-            // error++;
-            // a++;
-            // builder.append("第").append(a).append("行").append("软件名称为空");
-            // continue;
-            // }
             if (CheckRepeatName(entity.getName())) {
                 repeat++;
                 a++;
@@ -679,13 +661,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 continue;
             }
 
-            //
-            // if (Objects.isNull(entity.getServiceLife()) ) {
-            // error++;
-            // a++;
-            // builder.append("第").append(a).append("行").append("到期时间为空");
-            // continue;
-            // }
             if (repeat + error == 0) {
 
                 AssetSoftware asset = new AssetSoftware();
@@ -746,12 +721,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
 
         String res = "导入成功" + success + "条。";
-        // res += repeat > 0 ? ", " + repeat + "条软件名称重复" : "";
-        // res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
-        // if (error > 0) {
-        // stringBuilder.append("其中").append(builder);
-        // }
+
         // 写入业务日志
         LogHandle.log(resultDataList.toString(), AssetEventEnum.SOFT_EXPORT.getName(),
             AssetEventEnum.SOFT_EXPORT.getStatus(), ModuleEnum.ASSET.getCode());
@@ -817,8 +788,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareEntity.setAuthorization(1);
         assetSoftwareEntity.setBuyDate(System.currentTimeMillis());
         assetSoftwareEntity.setCategory("10");
-        assetSoftwareEntity.setDescription(
-            "安天智甲终端防御系统（中文简称“智甲”，英文简称“IEP”）是一套专业终端安全防护产品。");
+        assetSoftwareEntity.setDescription("安天智甲终端防御系统（中文简称“智甲”，英文简称“IEP”）是一套专业终端安全防护产品。");
         assetSoftwareEntity.setManufacturer("安天");
         assetSoftwareEntity.setVersion("1.1.1");
         assetSoftwareEntity.setServiceLife(System.currentTimeMillis());
