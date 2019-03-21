@@ -19,11 +19,11 @@ import com.antiy.common.utils.SpringUtil;
 @Component
 public class CodeUtils {
 
-    public static Map<String, Map<Integer, String>> codeMap  = new HashMap();
-    public static Map<Integer, String>              code     = new HashMap(16);
-    private static Boolean                          initflag = false;
+    private static Map<String, Map<Integer, String>> codeMap  = new HashMap<>();
+    private static Map<Integer, String>               code     = new HashMap<>(16);
+    private static Boolean                           initflag = false;
 
-    public static void init() {
+    private static void init() {
         if (!initflag) {
             String key = RedisKeyUtil.getKeyWhenGetObjectsByKeyword(ModuleEnum.COMMON.getType(), CodeType.class);
             try {
@@ -42,7 +42,7 @@ public class CodeUtils {
             } catch (Exception e) {
                 throw new BusinessException("初始化码表信息失败");
             }
-            code = new HashMap(16);
+            code = new HashMap<>(16);
             code.put(1, "是");
             code.put(0, "否");
             codeMap.put("yesorno", code);

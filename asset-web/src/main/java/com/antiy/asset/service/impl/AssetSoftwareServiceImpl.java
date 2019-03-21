@@ -108,7 +108,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private static final Logger                                              LOGGER = LogUtils
         .get(AssetSoftwareServiceImpl.class);
     @Resource
-    AssetChangeRecordDao                                                     assetChangeRecordDao;
+    private AssetChangeRecordDao                                             assetChangeRecordDao;
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {

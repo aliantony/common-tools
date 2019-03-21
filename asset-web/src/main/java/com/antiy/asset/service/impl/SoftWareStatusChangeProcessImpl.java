@@ -31,7 +31,7 @@ import com.antiy.common.utils.LoginUserUtil;
 @Service
 public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangeProcessImpl {
     @Resource
-    AssetSoftwareDao assetSoftwareDao;
+    private AssetSoftwareDao assetSoftwareDao;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
