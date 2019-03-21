@@ -64,7 +64,10 @@ public class CompareUtils {
             }
         }
 
-        return list;
+        if (list.size() > 0) {
+            return list;
+        }
+        return null;
     }
 
     /**

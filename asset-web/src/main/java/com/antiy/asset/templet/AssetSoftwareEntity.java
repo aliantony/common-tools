@@ -14,71 +14,69 @@ public class AssetSoftwareEntity {
     /**
      * 软件名称
      */
-    @ExcelField(value = "name", align = 1, title = "软件名称", type = 0)
-    private String            name;
+    @ExcelField(value = "name", align = 1, title = "软件名称(必填)", type = 0, required = true)
+    private String  name;
     /**
      * 软件品类
      */
-    @ExcelField(value = "category", align = 1, title = "软件品类", type = 0, dictType = "software_category")
-    private String            category;
+    @ExcelField(value = "category", align = 1, title = "软件品类(必填)", type = 0, dictType = "software_category", required = true)
+    private String  category;
     /**
      * 软件名称
      */
     @ExcelField(value = "manufacturer", align = 1, title = "软件厂商", type = 0)
-    private String            manufacturer;
+    private String  manufacturer;
     /**
      * 序列号
      */
     @ExcelField(value = "serial", align = 1, title = "序列号", type = 0)
-    private String            serial;
+    private String  serial;
 
     /**
      * 软件版本
      */
-    @ExcelField(value = "version", align = 1, title = "软件版本", type = 0)
-    private String            version;
+    @ExcelField(value = "version", align = 1, title = "软件版本(必填)", type = 0, required = true)
+    private String  version;
 
     /**
      * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
      */
     @ExcelField(value = "operationSystem", align = 1, title = "兼容系统", type = 0)
-    private String            operationSystem;
-
+    private String  operationSystem;
 
     /**
      * 1-免费软件，2-商业软件
      */
     @ExcelField(value = "authorization", align = 1, title = "授权", type = 0, dictType = "authorization")
-    private Integer           authorization;
-
+    private Integer authorization;
     /**
-     * MD5/SHA
+     * 1-免费软件，2-商业软件
      */
-    @ExcelField(value = "MD5", align = 1, title = "MD5/SHA", type = 0)
-    private String            MD5;
+    @ExcelField(value = "MD5", align = 1, title = "MD5/SHA")
+    private String MD5;
+
     /**
      * 购买时间
      */
-    @ExcelField(value = "buy_date", align = 1, title = "购买时间", isDate = true)
-    private Long              buyDate;
+    @ExcelField(value = "buyDate", align = 1, title = "购买时间", isDate = true)
+    private Long    buyDate;
 
     /**
      * 到期时间
      */
-    @ExcelField(value = "service_life", align = 1, title = "到期时间", isDate = true)
-    private Long              serviceLife;
+    @ExcelField(value = "serviceLife", align = 1, title = "到期时间(必填)", isDate = true, required = true)
+    private Long    serviceLife;
     /**
      * 发布时间
      */
     @ExcelField(value = "releaseTime", align = 1, title = "发布时间", type = 0, isDate = true)
-    private Long              releaseTime;
-
+    private Long    releaseTime;
 
     /**
      * 软件描述
      */
     @ExcelField(value = "description", align = 1, title = "软件描述", type = 0)
-    private String            description;
+    private String  description;
 
     public Integer getAuthorization() {
         return authorization;
@@ -86,15 +84,6 @@ public class AssetSoftwareEntity {
 
     public void setAuthorization(Integer authorization) {
         this.authorization = authorization;
-    }
-
-    @Override
-    public String toString() {
-        return "AssetSoftwareEntity{" + "name='" + name + '\'' + ", manufacturer='" + manufacturer + '\''
-               + ", serial='" + serial + '\''  + ", operationSystem='" + operationSystem + '\''
-               + ", category=" + category + ", version='" + version + '\'' + ", description='" + description + '\''
-               + ", authorization=" + authorization + ", releaseTime=" + releaseTime + ", buyDate=" + buyDate
-               + ", serviceLife=" + serviceLife + '}';
     }
 
     public String getName() {
@@ -145,8 +134,6 @@ public class AssetSoftwareEntity {
         this.serial = serial;
     }
 
-
-
     public String getOperationSystem() {
         return operationSystem;
     }
@@ -187,6 +174,13 @@ public class AssetSoftwareEntity {
         this.MD5 = MD5;
     }
 
-
+    @Override
+    public String toString() {
+        return "AssetSoftwareEntity{" + "name='" + name + '\'' + ", category='" + category + '\'' + ", manufacturer='"
+               + manufacturer + '\'' + ", serial='" + serial + '\'' + ", version='" + version + '\''
+               + ", operationSystem='" + operationSystem + '\'' + ", authorization=" + authorization + ", buyDate="
+               + buyDate + ", serviceLife=" + serviceLife + ", releaseTime=" + releaseTime + ", description='"
+               + description + '\'' + '}';
+    }
 
 }

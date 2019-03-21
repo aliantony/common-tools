@@ -1,15 +1,14 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareLicenseDao;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.util.CompareUtils;
@@ -18,6 +17,8 @@ import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.util.StringUtils;
 import com.antiy.asset.vo.enums.AssetImportanceDegreeEnum;
 import com.antiy.asset.vo.enums.InfoLabelEnum;
+import com.antiy.asset.vo.enums.InstallType;
+import com.antiy.asset.vo.enums.TransferTypeMemoryEnum;
 import com.antiy.asset.vo.request.*;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
@@ -26,6 +27,8 @@ import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.SysUser;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.JsonUtil;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 计算设备字段对比
@@ -36,6 +39,8 @@ import com.antiy.common.utils.JsonUtil;
 public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompareImpl {
     @Resource
     private AssetSoftwareLicenseDao            softwareLicenseDao;
+    @Resource
+    private AssetSoftwareDao                   softwareDao;
     @Resource
     private RedisUtil                          redisUtil;
     @Resource
@@ -88,10 +93,14 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             oldAssetBusinessInfo.setEmail(oldAsset.getEmail());
             oldAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());
             oldAssetBusinessInfo.setNumber(oldAsset.getNumber());
-            oldAssetBusinessInfo.setInstallTypeName(oldAsset.getInstallType() == 1 ? "人工" : "自动");
+            oldAssetBusinessInfo.setInstallTypeName(oldAsset.getInstallType() != null
+                ? oldAsset.getInstallType().equals(InstallType.MANUAL.getCode()) ? InstallType.MANUAL.getStatus()
+                    : InstallType.AUTOMATIC.getStatus()
+                : null);
             oldAssetBusinessInfo.setFirmwareVersion(oldAsset.getFirmwareVersion());
             oldAssetBusinessInfo.setOperationSystem(oldAsset.getOperationSystem());
-            oldAssetBusinessInfo.setImportanceDegreeName(EnumUtil.getByCode(AssetImportanceDegreeEnum.class,oldAsset.getImportanceDegree()).getMsg());
+            oldAssetBusinessInfo.setImportanceDegreeName(
+                EnumUtil.getByCode(AssetImportanceDegreeEnum.class, oldAsset.getImportanceDegree()).getMsg());
             oldAssetBusinessInfo.setBuyDate(oldAsset.getBuyDate());
             oldAssetBusinessInfo.setServiceLife(oldAsset.getServiceLife());
             oldAssetBusinessInfo.setWarranty(oldAsset.getWarranty());
@@ -111,10 +120,14 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             newAssetBusinessInfo.setEmail(newAsset.getEmail());
             newAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());
             newAssetBusinessInfo.setNumber(newAsset.getNumber());
-            newAssetBusinessInfo.setInstallTypeName(newAsset.getInstallType() == 1 ? "人工" : "自动");
+            oldAssetBusinessInfo.setInstallTypeName(oldAsset.getInstallType() != null
+                ? oldAsset.getInstallType().equals(InstallType.MANUAL.getCode()) ? InstallType.MANUAL.getStatus()
+                    : InstallType.AUTOMATIC.getStatus()
+                : null);
             newAssetBusinessInfo.setFirmwareVersion(newAsset.getFirmwareVersion());
             newAssetBusinessInfo.setOperationSystem(newAsset.getOperationSystem());
-            newAssetBusinessInfo.setImportanceDegreeName(EnumUtil.getByCode(AssetImportanceDegreeEnum.class,newAsset.getImportanceDegree()).getMsg());
+            newAssetBusinessInfo.setImportanceDegreeName(
+                EnumUtil.getByCode(AssetImportanceDegreeEnum.class, newAsset.getImportanceDegree()).getMsg());
             newAssetBusinessInfo.setBuyDate(newAsset.getBuyDate());
             newAssetBusinessInfo.setServiceLife(newAsset.getServiceLife());
             newAssetBusinessInfo.setWarranty(newAsset.getWarranty());
@@ -131,257 +144,487 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
             AssetMemory oldMemory = new AssetMemory();
             if (newMemoryList == null && memoryList != null) {
                 for (AssetMemoryRequest memoryRequest : memoryList) {
-                    oldMemory.setId(DataTypeUtils.stringToInteger(memoryRequest.getId()));
-                    oldMemory.setBrand(memoryRequest.getBrand());
-                    oldMemory.setTransferType(memoryRequest.getTransferType());
-                    oldMemory.setSerial(memoryRequest.getSerial());
-                    oldMemory.setCapacity(memoryRequest.getCapacity());
-                    oldMemory.setFrequency(memoryRequest.getFrequency());
-                    oldMemory.setSlotType(memoryRequest.getSlotType());
-                    oldMemory.setHeatsink(memoryRequest.getHeatsink());
-                    oldMemory.setStitch(memoryRequest.getStitch());
+                    buildMemoryCompareData(oldMemory, memoryRequest);
                     assetMemoryCompareResult
                         .add(CompareUtils.compareClass(oldMemory, newMemory, InfoLabelEnum.MEMORY.getMsg()));
                 }
             } else if (newMemoryList != null && memoryList == null) {
                 for (AssetMemoryRequest assetMemoryRequest : newMemoryList) {
-                    newMemory.setId(DataTypeUtils.stringToInteger(assetMemoryRequest.getId()));
-                    newMemory.setBrand(assetMemoryRequest.getBrand());
-                    newMemory.setTransferType(assetMemoryRequest.getTransferType());
-                    newMemory.setSerial(assetMemoryRequest.getSerial());
-                    newMemory.setCapacity(assetMemoryRequest.getCapacity());
-                    newMemory.setFrequency(assetMemoryRequest.getFrequency());
-                    newMemory.setSlotType(assetMemoryRequest.getSlotType());
-                    newMemory.setHeatsink(assetMemoryRequest.getHeatsink());
-                    newMemory.setStitch(assetMemoryRequest.getStitch());
+                    buildMemoryCompareData(newMemory, assetMemoryRequest);
                     assetMemoryCompareResult
                         .add(CompareUtils.compareClass(oldMemory, newMemory, InfoLabelEnum.MEMORY.getMsg()));
                 }
             } else if (CollectionUtils.isNotEmpty(memoryList)) {
-                oldMemory.setBrand(memoryList.get(0).getBrand());
-                oldMemory.setTransferType(memoryList.get(0).getTransferType());
-                oldMemory.setSerial(memoryList.get(0).getSerial());
-                oldMemory.setCapacity(memoryList.get(0).getCapacity());
-                oldMemory.setFrequency(memoryList.get(0).getFrequency());
-                oldMemory.setSlotType(memoryList.get(0).getSlotType());
-                oldMemory.setHeatsink(memoryList.get(0).getHeatsink());
-                oldMemory.setStitch(memoryList.get(0).getStitch());
-
-                newMemory.setBrand(newMemoryList.get(0).getBrand());
-                newMemory.setTransferType(newMemoryList.get(0).getTransferType());
-                newMemory.setSerial(newMemoryList.get(0).getSerial());
-                newMemory.setCapacity(newMemoryList.get(0).getCapacity());
-                newMemory.setFrequency(newMemoryList.get(0).getFrequency());
-                newMemory.setSlotType(newMemoryList.get(0).getSlotType());
-                newMemory.setHeatsink(newMemoryList.get(0).getHeatsink());
-                newMemory.setStitch(newMemoryList.get(0).getStitch());
-                assetMemoryCompareResult.add(
-                    CompareUtils.compareClass(oldMemory, newMemory, InfoLabelEnum.MEMORY.getMsg()));
+                Map<String, AssetMemoryRequest> newMemoryMap = null;
+                for (AssetMemoryRequest memoryRequest : memoryList) {
+                    buildMemoryCompareData(oldMemory, memoryRequest);
+                    newMemoryMap = this.getMemoryByIdMap(newMemoryList);
+                    if (newMemoryMap.containsKey(memoryRequest.getId())) {
+                        AssetMemoryRequest comparedMemoryRequest = newMemoryMap.get(memoryRequest.getId());
+                        buildMemoryCompareData(newMemory, comparedMemoryRequest);
+                        List<Map<String, Object>> mapList = CompareUtils.compareClass(oldMemory, newMemory,
+                            InfoLabelEnum.MEMORY.getMsg());
+                        if (mapList != null) {
+                            assetMemoryCompareResult.add(mapList);
+                        }
+                        newMemoryMap.remove(memoryRequest.getId());
+                    }
+                }
+                // 处理新增的部件
+                processNewMemoryComponent(assetMemoryCompareResult, newMemory, oldMemory, newMemoryMap);
             }
 
             // 提取CPU字段变更信息
             List<List<Map<String, Object>>> assetCpuCompareResult = new ArrayList<>();
-            List<AssetCpuRequest> cpuRequestList = oldAssetOuterRequest.getCpu();
+            List<AssetCpuRequest> oldCpuList = oldAssetOuterRequest.getCpu();
             List<AssetCpuRequest> newCpuList = newAssetOuterRequest.getCpu();
             AssetCpu oldCpu = new AssetCpu();
             AssetCpu newCpu = new AssetCpu();
-            if (newCpuList == null && cpuRequestList != null) {
-                for (AssetCpuRequest cpuRequest : cpuRequestList) {
-                    oldCpu.setId(DataTypeUtils.stringToInteger(cpuRequest.getId()));
-                    oldCpu.setBrand(cpuRequest.getBrand());
-                    oldCpu.setModel(cpuRequest.getModel());
-                    oldCpu.setSerial(cpuRequest.getSerial());
-                    oldCpu.setMainFrequency(cpuRequest.getMainFrequency());
-                    oldCpu.setThreadSize(cpuRequest.getThreadSize());
-                    oldCpu.setCoreSize(cpuRequest.getCoreSize());
+            if (newCpuList == null && oldCpuList != null) {
+                for (AssetCpuRequest cpuRequest : oldCpuList) {
+                    buildCpuCompareData(oldCpu, cpuRequest);
                     assetCpuCompareResult.add(CompareUtils.compareClass(oldCpu, newCpu, InfoLabelEnum.CPU.getMsg()));
                 }
-            } else if (newCpuList != null && cpuRequestList == null) {
+            } else if (newCpuList != null && oldCpuList == null) {
                 for (AssetCpuRequest assetCpuRequest : newCpuList) {
-                    newCpu.setId(DataTypeUtils.stringToInteger(assetCpuRequest.getId()));
-                    newCpu.setBrand(assetCpuRequest.getBrand());
-                    newCpu.setModel(assetCpuRequest.getModel());
-                    newCpu.setSerial(assetCpuRequest.getSerial());
-                    newCpu.setMainFrequency(assetCpuRequest.getMainFrequency());
-                    newCpu.setThreadSize(assetCpuRequest.getThreadSize());
-                    newCpu.setCoreSize(assetCpuRequest.getCoreSize());
+                    buildCpuCompareData(newCpu, assetCpuRequest);
                     assetCpuCompareResult.add(CompareUtils.compareClass(oldCpu, newCpu, InfoLabelEnum.CPU.getMsg()));
                 }
-            } else if (newCpuList != null && newCpuList.size() > 0) {
-                assetCpuCompareResult.add(
-                    CompareUtils.compareClass(cpuRequestList.get(0), newCpuList.get(0), InfoLabelEnum.MEMORY.getMsg()));
+            } else if (CollectionUtils.isNotEmpty(oldCpuList)) {
+                Map<String, AssetCpuRequest> newCpuMap = null;
+                for (AssetCpuRequest assetCpuRequest : oldCpuList) {
+                    buildCpuCompareData(oldCpu, assetCpuRequest);
+                    newCpuMap = this.getCpuByIdMap(newCpuList);
+                    if (newCpuMap.containsKey(assetCpuRequest.getId())) {
+                        AssetCpuRequest newCpuRequest = newCpuMap.get(assetCpuRequest.getId());
+                        buildCpuCompareData(newCpu, newCpuRequest);
+                        List<Map<String, Object>> mapList = CompareUtils.compareClass(oldCpu, newCpu,
+                            InfoLabelEnum.CPU.getMsg());
+                        if (mapList != null) {
+                            assetCpuCompareResult.add(mapList);
+                        }
+                        newCpuMap.remove(assetCpuRequest.getId());
+                    }
+                }
+                // 处理新增的部件
+                processNewCpuComponent(assetCpuCompareResult, newCpu, oldCpu, newCpuMap);
+
             }
 
             // 提取硬盘字段变更信息
             List<List<Map<String, Object>>> assetHardDiskCompareResult = new ArrayList<>();
-            List<AssetHardDiskRequest> hardDiskRequestList = oldAssetOuterRequest.getHardDisk();
-            List<AssetHardDiskRequest> newHardDiskList = oldAssetOuterRequest.getHardDisk();
+            List<AssetHardDiskRequest> oldHardDiskRequestList = oldAssetOuterRequest.getHardDisk();
+            List<AssetHardDiskRequest> newHardDiskList = newAssetOuterRequest.getHardDisk();
             AssetHardDisk oldHardDisk = new AssetHardDisk();
             AssetHardDisk newHardDisk = new AssetHardDisk();
-            if (newHardDiskList == null && hardDiskRequestList != null) {
-                for (AssetHardDiskRequest hardDiskRequest : hardDiskRequestList) {
-                    oldHardDisk.setId(DataTypeUtils.stringToInteger(hardDiskRequest.getId()));
-                    oldHardDisk.setBrand(hardDiskRequest.getBrand());
-                    oldHardDisk.setModel(hardDiskRequest.getModel());
-                    oldHardDisk.setSerial(hardDiskRequest.getSerial());
-                    oldHardDisk.setCapacity(hardDiskRequest.getCapacity());
-                    oldHardDisk.setInterfaceType(hardDiskRequest.getInterfaceType());
-                    oldHardDisk.setDiskType(hardDiskRequest.getDiskType());
-                    oldHardDisk.setBuyDate(hardDiskRequest.getBuyDate());
-                    assetHardDiskCompareResult
-                        .add(CompareUtils.compareClass(oldCpu, newCpu, InfoLabelEnum.CPU.getMsg()));
-                }
-            } else if (newHardDiskList != null && hardDiskRequestList == null) {
-                for (AssetHardDiskRequest assetHardDiskRequest : newHardDiskList) {
-                    newHardDisk.setId(DataTypeUtils.stringToInteger(assetHardDiskRequest.getId()));
-                    newHardDisk.setBrand(assetHardDiskRequest.getBrand());
-                    newHardDisk.setModel(assetHardDiskRequest.getModel());
-                    newHardDisk.setSerial(assetHardDiskRequest.getSerial());
-                    newHardDisk.setCapacity(assetHardDiskRequest.getCapacity());
-                    newHardDisk.setInterfaceType(assetHardDiskRequest.getInterfaceType());
-                    newHardDisk.setDiskType(assetHardDiskRequest.getDiskType());
-                    newHardDisk.setBuyDate(assetHardDiskRequest.getBuyDate());
+            if (newHardDiskList == null && oldHardDiskRequestList != null) {
+                for (AssetHardDiskRequest hardDiskRequest : oldHardDiskRequestList) {
+                    buildHarddiskCompareData(oldHardDisk, hardDiskRequest);
                     assetHardDiskCompareResult
                         .add(CompareUtils.compareClass(oldHardDisk, newHardDisk, InfoLabelEnum.HARDDISK.getMsg()));
                 }
-            } else if (newHardDiskList != null && newHardDiskList.size() > 0) {
-                assetHardDiskCompareResult.add(
-                    CompareUtils.compareClass(hardDiskRequestList.get(0), newHardDiskList.get(0), InfoLabelEnum.MEMORY.getMsg()));
+            } else if (newHardDiskList != null && oldHardDiskRequestList == null) {
+                for (AssetHardDiskRequest assetHardDiskRequest : newHardDiskList) {
+                    buildHarddiskCompareData(newHardDisk, assetHardDiskRequest);
+                    assetHardDiskCompareResult
+                        .add(CompareUtils.compareClass(oldHardDisk, newHardDisk, InfoLabelEnum.HARDDISK.getMsg()));
+                }
+            } else if (CollectionUtils.isNotEmpty(newHardDiskList)) {
+                Map<String, AssetHardDiskRequest> newHardDiskMap = null;
+                for (AssetHardDiskRequest assetHardDiskRequest : oldHardDiskRequestList) {
+                    buildHarddiskCompareData(oldHardDisk, assetHardDiskRequest);
+                    newHardDiskMap = this.getHarddiskByIdMap(newHardDiskList);
+                    if (newHardDiskMap.containsKey(assetHardDiskRequest.getId())) {
+                        AssetHardDiskRequest newHarddiskRequest = newHardDiskMap.get(assetHardDiskRequest.getId());
+                        buildHarddiskCompareData(newHardDisk, newHarddiskRequest);
+                        List<Map<String, Object>> mapList = CompareUtils.compareClass(oldHardDisk, newHardDisk,
+                            InfoLabelEnum.HARDDISK.getMsg());
+                        if (mapList != null) {
+                            assetHardDiskCompareResult.add(mapList);
+                        }
+                        newHardDiskMap.remove(assetHardDiskRequest.getId());
+                    }
+                }
+                // 处理新增的部件
+                processNewHarddiskComponent(assetHardDiskCompareResult, newHardDisk, oldHardDisk, newHardDiskMap);
             }
 
             // 提取主板字段变更信息
             List<List<Map<String, Object>>> assetMainboardCompareResult = new ArrayList<>();
-            List<AssetMainboradRequest> mainboradRequestList = oldAssetOuterRequest.getMainboard();
-            List<AssetMainboradRequest> newMainboardList = oldAssetOuterRequest.getMainboard();
-            AssetMainborad oldMainborad = new AssetMainborad();
+            List<AssetMainboradRequest> oldMainboardList = oldAssetOuterRequest.getMainboard();
+            List<AssetMainboradRequest> newMainboardList = newAssetOuterRequest.getMainboard();
+            AssetMainborad oldMainboard = new AssetMainborad();
             AssetMainborad newMainboard = new AssetMainborad();
-            if (newMainboardList == null && mainboradRequestList != null) {
-                for (AssetMainboradRequest mainboradRequest : mainboradRequestList) {
-                    oldMainborad.setId(DataTypeUtils.stringToInteger(mainboradRequest.getId()));
-                    oldMainborad.setBrand(mainboradRequest.getBrand());
-                    oldMainborad.setModel(mainboradRequest.getModel());
-                    oldMainborad.setSerial(mainboradRequest.getSerial());
-                    oldMainborad.setBiosVersion(mainboradRequest.getBiosVersion());
-                    oldMainborad.setBiosDate(mainboradRequest.getBiosDate());
+            if (newMainboardList == null && oldMainboardList != null) {
+                for (AssetMainboradRequest mainboradRequest : oldMainboardList) {
+                    buildMainboardCompareData(oldMainboard, mainboradRequest);
                     assetMainboardCompareResult
-                        .add(CompareUtils.compareClass(oldCpu, newCpu, InfoLabelEnum.CPU.getMsg()));
+                        .add(CompareUtils.compareClass(oldMainboard, newMainboard, InfoLabelEnum.MAINBORAD.getMsg()));
                 }
-            } else if (newMainboardList != null && mainboradRequestList == null) {
+            } else if (newMainboardList != null && oldMainboardList == null) {
                 for (AssetMainboradRequest assetMainboradRequest : newMainboardList) {
-                    newMainboard.setId(DataTypeUtils.stringToInteger(assetMainboradRequest.getId()));
-                    newMainboard.setBrand(assetMainboradRequest.getBrand());
-                    newMainboard.setModel(assetMainboradRequest.getModel());
-                    newMainboard.setSerial(assetMainboradRequest.getSerial());
-                    newMainboard.setBiosVersion(assetMainboradRequest.getBiosVersion());
-                    newMainboard.setBiosDate(assetMainboradRequest.getBiosDate());
+                    buildMainboardCompareData(newMainboard, assetMainboradRequest);
                     assetMainboardCompareResult
-                        .add(CompareUtils.compareClass(oldMainborad, newMainboard, InfoLabelEnum.MAINBORAD.getMsg()));
+                        .add(CompareUtils.compareClass(oldMainboard, newMainboard, InfoLabelEnum.MAINBORAD.getMsg()));
                 }
-            } else if (newMainboardList != null && newMainboardList.size() > 0) {
-                assetMainboardCompareResult.add(
-                    CompareUtils.compareClass(mainboradRequestList.get(0), newMainboardList.get(0), InfoLabelEnum.MEMORY.getMsg()));
+            } else if (CollectionUtils.isNotEmpty(newMainboardList)) {
+                Map<String, AssetMainboradRequest> newMainboardMap = null;
+                for (AssetMainboradRequest assetMainboardRequest : oldMainboardList) {
+                    buildMainboardCompareData(oldMainboard, assetMainboardRequest);
+                    newMainboardMap = this.getMainboardByIdMap(newMainboardList);
+                    if (newMainboardMap.containsKey(assetMainboardRequest.getId())) {
+                        AssetMainboradRequest newMainboardRequest = newMainboardMap.get(assetMainboardRequest.getId());
+                        buildMainboardCompareData(newMainboard, newMainboardRequest);
+                        List<Map<String, Object>> mapList = CompareUtils.compareClass(oldMainboard, newMainboard,
+                            InfoLabelEnum.MAINBORAD.getMsg());
+                        if (mapList != null) {
+                            assetMainboardCompareResult.add(mapList);
+                        }
+                        newMainboardMap.remove(assetMainboardRequest.getId());
+                    }
+                }
+                // 处理新增的部件
+                processMainboardComponent(assetMainboardCompareResult, newMainboard, oldMainboard, newMainboardMap);
             }
 
             // 提取网卡字段变更信息
             List<List<Map<String, Object>>> assetNetworkCompareResult = new ArrayList<>();
-            List<AssetNetworkCardRequest> networkCardList = oldAssetOuterRequest.getNetworkCard();
-            List<AssetNetworkCardRequest> newNetworkCardList = oldAssetOuterRequest.getNetworkCard();
+            List<AssetNetworkCardRequest> oldNetworkCardList = oldAssetOuterRequest.getNetworkCard();
+            List<AssetNetworkCardRequest> newNetworkCardList = newAssetOuterRequest.getNetworkCard();
             AssetNetworkCard oldNetworkCard = new AssetNetworkCard();
             AssetNetworkCard newNetworkCard = new AssetNetworkCard();
-            if (newNetworkCardList == null && networkCardList != null) {
-                for (AssetNetworkCardRequest networkCardRequest : networkCardList) {
-                    oldNetworkCard.setId(DataTypeUtils.stringToInteger(networkCardRequest.getId()));
-                    oldNetworkCard.setBrand(networkCardRequest.getBrand());
-                    oldNetworkCard.setModel(networkCardRequest.getModel());
-                    oldNetworkCard.setSerial(networkCardRequest.getSerial());
-                    oldNetworkCard.setIpAddress(networkCardRequest.getIpAddress());
-                    oldNetworkCard.setMacAddress(networkCardRequest.getMacAddress());
-                    oldNetworkCard.setSubnetMask(networkCardRequest.getSubnetMask());
-                    oldNetworkCard.setDefaultGateway(networkCardRequest.getDefaultGateway());
+            if (newNetworkCardList == null && oldNetworkCardList != null) {
+                for (AssetNetworkCardRequest networkCardRequest : oldNetworkCardList) {
+                    buildNetworkCardCompareData(oldNetworkCard, networkCardRequest);
                     assetNetworkCompareResult
-                        .add(CompareUtils.compareClass(oldCpu, newCpu, InfoLabelEnum.CPU.getMsg()));
+                        .add(CompareUtils.compareClass(oldCpu, newCpu, InfoLabelEnum.NETWORKCARD.getMsg()));
                 }
-            } else if (newNetworkCardList != null && networkCardList == null) {
+            } else if (newNetworkCardList != null && oldNetworkCardList == null) {
                 for (AssetNetworkCardRequest assetNetworkCardRequest : newNetworkCardList) {
-                    newNetworkCard.setId(DataTypeUtils.stringToInteger(assetNetworkCardRequest.getId()));
-                    newNetworkCard.setBrand(assetNetworkCardRequest.getBrand());
-                    newNetworkCard.setModel(assetNetworkCardRequest.getModel());
-                    newNetworkCard.setSerial(assetNetworkCardRequest.getSerial());
-                    newNetworkCard.setIpAddress(assetNetworkCardRequest.getIpAddress());
-                    newNetworkCard.setMacAddress(assetNetworkCardRequest.getMacAddress());
-                    newNetworkCard.setSubnetMask(assetNetworkCardRequest.getSubnetMask());
-                    newNetworkCard.setDefaultGateway(assetNetworkCardRequest.getDefaultGateway());
+                    buildNetworkCardCompareData(newNetworkCard, assetNetworkCardRequest);
                     assetNetworkCompareResult.add(
                         CompareUtils.compareClass(oldNetworkCard, newNetworkCard, InfoLabelEnum.NETWORKCARD.getMsg()));
                 }
-            } else if (newNetworkCardList != null && newNetworkCardList.size() > 0) {
-                assetNetworkCompareResult.add(
-                    CompareUtils.compareClass(networkCardList.get(0), newNetworkCardList.get(0), InfoLabelEnum.MEMORY.getMsg()));
+            } else if (CollectionUtils.isNotEmpty(oldNetworkCardList)) {
+                Map<String, AssetNetworkCardRequest> newNetworkCardMap = null;
+                for (AssetNetworkCardRequest assetNetworkCardRequest : oldNetworkCardList) {
+                    buildNetworkCardCompareData(oldNetworkCard, assetNetworkCardRequest);
+                    newNetworkCardMap = this.getNetworkCardByIdMap(newNetworkCardList);
+                    if (newNetworkCardMap.containsKey(assetNetworkCardRequest.getId())) {
+                        AssetNetworkCardRequest newNetworkCardRequest = newNetworkCardMap
+                            .get(assetNetworkCardRequest.getId());
+                        buildNetworkCardCompareData(newNetworkCard, newNetworkCardRequest);
+                        List<Map<String, Object>> mapList = CompareUtils.compareClass(oldNetworkCard, newNetworkCard,
+                            InfoLabelEnum.NETWORKCARD.getMsg());
+                        if (mapList != null) {
+                            assetNetworkCompareResult.add(mapList);
+                        }
+                        newNetworkCardMap.remove(assetNetworkCardRequest.getId());
+                    }
+                }
+                // 处理新增的部件
+                processNewNetworkCardComponent(assetNetworkCompareResult, newNetworkCard, oldNetworkCard,
+                    newNetworkCardMap);
             }
 
             // 提取关联软件变更信息
             List<List<Map<String, Object>>> relateSoftewareCompareResult = new ArrayList<>();
             List<AssetSoftwareRelationRequest> oldSoftwareRelationList = oldAssetOuterRequest
                 .getAssetSoftwareRelationList();
-            List<AssetSoftwareRelationRequest> newAssetOuterRequestList = newAssetOuterRequest
+            List<AssetSoftwareRelationRequest> newSoftwareRelationList = newAssetOuterRequest
                 .getAssetSoftwareRelationList();
-            if (CollectionUtils.isNotEmpty(oldSoftwareRelationList)) {
+            RelateSoftware oldRelateSoftware = new RelateSoftware();
+            RelateSoftware newRelateSoftware = new RelateSoftware();
+            if (newSoftwareRelationList == null && oldSoftwareRelationList != null) {
                 for (AssetSoftwareRelationRequest assetSoftwareRelationRequest : oldSoftwareRelationList) {
-                    RelateSoftware oldRelateSoftware = new RelateSoftware();
-                    oldRelateSoftware.setSoftwareId(assetSoftwareRelationRequest.getSoftwareId());
-                    AssetSoftwareLicense assetSoftwareLicense = softwareLicenseDao
-                        .getById(DataTypeUtils.stringToInteger(assetSoftwareRelationRequest.getSoftwareId()));
-                    oldRelateSoftware.setLicenseSecretKey(
-                        assetSoftwareLicense == null ? null : assetSoftwareLicense.getLicenseSecretKey());
-                    oldRelateSoftware.setMulPort(assetSoftwareRelationRequest.getPort());
-                    oldRelateSoftware.setDescription(assetSoftwareRelationRequest.getMemo());
-                    if (CollectionUtils.isNotEmpty(newAssetOuterRequestList)) {
-                        RelateSoftware newRelateSoftware = new RelateSoftware();
-                        for (AssetSoftwareRelationRequest newAssetSoftwareRelationRequest : newAssetOuterRequestList) {
-                            if (oldRelateSoftware.getSoftwareId()
-                                .equals(newAssetSoftwareRelationRequest.getSoftwareId())) {
-                                newRelateSoftware
-                                    .setLicenseSecretKey(newAssetSoftwareRelationRequest.getLicenseSecretKey());
-                                newRelateSoftware.setMulPort(newAssetSoftwareRelationRequest.getPort());
-                                newRelateSoftware.setDescription(newAssetSoftwareRelationRequest.getMemo());
-                                relateSoftewareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware,
-                                    newAssetSoftwareRelationRequest, InfoLabelEnum.RELATESOFTWARE.getMsg()));
-                            }
+                    buildSoftwareRelationCompareData(oldRelateSoftware, assetSoftwareRelationRequest);
+                    relateSoftewareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
+                        InfoLabelEnum.RELATESOFTWARE.getMsg()));
+                }
+            } else if (newSoftwareRelationList != null && oldSoftwareRelationList == null) {
+                for (AssetSoftwareRelationRequest softwareRelationRequest : newSoftwareRelationList) {
+                    buildSoftwareRelationCompareData(newRelateSoftware, softwareRelationRequest);
+                    relateSoftewareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
+                        InfoLabelEnum.RELATESOFTWARE.getMsg()));
+                }
+            } else if (CollectionUtils.isNotEmpty(newSoftwareRelationList)) {
+                Map<String, AssetSoftwareRelationRequest> newSoftwareRelationMap = null;
+                for (AssetSoftwareRelationRequest softwareRelationRequest : oldSoftwareRelationList) {
+                    buildSoftwareRelationCompareData(oldRelateSoftware, softwareRelationRequest);
+                    newSoftwareRelationMap = this.getRelationSoftwareByIdMap(newSoftwareRelationList);
+                    if (newSoftwareRelationMap.containsKey(softwareRelationRequest.getId())) {
+                        AssetSoftwareRelationRequest comparedSoftwareRelationRequest = newSoftwareRelationMap
+                            .get(softwareRelationRequest.getId());
+                        buildSoftwareRelationCompareData(newRelateSoftware, comparedSoftwareRelationRequest);
+                        List<Map<String, Object>> mapList = CompareUtils.compareClass(oldRelateSoftware,
+                            newRelateSoftware, InfoLabelEnum.RELATESOFTWARE.getMsg());
+                        if (mapList != null) {
+                            relateSoftewareCompareResult.add(mapList);
                         }
-                    } else {
-                        break;
+                        newSoftwareRelationMap.remove(softwareRelationRequest.getId());
                     }
                 }
+                // 处理新增的部件
+                processRelateSofwareComponent(relateSoftewareCompareResult, newRelateSoftware, oldRelateSoftware,
+                    newSoftwareRelationMap);
             }
 
             // 合并集合
-            changeValList.addAll(assetCommonInoCompareResult);
-            changeValList.addAll(assetBusinessInfoCompareResult);
+            if (CollectionUtils.isNotEmpty(assetCommonInoCompareResult)) {
+                changeValList.addAll(assetCommonInoCompareResult);
+            }
+
+            if (CollectionUtils.isNotEmpty(assetBusinessInfoCompareResult)) {
+                changeValList.addAll(assetBusinessInfoCompareResult);
+            }
             // 内存
             if (CollectionUtils.isNotEmpty(assetMemoryCompareResult)) {
                 changeValList.addAll(getMaps(assetMemoryCompareResult, InfoLabelEnum.MEMORY.getMsg()));
             }
+            // CPU
             if (CollectionUtils.isNotEmpty(assetCpuCompareResult)) {
                 changeValList.addAll(getMaps(assetCpuCompareResult, InfoLabelEnum.CPU.getMsg()));
             }
+            // 硬盘
             if (CollectionUtils.isNotEmpty(assetHardDiskCompareResult)) {
                 changeValList.addAll(getMaps(assetHardDiskCompareResult, InfoLabelEnum.HARDDISK.getMsg()));
             }
+            // 主板
             if (CollectionUtils.isNotEmpty(assetMainboardCompareResult)) {
                 changeValList.addAll(getMaps(assetMainboardCompareResult, InfoLabelEnum.MAINBORAD.getMsg()));
             }
+            // 网卡
             if (CollectionUtils.isNotEmpty(assetNetworkCompareResult)) {
                 changeValList.addAll(getMaps(assetNetworkCompareResult, InfoLabelEnum.NETWORKCARD.getMsg()));
             }
-
+            // 关联软件
             if (CollectionUtils.isNotEmpty(relateSoftewareCompareResult)) {
                 for (List<Map<String, Object>> listMap : relateSoftewareCompareResult) {
                     changeValList.addAll(listMap);
                 }
             }
+            return changeValList;
         }
-        return changeValList;
+        return null;
 
+    }
+
+    /**
+     * 处理新增的内存部件
+     * @param assetMemoryCompareResult
+     * @param newMemory
+     * @param oldMemory
+     * @param newMemoryMap
+     * @throws IllegalAccessException
+     */
+    private void processNewMemoryComponent(List<List<Map<String, Object>>> assetMemoryCompareResult,
+                                           AssetMemory newMemory, AssetMemory oldMemory,
+                                           Map<String, AssetMemoryRequest> newMemoryMap) throws IllegalAccessException {
+        if (newMemoryMap.size() > 0) {
+            Set<Map.Entry<String, AssetMemoryRequest>> mapEntrySet = newMemoryMap.entrySet();
+            for (Map.Entry<String, AssetMemoryRequest> mapEntry : mapEntrySet) {
+                buildMemoryCompareData(newMemory, mapEntry.getValue());
+                assetMemoryCompareResult
+                    .add(CompareUtils.compareClass(oldMemory, newMemory, InfoLabelEnum.MEMORY.getMsg()));
+            }
+        }
+    }
+
+    /**
+     * 处理新增的CPU部件
+     * @param assetCpuCompareResult
+     * @param newCpu
+     * @param oldCpu
+     * @param newCpuMap
+     * @throws IllegalAccessException
+     */
+    private void processNewCpuComponent(List<List<Map<String, Object>>> assetCpuCompareResult, AssetCpu newCpu,
+                                        AssetCpu oldCpu,
+                                        Map<String, AssetCpuRequest> newCpuMap) throws IllegalAccessException {
+        if (newCpuMap.size() > 0) {
+            Set<Map.Entry<String, AssetCpuRequest>> mapEntrySet = newCpuMap.entrySet();
+            for (Map.Entry<String, AssetCpuRequest> mapEntry : mapEntrySet) {
+                buildCpuCompareData(newCpu, mapEntry.getValue());
+                assetCpuCompareResult.add(CompareUtils.compareClass(oldCpu, newCpu, InfoLabelEnum.CPU.getMsg()));
+            }
+        }
+    }
+
+    /**
+     * 处理新增的硬盘部件
+     * @param assetHarddiskCompareResult
+     * @param newHarddisk
+     * @param oldHarddisk
+     * @param newHarddiskMap
+     * @throws IllegalAccessException
+     */
+    private void processNewHarddiskComponent(List<List<Map<String, Object>>> assetHarddiskCompareResult,
+                                             AssetHardDisk newHarddisk, AssetHardDisk oldHarddisk,
+                                             Map<String, AssetHardDiskRequest> newHarddiskMap) throws IllegalAccessException {
+        Set<Map.Entry<String, AssetHardDiskRequest>> mapEntrySet = newHarddiskMap.entrySet();
+        for (Map.Entry<String, AssetHardDiskRequest> mapEntry : mapEntrySet) {
+            buildHarddiskCompareData(newHarddisk, mapEntry.getValue());
+            assetHarddiskCompareResult
+                .add(CompareUtils.compareClass(oldHarddisk, newHarddisk, InfoLabelEnum.HARDDISK.getMsg()));
+        }
+    }
+
+    /**
+     * 处理新增的网卡部件
+     * @param assetNetworkCardCompareResult
+     * @param newNetworkCard
+     * @param oldNetworkCard
+     * @param newNetworkCardMap
+     * @throws IllegalAccessException
+     */
+    private void processNewNetworkCardComponent(List<List<Map<String, Object>>> assetNetworkCardCompareResult,
+                                                AssetNetworkCard newNetworkCard, AssetNetworkCard oldNetworkCard,
+                                                Map<String, AssetNetworkCardRequest> newNetworkCardMap) throws IllegalAccessException {
+        if (newNetworkCardMap.size() > 0) {
+            Set<Map.Entry<String, AssetNetworkCardRequest>> mapEntrySet = newNetworkCardMap.entrySet();
+            for (Map.Entry<String, AssetNetworkCardRequest> mapEntry : mapEntrySet) {
+                buildNetworkCardCompareData(newNetworkCard, mapEntry.getValue());
+                assetNetworkCardCompareResult
+                    .add(CompareUtils.compareClass(oldNetworkCard, newNetworkCard, InfoLabelEnum.NETWORKCARD.getMsg()));
+            }
+        }
+    }
+
+    /**
+     * 处理新增的主板部件
+     * @param assetMainboardCompareResult
+     * @param newMainboard
+     * @param oldMainboard
+     * @param newMainboardMap
+     * @throws IllegalAccessException
+     */
+    private void processMainboardComponent(List<List<Map<String, Object>>> assetMainboardCompareResult,
+                                           AssetMainborad newMainboard, AssetMainborad oldMainboard,
+                                           Map<String, AssetMainboradRequest> newMainboardMap) throws IllegalAccessException {
+        if (newMainboardMap.size() > 0) {
+            Set<Map.Entry<String, AssetMainboradRequest>> mapEntrySet = newMainboardMap.entrySet();
+            for (Map.Entry<String, AssetMainboradRequest> mapEntry : mapEntrySet) {
+                buildMainboardCompareData(newMainboard, mapEntry.getValue());
+                assetMainboardCompareResult
+                    .add(CompareUtils.compareClass(oldMainboard, newMainboard, InfoLabelEnum.NETWORKCARD.getMsg()));
+            }
+        }
+
+    }
+
+    /**
+     * 处理新增的关联软件部件
+     * @param assetRelateSoftwareCompareResult
+     * @param newRelateSoftware
+     * @param oldRelateSoftware
+     * @param newRelateSoftwareMap
+     * @throws Exception
+     */
+    private void processRelateSofwareComponent(List<List<Map<String, Object>>> assetRelateSoftwareCompareResult,
+                                               RelateSoftware newRelateSoftware, RelateSoftware oldRelateSoftware,
+                                               Map<String, AssetSoftwareRelationRequest> newRelateSoftwareMap) throws Exception {
+        if (newRelateSoftwareMap.size() > 0) {
+            Set<Map.Entry<String, AssetSoftwareRelationRequest>> mapEntrySet = newRelateSoftwareMap.entrySet();
+            for (Map.Entry<String, AssetSoftwareRelationRequest> mapEntry : mapEntrySet) {
+                buildSoftwareRelationCompareData(newRelateSoftware, mapEntry.getValue());
+                assetRelateSoftwareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
+                    InfoLabelEnum.RELATESOFTWARE.getMsg()));
+            }
+        }
+    }
+
+    /**
+     * 构建内存比较数据
+     * @param memory
+     * @param request
+     */
+    private void buildMemoryCompareData(AssetMemory memory, AssetMemoryRequest request) {
+        memory.setId(DataTypeUtils.stringToInteger(request.getId()));
+        memory.setBrand(request.getBrand());
+        TransferTypeMemoryEnum transferTypeMemoryEnum = EnumUtil.getByCode(TransferTypeMemoryEnum.class,
+            request.getTransferType());
+        memory.setTransferTypeName(transferTypeMemoryEnum != null ? transferTypeMemoryEnum.getMsg() : null);
+        memory.setSerial(request.getSerial());
+        memory.setCapacity(request.getCapacity());
+        memory.setFrequency(request.getFrequency());
+        memory.setSlotType(request.getSlotType());
+        memory.setHeatsink(request.getHeatsink());
+        memory.setStitch(request.getStitch());
+    }
+
+    /**
+     * 构建CPU比较数据
+     * @param cpu
+     * @param request
+     */
+    private void buildCpuCompareData(AssetCpu cpu, AssetCpuRequest request) {
+        cpu.setId(DataTypeUtils.stringToInteger(request.getId()));
+        cpu.setBrand(request.getBrand());
+        cpu.setModel(request.getModel());
+        cpu.setSerial(request.getSerial());
+        cpu.setMainFrequency(request.getMainFrequency());
+        cpu.setThreadSize(request.getThreadSize());
+        cpu.setCoreSize(request.getCoreSize());
+    }
+
+    /**
+     * 构建硬盘比较数据
+     * @param hardDisk
+     * @param request
+     */
+    private void buildHarddiskCompareData(AssetHardDisk hardDisk, AssetHardDiskRequest request) {
+        hardDisk.setId(DataTypeUtils.stringToInteger(request.getId()));
+        hardDisk.setBrand(request.getBrand());
+        hardDisk.setModel(request.getModel());
+        hardDisk.setSerial(request.getSerial());
+        hardDisk.setCapacity(request.getCapacity());
+        hardDisk.setInterfaceType(request.getInterfaceType());
+        hardDisk.setDiskType(request.getDiskType());
+        hardDisk.setBuyDate(request.getBuyDate());
+    }
+
+    /**
+     * 构建网卡比较数据
+     * @param networkCard
+     * @param request
+     */
+    private void buildNetworkCardCompareData(AssetNetworkCard networkCard, AssetNetworkCardRequest request) {
+        networkCard.setId(DataTypeUtils.stringToInteger(request.getId()));
+        networkCard.setBrand(request.getBrand());
+        networkCard.setModel(request.getModel());
+        networkCard.setSerial(request.getSerial());
+        networkCard.setIpAddress(request.getIpAddress());
+        networkCard.setMacAddress(request.getMacAddress());
+        networkCard.setSubnetMask(request.getSubnetMask());
+        networkCard.setDefaultGateway(request.getDefaultGateway());
+    }
+
+    /**
+     * 构主板比较数据
+     * @param mainboard
+     * @param request
+     */
+    private void buildMainboardCompareData(AssetMainborad mainboard, AssetMainboradRequest request) {
+        mainboard.setId(DataTypeUtils.stringToInteger(request.getId()));
+        mainboard.setBrand(request.getBrand());
+        mainboard.setModel(request.getModel());
+        mainboard.setSerial(request.getSerial());
+        mainboard.setBiosVersion(request.getBiosVersion());
+        mainboard.setBiosDate(request.getBiosDate());
+    }
+
+    /**
+     * 构关联软件比较数据
+     * @param relateSoftware
+     * @param request
+     */
+    private void buildSoftwareRelationCompareData(RelateSoftware relateSoftware,
+                                                  AssetSoftwareRelationRequest request) throws Exception {
+        relateSoftware.setSoftName(softwareDao.getById(request.getSoftwareId()).getName());
+        relateSoftware.setLicenseSecretKey(request.getLicenseSecretKey());
+        relateSoftware.setMulPort(request.getPort());
+        relateSoftware.setDescription(
+            org.apache.commons.lang.StringUtils.isNotEmpty(request.getMemo()) ? request.getMemo().trim() : null);
     }
 
     private List<Map<String, Object>> getMaps(List<List<Map<String, Object>>> assetMemoryCompareResult, String msg) {
@@ -390,17 +633,42 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
         List<String> tempOldList = new ArrayList<>();
         List<String> newOldList = new ArrayList<>();
         for (List<Map<String, Object>> listMap : assetMemoryCompareResult) {
-            for (Map<String, Object> field : listMap) {
-                tempOldList.add(field.get("name").toString() + ": " + field.get("old"));
-                newOldList.add(field.get("name").toString() + ": " + field.get("new"));
+            for (Map<String, Object> fieldMap : listMap) {
+                tempOldList.add(fieldMap.get("name").toString() + ": " + fieldMap.get("old"));
+                newOldList.add(fieldMap.get("name").toString() + ": " + fieldMap.get("new"));
             }
 
         }
-        map.put("old", StringUtils.trim(tempOldList.toString(),"[","]"));
-        map.put("new", StringUtils.trim(newOldList.toString(),"[","]"));
-        map.put("label", msg);
+        map.put("old", StringUtils.trim(tempOldList.toString(), "[", "]"));
+        map.put("new", StringUtils.trim(newOldList.toString(), "[", "]"));
+        // map.put("label", msg);
         resultMap.add(map);
         return resultMap;
+    }
+
+    private Map<String, AssetMemoryRequest> getMemoryByIdMap(List<AssetMemoryRequest> list) {
+        return list.stream().collect(Collectors.toMap(AssetMemoryRequest::getId, memory -> memory));
+    }
+
+    private Map<String, AssetCpuRequest> getCpuByIdMap(List<AssetCpuRequest> list) {
+        return list.stream().collect(Collectors.toMap(AssetCpuRequest::getId, cpu -> cpu));
+    }
+
+    private Map<String, AssetHardDiskRequest> getHarddiskByIdMap(List<AssetHardDiskRequest> list) {
+        return list.stream().collect(Collectors.toMap(AssetHardDiskRequest::getId, hardisk -> hardisk));
+    }
+
+    private Map<String, AssetNetworkCardRequest> getNetworkCardByIdMap(List<AssetNetworkCardRequest> list) {
+        return list.stream().collect(Collectors.toMap(AssetNetworkCardRequest::getId, networkCard -> networkCard));
+    }
+
+    private Map<String, AssetMainboradRequest> getMainboardByIdMap(List<AssetMainboradRequest> list) {
+        return list.stream().collect(Collectors.toMap(AssetMainboradRequest::getId, mainboard -> mainboard));
+    }
+
+    private Map<String, AssetSoftwareRelationRequest> getRelationSoftwareByIdMap(List<AssetSoftwareRelationRequest> list) {
+        return list.stream()
+            .collect(Collectors.toMap(AssetSoftwareRelationRequest::getId, softwareRelation -> softwareRelation));
     }
 
     @Override
@@ -413,9 +681,13 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
      */
     class RelateSoftware {
         private String softwareId;
+        @ApiModelProperty("名称")
         private String softName;
+        @ApiModelProperty("许可秘钥")
         private String licenseSecretKey;
+        @ApiModelProperty("端口")
         private String mulPort;
+        @ApiModelProperty("描述")
         private String description;
 
         public String getSoftwareId() {

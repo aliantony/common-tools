@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -26,6 +27,9 @@ public class AssetMemory extends BaseEntity {
      */
     @ApiModelProperty("内存类型")
     private Integer transferType;
+
+    @ApiModelProperty("内存类型")
+    private String  transferTypeName;
     /**
      * 内存品牌
      */
@@ -101,6 +105,14 @@ public class AssetMemory extends BaseEntity {
      * 状态,1未删除,0已删除
      */
     private Integer status;
+
+    public String getTransferTypeName() {
+        return transferTypeName;
+    }
+
+    public void setTransferTypeName(String transferTypeName) {
+        this.transferTypeName = transferTypeName;
+    }
 
     public String getAssetId() {
         return assetId;
@@ -214,14 +226,7 @@ public class AssetMemory extends BaseEntity {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "AssetMemory{" + ", assetId=" + assetId + ", capacity=" + capacity + ", frequency=" + frequency
-               + ", slotType=" + slotType + ", heatsink=" + heatsink + ", stitch=" + stitch + ", buyDate=" + buyDate
-               + ", warrantyDate=" + warrantyDate + ", telephone=" + telephone + ", gmtCreate=" + gmtCreate
-               + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser=" + createUser + ", modifyUser="
-               + modifyUser + ", status=" + status + "}";
-    }
+
 
     public String getSerial() {
         return serial;

@@ -627,13 +627,13 @@
             <choose>
                 <!--enterControl 为true表示从工作台进入-->
                 <when test="enterControl">
-                  and
+                    and
                 </when>
                 <otherwise>
                     or
                 </otherwise>
             </choose>
-             id in
+            id in
             <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
                 #{item}
             </foreach>
@@ -973,19 +973,20 @@
         a.gmt_create,
         case
         when group_concat(b.ip_address) is not null then
-            group_concat(b.ip_address)
-        when (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is not null then
-          (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
+        group_concat(b.ip_address)
+        when (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is not
+        null then
+        (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
         when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-          (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
+        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
         else '' end as ip,
         case
         when group_concat( b.mac_address ) is not null then
-          group_concat( b.mac_address )
+        group_concat( b.mac_address )
         when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
-          (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
+        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
         when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-          (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
+        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
         else '' end as mac
         from
         asset a
@@ -1046,6 +1047,18 @@
             </foreach>
         </if>
         GROUP BY asset_status
+    </select>
+
+    <select id="queryAssetCountByAreaIds" resultType="integer">
+        select count(1) from
+        <include refid="Table_Name"></include>
+        where status=1 and asset_status!=9
+        <if test="areaIds != null and areaIds.size() > 0">
+            and area_id in
+            <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
+                #{areaId}
+            </foreach>
+        </if>
     </select>
 
     <select id="queryAssetByIds" parameterType="java.lang.Integer" resultMap="BaseResultMap">

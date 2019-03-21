@@ -59,7 +59,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Resource
     private SelectConvert                                 selectConvert;
     @Resource
-    RedisUtil                                             redisUtil;
+    private RedisUtil                                     redisUtil;
     @Resource
     private BaseConverter<AssetGroup, AssetGroupResponse> assetGroupToResponseConverter;
     @Resource
@@ -98,9 +98,10 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
         Map<String, Object> map = new HashMap<>();
         StringBuilder assetNameBuilder = new StringBuilder();
-        if(ArrayUtils.isNotEmpty(request.getAssetIds())){
+        if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
             for (String assetId : request.getAssetIds()) {
-                List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(DataTypeUtils.stringToInteger(assetId));
+                List<String> assetGroupNameList = assetGroupRelationDao
+                    .findAssetGroupNameByAssetId(DataTypeUtils.stringToInteger(assetId));
                 String assetGroupName = assetGroupNameList.toString();
                 updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
             }
@@ -145,7 +146,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             assetGroupRelationList.add(assetGroupRelation);
         }
 
-        if(CollectionUtils.isNotEmpty(assetGroupRelationList)){
+        if (CollectionUtils.isNotEmpty(assetGroupRelationList)) {
             result = assetGroupRelationDao.insertBatch(assetGroupRelationList);
         }
 
@@ -223,17 +224,17 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     @Override
     public AssetGroupResponse findGroupById(String id) throws Exception {
-        AssetGroupResponse assetGroupResponse = assetGroupToResponseConverter
-            .convert(assetGroupDao.getById(id), AssetGroupResponse.class);
+        AssetGroupResponse assetGroupResponse = assetGroupToResponseConverter.convert(assetGroupDao.getById(id),
+            AssetGroupResponse.class);
         return assetGroupResponse;
     }
 
     @Override
     public List<SelectResponse> queryCreateUser() throws Exception {
         List<SelectResponse> selectResponseList = new ArrayList<>();
-        for (AssetGroup assetGroup : assetGroupDao.findCreateUser()){
+        for (AssetGroup assetGroup : assetGroupDao.findCreateUser()) {
             String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
-                    assetGroup.getCreateUser());
+                assetGroup.getCreateUser());
             SysUser sysUser = redisUtil.getObject(key, SysUser.class);
             SelectResponse selectResponse = new SelectResponse();
             selectResponse.setId(DataTypeUtils.integerToString(assetGroup.getCreateUser()));
@@ -251,16 +252,17 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
      * @param assetGroupNameList
      * @param assetGroupName
      */
-    private void updateAssetGroupName(Map<String, Object> map, StringBuilder assetNameBuilder, String assetId, List<String> assetGroupNameList, String assetGroupName) {
+    private void updateAssetGroupName(Map<String, Object> map, StringBuilder assetNameBuilder, String assetId,
+                                      List<String> assetGroupNameList, String assetGroupName) {
         if (assetGroupNameList.size() > 0) {
             assetNameBuilder.append(assetGroupNameList.toString(), 1, assetGroupName.length() - 1);
             map.put("assetGroupName", assetNameBuilder.toString());
             map.put("assetId", assetId);
             assetDao.updateAssetGroupNameWithAssetId(map);
-            assetNameBuilder.delete(0,assetNameBuilder.length());
+            assetNameBuilder.delete(0, assetNameBuilder.length());
             // 写入业务日志
             LogHandle.log(assetGroupNameList.toString(), AssetEventEnum.ASSET_MODIFY.getName(),
-                    AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
+                AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetGroupNameList.toString());
         }
     }

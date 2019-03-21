@@ -28,7 +28,7 @@ import com.antiy.common.utils.LoginUserUtil;
 public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeProcessImpl {
 
     @Resource
-    AssetDao assetDao;
+    private AssetDao assetDao;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {

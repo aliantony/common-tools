@@ -285,7 +285,7 @@ public class ImportExcel {
         initAnnotationList(clazz);
         List<T> dataList = new ArrayList<>();
         boolean flag = true;
-        Row firstRow = this.getRow(0);
+        Row firstRow = this.getRow(5);
         int length = 0;
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
@@ -422,7 +422,7 @@ public class ImportExcel {
      * @return
      */
     public String getResultMsg() {
-        sb.append("成功条数:").append(successNums).append(",").append("空白条数:").append(blankNums).append(",").append("失败条数:")
+        sb.append("成功条数:").append(successNums).append(",").append("失败条数:")
             .append(failNums).append(",").append("总条数:").append(totalNums).append(".");
         String resultString = sb.toString();
         sb.delete(0, sb.length());

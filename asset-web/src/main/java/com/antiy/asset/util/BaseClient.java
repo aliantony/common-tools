@@ -19,7 +19,7 @@ import com.antiy.common.utils.LoginUserUtil;
 public class BaseClient<T> {
 
     @Resource
-    RestTemplate                restTemplate;
+    private RestTemplate                restTemplate;
     private static final String TOKEN_KEY = "Authorization";
 
     /**

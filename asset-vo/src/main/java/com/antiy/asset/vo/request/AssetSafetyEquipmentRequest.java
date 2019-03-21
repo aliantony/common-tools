@@ -7,6 +7,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * <p> AssetSafetyEquipmentRequest 请求对象 </p>
  *
@@ -29,11 +31,13 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
      * IP
      */
     @ApiModelProperty("IP")
+    @NotBlank(message = "不能为空")
     private String ip;
     /**
      * mac
      */
     @ApiModelProperty("mac")
+    @NotBlank(message = "mac不能为空")
     private String mac;
     /**
      * 特征库版本

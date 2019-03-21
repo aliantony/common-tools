@@ -6,7 +6,6 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 
 /**
@@ -29,7 +28,7 @@ public class AssetImportRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("下一步操作人员")
     @Encode
-    @NotNull(message = "操作人员不能为空")
+//    @NotNull(message = "操作人员不能为空")
     private String[] userId;
     /**
      * 序列号

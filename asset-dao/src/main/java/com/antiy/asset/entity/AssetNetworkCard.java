@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -19,7 +20,7 @@ public class AssetNetworkCard extends BaseEntity {
     /**
      * 品牌
      */
-    @ApiModelProperty("pinp")
+    @ApiModelProperty("品牌")
     private String  brand;
     /**
      * 型号

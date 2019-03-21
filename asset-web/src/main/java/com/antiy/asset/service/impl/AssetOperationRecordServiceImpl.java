@@ -116,7 +116,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
             map.put("originStatus", SoftwareStatusEnum.WAIT_ANALYZE.getCode());
             NameValueVo<AssetOperationRecordBarResponse> waitAnalyze = new NameValueVo<>();
-            waitAnalyze.setName(SoftwareStatusEnum.WAIT_ANALYZE.getMsg().substring(2));
+            waitAnalyze.setName("待分析");
             waitAnalyze.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
             nameValueVoList.add(waitAnalyze);
 

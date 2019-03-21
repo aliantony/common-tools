@@ -630,9 +630,9 @@
                 <include refid="Multiple_Query"></include>
                 <if test=" multipleQuery != null">
                     and (
-                    asset_software.name LIKE CONCAT('%',#{multipleQuery},'%')
-                    or asset_software.serial LIKE CONCAT('%',#{multipleQuery},'%')
-                    or asset_software.id LIKE CONCAT('%',#{multipleQuery},'%'))
+                    asset_software.name LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_') ,'%')
+                    or asset_software.serial LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_') ,'%')
+                    or asset_software.id LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_') ,'%'))
                 </if>
             </trim>
         </where>
@@ -927,8 +927,8 @@
             and a.install_status = #{installStatus}
         </if>
         <if test=" multipleQuery != null">
-            and (c.name LIKE CONCAT('%',#{multipleQuery},'%')
-            or c.number LIKE CONCAT('%',#{multipleQuery},'%'))
+            and (c.name LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or c.number LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%'))
         </if>
         <if test=" installType != null">
             and a.install_type = #{installType}

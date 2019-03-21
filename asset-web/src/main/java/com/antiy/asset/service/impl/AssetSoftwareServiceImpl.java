@@ -1,5 +1,26 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetOperationRecord;
@@ -31,25 +52,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -106,6 +108,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     private static final Logger                                              LOGGER = LogUtils
         .get(AssetSoftwareServiceImpl.class);
+    @Resource
+    private AssetChangeRecordDao                                             assetChangeRecordDao;
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -279,6 +283,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                      *
                      * } }
                      */
+                    // 记录更新操作
+                    assetOperationRecordDao.insert(convertAssetOperationRecord(request, softwareStatus));
                     // 写入业务日志
                     LogHandle.log(assetSoftware.toString(), AssetEventEnum.SOFT_UPDATE.getName(),
                         AssetEventEnum.SOFT_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
@@ -294,6 +300,25 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // TODO 调用工作流，给配置管理员
         // activityClient.completeTask(request.getRequest());
         return count;
+    }
+
+    private AssetOperationRecord convertAssetOperationRecord(AssetSoftwareRequest request, Integer softwareStatus) {
+        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+        if (softwareStatus.equals(SoftwareFlowEnum.SOFTWARE_RETIRE_REGISTER.getCode())) {
+            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.RETIRE.getCode());
+            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_RETIRE_REGISTER.getMsg());
+        } else if (softwareStatus.equals(SoftwareFlowEnum.SOFTWARE_NOT_REGSIST_REGISTER.getCode())) {
+            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
+            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_NOT_REGSIST_REGISTER.getMsg());
+        }
+        assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
+        assetOperationRecord.setTargetObjectId(request.getId());
+        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+        assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
+        assetOperationRecord.setProcessResult(1);
+        assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        return assetOperationRecord;
     }
 
     /**
@@ -613,7 +638,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public String importExcel(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class,
-            file, 4, 0);
+            file, 5, 0);
         if (Objects.isNull(importResult.getDataList())) {
             return importResult.getMsg();
         }
@@ -624,16 +649,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         int success = 0;
         int repeat = 0;
         int error = 0;
-        int a = 5;
+        int a = 6;
         StringBuilder builder = new StringBuilder();
-        List<AssetSoftware> assetList = new ArrayList<> ();
+        List<AssetSoftware> assetList = new ArrayList<>();
         for (AssetSoftwareEntity entity : resultDataList) {
-            if (StringUtils.isBlank(entity.getCategory())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("软件品类为空");
-                continue;
-            }
 
             AssetCategoryModel categoryModel = assetCategoryModelDao
                 .getById(com.antiy.common.utils.DataTypeUtils.stringToInteger(entity.getCategory()));
@@ -641,102 +660,79 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             if (Objects.isNull(categoryModel)) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("选择的品类型号不存在，或已经注销！");
+                builder.append("第").append(a).append("行").append("选择的品类型号不存在，或已经注销！，");
                 continue;
             }
 
-            if (StringUtils.isBlank(entity.getName())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("软件名称为空");
-                continue;
-            }
             if (CheckRepeatName(entity.getName())) {
                 repeat++;
                 a++;
-                builder.append("第").append(a).append("行").append("软件名称重复");
-                continue;
-            }
-            if (StringUtils.isBlank(entity.getVersion())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("软件版本为空");
+                builder.append("第").append(a).append("行").append("软件名称重复，");
                 continue;
             }
 
-            if (Objects.isNull(entity.getServiceLife()) ) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("到期时间为空");
-                continue;
+            if (repeat + error == 0) {
+
+                AssetSoftware asset = new AssetSoftware();
+                asset.setServiceLife(entity.getServiceLife());
+                asset.setGmtCreate(System.currentTimeMillis());
+                asset.setMd5Code(entity.getMD5());
+                asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                asset.setSoftwareStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
+                asset.setReleaseTime(entity.getReleaseTime());
+                asset.setName(entity.getName());
+                asset.setVersion(entity.getVersion());
+                asset.setManufacturer(entity.getManufacturer());
+                asset.setOperationSystem(entity.getOperationSystem());
+                asset.setSerial(entity.getSerial());
+                asset.setBuyDate(entity.getBuyDate());
+                asset.setAuthorization(entity.getAuthorization());
+                asset.setMemo(entity.getDescription());
+                asset.setDescription(entity.getDescription());
+                asset.setCategoryModel(entity.getCategory());
+                assetList.add(asset);
             }
 
-            AssetSoftware asset = new AssetSoftware();
-            asset.setServiceLife(entity.getServiceLife());
-            asset.setGmtCreate(System.currentTimeMillis());
-            asset.setMd5Code(entity.getMD5());
-            asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            asset.setSoftwareStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
-            asset.setReleaseTime(entity.getReleaseTime());
-            asset.setName(entity.getName());
-            asset.setVersion(entity.getVersion());
-            asset.setManufacturer(entity.getManufacturer());
-            asset.setOperationSystem(entity.getOperationSystem());
-            asset.setSerial(entity.getSerial());
-            asset.setBuyDate(entity.getBuyDate());
-            asset.setAuthorization(entity.getAuthorization());
-            asset.setMemo(entity.getDescription());
-            asset.setDescription(entity.getDescription());
-            asset.setCategoryModel(entity.getCategory());
-            assetList.add (asset);
-
-
-
-//            Map<String, Object> formData = new HashMap<>();
-//            String[] userId = importRequest.getUserId();
-//            for (String analyzeBaselineUserId : userId) {
-//                formData.put("analyzeBaselineUserId", analyzeBaselineUserId);
-//                formData.put("discard", 0);
-//            }
-//
-//            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-//            manualStartActivityRequest.setBusinessId(asset.getStringId());
-//            manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-//            manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getName());
-//            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
-//            activityClient.manualStartProcess(manualStartActivityRequest);
+            // Map<String, Object> formData = new HashMap<>();
+            // String[] userId = importRequest.getUserId();
+            // for (String analyzeBaselineUserId : userId) {
+            // formData.put("analyzeBaselineUserId", analyzeBaselineUserId);
+            // formData.put("discard", 0);
+            // }
+            //
+            // ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+            // manualStartActivityRequest.setBusinessId(asset.getStringId());
+            // manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+            // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getName());
+            // manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
+            // activityClient.manualStartProcess(manualStartActivityRequest);
 
             a++;
         }
 
-        if (repeat+error==0){
+        if (repeat + error == 0) {
 
-    for (AssetSoftware assetSoftware : assetList) {
-        assetSoftwareDao.insert (assetSoftware);
-        // 记录资产操作流程
-        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        assetOperationRecord.setTargetObjectId(assetSoftware.getStringId());
-        assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
-        assetOperationRecord.setTargetStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
-        assetOperationRecord.setContent("导入软件资产");
-        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
-        assetOperationRecord.setOriginStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
-        assetOperationRecordDao.insert(assetOperationRecord);
-        success++;
-    }
+            for (AssetSoftware assetSoftware : assetList) {
+                assetSoftwareDao.insert(assetSoftware);
+                // 记录资产操作流程
+                AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+                assetOperationRecord.setTargetObjectId(assetSoftware.getStringId());
+                assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
+                assetOperationRecord.setTargetStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
+                assetOperationRecord.setContent("导入软件资产");
+                assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+                assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+                assetOperationRecord.setOriginStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
+                assetOperationRecordDao.insert(assetOperationRecord);
+                success++;
+            }
 
+        }
 
-}
-
-        String res = "导入成功" + success + "条";
-//        res += repeat > 0 ? ", " + repeat + "条软件名称重复" : "";
-//        res += error > 0 ? ", " + error + "条数据导入失败" : "";
+        String res = "导入成功" + success + "条。";
         StringBuilder stringBuilder = new StringBuilder(res);
-        // if (error > 0) {
-        // stringBuilder.append("其中").append(builder);
-        // }
+
         // 写入业务日志
         LogHandle.log(resultDataList.toString(), AssetEventEnum.SOFT_EXPORT.getName(),
             AssetEventEnum.SOFT_EXPORT.getStatus(), ModuleEnum.ASSET.getCode());
@@ -779,6 +775,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public void exportTemplate() throws Exception {
+
         exportToClient(AssetSoftwareEntity.class, "软件信息模板.xlsx", "软件信息");
     }
 
@@ -788,7 +785,27 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     private void exportToClient(Class clazz, String fileName, String title) {
-        ExcelUtils.exportTemplet(clazz, fileName, title);
+        List<AssetSoftwareEntity> assetSoftwareEntities = new ArrayList<>();
+        initExampleData(assetSoftwareEntities);
+        String memo = "备注：时间填写规范统一为XXXX/XX/XX，必填项必须填写，否则会插入失败";
+        ExcelUtils.exportTemplateToClient(clazz, fileName, title, memo, assetSoftwareEntities);
+    }
+
+    private void initExampleData(List<AssetSoftwareEntity> assetSoftwareEntities) {
+        AssetSoftwareEntity assetSoftwareEntity = new AssetSoftwareEntity();
+        assetSoftwareEntity.setName("智甲");
+        assetSoftwareEntity.setOperationSystem("WINDOW 8,WINDOW 10");
+        assetSoftwareEntity.setAuthorization(1);
+        assetSoftwareEntity.setBuyDate(System.currentTimeMillis());
+        assetSoftwareEntity.setCategory("10");
+        assetSoftwareEntity.setDescription("安天智甲终端防御系统（中文简称“智甲”，英文简称“IEP”）是一套专业终端安全防护产品。");
+        assetSoftwareEntity.setManufacturer("安天");
+        assetSoftwareEntity.setVersion("1.1.1");
+        assetSoftwareEntity.setServiceLife(System.currentTimeMillis());
+        assetSoftwareEntity.setSerial("425-0022172 EWIN95");
+        assetSoftwareEntity.setMD5("ASFFSDADQ2424r#@R#R");
+        assetSoftwareEntity.setReleaseTime(System.currentTimeMillis());
+        assetSoftwareEntities.add(assetSoftwareEntity);
     }
 
     private int getNextPage(PageResult pageResult) {

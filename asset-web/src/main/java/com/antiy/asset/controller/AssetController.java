@@ -1,15 +1,24 @@
 package com.antiy.asset.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import com.antiy.asset.vo.request.*;
+import com.google.gson.Gson;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.ActivityHandleRequest;
-import com.antiy.asset.vo.request.AssetImportRequest;
-import com.antiy.asset.vo.request.AssetOuterRequest;
-import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.AssetCountColumnarResponse;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
@@ -17,14 +26,8 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -36,10 +39,9 @@ import java.util.List;
 public class AssetController {
 
     @Resource
-    public IAssetService               iAssetService;
+    public IAssetService   iAssetService;
     @Resource
-    private ActivityClient             activityClient;
-
+    private ActivityClient activityClient;
 
     /**
      * 保存
@@ -67,6 +69,14 @@ public class AssetController {
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
     public ActionResponse queryList(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
         return ActionResponse.success(iAssetService.findPageAsset(asset));
+    }
+
+    @ApiOperation(value = "通过区域Id查询当前区域是否存在资产", notes = "传入查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/queryAssetCountByAreaIds", method = RequestMethod.GET)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetCountByAreaIds')")
+    public ActionResponse queryAssetCountByAreaIds(@ApiParam(value = "areaIds") Integer[] areaIds) throws Exception {
+        return ActionResponse.success(iAssetService.queryAssetCountByAreaIds(new ArrayList<>(Arrays.asList(areaIds))));
     }
 
     /**
@@ -139,7 +149,7 @@ public class AssetController {
     @ApiOperation(value = "导出模板", notes = "主键封装对象")
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:asset:exportTemplate')")
-    public void exportTemplate(@ApiParam("导出的模板类型")  Integer[] type) throws Exception {
+    public void exportTemplate(@ApiParam("导出的模板类型") Integer[] type) throws Exception {
         ParamterExceptionUtils.isNull(type, "类型不能为空");
         iAssetService.exportTemplate(type);
     }

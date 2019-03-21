@@ -226,7 +226,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
 
 @Component
 class DepartmentRequestConvert extends BaseConverter<AssetDepartmentRequest, AssetDepartment> {
-    Logger logger = LogUtils.get(DepartmentRequestConvert.class);
+    private Logger logger = LogUtils.get(DepartmentRequestConvert.class);
 
     @Override
     protected void convert(AssetDepartmentRequest assetDepartmentRequest, AssetDepartment assetDepartment) {

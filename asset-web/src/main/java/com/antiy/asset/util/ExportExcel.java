@@ -58,7 +58,7 @@ public class ExportExcel {
     /**
      * 注解列表（Object[]{ ExcelField, Field/Method }）
      */
-    List<Object[]>                 annotationList = Lists.newArrayList();
+    private List<Object[]>         annotationList = Lists.newArrayList();
 
     /**
      * 构造方法
