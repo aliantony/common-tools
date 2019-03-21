@@ -3,6 +3,7 @@ package com.antiy.asset.service.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -25,6 +26,7 @@ import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.AssetChangeRecordResponse;
 import com.antiy.common.base.*;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -191,7 +193,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
     }
 
     /**
-     * 获取二级分类品类型号信息
+     * 获取二级品类型号信息
      *
      * @param categoryModel
      * @return
@@ -203,10 +205,14 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
             return categoryModel;
         }
 
-        AssetCategoryModel tblCategory = allCategory.stream()
+        Optional<AssetCategoryModel> categoryModelOptional = allCategory.stream()
             .filter(x -> Objects.equals(x.getId(), DataTypeUtils.stringToInteger(categoryModel.getParentId())))
-            .findFirst().get();
-
-        return getParentCategory(tblCategory);
+            .findFirst();
+        if (categoryModelOptional.isPresent()) {
+            AssetCategoryModel tblCategory = categoryModelOptional.get();
+            return getParentCategory(tblCategory);
+        } else {
+            throw new BusinessException("获取二级品类型号失败");
+        }
     }
 }
