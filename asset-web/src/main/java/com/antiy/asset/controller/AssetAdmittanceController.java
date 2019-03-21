@@ -1,5 +1,6 @@
 package com.antiy.asset.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -47,6 +48,7 @@ public class AssetAdmittanceController {
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:admittance:queryList')")
     public ActionResponse queryList(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
+        asset.setAssetStatusList(Arrays.asList(new Integer[] { 3, 4, 5, 6, 7, 8, 9 }));
         return ActionResponse.success(assetService.findPageAsset(asset));
     }
 
