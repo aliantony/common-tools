@@ -9,11 +9,6 @@ import com.antiy.asset.annotation.ExcelField;
 public class NetworkDeviceEntity {
 
     /**
-     * area
-     */
-    @ExcelField(value = "area", align = 1, title = "所属区域(必填)",required = true)
-    private String                  area;
-    /**
      * 资产编号
      */
     @ExcelField(value = "number", align = 1, title = "资产编号")
@@ -21,7 +16,7 @@ public class NetworkDeviceEntity {
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "资产名称(必填)",required = true)
+    @ExcelField(value = "name", align = 1, title = "资产名称(必填)", required = true)
     private String  name;
     /**
      * 厂商
@@ -37,8 +32,14 @@ public class NetworkDeviceEntity {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者(必填)",required = true)
+    @ExcelField(value = "user", align = 1, title = "使用者(必填)", required = true)
     private String  user;
+
+    /**
+     * area
+     */
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)", required = true)
+    private String  area;
 
     /**
      * 联系电话
@@ -55,7 +56,7 @@ public class NetworkDeviceEntity {
     /**
      * 物理位置
      */
-    @ExcelField(value = "location", align = 1, title = "物理位置(必填)",required = true)
+    @ExcelField(value = "location", align = 1, title = "物理位置(必填)", required = true)
     private String  location;
     /**
      * 机房位置
@@ -157,7 +158,7 @@ public class NetworkDeviceEntity {
     /**
      * 到期时间
      */
-    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true,required = true)
+    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true, required = true)
     private Long    dueDate;
     /**
      * 保修期
@@ -169,7 +170,6 @@ public class NetworkDeviceEntity {
      */
     @ExcelField(value = "memo", align = 1, title = "描述")
     private String  memo;
-
 
     public String getName() {
         return name;

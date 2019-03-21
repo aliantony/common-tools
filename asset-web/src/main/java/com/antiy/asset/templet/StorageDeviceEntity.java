@@ -11,11 +11,11 @@ public class StorageDeviceEntity {
      * 资产编号
      */
     @ExcelField(value = "number", align = 1, title = "资产编号")
-    private String                  number;
+    private String  number;
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "资产名称(必填)",required = true)
+    @ExcelField(value = "name", align = 1, title = "资产名称(必填)", required = true)
     private String  name;
     /**
      * 厂商
@@ -27,31 +27,34 @@ public class StorageDeviceEntity {
      */
     @ExcelField(value = "serial", align = 1, title = "序列号")
     private String  serial;
-    /**
-     * area
-     */
-    @ExcelField(value = "area", align = 1, title = "所属区域(必填)",required = true)
-    private String                  area;
+
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者(必填)",required = true)
+    @ExcelField(value = "user", align = 1, title = "使用者(必填)", required = true)
     private String  user;
+
+    /**
+     * area
+     */
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)", required = true)
+    private String  area;
+
     /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话",type = 0)
+    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0)
     private String  telephone;
     /**
      * 邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱",type = 0)
+    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0)
     private String  email;
 
     /**
      * 物理位置
      */
-    @ExcelField(value = "location", align = 1, title = "物理位置(必填)",required = true)
+    @ExcelField(value = "location", align = 1, title = "物理位置(必填)", required = true)
     private String  location;
     /**
      * 机房位置
@@ -111,7 +114,7 @@ public class StorageDeviceEntity {
     /**
      * 到期时间
      */
-    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true,required = true)
+    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true, required = true)
     private Long    dueDate;
 
     /**
@@ -125,7 +128,6 @@ public class StorageDeviceEntity {
      */
     @ExcelField(value = "memo", align = 1, title = "描述")
     private String  memo;
-
 
     public String getName() {
         return name;
@@ -151,7 +153,6 @@ public class StorageDeviceEntity {
         this.serial = serial;
     }
 
-
     public String getUser() {
         return user;
     }
@@ -176,7 +177,6 @@ public class StorageDeviceEntity {
         this.email = email;
     }
 
-
     public String getLocation() {
         return location;
     }
@@ -184,8 +184,6 @@ public class StorageDeviceEntity {
     public void setLocation(String location) {
         this.location = location;
     }
-
-
 
     public String getCapacity() {
         return capacity;
@@ -287,8 +285,6 @@ public class StorageDeviceEntity {
         this.houseLocation = houseLocation;
     }
 
-
-
     public Integer getHardDiskNum() {
         return hardDiskNum;
     }
@@ -300,7 +296,6 @@ public class StorageDeviceEntity {
     public void setHighCache(String highCache) {
         this.highCache = highCache;
     }
-
 
     public String getNumber() {
         return number;

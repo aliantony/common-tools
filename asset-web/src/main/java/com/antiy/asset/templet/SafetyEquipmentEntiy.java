@@ -3,11 +3,7 @@ package com.antiy.asset.templet;
 import com.antiy.asset.annotation.ExcelField;
 
 public class SafetyEquipmentEntiy {
-    /**
-     * area
-     */
-    @ExcelField(value = "area", align = 1, title = "所属区域(必填)",required = true)
-    private String                  area;
+
     /**
      * 资产编号
      */
@@ -35,6 +31,13 @@ public class SafetyEquipmentEntiy {
      */
     @ExcelField(value = "user", align = 1, title = "使用者(必填)",required = true)
     private String user;
+
+    /**
+     * area
+     */
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)",required = true)
+    private String                  area;
+
     /**
      * 联系电话
      */

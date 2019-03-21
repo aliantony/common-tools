@@ -3,16 +3,12 @@ package com.antiy.asset.templet;
 import com.antiy.asset.annotation.ExcelField;
 
 public class OtherDeviceEntity {
-    /**
-     * area
-     */
-    @ExcelField(value = "area", align = 1, title = "所属区域(必填)",required = true)
-    private String                  area;
+
     /**
      * 资产编号
      */
     @ExcelField(value = "number", align = 1, title = "资产编号")
-    private String                  number;
+    private String number;
     /**
      * 资产名称
      */
@@ -34,39 +30,43 @@ public class OtherDeviceEntity {
      */
     @ExcelField(value = "user", align = 1, title = "使用者")
     private String user;
+
+    /**
+     * area
+     */
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)", required = true)
+    private String area;
     /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话",type = 0)
+    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0)
     private String telephone;
     /**
      * 使用者邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱",type = 0)
+    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0)
     private String email;
 
     /**
      * 购买日期
      */
-    @ExcelField(value = "buyDate", align = 1, title = "购买日期",isDate = true)
-    private Long            buyDate;
+    @ExcelField(value = "buyDate", align = 1, title = "购买日期", isDate = true)
+    private Long   buyDate;
     /**
      * 到期时间
      */
-    @ExcelField(value = "dueDate", align = 1, title = "到期时间",isDate = true,required = false)
-    private Long            dueDate;
+    @ExcelField(value = "dueDate", align = 1, title = "到期时间", isDate = true, required = false)
+    private Long   dueDate;
     /**
      * 保修期
      */
-    @ExcelField(value = "warranty", align = 1, title = "保修期",isDate = true)
-    private Long            warranty;
+    @ExcelField(value = "warranty", align = 1, title = "保修期", isDate = true)
+    private Long   warranty;
     /**
      * 描述
      */
     @ExcelField(value = "memo", align = 1, title = "描述")
-    private String            memo;
-
-
+    private String memo;
 
     public String getName() {
         return name;
@@ -147,8 +147,6 @@ public class OtherDeviceEntity {
     public void setMemo(String memo) {
         this.memo = memo;
     }
-
-
 
     public String getNumber() {
         return number;

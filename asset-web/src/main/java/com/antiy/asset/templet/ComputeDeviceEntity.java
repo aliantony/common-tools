@@ -13,16 +13,12 @@ public class ComputeDeviceEntity {
      * 资产编号
      */
     @ExcelField(value = "number", align = 1, title = "资产编号")
-    private String                  number;
-    /**
-     * area
-     */
-    @ExcelField(value = "area", align = 1, title = "所属区域(必填)",required = true)
-    private String                  area;
+    private String  number;
+
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "名称(必填)",required = true)
+    @ExcelField(value = "name", align = 1, title = "名称(必填)", required = true)
     private String  name;
 
     /**
@@ -30,7 +26,6 @@ public class ComputeDeviceEntity {
      */
     @ExcelField(value = "manufacturer", align = 1, title = "厂商")
     private String  manufacturer;
-
 
     /**
      * 序列号
@@ -41,25 +36,30 @@ public class ComputeDeviceEntity {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者(必填)",required = true)
+    @ExcelField(value = "user", align = 1, title = "使用者(必填)", required = true)
     private String  user;
 
     /**
+     * area
+     */
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)", required = true)
+    private String  area;
+    /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话",type =0)
+    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0)
     private String  telephone;
 
     /**
      * 邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱",type =0)
+    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0)
     private String  email;
 
     /**
      * 物理位置
      */
-    @ExcelField(value = "location", align = 1, title = "物理位置(必填)",required = true)
+    @ExcelField(value = "location", align = 1, title = "物理位置(必填)", required = true)
     private String  location;
 
     /**
@@ -83,24 +83,24 @@ public class ComputeDeviceEntity {
     /**
      * 重要程度
      */
-    @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type",required = true)
+    @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
     private String  importanceDegree;
 
     /**
      * 购买时间
      */
     @ExcelField(value = "buyDate", align = 1, title = "购买时间", isDate = true)
-    private Long  buyDate;
+    private Long    buyDate;
 
     /**
      * 使用到期时间
      */
-    @ExcelField(value = "dueTime", align = 1, title = "到期时间(必填)", isDate = true,required = true)
-    private Long  dueTime;
+    @ExcelField(value = "dueTime", align = 1, title = "到期时间(必填)", isDate = true, required = true)
+    private Long    dueTime;
     /**
      * 保修
      */
-    @ExcelField(value = "warranty", align = 1, title = "保修期",isDate = true)
+    @ExcelField(value = "warranty", align = 1, title = "保修期", isDate = true)
     private Long    warranty;
 
     /**
@@ -112,7 +112,7 @@ public class ComputeDeviceEntity {
      * 内存数量
      */
     @ExcelField(value = "memoryNum", align = 1, title = "内存数量")
-    private Integer  memoryNum;
+    private Integer memoryNum;
     /**
      * 内存品牌
      */
@@ -128,13 +128,13 @@ public class ComputeDeviceEntity {
      * 内存容量
      */
     @ExcelField(value = "memoryCapacity", align = 1, title = "内存容量")
-    private Integer  memoryCapacity;
+    private Integer memoryCapacity;
 
     /**
      * 内存类型
      */
     @ExcelField(value = "transferType", align = 1, title = "内存类型", dictType = "transfer_type")
-    private Integer  transferType;
+    private Integer transferType;
     /**
      * 内存主频
      */
@@ -145,7 +145,7 @@ public class ComputeDeviceEntity {
      * 内存插槽类型
      */
     @ExcelField(value = "slotType", align = 1, title = "内存插槽类型", dictType = "slot_type")
-    private Integer  slotType;
+    private Integer slotType;
 
     /**
      * 是否带散热
@@ -156,12 +156,12 @@ public class ComputeDeviceEntity {
      * 针脚数
      */
     @ExcelField(value = "stitch", align = 1, title = "内存针脚数")
-    private Integer  stitch;
+    private Integer stitch;
     /**
      * 硬盘数量
      */
     @ExcelField(value = "hardDiskNum", align = 1, title = "硬盘数量")
-    private Integer  hardDiskNum;
+    private Integer hardDiskNum;
     /**
      * 硬盘品牌
      */
@@ -183,17 +183,17 @@ public class ComputeDeviceEntity {
      * 硬盘容量
      */
     @ExcelField(value = "hardDisCapacityl", align = 1, title = "硬盘容量")
-    private Integer  hardDisCapacityl;
+    private Integer hardDisCapacityl;
     /**
      * 硬盘接口类型
      */
     @ExcelField(value = "hardDiskInterfaceType", align = 1, title = "硬盘接口类型", dictType = "interface_type")
-    private Integer  hardDiskInterfaceType;
+    private Integer hardDiskInterfaceType;
     /**
      * 硬盘磁盘类型
      */
     @ExcelField(value = "hardDiskType", align = 1, title = "硬盘磁盘类型", dictType = "disk_type")
-    private Integer  hardDiskType;
+    private Integer hardDiskType;
     /**
      * 硬盘购买时间
      */
@@ -203,7 +203,7 @@ public class ComputeDeviceEntity {
      * 主板数量
      */
     @ExcelField(value = "mainboradNum", align = 1, title = "主板数量")
-    private Integer  mainboradNum;
+    private Integer mainboradNum;
     /**
      * 主板品牌
      */
@@ -227,13 +227,13 @@ public class ComputeDeviceEntity {
     /**
      * 主板bios日期
      */
-    @ExcelField(value = "mainboradBiosDate", align = 1, title = "主板bios日期",isDate = true)
-    private Long  mainboradBiosDate;
+    @ExcelField(value = "mainboradBiosDate", align = 1, title = "主板bios日期", isDate = true)
+    private Long    mainboradBiosDate;
     /**
      * cpu数量
      */
     @ExcelField(value = "cpuNum", align = 1, title = "cpu数量")
-    private Integer  cpuNum;
+    private Integer cpuNum;
     /**
      * cpu品牌
      */
@@ -253,22 +253,22 @@ public class ComputeDeviceEntity {
      * cpu主频
      */
     @ExcelField(value = "cpuMainFrequency", align = 1, title = "cpu主频")
-    private Float  cpuMainFrequency;
+    private Float   cpuMainFrequency;
     /**
      * cpu线程数
      */
     @ExcelField(value = "cpuThreadSize", align = 1, title = "cpu线程数")
-    private Integer  cpuThreadSize;
+    private Integer cpuThreadSize;
     /**
      * cpu核心数
      */
     @ExcelField(value = "cpuCoreSize", align = 1, title = "cpu核心数")
-    private Integer  cpuCoreSize;
-//    /**
-//     * 网卡数量
-//     */
-//    @ExcelField(value = "network_num", align = 1, title = "网卡数量")
-//    private Integer  networkNum;
+    private Integer cpuCoreSize;
+    // /**
+    // * 网卡数量
+    // */
+    // @ExcelField(value = "network_num", align = 1, title = "网卡数量")
+    // private Integer networkNum;
     /**
      * 网卡品牌
      */
@@ -304,8 +304,6 @@ public class ComputeDeviceEntity {
      */
     @ExcelField(value = "networkDefaultGateway", align = 1, title = "网卡默认网关")
     private String  networkDefaultGateway;
-
-
 
     public String getName() {
         return name;
@@ -659,13 +657,13 @@ public class ComputeDeviceEntity {
         this.cpuCoreSize = cpuCoreSize;
     }
 
-//    public Integer getNetworkNum() {
-//        return networkNum;
-//    }
-//
-//    public void setNetworkNum(Integer networkNum) {
-//        this.networkNum = networkNum;
-//    }
+    // public Integer getNetworkNum() {
+    // return networkNum;
+    // }
+    //
+    // public void setNetworkNum(Integer networkNum) {
+    // this.networkNum = networkNum;
+    // }
 
     public String getNetworkBrand() {
         return networkBrand;
