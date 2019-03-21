@@ -5,8 +5,8 @@ package com.antiy.asset.vo.response;
  * @create 2019-01-24 15:49
  **/
 public class AssetStatusBarResponse {
-    String fileInfo;
-    String memo;
+    private String fileInfo;
+    private String memo;
 
     public String getFileInfo() {
         return fileInfo;
