@@ -287,12 +287,12 @@ public class ComputeDeviceEntity {
     /**
      * 网卡ip地址
      */
-    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip地址(必填)")
+    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip(必填)")
     private String  networkIpAddress;
     /**
      * 网卡mac地址
      */
-    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac地址(必填)")
+    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac(必填)")
     private String  networkMacAddress;
     /**
      * 网卡子网掩码
