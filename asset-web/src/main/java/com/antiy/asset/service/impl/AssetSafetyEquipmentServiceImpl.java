@@ -37,7 +37,7 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
     @Resource
     private AssetSafetyEquipmentDao                                           assetSafetyEquipmentDao;
     @Resource
-    AesEncoder                                                                aesEncoder;
+    private AesEncoder                                                                aesEncoder;
     @Resource
     private BaseConverter<AssetSafetyEquipmentRequest, AssetSafetyEquipment>  requestConverter;
     @Resource

@@ -29,7 +29,7 @@ import io.swagger.annotations.*;
 public class SchemeController {
 
     @Resource
-    ISchemeService iSchemeService;
+    private ISchemeService iSchemeService;
 
     /**
      * 批量查询

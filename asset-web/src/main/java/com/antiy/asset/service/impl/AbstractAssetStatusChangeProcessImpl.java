@@ -49,7 +49,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     @Resource
     private AssetDao                             assetDao;
     @Resource
-    AssetSoftwareDao                             assetSoftwareDao;
+    private AssetSoftwareDao                             assetSoftwareDao;
     @Resource
     private BaseConverter<SchemeRequest, Scheme> schemeRequestToSchemeConverter;
 
@@ -59,7 +59,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     @Resource
     private WorkOrderClient                      workOrderClient;
     @Resource
-    AesEncoder                                   aesEncoder;
+    private AesEncoder                                   aesEncoder;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {

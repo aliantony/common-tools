@@ -10,7 +10,7 @@ import com.antiy.common.utils.LogUtils;
 
 @Component
 public class CategoryRequestConvert extends BaseConverter<AssetCategoryModelRequest, AssetCategoryModel> {
-    Logger logger = LogUtils.get(CategoryRequestConvert.class);
+    private Logger logger = LogUtils.get(CategoryRequestConvert.class);
 
     @Override
     protected void convert(AssetCategoryModelRequest assetCategoryModelRequest, AssetCategoryModel assetCategoryModel) {

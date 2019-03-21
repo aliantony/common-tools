@@ -53,7 +53,7 @@ public class TemplateExcelExport {
     /**
      * 注解列表（Object[]{ ExcelField, Field/Method }）
      */
-    List<Object[]>                 annotationList = Lists.newArrayList();
+    private List<Object[]>         annotationList = Lists.newArrayList();
 
     /**
      * 构造方法
@@ -114,7 +114,7 @@ public class TemplateExcelExport {
      * @param val 添加值
      * @return
      */
-    public void addCell(Row row, int column, Object val, CellStyle style) {
+    private void addCell(Row row, int column, Object val, CellStyle style) {
         if (Objects.isNull(val)) {
             return;
         }
@@ -218,6 +218,8 @@ public class TemplateExcelExport {
                                 } else {
                                     value = "";
                                 }
+                                addCell(row, colunm++, value, styles.get("date"));
+                                continue;
                             }
                             addCell(row, colunm++, value, styles.get("templateData"));
                         }
@@ -325,6 +327,13 @@ public class TemplateExcelExport {
         templateDataFont.setColor(IndexedColors.RED.getIndex());
         style.setFont(templateDataFont);
         styles.put("templateData", style);
+
+        // 日期格式
+        style = wb.createCellStyle();
+        style.setFont(templateDataFont);
+        style.setDataFormat(wb.createDataFormat().getFormat("yyyy/M/d"));
+        style.setAlignment(HorizontalAlignment.CENTER);
+        styles.put("date", style);
         return styles;
     }
 

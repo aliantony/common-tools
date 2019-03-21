@@ -1852,7 +1852,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 初始化计算设备示例数据
         List<ComputeDeviceEntity> dataList = initComputeData();
         ExcelUtils.exportTemplateToFile(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备",
-            "备注：时间填写规范统一为XXXX/XX/XX(不用补0)，必填项必须填写，否则会插入失败,若想插入多个部件，请用,符号隔开", dictionary + "/", dataList);
+            "备注：时间填写规范统一为XXXX/XX/XX(不用补0)，必填项必须填写，否则会插入失败,部件信息选填,但若填写了某一部件，则必须填写该部件的必填项", dictionary + "/", dataList);
     }
 
     private List<ComputeDeviceEntity> initComputeData() {
