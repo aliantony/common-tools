@@ -1,26 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -53,6 +32,25 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -645,12 +643,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         StringBuilder builder = new StringBuilder();
         List<AssetSoftware> assetList = new ArrayList<>();
         for (AssetSoftwareEntity entity : resultDataList) {
-            // if (StringUtils.isBlank(entity.getCategory())) {
-            // error++;
-            // a++;
-            // builder.append("第").append(a).append("行").append("软件品类为空");
-            // continue;
-            // }
 
             AssetCategoryModel categoryModel = assetCategoryModelDao
                 .getById(com.antiy.common.utils.DataTypeUtils.stringToInteger(entity.getCategory()));
@@ -662,12 +654,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 continue;
             }
 
-            // if (StringUtils.isBlank(entity.getName())) {
-            // error++;
-            // a++;
-            // builder.append("第").append(a).append("行").append("软件名称为空");
-            // continue;
-            // }
             if (CheckRepeatName(entity.getName())) {
                 repeat++;
                 a++;
@@ -675,13 +661,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 continue;
             }
 
-            //
-            // if (Objects.isNull(entity.getServiceLife()) ) {
-            // error++;
-            // a++;
-            // builder.append("第").append(a).append("行").append("到期时间为空");
-            // continue;
-            // }
             if (repeat + error == 0) {
 
                 AssetSoftware asset = new AssetSoftware();
@@ -742,12 +721,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
 
         String res = "导入成功" + success + "条。";
-        // res += repeat > 0 ? ", " + repeat + "条软件名称重复" : "";
-        // res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
-        // if (error > 0) {
-        // stringBuilder.append("其中").append(builder);
-        // }
+
         // 写入业务日志
         LogHandle.log(resultDataList.toString(), AssetEventEnum.SOFT_EXPORT.getName(),
             AssetEventEnum.SOFT_EXPORT.getStatus(), ModuleEnum.ASSET.getCode());
@@ -813,8 +788,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareEntity.setAuthorization(1);
         assetSoftwareEntity.setBuyDate(System.currentTimeMillis());
         assetSoftwareEntity.setCategory("10");
-        assetSoftwareEntity.setDescription(
-            "安天智甲终端防御系统（中文简称“智甲”，英文简称“IEP”）是一套专业终端安全防护产品。");
+        assetSoftwareEntity.setDescription("安天智甲终端防御系统（中文简称“智甲”，英文简称“IEP”）是一套专业终端安全防护产品。");
         assetSoftwareEntity.setManufacturer("安天");
         assetSoftwareEntity.setVersion("1.1.1");
         assetSoftwareEntity.setServiceLife(System.currentTimeMillis());
