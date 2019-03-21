@@ -284,8 +284,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                      * } }
                      */
                     // 记录更新操作
-                    assetOperationRecordDao.insert(convertAssetOperationRecord(request));
-
+                    assetOperationRecordDao.insert(convertAssetOperationRecord(request, softwareStatus));
                     // 写入业务日志
                     LogHandle.log(assetSoftware.toString(), AssetEventEnum.SOFT_UPDATE.getName(),
                         AssetEventEnum.SOFT_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
@@ -303,10 +302,15 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return count;
     }
 
-    private AssetOperationRecord convertAssetOperationRecord(AssetSoftwareRequest request) {
+    private AssetOperationRecord convertAssetOperationRecord(AssetSoftwareRequest request, Integer softwareStatus) {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        assetOperationRecord.setOriginStatus(SoftwareStatusEnum.RETIRE.getCode());
-        assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_RETIRE_REGISTER.getMsg());
+        if (softwareStatus.equals(SoftwareFlowEnum.SOFTWARE_RETIRE_REGISTER.getCode())) {
+            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.RETIRE.getCode());
+            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_RETIRE_REGISTER.getMsg());
+        } else if (softwareStatus.equals(SoftwareFlowEnum.SOFTWARE_NOT_REGSIST_REGISTER.getCode())) {
+            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
+            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_NOT_REGSIST_REGISTER.getMsg());
+        }
         assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
         assetOperationRecord.setTargetObjectId(request.getId());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
