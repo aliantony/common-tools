@@ -2,12 +2,16 @@ package com.antiy.asset.util;
 
 import java.lang.reflect.*;
 
+import com.antiy.common.utils.LogUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
 
 /**
  * 反射工具类 用于调用getter/setter方法，访问私有方法，获取私有变量，获取泛型类型
  */
 public class ReflectionUtils {
+
+    private static Logger       logger        = LogUtils.get(ReflectionUtils.class);
 
     private static final String SETTER_PREFIX = "set";
 
@@ -108,7 +112,7 @@ public class ReflectionUtils {
         try {
             field.set(target, val);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -127,7 +131,7 @@ public class ReflectionUtils {
         try {
             return field.get(target);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         return null;
     }
@@ -149,9 +153,9 @@ public class ReflectionUtils {
         try {
             return method.invoke(target, args);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         return null;
     }
@@ -172,9 +176,9 @@ public class ReflectionUtils {
         try {
             return method.invoke(target, args);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         return null;
     }

@@ -320,6 +320,41 @@
             )
         </foreach>
     </insert>
+    <insert id="insertBatchWithId"  useGeneratedKeys="true"
+            keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        (
+        asset_id,
+        brand,
+        model,
+        serial,
+        bios_version ,
+        bios_date,
+        gmt_create ,
+        gmt_modified,
+        memo,
+        create_user,
+        modify_user
+        )
+        values
+        <foreach collection="list" item="mainboard" separator="," index="index">
+            (
+            #{aid},
+            #{mainboard.brand},
+            #{mainboard.model},
+            #{mainboard.serial},
+            #{mainboard.biosVersion} ,
+            #{mainboard.biosDate},
+            #{mainboard.gmtCreate },
+            #{mainboard.gmtModified},
+            #{mainboard.memo},
+            #{mainboard.createUser},
+            #{mainboard.modifyUser}
+            )
+        </foreach>
+    </insert>
     <update id="updateBatch" parameterType="java.util.List">
         <foreach collection="list" separator=";" index="index" item="item">
             update

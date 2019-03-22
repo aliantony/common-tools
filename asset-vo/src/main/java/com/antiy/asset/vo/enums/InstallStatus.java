@@ -21,15 +21,9 @@ public enum InstallStatus {
         return code;
     }
 
-    public void setCode(Integer code) {
-        this.code = code;
-    }
 
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }

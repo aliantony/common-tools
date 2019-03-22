@@ -39,7 +39,7 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
     private BaseConverter<AssetNetworkCardRequest, AssetNetworkCard>  requestConverter;
     @Resource
     private BaseConverter<AssetNetworkCard, AssetNetworkCardResponse> responseConverter;
-    private Logger logger = LogUtils.get(this.getClass());
+    private static Logger logger = LogUtils.get(AssetNetworkCardServiceImpl.class);
 
     @Override
     public Integer saveAssetNetworkCard(AssetNetworkCardRequest request) throws Exception {

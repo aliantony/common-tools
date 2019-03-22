@@ -908,7 +908,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return false;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         return true;
     }
@@ -1565,7 +1565,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 // 插入资产软件许可
                                 assetSoftwareLicenseDao.insert(assetSoftwareLicense);
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                logger.error(e.getMessage());
                             }
                         });
                     }
@@ -2057,7 +2057,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     && !Objects.isNull(entity.getMemoryFrequency()) && !Objects.isNull(entity.getMemoryNum())
                     && entity.getMemoryNum() > 0) {
                     AssetMemory assetMemory = new AssetMemory();
-                    assetMemory.setAssetId(id);
+//                    assetMemory.setAssetId(id);
                     assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetMemory.setGmtCreate(System.currentTimeMillis());
                     assetMemory.setSerial(entity.getMemorySerial());
@@ -2084,7 +2084,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     && !Objects.isNull(entity.getHardDiskType()) && !Objects.isNull(entity.getHardDiskNum())
                     && entity.getHardDiskNum() > 0) {
                     AssetHardDisk assetHardDisk = new AssetHardDisk();
-                    assetHardDisk.setAssetId(id);
+//                    assetHardDisk.setAssetId(id);
                     assetHardDisk.setGmtCreate(System.currentTimeMillis());
                     assetHardDisk.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetHardDisk.setSerial(entity.getHardDiskSerial());
@@ -2108,7 +2108,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     && entity.getMainboradNum() > 0) {
 
                     AssetMainborad assetMainborad = new AssetMainborad();
-                    assetMainborad.setAssetId(id);
+//                    assetMainborad.setAssetId(id);
                     assetMainborad.setGmtCreate(System.currentTimeMillis());
                     assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetMainborad.setSerial(entity.getMainboradSerial());
@@ -2126,7 +2126,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 if (StringUtils.isNotBlank(entity.getCpuBrand()) && !Objects.isNull(entity.getCpuNum())
                     && entity.getCpuNum() > 0 && !Objects.isNull(entity.getCpuMainFrequency())) {
                     AssetCpu assetCpu = new AssetCpu();
-                    assetCpu.setAssetId(id);
+//                    assetCpu.setAssetId(id);
                     assetCpu.setGmtCreate(System.currentTimeMillis());
                     assetCpu.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetCpu.setSerial(entity.getCpuSerial());
@@ -2145,7 +2145,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                 if (StringUtils.isNotBlank(entity.getNetworkBrand())) {
                     AssetNetworkCard assetNetworkCard = new AssetNetworkCard();
-                    assetNetworkCard.setAssetId(id);
+//                    assetNetworkCard.setAssetId(id);
                     assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                     assetNetworkCard.setSerial(entity.getNetworkSerial());
@@ -2157,7 +2157,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetNetworkCard.setMacAddress(entity.getNetworkMacAddress());
                     computerVo.setAssetNetworkCard(assetNetworkCard);
                 }
-
+                computerVos.add (computerVo);
             }
 
             a++;
@@ -2168,11 +2168,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (ComputerVo computerVo : computerVos) {
                 Asset asset = computerVo.getAsset();
                 assetDao.insert(asset);
-                assetCpuDao.insertBatch(computerVo.getAssetCpus());
-                assetMainboradDao.insertBatch(computerVo.getAssetMainborads());
-                assetHardDiskDao.insertBatch(computerVo.getAssetHardDisks());
-                assetMemoryDao.insertBatch(computerVo.getAssetMemoryList());
-                assetNetworkCardDao.insert(computerVo.getAssetNetworkCard());
+                if (CollectionUtils.isNotEmpty (computerVo.getAssetCpus ())){
+
+                    assetCpuDao.insertBatchWithId (computerVo.getAssetCpus(),asset.getId ());
+                }
+                if (CollectionUtils.isNotEmpty (computerVo.getAssetHardDisks ())){
+
+                    assetHardDiskDao.insertBatchWithId (computerVo.getAssetHardDisks(),asset.getId ());
+                }
+                if (CollectionUtils.isNotEmpty (computerVo.getAssetMainborads ())){
+
+                    assetMainboradDao.insertBatchWithId (computerVo.getAssetMainborads(),asset.getId ());
+                }
+                if (CollectionUtils.isNotEmpty (computerVo.getAssetMemoryList ())){
+
+                    assetMemoryDao.insertBatchWithId (computerVo.getAssetMemoryList(),asset.getId ());
+                }
+                if (!Objects.isNull (computerVo.getAssetNetworkCard ())){
+                    AssetNetworkCard assetNetworkCard = computerVo.getAssetNetworkCard ();
+                    assetNetworkCard.setAssetId (asset.getStringId ());
+                    assetNetworkCardDao.insert(assetNetworkCard);
+                }
                 // 记录资产操作流程
                 assetRecord(asset.getStringId());
                 success++;
@@ -2308,11 +2324,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetNetworkEquipmentDao.insert(networkEquipments.get(i));
                 assetRecord(assets.get(i).getStringId());
                 // 流程
-//                ActivityCodeAndAreaIdQuery codeAndAreaIdQuery = new ActivityCodeAndAreaIdQuery ();
-//                codeAndAreaIdQuery.setRoleCode ("zichanguanliyuan");
-//                codeAndAreaIdQuery.setAuthorization ( LoginUserUtil.getCommonInfo ().getToken ());
-//                List<SysUser> sysUsers = areaClient.queryCdeAndAreaId (codeAndAreaIdQuery);
-
+                ActivityCodeAndAreaIdQuery codeAndAreaIdQuery = new ActivityCodeAndAreaIdQuery ();
+                codeAndAreaIdQuery.setRoleCode ("zichanguanliyuan");
+                codeAndAreaIdQuery.setAuthorization ( LoginUserUtil.getCommonInfo ().getToken ());
+//                ActionResponse actionResponse = areaClient.queryCdeAndAreaId ("zichanguanliyuan");
+                ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
+                List<SysUser> sysUsers = (List<SysUser>) actionResponse.getBody ();
+                for (SysUser sysUser : sysUsers) {
+                    sysUser.getStringId ();
+                }
+                System.out.println ("-----------why--------值=" + sysUsers + "," + "当前类=.()");
                 // Map<String, Object> formData = new HashMap();
                 // String[] userIds = importRequest.getUserId();
                 // for (String configBaselineUserId : userIds) {
@@ -2327,7 +2348,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // manualStartActivityRequests.add(manualStartActivityRequest);
                 success++;
             }
-            // activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+//             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String re = "导入成功" + success + "条。";

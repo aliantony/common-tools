@@ -32,7 +32,7 @@ import com.antiy.common.utils.LoginUserUtil;
  */
 @Service
 public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> implements IAssetMainboradService {
-    private Logger logger = LogUtils.get(this.getClass());
+    private static Logger                                         logger = LogUtils.get(AssetMainboradServiceImpl.class);
 
     @Resource
     private AssetMainboradDao                                     assetMainboradDao;
@@ -47,7 +47,8 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
         assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetMainborad.setGmtCreate(System.currentTimeMillis());
         assetMainboradDao.insert(assetMainborad);
-        LogHandle.log(request, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(), AssetEventEnum.ASSET_MAINBORAD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogHandle.log(request, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(),
+            AssetEventEnum.ASSET_MAINBORAD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName() + " {}", request.toString());
         return assetMainborad.getId();
     }
@@ -57,7 +58,8 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
         AssetMainborad assetMainborad = requestConverter.convert(request, AssetMainborad.class);
         assetMainborad.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetMainborad.setGmtModified(System.currentTimeMillis());
-        LogHandle.log(request, AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName(), AssetEventEnum.ASSET_MAINBORAD_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogHandle.log(request, AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName(),
+            AssetEventEnum.ASSET_MAINBORAD_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName() + " {}", request.toString());
         return assetMainboradDao.update(assetMainborad);
     }
@@ -83,7 +85,8 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
 
     @Override
     public Integer deleteById(Serializable id) throws Exception {
-        LogHandle.log(id, AssetEventEnum.ASSET_MAINBORAD_DELETE.getName(), AssetEventEnum.ASSET_MAINBORAD_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogHandle.log(id, AssetEventEnum.ASSET_MAINBORAD_DELETE.getName(),
+            AssetEventEnum.ASSET_MAINBORAD_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_DELETE.getName() + " {}", id);
         return super.deleteById(id);
     }
