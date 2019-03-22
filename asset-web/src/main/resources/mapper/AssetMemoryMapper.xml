@@ -459,12 +459,14 @@
         asset_id,
         capacity,
         brand,
+        serial,
         frequency,
         slot_type,
         is_heatsink,
         stitch,
         buy_date,
         warranty_date,
+        transfer_type,
         telephone,
         gmt_create,
         memo,
@@ -476,11 +478,13 @@
             #{memory.assetId},
             #{memory.capacity},
             #{memory.brand},
+            #{memory.serial},
             #{memory.frequency},
             #{memory.slotType},
             #{memory.heatsink},
             #{memory.stitch},
             #{memory.buyDate},
+            #{memory.transferType},
             #{memory.warrantyDate},
             #{memory.telephone},
             #{memory.gmtCreate},
@@ -489,6 +493,8 @@
             )
         </foreach>
     </insert>
+
+
     <insert id="insertBatchWithId"  useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
         insert into
@@ -497,12 +503,14 @@
         asset_id,
         capacity,
         brand,
+        serial,
         frequency,
         slot_type,
         is_heatsink,
         stitch,
         buy_date,
         warranty_date,
+        transfer_type,
         telephone,
         gmt_create,
         memo,
@@ -514,11 +522,13 @@
             #{aid},
             #{memory.capacity},
             #{memory.brand},
+            #{memory.serial},
             #{memory.frequency},
             #{memory.slotType},
             #{memory.heatsink},
             #{memory.stitch},
             #{memory.buyDate},
+            #{memory.transferType},
             #{memory.warrantyDate},
             #{memory.telephone},
             #{memory.gmtCreate},

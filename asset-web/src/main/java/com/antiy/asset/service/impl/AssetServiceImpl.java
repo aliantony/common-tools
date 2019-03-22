@@ -1,32 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -52,6 +25,31 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -941,113 +939,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetDao.changeStatus(map);
     }
 
-    // public Integer saveAllAsset(HashMap<String, Object> map) throws Exception {
-    // Asset asset = new Asset ();
-    // AssetCpu assetCpu = new AssetCpu();
-    // AssetNetworkCard assetNetworkCard = new AssetNetworkCard();
-    // AssetHardDisk assetHardDisk = new AssetHardDisk();
-    // AssetMainborad assetMainborad = new AssetMainborad();
-    // AssetMemory assetMemory = new AssetMemory();
-    // asset.setNumber((String) map.get("number"));
-    // asset.setType((Integer) map.get("type"));
-    // asset.setCategory((Integer) map.get("category"));
-    // asset.setModel((Integer) map.get("model"));
-    // asset.setResponsibleUserId((Integer) map.get("responsibleUserId"));
-    // asset.setSystemBit((Integer) map.get("systemBit"));
-    // asset.setImportanceDegree((Integer) map.get("importanceDegree"));
-    // asset.setParentId((Integer) map.get("parentId"));
-    // asset.setCreateUser((Integer) map.get("createUser"));
-    // //3-待配置
-    // asset.setAssetStatus(3);
-    // // 2-人工上报
-    // asset.setAssetSource(2);
-    // asset.setName((String) map.get("name"));
-    // asset.setSerial((String) map.get("serial"));
-    // asset.setManufacturer((String) map.get("manufacturer"));
-    // asset.setOperationSystem((String) map.get("operationSystem"));
-    // asset.setLocation((String) map.get("location"));
-    // asset.setLatitude((String) map.get("latitude"));
-    // asset.setLongitude((String) map.get("longitude"));
-    // asset.setFirmwareVersion((String) map.get("firmwareVersion"));
-    // asset.setUuid((String) map.get("uuid"));
-    // asset.setContactTel((String) map.get("contactTel"));
-    // asset.setEmail((String) map.get("email"));
-    // asset.setHardDisk((String) map.get("hardDisk"));
-    // asset.setMemory((String) map.get("memory"));
-    // asset.setDescrible((String) map.get("describle"));
-    // asset.setCpu((String) map.get("cpu"));
-    // asset.setNetworkCard((String) map.get("networkCard"));
-    // asset.setTags((String) map.get("tags"));
-    // asset.setMemo((String) map.get("memo"));
-    // asset.setInnet(true);
-    // asset.setFirstEnterNett((Long) map.get("firstEnterNett"));
-    // asset.setServiceLife((Long) map.get("serviceLife"));
-    // asset.setBuyDate((Long) map.get("buyDate"));
-    // asset.setWarranty((Long) map.get("warranty"));
-    // asset.setGmtCreate(System.currentTimeMillis());
-    //
-    // Integer aid = assetDao.insert (asset);
-    //
-    // assetCpu.setAssetId(aid);
-    // assetCpu.setSerial((String) map.get("cserial"));
-    // assetCpu.setBrand((String) map.get("cbrand"));
-    // assetCpu.setModel((String) map.get("cmodel"));
-    // assetCpu.setMainFrequency((Float) map.get("mainFrequency"));
-    // assetCpu.setThreadSize((Integer) map.get("threadSize"));
-    // assetCpu.setCoreSize((Integer) map.get("coreSize"));
-    // assetCpu.setGmtCreate(System.currentTimeMillis());
-    // assetCpu.setMemo((String) map.get("memo"));
-    // assetCpu.setCreateUser((Integer) map.get("createUser"));
-    // Integer cid = assetCpuDao.insert(assetCpu);
-    //
-    // assetNetworkCard.setAssetId(aid);
-    // assetNetworkCard.setBrand((String) map.get("nbrand"));
-    // assetNetworkCard.setSerial((String) map.get("nserial"));
-    // assetNetworkCard.setModel((String) map.get("nmodel"));
-    // assetNetworkCard.setIpAddress((String) map.get("ipAddress"));
-    // assetNetworkCard.setMacAddress((String) map.get("macAddress"));
-    // assetNetworkCard.setDefaultGateway((String) map.get("defaultGateway"));
-    // assetNetworkCard.setNetwordAddress((String) map.get("networdAddress"));
-    // assetNetworkCard.setSubnetMask((String) map.get("subnetMask"));
-    // assetNetworkCard.setGmtCreate(System.currentTimeMillis());
-    // assetNetworkCard.setMemo((String) map.get("memo"));
-    // assetNetworkCard.setCreateUser((Integer) map.get("createUser"));
-    // Integer nid = assetNetworkCardDao.insert(assetNetworkCard);
-    //
-    // assetHardDisk.setAssetId(aid);
-    // assetHardDisk.setSerial((String) map.get("hserial"));
-    // assetHardDisk.setBrand((String) map.get("hbrand"));
-    // assetHardDisk.setModel((String) map.get("hmodel"));
-    // assetHardDisk.setInterfaceType((Integer) map.get("interfaceType"));
-    // assetHardDisk.setCapacity((Integer) map.get("hcapacity"));
-    // assetHardDisk.setDiskType((Integer) map.get("diskType"));
-    // assetHardDisk.setBuyDate((Long) map.get("hbuyDate"));
-    // assetHardDisk.setGmtCreate(System.currentTimeMillis());
-    // assetHardDisk.setMemo((String) map.get("memo"));
-    // assetHardDisk.setCreateUser((Integer) map.get("createUser"));
-    // Integer hid = assetHardDiskDao.insert(assetHardDisk);
-    //
-    // assetMainborad.setAssetId(aid);
-    // assetMainborad.setSerial((String) map.get("mserial"));
-    // assetMainborad.setBrand((String) map.get("mbrand"));
-    // assetMainborad.setModel((String) map.get("mmodel"));
-    // assetMainborad.setBiosVersion((String) map.get("biosVersion"));
-    // assetMainborad.setBiosDate((Long) map.get("biosDate"));
-    // assetMainborad.setGmtCreate(System.currentTimeMillis());
-    // assetMainborad.setMemo((String) map.get("memo"));
-    // assetMainborad.setCreateUser((Integer) map.get("createUser"));
-    // Integer mid = assetMainboradDao.insert(assetMainborad);
-    //
-    // assetMemory.setAssetId(aid);
-    // assetMemory.setCapacity((Integer) map.get("mecapacity"));
-    // assetMemory.setFrequency((Integer) map.get("mefrequency"));
-    // assetMemory.setSlotType((Integer) map.get("meslotType"));
-    // assetMemory.setStitch((Integer) map.get("mestitch"));
-    // assetMemory.setHeatsink(true);
-    // assetMemory.setBuyDate ((Long) map.get("hbuyDate"));
-    //
-    // return null;
-    // }
+
 
     @Override
     public List<AssetResponse> findListAssetByCategoryModel(AssetQuery query) throws Exception {
@@ -2056,8 +1948,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setEmail(entity.getEmail());
                 asset.setCategoryModel("4");
                 computerVo.setAsset(asset);
-                // assetDao.insert(asset);
-                String id = asset.getStringId();
 
                 if (StringUtils.isNotBlank(entity.getMemoryBrand()) && !Objects.isNull(entity.getMemoryCapacity())
                     && !Objects.isNull(entity.getMemoryFrequency()) && !Objects.isNull(entity.getMemoryNum())
@@ -2170,7 +2060,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         if (repeat + error == 0) {
-
+            List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
             for (ComputerVo computerVo : computerVos) {
                 Asset asset = computerVo.getAsset();
                 assetDao.insert(asset);
@@ -2197,9 +2087,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
                 // 记录资产操作流程
                 assetRecord(asset.getStringId());
+                // 流程
+                importActivity (manualStartActivityRequests,asset.getStringId());
                 success++;
             }
-
+            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String res = "导入成功" + success + "条。";
@@ -2326,35 +2218,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
             for (int i = 0; i < assets.size(); i++) {
                 assetDao.insert(assets.get(i));
-                networkEquipments.get(i).setAssetId((assets.get(i).getStringId()));
+                String stringId = assets.get (i).getStringId ();
+                networkEquipments.get(i).setAssetId(stringId);
                 assetNetworkEquipmentDao.insert(networkEquipments.get(i));
-                assetRecord(assets.get(i).getStringId());
+                assetRecord(stringId);
                 // 流程
-                ActivityCodeAndAreaIdQuery codeAndAreaIdQuery = new ActivityCodeAndAreaIdQuery ();
-                codeAndAreaIdQuery.setRoleCode ("zichanguanliyuan");
-                codeAndAreaIdQuery.setAuthorization ( LoginUserUtil.getCommonInfo ().getToken ());
-//                ActionResponse actionResponse = areaClient.queryCdeAndAreaId ("zichanguanliyuan");
-                ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
-                List<SysUser> sysUsers = (List<SysUser>) actionResponse.getBody ();
-                for (SysUser sysUser : sysUsers) {
-                    sysUser.getStringId ();
-                }
-                System.out.println ("-----------why--------值=" + sysUsers + "," + "当前类=.()");
-                // Map<String, Object> formData = new HashMap();
-                // String[] userIds = importRequest.getUserId();
-                // for (String configBaselineUserId : userIds) {
-                // formData.put("admittanceUserId", configBaselineUserId);
-                // }
-                // ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-                // manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
-                // manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-                // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-                // manualStartActivityRequest
-                // .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
-                // manualStartActivityRequests.add(manualStartActivityRequest);
+                importActivity (manualStartActivityRequests, stringId);
+
                 success++;
             }
-//             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String re = "导入成功" + success + "条。";
@@ -2371,6 +2244,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         sb.delete(sb.lastIndexOf("成"), sb.lastIndexOf("."));
         return stringBuilder.append(builder).append(sb).toString();
     }
+
 
     @Override
     public String importSecurity(MultipartFile file, AssetImportRequest importRequest) throws Exception {
@@ -2465,26 +2339,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
             for (int i = 0; i < assets.size(); i++) {
                 assetDao.insert(assets.get(i));
-                assetSafetyEquipments.get(i).setAssetId((assets.get(i).getStringId()));
+                String stringId = assets.get (i).getStringId ();
+                assetSafetyEquipments.get(i).setAssetId(stringId);
                 assetSafetyEquipmentDao.insert(assetSafetyEquipments.get(i));
-                assetRecord(assets.get(i).getStringId());
+                assetRecord(stringId);
                 // 流程
-
-                // Map<String, Object> formData = new HashMap();
-                // String[] userIds = importRequest.getUserId();
-                // for (String configBaselineUserId : userIds) {
-                // formData.put("admittanceUserId", configBaselineUserId);
-                // }
-                // ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-                // manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
-                // manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-                // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-                // manualStartActivityRequest
-                // .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
-                // manualStartActivityRequests.add(manualStartActivityRequest);
+                importActivity (manualStartActivityRequests,stringId);
                 success++;
             }
-            // activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
@@ -2606,27 +2469,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
             for (int i = 0; i < assets.size(); i++) {
                 assetDao.insert(assets.get(i));
-                assetStorageMedia.get(i).setAssetId((assets.get(i).getStringId()));
+                String stringId = assets.get (i).getStringId ();
+                assetStorageMedia.get(i).setAssetId(stringId);
                 assetStorageMediumDao.insert(assetStorageMedia.get(i));
                 assetRecord(assets.get(i).getStringId());
                 // 流程
-
-                // Map<String, Object> formData = new HashMap();
-
-                // String[] userIds = importRequest.getUserId();
-                // for (String configBaselineUserId : userIds) {
-                // formData.put("admittanceUserId", configBaselineUserId);
-                // }
-                // ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-                // manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
-                // manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-                // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-                // manualStartActivityRequest
-                // .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
-                // manualStartActivityRequests.add(manualStartActivityRequest);
+              importActivity (manualStartActivityRequests,stringId);
                 success++;
             }
-            // activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String res = "导入成功" + success + "条";
@@ -2726,22 +2577,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (Asset asset : assets) {
                 assetDao.insert(asset);
                 assetRecord(asset.getStringId());
-                // 流程
-                // Map<String, Object> formData = new HashMap();
-                // String[] userIds = importRequest.getUserId();
-                // for (String configBaselineUserId : userIds) {
-                // formData.put("admittanceUserId", configBaselineUserId);
-                // }
-                // ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-                // manualStartActivityRequest.setBusinessId(asset.getStringId());
-                // manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-                // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-                // manualStartActivityRequest
-                // .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
-                // manualStartActivityRequests.add(manualStartActivityRequest);
+              importActivity (manualStartActivityRequests,asset.getStringId());
                 success++;
             }
-            // activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String res = "导入成功" + success + "条";
@@ -2756,6 +2595,30 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuilder sb = new StringBuilder(result.getMsg());
         sb.delete(sb.lastIndexOf("成"), sb.lastIndexOf("."));
         return stringBuilder.append(builder).append(sb).toString();
+    }
+
+    private void importActivity(List<ManualStartActivityRequest> manualStartActivityRequests, String stringId) {
+        //                ActionResponse actionResponse = areaClient.queryCdeAndAreaId ("zichanguanliyuan");
+        ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
+        List<LinkedHashMap> mapList= (List<LinkedHashMap>) actionResponse.getBody ();
+        StringBuilder stringBuilder = new StringBuilder ();
+
+        for (LinkedHashMap linkedHashMap : mapList) {
+            stringBuilder.append( linkedHashMap.get ("stringId")).append(",");
+        }
+        String ids = stringBuilder.substring (0, stringBuilder.length () - 1);
+
+        Map<String, Object> formData = new HashMap<> ();
+
+        formData.put("admittanceUserId", ids);
+
+        ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+        manualStartActivityRequest.setBusinessId(stringId);
+        manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+        manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
+        manualStartActivityRequest
+                .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
+        manualStartActivityRequests.add(manualStartActivityRequest);
     }
 
     private void assetRecord(String id) throws Exception {
