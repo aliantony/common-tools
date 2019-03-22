@@ -339,13 +339,13 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                 for (AssetSoftwareRelationRequest assetSoftwareRelationRequest : oldSoftwareRelationList) {
                     buildSoftwareRelationCompareData(oldRelateSoftware, assetSoftwareRelationRequest);
                     relateSoftewareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
-                        InfoLabelEnum.RELATESOFTWARE.getMsg()));
+                        InfoLabelEnum.RELATESOFTWARE.getMsg() + "-" + oldRelateSoftware.getSoftName()));
                 }
             } else if (newSoftwareRelationList != null && oldSoftwareRelationList == null) {
                 for (AssetSoftwareRelationRequest softwareRelationRequest : newSoftwareRelationList) {
                     buildSoftwareRelationCompareData(newRelateSoftware, softwareRelationRequest);
                     relateSoftewareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
-                        InfoLabelEnum.RELATESOFTWARE.getMsg()));
+                        InfoLabelEnum.RELATESOFTWARE.getMsg() + "-" + oldRelateSoftware.getSoftName()));
                 }
             } else if (CollectionUtils.isNotEmpty(newSoftwareRelationList)) {
                 Map<String, AssetSoftwareRelationRequest> newSoftwareRelationMap = null;
@@ -357,7 +357,8 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                             .get(softwareRelationRequest.getId());
                         buildSoftwareRelationCompareData(newRelateSoftware, comparedSoftwareRelationRequest);
                         List<Map<String, Object>> mapList = CompareUtils.compareClass(oldRelateSoftware,
-                            newRelateSoftware, InfoLabelEnum.RELATESOFTWARE.getMsg());
+                            newRelateSoftware,
+                            InfoLabelEnum.RELATESOFTWARE.getMsg() + "-" + oldRelateSoftware.getSoftName());
                         if (mapList != null) {
                             relateSoftewareCompareResult.add(mapList);
                         }
@@ -641,7 +642,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
         }
         map.put("old", StringUtils.trim(tempOldList.toString(), "[", "]"));
         map.put("new", StringUtils.trim(newOldList.toString(), "[", "]"));
-        // map.put("label", msg);
+        map.put("label", msg);
         resultMap.add(map);
         return resultMap;
     }
