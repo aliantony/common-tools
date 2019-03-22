@@ -1,8 +1,10 @@
 package com.antiy.asset.util;
 
 import com.antiy.common.encoder.Encode;
+import com.antiy.common.utils.LogUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.core.Converter;
 import org.springframework.util.ObjectUtils;
@@ -22,6 +24,7 @@ import java.util.Objects;
 public class BeanConvert {
     private static final String SETTER_PREFIX = "set";
     private static final String GETTER_PREFIX = "get";
+    private static Logger       logger        = LogUtils.get(BeanConvert.class);
 
     public static Object convert(Object o1, Class<?> clazz) throws IllegalAccessException, InstantiationException {
         Field[] fields = o1.getClass().getDeclaredFields();
@@ -84,9 +87,9 @@ public class BeanConvert {
         try {
             o2 = c2.newInstance();
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         copy(copier, target, o2, rule);
         return o2;
@@ -113,9 +116,9 @@ public class BeanConvert {
             try {
                 o2 = c2.newInstance();
             } catch (InstantiationException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
             copy(copier, o, o2, rule);
             list.add(o2);
@@ -129,7 +132,7 @@ public class BeanConvert {
             public Object convert(Object o, Class aClass, Object o1) {
                 if (Objects.isNull(o) || StringUtils.isBlank(o.toString())) {
                     return null;
-                } else if ( rule.contains(o1)) {
+                } else if (rule.contains(o1)) {
                     if (String.class.equals(aClass)) {
                         return String.valueOf(o);
                     } else if (Integer.class.equals(aClass)) {

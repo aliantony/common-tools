@@ -640,7 +640,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     SysArea sysArea = redisUtil.getObject(key, SysArea.class);
                     a.setAreaName(sysArea.getFullName());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             });
         }
@@ -907,7 +907,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return false;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         return true;
     }
@@ -1564,7 +1564,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 // 插入资产软件许可
                                 assetSoftwareLicenseDao.insert(assetSoftwareLicense);
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                logger.error(e.getMessage());
                             }
                         });
                     }

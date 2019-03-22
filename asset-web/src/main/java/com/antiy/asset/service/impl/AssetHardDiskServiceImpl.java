@@ -33,7 +33,7 @@ import com.antiy.common.base.PageResult;
  */
 @Service
 public class AssetHardDiskServiceImpl extends BaseServiceImpl<AssetHardDisk> implements IAssetHardDiskService {
-    private Logger logger = LogUtils.get(this.getClass());
+    private static Logger logger = LogUtils.get(AssetHardDiskServiceImpl.class);
 
     @Resource
     private AssetHardDiskDao                                   assetHardDiskDao;
