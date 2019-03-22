@@ -35,12 +35,12 @@ public class AssetGroupResponse extends BaseResponse {
     /**
      * 资产信息
      */
-    List<String>   assetList;
+    private List<String>   assetList;
 
     /**
      * 资产明细
      */
-    String   assetDetail;
+    private String   assetDetail;
 
     public String getAssetDetail() {
         return assetDetail;

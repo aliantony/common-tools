@@ -42,7 +42,7 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
     private BaseConverter<AssetSafetyEquipmentRequest, AssetSafetyEquipment>  requestConverter;
     @Resource
     private BaseConverter<AssetSafetyEquipment, AssetSafetyEquipmentResponse> responseConverter;
-    private Logger logger = LogUtils.get(this.getClass());
+    private static Logger logger = LogUtils.get(AssetSafetyEquipmentServiceImpl.class);
     @Override
     public String saveAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception {
         AssetSafetyEquipment assetSafetyEquipment = requestConverter.convert(request, AssetSafetyEquipment.class);

@@ -26,16 +26,10 @@ public enum EntertFlowEnum implements CodeEnum {
         return code;
     }
 
-    public void setCode(Integer code) {
-        this.code = code;
-    }
 
     @Override
     public String getMsg() {
         return msg;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
 }

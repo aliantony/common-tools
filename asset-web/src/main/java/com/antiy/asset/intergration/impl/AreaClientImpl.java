@@ -1,15 +1,14 @@
 package com.antiy.asset.intergration.impl;
 
-import javax.annotation.Resource;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
-
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.util.BaseClient;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * @author zhangyajun
@@ -22,12 +21,24 @@ public class AreaClientImpl implements AreaClient {
 
     @Value("${areaUrl}")
     private String     areaUrl;
+    @Value("${cdeAndAreaId}")
+    private String     cdeAndAreaId;
+
 
     @Override
     public ActionResponse queryAreaById(String id) {
         return (ActionResponse) baseClient.get(null, new ParameterizedTypeReference<ActionResponse>() {
         }, areaUrl + id);
     }
+
+
+
+    @Override
+    public ActionResponse queryCdeAndAreaId(String code) {
+        return (ActionResponse) baseClient.get(null, new ParameterizedTypeReference<ActionResponse>() {
+        }, cdeAndAreaId+code);
+    }
+
 
     @Override
     public Object getInvokeResult(String id) {

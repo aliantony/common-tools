@@ -33,7 +33,7 @@ import com.antiy.common.utils.LoginUserUtil;
  */
 @Service
 public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> implements IAssetMemoryService {
-    private Logger                                          logger = LogUtils.get(this.getClass());
+    private static Logger                                          logger = LogUtils.get(AssetMemoryServiceImpl.class);
     @Resource
     private AssetMemoryDao                                  assetMemoryDao;
     @Resource

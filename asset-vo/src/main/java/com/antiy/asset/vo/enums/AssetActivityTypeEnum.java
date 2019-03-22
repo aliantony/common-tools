@@ -12,7 +12,8 @@ public enum AssetActivityTypeEnum {
     HARDWARE_RETIRE("hardwareRetire","硬件退役"),
     SOFTWARE_CHANGE("softwareChange","软件变更"),
     SOFTWARE_RETIRE("softwareRetire","软件退役"),
-    HARDWARE_ADMITTANGE_AUTO("hardwareAdmittanceAuto","硬件登记(导入)")
+    HARDWARE_ADMITTANGE_AUTO("hardwareAdmittanceAuto","硬件登记(导入)"),
+    SOFTWARE_ADMITTANCE_ATUO("softwareAdmittanceAuto","软件登记(导入)")
     ;
 
     AssetActivityTypeEnum(String code, String msg) {

@@ -39,7 +39,7 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
     private BaseConverter<AssetNetworkEquipmentRequest, AssetNetworkEquipment>  requestConverter;
     @Resource
     private BaseConverter<AssetNetworkEquipment, AssetNetworkEquipmentResponse> responseConverter;
-    private Logger logger = LogUtils.get(this.getClass());
+    private static Logger logger = LogUtils.get(AssetNetworkEquipmentServiceImpl.class);
     @Override
     public Integer saveAssetNetworkEquipment(AssetNetworkEquipmentRequest request) throws Exception {
         AssetNetworkEquipment assetNetworkEquipment = requestConverter.convert(request, AssetNetworkEquipment.class);

@@ -63,11 +63,6 @@ public class SafetyEquipmentEntiy {
      */
     @ExcelField(value = "firmwareVersion", align = 1, title = "固件版本")
     private String firmwareVersion;
-    /**
-     * 软件版本
-     */
-    @ExcelField(value = "softwareVersion", align = 1, title = "软件版本")
-    private String softwareVersion;
 
     /**
      * ip地址
@@ -173,14 +168,6 @@ public class SafetyEquipmentEntiy {
 
     public void setFirmwareVersion(String firmwareVersion) {
         this.firmwareVersion = firmwareVersion;
-    }
-
-    public String getSoftwareVersion() {
-        return softwareVersion;
-    }
-
-    public void setSoftwareVersion(String softwareVersion) {
-        this.softwareVersion = softwareVersion;
     }
 
     public String getIp() {

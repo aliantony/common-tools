@@ -9,6 +9,7 @@ import com.antiy.common.base.ActionResponse;
  **/
 public interface AreaClient {
     ActionResponse queryAreaById(String id);
+    ActionResponse queryCdeAndAreaId(String code);
 
     Object getInvokeResult(String id);
 }
