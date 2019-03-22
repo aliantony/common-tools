@@ -1963,13 +1963,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetMemory.setCapacity(entity.getMemoryCapacity());
                     assetMemory.setStitch(entity.getStitch());
                     assetMemory.setHeatsink(entity.getHeatsink());
-                    assetMemory.setTransferType(entity.getTransferType());
+                    assetMemory.setTransferType(entity.getTransferType ());
+                    assetMemory.setSlotType (entity.getSlotType ());
                     List<AssetMemory> assetMemoryList = new ArrayList<>();
 
                     for (int i = 0; i < entity.getMemoryNum(); i++) {
                         assetMemoryList.add(assetMemory);
-                        computerVo.setAssetMemoryList(assetMemoryList);
                     }
+                    computerVo.setAssetMemoryList(assetMemoryList);
                     // assetMemoryDao.insertBatch(assetMemoryList);
                 }
                 // else {
@@ -1994,8 +1995,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     List<AssetHardDisk> assetHardDisks = new ArrayList<>();
                     for (int i = 0; i < entity.getHardDiskNum(); i++) {
                         assetHardDisks.add(assetHardDisk);
-                        computerVo.setAssetHardDisks(assetHardDisks);
                     }
+                    computerVo.setAssetHardDisks(assetHardDisks);
                     // assetHardDiskDao.insertBatch(assetHardDisks);
 
                 }
@@ -2015,8 +2016,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     List<AssetMainborad> assetMainborads = new ArrayList<>();
                     for (int i = 0; i < entity.getMainboradNum(); i++) {
                         assetMainborads.add(assetMainborad);
-                        computerVo.setAssetMainborads(assetMainborads);
                     }
+                    computerVo.setAssetMainborads(assetMainborads);
                     // assetMainboradDao.insertBatch(assetMainborads);
                 }
                 if (StringUtils.isNotBlank(entity.getCpuBrand()) && !Objects.isNull(entity.getCpuNum())
@@ -2034,14 +2035,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     List<AssetCpu> assetCpus = new ArrayList<>();
                     for (int i = 0; i < entity.getCpuNum(); i++) {
                         assetCpus.add(assetCpu);
-                        computerVo.setAssetCpus(assetCpus);
                     }
+                    computerVo.setAssetCpus(assetCpus);
                     // assetCpuDao.insertBatch(assetCpus);
                 }
 
                 if (StringUtils.isNotBlank(entity.getNetworkBrand())) {
                     AssetNetworkCard assetNetworkCard = new AssetNetworkCard();
-//                    assetNetworkCard.setAssetId(id);
                     assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                     assetNetworkCard.setSerial(entity.getNetworkSerial());
@@ -2053,7 +2053,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetNetworkCard.setMacAddress(entity.getNetworkMacAddress());
                     computerVo.setAssetNetworkCard(assetNetworkCard);
                 }
-                computerVos.add (computerVo);
+
+                    computerVos.add (computerVo);
             }
 
             a++;
