@@ -974,9 +974,9 @@
         case
         when group_concat(b.ip_address) is not null then
         group_concat(b.ip_address)
-        when (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is not
+        when (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is not
         null then
-        (select concat(inner_ip,outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
+        (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
         when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
         else '' end as ip,

@@ -47,6 +47,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -640,7 +641,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     SysArea sysArea = redisUtil.getObject(key, SysArea.class);
                     a.setAreaName(sysArea.getFullName());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.warn("获取资产区域名称失败", e);
                 }
             });
         }
