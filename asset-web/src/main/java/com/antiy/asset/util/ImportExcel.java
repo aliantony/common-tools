@@ -1,6 +1,7 @@
 package com.antiy.asset.util;
 
 import com.antiy.asset.annotation.ExcelField;
+import com.antiy.asset.vo.enums.DataTypeEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -318,12 +319,28 @@ public class ImportExcel {
                 if (val == null && ef.required()) {
                     failNums++;
                     sb.append("数据不能为空,第").append(i + 1).append("行，第").append(column).append("列").append(ef.title())
-                        .append(",");
+                            .append(",");
                     log.error("数据不能为空,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
                     flag = false;
                     break;
                 }
                 if (val != null) {
+                    if (ef.dataType() != null && !DataTypeEnum.validate(val.toString(), ef.dataType())) {
+                        failNums++;
+                        sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列").append(ef.title())
+                                .append(",");
+                        log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
+                        flag = false;
+                        break;
+                    }
+                    //长度校验
+                    if (val.toString().length() > ef.length()) {
+                        sb.append("第").append(i + 1).append("行，第").append(column).append("列,").append(ef.title()).append(",数据长度超出")
+                                .append(",");
+                        log.error("第" + (i + 1) + "行，第" + column + "列," + ef.title() + ",数据长度超出");
+                        flag = false;
+                        break;
+                    }
                     // 是码表数据
                     if (StringUtils.isNotBlank(ef.dictType())) {
                         // 转换
@@ -427,5 +444,18 @@ public class ImportExcel {
         String resultString = sb.toString();
         sb.delete(0, sb.length());
         return resultString;
+    }
+
+    /**
+     * 校验数据格式
+     * @param val
+     * @param rule
+     * @return
+     */
+    public boolean validateData(Object val, String rule) {
+        switch (rule) {
+            case "EMAIL":
+        }
+        return true;
     }
 }

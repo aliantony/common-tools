@@ -7,6 +7,10 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.antiy.asset.templet.AssetUserEntity;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.SysArea;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +53,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     private UserSelectResponseConverter                 userSelectResponseConverter;
     @Resource
     private AesEncoder                                  aesEncoder;
+    @Resource
+    private RedisUtil                                   redisUtil;
 
     @Override
     @Transactional
@@ -81,6 +87,18 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Override
     public List<AssetUserResponse> findListAssetUser(AssetUserQuery query) throws Exception {
         List<AssetUser> assetUser = assetUserDao.queryUserList(query);
+        if (CollectionUtils.isNotEmpty(assetUser)) {
+            assetUser.stream().forEach(a -> {
+                try {
+                    String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                        com.antiy.common.utils.DataTypeUtils.stringToInteger(a.getAddress()));
+                    SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+                    a.setAddress(sysArea.getFullName());
+                } catch (Exception e) {
+                    logger.warn("获取用户详细地址失败", e);
+                }
+            });
+        }
         return convert(assetUser);
     }
 

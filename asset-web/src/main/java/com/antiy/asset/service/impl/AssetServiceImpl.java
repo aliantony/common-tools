@@ -1,32 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -52,6 +25,32 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -189,7 +188,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         Asset asset = requestConverter.convert(requestAsset, Asset.class);
 
                         if (CollectionUtils.isNotEmpty(assetGroup)) {
-                            assembleAssetGroupName(assetGroup, asset);
+                            saveAssetGroup(assetGroup, asset);
                         }
 
                         asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -433,7 +432,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetGroupRequest> assetGroup = assetOthersRequest.getAssetGroups();
 
                         if (CollectionUtils.isNotEmpty(assetGroup)) {
-                            assembleAssetGroupName(assetGroup, asset1);
+                            saveAssetGroup(assetGroup, asset1);
                         }
 
                         asset1.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -553,19 +552,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return safetyEquipment.getId();
     }
 
-    /**
-     * 资产组名称拼装
-     *
-     * @param assetGroup
-     * @param asset
-     */
-    private void assembleAssetGroupName(List<AssetGroupRequest> assetGroup, Asset asset) {
-        StringBuffer stringBuffer = new StringBuffer();
+    private void saveAssetGroup(List<AssetGroupRequest> assetGroup, Asset asset) {
+        StringBuilder stringBuilder = new StringBuilder();
         assetGroup.forEach(assetGroupRequest -> {
             try {
                 String assetGroupName = assetGroupDao.getById(assetGroupRequest.getId()).getName();
                 asset.setAssetGroup(
-                    stringBuffer.append(assetGroupName).append(",").substring(0, stringBuffer.length() - 1));
+                    stringBuilder.append(assetGroupName).append(",").substring(0, stringBuilder.length() - 1));
             } catch (Exception e) {
                 throw new BusinessException("资产组名称获取失败");
             }
@@ -648,7 +641,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     SysArea sysArea = redisUtil.getObject(key, SysArea.class);
                     a.setAreaName(sysArea.getFullName());
                 } catch (Exception e) {
-                    logger.error(e.getMessage());
+                    logger.warn("获取资产区域名称失败", e);
                 }
             });
         }
@@ -2057,6 +2050,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setEmail(entity.getEmail());
                 asset.setCategoryModel("4");
                 computerVo.setAsset(asset);
+                // assetDao.insert(asset);
+                String id = asset.getStringId();
 
                 if (StringUtils.isNotBlank(entity.getMemoryBrand()) && !Objects.isNull(entity.getMemoryCapacity())
                     && !Objects.isNull(entity.getMemoryFrequency()) && !Objects.isNull(entity.getMemoryNum())
