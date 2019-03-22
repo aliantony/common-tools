@@ -2,7 +2,6 @@ package com.antiy.asset.intergration.impl;
 
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.util.BaseClient;
-import com.antiy.asset.vo.query.ActivityCodeAndAreaIdQuery;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +24,7 @@ public class AreaClientImpl implements AreaClient {
     @Value("${cdeAndAreaId}")
     private String     cdeAndAreaId;
 
+
     @Override
     public ActionResponse queryAreaById(String id) {
         return (ActionResponse) baseClient.get(null, new ParameterizedTypeReference<ActionResponse>() {
@@ -34,10 +34,11 @@ public class AreaClientImpl implements AreaClient {
 
 
     @Override
-    public ActionResponse queryCdeAndAreaId(ActivityCodeAndAreaIdQuery codeAndAreaIdQuery) {
-        return (ActionResponse) baseClient.get(codeAndAreaIdQuery, new ParameterizedTypeReference<ActionResponse>() {
-        }, cdeAndAreaId);
+    public ActionResponse queryCdeAndAreaId(String code) {
+        return (ActionResponse) baseClient.get(null, new ParameterizedTypeReference<ActionResponse>() {
+        }, cdeAndAreaId+code);
     }
+
 
     @Override
     public Object getInvokeResult(String id) {

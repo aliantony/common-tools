@@ -1,6 +1,5 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.entity.AssetCpu;
 import com.antiy.asset.entity.AssetMemory;
 import com.antiy.asset.vo.query.AssetMemoryQuery;
 import com.antiy.common.base.IBaseDao;
@@ -21,6 +20,8 @@ public interface AssetMemoryDao extends IBaseDao<AssetMemory> {
     Integer updateBatch(@Param(value = "list") List<AssetMemory> assetMemoryList) throws Exception;
 
     Integer insertBatch(List<AssetMemory> assetMemoryList);
+
+    Integer insertBatchWithId(@Param(value = "list")List<AssetMemory> assetCpuList, @Param(value = "aid") Integer aid);
 
     Integer deleteByAssetId(Integer id);
 

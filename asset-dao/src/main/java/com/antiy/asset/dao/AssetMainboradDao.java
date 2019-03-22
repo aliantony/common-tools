@@ -1,6 +1,5 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.entity.AssetHardDisk;
 import com.antiy.asset.entity.AssetMainborad;
 import com.antiy.asset.vo.query.AssetMainboradQuery;
 import com.antiy.common.base.IBaseDao;
@@ -33,6 +32,8 @@ public interface AssetMainboradDao extends IBaseDao<AssetMainborad> {
      * @return
      */
     Integer insertBatch(List<AssetMainborad> assetMainborad);
+
+    Integer insertBatchWithId(@Param(value = "list")List<AssetMainborad> assetCpuList, @Param(value = "aid") Integer aid);
 
     /**
      * 根据资产id删除主板

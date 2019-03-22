@@ -335,6 +335,7 @@
         set status = 0
         where asset_id = #{assetId}
     </update>
+
     <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetCpu" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
         insert into
@@ -367,6 +368,40 @@
             )
         </foreach>
     </insert>
+
+    <insert id="insertBatchWithId"  useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        (
+        asset_id,
+        serial,
+        brand,
+        model,
+        main_frequency,
+        thread_size,
+        core_size,
+        gmt_create,
+        memo,
+        create_user
+        )
+        values
+        <foreach collection="list" item="cpu" separator=",">
+            (
+            #{aid},
+            #{cpu.serial},
+            #{cpu.brand},
+            #{cpu.model},
+            #{cpu.mainFrequency},
+            #{cpu.threadSize},
+            #{cpu.coreSize},
+            #{cpu.gmtCreate},
+            #{cpu.memo},
+            #{cpu.createUser}
+            )
+        </foreach>
+    </insert>
+
     <select id="findCpuByAssetId" resultMap="BaseResultMap"
             parameterType="int">
         select id, brand, model, serial, main_frequency, thread_size, core_size from

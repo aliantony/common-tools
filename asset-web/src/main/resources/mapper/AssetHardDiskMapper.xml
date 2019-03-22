@@ -416,6 +416,40 @@
             )
         </foreach>
     </insert>
+    <insert id="insertBatchWithId"  useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        (
+        asset_id,
+        brand,
+        model,
+        serial,
+        interface_type,
+        capacity,
+        disk_type,
+        buy_date,
+        gmt_create,
+        memo,
+        create_user
+        )
+        values
+        <foreach collection="list" item="hardDisk" separator=",">
+            (
+            #{aid},
+            #{hardDisk.brand},
+            #{hardDisk.model},
+            #{hardDisk.serial},
+            #{hardDisk.interfaceType},
+            #{hardDisk.capacity},
+            #{hardDisk.diskType},
+            #{hardDisk.buyDate},
+            #{hardDisk.gmtCreate},
+            #{hardDisk.memo},
+            #{hardDisk.createUser}
+            )
+        </foreach>
+    </insert>
     <select id="findHardDiskByAssetId" resultMap="BaseResultMap"
             parameterType="int">
         select id, brand, model, serial, capacity, interface_type, disk_type, buy_date from

@@ -1,6 +1,5 @@
 package com.antiy.asset.intergration;
 
-import com.antiy.asset.vo.query.ActivityCodeAndAreaIdQuery;
 import com.antiy.common.base.ActionResponse;
 
 /**
@@ -10,7 +9,7 @@ import com.antiy.common.base.ActionResponse;
  **/
 public interface AreaClient {
     ActionResponse queryAreaById(String id);
-    ActionResponse queryCdeAndAreaId(ActivityCodeAndAreaIdQuery codeAndAreaIdQuery);
+    ActionResponse queryCdeAndAreaId(String code);
 
     Object getInvokeResult(String id);
 }
