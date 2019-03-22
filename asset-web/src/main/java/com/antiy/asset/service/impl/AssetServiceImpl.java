@@ -1,5 +1,32 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -27,31 +54,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -187,7 +189,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         Asset asset = requestConverter.convert(requestAsset, Asset.class);
 
                         if (CollectionUtils.isNotEmpty(assetGroup)) {
-                            saveAssetGroup(assetGroup, asset);
+                            assembleAssetGroupName(assetGroup, asset);
                         }
 
                         asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -431,7 +433,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetGroupRequest> assetGroup = assetOthersRequest.getAssetGroups();
 
                         if (CollectionUtils.isNotEmpty(assetGroup)) {
-                            saveAssetGroup(assetGroup, asset1);
+                            assembleAssetGroupName(assetGroup, asset1);
                         }
 
                         asset1.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -551,13 +553,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return safetyEquipment.getId();
     }
 
-    private void saveAssetGroup(List<AssetGroupRequest> assetGroup, Asset asset) {
-        StringBuilder stringBuilder = new StringBuilder();
+    /**
+     * 资产组名称拼装
+     *
+     * @param assetGroup
+     * @param asset
+     */
+    private void assembleAssetGroupName(List<AssetGroupRequest> assetGroup, Asset asset) {
+        StringBuffer stringBuffer = new StringBuffer();
         assetGroup.forEach(assetGroupRequest -> {
             try {
                 String assetGroupName = assetGroupDao.getById(assetGroupRequest.getId()).getName();
                 asset.setAssetGroup(
-                    stringBuilder.append(assetGroupName).append(",").substring(0, stringBuilder.length() - 1));
+                    stringBuffer.append(assetGroupName).append(",").substring(0, stringBuffer.length() - 1));
             } catch (Exception e) {
                 throw new BusinessException("资产组名称获取失败");
             }
@@ -1984,7 +1992,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<ComputerVo> computerVos = new ArrayList<>();
         List<ComputeDeviceEntity> dataList = result.getDataList();
         if (dataList.size() == 0) {
-            return  result.getMsg();
+            return result.getMsg();
         }
         for (ComputeDeviceEntity entity : dataList) {
 
@@ -2212,7 +2220,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetNetworkEquipment> networkEquipments = new ArrayList<>();
         List<NetworkDeviceEntity> entities = result.getDataList();
         if (entities.size() == 0) {
-            return  result.getMsg();
+            return result.getMsg();
         }
         for (NetworkDeviceEntity networkDeviceEntity : entities) {
 
@@ -2310,21 +2318,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetRecord(assets.get(i).getStringId());
                 // 流程
 
-//                Map<String, Object> formData = new HashMap();
-//                String[] userIds = importRequest.getUserId();
-//                for (String configBaselineUserId : userIds) {
-//                    formData.put("admittanceUserId", configBaselineUserId);
-//                }
-//                ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-//                manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
-//                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-//                manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-//                manualStartActivityRequest
-//                    .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
-//                manualStartActivityRequests.add(manualStartActivityRequest);
+                // Map<String, Object> formData = new HashMap();
+                // String[] userIds = importRequest.getUserId();
+                // for (String configBaselineUserId : userIds) {
+                // formData.put("admittanceUserId", configBaselineUserId);
+                // }
+                // ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+                // manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
+                // manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+                // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
+                // manualStartActivityRequest
+                // .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
+                // manualStartActivityRequests.add(manualStartActivityRequest);
                 success++;
             }
-//            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+            // activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String re = "导入成功" + success + "条。";
@@ -2354,7 +2362,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         List<SafetyEquipmentEntiy> resultDataList = result.getDataList();
         if (resultDataList.size() == 0) {
-            return  result.getMsg();
+            return result.getMsg();
         }
         int success = 0;
         int repeat = 0;
@@ -2441,21 +2449,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetRecord(assets.get(i).getStringId());
                 // 流程
 
-//                Map<String, Object> formData = new HashMap();
-//                String[] userIds = importRequest.getUserId();
-//                for (String configBaselineUserId : userIds) {
-//                    formData.put("admittanceUserId", configBaselineUserId);
-//                }
-//                ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-//                manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
-//                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-//                manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-//                manualStartActivityRequest
-//                    .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
-//                manualStartActivityRequests.add(manualStartActivityRequest);
+                // Map<String, Object> formData = new HashMap();
+                // String[] userIds = importRequest.getUserId();
+                // for (String configBaselineUserId : userIds) {
+                // formData.put("admittanceUserId", configBaselineUserId);
+                // }
+                // ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+                // manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
+                // manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+                // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
+                // manualStartActivityRequest
+                // .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
+                // manualStartActivityRequests.add(manualStartActivityRequest);
                 success++;
             }
-//            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+            // activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
@@ -2483,8 +2491,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         List<StorageDeviceEntity> resultDataList = result.getDataList();
         if (resultDataList.size() == 0) {
-//            return "上传失败，模板内无数据，请填写数据后再次上传";
-            return  result.getMsg();
+            // return "上传失败，模板内无数据，请填写数据后再次上传";
+            return result.getMsg();
         }
         int success = 0;
         int repeat = 0;
@@ -2527,8 +2535,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("当前用户没有此所属区域，");
                 continue;
             }
-
-
 
             if (repeat + error == 0) {
 
@@ -2584,23 +2590,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetRecord(assets.get(i).getStringId());
                 // 流程
 
-//                Map<String, Object> formData = new HashMap();
-////            zichanguanliyuan
-////                    LoginUserUtil.getCommonInfo ().getToken ()
-//                String[] userIds = importRequest.getUserId();
-//                for (String configBaselineUserId : userIds) {
-//                    formData.put("admittanceUserId", configBaselineUserId);
-//                }
-//                ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-//                manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
-//                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-//                manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-//                manualStartActivityRequest
-//                    .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
-//                manualStartActivityRequests.add(manualStartActivityRequest);
-//                success++;
+                // Map<String, Object> formData = new HashMap();
+                //// zichanguanliyuan
+                //// LoginUserUtil.getCommonInfo ().getToken ()
+                // String[] userIds = importRequest.getUserId();
+                // for (String configBaselineUserId : userIds) {
+                // formData.put("admittanceUserId", configBaselineUserId);
+                // }
+                // ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+                // manualStartActivityRequest.setBusinessId(assets.get(i).getStringId());
+                // manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+                // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
+                // manualStartActivityRequest
+                // .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
+                // manualStartActivityRequests.add(manualStartActivityRequest);
+                // success++;
             }
-//            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+            // activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String res = "导入成功" + success + "条";
@@ -2615,7 +2621,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuilder sb = new StringBuilder(result.getMsg());
         sb.delete(sb.lastIndexOf("成"), sb.lastIndexOf("."));
         return stringBuilder.append(builder).append(sb).toString();
-//        return builder.append (result.getMsg ()).toString ();
+        // return builder.append (result.getMsg ()).toString ();
     }
 
     @Override
@@ -2627,7 +2633,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         List<OtherDeviceEntity> resultDataList = result.getDataList();
         if (resultDataList.size() == 0) {
-            return  result.getMsg();
+            return result.getMsg();
         }
         int success = 0;
         int repeat = 0;
@@ -2701,21 +2707,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetDao.insert(asset);
                 assetRecord(asset.getStringId());
                 // 流程
-//                Map<String, Object> formData = new HashMap();
-//                String[] userIds = importRequest.getUserId();
-//                for (String configBaselineUserId : userIds) {
-//                    formData.put("admittanceUserId", configBaselineUserId);
-//                }
-//                ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-//                manualStartActivityRequest.setBusinessId(asset.getStringId());
-//                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-//                manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-//                manualStartActivityRequest
-//                    .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
-//                manualStartActivityRequests.add(manualStartActivityRequest);
-//                success++;
+                // Map<String, Object> formData = new HashMap();
+                // String[] userIds = importRequest.getUserId();
+                // for (String configBaselineUserId : userIds) {
+                // formData.put("admittanceUserId", configBaselineUserId);
+                // }
+                // ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+                // manualStartActivityRequest.setBusinessId(asset.getStringId());
+                // manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+                // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
+                // manualStartActivityRequest
+                // .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
+                // manualStartActivityRequests.add(manualStartActivityRequest);
+                // success++;
             }
-//            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+            // activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String res = "导入成功" + success + "条";
