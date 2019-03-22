@@ -2,9 +2,6 @@ package com.antiy.asset.intergration;
 
 import com.antiy.asset.vo.query.ActivityCodeAndAreaIdQuery;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.SysUser;
-
-import java.util.List;
 
 /**
  * 区域查询接口
@@ -13,7 +10,7 @@ import java.util.List;
  **/
 public interface AreaClient {
     ActionResponse queryAreaById(String id);
-    List<SysUser> queryCdeAndAreaId(ActivityCodeAndAreaIdQuery codeAndAreaIdQuery);
+    ActionResponse queryCdeAndAreaId(ActivityCodeAndAreaIdQuery codeAndAreaIdQuery);
 
     Object getInvokeResult(String id);
 }

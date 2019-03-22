@@ -2156,7 +2156,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetNetworkCard.setMacAddress(entity.getNetworkMacAddress());
                     computerVo.setAssetNetworkCard(assetNetworkCard);
                 }
-
+                computerVos.add (computerVo);
             }
 
             a++;
@@ -2167,11 +2167,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (ComputerVo computerVo : computerVos) {
                 Asset asset = computerVo.getAsset();
                 assetDao.insert(asset);
-                assetCpuDao.insertBatch(computerVo.getAssetCpus());
-                assetMainboradDao.insertBatch(computerVo.getAssetMainborads());
-                assetHardDiskDao.insertBatch(computerVo.getAssetHardDisks());
-                assetMemoryDao.insertBatch(computerVo.getAssetMemoryList());
-                assetNetworkCardDao.insert(computerVo.getAssetNetworkCard());
+                if (CollectionUtils.isNotEmpty (computerVo.getAssetCpus ())){
+
+                    assetCpuDao.insertBatch(computerVo.getAssetCpus());
+                }
+                if (CollectionUtils.isNotEmpty (computerVo.getAssetHardDisks ())){
+
+                    assetHardDiskDao.insertBatch(computerVo.getAssetHardDisks());
+                }
+                if (CollectionUtils.isNotEmpty (computerVo.getAssetMainborads ())){
+
+                    assetMainboradDao.insertBatch(computerVo.getAssetMainborads());
+                }
+                if (CollectionUtils.isNotEmpty (computerVo.getAssetMemoryList ())){
+
+                    assetMemoryDao.insertBatch(computerVo.getAssetMemoryList());
+                }
+                if (!Objects.isNull (computerVo.getAssetNetworkCard ())){
+                    assetNetworkCardDao.insert(computerVo.getAssetNetworkCard());
+                }
+
                 // 记录资产操作流程
                 assetRecord(asset.getStringId());
                 success++;
@@ -2307,11 +2322,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetNetworkEquipmentDao.insert(networkEquipments.get(i));
                 assetRecord(assets.get(i).getStringId());
                 // 流程
-//                ActivityCodeAndAreaIdQuery codeAndAreaIdQuery = new ActivityCodeAndAreaIdQuery ();
-//                codeAndAreaIdQuery.setRoleCode ("zichanguanliyuan");
-//                codeAndAreaIdQuery.setAuthorization ( LoginUserUtil.getCommonInfo ().getToken ());
-//                List<SysUser> sysUsers = areaClient.queryCdeAndAreaId (codeAndAreaIdQuery);
-
+                ActivityCodeAndAreaIdQuery codeAndAreaIdQuery = new ActivityCodeAndAreaIdQuery ();
+                codeAndAreaIdQuery.setRoleCode ("zichanguanliyuan");
+                codeAndAreaIdQuery.setAuthorization ( LoginUserUtil.getCommonInfo ().getToken ());
+                ActionResponse actionResponse = areaClient.queryCdeAndAreaId (codeAndAreaIdQuery);
+                List<SysUser> sysUsers = (List<SysUser>) actionResponse.getBody ();
+                System.out.println ("-----------why--------值=" + sysUsers + "," + "当前类=.()");
                 // Map<String, Object> formData = new HashMap();
                 // String[] userIds = importRequest.getUserId();
                 // for (String configBaselineUserId : userIds) {
@@ -2326,7 +2342,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // manualStartActivityRequests.add(manualStartActivityRequest);
                 success++;
             }
-            // activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+//             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String re = "导入成功" + success + "条。";
