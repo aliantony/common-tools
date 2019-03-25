@@ -58,11 +58,13 @@ public class LogHandle {
         // 获取实体类的所有属性，返回Field数组
         Field[] fields = clz.getDeclaredFields();
         Field field = Arrays.asList(fields).stream().filter(tmp -> "id".equals(tmp.getName())).findFirst().orElse(null);
-        try {
-            field.setAccessible(true);
-            return (Integer) field.get(obj);
-        } catch (Exception e) {
-            e.getMessage();
+        if (Objects.nonNull(field)){
+            try {
+                field.setAccessible(true);
+                return (Integer) field.get(obj);
+            } catch (Exception e) {
+                e.getMessage();
+            }
         }
         return 0;
     }
