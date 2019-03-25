@@ -459,6 +459,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetChangeRecord.setGmtModified(System.currentTimeMillis());
                     assetChangeRecord.setType(hardware);
                     assetChangeRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetChangeRecord.setAreaId(assetOuterRequestToChangeRecord.getAsset().getAreaId());
                     assetChangeRecordDao.insert(assetChangeRecord);
 
                     // 记录资产操作流程
@@ -1474,6 +1475,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetChangeRecord.setBusinessId(asset.getId());
                     assetChangeRecord.setChangeVal(JSONObject.toJSONString(assetOuterRequest));
                     assetChangeRecord.setIsStore(1);
+                    assetChangeRecord.setAreaId(asset.getAreaId());
                     assetChangeRecord
                         .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
                     assetChangeRecord.setGmtCreate(System.currentTimeMillis());

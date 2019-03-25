@@ -38,6 +38,9 @@
         <if test=" isStore != null">
             is_store,
         </if>
+        <if test=" areaId != null">
+            area_id,
+        </if>
         <if test=" changeVal != null">
             change_val,
         </if>
@@ -68,6 +71,9 @@
         <if test=" isStore != null">
             #{isStore },
         </if>
+        <if test=" areaId != null">
+            #{areaId },
+        </if>
         <if test=" changeVal != null">
             #{changeVal },
         </if>
@@ -97,6 +103,9 @@
         </if>
         <if test=" isStore != null">
             is_store = #{isStore },
+        </if>
+        <if test=" areaId != null">
+            area_id = #{areaId },
         </if>
         <if test=" changeVal != null">
             change_val = #{changeVal },
