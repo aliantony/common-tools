@@ -77,12 +77,13 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
 
         // 2.保存流程
         AssetOperationRecord assetOperationRecord = convertAssetOperationRecord(assetStatusReqeust);
+
         if (!assetStatusReqeust.getSoftware()) {
             assetOperationRecord.setOriginStatus(assetStatusReqeust.getAssetStatus().getCode());
         } else {
             assetOperationRecord.setOriginStatus(assetStatusReqeust.getSoftwareStatusEnum().getCode());
         }
-
+        assetOperationRecord.setAreaId(assetDao.getById(assetStatusReqeust.getAssetId()).getAreaId());
         assetOperationRecord.setSchemeId(scheme != null ? scheme.getId() : null);
         assetOperationRecordDao.insert(assetOperationRecord);
 

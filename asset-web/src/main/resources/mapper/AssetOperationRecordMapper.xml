@@ -13,6 +13,7 @@
         <result column="gmt_create" property="gmtCreate"/>
         <result column="process_result" property="processResult"/>
         <result column="origin_status" property="originStatus"/>
+        <result column="area_id" property="areaId"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -52,6 +53,9 @@
         <if test=" processResult != null">
             process_result,
         </if>
+        <if test=" areaId != null">
+            area_id,
+        </if>
         <if test=" originStatus != null">
             origin_status,
         </if>
@@ -84,6 +88,9 @@
         </if>
         <if test=" processResult != null">
             #{processResult },
+        </if>
+        <if test=" areaId != null">
+            #{areaId },
         </if>
         <if test=" originStatus != null">
             #{originStatus },
@@ -118,8 +125,11 @@
         <if test=" processResult != null">
             process_result = #{processResult },
         </if>
+        <if test=" areaId != null">
+            area_id = #{areaId },
+        </if>
         <if test=" originStatus != null">
-            origin_status = #{originStatus },
+            origin_status = #{originStatus }
         </if>
     </sql>
 
