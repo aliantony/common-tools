@@ -274,7 +274,7 @@ public class TemplateExcelExport {
                 XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(dvConstraint,
                     addressList);
                 // 输入非法数据时，弹窗警告框
-                // validation.setShowErrorBox(true);
+                validation.setShowErrorBox(true);
                 validation.setShowPromptBox(true);
                 sheet.addValidationData(validation);
             }
