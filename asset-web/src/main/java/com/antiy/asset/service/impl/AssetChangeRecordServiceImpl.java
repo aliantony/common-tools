@@ -11,18 +11,15 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetChangeRecord;
 import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.service.IAssetChangeRecordService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.AssetChangeRecordQuery;
 import com.antiy.asset.vo.request.AssetChangeRecordRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
-import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.AssetChangeRecordResponse;
 import com.antiy.common.base.*;
@@ -67,13 +64,9 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
     @Resource
     private AssetChangeRecordDao                                        assetChangeRecordDao;
     @Resource
-    private BaseConverter<AssetRequest, Asset>                          assetRequestToAssetConverter;
-    @Resource
     private BaseConverter<AssetChangeRecordRequest, AssetChangeRecord>  requestConverter;
     @Resource
     private BaseConverter<AssetChangeRecord, AssetChangeRecordResponse> responseConverter;
-    @Resource
-    private AreaClient                                                  areaClient;
     @Resource
     private AssetCategoryModelDao                                       categoryModelDao;
 
@@ -83,6 +76,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
         AssetOuterRequest assetOuterRequest = request.getAssetOuterRequest();
 
         assetChangeRecord.setChangeVal(JsonUtil.object2Json(assetOuterRequest));
+        assetChangeRecord.setAreaId(assetOuterRequest.getAsset().getAreaId());
         assetChangeRecord.setGmtCreate(System.currentTimeMillis());
         assetChangeRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetChangeRecordDao.insert(assetChangeRecord);
