@@ -1,11 +1,13 @@
 package com.antiy.asset.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareLicense;
 import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetPortProtocolService;
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
@@ -59,7 +61,6 @@ import static com.antiy.biz.file.FileHelper.logger;
  */
 @Service
 public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> implements IAssetSoftwareService {
-
     @Resource
     private AssetSoftwareDao                                                 assetSoftwareDao;
     @Resource
@@ -100,6 +101,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Resource
     private ActivityClient                                                   activityClient;
+    @Resource
+    private AreaClient                                                       areaClient;
 
     @Resource
     private SoftwareEntityConvert                                            softwareEntityConvert;
@@ -642,7 +645,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
         List<AssetSoftwareEntity> resultDataList = importResult.getDataList();
         if (resultDataList.size() == 0) {
-            return importResult.getMsg ();
+            return importResult.getMsg();
         }
         int success = 0;
         int repeat = 0;
@@ -690,26 +693,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 asset.setCategoryModel(entity.getCategory());
                 assetList.add(asset);
             }
-
-            // Map<String, Object> formData = new HashMap<>();
-            // String[] userId = importRequest.getUserId();
-            // for (String analyzeBaselineUserId : userId) {
-            // formData.put("analyzeBaselineUserId", analyzeBaselineUserId);
-            // formData.put("discard", 0);
-            // }
-            //
-            // ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-            // manualStartActivityRequest.setBusinessId(asset.getStringId());
-            // manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
-            // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getName());
-            // manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
-            // activityClient.manualStartProcess(manualStartActivityRequest);
-
             a++;
         }
 
         if (repeat + error == 0) {
-
+            List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
             for (AssetSoftware assetSoftware : assetList) {
                 assetSoftwareDao.insert(assetSoftware);
                 // 记录资产操作流程
@@ -723,9 +711,30 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 assetOperationRecord.setGmtCreate(System.currentTimeMillis());
                 assetOperationRecord.setOriginStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
                 assetOperationRecordDao.insert(assetOperationRecord);
+                // ActionResponse actionResponse = areaClient.queryCdeAndAreaId ("zichanguanliyuan");
+                ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
+                List<LinkedHashMap> mapList = (List<LinkedHashMap>) actionResponse.getBody();
+                StringBuilder stringBuilder = new StringBuilder();
+
+                for (LinkedHashMap linkedHashMap : mapList) {
+                    stringBuilder.append(linkedHashMap.get("stringId")).append(",");
+                }
+                String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
+
+                Map<String, Object> formData = new HashMap<>();
+
+                formData.put("admittanceUserId", ids);
+
+                ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+                manualStartActivityRequest.setBusinessId(assetSoftware.getStringId());
+                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+                manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
+                manualStartActivityRequest
+                    .setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE_ATUO.getCode());
+                manualStartActivityRequests.add(manualStartActivityRequest);
                 success++;
             }
-
+            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String res = "导入成功" + success + "条。";
