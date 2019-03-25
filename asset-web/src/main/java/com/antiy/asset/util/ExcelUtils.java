@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.templet.ReportForm;
 import com.antiy.common.exception.BusinessException;
 import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -203,10 +204,26 @@ public class ExcelUtils {
      * @param title 文件标题
      */
     public static void exportTemplateToFile(Class<?> clazz, String filename, String title, String memo, String fileInfo,
-                                           List<?> dataList) {
+                                            List<?> dataList) {
         ParamterExceptionUtils.isBlank(filename, "文件名不能为空");
         try {
             new TemplateExcelExport(title, clazz, memo).exportToFile(fileInfo + filename, dataList);
+        } catch (IOException e) {
+            throw new BusinessException("模板导出异常");
+        }
+    }
+
+    /**
+     * 导出报表至客户端
+     *
+     * @param filename 文件名
+     */
+    public static void exportFormToClient(ReportForm reportForm, String filename) {
+        ParamterExceptionUtils.isBlank(filename, "文件名不能为空");
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+            .getResponse();
+        try {
+            new ReportExcelExport(reportForm).exportToClient(response, filename);
         } catch (IOException e) {
             throw new BusinessException("模板导出异常");
         }
