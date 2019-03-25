@@ -57,6 +57,18 @@ public class AssetOperationRecord extends BaseEntity {
      * 原始状态
      */
     private Integer originStatus;
+    /**
+     * 区域主键
+     */
+    private String  areaId;
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
+    }
 
     public Integer getOriginStatus() {
         return originStatus;

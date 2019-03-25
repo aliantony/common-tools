@@ -30,10 +30,6 @@ public class AssetChangeRecord extends BaseEntity {
      */
     private Integer           isStore;
     /**
-     * 区域主键
-     */
-    private String            areaId;
-    /**
      * 修改对象的JSON串
      */
     private String            changeVal;
@@ -54,13 +50,6 @@ public class AssetChangeRecord extends BaseEntity {
      */
     private Integer           businessId;
 
-    public String getAreaId() {
-        return areaId;
-    }
-
-    public void setAreaId(String areaId) {
-        this.areaId = areaId;
-    }
 
     public Integer getType() {
         return type;
@@ -137,8 +126,7 @@ public class AssetChangeRecord extends BaseEntity {
     @Override
     public String toString() {
         return "AssetChangeRecord{" + "type=" + type + ", status=" + status + ", createUser=" + createUser
-               + ", isStore=" + isStore + ", areaId=" + areaId + ", changeVal='" + changeVal + '\'' + ", gmtCreate="
-               + gmtCreate + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", businessId=" + businessId
-               + '}';
+               + ", isStore=" + isStore + ", changeVal='" + changeVal + '\'' + ", gmtCreate=" + gmtCreate
+               + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", businessId=" + businessId + '}';
     }
 }

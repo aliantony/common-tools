@@ -76,7 +76,6 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
         AssetOuterRequest assetOuterRequest = request.getAssetOuterRequest();
 
         assetChangeRecord.setChangeVal(JsonUtil.object2Json(assetOuterRequest));
-        assetChangeRecord.setAreaId(assetOuterRequest.getAsset().getAreaId());
         assetChangeRecord.setGmtCreate(System.currentTimeMillis());
         assetChangeRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetChangeRecordDao.insert(assetChangeRecord);
