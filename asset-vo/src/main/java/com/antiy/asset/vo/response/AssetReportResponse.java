@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.List;
 
 /**
@@ -12,10 +14,12 @@ public class AssetReportResponse extends BaseResponse {
     /**
      * 横坐标值
      */
+    @ApiModelProperty("横坐标值")
     private List<String>     abscissa;
     /**
      * 数据
      */
+    @ApiModelProperty("返回数据")
     private List<ReportData> dataList;
 
     public List<String> getAbscissa() {
@@ -43,14 +47,17 @@ public class AssetReportResponse extends BaseResponse {
         /**
          * 分类
          */
+        @ApiModelProperty("分类")
         private String        classify;
         /**
          * 总数
          */
+        @ApiModelProperty("总数")
         private List<Integer> total;
         /**
          * 新增数
          */
+        @ApiModelProperty("新增数")
         private List<Integer> addNumber;
 
         public String getClassify() {
