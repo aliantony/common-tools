@@ -3,6 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.antiy.asset.entity.AssetAreaEntity;
+import com.antiy.asset.entity.AssetCategoryEntity;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 
 /**
@@ -17,4 +19,16 @@ public interface AssetReportDao {
      * @return
      */
     List<Map<String, Integer>> getAllAssetWithArea(ReportQueryRequest reportQueryRequest);
+
+    /**
+     * 获取所有的品类型号新增资产信息 日期显示到天
+     * @return
+     */
+    List<AssetCategoryEntity> getNewAssetWithCategoryByDay(ReportQueryRequest reportQueryRequest);
+
+    /**
+     * 获取所有的品类型号新增资产信息 日期显示到月
+     * @return
+     */
+    List<AssetCategoryEntity> getNewAssetWithCategoryByMonth(ReportQueryRequest reportQueryRequest);
 }

@@ -38,7 +38,7 @@ public class AssetReportResponse extends BaseResponse {
         this.list = list;
     }
 
-    class ReportData {
+    public class ReportData {
         /**
          * 分类
          */
@@ -77,6 +77,9 @@ public class AssetReportResponse extends BaseResponse {
 
         public void setAdd(List<Integer> add) {
             this.add = add;
+        }
+
+        public ReportData() {
         }
     }
 }

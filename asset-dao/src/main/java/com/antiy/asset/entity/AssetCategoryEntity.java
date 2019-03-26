@@ -1,5 +1,7 @@
 package com.antiy.asset.entity;
 
+import java.util.Objects;
+
 /**
  * 报表统计结果
  */
@@ -37,10 +39,18 @@ public class AssetCategoryEntity {
 
     @Override
     public String toString() {
-        return "CategoryCountVO{" +
-                "categoryCount=" + categoryCount +
-                ", categoryModel=" + categoryModel +
-                ", date='" + date + '\'' +
-                '}';
+        return "CategoryCountVO{" + "categoryCount=" + categoryCount + ", categoryModel=" + categoryModel + ", date='"
+               + date + '\'' + '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof AssetCategoryEntity) {
+            AssetCategoryEntity assetCategoryEntity = (AssetCategoryEntity) obj;
+            return Objects.equals(assetCategoryEntity.categoryCount, assetCategoryEntity.getCategoryCount())
+                    && Objects.equals(assetCategoryEntity.categoryModel, assetCategoryEntity.getCategoryModel())
+                    && Objects.equals(assetCategoryEntity.date, assetCategoryEntity.getDate());
+        }
+        return false;
     }
 }

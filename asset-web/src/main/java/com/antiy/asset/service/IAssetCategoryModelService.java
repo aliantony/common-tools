@@ -94,6 +94,11 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      */
     List<Integer> findAssetCategoryModelIdsById(Integer id) throws Exception;
 
+    /**
+     * 递归查询品类子节点
+     *
+     * @return
+     */
     List<AssetCategoryModel> recursionSearch(List<AssetCategoryModel> list, Integer id) throws Exception;
 
     /**

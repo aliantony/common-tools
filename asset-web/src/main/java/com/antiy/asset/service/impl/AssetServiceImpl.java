@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -55,6 +56,8 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+
+import static java.util.Comparator.comparingInt;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -145,6 +148,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AesEncoder                                                         aesEncoder;
     @Resource
     private RedisUtil                                                          redisUtil;
+    @Resource
+    private AssetReportDao                                                     assetReportDao;
     private static final int                                                   ALL_PAGE = -1;
 
     @Override
@@ -944,8 +949,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         map.put("modifyUser", System.currentTimeMillis());
         return assetDao.changeStatus(map);
     }
-
-
 
     @Override
     public List<AssetResponse> findListAssetByCategoryModel(AssetQuery query) throws Exception {
@@ -1960,7 +1963,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     && !Objects.isNull(entity.getMemoryFrequency()) && !Objects.isNull(entity.getMemoryNum())
                     && entity.getMemoryNum() > 0) {
                     AssetMemory assetMemory = new AssetMemory();
-//                    assetMemory.setAssetId(id);
+                    // assetMemory.setAssetId(id);
                     assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetMemory.setGmtCreate(System.currentTimeMillis());
                     assetMemory.setSerial(entity.getMemorySerial());
@@ -1970,8 +1973,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetMemory.setCapacity(entity.getMemoryCapacity());
                     assetMemory.setStitch(entity.getStitch());
                     assetMemory.setHeatsink(entity.getHeatsink());
-                    assetMemory.setTransferType(entity.getTransferType ());
-                    assetMemory.setSlotType (entity.getSlotType ());
+                    assetMemory.setTransferType(entity.getTransferType());
+                    assetMemory.setSlotType(entity.getSlotType());
                     List<AssetMemory> assetMemoryList = new ArrayList<>();
 
                     for (int i = 0; i < entity.getMemoryNum(); i++) {
@@ -1988,7 +1991,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     && !Objects.isNull(entity.getHardDiskType()) && !Objects.isNull(entity.getHardDiskNum())
                     && entity.getHardDiskNum() > 0) {
                     AssetHardDisk assetHardDisk = new AssetHardDisk();
-//                    assetHardDisk.setAssetId(id);
+                    // assetHardDisk.setAssetId(id);
                     assetHardDisk.setGmtCreate(System.currentTimeMillis());
                     assetHardDisk.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetHardDisk.setSerial(entity.getHardDiskSerial());
@@ -2012,7 +2015,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     && entity.getMainboradNum() > 0) {
 
                     AssetMainborad assetMainborad = new AssetMainborad();
-//                    assetMainborad.setAssetId(id);
+                    // assetMainborad.setAssetId(id);
                     assetMainborad.setGmtCreate(System.currentTimeMillis());
                     assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetMainborad.setSerial(entity.getMainboradSerial());
@@ -2030,7 +2033,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 if (StringUtils.isNotBlank(entity.getCpuBrand()) && !Objects.isNull(entity.getCpuNum())
                     && entity.getCpuNum() > 0 && !Objects.isNull(entity.getCpuMainFrequency())) {
                     AssetCpu assetCpu = new AssetCpu();
-//                    assetCpu.setAssetId(id);
+                    // assetCpu.setAssetId(id);
                     assetCpu.setGmtCreate(System.currentTimeMillis());
                     assetCpu.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetCpu.setSerial(entity.getCpuSerial());
@@ -2061,7 +2064,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     computerVo.setAssetNetworkCard(assetNetworkCard);
                 }
 
-                    computerVos.add (computerVo);
+                computerVos.add(computerVo);
             }
 
             a++;
@@ -2072,31 +2075,31 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (ComputerVo computerVo : computerVos) {
                 Asset asset = computerVo.getAsset();
                 assetDao.insert(asset);
-                if (CollectionUtils.isNotEmpty (computerVo.getAssetCpus ())){
+                if (CollectionUtils.isNotEmpty(computerVo.getAssetCpus())) {
 
-                    assetCpuDao.insertBatchWithId (computerVo.getAssetCpus(),asset.getId ());
+                    assetCpuDao.insertBatchWithId(computerVo.getAssetCpus(), asset.getId());
                 }
-                if (CollectionUtils.isNotEmpty (computerVo.getAssetHardDisks ())){
+                if (CollectionUtils.isNotEmpty(computerVo.getAssetHardDisks())) {
 
-                    assetHardDiskDao.insertBatchWithId (computerVo.getAssetHardDisks(),asset.getId ());
+                    assetHardDiskDao.insertBatchWithId(computerVo.getAssetHardDisks(), asset.getId());
                 }
-                if (CollectionUtils.isNotEmpty (computerVo.getAssetMainborads ())){
+                if (CollectionUtils.isNotEmpty(computerVo.getAssetMainborads())) {
 
-                    assetMainboradDao.insertBatchWithId (computerVo.getAssetMainborads(),asset.getId ());
+                    assetMainboradDao.insertBatchWithId(computerVo.getAssetMainborads(), asset.getId());
                 }
-                if (CollectionUtils.isNotEmpty (computerVo.getAssetMemoryList ())){
+                if (CollectionUtils.isNotEmpty(computerVo.getAssetMemoryList())) {
 
-                    assetMemoryDao.insertBatchWithId (computerVo.getAssetMemoryList(),asset.getId ());
+                    assetMemoryDao.insertBatchWithId(computerVo.getAssetMemoryList(), asset.getId());
                 }
-                if (!Objects.isNull (computerVo.getAssetNetworkCard ())){
-                    AssetNetworkCard assetNetworkCard = computerVo.getAssetNetworkCard ();
-                    assetNetworkCard.setAssetId (asset.getStringId ());
+                if (!Objects.isNull(computerVo.getAssetNetworkCard())) {
+                    AssetNetworkCard assetNetworkCard = computerVo.getAssetNetworkCard();
+                    assetNetworkCard.setAssetId(asset.getStringId());
                     assetNetworkCardDao.insert(assetNetworkCard);
                 }
                 // 记录资产操作流程
                 assetRecord(asset.getStringId());
                 // 流程
-                importActivity (manualStartActivityRequests,asset.getStringId());
+                importActivity(manualStartActivityRequests, asset.getStringId());
                 success++;
             }
             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
@@ -2226,16 +2229,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
             for (int i = 0; i < assets.size(); i++) {
                 assetDao.insert(assets.get(i));
-                String stringId = assets.get (i).getStringId ();
+                String stringId = assets.get(i).getStringId();
                 networkEquipments.get(i).setAssetId(stringId);
                 assetNetworkEquipmentDao.insert(networkEquipments.get(i));
                 assetRecord(stringId);
                 // 流程
-                importActivity (manualStartActivityRequests, stringId);
+                importActivity(manualStartActivityRequests, stringId);
 
                 success++;
             }
-             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String re = "导入成功" + success + "条。";
@@ -2252,7 +2255,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         sb.delete(sb.lastIndexOf("成"), sb.lastIndexOf("."));
         return stringBuilder.append(builder).append(sb).toString();
     }
-
 
     @Override
     public String importSecurity(MultipartFile file, AssetImportRequest importRequest) throws Exception {
@@ -2347,15 +2349,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
             for (int i = 0; i < assets.size(); i++) {
                 assetDao.insert(assets.get(i));
-                String stringId = assets.get (i).getStringId ();
+                String stringId = assets.get(i).getStringId();
                 assetSafetyEquipments.get(i).setAssetId(stringId);
                 assetSafetyEquipmentDao.insert(assetSafetyEquipments.get(i));
                 assetRecord(stringId);
                 // 流程
-                importActivity (manualStartActivityRequests,stringId);
+                importActivity(manualStartActivityRequests, stringId);
                 success++;
             }
-             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
@@ -2477,15 +2479,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
             for (int i = 0; i < assets.size(); i++) {
                 assetDao.insert(assets.get(i));
-                String stringId = assets.get (i).getStringId ();
+                String stringId = assets.get(i).getStringId();
                 assetStorageMedia.get(i).setAssetId(stringId);
                 assetStorageMediumDao.insert(assetStorageMedia.get(i));
                 assetRecord(assets.get(i).getStringId());
                 // 流程
-              importActivity (manualStartActivityRequests,stringId);
+                importActivity(manualStartActivityRequests, stringId);
                 success++;
             }
-             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String res = "导入成功" + success + "条";
@@ -2585,10 +2587,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (Asset asset : assets) {
                 assetDao.insert(asset);
                 assetRecord(asset.getStringId());
-              importActivity (manualStartActivityRequests,asset.getStringId());
+                importActivity(manualStartActivityRequests, asset.getStringId());
                 success++;
             }
-             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
         String res = "导入成功" + success + "条";
@@ -2606,17 +2608,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     private void importActivity(List<ManualStartActivityRequest> manualStartActivityRequests, String stringId) {
-        //                ActionResponse actionResponse = areaClient.queryCdeAndAreaId ("zichanguanliyuan");
+        // ActionResponse actionResponse = areaClient.queryCdeAndAreaId ("zichanguanliyuan");
         ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
-        List<LinkedHashMap> mapList= (List<LinkedHashMap>) actionResponse.getBody ();
-        StringBuilder stringBuilder = new StringBuilder ();
+        List<LinkedHashMap> mapList = (List<LinkedHashMap>) actionResponse.getBody();
+        StringBuilder stringBuilder = new StringBuilder();
 
         for (LinkedHashMap linkedHashMap : mapList) {
-            stringBuilder.append( linkedHashMap.get ("stringId")).append(",");
+            stringBuilder.append(linkedHashMap.get("stringId")).append(",");
         }
-        String ids = stringBuilder.substring (0, stringBuilder.length () - 1);
+        String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
 
-        Map<String, Object> formData = new HashMap<> ();
+        Map<String, Object> formData = new HashMap<>();
 
         formData.put("admittanceUserId", ids);
 
@@ -2624,8 +2626,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         manualStartActivityRequest.setBusinessId(stringId);
         manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
         manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-        manualStartActivityRequest
-                .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
+        manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
         manualStartActivityRequests.add(manualStartActivityRequest);
     }
 
@@ -2678,6 +2679,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             throw new BusinessException("导出数据为空");
         }
     }
+
 
 }
 

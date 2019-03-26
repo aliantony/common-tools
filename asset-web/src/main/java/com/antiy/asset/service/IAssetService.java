@@ -232,4 +232,6 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     Integer queryAssetCountByAreaIds(List<Integer> areaIds);
 
+
+
 }

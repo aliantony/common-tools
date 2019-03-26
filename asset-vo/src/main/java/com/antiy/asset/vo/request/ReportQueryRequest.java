@@ -45,6 +45,10 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
     @ApiModelProperty(value = "顶级区域ID,默认不传")
     private Integer                      topAreaId;
 
+    // 用户登陆的区域查询条件
+    @ApiModelProperty(value = "区域列表 不用传")
+    private List<Integer>                areaIds;
+
     public Integer getTopAreaId() {
         return topAreaId;
     }
@@ -91,6 +95,14 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
 
     public void setTimeType(String timeType) {
         this.timeType = timeType;
+    }
+
+    public List<Integer> getAreaIds() {
+        return areaIds;
+    }
+
+    public void setAreaIds(List<Integer> areaIds) {
+        this.areaIds = areaIds;
     }
 
     @Override
