@@ -20,10 +20,10 @@ public enum AssetSecondCategoryEnum {
     private String msg;
 
     public String getCode(String code) {
-        this.code = code;
+        return code;
     }
 
     public String getMsg(String msg) {
-        this.msg = msg;
+        return msg;
     }
 }
