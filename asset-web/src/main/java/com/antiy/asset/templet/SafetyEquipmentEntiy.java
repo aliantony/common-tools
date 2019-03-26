@@ -1,6 +1,7 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
+import com.antiy.asset.vo.enums.DataTypeEnum;
 
 public class SafetyEquipmentEntiy {
 
@@ -41,12 +42,12 @@ public class SafetyEquipmentEntiy {
     /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话",type = 0)
+    @ExcelField(value = "telephone", align = 1, title = "联系电话",type = 0,dataType = DataTypeEnum.TEL)
     private String telephone;
     /**
      * 使用者邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱",type = 0)
+    @ExcelField(value = "email", align = 1, title = "邮箱",type = 0,dataType = DataTypeEnum.EMAIL)
     private String email;
     /**
      * 物理位置
@@ -67,12 +68,12 @@ public class SafetyEquipmentEntiy {
     /**
      * ip地址
      */
-    @ExcelField(value = "ip", align = 1, title = "ip地址(必填)",required = true)
+    @ExcelField(value = "ip", align = 1, title = "ip地址(必填)",required = true,dataType = DataTypeEnum.MAC)
     private String ip;
     /**
      * ip地址
      */
-    @ExcelField(value = "mac", align = 1, title = "mac地址(必填)",required = true)
+    @ExcelField(value = "mac", align = 1, title = "mac地址(必填)",required = true,dataType = DataTypeEnum.IP)
     private String mac;
 
     /**

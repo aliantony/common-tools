@@ -1,6 +1,7 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
+import com.antiy.asset.vo.enums.DataTypeEnum;
 
 public class OtherDeviceEntity {
 
@@ -39,12 +40,12 @@ public class OtherDeviceEntity {
     /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0)
+    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0,dataType = DataTypeEnum.TEL)
     private String telephone;
     /**
      * 使用者邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0)
+    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0,dataType = DataTypeEnum.EMAIL)
     private String email;
 
     /**
