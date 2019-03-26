@@ -16,8 +16,19 @@ public class AssetAreaReportRequest extends BaseRequest {
     @ApiModelProperty(value = "父区域id信息")
     private Integer       parentAreaId;
 
+    @ApiModelProperty(value = "父区域名字")
+    private String        parentAreaName;
+
     @ApiModelProperty(value = "子区域id列表信息")
     private List<Integer> childrenAradIds;
+
+    public String getParentAreaName() {
+        return parentAreaName;
+    }
+
+    public void setParentAreaName(String parentAreaName) {
+        this.parentAreaName = parentAreaName;
+    }
 
     public Integer getParentAreaId() {
         return parentAreaId;

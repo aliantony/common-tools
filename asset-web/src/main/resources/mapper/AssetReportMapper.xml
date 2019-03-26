@@ -11,25 +11,25 @@
     <select id="getAllAssetWithArea" resultType="java.util.Map"
             parameterType="com.antiy.asset.vo.request.ReportQueryRequest">
         SELECT
-        <foreach collection="assetAreaIds" item="item">
-            sum(CASE WHEN area_id IN (#{item.parentAreaId},
-            <foreach collection="item.childrenAradIds" separator="," item="area">
-                #{area}
+        <trim suffixOverrides=",">
+            <foreach collection="assetAreaIds" item="item">
+                sum(CASE WHEN area_id IN (#{item.parentAreaId},
+                <foreach collection="item.childrenAradIds" separator="," item="area">
+                    #{area}
+                </foreach>
+                )
+                THEN 1
+                ELSE 0
+                END
+                ) AS #{item.parentAreaName},
             </foreach>
-            )
-            THEN 1
-            ELSE 0
-            END
-            ) AS #{item.parentAreaId}
-        </foreach>
+        </trim>
         FROM
         asset
         WHERE
         gmt_create &lt;= #{endTime}
         AND asset_status != '9'
         AND STATUS = 1
-        ORDER BY
-        areaCount DESC
     </select>
 
 
