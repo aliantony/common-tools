@@ -1,6 +1,7 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
+import com.antiy.asset.vo.enums.DataTypeEnum;
 
 /**
  * 网络设备
@@ -44,13 +45,13 @@ public class NetworkDeviceEntity {
     /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0)
+    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0,dataType = DataTypeEnum.TEL)
     private String  telephone;
 
     /**
      * 邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0)
+    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0,dataType = DataTypeEnum.EMAIL)
     private String  email;
 
     /**
@@ -97,17 +98,17 @@ public class NetworkDeviceEntity {
     /**
      * 外网IP
      */
-    @ExcelField(value = "outerIp", align = 1, title = "外网IP")
+    @ExcelField(value = "outerIp", align = 1, title = "外网IP",dataType = DataTypeEnum.IP)
     private String  outerIp;
     /**
      * mac地址
      */
-    @ExcelField(value = "mac", align = 1, title = "mac地址")
+    @ExcelField(value = "mac", align = 1, title = "mac地址",dataType = DataTypeEnum.MAC)
     private String  mac;
     /**
      * 子网掩码
      */
-    @ExcelField(value = "subnetMask", align = 1, title = "子网掩码")
+    @ExcelField(value = "subnetMask", align = 1, title = "子网掩码",dataType = DataTypeEnum.IP)
     private String  subnetMask;
     /**
      * 预计带宽
