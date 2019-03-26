@@ -42,6 +42,17 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
     @ApiModelProperty(value = "区域查询条件")
     private List<AssetAreaReportRequest> assetAreaIds;
 
+    @ApiModelProperty(value = "顶级区域ID,默认不传")
+    private Integer                      topAreaId;
+
+    public Integer getTopAreaId() {
+        return topAreaId;
+    }
+
+    public void setTopAreaId(Integer topAreaId) {
+        this.topAreaId = topAreaId;
+    }
+
     public List<AssetAreaReportRequest> getAssetAreaIds() {
         return assetAreaIds;
     }
