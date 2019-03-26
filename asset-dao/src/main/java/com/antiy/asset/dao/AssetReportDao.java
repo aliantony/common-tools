@@ -16,5 +16,5 @@ public interface AssetReportDao {
      * 获取所有的区域总数信息，并且按照资产个数排序
      * @return
      */
-    List<Map<String, String>> getAllAssetWithArea(ReportQueryRequest reportQueryRequest);
+    List<Map<String, Integer>> getAllAssetWithArea(ReportQueryRequest reportQueryRequest);
 }
