@@ -136,31 +136,6 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             // 参数校验
             WorkOrderVO workOrderVO = assetStatusReqeust.getWorkOrderVO();
             workOrderVO.setOrderSource(1);
-            // if (assetStatusReqeust.getSoftware()) {
-            // SoftwareStatusEnum softwareStatusEnum = this.getNextSoftwareStatus(assetStatusReqeust);
-            // if (SoftwareStatusEnum.WAIT_RETIRE.getCode().equals(softwareStatusEnum.getCode())) {
-            // workOrderVO.setName(AssetOperationTableEnum.SOFTWARE.getMsg()
-            // + SoftwareStatusEnum.WAIT_RETIRE.getMsg());
-            // workOrderVO.setOrderType(WorkOrderTypeEnum.SOFTWARE_DECOMMISSIONING_ANALYSIS.getCode());
-            // }
-            // } else {
-            // // 硬件
-            // AssetStatusEnum assetStatusEnum = this.getNextAssetStatus(assetStatusReqeust);
-            // if (AssetStatusEnum.WAIT_VALIDATE.getCode().equals(assetStatusEnum.getCode())) {
-            // workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg());
-            // workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_VERIFY.getCode());
-            // } else if (AssetStatusEnum.WAIT_RETIRE.getCode().equals(assetStatusEnum.getCode())) {
-            // workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg());
-            // workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_BE_DECOMMISSIONED.getCode());
-            // } else if (AssetStatusEnum.WAIT_CHECK.getCode().equals(assetStatusEnum.getCode())) {
-            // workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg() + assetStatusEnum.getMsg());
-            // workOrderVO.setOrderType(WorkOrderTypeEnum.HARDWARE_TO_BE_CHECKED.getCode());
-            // } else {
-            // workOrderVO.setName(AssetOperationTableEnum.ASSET.getMsg());
-            // workOrderVO.setOrderType(WorkOrderTypeEnum.OTHER.getCode());
-            // }
-            //
-            // }
             ParamterExceptionUtils.isNull(workOrderVO.getName(), "工单名称不能为空");
             ParamterExceptionUtils.isNull(workOrderVO.getOrderSource(), "工单来源不能为空");
             ParamterExceptionUtils.isNull(workOrderVO.getOrderType(), "工单类型不能为空");
