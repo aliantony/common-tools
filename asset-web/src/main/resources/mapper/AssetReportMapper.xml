@@ -7,38 +7,27 @@
         <result column="areaId" property="areaId"/>
         <result column="date" property="date"/>
     </resultMap>
-    <!--按天统计总数-->
-    <select id="getAllAssetWithArea" resultMap="BaseResultMap"
+    <!--获取所有的统计数据-->
+    <select id="getAllAssetWithArea" resultType="java.util.Map"
             parameterType="com.antiy.asset.vo.request.ReportQueryRequest">
-
         SELECT
-        count( 1 ) AS areaCount,
-        FROM_UNIXTIME( gmt_create / 1000, '%Y-%m-%d' ) AS date,
-        CASE
         <foreach collection="assetAreaIds" item="item">
-            WHEN area_id IN (#{item.parentAreaId},
+            sum(CASE WHEN area_id IN (#{item.parentAreaId},
             <foreach collection="item.childrenAradIds" separator="," item="area">
                 #{area}
             </foreach>
             )
-            THEN #{item.parentAreaId}
+            THEN 1
+            ELSE 0
+            END
+            ) AS #{item.parentAreaId}
         </foreach>
-        ELSE area_id
-        END AS areaId
         FROM
         asset
         WHERE
-        FROM_UNIXTIME( gmt_create, '%Y-%m-%d') &lt; #{startTime}
+        gmt_create &lt;= #{endTime}
         AND asset_status != '9'
         AND STATUS = 1
-        AND area_id in
-        <foreach collection="assetAreaIds" item="item" open="(" close=")" separator=",">
-            <foreach collection="item.childrenAradIds" separator="," item="area">
-                #{area}
-            </foreach>
-        </foreach>
-        GROUP BY
-        area_id
         ORDER BY
         areaCount DESC
     </select>
