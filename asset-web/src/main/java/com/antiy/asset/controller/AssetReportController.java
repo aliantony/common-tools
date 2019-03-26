@@ -3,17 +3,18 @@ package com.antiy.asset.controller;
 import javax.annotation.Resource;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.service.IAssetReportService;
+import com.antiy.asset.vo.request.ReportQueryRequest;
+import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.common.base.ActionResponse;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -25,7 +26,10 @@ import io.swagger.annotations.ApiResponses;
 public class AssetReportController {
 
     @Resource
-    IAssetReportService iAssetReportService;
+    private IAssetReportService     iAssetReportService;
+
+    @Resource
+    private IAssetAreaReportService iAssetAreaReportService;
 
     /**
      * 根据时间条件查询分类统计资产数量
@@ -38,6 +42,15 @@ public class AssetReportController {
     @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
     public ActionResponse queryCategoryCountByTime() throws Exception {
         return ActionResponse.success(iAssetReportService.queryCategoryCountByTime());
+    }
+
+    @ApiOperation(value = "根据时间条件查询分类统计资产数量", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/queryAreaCount", method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('asset:report:queryAreaCount')")
+    public ActionResponse queryAreaCount(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
+        iAssetAreaReportService.getAssetWithArea(reportQueryRequest);
+        return null;
     }
 
 }

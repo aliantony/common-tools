@@ -1,8 +1,8 @@
 package com.antiy.asset.dao;
 
 import java.util.List;
+import java.util.Map;
 
-import com.antiy.asset.entity.AssetAreaEntity;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 
 /**
@@ -16,5 +16,5 @@ public interface AssetReportDao {
      * 获取所有的区域总数信息，并且按照资产个数排序
      * @return
      */
-    List<AssetAreaEntity> getAllAssetWithArea(ReportQueryRequest reportQueryRequest);
+    List<Map<String, Integer>> getAllAssetWithArea(ReportQueryRequest reportQueryRequest);
 }
