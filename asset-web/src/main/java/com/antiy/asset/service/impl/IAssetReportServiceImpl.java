@@ -14,5 +14,6 @@ public class IAssetReportServiceImpl implements IAssetReportService {
     @Override
     public AssetCategoryModelResponse queryCategoryCountByTime() {
 
+        return null;
     }
 }
