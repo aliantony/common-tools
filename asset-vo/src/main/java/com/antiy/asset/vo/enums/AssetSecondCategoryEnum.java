@@ -19,11 +19,11 @@ public enum AssetSecondCategoryEnum {
     // msg
     private String msg;
 
-    public void getCode(String code) {
+    public String getCode(String code) {
         this.code = code;
     }
 
-    public void getMsg(String msg) {
+    public String getMsg(String msg) {
         this.msg = msg;
     }
 }
