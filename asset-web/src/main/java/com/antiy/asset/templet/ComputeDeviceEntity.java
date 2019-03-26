@@ -1,6 +1,8 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
+import com.antiy.asset.vo.enums.DataTypeEnum;
+
 import lombok.Data;
 
 /**
@@ -47,13 +49,13 @@ public class ComputeDeviceEntity {
     /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0)
+    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0,dataType = DataTypeEnum.TEL)
     private String  telephone;
 
     /**
      * 邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0)
+    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0,dataType = DataTypeEnum.EMAIL)
     private String  email;
 
     /**
@@ -287,22 +289,22 @@ public class ComputeDeviceEntity {
     /**
      * 网卡ip地址
      */
-    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip(必填)")
+    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip(必填)",dataType = DataTypeEnum.IP)
     private String  networkIpAddress;
     /**
      * 网卡mac地址
      */
-    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac(必填)")
+    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac(必填)",dataType = DataTypeEnum.MAC)
     private String  networkMacAddress;
     /**
      * 网卡子网掩码
      */
-    @ExcelField(value = "networkSubnetMask", align = 1, title = "网卡子网掩码")
+    @ExcelField(value = "networkSubnetMask", align = 1, title = "网卡子网掩码",dataType = DataTypeEnum.IP)
     private String  networkSubnetMask;
     /**
      * 网卡默认网关
      */
-    @ExcelField(value = "networkDefaultGateway", align = 1, title = "网卡默认网关")
+    @ExcelField(value = "networkDefaultGateway", align = 1, title = "网卡默认网关",dataType = DataTypeEnum.IP)
     private String  networkDefaultGateway;
 
     public String getName() {
