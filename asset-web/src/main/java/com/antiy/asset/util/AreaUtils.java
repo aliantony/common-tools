@@ -22,14 +22,13 @@ public class AreaUtils {
      * @return 如果返回null，则说明不存在下级节点
      */
     private List<Integer> getNextArea(Integer areaId) {
-        List<SysArea> childAreaList = null;
+        List<SysArea> childAreaList = LoginUserUtil.getLoginUser().getAreas();;
         if (null != areaId) {
             childAreaList = LoginUserUtil.getLoginUser().getAreas().stream()
                 .filter(area -> area.getParentId().equals(areaId + "")).collect(Collectors.toList());
         }
-        childAreaList = LoginUserUtil.getLoginUser().getAreas();
 
-        if (CollectionUtils.isEmpty(childAreaList)) {
+        if (CollectionUtils.isNotEmpty(childAreaList)) {
             return childAreaList.stream().map(SysArea::getId).collect(Collectors.toList());
         }
 
