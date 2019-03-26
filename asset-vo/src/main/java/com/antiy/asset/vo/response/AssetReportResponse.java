@@ -1,8 +1,8 @@
 package com.antiy.asset.vo.response;
 
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.List;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetReportResponse 资产报表返回对象 </p>
@@ -15,32 +15,27 @@ public class AssetReportResponse extends BaseResponse {
      * 横坐标值
      */
     @ApiModelProperty("横坐标值")
-    private List<String>     abscissa;
+    private List<String>     date;
     /**
      * 数据
      */
     @ApiModelProperty("返回数据")
-    private List<ReportData> dataList;
+    private List<ReportData> list;
 
-    public List<String> getAbscissa() {
-        return abscissa;
+    public List<String> getDate() {
+        return date;
     }
 
-    public void setAbscissa(List<String> abscissa) {
-        this.abscissa = abscissa;
+    public void setDate(List<String> date) {
+        this.date = date;
     }
 
-    public List<ReportData> getDataList() {
-        return dataList;
+    public List<ReportData> getList() {
+        return list;
     }
 
-    public void setDataList(List<ReportData> dataList) {
-        this.dataList = dataList;
-    }
-
-    @Override
-    public String toString() {
-        return "AssetReportResponse{" + "abscissa=" + abscissa + ", dataList=" + dataList + '}';
+    public void setList(List<ReportData> list) {
+        this.list = list;
     }
 
     class ReportData {
@@ -53,12 +48,12 @@ public class AssetReportResponse extends BaseResponse {
          * 总数
          */
         @ApiModelProperty("总数")
-        private List<Integer> total;
+        private List<Integer> data;
         /**
          * 新增数
          */
         @ApiModelProperty("新增数")
-        private List<Integer> addNumber;
+        private List<Integer> add;
 
         public String getClassify() {
             return classify;
@@ -68,26 +63,20 @@ public class AssetReportResponse extends BaseResponse {
             this.classify = classify;
         }
 
-        public List<Integer> getTotal() {
-            return total;
+        public List<Integer> getData() {
+            return data;
         }
 
-        public void setTotal(List<Integer> total) {
-            this.total = total;
+        public void setData(List<Integer> data) {
+            this.data = data;
         }
 
-        public List<Integer> getAddNumber() {
-            return addNumber;
+        public List<Integer> getAdd() {
+            return add;
         }
 
-        public void setAddNumber(List<Integer> addNumber) {
-            this.addNumber = addNumber;
-        }
-
-        @Override
-        public String toString() {
-            return "ReportData{" + "classify='" + classify + '\'' + ", total=" + total + ", addNumber=" + addNumber
-                   + '}';
+        public void setAdd(List<Integer> add) {
+            this.add = add;
         }
     }
 }
