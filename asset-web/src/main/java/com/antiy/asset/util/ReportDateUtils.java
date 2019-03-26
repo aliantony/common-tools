@@ -19,6 +19,23 @@ import com.antiy.common.utils.ParamterExceptionUtils;
  */
 public class ReportDateUtils {
 
+    static Map<Integer, String> monthsMap = new HashMap<>();
+
+    static {
+        monthsMap.put(1, "一月");
+        monthsMap.put(2, "二月");
+        monthsMap.put(3, "三月");
+        monthsMap.put(4, "四月");
+        monthsMap.put(5, "五月");
+        monthsMap.put(6, "六月");
+        monthsMap.put(7, "七月");
+        monthsMap.put(8, "八月");
+        monthsMap.put(9, "九月");
+        monthsMap.put(10, "十月");
+        monthsMap.put(11, "十一月");
+        monthsMap.put(12, "十二月");
+    }
+
     /**
      * 获取当前时间的周时间
      * @return Map.key 为数据库返回的星期几，value返回前端数据格式
@@ -99,22 +116,9 @@ public class ReportDateUtils {
         Map<String, String> resultMaps = new HashMap<>();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
         LocalDate localDate = LocalDate.now();
-        Map<Integer, String> weeksMap = new HashMap<>();
-        weeksMap.put(1, "一月");
-        weeksMap.put(2, "二月");
-        weeksMap.put(3, "三月");
-        weeksMap.put(4, "四月");
-        weeksMap.put(5, "五月");
-        weeksMap.put(6, "六月");
-        weeksMap.put(7, "七月");
-        weeksMap.put(8, "八月");
-        weeksMap.put(9, "九月");
-        weeksMap.put(10, "十月");
-        weeksMap.put(11, "十一月");
-        weeksMap.put(12, "十二月");
         for (int i = 1; i <= localDate.getMonthValue(); i++) {
             LocalDate localDateTemp = localDate.withMonth(i);
-            resultMaps.put(localDateTemp.format(dateTimeFormatter), weeksMap.get(i));
+            resultMaps.put(localDateTemp.format(dateTimeFormatter), monthsMap.get(i));
 
             // help gc
             localDateTemp = null;
@@ -162,11 +166,44 @@ public class ReportDateUtils {
      */
     public static Map<String, String> getSeason() {
         LocalDate localDate = LocalDate.now();
-        System.out.println(localDate.getMonth().getValue());
-        return null;
-    }
+        // 获取当前的月份
+        int month = localDate.getMonth().getValue();
+        Map<String, String> resultMaps = new HashMap<>();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        if (month <= 3) {
+            for (int i = 1; i <= 3; i++) {
+                LocalDate localDateTemp = localDate.withMonth(i);
+                resultMaps.put(localDateTemp.format(dateTimeFormatter), monthsMap.get(i));
 
-    public static void main(String[] args) {
-        System.out.println(getCurrentMonthOfYear());
+                // help gc
+                localDateTemp = null;
+            }
+        } else if (month > 3 && month <= 6) {
+            for (int i = 4; i <= 6; i++) {
+                LocalDate localDateTemp = localDate.withMonth(i);
+                resultMaps.put(localDateTemp.format(dateTimeFormatter), monthsMap.get(i));
+
+                // help gc
+                localDateTemp = null;
+            }
+        } else if (month > 6 && month <= 9) {
+            for (int i = 7; i <= 9; i++) {
+                LocalDate localDateTemp = localDate.withMonth(i);
+                resultMaps.put(localDateTemp.format(dateTimeFormatter), monthsMap.get(i));
+
+                // help gc
+                localDateTemp = null;
+            }
+        } else if (month > 9 && month <= 12) {
+            for (int i = 10; i <= 12; i++) {
+                LocalDate localDateTemp = localDate.withMonth(i);
+                resultMaps.put(localDateTemp.format(dateTimeFormatter), monthsMap.get(i));
+
+                // help gc
+                localDateTemp = null;
+            }
+        }
+
+        return resultMaps;
     }
 }
