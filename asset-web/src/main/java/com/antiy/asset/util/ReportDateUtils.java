@@ -100,7 +100,6 @@ public class ReportDateUtils {
 
         // 获取当前月一共多少天
         int days = lastDay.getDayOfMonth() - firstday.getDayOfMonth() + firstday.getDayOfWeek().ordinal() + 1;
-        int weeks = (int) Math.ceil(days / 7.0);
         Map<String, String> resultMap = new HashMap<>();
 
         Map<Integer, String> weeksMap = new HashMap<>();
@@ -112,7 +111,8 @@ public class ReportDateUtils {
         weeksMap.put(6, "第六周");
         int weekCount = lastWeek - firstWeek + 1;
         for (int i = 1; i <= weekCount; i++) {
-            resultMap.put((firstWeek + i - 1) + "", weeksMap.get(i));
+            // 由于java周是1到53，mysql是0到52，所以此处-2
+            resultMap.put((firstWeek + i - 2) + "", weeksMap.get(i));
         }
         return resultMap;
     }
@@ -216,6 +216,8 @@ public class ReportDateUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(getMonthWithDate(1542468106000L,1558468106000L));
+        // System.out.println(getMonthWithDate(1542468106000L,1558468106000L));
+
+        System.out.println(getWeekOfMonth());
     }
 }
