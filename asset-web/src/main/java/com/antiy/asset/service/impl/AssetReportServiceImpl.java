@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetReportDao;
-import com.antiy.asset.dao.AssetReportServiceDao;
 import com.antiy.asset.entity.AssetCategoryEntity;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.service.IAssetCategoryModelService;
@@ -30,16 +29,13 @@ import com.antiy.common.utils.ParamterExceptionUtils;
  * @create 2019-03-26 13:41
  **/
 @Service
-public class IAssetReportServiceImpl implements IAssetReportService {
+public class AssetReportServiceImpl implements IAssetReportService {
     @Resource
     IAssetCategoryModelService iAssetCategoryModelService;
     @Resource
     AssetCategoryModelDao      assetCategoryModelDao;
     @Resource
     AssetReportDao             assetReportDao;
-
-    @Resource
-    AssetReportServiceDao      reportServiceDao;
     @Resource
     AssetCategoryModelDao      categoryModelDao;
 
@@ -75,7 +71,7 @@ public class IAssetReportServiceImpl implements IAssetReportService {
                 Map.Entry<String, String> entry = iterator.next();
                 String key = entry.getKey();
                 String time = entry.getValue();
-                List<AssetCategoryEntity> categoryEntityList = reportServiceDao.findCategoryCountByTime(query);
+                List<AssetCategoryEntity> categoryEntityList = assetReportDao.findCategoryCountByTime(query);
                 for (AssetCategoryEntity categoryEntity : categoryEntityList) {
                     if (key.equals(categoryEntity.getDate())) {
                         assetCategoryModel.setId(categoryEntity.getCategoryModel());
