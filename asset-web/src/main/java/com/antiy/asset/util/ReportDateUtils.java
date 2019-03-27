@@ -150,15 +150,14 @@ public class ReportDateUtils {
         // 获取时间差月份
         Long months = startDate.until(endDate, ChronoUnit.MONTHS);
 
+        ParamterExceptionUtils.isTrue(months < 12, "月份不能超过12个月");
+
         Map<String, String> resultMaps = new HashMap<>();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
         resultMaps.put(startDate.format(dateTimeFormatter), startDate.format(dateTimeFormatter));
         for (int i = 1; i <= months; i++) {
-            LocalDate localDateTemp = startDate.withMonth(i);
-            resultMaps.put(localDateTemp.format(dateTimeFormatter), localDateTemp.format(dateTimeFormatter));
-
-            // help gc
-            localDateTemp = null;
+            startDate = startDate.plusMonths(1);
+            resultMaps.put(startDate.format(dateTimeFormatter), startDate.format(dateTimeFormatter));
         }
         return resultMaps;
     }
@@ -216,7 +215,7 @@ public class ReportDateUtils {
         return resultMaps;
     }
 
-    public static void main(String[] args){
-        System.out.println(getDayOfWeek());
+    public static void main(String[] args) {
+        System.out.println(getMonthWithDate(1542468106000L,1558468106000L));
     }
 }
