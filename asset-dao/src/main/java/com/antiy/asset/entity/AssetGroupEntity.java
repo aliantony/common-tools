@@ -9,7 +9,7 @@ public class AssetGroupEntity {
 
     private Integer groupId;
     // 名字
-    private Integer name;
+    private String name;
     // 日期
     private String  date;
 
@@ -29,11 +29,11 @@ public class AssetGroupEntity {
         this.groupId = groupId;
     }
 
-    public Integer getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(Integer name) {
+    public void setName(String name) {
         this.name = name;
     }
 

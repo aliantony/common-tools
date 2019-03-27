@@ -22,4 +22,13 @@ public interface IAssetReportService {
      */
     AssetReportResponse getNewAssetWithCategoryInWeek(ReportQueryRequest reportQueryRequest) throws Exception;
 
+
+    /**
+     * 获取资产组top5信息
+     * @param reportQueryRequest
+     * @return
+     * @throws Exception
+     */
+    AssetReportResponse getAssetConutWithGroup(ReportQueryRequest reportQueryRequest) throws Exception;
+
 }

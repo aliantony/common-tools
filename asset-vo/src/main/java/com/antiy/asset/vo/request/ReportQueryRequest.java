@@ -2,13 +2,11 @@ package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -25,19 +23,19 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
     @ApiModelProperty(value = "资产状态")
     private Integer                      assetStatus;
 
-    @ApiModelProperty(value = "开始时间(时间戳)", required = true)
-    @NotNull(message = "开始时间不能为空")
+    @ApiModelProperty(value = "开始时间(时间戳)", required = false)
+//    @NotNull(message = "开始时间不能为空")
     private Long                         startTime;
 
-    @ApiModelProperty(value = "结束时间(时间戳)", required = true)
-    @NotNull(message = "结束时间不能为空")
+    @ApiModelProperty(value = "结束时间(时间戳)", required = false)
+//    @NotNull(message = "结束时间不能为空")
     private Long                         endTime;
 
     @ApiModelProperty(value = "时间类型,1-本周,2-本月,3-本季度,4-本年,5-时间范围", required = true)
     @NotBlank(message = "时间类型不能为空")
     private String                       timeType;
 
-    @ApiModelProperty(value = "查询top条件，默认不传")
+    @ApiModelProperty(value = "top条件，默认不传")
     private String                       topFive;
     @ApiModelProperty(value = "数据库使用时间转换，默认不传")
     private String                       sqlTime;
@@ -110,7 +108,7 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
 
     @Override
     public void validate() throws RequestParamValidateException {
-        ParamterExceptionUtils.isTrue(endTime > startTime, "开始时间必须小于结束时间");
+//        ParamterExceptionUtils.isTrue(endTime > startTime, "开始时间必须小于结束时间");
     }
 
     public String getTopFive() {

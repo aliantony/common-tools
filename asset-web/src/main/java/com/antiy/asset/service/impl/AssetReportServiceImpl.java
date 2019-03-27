@@ -1,15 +1,10 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.entity.AssetCategoryEntity;
 import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.entity.AssetGroupEntity;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.util.DataTypeUtils;
@@ -21,6 +16,10 @@ import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.*;
 
 /**
  * 资产报表实现类
@@ -284,4 +283,80 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
         return list;
     }
+
+    @Override
+    public AssetReportResponse getAssetConutWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
+
+        reportQueryRequest.setTopFive("查询top5");
+        // @ApiModelProperty(value = "时间类型,1-本周,2-本月,3-本季度,4-本年,5-时间范围", required = true)
+        switch (reportQueryRequest.getTimeType()) {
+            case "1":
+                reportQueryRequest.setSqlTime("%w");
+                return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getDayOfWeek());
+
+            case "2":
+                reportQueryRequest.setSqlTime("%U");
+                return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getWeekOfMonth());
+
+            case "3":
+                reportQueryRequest.setSqlTime("%Y-%m");
+                return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getSeason());
+
+            case "4":
+                reportQueryRequest.setSqlTime("%Y-%m");
+                return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear());
+
+            case "5":
+                reportQueryRequest.setSqlTime("%Y-%m");
+                return buildGroupCountByTime(reportQueryRequest, ReportDateUtils
+                    .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
+            default:
+                reportQueryRequest.setSqlTime("%Y-%m");
+                return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear());
+        }
+
+    }
+
+    private AssetReportResponse buildGroupCountByTime(ReportQueryRequest reportQueryRequest,
+                                                      Map<String, String> weekMap) {
+        List<AssetGroupEntity> assetConutWithGroup = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
+        AssetReportResponse reportResponse = new AssetReportResponse();
+        Iterator<Map.Entry<String, String>> iterator = weekMap.entrySet().iterator();
+        List<String> dateList = new ArrayList<>();
+
+        // 将结果数据组装到Response中
+        List<AssetReportResponse.ReportData> reportDataList = new ArrayList<>();
+        List<Integer> countDate = new ArrayList<>();
+        while (iterator.hasNext()) {
+            int count = 0;
+
+            Map.Entry<String, String> entry = iterator.next();
+            String key = entry.getKey();
+            String time = entry.getValue();
+            for (AssetGroupEntity entity : assetConutWithGroup) {
+                if (key.equals(entity.getDate())) {
+                    count =  entity.getGroupCount();
+                }
+            }
+
+            countDate.add(count);
+            dateList.add(time);
+
+        }
+
+
+        for (AssetGroupEntity groupEntity : assetConutWithGroup) {
+            AssetReportResponse.ReportData reportData = reportResponse.new ReportData();
+            reportData.setClassify(groupEntity.getName ());
+            reportData.setData (countDate);
+            reportDataList.add (reportData);
+        }
+
+        reportResponse.setList (reportDataList);
+        reportResponse.setDate (dateList);
+
+        return reportResponse;
+    }
+
+
 }

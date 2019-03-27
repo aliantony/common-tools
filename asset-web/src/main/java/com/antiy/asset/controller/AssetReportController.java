@@ -1,21 +1,19 @@
 package com.antiy.asset.controller;
 
-import javax.annotation.Resource;
-
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.common.base.ActionResponse;
-
 import io.swagger.annotations.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author zhangyajun
@@ -67,4 +65,20 @@ public class AssetReportController {
     public ActionResponse getNewAssetWithCategoryInWeek(ReportQueryRequest reportQueryRequest) throws Exception {
         return ActionResponse.success(iAssetReportService.getNewAssetWithCategoryInWeek(reportQueryRequest));
     }
+
+    /**
+     * 根据时间条件查询分类统计资产新增数量
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "根据条件查询资产组top5", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/groupCountTop/", method = RequestMethod.GET)
+//    @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
+    public ActionResponse getAssetConutWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
+        return ActionResponse.success(iAssetReportService.getAssetConutWithGroup(reportQueryRequest));
+    }
+
+
+
 }
