@@ -98,8 +98,6 @@ public class ReportDateUtils {
         int firstWeek = firstday.get(weekFields.weekOfWeekBasedYear());
         int lastWeek = lastDay.get(weekFields.weekOfWeekBasedYear());
 
-        // 获取当前月一共多少天
-        int days = lastDay.getDayOfMonth() - firstday.getDayOfMonth() + firstday.getDayOfWeek().ordinal() + 1;
         Map<String, String> resultMap = new HashMap<>();
 
         Map<Integer, String> weeksMap = new HashMap<>();
