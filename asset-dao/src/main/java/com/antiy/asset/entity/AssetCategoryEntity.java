@@ -13,6 +13,28 @@ public class AssetCategoryEntity {
     // 日期
     private String  date;
 
+    // 父类主键
+    private String  parentId;
+
+    // 品类名称
+    private String  categoryName;
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
     public Integer getCategoryCount() {
         return categoryCount;
     }
@@ -39,8 +61,8 @@ public class AssetCategoryEntity {
 
     @Override
     public String toString() {
-        return "CategoryCountVO{" + "categoryCount=" + categoryCount + ", categoryModel=" + categoryModel + ", date='"
-               + date + '\'' + '}';
+        return "AssetCategoryEntity{" + "categoryCount=" + categoryCount + ", categoryModel=" + categoryModel
+               + ", date='" + date + '\'' + ", parentId='" + parentId + '\'' + '}';
     }
 
     @Override
