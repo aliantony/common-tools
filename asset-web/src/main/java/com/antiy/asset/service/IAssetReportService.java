@@ -1,9 +1,8 @@
 package com.antiy.asset.service;
 
+import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
-import com.antiy.asset.vo.response.AssetCategoryModelResponse;
 import com.antiy.asset.vo.response.AssetReportResponse;
-import com.antiy.common.base.ActionResponse;
 
 /**
  * <p> 资产报表 服务类 </p>
@@ -13,7 +12,7 @@ import com.antiy.common.base.ActionResponse;
  */
 public interface IAssetReportService {
 
-    AssetCategoryModelResponse queryCategoryCountByTime();
+    AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query);
 
     /**
      * 获取本周的新增资产报表信息

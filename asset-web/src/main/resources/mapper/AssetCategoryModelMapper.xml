@@ -376,7 +376,7 @@
 
     <select id="findAllCategory" resultMap="BaseResultMap">
         select
-        id, parent_id
+        id, parent_id,name
         from
         <include refid="Table_Name"></include>
         where status=1

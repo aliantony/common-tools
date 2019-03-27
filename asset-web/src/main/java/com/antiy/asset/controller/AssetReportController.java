@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.service.IAssetReportService;
+import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.common.base.ActionResponse;
@@ -39,9 +40,9 @@ public class AssetReportController {
     @ApiOperation(value = "根据时间条件查询分类统计资产数量", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/categoryCountByTime", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
-    public ActionResponse queryCategoryCountByTime() throws Exception {
-        return ActionResponse.success(iAssetReportService.queryCategoryCountByTime());
+    // @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
+    public ActionResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
+        return ActionResponse.success(iAssetReportService.queryCategoryCountByTime(query));
     }
 
     @ApiOperation(value = "根据时间条件查询分类统计资产数量", notes = "主键封装对象")

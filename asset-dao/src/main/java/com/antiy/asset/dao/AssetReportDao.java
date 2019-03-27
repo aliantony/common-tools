@@ -3,8 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.antiy.asset.entity.AssetAreaEntity;
 import com.antiy.asset.entity.AssetCategoryEntity;
+import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 
 /**
@@ -31,4 +31,6 @@ public interface AssetReportDao {
      * @return
      */
     List<AssetCategoryEntity> getNewAssetWithCategoryByMonth(ReportQueryRequest reportQueryRequest);
+
+    List<AssetCategoryEntity> findCategoryCountByTime(AssetReportCategoryCountQuery query);
 }
