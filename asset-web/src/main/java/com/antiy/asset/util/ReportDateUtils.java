@@ -98,9 +98,6 @@ public class ReportDateUtils {
         int firstWeek = firstday.get(weekFields.weekOfWeekBasedYear());
         int lastWeek = lastDay.get(weekFields.weekOfWeekBasedYear());
 
-        // 获取当前月一共多少天
-        int days = lastDay.getDayOfMonth() - firstday.getDayOfMonth() + firstday.getDayOfWeek().ordinal() + 1;
-        int weeks = (int) Math.ceil(days / 7.0);
         Map<String, String> resultMap = new HashMap<>();
 
         Map<Integer, String> weeksMap = new HashMap<>();
@@ -112,7 +109,8 @@ public class ReportDateUtils {
         weeksMap.put(6, "第六周");
         int weekCount = lastWeek - firstWeek + 1;
         for (int i = 1; i <= weekCount; i++) {
-            resultMap.put((firstWeek + i - 1) + "", weeksMap.get(i));
+            // 由于java周是1到53，mysql是0到52，所以此处-2
+            resultMap.put((firstWeek + i - 2) + "", weeksMap.get(i));
         }
         return resultMap;
     }
@@ -150,15 +148,14 @@ public class ReportDateUtils {
         // 获取时间差月份
         Long months = startDate.until(endDate, ChronoUnit.MONTHS);
 
+        ParamterExceptionUtils.isTrue(months < 12, "月份不能超过12个月");
+
         Map<String, String> resultMaps = new HashMap<>();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
         resultMaps.put(startDate.format(dateTimeFormatter), startDate.format(dateTimeFormatter));
         for (int i = 1; i <= months; i++) {
-            LocalDate localDateTemp = startDate.withMonth(i);
-            resultMaps.put(localDateTemp.format(dateTimeFormatter), localDateTemp.format(dateTimeFormatter));
-
-            // help gc
-            localDateTemp = null;
+            startDate = startDate.plusMonths(1);
+            resultMaps.put(startDate.format(dateTimeFormatter), startDate.format(dateTimeFormatter));
         }
         return resultMaps;
     }
@@ -216,7 +213,9 @@ public class ReportDateUtils {
         return resultMaps;
     }
 
-    public static void main(String[] args){
-        System.out.println(getDayOfWeek());
+    public static void main(String[] args) {
+        // System.out.println(getMonthWithDate(1542468106000L,1558468106000L));
+
+        System.out.println(getWeekOfMonth());
     }
 }
