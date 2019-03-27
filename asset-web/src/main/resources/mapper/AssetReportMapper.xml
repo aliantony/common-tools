@@ -71,6 +71,10 @@
         </if>
         GROUP BY category_model,FROM_UNIXTIME(gmt_create/1000,'%Y-%m') order by date;
     </select>
+
+
+
+
     <select id="getAssetConutWithGroup" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
             resultType="com.antiy.asset.entity.AssetGroupEntity">
         SELECT
@@ -78,7 +82,7 @@
         ag.id AS groupId,
         FROM_UNIXTIME(
         ag.gmt_create ,
-        '%w'
+        #{sqlTime}
         ) AS date,
         ag.name AS name
         FROM
@@ -87,17 +91,24 @@
         LEFT JOIN asset ON asset.id = agr.asset_id
         WHERE
 
-       ag.gmt_create  &lt; #{endTime}
-
-
+        <if test="startTime!=null">
+            and  ag.gmt_create>=#{startTime}
+        </if>
+        <if test="endTime!=null">
+            ag.gmt_create  &lt; #{endTime}
+        </if>
         AND asset.asset_status != '9'
         AND agr. STATUS = 1
         AND asset. STATUS = 1
         GROUP BY
         groupId,
-        FROM_UNIXTIME( ag.gmt_create , '%w'),
+        FROM_UNIXTIME( ag.gmt_create , #{sqlTime}),
         name
-        ORDER BY groupCount desc LIMIT 0,5
+        ORDER BY groupCount desc
+        <if test="topFive!=null">
+            LIMIT 0,5
+        </if>
+
     </select>
 
 
