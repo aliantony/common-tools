@@ -1,17 +1,15 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @author: zhangbing
@@ -38,6 +36,11 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
     @ApiModelProperty(value = "时间类型,1-本周,2-本月,3-本季度,4-本年,5-时间范围", required = true)
     @NotBlank(message = "时间类型不能为空")
     private String                       timeType;
+
+    @ApiModelProperty(value = "查询top条件，默认不传")
+    private String                       topFive;
+    @ApiModelProperty(value = "数据库使用时间转换，默认不传")
+    private String                       sqlTime;
 
     @ApiModelProperty(value = "区域查询条件")
     private List<AssetAreaReportRequest> assetAreaIds;
@@ -108,5 +111,21 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
     @Override
     public void validate() throws RequestParamValidateException {
         ParamterExceptionUtils.isTrue(endTime > startTime, "开始时间必须小于结束时间");
+    }
+
+    public String getTopFive() {
+        return topFive;
+    }
+
+    public void setTopFive(String topFive) {
+        this.topFive = topFive;
+    }
+
+    public String getSqlTime() {
+        return sqlTime;
+    }
+
+    public void setSqlTime(String sqlTime) {
+        this.sqlTime = sqlTime;
     }
 }
