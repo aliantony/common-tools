@@ -322,6 +322,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         List<AssetGroupEntity> assetConutWithGroup = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
         AssetReportResponse reportResponse = new AssetReportResponse();
         Iterator<Map.Entry<String, String>> iterator = weekMap.entrySet().iterator();
+//        横坐标
         List<String> dateList = new ArrayList<>();
 
         // 将结果数据组装到Response中

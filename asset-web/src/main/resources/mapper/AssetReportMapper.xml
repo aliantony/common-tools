@@ -81,7 +81,7 @@
         count(1) AS groupCount,
         ag.id AS groupId,
         FROM_UNIXTIME(
-        ag.gmt_create ,
+        ag.gmt_create /1000 ,
         #{sqlTime}
         ) AS date,
         ag.name AS name
@@ -102,7 +102,7 @@
         AND asset. STATUS = 1
         GROUP BY
         groupId,
-        FROM_UNIXTIME( ag.gmt_create , #{sqlTime}),
+        FROM_UNIXTIME( ag.gmt_create /1000 , #{sqlTime}),
         name
         ORDER BY groupCount desc
         <if test="topFive!=null">
