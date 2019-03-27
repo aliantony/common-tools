@@ -20,7 +20,9 @@ public interface IAssetReportService {
      * @return
      * @throws Exception
      */
-    AssetReportResponse getNewAssetWithCategoryInWeek(ReportQueryRequest reportQueryRequest) throws Exception;
+    AssetReportResponse getNewAssetWithCategory(ReportQueryRequest reportQueryRequest) throws Exception;
+
+
 
 
     /**

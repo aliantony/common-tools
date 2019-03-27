@@ -52,7 +52,6 @@ public class AssetReportController {
         return null;
     }
 
-
     /**
      * 根据时间条件查询分类统计资产新增数量
      *
@@ -60,10 +59,10 @@ public class AssetReportController {
      */
     @ApiOperation(value = "根据时间条件查询分类统计资产新增数量", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/newAsset/week", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/newAsset", method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
-    public ActionResponse getNewAssetWithCategoryInWeek(ReportQueryRequest reportQueryRequest) throws Exception {
-        return ActionResponse.success(iAssetReportService.getNewAssetWithCategoryInWeek(reportQueryRequest));
+    public ActionResponse getNewAssetWithCategory(ReportQueryRequest reportQueryRequest) throws Exception {
+        return ActionResponse.success(iAssetReportService.getNewAssetWithCategory(reportQueryRequest));
     }
 
     /**

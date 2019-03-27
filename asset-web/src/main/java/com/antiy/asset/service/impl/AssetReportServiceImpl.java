@@ -1,5 +1,14 @@
 package com.antiy.asset.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import javax.annotation.Resource;
+
+import com.antiy.common.utils.LogUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.entity.AssetCategoryEntity;
@@ -37,6 +46,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     AssetReportDao             assetReportDao;
     @Resource
     AssetCategoryModelDao      categoryModelDao;
+    private static Logger      logger = LogUtils.get(AssetReportServiceImpl.class);
 
     @Override
     public AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) {
@@ -202,46 +212,38 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     @Override
-    public AssetReportResponse getNewAssetWithCategoryInWeek(ReportQueryRequest reportQueryRequest) throws Exception {
+    public AssetReportResponse getNewAssetWithCategory(ReportQueryRequest reportQueryRequest) throws Exception {
         List<AssetCategoryModel> secondCategoryModelList = assetCategoryModelDao.getNextLevelCategoryByName("硬件");
         List<AssetCategoryModel> categoryModelAll = assetCategoryModelDao.getAll();
         // 初始化品类二级品类和子节点的映射
-        Map<Integer, List<Integer>> categoryMap = new HashMap<>();
-        for (AssetCategoryModel assetCategoryModel : secondCategoryModelList) {
-            List<AssetCategoryModel> categoryModelList = iAssetCategoryModelService.recursionSearch(categoryModelAll,
-                assetCategoryModel.getId());
-            categoryMap.put(assetCategoryModel.getId(), getCategoryIdList(categoryModelList));
-        }
+        Map<Integer, List<Integer>> categoryMap = getIntegerListMap(secondCategoryModelList, categoryModelAll);
         // 查询数据
-        List<AssetCategoryEntity> assetCategoryEntityList = assetReportDao
-            .getNewAssetWithCategoryByDay(reportQueryRequest);
+        List<AssetCategoryEntity> assetCategoryEntityList = assetReportDao.getNewAssetWithCategory(reportQueryRequest);
         Map<String, Integer> result = new HashMap<>();
         // 组装数据，将子品类的数量组装进二级品类中
-        for (AssetCategoryEntity assetCategoryEntity : assetCategoryEntityList) {
-            for (Map.Entry<Integer, List<Integer>> entry : categoryMap.entrySet()) {
-                if (entry.getKey().equals(assetCategoryEntity.getCategoryModel())) {
-                    String categoryDate = new StringBuffer().append(assetCategoryEntity.getCategoryModel()).append(" ")
-                        .append(assetCategoryEntity.getDate()).toString();
-                    if (!result.containsKey(categoryDate)) {
-                        result.put(categoryDate, assetCategoryEntity.getCategoryCount());
-                    } else {
-                        result.put(categoryDate, assetCategoryEntity.getCategoryCount() + result.get(categoryDate));
-                    }
-                } else if (entry.getValue().contains(assetCategoryEntity.getCategoryModel())) {
-                    StringBuffer categoryDate = new StringBuffer().append(entry.getKey()).append(" ")
-                        .append(assetCategoryEntity.getDate());
-                    if (!result.containsKey(categoryDate.toString())) {
-                        result.put(categoryDate.toString(), assetCategoryEntity.getCategoryCount());
-                    } else {
-                        result.put(categoryDate.toString(),
-                            assetCategoryEntity.getCategoryCount() + result.get(categoryDate.toString()));
-                    }
-                }
-            }
+        installNodeData(categoryMap, assetCategoryEntityList, result);
+        switch (reportQueryRequest.getTimeType()) {
+            case "1":
+                return getAssetReportResponseInWeek(secondCategoryModelList, result);
+            case "2":
+                return getAssetReportResponseInMonth(secondCategoryModelList, result);
+            case "3":
+                return getAssetReportResponseInQuarterOrMonth(reportQueryRequest, secondCategoryModelList, result);
+            case "4":
+                return getAssetReportResponseInQuarterOrMonth(reportQueryRequest, secondCategoryModelList, result);
+            case "5":
+                return getAssetReportResponseInTime(reportQueryRequest, secondCategoryModelList, result);
+            default:
+                return null;
         }
+    }
+
+
+    private AssetReportResponse getAssetReportResponseInWeek(List<AssetCategoryModel> secondCategoryModelList,
+                                                             Map<String, Integer> result) {
         // 初始化返回类
-        AssetReportResponse assetReportResponse = new AssetReportResponse();
         Map<String, String> weekMap = ReportDateUtils.getDayOfWeek();
+        AssetReportResponse assetReportResponse = new AssetReportResponse();
         // 初始化横坐标
         String[] weeks = new String[weekMap.size()];
         for (Map.Entry<String, String> entry : weekMap.entrySet()) {
@@ -261,27 +263,227 @@ public class AssetReportServiceImpl implements IAssetReportService {
                     }
                 }
             }
-            AssetReportResponse.ReportData reportData = assetReportResponse.new ReportData();
-            reportData.setClassify(assetCategoryModel.getName());
-            reportData.setAdd(Arrays.asList(data));
-            reportDataList.add(reportData);
+            addReportData(assetReportResponse, reportDataList, assetCategoryModel, data);
         }
-
         assetReportResponse.setList(reportDataList);
         return assetReportResponse;
     }
 
-    /**
-     * 获取品类型号中的列表id
-     * @param search
-     * @return
-     */
-    public List<Integer> getCategoryIdList(List<AssetCategoryModel> search) {
+    private void installNodeData(Map<Integer, List<Integer>> categoryMap,
+                                 List<AssetCategoryEntity> assetCategoryEntityList, Map<String, Integer> result) {
+        for (AssetCategoryEntity assetCategoryEntity : assetCategoryEntityList) {
+            for (Map.Entry<Integer, List<Integer>> entry : categoryMap.entrySet()) {
+                if (entry.getKey().equals(assetCategoryEntity.getCategoryModel())) {
+                    String categoryDate = new StringBuffer().append(assetCategoryEntity.getCategoryModel()).append(" ")
+                        .append(assetCategoryEntity.getDate()).toString();
+                    putResult(result, assetCategoryEntity, categoryDate);
+                } else if (entry.getValue().contains(assetCategoryEntity.getCategoryModel())) {
+                    String categoryDate = new StringBuffer().append(entry.getKey()).append(" ")
+                        .append(assetCategoryEntity.getDate()).toString();
+                    putResult(result, assetCategoryEntity, categoryDate);
+                }
+
+            }
+        }
+    }
+
+    private void putResult(Map<String, Integer> result, AssetCategoryEntity assetCategoryEntity, String categoryDate) {
+        if (!result.containsKey(categoryDate)) {
+            result.put(categoryDate, assetCategoryEntity.getCategoryCount());
+        } else {
+            result.put(categoryDate, assetCategoryEntity.getCategoryCount() + result.get(categoryDate));
+        }
+    }
+
+
+    private AssetReportResponse getAssetReportResponseInMonth(List<AssetCategoryModel> secondCategoryModelList,
+                                                              Map<String, Integer> result) {
+        // 初始化返回类
+        Map<String, String> weekMap = ReportDateUtils.getWeekOfMonth();
+        int minWeek = Integer.MAX_VALUE;
+        for (Map.Entry<String, String> entry : weekMap.entrySet()) {
+            if (minWeek > Integer.parseInt(entry.getKey())) {
+                minWeek = Integer.parseInt(entry.getKey());
+            }
+        }
+        AssetReportResponse assetReportResponse = new AssetReportResponse();
+        // 初始化横坐标
+        String[] weeks = new String[weekMap.size()];
+        for (Map.Entry<String, String> entry : weekMap.entrySet()) {
+            weeks[Integer.parseInt(entry.getKey()) - minWeek] = entry.getValue();
+        }
+        assetReportResponse.setDate(Arrays.asList(weeks));
+        // 将结果数据组装到Response中
+        List<AssetReportResponse.ReportData> reportDataList = new ArrayList<>();
+        for (AssetCategoryModel assetCategoryModel : secondCategoryModelList) {
+            Integer[] data = new Integer[weekMap.size()];
+            for (Map.Entry<String, Integer> entry : result.entrySet()) {
+                int week = Integer.parseInt(entry.getKey().substring(entry.getKey().indexOf(" ") + 1));
+                setDataArray(minWeek, weeks, assetCategoryModel, data, entry, week);
+            }
+            addReportData(assetReportResponse, reportDataList, assetCategoryModel, data);
+        }
+        assetReportResponse.setList(reportDataList);
+        return assetReportResponse;
+    }
+
+    private AssetReportResponse getAssetReportResponseInQuarterOrMonth(ReportQueryRequest reportQueryRequest,
+                                                                       List<AssetCategoryModel> secondCategoryModelList,
+                                                                       Map<String, Integer> result) {
+        // 初始化返回类
+        Map<String, String> monthMap = null;
+        if (reportQueryRequest.getTimeType().equals("3")) {
+            monthMap = ReportDateUtils.getSeason();
+        } else if (reportQueryRequest.getTimeType().equals("4")) {
+            monthMap = ReportDateUtils.getCurrentMonthOfYear();
+        }
+        int minMonth = Integer.MAX_VALUE;
+        for (Map.Entry<String, String> entry : monthMap.entrySet()) {
+            int i = Integer.parseInt(entry.getKey().substring(entry.getKey().indexOf("-") + 1));
+            if (minMonth > i) {
+                minMonth = i;
+            }
+        }
+        AssetReportResponse assetReportResponse = new AssetReportResponse();
+        // 初始化横坐标
+        String[] weeks = new String[monthMap.size()];
+        for (Map.Entry<String, String> entry : monthMap.entrySet()) {
+            int i = Integer.parseInt(entry.getKey().substring(entry.getKey().indexOf("-") + 1)) - minMonth;
+            weeks[i] = entry.getValue();
+        }
+        assetReportResponse.setDate(Arrays.asList(weeks));
+        // 将结果数据组装到Response中
+        List<AssetReportResponse.ReportData> reportDataList = new ArrayList<>();
+        for (AssetCategoryModel assetCategoryModel : secondCategoryModelList) {
+            Integer[] data = new Integer[monthMap.size()];
+            for (Map.Entry<String, Integer> entry : result.entrySet()) {
+                int week = Integer.parseInt(entry.getKey().substring(entry.getKey().indexOf("-") + 1));
+                setDataArray(minMonth, weeks, assetCategoryModel, data, entry, week);
+            }
+            addReportData(assetReportResponse, reportDataList, assetCategoryModel, data);
+        }
+        assetReportResponse.setList(reportDataList);
+        return assetReportResponse;
+    }
+
+    private AssetReportResponse getAssetReportResponseInTime(ReportQueryRequest reportQueryRequest,
+                                                             List<AssetCategoryModel> secondCategoryModelList,
+                                                             Map<String, Integer> result) {
+        // 初始化返回类
+        Map<String, Integer> map = getWeeks(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime());
+        AssetReportResponse assetReportResponse = new AssetReportResponse();
+        // 初始化横坐标
+        String[] weeks = new String[map.size()];
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            weeks[entry.getValue()] = entry.getKey();
+        }
+        assetReportResponse.setDate(Arrays.asList(weeks));
+        // 将结果数据组装到Response中
+        List<AssetReportResponse.ReportData> reportDataList = new ArrayList<>();
+        for (AssetCategoryModel assetCategoryModel : secondCategoryModelList) {
+            Integer[] data = new Integer[weeks.length];
+            for (Map.Entry<String, Integer> entry : result.entrySet()) {
+                int index = entry.getKey().indexOf(" ");
+                int month = map.get(entry.getKey().substring(index + 1));
+                String category = entry.getKey().substring(0, index);
+                if (Objects.equals(assetCategoryModel.getStringId(), category)) {
+                    data[month] = entry.getValue();
+                }
+            }
+            addReportData(assetReportResponse, reportDataList, assetCategoryModel, data);
+        }
+        assetReportResponse.setList(reportDataList);
+        return assetReportResponse;
+    }
+
+    private Map<String, Integer> getWeeks(Long startTime, Long endTime) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
+        String startTimeStr = simpleDateFormat.format(new Date(startTime));
+        String endTimeStr = simpleDateFormat.format(new Date(endTime));
+        int index = startTimeStr.indexOf("-");
+        String startYear = startTimeStr.substring(0, index);
+        String startMonth = startTimeStr.substring(index + 1);
+        String endYear = endTimeStr.substring(0, index);
+        String endMonth = endTimeStr.substring(index + 1);
+        int start = Integer.parseInt(startMonth);
+        int end = Integer.parseInt(endMonth);
+        Map<String, Integer> result = new LinkedHashMap<>();
+        if (startYear.equals(endYear)) {
+            for (int i = start; i <= end; i++) {
+                StringBuffer sb = new StringBuffer();
+                if (i >= 10) {
+                    result.put(sb.append(startYear).append("-").append(i).toString(), i - start);
+                } else {
+                    result.put(sb.append(startYear).append("-0").append(i).toString(), i - start);
+                }
+            }
+        } else {
+            int m = 0;
+            for (int i = start; i <= 12; i++) {
+                StringBuffer sb = new StringBuffer();
+                if (i >= 10) {
+                    result.put(sb.append(startYear).append("-").append(i).toString(), m++);
+                } else {
+                    result.put(sb.append(startYear).append("-0").append(i).toString(), m++);
+                }
+            }
+            for (int i = 1; i <= end; i++) {
+                StringBuffer sb = new StringBuffer();
+                if (i >= 10) {
+                    result.put(sb.append(Integer.parseInt(startYear) + 1).append("-").append(i).toString(), m++);
+                } else {
+                    result.put(sb.append(Integer.parseInt(startYear) + 1).append("-0").append(i).toString(), m++);
+                }
+            }
+        }
+        return result;
+    }
+
+    private void setDataArray(int minMonth, String[] weeks, AssetCategoryModel assetCategoryModel, Integer[] data,
+                              Map.Entry<String, Integer> entry, int week) {
+        String category = entry.getKey().substring(0, entry.getKey().indexOf(" "));
+        if (Objects.equals(assetCategoryModel.getStringId(), category)) {
+            if (week - minMonth <= weeks.length) {
+                try {
+                    data[week - minMonth] = entry.getValue();
+                } catch (Exception e) {
+                    logger.error(e.toString());
+                    throw new BusinessException("时间传入参数错误");
+                }
+            }
+        }
+    }
+
+    private void addReportData(AssetReportResponse assetReportResponse,
+                               List<AssetReportResponse.ReportData> reportDataList,
+                               AssetCategoryModel assetCategoryModel, Integer[] data) {
+        AssetReportResponse.ReportData reportData = assetReportResponse.new ReportData();
+        reportData.setClassify(assetCategoryModel.getName());
+        reportData.setAdd(Arrays.asList(data));
+        reportDataList.add(reportData);
+    }
+
+    private Map<Integer, List<Integer>> getIntegerListMap(List<AssetCategoryModel> secondCategoryModelList,
+                                                          List<AssetCategoryModel> categoryModelAll) throws Exception {
+        // 初始化品类二级品类和子节点的映射
+        Map<Integer, List<Integer>> categoryMap = new HashMap<>();
+        for (AssetCategoryModel assetCategoryModel : secondCategoryModelList) {
+            List<AssetCategoryModel> categoryModelList = iAssetCategoryModelService.recursionSearch(categoryModelAll,
+                assetCategoryModel.getId());
+            categoryMap.put(assetCategoryModel.getId(), getCategoryIdList(categoryModelList));
+        }
+        return categoryMap;
+    }
+
+    private List<Integer> getCategoryIdList(List<AssetCategoryModel> categoryModelList) {
         List<Integer> list = new ArrayList<>();
-        for (AssetCategoryModel assetCategoryModel : search) {
+        for (AssetCategoryModel assetCategoryModel : categoryModelList) {
             list.add(assetCategoryModel.getId());
         }
         return list;
+    }
+
+    public static void main(String[] args) {
     }
 
     @Override
@@ -322,7 +524,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         List<AssetGroupEntity> assetConutWithGroup = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
         AssetReportResponse reportResponse = new AssetReportResponse();
         Iterator<Map.Entry<String, String>> iterator = weekMap.entrySet().iterator();
-//        横坐标
+        // 横坐标
         List<String> dateList = new ArrayList<>();
 
         // 将结果数据组装到Response中
@@ -336,7 +538,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             String time = entry.getValue();
             for (AssetGroupEntity entity : assetConutWithGroup) {
                 if (key.equals(entity.getDate())) {
-                    count =  entity.getGroupCount();
+                    count = entity.getGroupCount();
                 }
             }
 
@@ -345,19 +547,17 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
         }
 
-
         for (AssetGroupEntity groupEntity : assetConutWithGroup) {
             AssetReportResponse.ReportData reportData = reportResponse.new ReportData();
-            reportData.setClassify(groupEntity.getName ());
-            reportData.setData (countDate);
-            reportDataList.add (reportData);
+            reportData.setClassify(groupEntity.getName());
+            reportData.setData(countDate);
+            reportDataList.add(reportData);
         }
 
-        reportResponse.setList (reportDataList);
-        reportResponse.setDate (dateList);
+        reportResponse.setList(reportDataList);
+        reportResponse.setDate(dateList);
 
         return reportResponse;
     }
-
 
 }

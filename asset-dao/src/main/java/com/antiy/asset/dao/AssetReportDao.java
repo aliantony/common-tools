@@ -23,16 +23,10 @@ public interface AssetReportDao {
     List<Map<String, Integer>> getAllAssetWithArea(ReportQueryRequest reportQueryRequest);
 
     /**
-     * 获取所有的品类型号新增资产信息 日期显示到天
+     * 获取所有的品类型号新增资产信息
      * @return
      */
-    List<AssetCategoryEntity> getNewAssetWithCategoryByDay(ReportQueryRequest reportQueryRequest);
-
-    /**
-     * 获取所有的品类型号新增资产信息 日期显示到月
-     * @return
-     */
-    List<AssetCategoryEntity> getNewAssetWithCategoryByMonth(ReportQueryRequest reportQueryRequest);
+    List<AssetCategoryEntity> getNewAssetWithCategory(ReportQueryRequest reportQueryRequest);
 
     /**
      * 获取资产组top5和总数 图形
