@@ -202,30 +202,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
     }
 
-    /**
-     * 柱状数据对象
-     */
-    class Columnar {
-        private String        classify;
-        private List<Integer> data;
-
-        public String getClassify() {
-            return classify;
-        }
-
-        public void setClassify(String classify) {
-            this.classify = classify;
-        }
-
-        public List<Integer> getData() {
-            return data;
-        }
-
-        public void setData(List<Integer> data) {
-            this.data = data;
-        }
-    }
-
     @Override
     public AssetReportResponse getNewAssetWithCategoryInWeek(ReportQueryRequest reportQueryRequest) throws Exception {
         List<AssetCategoryModel> secondCategoryModelList = assetCategoryModelDao.getNextLevelCategoryByName("硬件");
