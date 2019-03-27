@@ -1,11 +1,13 @@
 package com.antiy.asset.dao;
 
+import com.antiy.asset.entity.AssetCategoryEntity;
+import com.antiy.asset.entity.AssetGroupEntity;
+import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
+import com.antiy.asset.vo.request.ReportQueryRequest;
+
 import java.util.List;
 import java.util.Map;
 
-import com.antiy.asset.entity.AssetCategoryEntity;
-import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
-import com.antiy.asset.vo.request.ReportQueryRequest;
 
 /**
  * @author: zhangbing
@@ -31,6 +33,16 @@ public interface AssetReportDao {
      * @return
      */
     List<AssetCategoryEntity> getNewAssetWithCategoryByMonth(ReportQueryRequest reportQueryRequest);
+
+    /**
+     * 获取资产组top5和总数 图形
+     * @return
+     */
+    List<AssetGroupEntity> getAssetConutWithGroup(ReportQueryRequest reportQueryRequest);
+
+
+
+
 
     List<AssetCategoryEntity> findCategoryCountByTime(AssetReportCategoryCountQuery query);
 }
