@@ -50,7 +50,7 @@
             ) THEN #{item.parentAreaId}
         </foreach>
         END AS areaId,
-        count(1) AS areaCount
+        count(1) AS assetCount
         FROM
         asset
         WHERE
@@ -70,9 +70,9 @@
     <!--统计区域每个区间的增量-->
     <select id="queryAddAssetWithArea" resultType="java.util.Map">
         SELECT
-        FROM_UNIXTIME( gmt_create / 1000, '%Y-%m' ) AS date,
+        FROM_UNIXTIME( gmt_create / 1000, #{timeType} ) AS date,
         <trim suffixOverrides=",">
-            <foreach collection="assetAreaIds" item="item">
+            <foreach collection="list" item="item">
                 sum(CASE WHEN area_id IN (#{item.parentAreaId},
                 <foreach collection="item.childrenAradIds" separator="," item="area">
                     #{area}

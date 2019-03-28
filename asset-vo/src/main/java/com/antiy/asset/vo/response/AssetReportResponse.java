@@ -17,6 +17,11 @@ public class AssetReportResponse extends BaseResponse {
     @ApiModelProperty("横坐标值")
     private List<String>     date;
     /**
+     * 横坐标值
+     */
+    @ApiModelProperty("总数")
+    private List<Integer>     alldata;
+    /**
      * 数据
      */
     @ApiModelProperty("返回数据")
@@ -36,6 +41,14 @@ public class AssetReportResponse extends BaseResponse {
 
     public void setList(List<ReportData> list) {
         this.list = list;
+    }
+
+    public List<Integer> getAlldata() {
+        return alldata;
+    }
+
+    public void setAlldata(List<Integer> alldata) {
+        this.alldata = alldata;
     }
 }
 

@@ -48,10 +48,8 @@ public class AssetReportController {
     @RequestMapping(value = "/query/queryAreaCount", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:report:queryAreaCount')")
     public ActionResponse queryAreaCount(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
-        iAssetAreaReportService.getAssetWithArea(reportQueryRequest);
-        return null;
+        return ActionResponse.success(iAssetAreaReportService.getAssetWithArea(reportQueryRequest));
     }
-
     /**
      * 根据时间条件查询分类统计资产新增数量
      *
