@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.service.IAssetAreaReportService;
+import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.request.AssetAreaReportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;

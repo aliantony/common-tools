@@ -20,10 +20,17 @@ import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.asset.vo.response.ReportData;
+import com.antiy.asset.vo.response.ReportTableHead;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 资产报表实现类
@@ -45,7 +52,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     AssetReportDao              assetReportDao;
     @Resource
     AssetCategoryModelDao       categoryModelDao;
-    private static Logger       logger = LogUtils.get(AssetReportServiceImpl.class);
+    private static Logger logger = LogUtils.get(AssetReportServiceImpl.class);
 
     @Override
     public AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
@@ -99,10 +106,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
      */
     private Map<String, Object> buildCategoryCountByTime(AssetReportCategoryCountQuery query,
                                                          Map<String, String> weekMap) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<> ();
         List<AssetCategoryModel> categoryModels = categoryModelDao.findAllCategory();
         // 构造柱状图所需的source
-        List<Integer> computerDataList = new ArrayList<>();
+        List<Integer> computerDataList = new ArrayList<> ();
         List<Integer> networkDataList = new ArrayList<>();
         List<Integer> storageDataList = new ArrayList<>();
         List<Integer> safetyDataList = new ArrayList<>();
@@ -580,25 +587,13 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
             dateKeyList.forEach(date -> {
                 Integer num = 0;
-//                for (AssetGroupEntity groupReportEntity : groupReportEntityList) {
-//                    // 去掉数据库返回的数据中开头为0的部分
-//                    String groupReportEntityDate = groupReportEntity.getDate().startsWith("0")
-//                        ? groupReportEntity.getDate().substring(1)
-//                        : groupReportEntity.getDate();
-//                    // 资产组别且对应周数匹配
-//                    if (groupReportEntity.getName().equals(groupName) && groupReportEntityDate.equals(date)) {
-//                        num = groupReportEntity.getGroupCount();
-//                    }
-//                }
-
-
-
+                Integer num2 = 0;
                 for (int i = 0; i < assetGroupEntities.size (); i++) {
                     if (i==0){
                         for (int j = 0; j < groupReportEntityList.size (); j++) {
                             // 资产组别且对应周数匹配
                             if (groupReportEntityList.get (i).getName().equals(groupName) && groupReportEntityList.equals(date)) {
-                                num = groupReportEntityList.get (i).getGroupCount();
+                                num2 = groupReportEntityList.get (i).getGroupCount();
                             }
                         }
                     }
@@ -609,15 +604,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
                         : assetGroupEntities.get (i).getDate();
                     // 资产组别且对应周数匹配
                     if (assetGroupEntities.get (i).getName().equals(groupName) && groupReportEntityDate.equals(date)) {
-                        num = assetGroupEntities.get (i).getGroupCount();
+                         num += assetGroupEntities.get (i).getGroupCount()+num2;
                     }
-
                 }
-
-
-
-
-
 
                 addNumList.add(num);
             });
