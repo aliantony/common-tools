@@ -3,6 +3,7 @@ package com.antiy.asset.service;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
+import com.antiy.asset.vo.response.AssetReportTableResponse;
 
 /**
  * <p> 资产报表 服务类 </p>
@@ -12,6 +13,12 @@ import com.antiy.asset.vo.response.AssetReportResponse;
  */
 public interface IAssetReportService {
 
+    /**
+     * 根据时间条件分类统计查询
+     * @param query
+     * @return
+     * @throws Exception
+     */
     AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception;
 
     /**
@@ -45,5 +52,13 @@ public interface IAssetReportService {
      * @throws Exception
      */
     AssetReportResponse getNewAssetWithGroup(ReportQueryRequest reportQueryRequest) throws Exception;
+
+    /**
+     * 根据时间条件分类统计查询数据，返回表格信息
+     * @param query
+     * @return
+     * @throws Exception
+     */
+    AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception;
 
 }

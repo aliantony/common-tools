@@ -23,6 +23,7 @@ import com.antiy.asset.vo.enums.ShowCycleType;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
+import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.asset.vo.response.ReportData;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
@@ -56,21 +57,39 @@ public class AssetReportServiceImpl implements IAssetReportService {
         ShowCycleType showCycleType = query.getShowCycleType();
         checkParameter(query, showCycleType);
 
+        AssetReportResponse reportResponse = new AssetReportResponse();
+
+        Map<String, Object> map;
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
             query.setFormat(DAY);
-            return buildCategoryCountByTime(query, ReportDateUtils.getDayOfWeek());
+            map = buildCategoryCountByTime(query, ReportDateUtils.getDayOfWeek());
+            reportResponse.setDate((List) map.get("dateList"));
+            reportResponse.setList((List) map.get("columnarList"));
+            return reportResponse;
         } else if (ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())) {
             query.setFormat(WEEK);
-            return buildCategoryCountByTime(query, ReportDateUtils.getWeekOfMonth());
+            map = buildCategoryCountByTime(query, ReportDateUtils.getWeekOfMonth());
+            reportResponse.setDate((List) map.get("dateList"));
+            reportResponse.setList((List) map.get("columnarList"));
+            return reportResponse;
         } else if (ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())) {
             query.setFormat(MONTH);
-            return buildCategoryCountByTime(query, ReportDateUtils.getSeason());
+            map = buildCategoryCountByTime(query, ReportDateUtils.getSeason());
+            reportResponse.setDate((List) map.get("dateList"));
+            reportResponse.setList((List) map.get("columnarList"));
+            return reportResponse;
         } else if (ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
             query.setFormat(MONTH);
-            return buildCategoryCountByTime(query, ReportDateUtils.getCurrentMonthOfYear());
+            map = buildCategoryCountByTime(query, ReportDateUtils.getCurrentMonthOfYear());
+            reportResponse.setDate((List) map.get("dateList"));
+            reportResponse.setList((List) map.get("columnarList"));
+            return reportResponse;
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
-            return buildCategoryCountByTime(query,
+            map = buildCategoryCountByTime(query,
                 ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
+            reportResponse.setDate((List) map.get("dateList"));
+            reportResponse.setList((List) map.get("columnarList"));
+            return reportResponse;
         } else {
             throw new BusinessException("非法参数");
         }
@@ -82,9 +101,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @param weekMap
      * @return
      */
-    private AssetReportResponse buildCategoryCountByTime(AssetReportCategoryCountQuery query,
+    private Map<String, Object> buildCategoryCountByTime(AssetReportCategoryCountQuery query,
                                                          Map<String, String> weekMap) {
-        AssetReportResponse reportResponse = new AssetReportResponse();
+        Map<String, Object> map = new HashMap<>();
         List<AssetCategoryModel> categoryModels = categoryModelDao.findAllCategory();
         // 构造柱状图所需的source
         List<Integer> computerDataList = new ArrayList<>();
@@ -167,9 +186,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
         otherDeviceColumnar.setData(otherDataList);
         columnarList.add(otherDeviceColumnar);
 
-        reportResponse.setDate(dateList);
-        reportResponse.setList(columnarList);
-        return reportResponse;
+        map.put("dateList", dateList);
+        map.put("columnarList", columnarList);
+        return map;
     }
 
     /**
@@ -641,6 +660,32 @@ public class AssetReportServiceImpl implements IAssetReportService {
             default:
                 throw new BusinessException("查询时间类型不正确");
         }
+    }
+
+    @Override
+    public AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception {
+        ShowCycleType showCycleType = query.getShowCycleType();
+        checkParameter(query, showCycleType);
+
+        // if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
+        // query.setFormat(DAY);
+        // return buildCategoryCountByTime(query, ReportDateUtils.getDayOfWeek());
+        // } else if (ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())) {
+        // query.setFormat(WEEK);
+        // return buildCategoryCountByTime(query, ReportDateUtils.getWeekOfMonth());
+        // } else if (ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())) {
+        // query.setFormat(MONTH);
+        // return buildCategoryCountByTime(query, ReportDateUtils.getSeason());
+        // } else if (ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
+        // query.setFormat(MONTH);
+        // return buildCategoryCountByTime(query, ReportDateUtils.getCurrentMonthOfYear());
+        // } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
+        // return buildCategoryCountByTime(query,
+        // ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
+        // } else {
+        // throw new BusinessException("非法参数");
+        // }
+        return null;
     }
 
     /**
