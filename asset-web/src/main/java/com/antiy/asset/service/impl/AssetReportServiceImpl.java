@@ -550,7 +550,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             reportQueryRequest.setGroupIds (groupIds);
         }
 
-        //新增的资产
+        //新增的资产痛
         List<AssetGroupEntity> assetGroupEntities = assetReportDao.getNewAssetWithGroup (reportQueryRequest);
 
         // 1.初始化返回对象
@@ -592,7 +592,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                     if (i==0){
                         for (int j = 0; j < groupReportEntityList.size (); j++) {
                             // 资产组别且对应周数匹配
-                            if (groupReportEntityList.get (i).getName().equals(groupName) && groupReportEntityList.equals(date)) {
+                            if (groupReportEntityList.get (i).getName().equals(groupName) ) {
                                 num2 = groupReportEntityList.get (i).getGroupCount();
                             }
                         }
@@ -607,7 +607,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
                          num += assetGroupEntities.get (i).getGroupCount()+num2;
                     }
                 }
-
                 addNumList.add(num);
             });
             reportData.setData(addNumList);
