@@ -39,8 +39,9 @@ public interface AssetReportDao {
      * @param endTime
      * @return
      */
-    List<Map<String, Integer>> queryAddAssetWithArea(@Param("list") List<AssetAreaReportRequest> list,
-                                                     @Param("startime") Long startTime, @Param("endTime") Long endTime);
+    List<Map<String, String>> queryAddAssetWithArea(@Param("list") List<AssetAreaReportRequest> list,
+                                                    @Param("startTime") Long startTime, @Param("endTime") Long endTime,
+                                                    @Param("timeType") String timeType);
 
     /**
      * 获取所有的品类型号新增资产信息

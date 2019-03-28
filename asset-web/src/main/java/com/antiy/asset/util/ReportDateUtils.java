@@ -231,6 +231,31 @@ public class ReportDateUtils {
         return null;
     }
 
+    /**
+     * 获取数据库时间格式
+     * @return
+     */
+    public static String getTimeType(Integer type) {
+        switch (type) {
+            // 本周
+            case 1:
+                return "%w";
+            // 本月
+            case 2:
+                return "%u";
+            // 本季度
+            case 3:
+                return "%Y-%m";
+            // 本年
+            case 4:
+                return "%Y-%m";
+            // 时间范围
+            case 5:
+                return "%Y-%m";
+        }
+        return "";
+    }
+
     public static void main(String[] args) {
         // System.out.println(getMonthWithDate(1542468106000L,1558468106000L));
 
