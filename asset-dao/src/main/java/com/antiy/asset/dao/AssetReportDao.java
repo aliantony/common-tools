@@ -8,7 +8,6 @@ import com.antiy.asset.vo.request.ReportQueryRequest;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * @author: zhangbing
  * @date: 2019/3/26 11:01
@@ -26,17 +25,13 @@ public interface AssetReportDao {
      * 获取所有的品类型号新增资产信息
      * @return
      */
-    List<AssetCategoryEntity> getNewAssetWithCategory(ReportQueryRequest reportQueryRequest);
+    List<AssetCategoryEntity> getNewAssetWithCategory(AssetReportCategoryCountQuery assetReportCategoryCountQuery);
 
     /**
      * 获取资产组top5和总数 图形
      * @return
      */
     List<AssetGroupEntity> getAssetConutWithGroup(ReportQueryRequest reportQueryRequest);
-
-
-
-
 
     List<AssetCategoryEntity> findCategoryCountByTime(AssetReportCategoryCountQuery query);
 }

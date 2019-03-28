@@ -32,14 +32,13 @@
         AND STATUS = 1
     </select>
 
-    <select id="getNewAssetWithCategory" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
+    <select id="getNewAssetWithCategory" parameterType="com.antiy.asset.vo.request.AssetReportCategoryCountRequest"
             resultType="com.antiy.asset.entity.AssetCategoryEntity">
-        SELECT count(1) as categoryCount,category_model as categoryModel,FROM_UNIXTIME(gmt_create/1000,<include
-            refid="timeType"></include> ) as
+        SELECT count(1) as categoryCount,category_model as categoryModel,FROM_UNIXTIME(gmt_create/1000,#{format} ) as
         date FROM asset
         WHERE `status`=1 and asset_status != '9'
-        <if test="startTime!=null">
-            and gmt_create>=#{startTime}
+        <if test="beginTime!=null">
+            and gmt_create>=#{beginTime}
         </if>
         <if test="endTime!=null">
             and gmt_create &lt;= #{endTime}
@@ -50,10 +49,8 @@
                 #{areaId}
             </foreach>
         </if>
-        GROUP BY category_model,FROM_UNIXTIME(gmt_create/1000,<include refid="timeType"></include> ) order by date;
+        GROUP BY category_model,FROM_UNIXTIME(gmt_create/1000,#{format} ) order by date;
     </select>
-
-
 
 
     <select id="getAssetConutWithGroup" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
@@ -73,10 +70,10 @@
         WHERE 1=1
 
         <if test="startTime!=null">
-            and  ag.gmt_create>=#{startTime}
+            and ag.gmt_create>=#{startTime}
         </if>
         <if test="endTime!=null">
-            and    ag.gmt_create  &lt; #{endTime}
+            and ag.gmt_create &lt; #{endTime}
         </if>
         AND asset.asset_status != '9'
         AND agr. STATUS = 1
@@ -92,23 +89,6 @@
 
     </select>
 
-
-
-
-
-    <sql id="timeType">
-        <choose>
-            <when test="timeType==1">
-                '%w'
-            </when>
-            <when test="timeType==2">
-                '%U'
-            </when>
-            <otherwise>
-                '%Y-%m'
-            </otherwise>
-        </choose>
-    </sql>
 
     <select id="findCategoryCountByTime" resultType="com.antiy.asset.entity.AssetCategoryEntity"
             parameterType="com.antiy.common.base.ObjectQuery">

@@ -15,15 +15,20 @@ public interface IAssetReportService {
     AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query);
 
     /**
-     * 获取本周的新增资产报表信息
-     * @param reportQueryRequest
+     * 获取新增资产报表信息
+     * @param assetReportCategoryCountQuery
      * @return
      * @throws Exception
      */
-    AssetReportResponse getNewAssetWithCategory(ReportQueryRequest reportQueryRequest) throws Exception;
+    AssetReportResponse getNewAssetWithCategory(AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception;
 
-
-
+    /**
+     * 导出新增资产报表表格
+     * @param assetReportCategoryCountQuery
+     * @return
+     * @throws Exception
+     */
+    void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery);
 
     /**
      * 获取资产组top5信息
