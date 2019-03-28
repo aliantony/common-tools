@@ -5,11 +5,6 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.util.ArrayTypeUtil;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.vo.response.ReportData;
-import com.antiy.asset.templet.ReportForm;
-import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +15,10 @@ import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroupEntity;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetReportService;
+import com.antiy.asset.templet.ReportForm;
+import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
 import com.antiy.asset.vo.enums.ShowCycleType;
@@ -30,6 +28,7 @@ import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.asset.vo.response.ReportData;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
@@ -671,17 +670,24 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // 1-本周,2-本月,3-本季度,4-本年,5-时间范围
         switch (reportQueryRequest.getTimeType()) {
             case "1":
-                return getNewAssetWithGroupInWeek(reportQueryRequest);
+                reportQueryRequest.setSqlTime("%w");
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getDayOfWeek());
             case "2":
-                return getNewAssetWithGroupInMonth(reportQueryRequest);
+                reportQueryRequest.setSqlTime("%U");
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getWeekOfMonth());
             case "3":
-                return getNewAssetWithGroupInSeason(reportQueryRequest);
+                reportQueryRequest.setSqlTime("%Y-%m");
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getSeason());
             case "4":
-                return getNewAssetWithGroupInYear(reportQueryRequest);
+                reportQueryRequest.setSqlTime("%Y-%m");
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear());
             case "5":
-                return getNewAssetWithGroupInRange(reportQueryRequest);
+                reportQueryRequest.setSqlTime("%Y-%m");
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils
+                    .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
             default:
-                throw new BusinessException("查询时间类型不正确");
+                reportQueryRequest.setSqlTime("%Y-%m");
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear());
         }
     }
 
