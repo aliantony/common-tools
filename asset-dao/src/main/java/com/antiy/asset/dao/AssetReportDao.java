@@ -64,4 +64,5 @@ public interface AssetReportDao {
      */
     List<AssetGroupEntity> getNewAssetWithGroupByMonth(ReportQueryRequest reportQueryRequest);
 
+    List<AssetGroupEntity> myTest(ReportQueryRequest reportQueryRequest);
 }
