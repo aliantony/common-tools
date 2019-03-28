@@ -32,7 +32,8 @@ import com.antiy.asset.vo.response.AssetReportResponse;
 public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
 
     @Resource
-    private AssetReportDao assetReportDao;
+    private AssetReportDao      assetReportDao;
+    private static final String TRUE = "true";
 
     @Override
     public AssetReportResponse getAssetWithArea(ReportQueryRequest reportRequest) {
@@ -40,8 +41,17 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         List<ReportData> reportDataList = Lists.newArrayList();
         // 总数
         List<Integer> allDataList = Lists.newArrayList();
-        // 1.查询TOP5的区域信息
-        List<Integer> topAreaIds = getTopFive(reportRequest);
+        List<Integer> topAreaIds;
+        // 是否需要top5
+        if (TRUE.equals(reportRequest.getTopFive())) {
+            // 1.查询TOP5的区域信息
+            topAreaIds = getTopFive(reportRequest);
+            reportRequest.setAssetAreaIds(reportRequest.getAssetAreaIds().stream()
+                .filter(report -> topAreaIds.contains(report.getParentAreaId())).collect(Collectors.toList()));
+        } else {
+            topAreaIds = reportRequest.getAssetAreaIds().stream().map(AssetAreaReportRequest::getParentAreaId)
+                .collect(Collectors.toList());
+        }
         // 横坐标
         List<String> abscissa = Lists.newArrayList();
         Map<String, String> dateList = ReportDateUtils.getDate(
