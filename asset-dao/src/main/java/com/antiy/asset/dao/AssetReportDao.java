@@ -39,15 +39,21 @@ public interface AssetReportDao {
      * @param endTime
      * @return
      */
-    List<Map<String, Integer>> queryAddAssetWithArea(@Param("list") List<AssetAreaReportRequest> list,
-                                                     @Param("startime") Long startTime, @Param("endTime") Long endTime);
-
+    List<Map<String, String>> queryAddAssetWithArea(@Param("list") List<AssetAreaReportRequest> list,
+                                                    @Param("startTime") Long startTime, @Param("endTime") Long endTime,
+                                                    @Param("timeType") String timeType);
 
     /**
      * 获取所有的品类型号新增资产信息
      * @return
      */
     List<AssetCategoryEntity> getNewAssetWithCategory(AssetReportCategoryCountQuery assetReportCategoryCountQuery);
+
+    /**
+     * 获取开始时间以前的数据
+     * @return
+     */
+    List<AssetCategoryEntity> findCategoryCountPrevious(AssetReportCategoryCountQuery assetReportCategoryCountQuery);
 
     /**
      * 获取资产组top5和总数 图形
@@ -58,11 +64,11 @@ public interface AssetReportDao {
     List<AssetCategoryEntity> findCategoryCountByTime(AssetReportCategoryCountQuery query);
 
     /**
-     * 获取资产组新增资产信息-日期显示到月
+     * 查询资产组新增资产信息-通用
      * @param reportQueryRequest
      * @return
      */
-    List<AssetGroupEntity> getNewAssetWithGroupByMonth(ReportQueryRequest reportQueryRequest);
+    List<AssetGroupEntity> getNewAssetWithGroup(ReportQueryRequest reportQueryRequest);
 
     List<AssetGroupEntity> myTest(ReportQueryRequest reportQueryRequest);
 }
