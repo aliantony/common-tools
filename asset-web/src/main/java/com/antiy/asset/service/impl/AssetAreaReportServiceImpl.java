@@ -5,8 +5,17 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.ReportDateUtils;
+import com.antiy.asset.vo.request.AssetAreaReportRequest;
+import com.antiy.asset.vo.response.ReportData;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.DataTypeUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetReportDao;
@@ -24,14 +33,73 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
 
     @Resource
     private AssetReportDao assetReportDao;
+    @Resource
+    private RedisUtil      redisUtil;
 
     @Override
     public AssetReportResponse getAssetWithArea(ReportQueryRequest reportRequest) {
-
+        AssetReportResponse assetReportResponse = new AssetReportResponse();
+        List<ReportData> list = Lists.newArrayList();
+        List<AssetAreaReportRequest> oldAssetAreaIds = reportRequest.getAssetAreaIds();
         // 1.查询TOP5的区域信息
         List<Integer> topAreaIds = getTopFive(reportRequest);
         // 2. 初始化横坐标信息
+        List<AssetAreaReportRequest> assetAreaIds = reportRequest.getAssetAreaIds().stream()
+            .filter(area -> topAreaIds.contains(area.getParentAreaId())).collect(Collectors.toList());
+        // 横坐标
+        List<String> abscissa = Lists.newArrayList();
+        ReportDateUtils.getDate(DataTypeUtils.stringToInteger(reportRequest.getTimeType()),
+            reportRequest.getStartTime(), reportRequest.getEndTime()).forEach((k, v) -> {
+                abscissa.add(v);
+            });
+        assetReportResponse.setDate(abscissa);
 
+        // 3.获取起始时间初始值
+        List<Map<String, Integer>> initData = assetReportDao.queryAssetWithAreaByDate(reportRequest.getAssetAreaIds(),
+            reportRequest.getStartTime());
+        // 计算初始值
+        topAreaIds.stream().forEach(top -> {
+            boolean flag = false;
+            for (Map iData : initData) {
+                if (top.equals(iData.get("areaId"))) {
+                    flag = true;
+                }
+            }
+            if (!flag) {
+                Map m = new HashMap(2);
+                m.put("areaId", top);
+                m.put("assetCount", 0);
+                initData.add(m);
+            }
+        });
+        // 4.获取每个地区在每个时间区间的增量
+        List<Map<String, Integer>> addData = assetReportDao.queryAddAssetWithArea(reportRequest.getAssetAreaIds(),
+            reportRequest.getStartTime(), reportRequest.getEndTime());
+        topAreaIds.stream().forEach(top -> {
+            ReportData reportData = new ReportData();
+            //区域在区间总数
+            List<Integer> total = Lists.newArrayList();
+            //区域在区间增量
+            List<Integer> add = Lists.newArrayList();
+            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, top);
+            try {
+                SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+                reportData.setClassify(sysArea.getFullName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            // 循环横坐标[2019-01,2019-02......]
+            for (int i = 0; i < abscissa.size(); i++) {
+                //遍历增量数据
+                for (Map<String, Integer> data : addData) {
+                    if (abscissa.get(i).equals(data.get("date"))) {
+                        add.add(data.get(top));
+                    } else {
+                        add.add(0);
+                    }
+                }
+            }
+        });
         // 3.组装基础数据和总数
 
         return null;

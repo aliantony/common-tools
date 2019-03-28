@@ -61,8 +61,8 @@ public class AssetReportController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/newAsset", method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
-    public ActionResponse getNewAssetWithCategory(ReportQueryRequest reportQueryRequest) throws Exception {
-        return ActionResponse.success(iAssetReportService.getNewAssetWithCategory(reportQueryRequest));
+    public ActionResponse getNewAssetWithCategory(AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception {
+        return ActionResponse.success(iAssetReportService.getNewAssetWithCategory(assetReportCategoryCountQuery));
     }
 
     /**

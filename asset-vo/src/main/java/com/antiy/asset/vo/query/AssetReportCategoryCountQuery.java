@@ -10,6 +10,8 @@ import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.List;
+
 /**
  * <p> AssetCpu 查询条件 </p>
  *
@@ -25,6 +27,9 @@ public class AssetReportCategoryCountQuery extends ObjectQuery implements Object
 
     @ApiModelProperty(value = "勿传")
     private String        format;
+
+    @ApiModelProperty(value = "区域ID 不用传")
+    private List<Integer> areaIds;
 
     @Override
     public void validate() throws RequestParamValidateException {

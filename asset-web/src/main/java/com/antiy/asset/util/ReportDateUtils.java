@@ -5,8 +5,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.antiy.common.utils.ParamterExceptionUtils;
 
@@ -46,15 +48,11 @@ public class ReportDateUtils {
         days.put(4, "星期四");
         days.put(5, "星期五");
         days.put(6, "星期六");
-        days.put(0, "星期日");
+        days.put(7, "星期日");
         LocalDate currentDate = LocalDate.now();
         int weekDay = currentDate.getDayOfWeek().getValue();
-        Map<String, String> resultWeek = new HashMap<>();
+        TreeMap<String, String> resultWeek = new TreeMap<>();
 
-        // 转换mysql 0 为周天
-        if (weekDay == 7) {
-            resultWeek.put("0", days.get(0));
-        }
         for (int i = 1; i <= weekDay; i++) {
             if (null != days.get(i)) {
                 resultWeek.put(i + "", days.get(i));
@@ -68,7 +66,7 @@ public class ReportDateUtils {
      * @return
      */
     public static Map<String, String> getCurrentDayOfMonth() {
-        Map<String, String> resultMaps = new HashMap<>();
+        TreeMap<String, String> resultMaps = new TreeMap<>();
         LocalDate localDate = LocalDate.now();
         resultMaps.put(localDate.toString(), localDate.toString());
         for (int i = 1; i < localDate.getDayOfMonth(); i++) {
@@ -89,16 +87,20 @@ public class ReportDateUtils {
         LocalDate today = LocalDate.now();
 
         // 获取本月第一天
-        LocalDate firstday = LocalDate.of(today.getYear(), today.getMonth(), 1);
+        LocalDate firstday = today.with(TemporalAdjusters.firstDayOfMonth());
 
         // 获取本月最后一天
         LocalDate lastDay = today.with(TemporalAdjusters.lastDayOfMonth());
 
         WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 4);
-        int firstWeek = firstday.get(weekFields.weekOfWeekBasedYear());
-        int lastWeek = lastDay.get(weekFields.weekOfWeekBasedYear());
-
-        Map<String, String> resultMap = new HashMap<>();
+        int firstWeek = firstday.get(weekFields.weekOfYear());
+        int lastWeek = lastDay.get(weekFields.weekOfYear());
+        TreeMap<String, String> resultMap = new TreeMap<String, String>(new Comparator<String>() {
+            @Override
+            public int compare(String a, String b) {
+                return DataTypeUtils.stringToInteger(a) - DataTypeUtils.stringToInteger(b);
+            }
+        });
 
         Map<Integer, String> weeksMap = new HashMap<>();
         weeksMap.put(1, "第一周");
@@ -120,7 +122,7 @@ public class ReportDateUtils {
      * @return
      */
     public static Map<String, String> getCurrentMonthOfYear() {
-        Map<String, String> resultMaps = new HashMap<>();
+        TreeMap<String, String> resultMaps = new TreeMap<>();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
         LocalDate localDate = LocalDate.now();
         for (int i = 1; i <= localDate.getMonthValue(); i++) {
@@ -150,7 +152,7 @@ public class ReportDateUtils {
 
         ParamterExceptionUtils.isTrue(months < 12, "月份不能超过12个月");
 
-        Map<String, String> resultMaps = new HashMap<>();
+        TreeMap<String, String> resultMaps = new TreeMap<>();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
         resultMaps.put(startDate.format(dateTimeFormatter), startDate.format(dateTimeFormatter));
         for (int i = 1; i <= months; i++) {
@@ -174,7 +176,7 @@ public class ReportDateUtils {
         LocalDate localDate = LocalDate.now();
         // 获取当前的月份
         int month = localDate.getMonth().getValue();
-        Map<String, String> resultMaps = new HashMap<>();
+        TreeMap<String, String> resultMaps = new TreeMap<>();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
         if (month <= 3) {
             for (int i = 1; i <= 3; i++) {
@@ -211,6 +213,22 @@ public class ReportDateUtils {
         }
 
         return resultMaps;
+    }
+
+    public static Map<String, String> getDate(Integer type, Long startTime, Long endTime) {
+        switch (type) {
+            case 1:
+                return getDayOfWeek();
+            case 2:
+                return getWeekOfMonth();
+            case 3:
+                return getSeason();
+            case 4:
+                return getCurrentMonthOfYear();
+            case 5:
+                return getMonthWithDate(startTime, endTime);
+        }
+        return null;
     }
 
     public static void main(String[] args) {
