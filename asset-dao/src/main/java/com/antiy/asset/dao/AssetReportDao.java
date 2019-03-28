@@ -10,6 +10,7 @@ import com.antiy.asset.vo.request.AssetAreaReportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import org.apache.ibatis.annotations.Param;
 
+
 /**
  * @author: zhangbing
  * @date: 2019/3/26 11:01
@@ -55,9 +56,13 @@ public interface AssetReportDao {
      */
     List<AssetGroupEntity> getAssetConutWithGroup(ReportQueryRequest reportQueryRequest);
 
-
-
-
-
     List<AssetCategoryEntity> findCategoryCountByTime(AssetReportCategoryCountQuery query);
+
+    /**
+     * 获取资产组新增资产信息-日期显示到月
+     * @param reportQueryRequest
+     * @return
+     */
+    List<AssetGroupEntity> getNewAssetWithGroupByMonth(ReportQueryRequest reportQueryRequest);
+
 }

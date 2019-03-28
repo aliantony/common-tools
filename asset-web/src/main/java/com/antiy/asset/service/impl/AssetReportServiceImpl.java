@@ -25,11 +25,8 @@ import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.*;
 
 /**
  * 资产报表实现类
@@ -558,4 +555,126 @@ public class AssetReportServiceImpl implements IAssetReportService {
         return reportResponse;
     }
 
+    /**
+     * 根据资产组查询资产新增数量
+     *
+     * @param reportQueryRequest
+     * @return
+     */
+    @Override
+    public AssetReportResponse getNewAssetWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
+        // 1-本周,2-本月,3-本季度,4-本年,5-时间范围
+        switch (reportQueryRequest.getTimeType()) {
+            case "1":
+                return getNewAssetWithGroupInWeek(reportQueryRequest);
+            case "2":
+                return getNewAssetWithGroupInMonth(reportQueryRequest);
+            case "3":
+                return getNewAssetWithGroupInSeason(reportQueryRequest);
+            case "4":
+                return getNewAssetWithGroupInYear(reportQueryRequest);
+            case "5":
+                return getNewAssetWithGroupInRange(reportQueryRequest);
+            default:
+                throw new BusinessException("查询时间类型不正确");
+        }
+    }
+
+    /**
+     * 根据资产组类别查本周新增资产情况
+     * @param reportQueryRequest
+     * @return
+     */
+    public AssetReportResponse getNewAssetWithGroupInWeek(ReportQueryRequest reportQueryRequest) {
+        return null;
+    }
+
+    /**
+     * 根据资产组类别查本月新增资产情况
+     * @param reportQueryRequest
+     * @return
+     */
+    public AssetReportResponse getNewAssetWithGroupInMonth(ReportQueryRequest reportQueryRequest) {
+
+        List<AssetGroupEntity> groupReportEntityList = assetReportDao.getNewAssetWithGroupByMonth(reportQueryRequest);
+        // 1.初始化返回对象
+        AssetReportResponse assetReportResponse = new AssetReportResponse();
+        List<AssetReportResponse.ReportData> reportDataList = new ArrayList<>();
+
+        // 2.获取本月的周数信息map,重新按周数key排序
+        Map<String, String> treeWeekMap = new TreeMap<>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return Integer.valueOf(o1).compareTo(Integer.valueOf(o2));
+            }
+        });
+        treeWeekMap.putAll(ReportDateUtils.getWeekOfMonth());
+        // 3.添加排序后的日期信息到dateList
+        List<String> dateKeyList = new ArrayList<>(treeWeekMap.size());
+        List<String> dateValueList = new ArrayList<>(treeWeekMap.size());
+        for (Map.Entry<String, String> entry : treeWeekMap.entrySet()) {
+            dateKeyList.add(entry.getKey());
+            dateValueList.add(entry.getValue());
+        }
+        // 4.资产组名字信息
+        List<String> groupNameList = new ArrayList<>();
+        groupReportEntityList.forEach(groupReportEntity -> {
+            if (!groupNameList.contains(groupReportEntity.getName())) {
+                groupNameList.add(groupReportEntity.getName());
+            }
+        });
+        // 5.根据资产组信息封装
+        groupNameList.forEach(groupName -> {
+            AssetReportResponse.ReportData reportData = assetReportResponse.new ReportData();
+            reportData.setClassify(groupName);
+            List<Integer> addNumList = new ArrayList<>();
+
+            dateKeyList.forEach(date -> {
+                Integer num = 0;
+                for (AssetGroupEntity groupReportEntity : groupReportEntityList) {
+                    // 去掉数据库返回的数据中开头为0的部分
+                    String groupReportEntityDate = groupReportEntity.getDate().startsWith("0")
+                        ? groupReportEntity.getDate().substring(1)
+                        : groupReportEntity.getDate();
+                    // 资产组别且对应周数匹配
+                    if (groupReportEntity.getName().equals(groupName) && groupReportEntityDate.equals(date)) {
+                        num = groupReportEntity.getGroupCount();
+                    }
+                }
+                addNumList.add(num);
+            });
+            reportData.setData(addNumList);
+            reportDataList.add(reportData);
+        });
+        assetReportResponse.setDate(dateValueList);
+        assetReportResponse.setList(reportDataList);
+        return assetReportResponse;
+    }
+
+    /**
+     * 根据资产组类别查本季度新增资产情况
+     * @param reportQueryRequest
+     * @return
+     */
+    public AssetReportResponse getNewAssetWithGroupInSeason(ReportQueryRequest reportQueryRequest) {
+        return null;
+    }
+
+    /**
+     * 根据资产组类别查本年新增资产情况
+     * @param reportQueryRequest
+     * @return
+     */
+    public AssetReportResponse getNewAssetWithGroupInYear(ReportQueryRequest reportQueryRequest) {
+        return null;
+    }
+
+    /**
+     * 根据资产组类别查某个时间范围新增资产情况
+     * @param reportQueryRequest
+     * @return
+     */
+    public AssetReportResponse getNewAssetWithGroupInRange(ReportQueryRequest reportQueryRequest) {
+        return null;
+    }
 }
