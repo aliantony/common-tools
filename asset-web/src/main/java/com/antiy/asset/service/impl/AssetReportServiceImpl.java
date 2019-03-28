@@ -283,6 +283,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             || ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
             ParamterExceptionUtils.isNull(query.getBeginTime(), "开始时间不能为空");
             ParamterExceptionUtils.isNull(query.getEndTime(), "开始时间不能为空");
+            ParamterExceptionUtils.isNull(query.getReportFormType(), "报表类型不能为空");
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
             ParamterExceptionUtils.isNull(query.getBeginTime(), "指定开始时间不能为空");
         }
@@ -478,8 +479,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 for (AssetGroupEntity groupReportEntity : groupReportEntityList) {
                     // 去掉数据库返回的数据中开头为0的部分
                     String groupReportEntityDate = groupReportEntity.getDate().startsWith("0")
-                            ? groupReportEntity.getDate().substring(1)
-                            : groupReportEntity.getDate();
+                        ? groupReportEntity.getDate().substring(1)
+                        : groupReportEntity.getDate();
                     // 资产组别且对应周数匹配
                     if (groupReportEntity.getName().equals(groupName) && groupReportEntityDate.equals(date)) {
                         num = groupReportEntity.getGroupCount();
@@ -494,45 +495,43 @@ public class AssetReportServiceImpl implements IAssetReportService {
         assetReportResponse.setList(reportDataList);
         return assetReportResponse;
 
-
-//        AssetReportResponse reportResponse = new AssetReportResponse();
-//        Iterator<Map.Entry<String, String>> iterator = weekMap.entrySet().iterator();
-//        // 横坐标
-//        List<String> dateList = new ArrayList<>();
-//
-//        // 将结果数据组装到Response中
-//        List<ReportData> reportDataList = new ArrayList<>();
-//        List<Integer> countDate = new ArrayList<>();
-//        while (iterator.hasNext()) {
-//            int count = 0;
-//
-//            Map.Entry<String, String> entry = iterator.next();
-//            String key = entry.getKey();
-//            String time = entry.getValue();
-//            for (AssetGroupEntity entity : assetConutWithGroup) {
-//                if (key.equals(entity.getDate())) {
-//                    count = entity.getGroupCount();
-//                }
-//            }
-//
-//            countDate.add(count);
-//            dateList.add(time);
-//
-//        }
-//
-//        for (AssetGroupEntity groupEntity : assetConutWithGroup) {
-//            ReportData reportData = new ReportData();
-//            reportData.setClassify(groupEntity.getName());
-//            reportData.setData(countDate);
-//            reportDataList.add(reportData);
-//        }
-//
-//        reportResponse.setList(reportDataList);
-//        reportResponse.setDate(dateList);
-//
-//        return reportResponse;
+        // AssetReportResponse reportResponse = new AssetReportResponse();
+        // Iterator<Map.Entry<String, String>> iterator = weekMap.entrySet().iterator();
+        // // 横坐标
+        // List<String> dateList = new ArrayList<>();
+        //
+        // // 将结果数据组装到Response中
+        // List<ReportData> reportDataList = new ArrayList<>();
+        // List<Integer> countDate = new ArrayList<>();
+        // while (iterator.hasNext()) {
+        // int count = 0;
+        //
+        // Map.Entry<String, String> entry = iterator.next();
+        // String key = entry.getKey();
+        // String time = entry.getValue();
+        // for (AssetGroupEntity entity : assetConutWithGroup) {
+        // if (key.equals(entity.getDate())) {
+        // count = entity.getGroupCount();
+        // }
+        // }
+        //
+        // countDate.add(count);
+        // dateList.add(time);
+        //
+        // }
+        //
+        // for (AssetGroupEntity groupEntity : assetConutWithGroup) {
+        // ReportData reportData = new ReportData();
+        // reportData.setClassify(groupEntity.getName());
+        // reportData.setData(countDate);
+        // reportDataList.add(reportData);
+        // }
+        //
+        // reportResponse.setList(reportDataList);
+        // reportResponse.setDate(dateList);
+        //
+        // return reportResponse;
     }
-
 
     /**
      * 根据资产组查询资产新增数量
