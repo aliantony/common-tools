@@ -1,5 +1,6 @@
 package com.antiy.asset.service;
 
+import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
@@ -23,4 +24,11 @@ public interface IAssetAreaReportService {
      * @return
      */
     AssetReportTableResponse queryAreaTable(ReportQueryRequest reportQueryRequest);
+
+    /**
+     * 导出数据
+     * @param reportQueryRequest
+     * @return
+     */
+    ReportForm exportAreaTable(ReportQueryRequest reportQueryRequest);
 }

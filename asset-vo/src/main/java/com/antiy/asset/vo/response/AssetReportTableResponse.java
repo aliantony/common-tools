@@ -37,4 +37,5 @@ public class AssetReportTableResponse extends BaseResponse {
     public void setChildren(List<ReportTableHead> children) {
         this.children = children;
     }
+
 }
