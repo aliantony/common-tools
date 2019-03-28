@@ -41,7 +41,7 @@ public class AssetReportController {
     @ApiOperation(value = "根据时间条件查询分类统计资产数量", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/categoryCountByTime", method = RequestMethod.GET)
-    // @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
+    @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
     public ActionResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
         return ActionResponse.success(iAssetReportService.queryCategoryCountByTime(query));
     }
@@ -54,7 +54,7 @@ public class AssetReportController {
     @ApiOperation(value = "根据时间条件查询分类统计资产数量（表格数据）", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportTableResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/categoryCountByTimeToTable", method = RequestMethod.GET)
-    // @PreAuthorize("hasAuthority('asset:report:categoryCountByTimeToTable')")
+    @PreAuthorize("hasAuthority('asset:report:categoryCountByTimeToTable')")
     public ActionResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception {
         return ActionResponse.success(iAssetReportService.queryCategoryCountByTimeToTable(query));
     }
@@ -71,6 +71,7 @@ public class AssetReportController {
     public ActionResponse queryAreaCount(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
         return ActionResponse.success(iAssetAreaReportService.getAssetWithArea(reportQueryRequest));
     }
+
     /**
      * 根据时间条件、区域资产表格数据
      * @param reportQueryRequest

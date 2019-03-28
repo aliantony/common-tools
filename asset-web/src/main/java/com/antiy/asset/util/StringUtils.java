@@ -1,5 +1,8 @@
 package com.antiy.asset.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author zhangyajun
  * @create 2019-03-02 15:17
@@ -32,5 +35,18 @@ public class StringUtils {
             }
         }
         return source;
+    }
+
+    public static <S, T> List<T> wrapperListConverter(List<S> sList, Class<T> tClass) {
+        List<T> list = null;
+        if (sList != null && sList.size() > 0) {
+            list = new ArrayList<>();
+            for (S s : sList) {
+                if (s instanceof Integer) {
+                    list.add((T) String.valueOf(s));
+                }
+            }
+        }
+        return list;
     }
 }
