@@ -67,18 +67,6 @@ public class AssetReportController {
     public ActionResponse queryAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
         return ActionResponse.success(iAssetAreaReportService.queryAreaTable(reportQueryRequest));
     }
-    /**
-     * 根据时间条件查询分类统计资产新增数量
-     *
-     * @return actionResponse
-     */
-    @ApiOperation(value = "根据时间条件查询分类统计资产新增数量", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/category/newAsset", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
-    public ActionResponse getNewAssetWithCategory(AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception {
-        return ActionResponse.success(iAssetReportService.getNewAssetWithCategory(assetReportCategoryCountQuery));
-    }
 
     /**
      * 根据时间条件查询分类统计资产新增数量
