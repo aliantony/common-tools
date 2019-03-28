@@ -31,6 +31,64 @@
         AND asset_status != '9'
         AND STATUS = 1
     </select>
+    <!--统计初始数据-->
+    <select id="queryAssetWithAreaByDate" resultType="java.util.Map">
+        SELECT
+        CASE
+        <foreach collection="list" item="item">
+            WHEN area_id IN (#{item.parentAreaId},
+            <foreach collection="item.childrenAradIds" separator="," item="area">
+                #{area}
+            </foreach>
+            ) THEN #{item.parentAreaId}
+        </foreach>
+        END AS areaId,
+        count(1) AS areaCount
+        FROM
+        asset
+        WHERE
+        gmt_create &lt; #{startTime}
+        AND asset_status != '9'
+        AND STATUS = 1
+        AND area_id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item.parentAreaId},
+            <foreach collection="item.childrenAradIds" separator="," item="area">
+                #{area}
+            </foreach>
+        </foreach>
+        GROUP BY
+        areaId
+    </select>
+    <!--统计区域每个区间的增量-->
+    <select id="queryAddAssetWithArea" resultType="java.util.Map">
+        SELECT
+        FROM_UNIXTIME( gmt_create / 1000, '%Y-%m' ) AS date,
+        <trim suffixOverrides=",">
+            <foreach collection="assetAreaIds" item="item">
+                sum(CASE WHEN area_id IN (#{item.parentAreaId},
+                <foreach collection="item.childrenAradIds" separator="," item="area">
+                    #{area}
+                </foreach>
+                )
+                THEN 1
+                ELSE 0
+                END
+                ) AS #{item.parentAreaName},
+            </foreach>
+        </trim>
+        FROM
+        asset
+        WHERE
+        gmt_create &lt; #{endTime}
+        and gmt_create > #{startTime}
+        AND asset_status != '9'
+        AND STATUS = 1
+        GROUP BY
+        date
+        ORDER BY
+        date ASC
+    </select>
 
     <select id="getNewAssetWithCategory" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
             resultType="com.antiy.asset.entity.AssetCategoryEntity">

@@ -98,6 +98,9 @@ public class ReportDateUtils {
         int firstWeek = firstday.get(weekFields.weekOfWeekBasedYear());
         int lastWeek = lastDay.get(weekFields.weekOfWeekBasedYear());
 
+        // 获取当前月一共多少天
+        int days = lastDay.getDayOfMonth() - firstday.getDayOfMonth() + firstday.getDayOfWeek().ordinal() + 1;
+        int weeks = (int) Math.ceil(days / 7.0);
         Map<String, String> resultMap = new HashMap<>();
 
         Map<Integer, String> weeksMap = new HashMap<>();
@@ -211,6 +214,21 @@ public class ReportDateUtils {
         }
 
         return resultMaps;
+    }
+    public static Map<String, String> getDate(Integer type, Long startTime, Long endTime) {
+        switch (type) {
+            case 1:
+                return getDayOfWeek();
+            case 2:
+                return getWeekOfMonth();
+            case 3:
+                return getSeason();
+            case 4:
+                return getCurrentMonthOfYear();
+            case 5:
+                return getMonthWithDate(startTime, endTime);
+        }
+        return null;
     }
 
     public static void main(String[] args) {

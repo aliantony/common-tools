@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.response.ReportData;
 import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -91,7 +92,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         List<Integer> otherDataList = new ArrayList<>();
         Iterator<Map.Entry<String, String>> iterator = weekMap.entrySet().iterator();
         List<String> dateList = new ArrayList<>();
-        List<AssetReportResponse.ReportData> columnarList = new ArrayList<>();
+        List<ReportData> columnarList = new ArrayList<>();
         AssetCategoryModel assetCategoryModel = new AssetCategoryModel();
 
         while (iterator.hasNext()) {
@@ -139,27 +140,27 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
         // 构建柱状数据
 
-        AssetReportResponse.ReportData computeDeviceColumnar = reportResponse.new ReportData();
+        ReportData computeDeviceColumnar = new ReportData();
         computeDeviceColumnar.setClassify(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
         computeDeviceColumnar.setData(computerDataList);
         columnarList.add(computeDeviceColumnar);
 
-        AssetReportResponse.ReportData networkDeviceColumnar = reportResponse.new ReportData();
+        ReportData networkDeviceColumnar = new ReportData();
         networkDeviceColumnar.setClassify(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg());
         networkDeviceColumnar.setData(networkDataList);
         columnarList.add(networkDeviceColumnar);
 
-        AssetReportResponse.ReportData storageDeviceColumnar = reportResponse.new ReportData();
+        ReportData storageDeviceColumnar = new ReportData();
         storageDeviceColumnar.setClassify(AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg());
         storageDeviceColumnar.setData(storageDataList);
         columnarList.add(storageDeviceColumnar);
 
-        AssetReportResponse.ReportData safetyDeviceColumnar = reportResponse.new ReportData();
+        ReportData safetyDeviceColumnar = new ReportData();
         safetyDeviceColumnar.setClassify(AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg());
         safetyDeviceColumnar.setData(safetyDataList);
         columnarList.add(safetyDeviceColumnar);
 
-        AssetReportResponse.ReportData otherDeviceColumnar = reportResponse.new ReportData();
+        ReportData otherDeviceColumnar = new ReportData();
         otherDeviceColumnar.setClassify(AssetSecondCategoryEnum.OTHER_DEVICE.getMsg());
         otherDeviceColumnar.setData(otherDataList);
         columnarList.add(otherDeviceColumnar);
@@ -238,7 +239,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
     }
 
-
     private AssetReportResponse getAssetReportResponseInWeek(List<AssetCategoryModel> secondCategoryModelList,
                                                              Map<String, Integer> result) {
         // 初始化返回类
@@ -251,7 +251,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
         assetReportResponse.setDate(Arrays.asList(weeks));
         // 将结果数据组装到Response中
-        List<AssetReportResponse.ReportData> reportDataList = new ArrayList<>();
+        List<ReportData> reportDataList = new ArrayList<>();
         for (AssetCategoryModel assetCategoryModel : secondCategoryModelList) {
             Integer[] data = new Integer[weekMap.size()];
             for (Map.Entry<String, Integer> entry : result.entrySet()) {
@@ -295,7 +295,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
     }
 
-
     private AssetReportResponse getAssetReportResponseInMonth(List<AssetCategoryModel> secondCategoryModelList,
                                                               Map<String, Integer> result) {
         // 初始化返回类
@@ -314,7 +313,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
         assetReportResponse.setDate(Arrays.asList(weeks));
         // 将结果数据组装到Response中
-        List<AssetReportResponse.ReportData> reportDataList = new ArrayList<>();
+        List<ReportData> reportDataList = new ArrayList<>();
         for (AssetCategoryModel assetCategoryModel : secondCategoryModelList) {
             Integer[] data = new Integer[weekMap.size()];
             for (Map.Entry<String, Integer> entry : result.entrySet()) {
@@ -353,7 +352,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
         assetReportResponse.setDate(Arrays.asList(weeks));
         // 将结果数据组装到Response中
-        List<AssetReportResponse.ReportData> reportDataList = new ArrayList<>();
+        List<ReportData> reportDataList = new ArrayList<>();
         for (AssetCategoryModel assetCategoryModel : secondCategoryModelList) {
             Integer[] data = new Integer[monthMap.size()];
             for (Map.Entry<String, Integer> entry : result.entrySet()) {
@@ -379,7 +378,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
         assetReportResponse.setDate(Arrays.asList(weeks));
         // 将结果数据组装到Response中
-        List<AssetReportResponse.ReportData> reportDataList = new ArrayList<>();
+        List<ReportData> reportDataList = new ArrayList<>();
         for (AssetCategoryModel assetCategoryModel : secondCategoryModelList) {
             Integer[] data = new Integer[weeks.length];
             for (Map.Entry<String, Integer> entry : result.entrySet()) {
@@ -454,10 +453,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
     }
 
-    private void addReportData(AssetReportResponse assetReportResponse,
-                               List<AssetReportResponse.ReportData> reportDataList,
+    private void addReportData(AssetReportResponse assetReportResponse, List<ReportData> reportDataList,
                                AssetCategoryModel assetCategoryModel, Integer[] data) {
-        AssetReportResponse.ReportData reportData = assetReportResponse.new ReportData();
+        ReportData reportData = new ReportData();
         reportData.setClassify(assetCategoryModel.getName());
         reportData.setAdd(Arrays.asList(data));
         reportDataList.add(reportData);
@@ -528,7 +526,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         List<String> dateList = new ArrayList<>();
 
         // 将结果数据组装到Response中
-        List<AssetReportResponse.ReportData> reportDataList = new ArrayList<>();
+        List<ReportData> reportDataList = new ArrayList<>();
         List<Integer> countDate = new ArrayList<>();
         while (iterator.hasNext()) {
             int count = 0;
@@ -548,7 +546,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
 
         for (AssetGroupEntity groupEntity : assetConutWithGroup) {
-            AssetReportResponse.ReportData reportData = reportResponse.new ReportData();
+            ReportData reportData = new ReportData();
             reportData.setClassify(groupEntity.getName());
             reportData.setData(countDate);
             reportDataList.add(reportData);
