@@ -45,6 +45,13 @@ public interface IAssetReportService {
      * @throws Exception
      */
     AssetReportResponse getNewAssetWithGroup(ReportQueryRequest reportQueryRequest) throws Exception;
+    /**
+     * 根据时间条件分类统计查询数据，返回表格信息
+     * @param query
+     * @return
+     * @throws Exception
+     */
+    AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception;
 
 
 }
