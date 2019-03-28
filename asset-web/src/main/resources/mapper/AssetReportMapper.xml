@@ -7,6 +7,11 @@
         <result column="areaId" property="areaId"/>
         <result column="date" property="date"/>
     </resultMap>
+
+    <resultMap id="AssetGroupResultMap" type="com.antiy.asset.entity.AssetGroupReportEntity">
+        <id column="asset_group_id" property="assetGroupId"></id>
+        <result column=""></result>
+    </resultMap>
     <!--获取所有的统计数据-->
     <select id="getAllAssetWithArea" resultType="java.util.Map"
             parameterType="com.antiy.asset.vo.request.ReportQueryRequest">
@@ -129,6 +134,25 @@
         GROUP BY
         asset.category_model,
         FROM_UNIXTIME( asset.gmt_create / 1000, #{format} );
+    </select>
+
+    <select id="getNewAssetWithGroupByMonth" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
+            resultMap="AssetGroupResultMap">
+        SELECT
+        agr.asset_group_id,ag.`NAME` as assetGroupName,count(agr.asset_group_id) as countNum,
+        FROM_UNIXTIME(agr.gmt_create / 1000,'%U') AS `date`
+        FROM
+        asset_group_relation agr
+        LEFT JOIN asset_group ag ON agr.asset_group_id = ag.id
+        LEFT JOIN asset on agr.asset_id = asset.id
+        WHERE
+        agr.gmt_create &lt;= #{endTime}
+        AND agr.gmt_create &gt;= #{startTime}
+        AND asset.status = 1
+        GROUP BY
+        agr.asset_group_id,
+        FROM_UNIXTIME(gmt_create / 1000, '%U')
+        ORDER BY `date` asc
     </select>
 
 </mapper>
