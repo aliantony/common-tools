@@ -1,13 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.entity.AssetCategoryEntity;
@@ -33,6 +25,12 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 资产报表实现类
@@ -54,7 +52,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     AssetReportDao              assetReportDao;
     @Resource
     AssetCategoryModelDao       categoryModelDao;
-    private static Logger       logger = LogUtils.get(AssetReportServiceImpl.class);
+    private static Logger logger = LogUtils.get(AssetReportServiceImpl.class);
 
     @Override
     public AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
@@ -108,10 +106,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
      */
     private Map<String, Object> buildCategoryCountByTime(AssetReportCategoryCountQuery query,
                                                          Map<String, String> weekMap) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<> ();
         List<AssetCategoryModel> categoryModels = categoryModelDao.findAllCategory();
         // 构造柱状图所需的source
-        List<Integer> computerDataList = new ArrayList<>();
+        List<Integer> computerDataList = new ArrayList<> ();
         List<Integer> networkDataList = new ArrayList<>();
         List<Integer> storageDataList = new ArrayList<>();
         List<Integer> safetyDataList = new ArrayList<>();
@@ -584,7 +582,18 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     private AssetReportResponse buildGroupCountByTime(ReportQueryRequest reportQueryRequest,
                                                       Map<String, String> timeMap) {
+        //初始总量
         List<AssetGroupEntity> groupReportEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
+        if (Objects.isNull (reportQueryRequest.getTopFive ())) {
+            //传入endTime 查询前5资产组
+            List<AssetGroupEntity> groupReportEntityListTop = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
+            List<Integer> groupIds = new ArrayList<> ();
+            groupReportEntityListTop.stream ().forEach (assetGroupEntity ->groupIds.add (assetGroupEntity.getGroupId ()) );
+            reportQueryRequest.setGroupIds (groupIds);
+        }
+
+        //新增的资产痛
+        List<AssetGroupEntity> assetGroupEntities = assetReportDao.getNewAssetWithGroup (reportQueryRequest);
 
         // 1.初始化返回对象
         AssetReportResponse assetReportResponse = new AssetReportResponse();
@@ -620,14 +629,24 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
             dateKeyList.forEach(date -> {
                 Integer num = 0;
-                for (AssetGroupEntity groupReportEntity : groupReportEntityList) {
+                Integer num2 = 0;
+                for (int i = 0; i < assetGroupEntities.size (); i++) {
+                    if (i==0){
+                        for (int j = 0; j < groupReportEntityList.size (); j++) {
+                            // 资产组别且对应周数匹配
+                            if (groupReportEntityList.get (i).getName().equals(groupName) ) {
+                                num2 = groupReportEntityList.get (i).getGroupCount();
+                            }
+                        }
+                    }
+
                     // 去掉数据库返回的数据中开头为0的部分
-                    String groupReportEntityDate = groupReportEntity.getDate().startsWith("0")
-                        ? groupReportEntity.getDate().substring(1)
-                        : groupReportEntity.getDate();
+                    String groupReportEntityDate = assetGroupEntities.get (i).getDate().startsWith("0")
+                        ? assetGroupEntities.get (i).getDate().substring(1)
+                        : assetGroupEntities.get (i).getDate();
                     // 资产组别且对应周数匹配
-                    if (groupReportEntity.getName().equals(groupName) && groupReportEntityDate.equals(date)) {
-                        num = groupReportEntity.getGroupCount();
+                    if (assetGroupEntities.get (i).getName().equals(groupName) && groupReportEntityDate.equals(date)) {
+                         num += assetGroupEntities.get (i).getGroupCount()+num2;
                     }
                 }
                 addNumList.add(num);
@@ -639,42 +658,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
         assetReportResponse.setList(reportDataList);
         return assetReportResponse;
 
-        // AssetReportResponse reportResponse = new AssetReportResponse();
-        // Iterator<Map.Entry<String, String>> iterator = weekMap.entrySet().iterator();
-        // // 横坐标
-        // List<String> dateList = new ArrayList<>();
-        //
-        // // 将结果数据组装到Response中
-        // List<ReportData> reportDataList = new ArrayList<>();
-        // List<Integer> countDate = new ArrayList<>();
-        // while (iterator.hasNext()) {
-        // int count = 0;
-        //
-        // Map.Entry<String, String> entry = iterator.next();
-        // String key = entry.getKey();
-        // String time = entry.getValue();
-        // for (AssetGroupEntity entity : assetConutWithGroup) {
-        // if (key.equals(entity.getDate())) {
-        // count = entity.getGroupCount();
-        // }
-        // }
-        //
-        // countDate.add(count);
-        // dateList.add(time);
-        //
-        // }
-        //
-        // for (AssetGroupEntity groupEntity : assetConutWithGroup) {
-        // ReportData reportData = new ReportData();
-        // reportData.setClassify(groupEntity.getName());
-        // reportData.setData(countDate);
-        // reportDataList.add(reportData);
-        // }
-        //
-        // reportResponse.setList(reportDataList);
-        // reportResponse.setDate(dateList);
-        //
-        // return reportResponse;
     }
 
     /**
@@ -704,7 +687,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils
                     .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
             default:
-                throw new RequestParamValidateException("查询时间类型不正确");
+                throw new RequestParamValidateException ("查询时间类型不正确");
         }
     }
 

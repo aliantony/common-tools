@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.service.IAssetReportService;
+import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
@@ -77,14 +78,25 @@ public class AssetReportController {
      * @param reportQueryRequest
      * @return
      */
-    @ApiOperation(value = "根据时间条件、区域资产表格数据", notes = "主键封装对象")
+    @ApiOperation(value = "根据时间条件、区域查询资产表格数据", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/queryAreaTable", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:report:queryAreaTable')")
     public ActionResponse queryAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
         return ActionResponse.success(iAssetAreaReportService.queryAreaTable(reportQueryRequest));
     }
-
+    /**
+     * 根据时间条件、区域导出资产表格数据
+     * @param reportQueryRequest
+     * @return
+     */
+    @ApiOperation(value = "根据时间条件、区域资产表格数据", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/exportAreaTable", method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('asset:report:exportAreaTable')")
+    public void exportAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
+        ExcelUtils.exportFormToClient(iAssetAreaReportService.exportAreaTable(reportQueryRequest), "资产区域报表数据");
+    }
     /**
      * 根据时间条件查询分类统计资产新增数量
      *
