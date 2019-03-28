@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.request.AssetAreaReportRequest;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
@@ -196,6 +197,42 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         rows.add(add);
         assetReportTableResponse.setRows(rows);
         return assetReportTableResponse;
+    }
+
+    /**
+     * 导出报表数据
+     * @param reportQueryRequest
+     * @return
+     */
+    @Override
+    public ReportForm exportAreaTable(ReportQueryRequest reportQueryRequest) {
+        ReportForm reportForm = new ReportForm();
+        AssetReportResponse assetReportResponse = this.getAssetWithArea(reportQueryRequest);
+        // 表格标题
+        reportForm.setTitle("资产区域报表数据");
+        //表格行头
+        reportForm.setHeaderList(assetReportResponse.getDate());
+        // 表格列头
+        List columnList = assetReportResponse.getList().stream().map(ReportData::getClassify).collect(Collectors.toList());
+        columnList.add("总数");
+        columnList.add("新增数量");
+        List<List<Integer>> dataList = Lists.newArrayList();
+        reportForm.setColumnList(columnList);
+        List<ReportData> list = assetReportResponse.getList();
+        list.stream().forEach(reportData -> {
+            dataList.add(reportData.getData());
+        });
+        dataList.add(assetReportResponse.getAlldata());
+        dataList.add(assetReportResponse.getAllAdd());
+        String[][] datas = new String[columnList.size()][assetReportResponse.getDate().size()];
+        for (int i = 0; i < dataList.size(); i++) {
+            List<Integer> data = dataList.get(i);
+            for (int j = 0; j < data.size();j++) {
+                datas[i][j] = String.valueOf(data.get(j));
+            }
+        }
+        reportForm.setData(datas);
+        return reportForm;
     }
 
     private String getAreaNameById(Integer id, List<AssetAreaReportRequest> assetAreaIds) {
