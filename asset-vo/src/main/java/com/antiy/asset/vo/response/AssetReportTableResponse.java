@@ -13,4 +13,27 @@ public class AssetReportTableResponse extends BaseResponse {
     private List<ReportTableHead> children;
     private List<String>          rows;
 
+    public String getFormName() {
+        return formName;
+    }
+
+    public void setFormName(String formName) {
+        this.formName = formName;
+    }
+
+    public List<ReportTableHead> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<ReportTableHead> children) {
+        this.children = children;
+    }
+
+    public List<String> getRows() {
+        return rows;
+    }
+
+    public void setRows(List<String> rows) {
+        this.rows = rows;
+    }
 }
