@@ -27,6 +27,8 @@ import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.asset.vo.response.ReportData;
+import com.antiy.asset.vo.response.ReportTableHead;
+import com.antiy.common.base.BaseConverter;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -51,6 +53,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
     AssetReportDao              assetReportDao;
     @Resource
     AssetCategoryModelDao       categoryModelDao;
+    @Resource
+    BaseConverter<Integer, String> baseConverter;
     private static Logger       logger = LogUtils.get(AssetReportServiceImpl.class);
 
     @Override
@@ -117,7 +121,17 @@ public class AssetReportServiceImpl implements IAssetReportService {
         List<String> dateList = new ArrayList<>();
         List<ReportData> columnarList = new ArrayList<>();
         AssetCategoryModel assetCategoryModel = new AssetCategoryModel();
-
+        Map<String, Object> timeValueMap = new HashMap<>();
+        Map<String, String> computerTimeValueMap = new HashMap<>();
+        Map<String, String> networkTimeValueMap = new HashMap<>();
+        Map<String, String> storageTimeValueMap = new HashMap<>();
+        Map<String, String> safetyTimeValueMap = new HashMap<>();
+        Map<String, String> otherTimeValueMap = new HashMap<>();
+        computerTimeValueMap.put("classifyName", AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
+        networkTimeValueMap.put("classifyName", AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg());
+        storageTimeValueMap.put("classifyName", AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg());
+        safetyTimeValueMap.put("classifyName", AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg());
+        otherTimeValueMap.put("classifyName", AssetSecondCategoryEnum.OTHER_DEVICE.getMsg());
         while (iterator.hasNext()) {
             int computeDevice = 0;
             int networkDevice = 0;
@@ -128,6 +142,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             Map.Entry<String, String> entry = iterator.next();
             String key = entry.getKey();
             String time = entry.getValue();
+
             List<AssetCategoryEntity> categoryEntityList = assetReportDao.findCategoryCountByTime(query);
             for (AssetCategoryEntity categoryEntity : categoryEntityList) {
                 if (key.equals(categoryEntity.getDate())) {
@@ -137,18 +152,23 @@ public class AssetReportServiceImpl implements IAssetReportService {
                     String secondCategoryName = this.getParentCategory(assetCategoryModel, categoryModels).getName();
                     if (AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg().equals(secondCategoryName)
                         && key.equals(categoryEntity.getDate())) {
+                        computerTimeValueMap.put("classifyName", AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
                         computeDevice = computeDevice + categoryEntity.getCategoryCount();
                     } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
+                        networkTimeValueMap.put("classifyName", AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
                         networkDevice = networkDevice + categoryEntity.getCategoryCount();
                     } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
+                        storageTimeValueMap.put("classifyName", AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg());
                         storageDevice = storageDevice + categoryEntity.getCategoryCount();
                     } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
+                        safetyTimeValueMap.put("classifyName", AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg());
                         safetyDevice = safetyDevice + categoryEntity.getCategoryCount();
                     } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
+                        otherTimeValueMap.put("classifyName", AssetSecondCategoryEnum.OTHER_DEVICE.getMsg());
                         otherDevice = otherDevice + categoryEntity.getCategoryCount();
                     }
                 }
@@ -159,7 +179,22 @@ public class AssetReportServiceImpl implements IAssetReportService {
             storageDataList.add(storageDevice);
             safetyDataList.add(safetyDevice);
             otherDataList.add(otherDevice);
+
+            computerTimeValueMap.put(key, String.valueOf(computeDevice));
+            networkTimeValueMap.put(key, String.valueOf(networkDevice));
+            storageTimeValueMap.put(key, String.valueOf(storageDevice));
+            safetyTimeValueMap.put(key, String.valueOf(safetyDevice));
+            otherTimeValueMap.put(key, String.valueOf(otherDevice));
+
         }
+
+        timeValueMap.put(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg(), computerTimeValueMap);
+        timeValueMap.put(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg(), networkTimeValueMap);
+        timeValueMap.put(AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg(), storageTimeValueMap);
+        timeValueMap.put(AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg(), safetyTimeValueMap);
+        timeValueMap.put(AssetSecondCategoryEnum.OTHER_DEVICE.getMsg(), otherTimeValueMap);
+
+        map.put("timeValueMap", timeValueMap);
 
         // 构建柱状数据
 
@@ -695,26 +730,71 @@ public class AssetReportServiceImpl implements IAssetReportService {
     public AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception {
         ShowCycleType showCycleType = query.getShowCycleType();
         checkParameter(query, showCycleType);
+        if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
+            query.setFormat(DAY);
+            return getAssetReportTableResponse(query);
+        } else if (ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())) {
+            query.setFormat(WEEK);
+            return getAssetReportTableResponse(query);
+        } else if (ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())) {
+            query.setFormat(MONTH);
+            return getAssetReportTableResponse(query);
+        } else if (ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
+            query.setFormat(MONTH);
+            return getAssetReportTableResponse(query);
+        } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
+            return getAssetReportTableResponse(query);
+        } else {
+            throw new BusinessException("非法参数");
+        }
+    }
 
-        // if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
-        // query.setFormat(DAY);
-        // return buildCategoryCountByTime(query, ReportDateUtils.getDayOfWeek());
-        // } else if (ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())) {
-        // query.setFormat(WEEK);
-        // return buildCategoryCountByTime(query, ReportDateUtils.getWeekOfMonth());
-        // } else if (ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())) {
-        // query.setFormat(MONTH);
-        // return buildCategoryCountByTime(query, ReportDateUtils.getSeason());
-        // } else if (ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
-        // query.setFormat(MONTH);
-        // return buildCategoryCountByTime(query, ReportDateUtils.getCurrentMonthOfYear());
-        // } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
-        // return buildCategoryCountByTime(query,
-        // ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
-        // } else {
-        // throw new BusinessException("非法参数");
-        // }
-        return null;
+    private AssetReportTableResponse getAssetReportTableResponse(AssetReportCategoryCountQuery query) {
+        AssetReportTableResponse reportTableResponse = new AssetReportTableResponse();
+        List<Map<String, String>> rows = new ArrayList<>();
+        Map<String, String> computerMap = new HashMap<>();
+        Map<String, String> networkMap = new HashMap<>();
+        Map<String, String> storageMap = new HashMap<>();
+        Map<String, String> safetyMap = new HashMap<>();
+        Map<String, String> otherMap = new HashMap<>();
+        computerMap.put("classifyName", AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
+        networkMap.put("classifyName", AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg());
+        storageMap.put("classifyName", AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg());
+        safetyMap.put("classifyName", AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg());
+        otherMap.put("classifyName", AssetSecondCategoryEnum.OTHER_DEVICE.getMsg());
+
+        List<ReportTableHead> children = new ArrayList<>();
+        ReportTableHead initTableHead = new ReportTableHead();
+        initTableHead.setName("");
+        initTableHead.setKey("classifyName");
+        children.add(initTableHead);
+        Map<String, Object> map;
+        Map<String, String> dateMap = ReportDateUtils.getDayOfWeek();
+        Iterator<Map.Entry<String, String>> iterator = dateMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, String> entry = iterator.next();
+            ReportTableHead reportTableHead = new ReportTableHead();
+            reportTableHead.setKey(entry.getKey());
+            reportTableHead.setName(entry.getValue());
+            children.add(reportTableHead);
+
+            computerMap.put(entry.getKey(), "");
+            networkMap.put(entry.getKey(), "");
+            storageMap.put(entry.getKey(), "");
+            safetyMap.put(entry.getKey(), "");
+            otherMap.put(entry.getKey(), "");
+        }
+        map = buildCategoryCountByTime(query, ReportDateUtils.getDayOfWeek());
+        Map<String, Object> ssMap = (Map<String, Object>) map.get("timeValueMap");
+        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg()));
+        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg()));
+        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg()));
+        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg()));
+        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.OTHER_DEVICE.getMsg()));
+
+        reportTableResponse.setRows(rows);
+        reportTableResponse.setChildren(children);
+        return reportTableResponse;
     }
 
     /**
