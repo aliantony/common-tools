@@ -203,6 +203,7 @@
         agr.gmt_create &lt;= #{endTime}
         AND agr.gmt_create &gt;= #{startTime}
         AND asset.status = 1
+        AND asset.asset_status != 9
         GROUP BY
         agr.asset_group_id,
         FROM_UNIXTIME(gmt_create / 1000, #{sqlTime})

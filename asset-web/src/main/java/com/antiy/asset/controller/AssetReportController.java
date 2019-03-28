@@ -85,7 +85,7 @@ public class AssetReportController {
      * @return
      * @throws Exception
      */
-    @ApiOperation(value = "根据资产组查询资产新增数量信息", notes = "根据资产组查询资产新增数量信息")
+    @ApiOperation(value = "按资产组查询资产新增数量信息", notes = "根据资产组查询资产新增数量信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/groupNewAsset", method = RequestMethod.GET)
     public ActionResponse getNewAssetWithGroup(@ApiParam("报表查询对象") ReportQueryRequest reportQueryRequest) throws Exception {
