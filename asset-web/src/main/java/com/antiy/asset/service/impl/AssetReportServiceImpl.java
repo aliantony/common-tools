@@ -5,6 +5,10 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.ArrayTypeUtil;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.vo.response.ReportData;
+import com.antiy.asset.templet.ReportForm;
 import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -16,7 +20,6 @@ import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroupEntity;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetReportService;
-import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
@@ -24,9 +27,7 @@ import com.antiy.asset.vo.enums.ShowCycleType;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
-import com.antiy.asset.vo.response.ReportData;
 import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
@@ -251,7 +252,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 assetReportCategoryCountQuery.setFormat("%w");
                 break;
             case THIS_MONTH:
-                assetReportCategoryCountQuery.setFormat("%U");
+                assetReportCategoryCountQuery.setFormat("%u");
                 break;
 
             case THIS_QUARTER:
@@ -274,16 +275,16 @@ public class AssetReportServiceImpl implements IAssetReportService {
         String titleStr;
         switch (assetReportCategoryCountQuery.getShowCycleType()) {
             case THIS_WEEK:
-                titleStr = "本周";
+                titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
                 break;
             case THIS_MONTH:
-                titleStr = "本月";
+                titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
                 break;
             case THIS_QUARTER:
-                titleStr = "本季度";
+                titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
                 break;
             case THIS_YEAR:
-                titleStr = "本年";
+                titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
                 break;
             case ASSIGN_TIME:
                 titleStr = getTitleStr(assetReportCategoryCountQuery);
@@ -291,14 +292,34 @@ public class AssetReportServiceImpl implements IAssetReportService {
             default:
                 throw new BusinessException("timeType参数异常");
         }
-
         reportForm.setTitle("资产" + titleStr + "品类型号总数");
         AssetReportResponse assetReportResponse = queryCategoryCountByTime(assetReportCategoryCountQuery);
-        List<String> headerList = new ArrayList<>();
+        List<String> headerList = assetReportResponse.getDate();
+        headerList.add("总数");
+        int[] total = new int[headerList.size()];
+        headerList.add("新增");
+        int[] add = new int[headerList.size()];
+        List<ReportData> reportDataList = assetReportResponse.getList();
+        List<String> columnList = new ArrayList<>();
+        String[][] data = new String[reportDataList.size()][headerList.size()];
+        for (int i = 0; i < reportDataList.size(); i++) {
+            ReportData reportData = reportDataList.get(i);
+            String classify = reportData.getClassify();
+            columnList.add(classify);
+            List dataList = reportData.getData();
+            data[i] = ArrayTypeUtil.objectArrayToStringArray(dataList.toArray());
+        }
+        reportForm.setHeaderList(headerList);
+        reportForm.setData(data);
+        reportForm.setColumnList(columnList);
+        ExcelUtils.exportFormToClient(reportForm, "报表导出.xlsx");
     }
 
     private String getTitleStr(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
-        return "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
+        String beginTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getBeginTime()));
+        String endTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getEndTime()));
+        return new StringBuffer(beginTime).append(" ").append(endTime).toString();
     }
 
     private AssetReportResponse getAssetReportResponseInWeek(List<AssetCategoryModel> secondCategoryModelList,
@@ -520,8 +541,17 @@ public class AssetReportServiceImpl implements IAssetReportService {
                                AssetCategoryModel assetCategoryModel, Integer[] data) {
         ReportData reportData = new ReportData();
         reportData.setClassify(assetCategoryModel.getName());
+        processData(data);
         reportData.setAdd(Arrays.asList(data));
         reportDataList.add(reportData);
+    }
+
+    private void processData(Integer[] data) {
+        for (int i = 0; i < data.length; i++) {
+            if (data[i] == null) {
+                data[i] = 0;
+            }
+        }
     }
 
     private Map<Integer, List<Integer>> getIntegerListMap(List<AssetCategoryModel> secondCategoryModelList,
