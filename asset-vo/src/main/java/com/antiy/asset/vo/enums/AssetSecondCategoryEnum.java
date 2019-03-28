@@ -6,7 +6,9 @@ public enum AssetSecondCategoryEnum {
                                                                             "存储设备"), OTHER_DEVICE("other_device",
                                                                                                   "其它设备"), SAFETY_DEVICE("safety_device",
                                                                                                                          "安全设备"), NETWORK_DEVICE("network_device",
-                                                                                                                                                 "网络设备");
+                                                                                                                                                 "网络设备"), AMOUNT("AMOUNT",
+                                                                                                                                                                 "总数"), NEW_ADD("NEW_ADD",
+                                                                                                                                                                                "新增数量");
 
     AssetSecondCategoryEnum(String code, String msg) {
         this.code = code;
