@@ -565,27 +565,25 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // 1-本周,2-本月,3-本季度,4-本年,5-时间范围
         switch (reportQueryRequest.getTimeType()) {
             case "1":
-                return getNewAssetWithGroupInWeek(reportQueryRequest);
+                reportQueryRequest.setSqlTime("%w");
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getDayOfWeek());
             case "2":
-                return getNewAssetWithGroupInMonth(reportQueryRequest);
+                reportQueryRequest.setSqlTime("%U");
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getWeekOfMonth());
             case "3":
-                return getNewAssetWithGroupInSeason(reportQueryRequest);
+                reportQueryRequest.setSqlTime("%Y-%m");
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getSeason());
             case "4":
-                return getNewAssetWithGroupInYear(reportQueryRequest);
+                reportQueryRequest.setSqlTime("%Y-%m");
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear());
             case "5":
-                return getNewAssetWithGroupInRange(reportQueryRequest);
+                reportQueryRequest.setSqlTime("%Y-%m");
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils
+                    .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
             default:
-                throw new BusinessException("查询时间类型不正确");
+                reportQueryRequest.setSqlTime("%Y-%m");
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear());
         }
-    }
-
-    /**
-     * 根据资产组类别查本周新增资产情况
-     * @param reportQueryRequest
-     * @return
-     */
-    public AssetReportResponse getNewAssetWithGroupInWeek(ReportQueryRequest reportQueryRequest) {
-        return null;
     }
 
     /**
@@ -593,9 +591,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @param reportQueryRequest
      * @return
      */
-    public AssetReportResponse getNewAssetWithGroupInMonth(ReportQueryRequest reportQueryRequest) {
-
-        List<AssetGroupEntity> groupReportEntityList = assetReportDao.getNewAssetWithGroupByMonth(reportQueryRequest);
+    public AssetReportResponse queryNewAssetWithGroup(ReportQueryRequest reportQueryRequest,
+                                                      Map<String, String> timeMap) {
+        List<AssetGroupEntity> groupReportEntityList = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
         // 1.初始化返回对象
         AssetReportResponse assetReportResponse = new AssetReportResponse();
         List<AssetReportResponse.ReportData> reportDataList = new ArrayList<>();
@@ -604,10 +602,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
         Map<String, String> treeWeekMap = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                return Integer.valueOf(o1).compareTo(Integer.valueOf(o2));
+                return Integer.valueOf(o1.replace("-", "")).compareTo(Integer.valueOf(o2.replace("-", "")));
             }
         });
-        treeWeekMap.putAll(ReportDateUtils.getWeekOfMonth());
+        treeWeekMap.putAll(timeMap);
         // 3.添加排序后的日期信息到dateList
         List<String> dateKeyList = new ArrayList<>(treeWeekMap.size());
         List<String> dateValueList = new ArrayList<>(treeWeekMap.size());
@@ -650,30 +648,4 @@ public class AssetReportServiceImpl implements IAssetReportService {
         return assetReportResponse;
     }
 
-    /**
-     * 根据资产组类别查本季度新增资产情况
-     * @param reportQueryRequest
-     * @return
-     */
-    public AssetReportResponse getNewAssetWithGroupInSeason(ReportQueryRequest reportQueryRequest) {
-        return null;
-    }
-
-    /**
-     * 根据资产组类别查本年新增资产情况
-     * @param reportQueryRequest
-     * @return
-     */
-    public AssetReportResponse getNewAssetWithGroupInYear(ReportQueryRequest reportQueryRequest) {
-        return null;
-    }
-
-    /**
-     * 根据资产组类别查某个时间范围新增资产情况
-     * @param reportQueryRequest
-     * @return
-     */
-    public AssetReportResponse getNewAssetWithGroupInRange(ReportQueryRequest reportQueryRequest) {
-        return null;
-    }
 }
