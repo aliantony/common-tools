@@ -5,7 +5,6 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +23,8 @@ import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.*;
 
 /**
  * 资产报表实现类
@@ -38,6 +34,10 @@ import java.util.*;
  **/
 @Service
 public class AssetReportServiceImpl implements IAssetReportService {
+    private final static String DAY    = "%w";
+    private final static String WEEK   = "%U";
+    private final static String MONTH  = "%Y-%m";
+
     @Resource
     IAssetCategoryModelService iAssetCategoryModelService;
     @Resource
@@ -46,6 +46,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     AssetReportDao             assetReportDao;
     @Resource
     AssetCategoryModelDao      categoryModelDao;
+
     private static Logger      logger = LogUtils.get(AssetReportServiceImpl.class);
 
     @Override
@@ -55,20 +56,20 @@ public class AssetReportServiceImpl implements IAssetReportService {
         checkParameter(query, showCycleType);
 
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
-            query.setFormat("%w");
+            query.setFormat(DAY);
             return buildCategoryCountByTime(query, ReportDateUtils.getDayOfWeek());
         } else if (ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())) {
-            query.setFormat("%U");
+            query.setFormat(WEEK);
             return buildCategoryCountByTime(query, ReportDateUtils.getWeekOfMonth());
         } else if (ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())) {
-            query.setFormat("%Y-%m");
+            query.setFormat(MONTH);
             return buildCategoryCountByTime(query, ReportDateUtils.getSeason());
         } else if (ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
-            query.setFormat("%Y-%m");
+            query.setFormat(MONTH);
             return buildCategoryCountByTime(query, ReportDateUtils.getCurrentMonthOfYear());
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
-            // TODO 待测试
-            return buildCategoryCountByTime(query, ReportDateUtils.getMonthWithDate(1L, 1L));
+            return buildCategoryCountByTime(query,
+                ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
         }
         return null;
     }
