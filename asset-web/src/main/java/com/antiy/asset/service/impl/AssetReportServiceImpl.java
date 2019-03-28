@@ -5,9 +5,6 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.response.ReportData;
-import com.antiy.asset.templet.ReportForm;
-import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +15,7 @@ import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroupEntity;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetReportService;
+import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
@@ -25,6 +23,7 @@ import com.antiy.asset.vo.enums.ShowCycleType;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
+import com.antiy.asset.vo.response.ReportData;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -37,15 +36,19 @@ import com.antiy.common.utils.ParamterExceptionUtils;
  **/
 @Service
 public class AssetReportServiceImpl implements IAssetReportService {
+    private final static String DAY    = "%w";
+    private final static String WEEK   = "%u";
+    private final static String MONTH  = "%Y-%m";
+
     @Resource
-    IAssetCategoryModelService iAssetCategoryModelService;
+    IAssetCategoryModelService  iAssetCategoryModelService;
     @Resource
-    AssetCategoryModelDao      assetCategoryModelDao;
+    AssetCategoryModelDao       assetCategoryModelDao;
     @Resource
-    AssetReportDao             assetReportDao;
+    AssetReportDao              assetReportDao;
     @Resource
-    AssetCategoryModelDao      categoryModelDao;
-    private static Logger      logger = LogUtils.get(AssetReportServiceImpl.class);
+    AssetCategoryModelDao       categoryModelDao;
+    private static Logger       logger = LogUtils.get(AssetReportServiceImpl.class);
 
     @Override
     public AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) {
@@ -54,20 +57,20 @@ public class AssetReportServiceImpl implements IAssetReportService {
         checkParameter(query, showCycleType);
 
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
-            query.setFormat("%w");
+            query.setFormat(DAY);
             return buildCategoryCountByTime(query, ReportDateUtils.getDayOfWeek());
         } else if (ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())) {
-            query.setFormat("%U");
+            query.setFormat(WEEK);
             return buildCategoryCountByTime(query, ReportDateUtils.getWeekOfMonth());
         } else if (ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())) {
-            query.setFormat("%Y-%m");
+            query.setFormat(MONTH);
             return buildCategoryCountByTime(query, ReportDateUtils.getSeason());
         } else if (ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
-            query.setFormat("%Y-%m");
+            query.setFormat(MONTH);
             return buildCategoryCountByTime(query, ReportDateUtils.getCurrentMonthOfYear());
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
-            // TODO 待测试
-            return buildCategoryCountByTime(query, ReportDateUtils.getMonthWithDate(1L, 1L));
+            return buildCategoryCountByTime(query,
+                ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
         }
         return null;
     }
