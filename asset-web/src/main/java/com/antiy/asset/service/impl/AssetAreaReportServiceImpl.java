@@ -33,25 +33,24 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
 
     @Resource
     private AssetReportDao assetReportDao;
-    @Resource
-    private RedisUtil      redisUtil;
 
     @Override
     public AssetReportResponse getAssetWithArea(ReportQueryRequest reportRequest) {
         AssetReportResponse assetReportResponse = new AssetReportResponse();
-        List<ReportData> list = Lists.newArrayList();
-        List<AssetAreaReportRequest> oldAssetAreaIds = reportRequest.getAssetAreaIds();
+        List<ReportData> reportDataList = Lists.newArrayList();
+        // 总数
+        List<Integer> allDataList = Lists.newArrayList();
         // 1.查询TOP5的区域信息
         List<Integer> topAreaIds = getTopFive(reportRequest);
-        // 2. 初始化横坐标信息
-        List<AssetAreaReportRequest> assetAreaIds = reportRequest.getAssetAreaIds().stream()
-            .filter(area -> topAreaIds.contains(area.getParentAreaId())).collect(Collectors.toList());
         // 横坐标
         List<String> abscissa = Lists.newArrayList();
-        ReportDateUtils.getDate(DataTypeUtils.stringToInteger(reportRequest.getTimeType()),
-            reportRequest.getStartTime(), reportRequest.getEndTime()).forEach((k, v) -> {
-                abscissa.add(v);
-            });
+        Map<String, String> dateList = ReportDateUtils.getDate(
+            DataTypeUtils.stringToInteger(reportRequest.getTimeType()), reportRequest.getStartTime(),
+            reportRequest.getEndTime());
+        // 初始化横坐标名称
+        dateList.forEach((k, v) -> {
+            abscissa.add(v);
+        });
         assetReportResponse.setDate(abscissa);
 
         // 3.获取起始时间初始值
@@ -68,41 +67,78 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             if (!flag) {
                 Map m = new HashMap(2);
                 m.put("areaId", top);
-                m.put("assetCount", 0);
+                m.put("assetCount", Integer.valueOf(0));
                 initData.add(m);
             }
         });
         // 4.获取每个地区在每个时间区间的增量
-        List<Map<String, Integer>> addData = assetReportDao.queryAddAssetWithArea(reportRequest.getAssetAreaIds(),
-            reportRequest.getStartTime(), reportRequest.getEndTime());
+        List<Map<String, String>> addData = assetReportDao.queryAddAssetWithArea(reportRequest.getAssetAreaIds(),
+            reportRequest.getStartTime(), reportRequest.getEndTime(),
+            ReportDateUtils.getTimeType(DataTypeUtils.stringToInteger(reportRequest.getTimeType())));
         topAreaIds.stream().forEach(top -> {
             ReportData reportData = new ReportData();
-            //区域在区间总数
-            List<Integer> total = Lists.newArrayList();
-            //区域在区间增量
-            List<Integer> add = Lists.newArrayList();
-            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, top);
-            try {
-                SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-                reportData.setClassify(sysArea.getFullName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            // 区域在区间总数
+            List<Integer> totalList = Lists.newArrayList();
+            // 区域在区间增量
+            List<Integer> addList = Lists.newArrayList();
+            reportData.setClassify(getAreaNameById(top, reportRequest.getAssetAreaIds()));
             // 循环横坐标[2019-01,2019-02......]
-            for (int i = 0; i < abscissa.size(); i++) {
-                //遍历增量数据
-                for (Map<String, Integer> data : addData) {
-                    if (abscissa.get(i).equals(data.get("date"))) {
-                        add.add(data.get(top));
+            for (String date : dateList.keySet()) {
+                // 遍历增量数据
+                for (Map<String, String> data : addData) {
+                    if (date.equals(data.get("date"))) {
+                        addList.add(DataTypeUtils.stringToInteger(
+                            String.valueOf(data.get(getAreaNameById(top, reportRequest.getAssetAreaIds())))));
                     } else {
-                        add.add(0);
+                        addList.add(Integer.valueOf(0));
                     }
                 }
             }
+            // 计算每个区间总数
+            for (int i = 0; i < addList.size(); i++) {
+                // 第一列，初始值加上本区间增量
+                if (i == 0) {
+                    for (Map<String, Integer> init : initData) {
+                        if (top.equals(init.get("areaId"))) {
+                            totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.get("assetCount"))));
+                            break;
+                        }
+                    }
+                }
+                // 上个区间加上本区间增量
+                else {
+                    int t = Integer.valueOf(totalList.get(i - 1) + "");
+                    int a = Integer.valueOf(addList.get(i) + "");
+                    totalList.add(t + a);
+                }
+            }
+            // 设置增量数据
+            reportData.setAdd(addList);
+            // 设置区域区间总数
+            reportData.setData(totalList);
+            reportDataList.add(reportData);
         });
+        int allData = 0;
+        for (int i = 0; i < abscissa.size(); i++) {
+            for (int j = 0; j < topAreaIds.size(); j++) {
+                allData += reportDataList.get(j).getData().get(i);
+            }
+            allDataList.add(allData);
+            allData = 0;
+        }
         // 3.组装基础数据和总数
+        assetReportResponse.setList(reportDataList);
+        assetReportResponse.setAlldata(allDataList);
+        return assetReportResponse;
+    }
 
-        return null;
+    private String getAreaNameById(Integer id, List<AssetAreaReportRequest> assetAreaIds) {
+        for (AssetAreaReportRequest assetAreaReportRequest : assetAreaIds) {
+            if (id.equals(assetAreaReportRequest.getParentAreaId())) {
+                return assetAreaReportRequest.getParentAreaName();
+            }
+        }
+        return "";
     }
 
     private AssetReportResponse getAreaReportData(String timeType) {
