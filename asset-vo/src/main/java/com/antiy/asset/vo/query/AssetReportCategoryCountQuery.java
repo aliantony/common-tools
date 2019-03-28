@@ -2,6 +2,7 @@ package com.antiy.asset.vo.query;
 
 import javax.validation.constraints.NotNull;
 
+import com.antiy.asset.vo.enums.ReportFormType;
 import com.antiy.asset.vo.enums.ShowCycleType;
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -23,15 +24,16 @@ public class AssetReportCategoryCountQuery extends ObjectQuery implements Object
 
     @ApiModelProperty(value = "展示时间类型", example = "THIS_WEEK,THIS_MONTH,THIS_QUARTER,THIS_YEAR,ASSIGN_TIME")
     @NotNull(message = "展示时间类型不能为空")
-    private ShowCycleType      showCycleType;
+    private ShowCycleType  showCycleType;
 
     @ApiModelProperty(value = "勿传")
-    private String             format;
+    private String         format;
 
     @ApiModelProperty(value = "区域ID 不用传")
-    private List<Integer>      areaIds;
+    private List<Integer>  areaIds;
 
-
+    @ApiModelProperty(value = "报表类型 分别为总数统计/新增趋势统计", example = "ALL,NEW")
+    private ReportFormType reportFormType;
 
     @Override
     public void validate() throws RequestParamValidateException {
@@ -62,5 +64,11 @@ public class AssetReportCategoryCountQuery extends ObjectQuery implements Object
         this.areaIds = areaIds;
     }
 
+    public ReportFormType getReportFormType() {
+        return reportFormType;
+    }
 
+    public void setReportFormType(ReportFormType reportFormType) {
+        this.reportFormType = reportFormType;
+    }
 }
