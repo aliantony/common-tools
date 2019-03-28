@@ -5,6 +5,11 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.ArrayTypeUtil;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.vo.response.ReportData;
+import com.antiy.asset.templet.ReportForm;
+import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +20,6 @@ import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroupEntity;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetReportService;
-import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
@@ -26,7 +30,6 @@ import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.asset.vo.response.ReportData;
 import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
@@ -270,7 +273,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 assetReportCategoryCountQuery.setFormat("%w");
                 break;
             case THIS_MONTH:
-                assetReportCategoryCountQuery.setFormat("%U");
+                assetReportCategoryCountQuery.setFormat("%u");
                 break;
 
             case THIS_QUARTER:
@@ -293,16 +296,16 @@ public class AssetReportServiceImpl implements IAssetReportService {
         String titleStr;
         switch (assetReportCategoryCountQuery.getShowCycleType()) {
             case THIS_WEEK:
-                titleStr = "本周";
+                titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
                 break;
             case THIS_MONTH:
-                titleStr = "本月";
+                titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
                 break;
             case THIS_QUARTER:
-                titleStr = "本季度";
+                titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
                 break;
             case THIS_YEAR:
-                titleStr = "本年";
+                titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
                 break;
             case ASSIGN_TIME:
                 titleStr = getTitleStr(assetReportCategoryCountQuery);
@@ -310,14 +313,34 @@ public class AssetReportServiceImpl implements IAssetReportService {
             default:
                 throw new BusinessException("timeType参数异常");
         }
-
         reportForm.setTitle("资产" + titleStr + "品类型号总数");
         AssetReportResponse assetReportResponse = queryCategoryCountByTime(assetReportCategoryCountQuery);
-        List<String> headerList = new ArrayList<>();
+        List<String> headerList = assetReportResponse.getDate();
+        headerList.add("总数");
+        int[] total = new int[headerList.size()];
+        headerList.add("新增");
+        int[] add = new int[headerList.size()];
+        List<ReportData> reportDataList = assetReportResponse.getList();
+        List<String> columnList = new ArrayList<>();
+        String[][] data = new String[reportDataList.size()][headerList.size()];
+        for (int i = 0; i < reportDataList.size(); i++) {
+            ReportData reportData = reportDataList.get(i);
+            String classify = reportData.getClassify();
+            columnList.add(classify);
+            List dataList = reportData.getData();
+            data[i] = ArrayTypeUtil.objectArrayToStringArray(dataList.toArray());
+        }
+        reportForm.setHeaderList(headerList);
+        reportForm.setData(data);
+        reportForm.setColumnList(columnList);
+        ExcelUtils.exportFormToClient(reportForm, "报表导出.xlsx");
     }
 
     private String getTitleStr(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
-        return "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
+        String beginTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getBeginTime()));
+        String endTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getEndTime()));
+        return new StringBuffer(beginTime).append(" ").append(endTime).toString();
     }
 
     private AssetReportResponse getAssetReportResponseInWeek(List<AssetCategoryModel> secondCategoryModelList,
@@ -694,7 +717,42 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @return
      */
     public AssetReportResponse getNewAssetWithGroupInWeek(ReportQueryRequest reportQueryRequest) {
-        return null;
+        Map<String, String> weekMap = ReportDateUtils.getDayOfWeek();
+        AssetReportResponse assetReportResponse = new AssetReportResponse();
+        // 初始化横坐标
+        String[] weeks = new String[weekMap.size()];
+        for (Map.Entry<String, String> entry : weekMap.entrySet()) {
+            weeks[Integer.parseInt(entry.getKey()) - 1] = entry.getValue();
+        }
+        assetReportResponse.setDate(Arrays.asList(weeks));
+        List<AssetGroupEntity> assetGroupEntities = assetReportDao.myTest(reportQueryRequest);
+        // 获取资产组名字（不重复）
+        List<String> groupNameList = new ArrayList<>();
+        for (AssetGroupEntity assetGroupEntity : assetGroupEntities) {
+            if (!groupNameList.contains(assetGroupEntity.getName())) {
+                groupNameList.add(assetGroupEntity.getName());
+            }
+        }
+        List<ReportData> dataList = new ArrayList<>();
+        for (int i = 0; i < groupNameList.size(); i++) {
+            ReportData reportData = new ReportData();
+            String groupName = groupNameList.get(i);
+            reportData.setClassify(groupName);
+            Integer[] addList = new Integer[weeks.length];
+            Arrays.fill(addList, 0);
+            for (int day = 0; day < weeks.length; day++) {
+                for (AssetGroupEntity groupReportEntity : assetGroupEntities) {
+                    if (groupReportEntity.getName().equals(groupName)) {
+                        addList[DataTypeUtils.stringToInteger(groupReportEntity.getDate()) - 1] = groupReportEntity
+                            .getGroupCount();
+                    }
+                }
+            }
+            reportData.setAdd(Arrays.asList(addList));
+            dataList.add(reportData);
+        }
+        assetReportResponse.setList(dataList);
+        return assetReportResponse;
     }
 
     /**
@@ -702,9 +760,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @param reportQueryRequest
      * @return
      */
-    public AssetReportResponse getNewAssetWithGroupInMonth(ReportQueryRequest reportQueryRequest) {
-
-        List<AssetGroupEntity> groupReportEntityList = assetReportDao.getNewAssetWithGroupByMonth(reportQueryRequest);
+    public AssetReportResponse queryNewAssetWithGroup(ReportQueryRequest reportQueryRequest,
+                                                      Map<String, String> timeMap) {
+        List<AssetGroupEntity> groupReportEntityList = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
         // 1.初始化返回对象
         AssetReportResponse assetReportResponse = new AssetReportResponse();
         List<ReportData> reportDataList = new ArrayList<>();
@@ -713,10 +771,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
         Map<String, String> treeWeekMap = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                return Integer.valueOf(o1).compareTo(Integer.valueOf(o2));
+                return Integer.valueOf(o1.replace("-", "")).compareTo(Integer.valueOf(o2.replace("-", "")));
             }
         });
-        treeWeekMap.putAll(ReportDateUtils.getWeekOfMonth());
+        treeWeekMap.putAll(timeMap);
         // 3.添加排序后的日期信息到dateList
         List<String> dateKeyList = new ArrayList<>(treeWeekMap.size());
         List<String> dateValueList = new ArrayList<>(treeWeekMap.size());

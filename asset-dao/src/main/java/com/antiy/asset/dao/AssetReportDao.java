@@ -58,10 +58,11 @@ public interface AssetReportDao {
     List<AssetCategoryEntity> findCategoryCountByTime(AssetReportCategoryCountQuery query);
 
     /**
-     * 获取资产组新增资产信息-日期显示到月
+     * 查询资产组新增资产信息-通用
      * @param reportQueryRequest
      * @return
      */
-    List<AssetGroupEntity> getNewAssetWithGroupByMonth(ReportQueryRequest reportQueryRequest);
+    List<AssetGroupEntity> getNewAssetWithGroup(ReportQueryRequest reportQueryRequest);
 
+    List<AssetGroupEntity> myTest(ReportQueryRequest reportQueryRequest);
 }

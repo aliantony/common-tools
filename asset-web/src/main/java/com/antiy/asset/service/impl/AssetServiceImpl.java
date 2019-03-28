@@ -1017,7 +1017,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 查询第二级每个分类下所有的分类id，并添加至list集合
                 List<AssetCategoryModel> search = iAssetCategoryModelService.recursionSearch(categoryModelDaoAll,
                     secondCategoryModel.getId());
-                enumCountResponse.setCode(iAssetCategoryModelService.getCategoryIdList(search));
+                List<String> categoryList=new ArrayList<>();
+                categoryList.add(secondCategoryModel.getStringId());
+                enumCountResponse.setCode(categoryList);
                 // 设置查询资产条件参数，包括区域id，状态，资产品类型号
                 AssetQuery assetQuery = setAssetQueryParam(areaIds, search);
                 // 将查询结果放置结果集
@@ -2679,7 +2681,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             throw new BusinessException("导出数据为空");
         }
     }
-
 
 }
 

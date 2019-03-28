@@ -59,7 +59,7 @@ public class AssetReportController {
      */
     @ApiOperation(value = "根据时间条件查询分类统计资产新增数量", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/newAsset", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/category/newAsset", method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
     public ActionResponse getNewAssetWithCategory(AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception {
         return ActionResponse.success(iAssetReportService.getNewAssetWithCategory(assetReportCategoryCountQuery));
@@ -90,6 +90,20 @@ public class AssetReportController {
     @RequestMapping(value = "/query/groupNewAsset", method = RequestMethod.GET)
     public ActionResponse getNewAssetWithGroup(@ApiParam("报表查询对象") ReportQueryRequest reportQueryRequest) throws Exception {
         return ActionResponse.success(iAssetReportService.getNewAssetWithGroup(reportQueryRequest));
+    }
+
+    /**
+     * 根据资产组查询资产新增数量信息
+     *
+     * @param assetReportCategoryCountQuery
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "根据资产组查询资产新增数量信息", notes = "根据资产组查询资产新增数量信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/export/category/newAsset", method = RequestMethod.GET)
+    public void getNewAssetWithGroup(@ApiParam("报表查询对象") AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception {
+        iAssetReportService.exportCategoryCount(assetReportCategoryCountQuery);
     }
 
 }
