@@ -131,7 +131,7 @@
         LEFT JOIN asset_group ag ON agr.asset_group_id = ag.id
         LEFT JOIN asset ON asset.id = agr.asset_id
 
-        WHERE       agr.gmt_create &lt;{startTime}
+        WHERE       agr.gmt_create &lt;#{startTime}
 
         AND asset.asset_status != '9'
         AND agr. STATUS = 1

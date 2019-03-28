@@ -1,29 +1,23 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
+import com.antiy.asset.dao.AssetReportDao;
+import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.request.AssetAreaReportRequest;
+import com.antiy.asset.vo.request.ReportQueryRequest;
+import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.asset.vo.response.ReportData;
 import com.antiy.asset.vo.response.ReportTableHead;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.DataTypeUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.stereotype.Service;
 
-import com.antiy.asset.dao.AssetReportDao;
-import com.antiy.asset.service.IAssetAreaReportService;
-import com.antiy.asset.vo.request.ReportQueryRequest;
-import com.antiy.asset.vo.response.AssetReportResponse;
+import javax.annotation.Resource;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author: zhangbing
@@ -117,7 +111,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
                 if (i == 0) {
                     for (Map<String, Integer> init : initData) {
                         if (top.equals(init.get("areaId"))) {
-                            totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.get("assetCount"))));
+                            totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.get("y"))));
                             break;
                         }
                     }
