@@ -41,6 +41,8 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         List<ReportData> reportDataList = Lists.newArrayList();
         // 总数
         List<Integer> allDataList = Lists.newArrayList();
+        // 总增量
+        List<Integer> allAddList = Lists.newArrayList();
         List<Integer> topAreaIds;
         // 是否需要top5
         if (TRUE.equals(reportRequest.getTopFive())) {
@@ -128,17 +130,20 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             reportData.setData(totalList);
             reportDataList.add(reportData);
         });
-        int allData = 0;
         for (int i = 0; i < abscissa.size(); i++) {
+            int allData = 0;
+            int allAdd = 0;
             for (int j = 0; j < topAreaIds.size(); j++) {
                 allData += reportDataList.get(j).getData().get(i);
+                allAdd += reportDataList.get(j).getAdd().get(i);
             }
             allDataList.add(allData);
-            allData = 0;
+            allAddList.add(allAdd);
         }
         // 3.组装基础数据和总数
         assetReportResponse.setList(reportDataList);
         assetReportResponse.setAlldata(allDataList);
+        assetReportResponse.setAllAdd(allAddList);
         return assetReportResponse;
     }
 

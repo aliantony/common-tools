@@ -29,8 +29,15 @@ import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.asset.vo.response.ReportData;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 资产报表实现类
@@ -431,45 +438,101 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     private AssetReportResponse buildGroupCountByTime(ReportQueryRequest reportQueryRequest,
-                                                      Map<String, String> weekMap) {
-        List<AssetGroupEntity> assetConutWithGroup = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
-        AssetReportResponse reportResponse = new AssetReportResponse();
-        Iterator<Map.Entry<String, String>> iterator = weekMap.entrySet().iterator();
-        // 横坐标
-        List<String> dateList = new ArrayList<>();
+                                                      Map<String, String> timeMap) {
+        List<AssetGroupEntity> groupReportEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
 
-        // 将结果数据组装到Response中
+        // 1.初始化返回对象
+        AssetReportResponse assetReportResponse = new AssetReportResponse();
         List<ReportData> reportDataList = new ArrayList<>();
-        List<Integer> countDate = new ArrayList<>();
-        while (iterator.hasNext()) {
-            int count = 0;
 
-            Map.Entry<String, String> entry = iterator.next();
-            String key = entry.getKey();
-            String time = entry.getValue();
-            for (AssetGroupEntity entity : assetConutWithGroup) {
-                if (key.equals(entity.getDate())) {
-                    count = entity.getGroupCount();
-                }
+        // 2.获取本月的周数信息map,重新按周数key排序
+        Map<String, String> treeWeekMap = new TreeMap<>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return Integer.valueOf(o1.replace("-", "")).compareTo(Integer.valueOf(o2.replace("-", "")));
             }
-
-            countDate.add(count);
-            dateList.add(time);
-
+        });
+        treeWeekMap.putAll(timeMap);
+        // 3.添加排序后的日期信息到dateList
+        List<String> dateKeyList = new ArrayList<>(treeWeekMap.size());
+        List<String> dateValueList = new ArrayList<>(treeWeekMap.size());
+        for (Map.Entry<String, String> entry : treeWeekMap.entrySet()) {
+            dateKeyList.add(entry.getKey());
+            dateValueList.add(entry.getValue());
         }
-
-        for (AssetGroupEntity groupEntity : assetConutWithGroup) {
+        // 4.资产组名字信息
+        List<String> groupNameList = new ArrayList<>();
+        groupReportEntityList.forEach(groupReportEntity -> {
+            if (!groupNameList.contains(groupReportEntity.getName())) {
+                groupNameList.add(groupReportEntity.getName());
+            }
+        });
+        // 5.根据资产组信息封装
+        groupNameList.forEach(groupName -> {
             ReportData reportData = new ReportData();
-            reportData.setClassify(groupEntity.getName());
-            reportData.setData(countDate);
+            reportData.setClassify(groupName);
+            List<Integer> addNumList = new ArrayList<>();
+
+            dateKeyList.forEach(date -> {
+                Integer num = 0;
+                for (AssetGroupEntity groupReportEntity : groupReportEntityList) {
+                    // 去掉数据库返回的数据中开头为0的部分
+                    String groupReportEntityDate = groupReportEntity.getDate().startsWith("0")
+                            ? groupReportEntity.getDate().substring(1)
+                            : groupReportEntity.getDate();
+                    // 资产组别且对应周数匹配
+                    if (groupReportEntity.getName().equals(groupName) && groupReportEntityDate.equals(date)) {
+                        num = groupReportEntity.getGroupCount();
+                    }
+                }
+                addNumList.add(num);
+            });
+            reportData.setData(addNumList);
             reportDataList.add(reportData);
-        }
+        });
+        assetReportResponse.setDate(dateValueList);
+        assetReportResponse.setList(reportDataList);
+        return assetReportResponse;
 
-        reportResponse.setList(reportDataList);
-        reportResponse.setDate(dateList);
 
-        return reportResponse;
+//        AssetReportResponse reportResponse = new AssetReportResponse();
+//        Iterator<Map.Entry<String, String>> iterator = weekMap.entrySet().iterator();
+//        // 横坐标
+//        List<String> dateList = new ArrayList<>();
+//
+//        // 将结果数据组装到Response中
+//        List<ReportData> reportDataList = new ArrayList<>();
+//        List<Integer> countDate = new ArrayList<>();
+//        while (iterator.hasNext()) {
+//            int count = 0;
+//
+//            Map.Entry<String, String> entry = iterator.next();
+//            String key = entry.getKey();
+//            String time = entry.getValue();
+//            for (AssetGroupEntity entity : assetConutWithGroup) {
+//                if (key.equals(entity.getDate())) {
+//                    count = entity.getGroupCount();
+//                }
+//            }
+//
+//            countDate.add(count);
+//            dateList.add(time);
+//
+//        }
+//
+//        for (AssetGroupEntity groupEntity : assetConutWithGroup) {
+//            ReportData reportData = new ReportData();
+//            reportData.setClassify(groupEntity.getName());
+//            reportData.setData(countDate);
+//            reportDataList.add(reportData);
+//        }
+//
+//        reportResponse.setList(reportDataList);
+//        reportResponse.setDate(dateList);
+//
+//        return reportResponse;
     }
+
 
     /**
      * 根据资产组查询资产新增数量
@@ -498,11 +561,11 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils
                     .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
             default:
-                reportQueryRequest.setSqlTime("%Y-%m");
-                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear());
+                throw new RequestParamValidateException("查询时间类型不正确");
         }
     }
 
+    @Override
     public AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception {
         ShowCycleType showCycleType = query.getShowCycleType();
         checkParameter(query, showCycleType);
@@ -573,7 +636,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     /**
-     * 根据资产组类别查本月新增资产情况
+     * 根据资产组类别查新增资产情况-封装数据
      * @param reportQueryRequest
      * @return
      */
@@ -610,7 +673,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         groupNameList.forEach(groupName -> {
             ReportData reportData = new ReportData();
             reportData.setClassify(groupName);
-            List<Integer> addNumList = new ArrayList<>();
+            List<Integer> addNumList = new ArrayList<>(treeWeekMap.size());
 
             dateKeyList.forEach(date -> {
                 Integer num = 0;
@@ -632,32 +695,5 @@ public class AssetReportServiceImpl implements IAssetReportService {
         assetReportResponse.setDate(dateValueList);
         assetReportResponse.setList(reportDataList);
         return assetReportResponse;
-    }
-
-    /**
-     * 根据资产组类别查本季度新增资产情况
-     * @param reportQueryRequest
-     * @return
-     */
-    public AssetReportResponse getNewAssetWithGroupInSeason(ReportQueryRequest reportQueryRequest) {
-        return null;
-    }
-
-    /**
-     * 根据资产组类别查本年新增资产情况
-     * @param reportQueryRequest
-     * @return
-     */
-    public AssetReportResponse getNewAssetWithGroupInYear(ReportQueryRequest reportQueryRequest) {
-        return null;
-    }
-
-    /**
-     * 根据资产组类别查某个时间范围新增资产情况
-     * @param reportQueryRequest
-     * @return
-     */
-    public AssetReportResponse getNewAssetWithGroupInRange(ReportQueryRequest reportQueryRequest) {
-        return null;
     }
 }

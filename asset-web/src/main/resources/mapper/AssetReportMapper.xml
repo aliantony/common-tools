@@ -118,34 +118,26 @@
     </select>
 
 
+
+
     <select id="getAssetConutWithGroup" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
             resultType="com.antiy.asset.entity.AssetGroupEntity">
         SELECT
         count(1) AS groupCount,
         ag.id AS groupId,
-        FROM_UNIXTIME(
-        ag.gmt_create /1000 ,
-        #{sqlTime}
-        ) AS date,
         ag.name AS name
         FROM
         asset_group_relation agr
         LEFT JOIN asset_group ag ON agr.asset_group_id = ag.id
         LEFT JOIN asset ON asset.id = agr.asset_id
-        WHERE 1=1
 
-        <if test="startTime!=null">
-            and ag.gmt_create>=#{startTime}
-        </if>
-        <if test="endTime!=null">
-            and ag.gmt_create &lt; #{endTime}
-        </if>
+        WHERE       agr.gmt_create &lt;{startTime}
+
         AND asset.asset_status != '9'
         AND agr. STATUS = 1
         AND asset. STATUS = 1
         GROUP BY
         groupId,
-        FROM_UNIXTIME( ag.gmt_create /1000 , #{sqlTime}),
         name
         ORDER BY groupCount desc
         <if test="topFive!=null">
@@ -221,6 +213,16 @@
         agr.gmt_create &lt;= #{endTime}
         AND agr.gmt_create &gt;= #{startTime}
         AND asset.status = 1
+
+
+        <if test="groupIds!=null and groupIds.size()>0" >
+          AND ag.id in
+        <foreach item="areaId" collection="groupIds" open="(" separator="," close=")">
+            #{areaId}
+        </foreach>
+        </if>
+
+        AND asset.asset_status != 9
         GROUP BY
         agr.asset_group_id,
         FROM_UNIXTIME(gmt_create / 1000, #{sqlTime})

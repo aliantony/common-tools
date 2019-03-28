@@ -24,11 +24,11 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
     private Integer                      assetStatus;
 
     @ApiModelProperty(value = "开始时间(时间戳)", required = false)
-//    @NotNull(message = "开始时间不能为空")
+    // @NotNull(message = "开始时间不能为空")
     private Long                         startTime;
 
     @ApiModelProperty(value = "结束时间(时间戳)", required = false)
-//    @NotNull(message = "结束时间不能为空")
+    // @NotNull(message = "结束时间不能为空")
     private Long                         endTime;
 
     @ApiModelProperty(value = "时间类型,1-本周,2-本月,3-本季度,4-本年,5-时间范围", required = true)
@@ -49,6 +49,8 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
     // 用户登陆的区域查询条件
     @ApiModelProperty(value = "区域列表 不用传")
     private List<Integer>                areaIds;
+    @ApiModelProperty(value = "资产组ids 不用传")
+    private List<Integer>                groupIds;
 
     public Integer getTopAreaId() {
         return topAreaId;
@@ -108,7 +110,7 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
 
     @Override
     public void validate() throws RequestParamValidateException {
-//        ParamterExceptionUtils.isTrue(endTime > startTime, "开始时间必须小于结束时间");
+        // ParamterExceptionUtils.isTrue(endTime > startTime, "开始时间必须小于结束时间");
     }
 
     public String getTopFive() {
@@ -125,5 +127,13 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
 
     public void setSqlTime(String sqlTime) {
         this.sqlTime = sqlTime;
+    }
+
+    public List<Integer> getGroupIds() {
+        return groupIds;
+    }
+
+    public void setGroupIds(List<Integer> groupIds) {
+        this.groupIds = groupIds;
     }
 }
