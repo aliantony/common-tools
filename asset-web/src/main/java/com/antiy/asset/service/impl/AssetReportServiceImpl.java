@@ -13,7 +13,6 @@ import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.entity.AssetCategoryEntity;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroupEntity;
-import com.antiy.asset.entity.AssetGroupReportEntity;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.util.DataTypeUtils;
@@ -35,10 +34,6 @@ import com.antiy.common.utils.ParamterExceptionUtils;
  **/
 @Service
 public class AssetReportServiceImpl implements IAssetReportService {
-    private final static String DAY    = "%w";
-    private final static String WEEK   = "%U";
-    private final static String MONTH  = "%Y-%m";
-
     @Resource
     IAssetCategoryModelService iAssetCategoryModelService;
     @Resource
@@ -47,7 +42,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
     AssetReportDao             assetReportDao;
     @Resource
     AssetCategoryModelDao      categoryModelDao;
-
     private static Logger      logger = LogUtils.get(AssetReportServiceImpl.class);
 
     @Override
@@ -57,20 +51,20 @@ public class AssetReportServiceImpl implements IAssetReportService {
         checkParameter(query, showCycleType);
 
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(DAY);
+            query.setFormat("%w");
             return buildCategoryCountByTime(query, ReportDateUtils.getDayOfWeek());
         } else if (ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(WEEK);
+            query.setFormat("%U");
             return buildCategoryCountByTime(query, ReportDateUtils.getWeekOfMonth());
         } else if (ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(MONTH);
+            query.setFormat("%Y-%m");
             return buildCategoryCountByTime(query, ReportDateUtils.getSeason());
         } else if (ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(MONTH);
+            query.setFormat("%Y-%m");
             return buildCategoryCountByTime(query, ReportDateUtils.getCurrentMonthOfYear());
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
-            return buildCategoryCountByTime(query,
-                ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
+            // TODO 待测试
+            return buildCategoryCountByTime(query, ReportDateUtils.getMonthWithDate(1L, 1L));
         }
         return null;
     }
@@ -601,8 +595,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
      */
     public AssetReportResponse getNewAssetWithGroupInMonth(ReportQueryRequest reportQueryRequest) {
 
-        List<AssetGroupReportEntity> groupReportEntityList = assetReportDao
-            .getNewAssetWithGroupByMonth(reportQueryRequest);
+        List<AssetGroupEntity> groupReportEntityList = assetReportDao.getNewAssetWithGroupByMonth(reportQueryRequest);
         // 1.初始化返回对象
         AssetReportResponse assetReportResponse = new AssetReportResponse();
         List<AssetReportResponse.ReportData> reportDataList = new ArrayList<>();
@@ -625,8 +618,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // 4.资产组名字信息
         List<String> groupNameList = new ArrayList<>();
         groupReportEntityList.forEach(groupReportEntity -> {
-            if (!groupNameList.contains(groupReportEntity.getAssetGroupName())) {
-                groupNameList.add(groupReportEntity.getAssetGroupName());
+            if (!groupNameList.contains(groupReportEntity.getName())) {
+                groupNameList.add(groupReportEntity.getName());
             }
         });
         // 5.根据资产组信息封装
@@ -637,14 +630,14 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
             dateKeyList.forEach(date -> {
                 Integer num = 0;
-                for (AssetGroupReportEntity groupReportEntity : groupReportEntityList) {
+                for (AssetGroupEntity groupReportEntity : groupReportEntityList) {
                     // 去掉数据库返回的数据中开头为0的部分
                     String groupReportEntityDate = groupReportEntity.getDate().startsWith("0")
                         ? groupReportEntity.getDate().substring(1)
                         : groupReportEntity.getDate();
                     // 资产组别且对应周数匹配
-                    if (groupReportEntity.getAssetGroupName().equals(groupName) && groupReportEntityDate.equals(date)) {
-                        num = groupReportEntity.getCountNum();
+                    if (groupReportEntity.getName().equals(groupName) && groupReportEntityDate.equals(date)) {
+                        num = groupReportEntity.getGroupCount();
                     }
                 }
                 addNumList.add(num);

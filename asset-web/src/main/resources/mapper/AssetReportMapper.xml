@@ -8,9 +8,11 @@
         <result column="date" property="date"/>
     </resultMap>
 
-    <resultMap id="AssetGroupResultMap" type="com.antiy.asset.entity.AssetGroupReportEntity">
-        <id column="asset_group_id" property="assetGroupId"></id>
-        <result column=""></result>
+    <resultMap id="AssetGroupResultMap" type="com.antiy.asset.entity.AssetGroupEntity">
+        <result column="asset_group_id" property="groupId"></result>
+        <result column="assetGroupName" property="name"></result>
+        <result column="countNum" property="groupCount"></result>
+        <result column="date" property="date"></result>
     </resultMap>
     <!--获取所有的统计数据-->
     <select id="getAllAssetWithArea" resultType="java.util.Map"
@@ -59,8 +61,6 @@
     </select>
 
 
-
-
     <select id="getAssetConutWithGroup" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
             resultType="com.antiy.asset.entity.AssetGroupEntity">
         SELECT
@@ -78,10 +78,10 @@
         WHERE 1=1
 
         <if test="startTime!=null">
-            and  ag.gmt_create>=#{startTime}
+            and ag.gmt_create>=#{startTime}
         </if>
         <if test="endTime!=null">
-            and    ag.gmt_create  &lt; #{endTime}
+            and ag.gmt_create &lt; #{endTime}
         </if>
         AND asset.asset_status != '9'
         AND agr. STATUS = 1
@@ -96,9 +96,6 @@
         </if>
 
     </select>
-
-
-
 
 
     <sql id="timeType">

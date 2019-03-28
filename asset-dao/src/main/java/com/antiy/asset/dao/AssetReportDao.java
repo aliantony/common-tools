@@ -5,10 +5,8 @@ import java.util.Map;
 
 import com.antiy.asset.entity.AssetCategoryEntity;
 import com.antiy.asset.entity.AssetGroupEntity;
-import com.antiy.asset.entity.AssetGroupReportEntity;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
-
 
 /**
  * @author: zhangbing
@@ -35,10 +33,6 @@ public interface AssetReportDao {
      */
     List<AssetGroupEntity> getAssetConutWithGroup(ReportQueryRequest reportQueryRequest);
 
-
-
-
-
     List<AssetCategoryEntity> findCategoryCountByTime(AssetReportCategoryCountQuery query);
 
     /**
@@ -46,6 +40,6 @@ public interface AssetReportDao {
      * @param reportQueryRequest
      * @return
      */
-    List<AssetGroupReportEntity> getNewAssetWithGroupByMonth(ReportQueryRequest reportQueryRequest);
+    List<AssetGroupEntity> getNewAssetWithGroupByMonth(ReportQueryRequest reportQueryRequest);
 
 }

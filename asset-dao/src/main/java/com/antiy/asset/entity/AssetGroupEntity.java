@@ -9,7 +9,7 @@ public class AssetGroupEntity {
 
     private Integer groupId;
     // 名字
-    private String name;
+    private String  name;
     // 日期
     private String  date;
 
