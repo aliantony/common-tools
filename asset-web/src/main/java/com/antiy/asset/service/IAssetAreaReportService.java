@@ -2,6 +2,7 @@ package com.antiy.asset.service;
 
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
+import com.antiy.asset.vo.response.AssetReportTableResponse;
 
 /**
  * @author: zhangbing
@@ -15,4 +16,11 @@ public interface IAssetAreaReportService {
      * @return
      */
     AssetReportResponse getAssetWithArea(ReportQueryRequest reportRequest);
+
+    /**
+     * 统计所有区域表格数据
+     * @param reportQueryRequest
+     * @return
+     */
+    AssetReportTableResponse queryAreaTable(ReportQueryRequest reportQueryRequest);
 }
