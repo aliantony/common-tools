@@ -60,7 +60,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
         checkParameter(query, showCycleType);
 
         AssetReportResponse reportResponse = new AssetReportResponse();
-
         Map<String, Object> map;
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
             query.setFormat(DAY);
@@ -163,34 +162,27 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
         // 构建柱状数据
 
-        ReportData computeDeviceColumnar = new ReportData();
-        computeDeviceColumnar.setClassify(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
-        computeDeviceColumnar.setData(computerDataList);
-        columnarList.add(computeDeviceColumnar);
-
-        ReportData networkDeviceColumnar = new ReportData();
-        networkDeviceColumnar.setClassify(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg());
-        networkDeviceColumnar.setData(networkDataList);
-        columnarList.add(networkDeviceColumnar);
-
-        ReportData storageDeviceColumnar = new ReportData();
-        storageDeviceColumnar.setClassify(AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg());
-        storageDeviceColumnar.setData(storageDataList);
-        columnarList.add(storageDeviceColumnar);
-
-        ReportData safetyDeviceColumnar = new ReportData();
-        safetyDeviceColumnar.setClassify(AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg());
-        safetyDeviceColumnar.setData(safetyDataList);
-        columnarList.add(safetyDeviceColumnar);
+        addColumnarList(computerDataList, columnarList, AssetSecondCategoryEnum.COMPUTE_DEVICE);
+        addColumnarList(networkDataList, columnarList, AssetSecondCategoryEnum.NETWORK_DEVICE);
+        addColumnarList(storageDataList, columnarList, AssetSecondCategoryEnum.STORAGE_DEVICE);
+        addColumnarList(safetyDataList, columnarList, AssetSecondCategoryEnum.SAFETY_DEVICE);
 
         ReportData otherDeviceColumnar = new ReportData();
         otherDeviceColumnar.setClassify(AssetSecondCategoryEnum.OTHER_DEVICE.getMsg());
-        otherDeviceColumnar.setData(otherDataList);
+        otherDeviceColumnar.setAdd(otherDataList);
         columnarList.add(otherDeviceColumnar);
 
         map.put("dateList", dateList);
         map.put("columnarList", columnarList);
         return map;
+    }
+
+    private void addColumnarList(List<Integer> safetyDataList, List<ReportData> columnarList,
+                                 AssetSecondCategoryEnum assetSecondCategoryEnum) {
+        ReportData reportData = new ReportData();
+        reportData.setClassify(assetSecondCategoryEnum.getMsg());
+        reportData.setAdd(safetyDataList);
+        columnarList.add(reportData);
     }
 
     /**
@@ -315,13 +307,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setTitle("资产" + titleStr + "品类型号总数");
         AssetReportResponse assetReportResponse = queryCategoryCountByTime(assetReportCategoryCountQuery);
         List<String> headerList = assetReportResponse.getDate();
-        headerList.add("总数");
-        int[] total = new int[headerList.size()];
-        headerList.add("新增");
-        int[] add = new int[headerList.size()];
         List<ReportData> reportDataList = assetReportResponse.getList();
         List<String> columnList = new ArrayList<>();
-        String[][] data = new String[reportDataList.size()][headerList.size()];
+        String[][] data = new String[reportDataList.size() + 2][headerList.size()];
         for (int i = 0; i < reportDataList.size(); i++) {
             ReportData reportData = reportDataList.get(i);
             String classify = reportData.getClassify();
@@ -329,6 +317,24 @@ public class AssetReportServiceImpl implements IAssetReportService {
             List dataList = reportData.getData();
             data[i] = ArrayTypeUtil.objectArrayToStringArray(dataList.toArray());
         }
+        columnList.add("总数");
+        columnList.add("新增");
+        int[] total = new int[headerList.size()];
+        AssetReportResponse addReport = this.getNewAssetWithCategory(assetReportCategoryCountQuery);
+        List<ReportData> reportList = addReport.getList();
+        int[] add = new int[headerList.size()];
+        for (int i = 0; i < headerList.size(); i++) {
+            total[i] = 0;
+            add[i] = 0;
+            for (int j = 0; j < reportDataList.size(); j++) {
+                ReportData reportData = reportList.get(j);
+                List<Integer> addList = reportData.getAdd();
+                add[i] += addList.get(i);
+                total[i] += Integer.parseInt(data[j][i]);
+            }
+        }
+        data[reportDataList.size()] = ArrayTypeUtil.integerArrayToStringArray(total);
+        data[reportDataList.size() + 1] = ArrayTypeUtil.integerArrayToStringArray(add);
         reportForm.setHeaderList(headerList);
         reportForm.setData(data);
         reportForm.setColumnList(columnList);

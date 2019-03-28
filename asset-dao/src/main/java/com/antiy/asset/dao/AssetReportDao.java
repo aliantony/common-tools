@@ -42,12 +42,17 @@ public interface AssetReportDao {
     List<Map<String, Integer>> queryAddAssetWithArea(@Param("list") List<AssetAreaReportRequest> list,
                                                      @Param("startime") Long startTime, @Param("endTime") Long endTime);
 
-
     /**
      * 获取所有的品类型号新增资产信息
      * @return
      */
     List<AssetCategoryEntity> getNewAssetWithCategory(AssetReportCategoryCountQuery assetReportCategoryCountQuery);
+
+    /**
+     * 获取开始时间以前的数据
+     * @return
+     */
+    List<AssetCategoryEntity> findCategoryCountPrevious(AssetReportCategoryCountQuery assetReportCategoryCountQuery);
 
     /**
      * 获取资产组top5和总数 图形

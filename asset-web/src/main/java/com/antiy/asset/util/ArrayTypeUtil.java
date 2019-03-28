@@ -30,7 +30,7 @@ public class ArrayTypeUtil {
         String[] strings = new String[objects.length];
         for (int i = 0; i < objects.length; i++) {
             try {
-                strings[i] = Objects.toString( objects[i]);
+                strings[i] = Objects.toString(objects[i]);
             } catch (Exception e) {
                 logger.error("Object转换为String出错", e);
                 throw new BusinessException("Object转换为String出错");
@@ -38,11 +38,25 @@ public class ArrayTypeUtil {
         }
         return strings;
     }
+
+    public static String[] integerArrayToStringArray(int[] objects) {
+        String[] strings = new String[objects.length];
+        for (int i = 0; i < objects.length; i++) {
+            try {
+                strings[i] = Objects.toString(objects[i]);
+            } catch (Exception e) {
+                logger.error("Object转换为String出错", e);
+                throw new BusinessException("Object转换为String出错");
+            }
+        }
+        return strings;
+    }
+
     public static Map.Entry[] objectArrayToEntryArray(Object[] objects) {
         Map.Entry[] strings = new Map.Entry[objects.length];
         for (int i = 0; i < objects.length; i++) {
             try {
-                strings[i] = (Map.Entry)objects[i];
+                strings[i] = (Map.Entry) objects[i];
             } catch (Exception e) {
                 logger.error("Object转换为String出错", e);
                 throw new BusinessException("Object转换为String出错");
@@ -50,11 +64,12 @@ public class ArrayTypeUtil {
         }
         return strings;
     }
+
     public static Long[] objectArrayToLongArray(Object[] objects) {
         Long[] strings = new Long[objects.length];
         for (int i = 0; i < objects.length; i++) {
             try {
-                strings[i] =(Long) objects[i];
+                strings[i] = (Long) objects[i];
             } catch (Exception e) {
                 logger.error("Object转换为Long形出错", e);
                 throw new BusinessException("Object转换为Long出错");

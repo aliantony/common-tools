@@ -23,13 +23,15 @@ public class AssetReportCategoryCountQuery extends ObjectQuery implements Object
 
     @ApiModelProperty(value = "展示时间类型", example = "THIS_WEEK,THIS_MONTH,THIS_QUARTER,THIS_YEAR,ASSIGN_TIME")
     @NotNull(message = "展示时间类型不能为空")
-    private ShowCycleType showCycleType;
+    private ShowCycleType      showCycleType;
 
     @ApiModelProperty(value = "勿传")
-    private String        format;
+    private String             format;
 
     @ApiModelProperty(value = "区域ID 不用传")
-    private List<Integer> areaIds;
+    private List<Integer>      areaIds;
+
+
 
     @Override
     public void validate() throws RequestParamValidateException {
@@ -51,5 +53,14 @@ public class AssetReportCategoryCountQuery extends ObjectQuery implements Object
     public void setShowCycleType(ShowCycleType showCycleType) {
         this.showCycleType = showCycleType;
     }
+
+    public List<Integer> getAreaIds() {
+        return areaIds;
+    }
+
+    public void setAreaIds(List<Integer> areaIds) {
+        this.areaIds = areaIds;
+    }
+
 
 }
