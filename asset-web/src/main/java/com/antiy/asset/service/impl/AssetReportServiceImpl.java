@@ -665,24 +665,25 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
         assetReportResponse.setDate(Arrays.asList(weeks));
         List<AssetGroupEntity> assetGroupEntities = assetReportDao.myTest(reportQueryRequest);
-        //获取资产组名字（不重复）
+        // 获取资产组名字（不重复）
         List<String> groupNameList = new ArrayList<>();
-        for (AssetGroupEntity assetGroupEntity : assetGroupEntities){
-            if(!groupNameList.contains(assetGroupEntity.getName())){
+        for (AssetGroupEntity assetGroupEntity : assetGroupEntities) {
+            if (!groupNameList.contains(assetGroupEntity.getName())) {
                 groupNameList.add(assetGroupEntity.getName());
             }
         }
         List<ReportData> dataList = new ArrayList<>();
-        for (int i = 0; i < groupNameList.size(); i++){
+        for (int i = 0; i < groupNameList.size(); i++) {
             ReportData reportData = new ReportData();
             String groupName = groupNameList.get(i);
             reportData.setClassify(groupName);
             Integer[] addList = new Integer[weeks.length];
             Arrays.fill(addList, 0);
-            for (int day = 0; day < weeks.length; day++){
+            for (int day = 0; day < weeks.length; day++) {
                 for (AssetGroupEntity groupReportEntity : assetGroupEntities) {
-                    if (groupReportEntity.getName().equals(groupName)){
-                        addList[DataTypeUtils.stringToInteger(groupReportEntity.getDate())-1] = groupReportEntity.getGroupCount();
+                    if (groupReportEntity.getName().equals(groupName)) {
+                        addList[DataTypeUtils.stringToInteger(groupReportEntity.getDate()) - 1] = groupReportEntity
+                            .getGroupCount();
                     }
                 }
             }
