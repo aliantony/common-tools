@@ -1,12 +1,13 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.entity.AssetCategoryEntity;
-import com.antiy.asset.entity.AssetGroupEntity;
-import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
-import com.antiy.asset.vo.request.ReportQueryRequest;
-
 import java.util.List;
 import java.util.Map;
+
+import com.antiy.asset.entity.AssetCategoryEntity;
+import com.antiy.asset.entity.AssetGroupEntity;
+import com.antiy.asset.entity.AssetGroupReportEntity;
+import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
+import com.antiy.asset.vo.request.ReportQueryRequest;
 
 
 /**
@@ -39,4 +40,12 @@ public interface AssetReportDao {
 
 
     List<AssetCategoryEntity> findCategoryCountByTime(AssetReportCategoryCountQuery query);
+
+    /**
+     * 获取资产组新增资产信息-日期显示到月
+     * @param reportQueryRequest
+     * @return
+     */
+    List<AssetGroupReportEntity> getNewAssetWithGroupByMonth(ReportQueryRequest reportQueryRequest);
+
 }
