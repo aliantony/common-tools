@@ -599,7 +599,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         List<AssetGroupEntity> groupReportEntityList = assetReportDao.getNewAssetWithGroupByMonth(reportQueryRequest);
         // 1.初始化返回对象
         AssetReportResponse assetReportResponse = new AssetReportResponse();
-        List<AssetReportResponse.ReportData> reportDataList = new ArrayList<>();
+        List<ReportData> reportDataList = new ArrayList<>();
 
         // 2.获取本月的周数信息map,重新按周数key排序
         Map<String, String> treeWeekMap = new TreeMap<>(new Comparator<String>() {
@@ -625,7 +625,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         });
         // 5.根据资产组信息封装
         groupNameList.forEach(groupName -> {
-            AssetReportResponse.ReportData reportData = assetReportResponse.new ReportData();
+            ReportData reportData = new ReportData();
             reportData.setClassify(groupName);
             List<Integer> addNumList = new ArrayList<>();
 
