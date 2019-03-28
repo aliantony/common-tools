@@ -22,4 +22,12 @@ public class ReportTableHead {
     public void setKey(String key) {
         this.key = key;
     }
+
+    public ReportTableHead(String name, String key) {
+        this.name = name;
+        this.key = key;
+    }
+
+    public ReportTableHead() {
+    }
 }

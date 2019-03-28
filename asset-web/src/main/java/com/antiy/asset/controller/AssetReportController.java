@@ -43,12 +43,29 @@ public class AssetReportController {
         return ActionResponse.success(iAssetReportService.queryCategoryCountByTime(query));
     }
 
-    @ApiOperation(value = "根据时间条件查询分类统计资产数量", notes = "主键封装对象")
+    /**
+     * 根据时间条件、区域资产数量
+     * @param reportQueryRequest
+     * @return
+     */
+    @ApiOperation(value = "根据时间条件、区域资产数量", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/queryAreaCount", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:report:queryAreaCount')")
     public ActionResponse queryAreaCount(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
         return ActionResponse.success(iAssetAreaReportService.getAssetWithArea(reportQueryRequest));
+    }
+    /**
+     * 根据时间条件、区域资产表格数据
+     * @param reportQueryRequest
+     * @return
+     */
+    @ApiOperation(value = "根据时间条件、区域资产表格数据", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/queryAreaTable", method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('asset:report:queryAreaTable')")
+    public ActionResponse queryAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
+        return ActionResponse.success(iAssetAreaReportService.queryAreaTable(reportQueryRequest));
     }
     /**
      * 根据时间条件查询分类统计资产新增数量
