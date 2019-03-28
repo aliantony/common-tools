@@ -73,11 +73,23 @@ public class AssetReportController {
     @ApiOperation(value = "根据条件查询资产组top5", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/groupCountTop/", method = RequestMethod.GET)
-//    @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
+    // @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
     public ActionResponse getAssetConutWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
         return ActionResponse.success(iAssetReportService.getAssetConutWithGroup(reportQueryRequest));
     }
 
-
+    /**
+     * 根据资产组查询资产新增数量信息
+     *
+     * @param reportQueryRequest
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "根据资产组查询资产新增数量信息", notes = "根据资产组查询资产新增数量信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/groupNewAsset", method = RequestMethod.GET)
+    public ActionResponse getNewAssetWithGroup(@ApiParam("报表查询对象") ReportQueryRequest reportQueryRequest) throws Exception {
+        return ActionResponse.success(iAssetReportService.getNewAssetWithGroup(reportQueryRequest));
+    }
 
 }

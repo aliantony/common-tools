@@ -7,6 +7,13 @@
         <result column="areaId" property="areaId"/>
         <result column="date" property="date"/>
     </resultMap>
+
+    <resultMap id="AssetGroupResultMap" type="com.antiy.asset.entity.AssetGroupEntity">
+        <result column="asset_group_id" property="groupId"></result>
+        <result column="assetGroupName" property="name"></result>
+        <result column="countNum" property="groupCount"></result>
+        <result column="date" property="date"></result>
+    </resultMap>
     <!--获取所有的统计数据-->
     <select id="getAllAssetWithArea" resultType="java.util.Map"
             parameterType="com.antiy.asset.vo.request.ReportQueryRequest">
@@ -30,6 +37,64 @@
         gmt_create &lt;= #{endTime}
         AND asset_status != '9'
         AND STATUS = 1
+    </select>
+    <!--统计初始数据-->
+    <select id="queryAssetWithAreaByDate" resultType="java.util.Map">
+        SELECT
+        CASE
+        <foreach collection="list" item="item">
+            WHEN area_id IN (#{item.parentAreaId},
+            <foreach collection="item.childrenAradIds" separator="," item="area">
+                #{area}
+            </foreach>
+            ) THEN #{item.parentAreaId}
+        </foreach>
+        END AS areaId,
+        count(1) AS areaCount
+        FROM
+        asset
+        WHERE
+        gmt_create &lt; #{startTime}
+        AND asset_status != '9'
+        AND STATUS = 1
+        AND area_id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item.parentAreaId},
+            <foreach collection="item.childrenAradIds" separator="," item="area">
+                #{area}
+            </foreach>
+        </foreach>
+        GROUP BY
+        areaId
+    </select>
+    <!--统计区域每个区间的增量-->
+    <select id="queryAddAssetWithArea" resultType="java.util.Map">
+        SELECT
+        FROM_UNIXTIME( gmt_create / 1000, '%Y-%m' ) AS date,
+        <trim suffixOverrides=",">
+            <foreach collection="assetAreaIds" item="item">
+                sum(CASE WHEN area_id IN (#{item.parentAreaId},
+                <foreach collection="item.childrenAradIds" separator="," item="area">
+                    #{area}
+                </foreach>
+                )
+                THEN 1
+                ELSE 0
+                END
+                ) AS #{item.parentAreaName},
+            </foreach>
+        </trim>
+        FROM
+        asset
+        WHERE
+        gmt_create &lt; #{endTime}
+        and gmt_create > #{startTime}
+        AND asset_status != '9'
+        AND STATUS = 1
+        GROUP BY
+        date
+        ORDER BY
+        date ASC
     </select>
 
     <select id="getNewAssetWithCategory" parameterType="com.antiy.asset.vo.request.AssetReportCategoryCountRequest"
@@ -90,6 +155,20 @@
     </select>
 
 
+    <sql id="timeType">
+        <choose>
+            <when test="timeType==1">
+                '%w'
+            </when>
+            <when test="timeType==2">
+                '%U'
+            </when>
+            <otherwise>
+                '%Y-%m'
+            </otherwise>
+        </choose>
+    </sql>
+
     <select id="findCategoryCountByTime" resultType="com.antiy.asset.entity.AssetCategoryEntity"
             parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
@@ -109,6 +188,25 @@
         GROUP BY
         asset.category_model,
         FROM_UNIXTIME( asset.gmt_create / 1000, #{format} );
+    </select>
+
+    <select id="getNewAssetWithGroupByMonth" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
+            resultMap="AssetGroupResultMap">
+        SELECT
+        agr.asset_group_id,ag.`NAME` as assetGroupName,count(agr.asset_group_id) as countNum,
+        FROM_UNIXTIME(agr.gmt_create / 1000,'%U') AS `date`
+        FROM
+        asset_group_relation agr
+        LEFT JOIN asset_group ag ON agr.asset_group_id = ag.id
+        LEFT JOIN asset on agr.asset_id = asset.id
+        WHERE
+        agr.gmt_create &lt;= #{endTime}
+        AND agr.gmt_create &gt;= #{startTime}
+        AND asset.status = 1
+        GROUP BY
+        agr.asset_group_id,
+        FROM_UNIXTIME(gmt_create / 1000, '%U')
+        ORDER BY `date` asc
     </select>
 
 </mapper>
