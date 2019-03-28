@@ -21,13 +21,6 @@ public interface IAssetReportService {
      */
     AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception;
 
-    /**
-     * 获取新增资产报表信息
-     * @param assetReportCategoryCountQuery
-     * @return
-     * @throws Exception
-     */
-    AssetReportResponse getNewAssetWithCategory(AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception;
 
     /**
      * 导出新增资产报表表格
@@ -52,7 +45,6 @@ public interface IAssetReportService {
      * @throws Exception
      */
     AssetReportResponse getNewAssetWithGroup(ReportQueryRequest reportQueryRequest) throws Exception;
-
     /**
      * 根据时间条件分类统计查询数据，返回表格信息
      * @param query
@@ -60,5 +52,6 @@ public interface IAssetReportService {
      * @throws Exception
      */
     AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception;
+
 
 }
