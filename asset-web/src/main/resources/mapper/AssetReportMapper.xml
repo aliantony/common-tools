@@ -197,11 +197,12 @@
         AND asset.status = 1
 
 
-        <if test="groupIds!=null and groupIds.size()>0">
+        <if test="groupIds!=null and groupIds.size()>0" >
           AND ag.id in
         <foreach item="areaId" collection="groupIds" open="(" separator="," close=")">
             #{areaId}
         </foreach>
+        </if>
 
         AND asset.asset_status != 9
         GROUP BY
