@@ -12,7 +12,7 @@ import com.antiy.asset.vo.response.AssetReportResponse;
  */
 public interface IAssetReportService {
 
-    AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query);
+    AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception;
 
     /**
      * 获取新增资产报表信息
@@ -28,7 +28,7 @@ public interface IAssetReportService {
      * @return
      * @throws Exception
      */
-    void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery);
+    void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception;
 
     /**
      * 获取资产组top5信息

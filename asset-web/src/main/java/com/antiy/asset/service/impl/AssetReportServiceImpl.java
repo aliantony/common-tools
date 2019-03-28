@@ -51,7 +51,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     private static Logger       logger = LogUtils.get(AssetReportServiceImpl.class);
 
     @Override
-    public AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) {
+    public AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
 
         ShowCycleType showCycleType = query.getShowCycleType();
         checkParameter(query, showCycleType);
@@ -71,8 +71,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
             return buildCategoryCountByTime(query,
                 ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
+        } else {
+            throw new BusinessException("非法参数");
         }
-        return null;
     }
 
     /**
@@ -268,7 +269,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     @Override
-    public void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
+    public void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception {
         ReportForm reportForm = new ReportForm();
         String titleStr;
         switch (assetReportCategoryCountQuery.getShowCycleType()) {
