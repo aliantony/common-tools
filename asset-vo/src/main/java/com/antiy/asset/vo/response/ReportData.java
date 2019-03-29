@@ -47,4 +47,5 @@ public class ReportData {
     public void setAdd(List<Integer> add) {
         this.add = add;
     }
+
 }

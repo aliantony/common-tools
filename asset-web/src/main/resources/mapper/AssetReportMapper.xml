@@ -249,4 +249,25 @@
         ORDER BY countNum desc
     </select>
 
+    <select id="getInitGroupData" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
+            resultMap="AssetGroupResultMap">
+        SELECT
+        count( 1 ) AS countNum,
+        ag.NAME AS assetGroupName
+        FROM
+        asset_group_relation agr
+        LEFT JOIN asset_group ag ON agr.asset_group_id = ag.id
+        LEFT JOIN asset ON asset.id = agr.asset_id
+        WHERE
+        1 = 1
+        AND agr.gmt_create &lt; #{startTime}
+        AND asset.asset_status != '9'
+        AND agr.STATUS = 1
+        AND asset.STATUS = 1
+        GROUP BY
+        assetGroupName
+        ORDER BY
+        countNum DESC
+    </select>
+
 </mapper>
