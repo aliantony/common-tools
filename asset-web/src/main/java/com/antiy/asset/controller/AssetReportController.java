@@ -85,6 +85,7 @@ public class AssetReportController {
     public ActionResponse queryAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
         return ActionResponse.success(iAssetAreaReportService.queryAreaTable(reportQueryRequest));
     }
+
     /**
      * 根据时间条件、区域导出资产表格数据
      * @param reportQueryRequest
@@ -97,6 +98,7 @@ public class AssetReportController {
     public void exportAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
         ExcelUtils.exportFormToClient(iAssetAreaReportService.exportAreaTable(reportQueryRequest), "资产区域报表数据");
     }
+
     /**
      * 根据时间条件查询分类统计资产新增数量
      *

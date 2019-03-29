@@ -817,7 +817,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 reportQueryRequest.setSqlTime("%w");
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getDayOfWeek(), "本周");
             case "2":
-                reportQueryRequest.setSqlTime("%U");
+                reportQueryRequest.setSqlTime("%u");
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getWeekOfMonth(), "本月");
             case "3":
                 reportQueryRequest.setSqlTime("%Y-%m");
@@ -838,12 +838,11 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     private AssetReportTableResponse buildAssetReportTable(ReportQueryRequest reportQueryRequest,
-                                                           Map<String, String> timeMap,
-                                                           String title) {
+                                                           Map<String, String> timeMap, String title) {
         // 获取初始化数据
         ReportQueryRequest initReportQueryRequest = new ReportQueryRequest();
         initReportQueryRequest.setStartTime(reportQueryRequest.getStartTime());
-        List<AssetGroupEntity> initAssetGroupEntities = assetReportDao.getInitGroupData(initReportQueryRequest);
+        List<AssetGroupEntity> initAssetGroupEntities = assetReportDao.getAssetConutWithGroup(initReportQueryRequest);
         List<String> initNameList = new ArrayList<>();
         for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {
             initNameList.add(assetGroupEntity.getName());
