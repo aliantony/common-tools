@@ -604,8 +604,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
             dateKeyList.forEach(date -> {
                 Integer num = 0;
                 Optional<AssetGroupEntity> assetGroupEntityOptional = assetGroupEntities.stream()
-                    .filter(assetGroupEntity -> date.equals(assetGroupEntity.getDate())
-                                                && groupName.equals(assetGroupEntity.getName()))
+                    .filter(assetGroupEntity -> date
+                        .equals(assetGroupEntity.getDate().startsWith("0") ? assetGroupEntity.getDate().substring(1)
+                            : assetGroupEntity.getDate()) && groupName.equals(assetGroupEntity.getName()))
                     .findFirst();
                 if (assetGroupEntityOptional.isPresent() && null != assetGroupEntityOptional.get()) {
                     num += assetGroupEntityOptional.get().getGroupCount();
@@ -635,7 +636,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 reportQueryRequest.setSqlTime("%w");
                 return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getDayOfWeek());
             case "2":
-                reportQueryRequest.setSqlTime("%U");
+                reportQueryRequest.setSqlTime("%u");
                 return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getWeekOfMonth());
             case "3":
                 reportQueryRequest.setSqlTime("%Y-%m");
@@ -746,24 +747,22 @@ public class AssetReportServiceImpl implements IAssetReportService {
      */
     public AssetReportResponse queryNewAssetWithGroup(ReportQueryRequest reportQueryRequest,
                                                       Map<String, String> timeMap) {
+        if (MapUtils.isEmpty(timeMap)) {
+            return null;
+        }
         List<AssetGroupEntity> groupReportEntityList = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
         // 1.初始化返回对象
         AssetReportResponse assetReportResponse = new AssetReportResponse();
         List<ReportData> reportDataList = new ArrayList<>();
 
-        // 2.获取本时间范围的时间点信息map,重新按周数key排序
-        Map<String, String> treeWeekMap = new TreeMap<>((o1, o2) -> {
-            return Integer.valueOf(o1.replace("-", "")).compareTo(Integer.valueOf(o2.replace("-", "")));
-        });
-        treeWeekMap.putAll(timeMap);
-        // 3.添加排序后的日期信息到dateList
-        List<String> dateKeyList = new ArrayList<>(treeWeekMap.size());
-        List<String> dateValueList = new ArrayList<>(treeWeekMap.size());
-        for (Map.Entry<String, String> entry : treeWeekMap.entrySet()) {
+        // 2.添加排序后的日期信息到dateList
+        List<String> dateKeyList = new ArrayList<>(timeMap.size());
+        List<String> dateValueList = new ArrayList<>(timeMap.size());
+        for (Map.Entry<String, String> entry : timeMap.entrySet()) {
             dateKeyList.add(entry.getKey());
             dateValueList.add(entry.getValue());
         }
-        // 4.TOP5资产组名字信息
+        // 3.TOP5资产组名字信息
         reportQueryRequest.setTopFive(true);
         List<AssetGroupEntity> topAssetGroupEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
         List<String> groupNameList = new ArrayList<>(5);
@@ -772,11 +771,11 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 groupNameList.add(groupReportEntity.getName());
             }
         });
-        // 5.根据资产组信息封装
+        // 4.根据资产组信息封装
         groupNameList.forEach(groupName -> {
             ReportData reportData = new ReportData();
             reportData.setClassify(groupName);
-            List<Integer> addNumList = new ArrayList<>(treeWeekMap.size());
+            List<Integer> addNumList = new ArrayList<>(timeMap.size());
 
             dateKeyList.forEach(date -> {
                 Integer num = 0;
