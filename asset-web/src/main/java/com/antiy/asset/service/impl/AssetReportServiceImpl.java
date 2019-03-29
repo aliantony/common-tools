@@ -881,23 +881,43 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // --------------------------------开始增加新数据--------------------------------
         // 获取时间段新增数据
         List<AssetGroupEntity> assetGroupEntities = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
+
+        // 初始化
+        List<Map<String, String>> addRows2 = new ArrayList<>();
+        for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {
+            for (int i = 2; i <= timeMap.size(); i++) {
+                Map<String, String> addMap2 = new HashMap<>();
+                addMap2.put(DataTypeUtils.integerToString(i), "0");
+                addMap2.put("classifyName", assetGroupEntity.getName());
+                addRows2.add(addMap2);
+            }
+        }
+
         // 获得新增的数据
         List<Map<String, String>> addRows = new ArrayList<>();
-        List<Map<String, String>> addRows2 = new ArrayList<>();
         for (AssetGroupEntity assetGroupEntity : assetGroupEntities) {
             Map<String, String> addMap = new HashMap<>();
-            // for (int i = 2; i <= timeMap.size(); i++){
-            // Map<String, String> addMap2 = new HashMap<>();
-            // addMap2.put(DataTypeUtils.integerToString(i), "0");
-            // addMap2.put("classifyName", assetGroupEntity.getName());
-            // addRows.add(addMap2);
-            // }
             if (initNameList.contains(assetGroupEntity.getName())) {
                 addMap.put("classifyName", assetGroupEntity.getName());
                 addMap.put(assetGroupEntity.getDate(), DataTypeUtils.integerToString(assetGroupEntity.getGroupCount()));
                 addRows.add(addMap);
             }
+        }
 
+        for (int i = 0; i < addRows.size(); i++) {
+            for (int j = 0; j < addRows2.size(); j++) {
+                if (addRows.get(i).get("classifyName").equals(addRows2.get(j).get("classifyName"))
+                    && addRows.get(i).keySet().iterator().next().equals(addRows2.get(j).keySet().iterator().next())) {
+                    System.out.println("开始");
+                    String data = addRows.get(i).keySet().iterator().next();
+                    String count = addRows.get(i).get(addRows.get(i).keySet().iterator().next());
+                    System.out.println(data);
+                    System.out.println(count);
+                    System.out.println("结束");
+                    addRows2.get(j).put(addRows.get(i).keySet().iterator().next(),
+                        addRows.get(i).get(addRows.get(i).keySet().iterator().next()));
+                }
+            }
         }
 
         // 给新数据填上0
@@ -910,10 +930,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
         // 把旧数据和新数据加起来
         for (int i = 0; i < rows.size(); i++) {
-            for (int j = 0; j < addRows.size(); j++) {
-                if (rows.get(i).get("classifyName").equals(addRows.get(j).get("classifyName"))) {
-                    String day = addRows.get(j).keySet().iterator().next();
-                    String addCount = addRows.get(j).get(addRows.get(j).keySet().iterator().next());
+            for (int j = 0; j < addRows2.size(); j++) {
+                if (rows.get(i).get("classifyName").equals(addRows2.get(j).get("classifyName"))) {
+                    String day = addRows2.get(j).keySet().iterator().next();
+                    String addCount = addRows2.get(j).get(addRows2.get(j).keySet().iterator().next());
 
                     Iterator<String> iterator = rows.get(i).keySet().iterator();
                     String lastKey = null;
