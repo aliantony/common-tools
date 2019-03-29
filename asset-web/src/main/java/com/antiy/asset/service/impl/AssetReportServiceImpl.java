@@ -5,7 +5,6 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.antiy.common.utils.LoginUserUtil;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -691,6 +690,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             query.setFormat(MONTH);
             return getAssetReportTableResponse(query, ReportDateUtils.getCurrentMonthOfYear());
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
+            query.setFormat(MONTH);
             return getAssetReportTableResponse(query,
                 ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
         } else {
