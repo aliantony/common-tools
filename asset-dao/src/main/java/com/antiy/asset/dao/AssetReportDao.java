@@ -3,12 +3,13 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.entity.AssetCategoryEntity;
 import com.antiy.asset.entity.AssetGroupEntity;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.AssetAreaReportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * @author: zhangbing
@@ -71,4 +72,11 @@ public interface AssetReportDao {
     List<AssetGroupEntity> getNewAssetWithGroup(ReportQueryRequest reportQueryRequest);
 
     List<AssetGroupEntity> myTest(ReportQueryRequest reportQueryRequest);
+
+    /**
+     * 按时间分类统计资产总数
+     * @param map
+     * @return
+     */
+    Integer findCategoryCountAmount(Map<String, Object> map);
 }
