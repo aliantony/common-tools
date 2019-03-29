@@ -199,7 +199,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
     /**
      * 导出报表数据
      * @param reportQueryRequest
-     * @return
+     * @returnK
      */
     @Override
     public ReportForm exportAreaTable(ReportQueryRequest reportQueryRequest) {
