@@ -45,12 +45,6 @@ public interface AssetReportDao {
                                                     @Param("timeType") String timeType);
 
     /**
-     * 获取所有的品类型号新增资产信息
-     * @return
-     */
-    List<AssetCategoryEntity> getNewAssetWithCategory(AssetReportCategoryCountQuery assetReportCategoryCountQuery);
-
-    /**
      * 获取开始时间以前的数据
      * @return
      */
