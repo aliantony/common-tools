@@ -2,6 +2,10 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.base.LoginUser;
+import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +23,8 @@ import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.common.base.ActionResponse;
 
 import io.swagger.annotations.*;
+
+import java.util.Collections;
 
 /**
  * @author zhangyajun
@@ -71,6 +77,7 @@ public class AssetReportController {
     @RequestMapping(value = "/query/queryAreaCount", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:report:queryAreaCount')")
     public ActionResponse queryAreaCount(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
+        ParamterExceptionUtils.isEmpty(reportQueryRequest.getAssetAreaIds(), "请指定要统计的区域");
         return ActionResponse.success(iAssetAreaReportService.getAssetWithArea(reportQueryRequest));
     }
 
@@ -84,6 +91,7 @@ public class AssetReportController {
     @RequestMapping(value = "/query/queryAreaTable", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:report:queryAreaTable')")
     public ActionResponse queryAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
+        ParamterExceptionUtils.isEmpty(reportQueryRequest.getAssetAreaIds(), "请指定要统计的区域");
         return ActionResponse.success(iAssetAreaReportService.queryAreaTable(reportQueryRequest));
     }
 
@@ -97,7 +105,8 @@ public class AssetReportController {
     @RequestMapping(value = "/query/exportAreaTable", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:report:exportAreaTable')")
     public void exportAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
-        ExcelUtils.exportFormToClient(iAssetAreaReportService.exportAreaTable(reportQueryRequest), "资产区域报表数据");
+        ParamterExceptionUtils.isEmpty(reportQueryRequest.getAssetAreaIds(), "请指定要统计的区域");
+        ExcelUtils.exportFormToClient(iAssetAreaReportService.exportAreaTable(reportQueryRequest), "资产区域报表数据.xlsx");
     }
 
     /**
@@ -107,7 +116,7 @@ public class AssetReportController {
      */
     @ApiOperation(value = "根据条件查询资产组top5", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/groupCountTop", method = RequestMethod.POST)
+    @RequestMapping(value = "/query/groupCountTop", method = RequestMethod.GET)
     // @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
     public ActionResponse getAssetConutWithGroup(@RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
         reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
@@ -157,5 +166,6 @@ public class AssetReportController {
     public ActionResponse queryAssetGroupTable(@RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
         return ActionResponse.success(iAssetReportService.getAssetGroupReportTable(reportQueryRequest));
     }
+
 
 }
