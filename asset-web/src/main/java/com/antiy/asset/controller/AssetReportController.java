@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,6 +86,7 @@ public class AssetReportController {
     public ActionResponse queryAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
         return ActionResponse.success(iAssetAreaReportService.queryAreaTable(reportQueryRequest));
     }
+
     /**
      * 根据时间条件、区域导出资产表格数据
      * @param reportQueryRequest
@@ -97,6 +99,7 @@ public class AssetReportController {
     public void exportAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
         ExcelUtils.exportFormToClient(iAssetAreaReportService.exportAreaTable(reportQueryRequest), "资产区域报表数据");
     }
+
     /**
      * 根据时间条件查询分类统计资产新增数量
      *
@@ -104,9 +107,10 @@ public class AssetReportController {
      */
     @ApiOperation(value = "根据条件查询资产组top5", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/groupCountTop/", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/groupCountTop", method = RequestMethod.POST)
     // @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
-    public ActionResponse getAssetConutWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
+    public ActionResponse getAssetConutWithGroup(@RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
+        reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         return ActionResponse.success(iAssetReportService.getAssetConutWithGroup(reportQueryRequest));
     }
 
@@ -121,6 +125,7 @@ public class AssetReportController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/groupNewAsset", method = RequestMethod.GET)
     public ActionResponse getNewAssetWithGroup(@ApiParam("报表查询对象") ReportQueryRequest reportQueryRequest) throws Exception {
+        reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         return ActionResponse.success(iAssetReportService.getNewAssetWithGroup(reportQueryRequest));
     }
 
@@ -135,6 +140,7 @@ public class AssetReportController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/category/newAsset", method = RequestMethod.GET)
     public void getNewAssetWithGroup(@ApiParam("报表查询对象") AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception {
+        assetReportCategoryCountQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         iAssetReportService.exportCategoryCount(assetReportCategoryCountQuery);
     }
 

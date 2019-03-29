@@ -118,8 +118,6 @@
     </select>
 
 
-
-
     <select id="getAssetConutWithGroup" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
             resultType="com.antiy.asset.entity.AssetGroupEntity">
         SELECT
@@ -131,11 +129,16 @@
         LEFT JOIN asset_group ag ON agr.asset_group_id = ag.id
         LEFT JOIN asset ON asset.id = agr.asset_id
 
-        WHERE       agr.gmt_create &lt;#{startTime}
-
+        WHERE agr.gmt_create &lt;=#{endTime}
         AND asset.asset_status != '9'
         AND agr. STATUS = 1
         AND asset. STATUS = 1
+        <if test="areaIds != null and areaIds.size() > 0">
+            and asset.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         GROUP BY
         groupId,
         name
@@ -153,7 +156,7 @@
                 '%w'
             </when>
             <when test="timeType==2">
-                '%U'
+                '%u'
             </when>
             <otherwise>
                 '%Y-%m'
@@ -173,7 +176,7 @@
         asset
         LEFT JOIN asset_category_model acm ON acm.id = asset.category_model
         WHERE
-        asset.gmt_create &lt; #{endTime}
+        asset.gmt_create &lt;= #{endTime}
         AND asset.gmt_create > #{beginTime}
         AND asset.`status` &lt;&gt; 9
         AND asset.category_model IS NOT NULL
@@ -193,7 +196,7 @@
         asset
         LEFT JOIN asset_category_model acm ON acm.id = asset.category_model
         WHERE
-        asset.gmt_create &lt; #{beginTime}
+        asset.gmt_create &lt;= #{beginTime}
         AND asset.`status` &lt;&gt; 9
         AND asset.category_model IS NOT NULL
         GROUP BY
@@ -207,7 +210,7 @@
         FROM
         asset
         WHERE
-        asset.gmt_create &lt; #{beginTime}
+        asset.gmt_create &lt;= #{beginTime}
         AND asset.`status` &lt;&gt; 9
         AND asset.category_model IS NOT NULL
         and asset.category_model = #{categoryModel}
@@ -224,15 +227,19 @@
         LEFT JOIN asset on agr.asset_id = asset.id
         WHERE
         agr.gmt_create &lt;= #{endTime}
-        AND agr.gmt_create &gt;= #{startTime}
+        AND agr.gmt_create &gt;#{startTime}
         AND asset.status = 1
-
-
-        <if test="groupIds!=null and groupIds.size()>0" >
-          AND ag.id in
-        <foreach item="areaId" collection="groupIds" open="(" separator="," close=")">
-            #{areaId}
-        </foreach>
+        <if test="groupIds!=null and groupIds.size()>0">
+            AND ag.id in
+            <foreach item="areaId" collection="groupIds" open="(" separator="," close=")">
+                #{areaId}
+            </foreach>
+        </if>
+        <if test="areaIds != null and areaIds.size() > 0">
+            and asset.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
 
         AND asset.asset_status != 9
@@ -273,10 +280,18 @@
         LEFT JOIN asset ON asset.id = agr.asset_id
         WHERE
         1 = 1
-        AND agr.gmt_create &lt; #{startTime}
+        AND agr.gmt_create &lt;= #{startTime}
         AND asset.asset_status != '9'
         AND agr.STATUS = 1
         AND asset.STATUS = 1
+        <where>
+            <if test="areaIds != null and areaIds.size() > 0">
+                and asset.area_id in
+                <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
         GROUP BY
         assetGroupName
         ORDER BY
