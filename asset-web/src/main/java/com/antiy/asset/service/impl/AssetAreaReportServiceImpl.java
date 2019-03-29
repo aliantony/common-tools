@@ -112,7 +112,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
                 if (i == 0) {
                     for (Map<String, Integer> init : initData) {
                         if (top.equals(init.get("areaId"))) {
-                            totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.get("y"))));
+                            totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.get("assetCount"))));
                             break;
                         }
                     }
