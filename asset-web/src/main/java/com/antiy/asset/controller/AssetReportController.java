@@ -144,8 +144,17 @@ public class AssetReportController {
         iAssetReportService.exportCategoryCount(assetReportCategoryCountQuery);
     }
 
-    @RequestMapping(value = "/aqaq", method = RequestMethod.GET)
-    public ActionResponse myTest(ReportQueryRequest reportQueryRequest) throws Exception {
+    /**
+     * 根据时间查询资产组表格
+     *
+     * @param reportQueryRequest
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "资产组表格", notes = "根据时间查询资产组表格")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/queryAssetGroupTable", method = RequestMethod.GET)
+    public ActionResponse queryAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception {
         return ActionResponse.success(iAssetReportService.getAssetGroupReportTable(reportQueryRequest));
     }
 

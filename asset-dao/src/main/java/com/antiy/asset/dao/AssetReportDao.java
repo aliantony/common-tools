@@ -45,12 +45,6 @@ public interface AssetReportDao {
                                                     @Param("timeType") String timeType);
 
     /**
-     * 获取所有的品类型号新增资产信息
-     * @return
-     */
-    List<AssetCategoryEntity> getNewAssetWithCategory(AssetReportCategoryCountQuery assetReportCategoryCountQuery);
-
-    /**
      * 获取开始时间以前的数据
      * @return
      */
@@ -70,15 +64,6 @@ public interface AssetReportDao {
      * @return
      */
     List<AssetGroupEntity> getNewAssetWithGroup(ReportQueryRequest reportQueryRequest);
-
-    List<AssetGroupEntity> myTest(ReportQueryRequest reportQueryRequest);
-
-    /**
-     * 获取初始化资产组信息
-     * @param reportQueryRequest
-     * @return
-     */
-    List<AssetGroupEntity> getInitGroupData(ReportQueryRequest reportQueryRequest);
 
     /**
      * 按时间分类统计资产总数

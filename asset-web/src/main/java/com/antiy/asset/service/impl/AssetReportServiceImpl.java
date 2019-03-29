@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
         ShowCycleType showCycleType = query.getShowCycleType();
         checkParameter(query, showCycleType);
-        // query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         AssetReportResponse reportResponse = new AssetReportResponse();
         Map<String, Object> map;
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
@@ -806,7 +807,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 reportQueryRequest.setSqlTime("%w");
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getDayOfWeek(), "本周");
             case "2":
-                reportQueryRequest.setSqlTime("%U");
+                reportQueryRequest.setSqlTime("%u");
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getWeekOfMonth(), "本月");
             case "3":
                 reportQueryRequest.setSqlTime("%Y-%m");
@@ -827,13 +828,11 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     private AssetReportTableResponse buildAssetReportTable(ReportQueryRequest reportQueryRequest,
-                                                           Map<String, String> timeMap,
-                                                           String title) throws NoSuchFieldException,
-                                                                         IllegalAccessException {
+                                                           Map<String, String> timeMap, String title) {
         // 获取初始化数据
         ReportQueryRequest initReportQueryRequest = new ReportQueryRequest();
         initReportQueryRequest.setStartTime(reportQueryRequest.getStartTime());
-        List<AssetGroupEntity> initAssetGroupEntities = assetReportDao.getInitGroupData(initReportQueryRequest);
+        List<AssetGroupEntity> initAssetGroupEntities = assetReportDao.getAssetConutWithGroup(initReportQueryRequest);
         List<String> initNameList = new ArrayList<>();
         for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {
             initNameList.add(assetGroupEntity.getName());
@@ -870,47 +869,52 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // --------------------------------开始增加新数据--------------------------------
         // 获取时间段新增数据
         List<AssetGroupEntity> assetGroupEntities = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
+
+        // 初始化新增的数据
+        List<Map<String, String>> addRowsResult = new ArrayList<>();
+        for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {
+            for (int i = 2; i <= timeMap.size(); i++) {
+                Map<String, String> initaddMap = new HashMap<>();
+                initaddMap.put(DataTypeUtils.integerToString(i), "0");
+                initaddMap.put("classifyName", assetGroupEntity.getName());
+                addRowsResult.add(initaddMap);
+            }
+        }
+
         // 获得新增的数据
         List<Map<String, String>> addRows = new ArrayList<>();
-        List<Map<String, String>> addRows2 = new ArrayList<>();
         for (AssetGroupEntity assetGroupEntity : assetGroupEntities) {
             Map<String, String> addMap = new HashMap<>();
-            // for (int i = 2; i <= timeMap.size(); i++){
-            // Map<String, String> addMap2 = new HashMap<>();
-            // addMap2.put(DataTypeUtils.integerToString(i), "0");
-            // addMap2.put("classifyName", assetGroupEntity.getName());
-            // addRows.add(addMap2);
-            // }
             if (initNameList.contains(assetGroupEntity.getName())) {
                 addMap.put("classifyName", assetGroupEntity.getName());
                 addMap.put(assetGroupEntity.getDate(), DataTypeUtils.integerToString(assetGroupEntity.getGroupCount()));
                 addRows.add(addMap);
             }
-
         }
 
-        // 给新数据填上0
-        // List<Map<String, String>> addRowsTest = new ArrayList<>( rows.size() * (timeMap.size()-1) );
-        // for (int i = 0; i < rows.size(); i++){
-        // for (int j = 1; j < timeMap.size(); j++){
-        // if (addRows.get(i).get())
-        // }
-        // }
+        // 将新增数据与初始化的新增数据进行比较配对。将有变化的数据进行修改
+        for (int i = 0; i < addRows.size(); i++) {
+            for (int j = 0; j < addRowsResult.size(); j++) {
+                if (addRows.get(i).get("classifyName").equals(addRowsResult.get(j).get("classifyName")) && addRows
+                    .get(i).keySet().iterator().next().equals(addRowsResult.get(j).keySet().iterator().next())) {
+                    addRowsResult.get(j).put(addRows.get(i).keySet().iterator().next(),
+                        addRows.get(i).get(addRows.get(i).keySet().iterator().next()));
+                }
+            }
+        }
 
         // 把旧数据和新数据加起来
         for (int i = 0; i < rows.size(); i++) {
-            for (int j = 0; j < addRows.size(); j++) {
-                if (rows.get(i).get("classifyName").equals(addRows.get(j).get("classifyName"))) {
-                    String day = addRows.get(j).keySet().iterator().next();
-                    String addCount = addRows.get(j).get(addRows.get(j).keySet().iterator().next());
-
+            for (int j = 0; j < addRowsResult.size(); j++) {
+                if (rows.get(i).get("classifyName").equals(addRowsResult.get(j).get("classifyName"))) {
+                    String day = addRowsResult.get(j).keySet().iterator().next();
+                    String addCount = addRowsResult.get(j).get(addRowsResult.get(j).keySet().iterator().next());
                     Iterator<String> iterator = rows.get(i).keySet().iterator();
                     String lastKey = null;
                     while (iterator.hasNext()) {
                         lastKey = iterator.next();
                     }
                     String oldCount = rows.get(i).get(lastKey);
-
                     int sum = DataTypeUtils.stringToInteger(oldCount) + DataTypeUtils.stringToInteger(addCount);
                     rows.get(i).put(day, DataTypeUtils.integerToString(sum));
                 }
