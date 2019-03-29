@@ -258,70 +258,28 @@ public class AssetReportServiceImpl implements IAssetReportService {
             addColumnarNewList(otherDataList, columnarList, AssetSecondCategoryEnum.OTHER_DEVICE);
 
         } else if (query.getReportFormType().equals(ReportFormType.TABLE)) {
+
+            List<AssetCategoryEntity> amountCategoryEntityList = assetReportDao.findCategoryCountByTime(query);
+            Map<String, Object> filterMap = new HashMap<>();
+            filterMap.put("beginTime", query.getBeginTime());
             // 表格数据
             while (iterator.hasNext()) {
-                int computeDevice = 0;
-                int networkDevice = 0;
-                int storageDevice = 0;
-                int safetyDevice = 0;
-                int otherDevice = 0;
-
                 Map.Entry<String, String> entry = iterator.next();
                 String key = entry.getKey();
                 String time = entry.getValue();
-
-                List<AssetCategoryEntity> categoryEntityList = assetReportDao.findCategoryCountPrevious(query);
-                for (AssetCategoryEntity categoryEntity : categoryEntityList) {
-                    if (key.equals(categoryEntity.getDate())) {
-                        assetCategoryModel.setId(categoryEntity.getCategoryModel());
-                        assetCategoryModel.setParentId(categoryEntity.getParentId());
-                        assetCategoryModel.setName(categoryEntity.getCategoryName());
-                        String secondCategoryName = this.getParentCategory(assetCategoryModel, categoryModels)
-                            .getName();
-                        if (AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg().equals(secondCategoryName)
-                            && key.equals(categoryEntity.getDate())) {
-                            computerTimeValueMap.put("classifyName", AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
-                            computeDevice = computeDevice + categoryEntity.getCategoryCount();
-                        } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryName)
-                                   && key.equals(categoryEntity.getDate())) {
-                            networkTimeValueMap.put("classifyName", AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
-                            networkDevice = networkDevice + categoryEntity.getCategoryCount();
-                        } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(secondCategoryName)
-                                   && key.equals(categoryEntity.getDate())) {
-                            storageTimeValueMap.put("classifyName", AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg());
-                            storageDevice = storageDevice + categoryEntity.getCategoryCount();
-                        } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(secondCategoryName)
-                                   && key.equals(categoryEntity.getDate())) {
-                            safetyTimeValueMap.put("classifyName", AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg());
-                            safetyDevice = safetyDevice + categoryEntity.getCategoryCount();
-                        } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)
-                                   && key.equals(categoryEntity.getDate())) {
-                            otherTimeValueMap.put("classifyName", AssetSecondCategoryEnum.OTHER_DEVICE.getMsg());
-                            otherDevice = otherDevice + categoryEntity.getCategoryCount();
-                        }
-                    }
-                }
                 dateList.add(time);
-                computerDataList.add(computeDevice);
-                networkDataList.add(networkDevice);
-                storageDataList.add(storageDevice);
-                safetyDataList.add(safetyDevice);
-                otherDataList.add(otherDevice);
-
-                computerTimeValueMap.put(key, String.valueOf(computeDevice));
-                networkTimeValueMap.put(key, String.valueOf(networkDevice));
-                storageTimeValueMap.put(key, String.valueOf(storageDevice));
-                safetyTimeValueMap.put(key, String.valueOf(safetyDevice));
-                otherTimeValueMap.put(key, String.valueOf(otherDevice));
-                amountTimeValueMap.put(key,
-                    String.valueOf(computeDevice + networkDevice + storageDevice + safetyDevice + otherDevice));
                 // 计算新增数量
                 int computeNewAdd = 0;
+                int computeAmount = 0;
                 int networkNewAdd = 0;
+                int networkAmount = 0;
                 int storageNewAdd = 0;
+                int storageAmount = 0;
                 int safetyNewAdd = 0;
+                int safetyAmount = 0;
                 int otherNewAdd = 0;
-                List<AssetCategoryEntity> amountCategoryEntityList = assetReportDao.findCategoryCountByTime(query);
+                int otherAmount = 0;
+
                 for (AssetCategoryEntity categoryEntity : amountCategoryEntityList) {
                     if (key.equals(categoryEntity.getDate())) {
                         assetCategoryModel.setId(categoryEntity.getCategoryModel());
@@ -331,25 +289,43 @@ public class AssetReportServiceImpl implements IAssetReportService {
                             .getName();
                         if (AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg().equals(secondCategoryName)
                             && key.equals(categoryEntity.getDate())) {
+                            filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                             computeNewAdd = computeNewAdd + categoryEntity.getCategoryCount();
+                            computeAmount = assetReportDao.findCategoryCountAmount(filterMap);
                         } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryName)
                                    && key.equals(categoryEntity.getDate())) {
+                            filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                             networkNewAdd = networkNewAdd + categoryEntity.getCategoryCount();
+                            networkAmount = assetReportDao.findCategoryCountAmount(filterMap);
                         } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(secondCategoryName)
                                    && key.equals(categoryEntity.getDate())) {
+                            filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                             storageNewAdd = storageNewAdd + categoryEntity.getCategoryCount();
+                            storageAmount = assetReportDao.findCategoryCountAmount(filterMap);
                         } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(secondCategoryName)
                                    && key.equals(categoryEntity.getDate())) {
+                            filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                             safetyNewAdd = safetyNewAdd + categoryEntity.getCategoryCount();
+                            safetyAmount = assetReportDao.findCategoryCountAmount(filterMap);
                         } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)
                                    && key.equals(categoryEntity.getDate())) {
+                            filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                             otherNewAdd = otherNewAdd + categoryEntity.getCategoryCount();
+                            otherAmount = assetReportDao.findCategoryCountAmount(filterMap);
                         }
                     }
                 }
 
+                computerTimeValueMap.put(key, String.valueOf(computeAmount + computeNewAdd));
+                networkTimeValueMap.put(key, String.valueOf(networkAmount + networkNewAdd));
+                storageTimeValueMap.put(key, String.valueOf(storageAmount + storageNewAdd));
+                safetyTimeValueMap.put(key, String.valueOf(safetyAmount + +safetyNewAdd));
+                otherTimeValueMap.put(key, String.valueOf(otherAmount + otherNewAdd));
                 newAddTimeValueMap.put(key,
                     String.valueOf(computeNewAdd + networkNewAdd + storageNewAdd + safetyNewAdd + otherNewAdd));
+                amountTimeValueMap.put(key,
+                    String.valueOf(computeAmount + computeNewAdd + networkAmount + networkNewAdd + storageAmount
+                                   + storageNewAdd + safetyAmount + +safetyNewAdd + otherAmount + otherNewAdd));
             }
 
             timeValueMap.put(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg(), computerTimeValueMap);
