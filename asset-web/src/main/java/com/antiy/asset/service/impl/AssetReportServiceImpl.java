@@ -755,50 +755,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     /**
-     * 根据资产组类别查本周新增资产情况
-     * @param reportQueryRequest
-     * @return
-     */
-    // public AssetReportResponse getNewAssetWithGroupInWeek(ReportQueryRequest reportQueryRequest) {
-    // Map<String, String> weekMap = ReportDateUtils.getDayOfWeek();
-    // AssetReportResponse assetReportResponse = new AssetReportResponse();
-    // // 初始化横坐标
-    // String[] weeks = new String[weekMap.size()];
-    // for (Map.Entry<String, String> entry : weekMap.entrySet()) {
-    // weeks[Integer.parseInt(entry.getKey()) - 1] = entry.getValue();
-    // }
-    // assetReportResponse.setDate(Arrays.asList(weeks));
-    // List<AssetGroupEntity> assetGroupEntities = assetReportDao.myTest(reportQueryRequest);
-    // // 获取资产组名字（不重复）
-    // List<String> groupNameList = new ArrayList<>();
-    // for (AssetGroupEntity assetGroupEntity : assetGroupEntities) {
-    // if (!groupNameList.contains(assetGroupEntity.getName())) {
-    // groupNameList.add(assetGroupEntity.getName());
-    // }
-    // }
-    // List<ReportData> dataList = new ArrayList<>();
-    // for (int i = 0; i < groupNameList.size(); i++) {
-    // ReportData reportData = new ReportData();
-    // String groupName = groupNameList.get(i);
-    // reportData.setClassify(groupName);
-    // Integer[] addList = new Integer[weeks.length];
-    // Arrays.fill(addList, 0);
-    // for (int day = 0; day < weeks.length; day++) {
-    // for (AssetGroupEntity groupReportEntity : assetGroupEntities) {
-    // if (groupReportEntity.getName().equals(groupName)) {
-    // addList[DataTypeUtils.stringToInteger(groupReportEntity.getDate()) - 1] = groupReportEntity
-    // .getGroupCount();
-    // }
-    // }
-    // }
-    // reportData.setAdd(Arrays.asList(addList));
-    // dataList.add(reportData);
-    // }
-    // assetReportResponse.setList(dataList);
-    // return assetReportResponse;
-    // }
-
-    /**
      * 根据资产组类别查新增资产情况-封装数据
      * @param reportQueryRequest
      * @return
