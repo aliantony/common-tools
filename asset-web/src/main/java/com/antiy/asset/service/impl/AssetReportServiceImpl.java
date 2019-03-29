@@ -121,13 +121,13 @@ public class AssetReportServiceImpl implements IAssetReportService {
         List<ReportData> columnarList = new ArrayList<>();
         AssetCategoryModel assetCategoryModel = new AssetCategoryModel();
         Map<String, Object> timeValueMap = new HashMap<>();
-        Map<String, String> computerTimeValueMap = new HashMap<>();
-        Map<String, String> networkTimeValueMap = new HashMap<>();
-        Map<String, String> storageTimeValueMap = new HashMap<>();
-        Map<String, String> safetyTimeValueMap = new HashMap<>();
-        Map<String, String> otherTimeValueMap = new HashMap<>();
-        Map<String, String> amountTimeValueMap = new HashMap<>();
-        Map<String, String> newAddTimeValueMap = new HashMap<>();
+        Map<String, String> computerTimeValueMap = new TreeMap<>();
+        Map<String, String> networkTimeValueMap = new TreeMap<>();
+        Map<String, String> storageTimeValueMap = new TreeMap<>();
+        Map<String, String> safetyTimeValueMap = new TreeMap<>();
+        Map<String, String> otherTimeValueMap = new TreeMap<>();
+        Map<String, String> amountTimeValueMap = new TreeMap<>();
+        Map<String, String> newAddTimeValueMap = new TreeMap<>();
         computerTimeValueMap.put("classifyName", AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
         networkTimeValueMap.put("classifyName", AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg());
         storageTimeValueMap.put("classifyName", AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg());
@@ -364,9 +364,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
             otherDeviceColumnar.setClassify(AssetSecondCategoryEnum.OTHER_DEVICE.getMsg());
             otherDeviceColumnar.setData(otherDataList);
             columnarList.add(otherDeviceColumnar);
-
-            map.put("dateList", dateList);
-            map.put("columnarList", columnarList);
             return map;
         }
 
@@ -670,6 +667,12 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
     }
 
+    /**
+     * 按时间分类统计返回表格数据
+     * @param query
+     * @return
+     * @throws Exception
+     */
     @Override
     public AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception {
         ShowCycleType showCycleType = query.getShowCycleType();
