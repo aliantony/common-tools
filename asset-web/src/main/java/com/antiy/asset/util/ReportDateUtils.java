@@ -259,6 +259,26 @@ public class ReportDateUtils {
     public static void main(String[] args) {
         // System.out.println(getMonthWithDate(1542468106000L,1558468106000L));
 
-        System.out.println(getWeekOfMonth());
+        // System.out.println(getDayOfWeek());
+        // for (Map.Entry<String, String> entry : getDayOfWeek().entrySet()) {
+        // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        // }
+        // System.out.println(getWeekOfMonth());
+        // for (Map.Entry<String, String> entry : getWeekOfMonth().entrySet()) {
+        // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        // }
+        // System.out.println(getSeason());
+        // for (Map.Entry<String, String> entry : getSeason().entrySet()) {
+        // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        // }
+        // System.out.println(getCurrentMonthOfYear());
+        // for (Map.Entry<String, String> entry : getCurrentMonthOfYear().entrySet()) {
+        // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        // }
+        // System.out.println(getMonthWithDate(1527177600000L,1553443200000L));
+        // for (Map.Entry<String, String> entry : getMonthWithDate(1527177600000L,1553443200000L).entrySet()) {
+        // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        // }
+        // System.out.println(getWeekOfMonth());
     }
 }

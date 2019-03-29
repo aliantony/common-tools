@@ -54,4 +54,12 @@ public interface IAssetReportService {
     AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception;
 
 
+    /**
+     * 资产组表格
+     * @param reportQueryRequest
+     * @return
+     * @throws Exception
+     */
+    AssetReportTableResponse getAssetGroupReportTable(ReportQueryRequest reportQueryRequest) throws Exception;
+
 }
