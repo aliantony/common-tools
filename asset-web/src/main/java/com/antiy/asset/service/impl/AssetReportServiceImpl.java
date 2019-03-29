@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.utils.LoginUserUtil;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +62,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
         ShowCycleType showCycleType = query.getShowCycleType();
         checkParameter(query, showCycleType);
-
+        // query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         AssetReportResponse reportResponse = new AssetReportResponse();
         Map<String, Object> map;
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
@@ -162,11 +163,11 @@ public class AssetReportServiceImpl implements IAssetReportService {
                     otherDevice = otherDevice + assetCategoryEntity.getCategoryCount();
                 }
             }
+            List<AssetCategoryEntity> categoryEntityList = assetReportDao.findCategoryCountByTime(query);
             while (iterator.hasNext()) {
                 Map.Entry<String, String> entry = iterator.next();
                 String key = entry.getKey();
                 String time = entry.getValue();
-                List<AssetCategoryEntity> categoryEntityList = assetReportDao.findCategoryCountByTime(query);
                 for (AssetCategoryEntity categoryEntity : categoryEntityList) {
                     if (key.equals(categoryEntity.getDate())) {
                         assetCategoryModel.setId(categoryEntity.getCategoryModel());
@@ -207,6 +208,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             addColumnarList(safetyDataList, columnarList, AssetSecondCategoryEnum.SAFETY_DEVICE);
             addColumnarList(otherDataList, columnarList, AssetSecondCategoryEnum.OTHER_DEVICE);
         } else if (query.getReportFormType().equals(ReportFormType.NEW)) {
+            List<AssetCategoryEntity> categoryEntityList = assetReportDao.findCategoryCountByTime(query);
             while (iterator.hasNext()) {
                 int computeDevice = 0;
                 int networkDevice = 0;
@@ -216,7 +218,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 Map.Entry<String, String> entry = iterator.next();
                 String key = entry.getKey();
                 String time = entry.getValue();
-                List<AssetCategoryEntity> categoryEntityList = assetReportDao.findCategoryCountByTime(query);
                 for (AssetCategoryEntity categoryEntity : categoryEntityList) {
                     if (key.equals(categoryEntity.getDate())) {
                         assetCategoryModel.setId(categoryEntity.getCategoryModel());
