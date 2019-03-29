@@ -1,5 +1,15 @@
 package com.antiy.asset.service.impl;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.springframework.stereotype.Service;
+
 import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.templet.ReportForm;
@@ -11,14 +21,6 @@ import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.asset.vo.response.ReportData;
 import com.antiy.asset.vo.response.ReportTableHead;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author: zhangbing
@@ -42,7 +44,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         List<Integer> allAddList = Lists.newArrayList();
         List<Integer> topAreaIds;
         // 是否需要top5
-        if (TRUE.equals(reportRequest.getTopFive())) {
+        if (reportRequest.getTopFive()) {
             // 1.查询TOP5的区域信息
             topAreaIds = getTopFive(reportRequest);
             reportRequest.setAssetAreaIds(reportRequest.getAssetAreaIds().stream()

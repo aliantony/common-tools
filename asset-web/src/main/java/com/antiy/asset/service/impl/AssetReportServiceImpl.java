@@ -1,6 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -14,7 +13,6 @@ import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.entity.AssetCategoryEntity;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroupEntity;
-import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.util.ArrayTypeUtil;
@@ -47,10 +45,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
     private final static String WEEK   = "%u";
     private final static String MONTH  = "%Y-%m";
 
-    @Resource
-    IAssetCategoryModelService  iAssetCategoryModelService;
-    @Resource
-    AssetCategoryModelDao       assetCategoryModelDao;
     @Resource
     AssetReportDao              assetReportDao;
     @Resource
@@ -526,8 +520,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     @Override
     public AssetReportResponse getAssetConutWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
-
-        reportQueryRequest.setTopFive("查询top5");
         // @ApiModelProperty(value = "时间类型,1-本周,2-本月,3-本季度,4-本年,5-时间范围", required = true)
         switch (reportQueryRequest.getTimeType()) {
             case "1":
@@ -780,7 +772,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             dateValueList.add(entry.getValue());
         }
         // 4.TOP5资产组名字信息
-        reportQueryRequest.setTopFive("true");
+        reportQueryRequest.setTopFive(true);
         List<AssetGroupEntity> topAssetGroupEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
         List<String> groupNameList = new ArrayList<>(5);
         topAssetGroupEntityList.forEach(groupReportEntity -> {
