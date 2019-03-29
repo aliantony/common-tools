@@ -14,7 +14,6 @@ import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.entity.AssetCategoryEntity;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroupEntity;
-import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.util.ArrayTypeUtil;
@@ -47,10 +46,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
     private final static String WEEK   = "%u";
     private final static String MONTH  = "%Y-%m";
 
-    @Resource
-    IAssetCategoryModelService  iAssetCategoryModelService;
-    @Resource
-    AssetCategoryModelDao       assetCategoryModelDao;
     @Resource
     AssetReportDao              assetReportDao;
     @Resource
@@ -526,8 +521,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     @Override
     public AssetReportResponse getAssetConutWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
-
-        reportQueryRequest.setTopFive("查询top5");
         // @ApiModelProperty(value = "时间类型,1-本周,2-本月,3-本季度,4-本年,5-时间范围", required = true)
         switch (reportQueryRequest.getTimeType()) {
             case "1":
@@ -780,7 +773,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             dateValueList.add(entry.getValue());
         }
         // 4.TOP5资产组名字信息
-        reportQueryRequest.setTopFive("true");
+        reportQueryRequest.setTopFive(true);
         List<AssetGroupEntity> topAssetGroupEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
         List<String> groupNameList = new ArrayList<>(5);
         topAssetGroupEntityList.forEach(groupReportEntity -> {
@@ -845,11 +838,17 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     private AssetReportTableResponse buildAssetReportTable(ReportQueryRequest reportQueryRequest,
-                                                           Map<String, String> timeMap, String title) {
+                                                           Map<String, String> timeMap,
+                                                           String title) throws NoSuchFieldException,
+                                                                         IllegalAccessException {
         // 获取初始化数据
         ReportQueryRequest initReportQueryRequest = new ReportQueryRequest();
         initReportQueryRequest.setStartTime(reportQueryRequest.getStartTime());
         List<AssetGroupEntity> initAssetGroupEntities = assetReportDao.getInitGroupData(initReportQueryRequest);
+        List<String> initNameList = new ArrayList<>();
+        for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {
+            initNameList.add(assetGroupEntity.getName());
+        }
         // 组装数据
         AssetReportTableResponse assetReportTableResponse = new AssetReportTableResponse();
         // 设置标题
@@ -877,11 +876,58 @@ public class AssetReportServiceImpl implements IAssetReportService {
             map.put(firstDateKey, DataTypeUtils.integerToString(assetGroupEntity.getGroupCount()));
             rows.add(map);
         }
-        assetReportTableResponse.setRows(rows);
+        // assetReportTableResponse.setRows(rows);
         // --------------------------------初始化数据完毕--------------------------------
         // --------------------------------开始增加新数据--------------------------------
         // 获取时间段新增数据
         List<AssetGroupEntity> assetGroupEntities = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
+        // 获得新增的数据
+        List<Map<String, String>> addRows = new ArrayList<>();
+        List<Map<String, String>> addRows2 = new ArrayList<>();
+        for (AssetGroupEntity assetGroupEntity : assetGroupEntities) {
+            Map<String, String> addMap = new HashMap<>();
+            // for (int i = 2; i <= timeMap.size(); i++){
+            // Map<String, String> addMap2 = new HashMap<>();
+            // addMap2.put(DataTypeUtils.integerToString(i), "0");
+            // addMap2.put("classifyName", assetGroupEntity.getName());
+            // addRows.add(addMap2);
+            // }
+            if (initNameList.contains(assetGroupEntity.getName())) {
+                addMap.put("classifyName", assetGroupEntity.getName());
+                addMap.put(assetGroupEntity.getDate(), DataTypeUtils.integerToString(assetGroupEntity.getGroupCount()));
+                addRows.add(addMap);
+            }
+
+        }
+
+        // 给新数据填上0
+        // List<Map<String, String>> addRowsTest = new ArrayList<>( rows.size() * (timeMap.size()-1) );
+        // for (int i = 0; i < rows.size(); i++){
+        // for (int j = 1; j < timeMap.size(); j++){
+        // if (addRows.get(i).get())
+        // }
+        // }
+
+        // 把旧数据和新数据加起来
+        for (int i = 0; i < rows.size(); i++) {
+            for (int j = 0; j < addRows.size(); j++) {
+                if (rows.get(i).get("classifyName").equals(addRows.get(j).get("classifyName"))) {
+                    String day = addRows.get(j).keySet().iterator().next();
+                    String addCount = addRows.get(j).get(addRows.get(j).keySet().iterator().next());
+
+                    Iterator<String> iterator = rows.get(i).keySet().iterator();
+                    String lastKey = null;
+                    while (iterator.hasNext()) {
+                        lastKey = iterator.next();
+                    }
+                    String oldCount = rows.get(i).get(lastKey);
+
+                    int sum = DataTypeUtils.stringToInteger(oldCount) + DataTypeUtils.stringToInteger(addCount);
+                    rows.get(i).put(day, DataTypeUtils.integerToString(sum));
+                }
+            }
+        }
+        assetReportTableResponse.setRows(rows);
         return assetReportTableResponse;
     }
 }
