@@ -5,7 +5,6 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -33,6 +32,7 @@ import com.antiy.asset.vo.response.ReportTableHead;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
@@ -569,6 +569,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
 
         // 获取新增资产组的统计信息
+        reportQueryRequest.setStartTime(null);
         List<AssetGroupEntity> assetGroupEntities = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
 
         // 1.初始化返回对象

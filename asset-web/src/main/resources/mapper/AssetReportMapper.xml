@@ -97,29 +97,6 @@
         date ASC
     </select>
 
-    <select id="getNewAssetWithCategory" parameterType="com.antiy.asset.vo.request.AssetReportCategoryCountRequest"
-            resultType="com.antiy.asset.entity.AssetCategoryEntity">
-        SELECT count(1) as categoryCount,category_model as categoryModel,FROM_UNIXTIME(gmt_create/1000,#{format} ) as
-        date FROM asset
-        WHERE `status`=1 and asset_status != '9'
-        <if test="beginTime!=null">
-            and gmt_create>#{beginTime}
-        </if>
-        <if test="endTime!=null">
-            and gmt_create &lt;= #{endTime}
-        </if>
-        <if test="areaIds!=null and areaIds.size()>0">
-            and area_id in
-            <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
-                #{areaId}
-            </foreach>
-        </if>
-        GROUP BY category_model,FROM_UNIXTIME(gmt_create/1000,#{format} ) order by date;
-    </select>
-
-
-
-
     <select id="getAssetConutWithGroup" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
             resultType="com.antiy.asset.entity.AssetGroupEntity">
         SELECT
@@ -145,7 +122,7 @@
         groupId,
         name
         ORDER BY groupCount desc
-        <if test="topFive!=null">
+        <if test="topFive">
             LIMIT 0,5
         </if>
 
@@ -169,7 +146,7 @@
     <select id="findCategoryCountByTime" resultType="com.antiy.asset.entity.AssetCategoryEntity"
             parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
-        count( 1 ) AS categoryCount,
+        count(1) AS categoryCount,
         asset.category_model AS categoryModel,
         FROM_UNIXTIME( asset.gmt_create / 1000, #{format} ) AS date,
         acm.parent_id as parentId,
@@ -239,77 +216,32 @@
         asset_group_relation agr
         LEFT JOIN asset_group ag ON agr.asset_group_id = ag.id
         LEFT JOIN asset on agr.asset_id = asset.id
-        WHERE
-        agr.gmt_create &lt;= #{endTime}
-        AND agr.gmt_create &gt;#{startTime}
-        AND asset.status = 1
-        <if test="groupIds!=null and groupIds.size()>0">
-            AND ag.id in
-            <foreach item="areaId" collection="groupIds" open="(" separator="," close=")">
-                #{areaId}
-            </foreach>
-        </if>
-        <if test="areaIds != null and areaIds.size() > 0">
-            and asset.area_id in
-            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
-
-        AND asset.asset_status != 9
-        GROUP BY
-        agr.asset_group_id,
-        FROM_UNIXTIME(gmt_create / 1000, #{sqlTime})
-        ORDER BY `date` asc
-    </select>
-
-    <select id="myTest" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
-            resultMap="AssetGroupResultMap">
-        SELECT
-        agr.asset_group_id,
-        ag.name as assetGroupName,
-        count( agr.asset_group_id ) AS countNum,
-        FROM_UNIXTIME( agr.gmt_create / 1000, '%w' ) AS date
-        FROM
-        asset_group_relation agr
-        LEFT JOIN asset_group ag ON agr.asset_group_id = ag.id
-        LEFT JOIN asset ON agr.asset_id = asset.id
-        WHERE
-        asset.asset_status != '9'
-        AND FROM_UNIXTIME( agr.gmt_create / 1000, '%Y-%m-%d' ) &lt; last_day( curdate( ) ) AND FROM_UNIXTIME( agr.gmt_create / 1000, '%Y-%m-%d' ) &gt; date_sub(curdate(),INTERVAL WEEKDAY(curdate()) + 1 DAY)
-        GROUP BY
-        agr.asset_group_id,
-        date
-        ORDER BY countNum desc
-    </select>
-
-    <select id="getInitGroupData" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
-            resultMap="AssetGroupResultMap">
-        SELECT
-        count( 1 ) AS countNum,
-        ag.NAME AS assetGroupName
-        FROM
-        asset_group_relation agr
-        LEFT JOIN asset_group ag ON agr.asset_group_id = ag.id
-        LEFT JOIN asset ON asset.id = agr.asset_id
-        WHERE
-        1 = 1
-        AND agr.gmt_create &lt;= #{startTime}
-        AND asset.asset_status != '9'
-        AND agr.STATUS = 1
-        AND asset.STATUS = 1
         <where>
+            <if test="endTime != null and endTime !=''">
+                and agr.gmt_create &lt;= #{endTime}
+            </if>
+            <if test=" startTime != null and startTime != ''">
+                AND agr.gmt_create &gt;#{startTime}
+            </if>
+            AND asset.status = 1
+            <if test="groupIds!=null and groupIds.size()>0">
+                AND ag.id in
+                <foreach item="areaId" collection="groupIds" open="(" separator="," close=")">
+                    #{areaId}
+                </foreach>
+            </if>
             <if test="areaIds != null and areaIds.size() > 0">
                 and asset.area_id in
                 <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
                     #{item}
                 </foreach>
             </if>
+
+            AND asset.asset_status != 9
         </where>
         GROUP BY
-        assetGroupName
-        ORDER BY
-        countNum DESC
+        agr.asset_group_id,
+        FROM_UNIXTIME(gmt_create / 1000, #{sqlTime})
+        ORDER BY `date` asc
     </select>
-
 </mapper>
