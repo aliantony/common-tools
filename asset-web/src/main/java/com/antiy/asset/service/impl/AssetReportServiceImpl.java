@@ -1,5 +1,13 @@
 package com.antiy.asset.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.entity.AssetCategoryEntity;
@@ -25,12 +33,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * 资产报表实现类
@@ -143,9 +145,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
             int otherDevice = 0;
             for (AssetCategoryEntity assetCategoryEntity : assetCategoryEntities) {
                 AssetCategoryModel assetCategory = new AssetCategoryModel();
-                assetCategoryModel.setId(assetCategoryEntity.getCategoryModel());
-                assetCategoryModel.setParentId(assetCategoryEntity.getParentId());
-                assetCategoryModel.setName(assetCategoryEntity.getCategoryName());
+                assetCategory.setId(assetCategoryEntity.getCategoryModel());
+                assetCategory.setParentId(assetCategoryEntity.getParentId());
+                assetCategory.setName(assetCategoryEntity.getCategoryName());
                 AssetCategoryModel parentAssetCategory = getParentCategory(assetCategory, categoryModels);
                 String secondCategoryName = parentAssetCategory.getName();
                 if (AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg().equals(secondCategoryName)) {
@@ -256,6 +258,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             addColumnarNewList(otherDataList, columnarList, AssetSecondCategoryEnum.OTHER_DEVICE);
 
         } else if (query.getReportFormType().equals(ReportFormType.TABLE)) {
+            // 表格数据
             while (iterator.hasNext()) {
                 int computeDevice = 0;
                 int networkDevice = 0;
