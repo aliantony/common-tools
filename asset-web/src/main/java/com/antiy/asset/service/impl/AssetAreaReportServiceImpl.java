@@ -112,7 +112,8 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
                 if (i == 0) {
                     for (Map<String, Integer> init : initData) {
                         if (top.equals(init.get("areaId"))) {
-                            totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.get("assetCount"))));
+                            totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.get("assetCount")))
+                                          + Integer.valueOf(addList.get(i) + ""));
                             break;
                         }
                     }
@@ -204,10 +205,11 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         AssetReportResponse assetReportResponse = this.getAssetWithArea(reportQueryRequest);
         // 表格标题
         reportForm.setTitle("资产区域报表数据");
-        //表格行头
+        // 表格行头
         reportForm.setHeaderList(assetReportResponse.getDate());
         // 表格列头
-        List columnList = assetReportResponse.getList().stream().map(ReportData::getClassify).collect(Collectors.toList());
+        List columnList = assetReportResponse.getList().stream().map(ReportData::getClassify)
+            .collect(Collectors.toList());
         columnList.add("总数");
         columnList.add("新增数量");
         List<List<Integer>> dataList = Lists.newArrayList();
@@ -221,7 +223,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         String[][] datas = new String[columnList.size()][assetReportResponse.getDate().size()];
         for (int i = 0; i < dataList.size(); i++) {
             List<Integer> data = dataList.get(i);
-            for (int j = 0; j < data.size();j++) {
+            for (int j = 0; j < data.size(); j++) {
                 datas[i][j] = String.valueOf(data.get(j));
             }
         }
