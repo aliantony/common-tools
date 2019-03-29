@@ -74,6 +74,13 @@ public interface AssetReportDao {
     List<AssetGroupEntity> myTest(ReportQueryRequest reportQueryRequest);
 
     /**
+     * 获取初始化资产组信息
+     * @param reportQueryRequest
+     * @return
+     */
+    List<AssetGroupEntity> getInitGroupData(ReportQueryRequest reportQueryRequest);
+
+    /**
      * 按时间分类统计资产总数
      * @param map
      * @return
