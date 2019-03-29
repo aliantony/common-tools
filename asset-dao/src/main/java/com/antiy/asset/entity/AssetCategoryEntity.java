@@ -65,14 +65,4 @@ public class AssetCategoryEntity {
                + ", date='" + date + '\'' + ", parentId='" + parentId + '\'' + '}';
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof AssetCategoryEntity) {
-            AssetCategoryEntity assetCategoryEntity = (AssetCategoryEntity) obj;
-            return Objects.equals(assetCategoryEntity.categoryCount, assetCategoryEntity.getCategoryCount())
-                    && Objects.equals(assetCategoryEntity.categoryModel, assetCategoryEntity.getCategoryModel())
-                    && Objects.equals(assetCategoryEntity.date, assetCategoryEntity.getDate());
-        }
-        return false;
-    }
 }

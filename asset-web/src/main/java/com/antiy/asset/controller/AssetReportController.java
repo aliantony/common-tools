@@ -138,4 +138,9 @@ public class AssetReportController {
         iAssetReportService.exportCategoryCount(assetReportCategoryCountQuery);
     }
 
+    @RequestMapping(value = "/aqaq", method = RequestMethod.GET)
+    public ActionResponse myTest(ReportQueryRequest reportQueryRequest) throws Exception {
+        return ActionResponse.success(iAssetReportService.getAssetGroupReportTable(reportQueryRequest));
+    }
+
 }
