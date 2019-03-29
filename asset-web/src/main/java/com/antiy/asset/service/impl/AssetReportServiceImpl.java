@@ -529,7 +529,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getDayOfWeek());
 
             case "2":
-                reportQueryRequest.setSqlTime("%U");
+                reportQueryRequest.setSqlTime("%u");
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getWeekOfMonth());
 
             case "3":
