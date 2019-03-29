@@ -833,7 +833,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                                                            Map<String, String> timeMap, String title) {
         // 获取初始化数据
         ReportQueryRequest initReportQueryRequest = new ReportQueryRequest();
-        initReportQueryRequest.setStartTime(reportQueryRequest.getStartTime());
+        initReportQueryRequest.setEndTime(reportQueryRequest.getEndTime());
         List<AssetGroupEntity> initAssetGroupEntities = assetReportDao.getAssetConutWithGroup(initReportQueryRequest);
         List<String> initNameList = new ArrayList<>();
         for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {

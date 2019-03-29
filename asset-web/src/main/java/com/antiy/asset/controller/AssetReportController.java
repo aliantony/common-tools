@@ -153,8 +153,8 @@ public class AssetReportController {
      */
     @ApiOperation(value = "资产组表格", notes = "根据时间查询资产组表格")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/queryAssetGroupTable", method = RequestMethod.GET)
-    public ActionResponse queryAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception {
+    @RequestMapping(value = "/query/queryAssetGroupTable", method = RequestMethod.POST)
+    public ActionResponse queryAssetGroupTable(@RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
         return ActionResponse.success(iAssetReportService.getAssetGroupReportTable(reportQueryRequest));
     }
 
