@@ -630,6 +630,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
      */
     @Override
     public AssetReportResponse getNewAssetWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
+        // 当前登录用户所属区域id
+        reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         // 1-本周,2-本月,3-本季度,4-本年,5-时间范围
         switch (reportQueryRequest.getTimeType()) {
             case "1":
@@ -755,7 +757,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         AssetReportResponse assetReportResponse = new AssetReportResponse();
         List<ReportData> reportDataList = new ArrayList<>();
 
-        // 2.添加排序后的日期信息到dateList
+        // 2.添加日期信息到dateList,
         List<String> dateKeyList = new ArrayList<>(timeMap.size());
         List<String> dateValueList = new ArrayList<>(timeMap.size());
         for (Map.Entry<String, String> entry : timeMap.entrySet()) {

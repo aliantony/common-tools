@@ -221,13 +221,12 @@
                 and agr.gmt_create &lt;= #{endTime}
             </if>
             <if test=" startTime != null and startTime != ''">
-                AND agr.gmt_create &gt;#{startTime}
+                AND agr.gmt_create &gt;= #{startTime}
             </if>
-            AND asset.status = 1
-            <if test="groupIds!=null and groupIds.size()>0">
+            <if test="groupIds != null and groupIds.size()>0">
                 AND ag.id in
-                <foreach item="areaId" collection="groupIds" open="(" separator="," close=")">
-                    #{areaId}
+                <foreach item="groupId" collection="groupIds" open="(" separator="," close=")">
+                    #{groupId}
                 </foreach>
             </if>
             <if test="areaIds != null and areaIds.size() > 0">
@@ -236,7 +235,7 @@
                     #{item}
                 </foreach>
             </if>
-
+            AND asset.status = 1
             AND asset.asset_status != 9
         </where>
         GROUP BY
