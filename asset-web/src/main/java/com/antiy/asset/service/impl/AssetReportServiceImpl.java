@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.utils.LoginUserUtil;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +62,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
         ShowCycleType showCycleType = query.getShowCycleType();
         checkParameter(query, showCycleType);
-        // query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         AssetReportResponse reportResponse = new AssetReportResponse();
         Map<String, Object> map;
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {

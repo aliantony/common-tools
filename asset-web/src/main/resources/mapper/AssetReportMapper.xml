@@ -174,6 +174,12 @@
         LEFT JOIN asset_category_model acm ON acm.id = asset.category_model
         WHERE
         asset.gmt_create &lt; #{endTime}
+        <if test="areaIds!=null and areaIds.size()>0">
+            and area_id in
+            <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
+                #{areaId}
+            </foreach>
+        </if>
         AND asset.gmt_create > #{beginTime}
         AND asset.`status` &lt;&gt; 9
         AND asset.category_model IS NOT NULL
@@ -194,6 +200,12 @@
         LEFT JOIN asset_category_model acm ON acm.id = asset.category_model
         WHERE
         asset.gmt_create &lt; #{beginTime}
+        <if test="areaIds!=null and areaIds.size()>0">
+            and area_id in
+            <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
+                #{areaId}
+            </foreach>
+        </if>
         AND asset.`status` &lt;&gt; 9
         AND asset.category_model IS NOT NULL
         GROUP BY
