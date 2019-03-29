@@ -839,8 +839,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     private AssetReportTableResponse buildAssetReportTable(ReportQueryRequest reportQueryRequest,
                                                            Map<String, String> timeMap,
-                                                           String title) throws NoSuchFieldException,
-                                                                         IllegalAccessException {
+                                                           String title) {
         // 获取初始化数据
         ReportQueryRequest initReportQueryRequest = new ReportQueryRequest();
         initReportQueryRequest.setStartTime(reportQueryRequest.getStartTime());
@@ -882,14 +881,14 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // 获取时间段新增数据
         List<AssetGroupEntity> assetGroupEntities = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
 
-        // 初始化
-        List<Map<String, String>> addRows2 = new ArrayList<>();
+        // 初始化新增的数据
+        List<Map<String, String>> addRowsResult = new ArrayList<>();
         for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {
             for (int i = 2; i <= timeMap.size(); i++) {
-                Map<String, String> addMap2 = new HashMap<>();
-                addMap2.put(DataTypeUtils.integerToString(i), "0");
-                addMap2.put("classifyName", assetGroupEntity.getName());
-                addRows2.add(addMap2);
+                Map<String, String> initaddMap = new HashMap<>();
+                initaddMap.put(DataTypeUtils.integerToString(i), "0");
+                initaddMap.put("classifyName", assetGroupEntity.getName());
+                addRowsResult.add(initaddMap);
             }
         }
 
@@ -904,44 +903,29 @@ public class AssetReportServiceImpl implements IAssetReportService {
             }
         }
 
+        // 将新增数据与初始化的新增数据进行比较配对。将有变化的数据进行修改
         for (int i = 0; i < addRows.size(); i++) {
-            for (int j = 0; j < addRows2.size(); j++) {
-                if (addRows.get(i).get("classifyName").equals(addRows2.get(j).get("classifyName"))
-                    && addRows.get(i).keySet().iterator().next().equals(addRows2.get(j).keySet().iterator().next())) {
-                    System.out.println("开始");
-                    String data = addRows.get(i).keySet().iterator().next();
-                    String count = addRows.get(i).get(addRows.get(i).keySet().iterator().next());
-                    System.out.println(data);
-                    System.out.println(count);
-                    System.out.println("结束");
-                    addRows2.get(j).put(addRows.get(i).keySet().iterator().next(),
+            for (int j = 0; j < addRowsResult.size(); j++) {
+                if (addRows.get(i).get("classifyName").equals(addRowsResult.get(j).get("classifyName")) && addRows
+                    .get(i).keySet().iterator().next().equals(addRowsResult.get(j).keySet().iterator().next())) {
+                    addRowsResult.get(j).put(addRows.get(i).keySet().iterator().next(),
                         addRows.get(i).get(addRows.get(i).keySet().iterator().next()));
                 }
             }
         }
 
-        // 给新数据填上0
-        // List<Map<String, String>> addRowsTest = new ArrayList<>( rows.size() * (timeMap.size()-1) );
-        // for (int i = 0; i < rows.size(); i++){
-        // for (int j = 1; j < timeMap.size(); j++){
-        // if (addRows.get(i).get())
-        // }
-        // }
-
         // 把旧数据和新数据加起来
         for (int i = 0; i < rows.size(); i++) {
-            for (int j = 0; j < addRows2.size(); j++) {
-                if (rows.get(i).get("classifyName").equals(addRows2.get(j).get("classifyName"))) {
-                    String day = addRows2.get(j).keySet().iterator().next();
-                    String addCount = addRows2.get(j).get(addRows2.get(j).keySet().iterator().next());
-
+            for (int j = 0; j < addRowsResult.size(); j++) {
+                if (rows.get(i).get("classifyName").equals(addRowsResult.get(j).get("classifyName"))) {
+                    String day = addRowsResult.get(j).keySet().iterator().next();
+                    String addCount = addRowsResult.get(j).get(addRowsResult.get(j).keySet().iterator().next());
                     Iterator<String> iterator = rows.get(i).keySet().iterator();
                     String lastKey = null;
                     while (iterator.hasNext()) {
                         lastKey = iterator.next();
                     }
                     String oldCount = rows.get(i).get(lastKey);
-
                     int sum = DataTypeUtils.stringToInteger(oldCount) + DataTypeUtils.stringToInteger(addCount);
                     rows.get(i).put(day, DataTypeUtils.integerToString(sum));
                 }
