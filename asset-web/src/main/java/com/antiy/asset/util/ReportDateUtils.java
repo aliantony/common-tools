@@ -55,7 +55,7 @@ public class ReportDateUtils {
         if (weekDay == 7) {
             resultWeek.put("0", days.get(0));
         }
-        for (int i = 1; i < weekDay; i++) {
+        for (int i = 1; i <= weekDay; i++) {
             if (null != days.get(i)) {
                 resultWeek.put(i + "", days.get(i));
             }
@@ -214,5 +214,9 @@ public class ReportDateUtils {
         }
 
         return resultMaps;
+    }
+
+    public static void main(String[] args){
+        System.out.println(getDayOfWeek());
     }
 }
