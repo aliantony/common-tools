@@ -512,7 +512,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             add[i] = 0;
             for (int j = 0; j < reportDataList.size(); j++) {
                 ReportData reportData = reportList.get(j);
-                List<Integer> addList = reportData.getAdd();
+                List<Integer> addList = reportData.getData();
                 add[i] += addList.get(i);
                 total[i] += Integer.parseInt(data[j][i]);
             }
