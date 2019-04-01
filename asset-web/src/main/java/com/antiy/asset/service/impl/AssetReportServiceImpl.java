@@ -107,15 +107,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
      */
     private Map<String, Object> buildCategoryCountByTime(AssetReportCategoryCountQuery query,
                                                          Map<String, String> weekMap) {
-        if (query.getReportFormType().equals(ReportFormType.TABLE)) {
-            Map<String, Object> map = build(query, weekMap);
-            return (Map<String, Object>) map.get("timeValueMap");
-        } else {
-            return build(query, weekMap);
-        }
-    }
-
-    private Map<String, Object> build(AssetReportCategoryCountQuery query, Map<String, String> weekMap) {
         Map<String, Object> map = new HashMap<>();
         List<AssetCategoryModel> categoryModels = categoryModelDao.findAllCategory();
         // 构造柱状图所需的source
@@ -278,7 +269,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
         map.put("timeValueMap", timeValueMap);
 
-        if (!ReportFormType.TABLE.getCode().equals(query.getReportFormType().getCode())) {
+        if (query.getReportFormType() == null) {
             // 构建柱状数据
             ReportData computeDeviceColumnar = new ReportData();
             computeDeviceColumnar.setClassify(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
