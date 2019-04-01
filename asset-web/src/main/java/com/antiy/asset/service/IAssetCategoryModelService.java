@@ -74,6 +74,13 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
     AssetCategoryModelNodeResponse queryCategoryNode(int type) throws Exception;
 
     /**
+     * 查询二级品类组合树 若参数为4和5 则结果为硬件(根节点)-(计算设备+网络设备) 树
+     * @param types 4-计算设备 5-网络设备 6-存储设备 7-安全设备 8-其他设备
+     * @return
+     */
+    AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types) throws Exception;
+
+    /**
      * 通过名称查询下一级的品类
      *
      * @return
