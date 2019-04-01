@@ -140,7 +140,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
         int storageAmountSum = 0;
         int safetyAmountSum = 0;
         int otherAmountSum = 0;
-        boolean first = false;
         // 表格数据
         while (iterator.hasNext()) {
             Map.Entry<String, String> entry = iterator.next();
@@ -169,58 +168,35 @@ public class AssetReportServiceImpl implements IAssetReportService {
                         && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         computeNewAdd = computeNewAdd + categoryEntity.getCategoryCount();
-                        if (!first) {
                             computeAmount = assetReportDao.findCategoryCountAmount(filterMap);
-                        }
-                        first = true;
                     } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         networkNewAdd = networkNewAdd + categoryEntity.getCategoryCount();
-                        if (!first) {
                             networkAmount = assetReportDao.findCategoryCountAmount(filterMap);
-                        }
-                        first = true;
                     } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         storageNewAdd = storageNewAdd + categoryEntity.getCategoryCount();
-                        if (!first) {
                             storageAmount = assetReportDao.findCategoryCountAmount(filterMap);
-                        }
-                        first = true;
                     } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         safetyNewAdd = safetyNewAdd + categoryEntity.getCategoryCount();
-                        if (!first) {
                             safetyAmount = assetReportDao.findCategoryCountAmount(filterMap);
-                        }
-                        first = true;
                     } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         otherNewAdd = otherNewAdd + categoryEntity.getCategoryCount();
-                        if (!first) {
                             otherAmount = assetReportDao.findCategoryCountAmount(filterMap);
-                        }
-                        first = true;
                     }
                 }
             }
-            if (first) {
                 computerAmountSum = computerAmountSum + computeAmount + computeNewAdd;
                 networkAmountSum = networkAmountSum + networkAmount + networkNewAdd;
                 storageAmountSum = storageAmountSum + storageAmount + storageNewAdd;
                 safetyAmountSum = safetyAmountSum + safetyAmount + +safetyNewAdd;
                 otherAmountSum = otherAmountSum + otherAmount + otherNewAdd;
-            } else {
-                computerAmountSum = computerAmountSum + computeNewAdd;
-                networkAmountSum = networkAmountSum + networkNewAdd;
-                storageAmountSum = storageAmountSum + storageNewAdd;
-                safetyAmountSum = safetyAmountSum + safetyNewAdd;
-                otherAmountSum = otherAmountSum + otherNewAdd;
-            }
 
             computerTimeValueMap.put(key, String.valueOf(computerAmountSum));
             networkTimeValueMap.put(key, String.valueOf(networkAmountSum));
@@ -625,6 +601,15 @@ public class AssetReportServiceImpl implements IAssetReportService {
         initTableHead.setName("");
         initTableHead.setKey("classifyName");
         children.add(initTableHead);
+        Iterator<Map.Entry<String, String>> iterator = dateMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, String> entry = iterator.next();
+            ReportTableHead reportTableHead = new ReportTableHead();
+            reportTableHead.setKey(entry.getKey());
+            reportTableHead.setName(entry.getValue());
+            children.add(reportTableHead);
+        }
+
         Map<String, Object> map = buildCategoryCountByTime(query, dateMap);
         Map<String, Object> ssMap = (Map<String, Object>) map.get("timeValueMap");
         rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg()));
