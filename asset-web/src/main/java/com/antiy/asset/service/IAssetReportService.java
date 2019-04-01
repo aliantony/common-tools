@@ -70,12 +70,5 @@ public interface IAssetReportService {
      * @throws Exception
      */
     ReportForm exportAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception;
-    /**
-     * 根据时间条件分类统计查询（同时获取总数和新增数）
-     * @param assetReportCategoryCountQuery
-     * @return
-     * @throws Exception
-     */
-    Map queryCategory(AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception;
 
 }

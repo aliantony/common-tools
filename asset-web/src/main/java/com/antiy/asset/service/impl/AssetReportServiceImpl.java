@@ -53,17 +53,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
     AssetCategoryModelDao       categoryModelDao;
     private static Logger       logger = LogUtils.get(AssetReportServiceImpl.class);
 
-    @Override
-    public Map queryCategory(AssetReportCategoryCountQuery query) throws Exception {
-        query.setReportFormType(ReportFormType.ALL);
-        AssetReportResponse allResponse = queryCategoryCountByTime(query);
-        query.setReportFormType(ReportFormType.NEW);
-        AssetReportResponse newResponse = queryCategoryCountByTime(query);
-        Map result = new HashMap();
-        result.put(ReportFormType.ALL, allResponse);
-        result.put(ReportFormType.NEW, newResponse);
-        return result;
-    }
 
     @Override
     public AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
@@ -503,7 +492,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             add[i] = 0;
             for (int j = 0; j < reportDataList.size(); j++) {
                 ReportData reportData = reportList.get(j);
-                List<Integer> addList = reportData.getData();
+                List<Integer> addList = reportData.getAdd();
                 add[i] += addList.get(i);
                 total[i] += Integer.parseInt(data[j][i]);
             }
