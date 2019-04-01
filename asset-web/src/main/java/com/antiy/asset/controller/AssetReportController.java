@@ -53,6 +53,18 @@ public class AssetReportController {
     public ActionResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
         return ActionResponse.success(iAssetReportService.queryCategoryCountByTime(query));
     }
+    /**
+     * 根据时间条件查询分类统计资产数量
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "根据时间条件查询分类统计资产数量（同时获取总数和新增数）", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/categoryCount", method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('asset:report:queryCategory')")
+    public ActionResponse queryCategory(AssetReportCategoryCountQuery query) throws Exception {
+        return ActionResponse.success(iAssetReportService.queryCategory(query));
+    }
 
     /**
      * 根据时间条件查询分类统计资产数量,返回表格数据

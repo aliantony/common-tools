@@ -54,6 +54,18 @@ public class AssetReportServiceImpl implements IAssetReportService {
     private static Logger       logger = LogUtils.get(AssetReportServiceImpl.class);
 
     @Override
+    public Map queryCategory(AssetReportCategoryCountQuery query) throws Exception {
+        query.setReportFormType(ReportFormType.ALL);
+        AssetReportResponse allResponse = queryCategoryCountByTime(query);
+        query.setReportFormType(ReportFormType.NEW);
+        AssetReportResponse newResponse = queryCategoryCountByTime(query);
+        Map result = new HashMap();
+        result.put(ReportFormType.ALL, allResponse);
+        result.put(ReportFormType.NEW, newResponse);
+        return result;
+    }
+
+    @Override
     public AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
 
         ShowCycleType showCycleType = query.getShowCycleType();
@@ -271,7 +283,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
             columnarList.add(otherDeviceColumnar);
             return map;
         }
-
 
         return map;
     }

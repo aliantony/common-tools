@@ -5,6 +5,8 @@ import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
 
+import java.util.Map;
+
 /**
  * <p> 资产报表 服务类 </p>
  *
@@ -20,7 +22,6 @@ public interface IAssetReportService {
      * @throws Exception
      */
     AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception;
-
 
     /**
      * 导出新增资产报表表格
@@ -45,6 +46,7 @@ public interface IAssetReportService {
      * @throws Exception
      */
     AssetReportResponse getNewAssetWithGroup(ReportQueryRequest reportQueryRequest) throws Exception;
+
     /**
      * 根据时间条件分类统计查询数据，返回表格信息
      * @param query
@@ -53,7 +55,6 @@ public interface IAssetReportService {
      */
     AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception;
 
-
     /**
      * 资产组表格
      * @param reportQueryRequest
@@ -61,5 +62,13 @@ public interface IAssetReportService {
      * @throws Exception
      */
     AssetReportTableResponse getAssetGroupReportTable(ReportQueryRequest reportQueryRequest) throws Exception;
+
+    /**
+     * 根据时间条件分类统计查询（同时获取总数和新增数）
+     * @param assetReportCategoryCountQuery
+     * @return
+     * @throws Exception
+     */
+    Map queryCategory(AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception;
 
 }
