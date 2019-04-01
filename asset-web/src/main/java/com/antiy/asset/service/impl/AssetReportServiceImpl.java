@@ -818,11 +818,43 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
     }
 
+    @Override
+    public ReportForm exportAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception {
+        ReportForm reportForm = new ReportForm();
+        String titleStr;
+        switch (reportQueryRequest.getTimeType()) {
+            case "1":
+                titleStr = "本周";
+                break;
+            case "2":
+                titleStr = "本月";
+                break;
+            case "3":
+                titleStr = "本季度";
+                break;
+            case "4":
+                titleStr = "本年";
+                break;
+            case "5":
+                titleStr = reportQueryRequest.getStartTime() + "~" + reportQueryRequest.getEndTime();
+                break;
+            default:
+                throw new BusinessException("timeType参数异常");
+        }
+        // 表格标题
+        reportForm.setTitle("资产组" + titleStr + "统计");
+        AssetReportTableResponse assetReportTableResponse = this.getAssetGroupReportTable(reportQueryRequest);
+        // 表格行头
+        // List<String> dataList = new
+        // reportForm.setHeaderList(assetReportTableResponse.getChildren());
+        return reportForm;
+    }
+
     private AssetReportTableResponse buildAssetReportTable(ReportQueryRequest reportQueryRequest,
                                                            Map<String, String> timeMap, String title) {
         // 获取初始化数据
         ReportQueryRequest initReportQueryRequest = new ReportQueryRequest();
-        initReportQueryRequest.setEndTime(reportQueryRequest.getEndTime());
+        initReportQueryRequest.setEndTime(reportQueryRequest.getStartTime());
         List<AssetGroupEntity> initAssetGroupEntities = assetReportDao.getAssetConutWithGroup(initReportQueryRequest);
         List<String> initNameList = new ArrayList<>();
         for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {
@@ -855,7 +887,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
             map.put(firstDateKey, DataTypeUtils.integerToString(assetGroupEntity.getGroupCount()));
             rows.add(map);
         }
-        // assetReportTableResponse.setRows(rows);
         // --------------------------------初始化数据完毕--------------------------------
         // --------------------------------开始增加新数据--------------------------------
         // 获取时间段新增数据
@@ -864,9 +895,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // 初始化新增的数据
         List<Map<String, String>> addRowsResult = new ArrayList<>();
         for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {
-            for (int i = 2; i <= timeMap.size(); i++) {
-                Map<String, String> initaddMap = new HashMap<>();
-                initaddMap.put(DataTypeUtils.integerToString(i), "0");
+            for (Map.Entry<String, String> entry : timeMap.entrySet()) {
+                Map<String, String> initaddMap = new LinkedHashMap<>();
+                initaddMap.put(entry.getKey(), "0");
                 initaddMap.put("classifyName", assetGroupEntity.getName());
                 addRowsResult.add(initaddMap);
             }
