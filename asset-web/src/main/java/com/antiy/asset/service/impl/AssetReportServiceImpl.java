@@ -318,10 +318,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @param showCycleType
      */
     private void checkParameter(AssetReportCategoryCountQuery query, ShowCycleType showCycleType) {
-        if (ReportFormType.TABLE.getCode().equals(query.getReportFormType().getCode())) {
-            ParamterExceptionUtils.isNull(query.getReportFormType(), "报表类型不能为空");
-        }
-
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())
             || ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())
             || ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())
