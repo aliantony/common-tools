@@ -614,6 +614,12 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
     }
 
+    /**
+     * 获取表格数据
+     * @param query
+     * @param dateMap
+     * @return
+     */
     private AssetReportTableResponse getAssetReportTableResponse(AssetReportCategoryCountQuery query,
                                                                  Map<String, String> dateMap) {
         AssetReportTableResponse reportTableResponse = new AssetReportTableResponse();
