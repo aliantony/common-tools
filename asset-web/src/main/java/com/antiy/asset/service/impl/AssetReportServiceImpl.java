@@ -318,13 +318,16 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @param showCycleType
      */
     private void checkParameter(AssetReportCategoryCountQuery query, ShowCycleType showCycleType) {
+        if (ReportFormType.TABLE.getCode().equals(query.getReportFormType().getCode())) {
+            ParamterExceptionUtils.isNull(query.getReportFormType(), "报表类型不能为空");
+        }
+
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())
             || ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())
             || ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())
             || ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
             ParamterExceptionUtils.isNull(query.getBeginTime(), "开始时间不能为空");
             ParamterExceptionUtils.isNull(query.getEndTime(), "开始时间不能为空");
-            ParamterExceptionUtils.isNull(query.getReportFormType(), "报表类型不能为空");
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
             ParamterExceptionUtils.isNull(query.getBeginTime(), "指定开始时间不能为空");
         }
