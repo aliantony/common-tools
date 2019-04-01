@@ -53,7 +53,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
     AssetCategoryModelDao       categoryModelDao;
     private static Logger       logger = LogUtils.get(AssetReportServiceImpl.class);
 
-
     @Override
     public AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
 
@@ -296,71 +295,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
         return map;
     }
 
-    /**
-     * 构建柱状图数据
-     * @param query
-     * @param categoryModels
-     * @param iterator
-     */
-    private void buildColumnarData(AssetReportCategoryCountQuery query, List<AssetCategoryModel> categoryModels,
-                                   Iterator<Map.Entry<String, String>> iterator, Map<String, Object> map) {
-
-        List<Integer> computerDataList = new ArrayList<>();
-        List<Integer> networkDataList = new ArrayList<>();
-        List<Integer> storageDataList = new ArrayList<>();
-        List<Integer> safetyDataList = new ArrayList<>();
-        List<Integer> otherDataList = new ArrayList<>();
-        List<String> dateList = new ArrayList<>();
-        List<ReportData> columnarList = new ArrayList<>();
-        AssetCategoryModel assetCategoryModel = new AssetCategoryModel();
-        List<AssetCategoryEntity> categoryEntityList = assetReportDao.findCategoryCountByTime(query);
-        while (iterator.hasNext()) {
-            int computeDevice = 0;
-            int networkDevice = 0;
-            int storageDevice = 0;
-            int safetyDevice = 0;
-            int otherDevice = 0;
-            Map.Entry<String, String> entry = iterator.next();
-            String key = entry.getKey();
-            String time = entry.getValue();
-            for (AssetCategoryEntity categoryEntity : categoryEntityList) {
-                if (key.equals(categoryEntity.getDate())) {
-                    assetCategoryModel.setId(categoryEntity.getCategoryModel());
-                    assetCategoryModel.setParentId(categoryEntity.getParentId());
-                    assetCategoryModel.setName(categoryEntity.getCategoryName());
-                    String secondCategoryName = this.getParentCategory(assetCategoryModel, categoryModels).getName();
-                    if (AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg().equals(secondCategoryName)
-                        && key.equals(categoryEntity.getDate())) {
-                        computeDevice = computeDevice + categoryEntity.getCategoryCount();
-                    } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryName)
-                               && key.equals(categoryEntity.getDate())) {
-                        networkDevice = networkDevice + categoryEntity.getCategoryCount();
-                    } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(secondCategoryName)
-                               && key.equals(categoryEntity.getDate())) {
-                        storageDevice = storageDevice + categoryEntity.getCategoryCount();
-                    } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(secondCategoryName)
-                               && key.equals(categoryEntity.getDate())) {
-                        safetyDevice = safetyDevice + categoryEntity.getCategoryCount();
-                    } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)
-                               && key.equals(categoryEntity.getDate())) {
-                        otherDevice = otherDevice + categoryEntity.getCategoryCount();
-                    }
-                }
-            }
-        }
-        // 构建柱状数据
-        addColumnarList(computerDataList, columnarList, AssetSecondCategoryEnum.COMPUTE_DEVICE);
-        addColumnarList(networkDataList, columnarList, AssetSecondCategoryEnum.NETWORK_DEVICE);
-        addColumnarList(storageDataList, columnarList, AssetSecondCategoryEnum.STORAGE_DEVICE);
-        addColumnarList(safetyDataList, columnarList, AssetSecondCategoryEnum.SAFETY_DEVICE);
-        addColumnarList(otherDataList, columnarList, AssetSecondCategoryEnum.OTHER_DEVICE);
-
-        if (!ReportFormType.TABLE.getCode().equals(query.getReportFormType().getCode())) {
-            map.put("dateList", dateList);
-            map.put("columnarList", columnarList);
-        }
-    }
-
     private void addColumnarNewList(List<Integer> safetyDataList, List<ReportData> columnarList,
                                     AssetSecondCategoryEnum assetSecondCategoryEnum) {
         ReportData reportData = new ReportData();
@@ -492,7 +426,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             add[i] = 0;
             for (int j = 0; j < reportDataList.size(); j++) {
                 ReportData reportData = reportList.get(j);
-                List<Integer> addList = reportData.getAdd();
+                List<Integer> addList = reportData.getData();
                 add[i] += addList.get(i);
                 total[i] += Integer.parseInt(data[j][i]);
             }
@@ -681,44 +615,12 @@ public class AssetReportServiceImpl implements IAssetReportService {
                                                                  Map<String, String> dateMap) {
         AssetReportTableResponse reportTableResponse = new AssetReportTableResponse();
         List<Map<String, String>> rows = new ArrayList<>();
-        Map<String, String> computerMap = new HashMap<>();
-        Map<String, String> networkMap = new HashMap<>();
-        Map<String, String> storageMap = new HashMap<>();
-        Map<String, String> safetyMap = new HashMap<>();
-        Map<String, String> otherMap = new HashMap<>();
-        Map<String, String> amountMap = new HashMap<>();
-        Map<String, String> newAddMap = new HashMap<>();
-        computerMap.put("classifyName", AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
-        networkMap.put("classifyName", AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg());
-        storageMap.put("classifyName", AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg());
-        safetyMap.put("classifyName", AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg());
-        otherMap.put("classifyName", AssetSecondCategoryEnum.OTHER_DEVICE.getMsg());
-        amountMap.put("classifyName", AssetSecondCategoryEnum.AMOUNT.getMsg());
-        newAddMap.put("classifyName", AssetSecondCategoryEnum.NEW_ADD.getMsg());
-
         List<ReportTableHead> children = new ArrayList<>();
         ReportTableHead initTableHead = new ReportTableHead();
         initTableHead.setName("");
         initTableHead.setKey("classifyName");
         children.add(initTableHead);
-        Map<String, Object> map;
-        Iterator<Map.Entry<String, String>> iterator = dateMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, String> entry = iterator.next();
-            ReportTableHead reportTableHead = new ReportTableHead();
-            reportTableHead.setKey(entry.getKey());
-            reportTableHead.setName(entry.getValue());
-            children.add(reportTableHead);
-
-            computerMap.put(entry.getKey(), "");
-            networkMap.put(entry.getKey(), "");
-            storageMap.put(entry.getKey(), "");
-            safetyMap.put(entry.getKey(), "");
-            otherMap.put(entry.getKey(), "");
-            amountMap.put(entry.getKey(), "");
-            newAddMap.put(entry.getKey(), "");
-        }
-        map = buildCategoryCountByTime(query, dateMap);
+        Map<String, Object> map = buildCategoryCountByTime(query, dateMap);
         Map<String, Object> ssMap = (Map<String, Object>) map.get("timeValueMap");
         rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg()));
         rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg()));
