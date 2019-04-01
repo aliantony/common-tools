@@ -70,43 +70,33 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
         ShowCycleType showCycleType = query.getShowCycleType();
         checkParameter(query, showCycleType);
+        Map<String, Object> map;
         query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         AssetReportResponse reportResponse = new AssetReportResponse();
-        Map<String, Object> map;
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
             query.setFormat(DAY);
             map = buildCategoryCountByTime(query, ReportDateUtils.getDayOfWeek());
-            reportResponse.setDate((List) map.get("dateList"));
-            reportResponse.setList((List) map.get("columnarList"));
-            return reportResponse;
         } else if (ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())) {
             query.setFormat(WEEK);
             map = buildCategoryCountByTime(query, ReportDateUtils.getWeekOfMonth());
-            reportResponse.setDate((List) map.get("dateList"));
-            reportResponse.setList((List) map.get("columnarList"));
-            return reportResponse;
         } else if (ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())) {
             query.setFormat(MONTH);
             map = buildCategoryCountByTime(query, ReportDateUtils.getSeason());
-            reportResponse.setDate((List) map.get("dateList"));
-            reportResponse.setList((List) map.get("columnarList"));
-            return reportResponse;
         } else if (ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
             query.setFormat(MONTH);
             map = buildCategoryCountByTime(query, ReportDateUtils.getCurrentMonthOfYear());
-            reportResponse.setDate((List) map.get("dateList"));
-            reportResponse.setList((List) map.get("columnarList"));
-            return reportResponse;
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
             query.setFormat(MONTH);
             map = buildCategoryCountByTime(query,
                 ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
-            reportResponse.setDate((List) map.get("dateList"));
-            reportResponse.setList((List) map.get("columnarList"));
-            return reportResponse;
         } else {
             throw new BusinessException("非法参数");
         }
+
+        reportResponse.setDate(map.get("dateList") != null ? (List) map.get("dateList") : null);
+        reportResponse.setList(map.get("columnarList") != null ? (List) map.get("columnarList") : null);
+
+        return reportResponse;
     }
 
     /**
@@ -117,24 +107,12 @@ public class AssetReportServiceImpl implements IAssetReportService {
      */
     private Map<String, Object> buildCategoryCountByTime(AssetReportCategoryCountQuery query,
                                                          Map<String, String> weekMap) {
-        Map<String, Object> result = new HashMap<>(2);
-        if (query.getReportFormType().equals(ReportFormType.ALL)) {
-            Map<String, Object> map = build(query, weekMap);
-            result.put("dateList", map.get("dateList"));
-            result.put("columnarList", map.get("columnarList"));
-            return result;
-        } else if (query.getReportFormType().equals(ReportFormType.NEW)) {
-            Map<String, Object> map = build(query, weekMap);
-            result.put("dateList", map.get("dateList"));
-            result.put("columnarList", map.get("columnarList"));
-            return result;
-
-        } else if (query.getReportFormType().equals(ReportFormType.TABLE)) {
+        if (query.getReportFormType().equals(ReportFormType.TABLE)) {
             Map<String, Object> map = build(query, weekMap);
             return (Map<String, Object>) map.get("timeValueMap");
+        } else {
+            return build(query, weekMap);
         }
-
-        return null;
     }
 
     private Map<String, Object> build(AssetReportCategoryCountQuery query, Map<String, String> weekMap) {
