@@ -205,6 +205,12 @@
         AND asset.`status` &lt;&gt; 9
         AND asset.category_model IS NOT NULL
         and asset.category_model = #{categoryModel}
+        <if test="areaIds!=null and areaIds.size()>0">
+            and area_id in
+            <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
+                #{areaId}
+            </foreach>
+        </if>
     </select>
 
     <select id="getNewAssetWithGroup" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"

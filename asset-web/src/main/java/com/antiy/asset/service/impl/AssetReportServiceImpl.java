@@ -60,6 +60,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         checkParameter(query, showCycleType);
         query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         AssetReportResponse reportResponse = new AssetReportResponse();
+        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         Map<String, Object> map;
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
             query.setFormat(DAY);
@@ -105,6 +106,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
      */
     private Map<String, Object> buildCategoryCountByTime(AssetReportCategoryCountQuery query,
                                                          Map<String, String> weekMap) {
+        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         Map<String, Object> map = new HashMap<>();
         List<AssetCategoryModel> categoryModels = categoryModelDao.findAllCategory();
         // 构造柱状图所需的source
@@ -167,6 +169,13 @@ public class AssetReportServiceImpl implements IAssetReportService {
             List<AssetCategoryEntity> amountCategoryEntityList = assetReportDao.findCategoryCountByTime(query);
             Map<String, Object> filterMap = new HashMap<>();
             filterMap.put("beginTime", query.getBeginTime());
+            int amount = 0;
+            int computerAmountSum = 0;
+            int networkAmountSum = 0;
+            int storageAmountSum = 0;
+            int safetyAmountSum = 0;
+            int otherAmountSum = 0;
+            boolean first = false;
             // 表格数据
             while (iterator.hasNext()) {
                 Map.Entry<String, String> entry = iterator.next();
@@ -196,41 +205,70 @@ public class AssetReportServiceImpl implements IAssetReportService {
                             && key.equals(categoryEntity.getDate())) {
                             filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                             computeNewAdd = computeNewAdd + categoryEntity.getCategoryCount();
-                            computeAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                            if (!first) {
+                                computeAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                            }
+                            first = true;
                         } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryName)
                                    && key.equals(categoryEntity.getDate())) {
                             filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                             networkNewAdd = networkNewAdd + categoryEntity.getCategoryCount();
-                            networkAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                            if (!first) {
+                                networkAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                            }
+                            first = true;
                         } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(secondCategoryName)
                                    && key.equals(categoryEntity.getDate())) {
                             filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                             storageNewAdd = storageNewAdd + categoryEntity.getCategoryCount();
-                            storageAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                            if (!first) {
+                                storageAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                            }
+                            first = true;
                         } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(secondCategoryName)
                                    && key.equals(categoryEntity.getDate())) {
                             filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                             safetyNewAdd = safetyNewAdd + categoryEntity.getCategoryCount();
-                            safetyAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                            if (!first) {
+                                safetyAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                            }
+                            first = true;
                         } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)
                                    && key.equals(categoryEntity.getDate())) {
                             filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                             otherNewAdd = otherNewAdd + categoryEntity.getCategoryCount();
-                            otherAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                            if (!first) {
+                                otherAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                            }
+                            first = true;
                         }
                     }
                 }
+                if (first) {
+                    computerAmountSum = computerAmountSum + computeAmount + computeNewAdd;
+                    networkAmountSum = networkAmountSum + networkAmount + networkNewAdd;
+                    storageAmountSum = storageAmountSum + storageAmount + storageNewAdd;
+                    safetyAmountSum = safetyAmountSum + safetyAmount + +safetyNewAdd;
+                    otherAmountSum = otherAmountSum + otherAmount + otherNewAdd;
+                } else {
+                    computerAmountSum = computerAmountSum + computeNewAdd;
+                    networkAmountSum = networkAmountSum + networkNewAdd;
+                    storageAmountSum = storageAmountSum + storageNewAdd;
+                    safetyAmountSum = safetyAmountSum + safetyNewAdd;
+                    otherAmountSum = otherAmountSum + otherNewAdd;
+                }
 
-                computerTimeValueMap.put(key, String.valueOf(computeAmount + computeNewAdd));
-                networkTimeValueMap.put(key, String.valueOf(networkAmount + networkNewAdd));
-                storageTimeValueMap.put(key, String.valueOf(storageAmount + storageNewAdd));
-                safetyTimeValueMap.put(key, String.valueOf(safetyAmount + +safetyNewAdd));
-                otherTimeValueMap.put(key, String.valueOf(otherAmount + otherNewAdd));
+                computerTimeValueMap.put(key, String.valueOf(computerAmountSum));
+                networkTimeValueMap.put(key, String.valueOf(networkAmountSum));
+                storageTimeValueMap.put(key, String.valueOf(storageAmountSum));
+                safetyTimeValueMap.put(key, String.valueOf(safetyAmountSum));
+                otherTimeValueMap.put(key, String.valueOf(otherAmountSum));
                 newAddTimeValueMap.put(key,
                     String.valueOf(computeNewAdd + networkNewAdd + storageNewAdd + safetyNewAdd + otherNewAdd));
+                amount = amount + computeAmount + computeNewAdd + networkAmount + networkNewAdd + storageAmount
+                         + storageNewAdd + safetyAmount + +safetyNewAdd + otherAmount + otherNewAdd;
                 amountTimeValueMap.put(key,
-                    String.valueOf(computeAmount + computeNewAdd + networkAmount + networkNewAdd + storageAmount
-                                   + storageNewAdd + safetyAmount + +safetyNewAdd + otherAmount + otherNewAdd));
+                    String.valueOf(amount));
             }
 
             timeValueMap.put(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg(), computerTimeValueMap);
