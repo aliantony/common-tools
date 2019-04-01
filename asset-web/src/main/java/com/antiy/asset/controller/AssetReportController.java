@@ -168,5 +168,15 @@ public class AssetReportController {
         return ActionResponse.success(iAssetReportService.getAssetGroupReportTable(reportQueryRequest));
     }
 
-
+    /**
+     * 导出资产组表格
+     * @param reportQueryRequest
+     * @return
+     */
+    @ApiOperation(value = "导出资产组表格", notes = "导出资产组表格")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/exportAssetGroupTable", method = RequestMethod.POST)
+    public void exportAssetGroupTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
+        ExcelUtils.exportFormToClient(iAssetReportService.exportAssetGroupTable(reportQueryRequest), "导出报表.xlsx");
+    }
 }
