@@ -1,5 +1,6 @@
 package com.antiy.asset.service;
 
+import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
@@ -62,4 +63,10 @@ public interface IAssetReportService {
      */
     AssetReportTableResponse getAssetGroupReportTable(ReportQueryRequest reportQueryRequest) throws Exception;
 
+    /**
+     * 导出资产组表格
+     * @param reportQueryRequest
+     * @throws Exception
+     */
+    ReportForm exportAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception;
 }
