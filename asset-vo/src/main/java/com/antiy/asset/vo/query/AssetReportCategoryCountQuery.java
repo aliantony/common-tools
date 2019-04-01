@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.query;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
 import com.antiy.asset.vo.enums.ReportFormType;
@@ -10,8 +12,6 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.util.List;
 
 /**
  * <p> AssetCpu 查询条件 </p>
@@ -32,7 +32,7 @@ public class AssetReportCategoryCountQuery extends ObjectQuery implements Object
     @ApiModelProperty(value = "区域ID 不用传")
     private List<Integer>  areaIds;
 
-    @ApiModelProperty(value = "报表类型 分别为总数统计/新增趋势统计", example = "ALL,NEW")
+    @ApiModelProperty(value = "报表类型 分别为总数统计/新增趋势统计", example = "ALL,NEW,TABLE")
     private ReportFormType reportFormType;
 
     @Override

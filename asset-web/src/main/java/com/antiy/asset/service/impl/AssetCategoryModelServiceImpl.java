@@ -3,15 +3,14 @@ package com.antiy.asset.service.impl;
 import static com.antiy.biz.file.FileHelper.logger;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import javax.annotation.Resource;
 
 import com.antiy.asset.util.Constants;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.stereotype.Component;
@@ -235,6 +234,87 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         AssetCategoryModelNodeResponse assetCategoryModelNodeResponse = getAssetCategoryModelNodeResponse(
             assetCategoryModels);
         return assetCategoryModelNodeResponse == null ? null : assetCategoryModelNodeResponse.getChildrenNode().get(0);
+    }
+
+    /**
+     * 查询二级品类组合树 若参数为4和5 则结果为硬件(根节点)-(计算设备+网络设备) 树
+     * @param types 4-计算设备 5-网络设备 6-存储设备 7-安全设备 8-其他设备
+     * @return
+     */
+    @Override
+    public AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types) throws Exception {
+        checkParameterTypes(types);
+        AssetCategoryModelQuery query = new AssetCategoryModelQuery();
+        query.setPageSize(Constants.ALL_PAGE);
+        List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
+        Map<String, String> initMap = getSecondCategoryMap();
+        AssetCategoryModelNodeResponse assetCategoryModelNodeResponse = getAssetCategoryModelNodeResponse(
+            assetCategoryModels);
+        if (assetCategoryModelNodeResponse != null) {
+            List<AssetCategoryModelNodeResponse> nodeResponseList = new ArrayList<>();
+            for (String type : types) {
+                AssetCategoryModelNodeResponse secondCategoryModelNode = getSecondCategoryModelNodeResponse(
+                    assetCategoryModelNodeResponse, type, initMap);
+                nodeResponseList.add(secondCategoryModelNode);
+            }
+            assetCategoryModelNodeResponse.setChildrenNode(nodeResponseList);
+            return assetCategoryModelNodeResponse;
+        }
+        return null;
+    }
+
+    private void checkParameterTypes(String[] types) {
+        ParamterExceptionUtils.isTrue(types.length <= 5, "参数错误");
+
+        for (String type : types) {
+            int itype = Integer.parseInt(type);
+            ParamterExceptionUtils.isTrue(itype >= 4 && itype <= 8, "参数错误");
+        }
+    }
+
+    private Map<String, String> getSecondCategoryMap() throws Exception {
+        List<AssetCategoryModelResponse> secondList = getNextLevelCategoryByName(
+            Constants.FIRST_LEVEL_ASSET_CATEGORY_NAME);
+        Map<String, String> secondMap = new HashMap<>();
+        for (AssetCategoryModelResponse secondResponse : secondList) {
+            secondMap.put(secondResponse.getStringId(), secondResponse.getName());
+        }
+        return secondMap;
+    }
+
+    /**
+     * 从整棵树中获取指定的二级品类树
+     *
+     * @param assetCategoryModelNodeResponse
+     * @return
+     */
+    private AssetCategoryModelNodeResponse getSecondCategoryModelNodeResponse(AssetCategoryModelNodeResponse assetCategoryModelNodeResponse,
+                                                                              String type,
+                                                                              Map<String, String> initMap) {
+        List<AssetCategoryModelNodeResponse> secondNodeList = assetCategoryModelNodeResponse.getChildrenNode();
+        AssetCategoryModelNodeResponse hardwareCategory = getCategoryByNameFromList(secondNodeList, "硬件");
+        return hardwareCategory == null ? null
+            : getCategoryByNameFromList(hardwareCategory.getChildrenNode(), initMap.get(type));
+    }
+
+    /**
+     * 根据名字查询AssetCategoryModelNodeResponseList中匹配的值,若不存在则返回Null
+     *
+     * @param assetCategoryModelNodeResponses
+     * @param name
+     * @return
+     */
+    private AssetCategoryModelNodeResponse getCategoryByNameFromList(List<AssetCategoryModelNodeResponse> assetCategoryModelNodeResponses,
+                                                                     String name) {
+        if (Objects.isNull(assetCategoryModelNodeResponses)) {
+            return null;
+        }
+        for (AssetCategoryModelNodeResponse secondNode : assetCategoryModelNodeResponses) {
+            if (secondNode.getName().equals(name)) {
+                return secondNode;
+            }
+        }
+        return null;
     }
 
     private AssetCategoryModelNodeResponse getAssetCategoryModelNodeResponse(List<AssetCategoryModel> assetCategoryModels) {

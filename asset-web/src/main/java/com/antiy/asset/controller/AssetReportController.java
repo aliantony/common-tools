@@ -54,6 +54,7 @@ public class AssetReportController {
         return ActionResponse.success(iAssetReportService.queryCategoryCountByTime(query));
     }
 
+
     /**
      * 根据时间条件查询分类统计资产数量,返回表格数据
      *
@@ -139,13 +140,13 @@ public class AssetReportController {
     }
 
     /**
-     * 根据资产组查询资产新增数量信息
+     * 导出资产品类型号报表
      *
      * @param assetReportCategoryCountQuery
      * @return
      * @throws Exception
      */
-    @ApiOperation(value = "根据资产组查询资产新增数量信息", notes = "根据资产组查询资产新增数量信息")
+    @ApiOperation(value = "导出资产品类型号报表", notes = "导出资产品类型号报表")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/category/newAsset", method = RequestMethod.GET)
     public void getNewAssetWithGroup(@ApiParam("报表查询对象") AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception {
@@ -162,10 +163,20 @@ public class AssetReportController {
      */
     @ApiOperation(value = "资产组表格", notes = "根据时间查询资产组表格")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/queryAssetGroupTable", method = RequestMethod.POST)
-    public ActionResponse queryAssetGroupTable(@RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
+    @RequestMapping(value = "/query/queryAssetGroupTable", method = RequestMethod.GET)
+    public ActionResponse queryAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception {
         return ActionResponse.success(iAssetReportService.getAssetGroupReportTable(reportQueryRequest));
     }
 
-
+    /**
+     * 导出资产组表格
+     * @param reportQueryRequest
+     * @return
+     */
+    @ApiOperation(value = "导出资产组表格", notes = "导出资产组表格")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/exportAssetGroupTable", method = RequestMethod.POST)
+    public void exportAssetGroupTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
+        ExcelUtils.exportFormToClient(iAssetReportService.exportAssetGroupTable(reportQueryRequest), "导出报表.xlsx");
+    }
 }

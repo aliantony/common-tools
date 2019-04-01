@@ -70,7 +70,7 @@
     <!--统计区域每个区间的增量-->
     <select id="queryAddAssetWithArea" resultType="java.util.Map">
         SELECT
-        ltrim(replace(FROM_UNIXTIME(gmt_create/1000,#{timeType}),'0',' ')) AS date,
+        replace(ltrim(replace(FROM_UNIXTIME(gmt_create/1000,#{timeType}),'0',' ')),' ','0') AS date,
         <trim suffixOverrides=",">
             <foreach collection="list" item="item">
                 sum(CASE WHEN area_id IN (#{item.parentAreaId},
@@ -148,7 +148,7 @@
         SELECT
         count(1) AS categoryCount,
         asset.category_model AS categoryModel,
-        ltrim(replace(FROM_UNIXTIME(asset.gmt_create/1000,#{format}),'0',' ')) AS date,
+        replace(ltrim(replace(FROM_UNIXTIME(asset.gmt_create/1000,#{format}),'0',' ')),' ','0') AS date,
         acm.parent_id as parentId,
         acm.name as categoryName
         FROM
@@ -167,7 +167,7 @@
         AND asset.category_model IS NOT NULL
         GROUP BY
         asset.category_model,
-        ltrim(replace(FROM_UNIXTIME(asset.gmt_create/1000,#{format}),'0',' '))
+        date
     </select>
 
     <select id="findCategoryCountPrevious" resultType="com.antiy.asset.entity.AssetCategoryEntity"
@@ -205,13 +205,19 @@
         AND asset.`status` &lt;&gt; 9
         AND asset.category_model IS NOT NULL
         and asset.category_model = #{categoryModel}
+        <if test="areaIds!=null and areaIds.size()>0">
+            and area_id in
+            <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
+                #{areaId}
+            </foreach>
+        </if>
     </select>
 
     <select id="getNewAssetWithGroup" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
             resultMap="AssetGroupResultMap">
         SELECT
         agr.asset_group_id,ag.`NAME` as assetGroupName,count(agr.asset_group_id) as countNum,
-        ltrim(replace(FROM_UNIXTIME(agr.gmt_create/1000,#{sqlTime}),'0',' ')) AS `date`
+        replace(ltrim(replace(FROM_UNIXTIME(agr.gmt_create/1000,#{sqlTime}),'0',' ')),' ','0') AS date
         FROM
         asset_group_relation agr
         LEFT JOIN asset_group ag ON agr.asset_group_id = ag.id
@@ -240,7 +246,7 @@
         </where>
         GROUP BY
         agr.asset_group_id,
-        ltrim(replace(FROM_UNIXTIME(agr.gmt_create/1000,#{sqlTime}),'0',' '))
+        date
         ORDER BY `date` asc
     </select>
 </mapper>
