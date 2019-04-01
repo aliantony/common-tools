@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import io.swagger.models.auth.In;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -735,12 +736,62 @@ public class AssetReportServiceImpl implements IAssetReportService {
             default:
                 throw new BusinessException("timeType参数异常");
         }
-        // 表格标题
-        reportForm.setTitle("资产组" + titleStr + "统计");
         AssetReportTableResponse assetReportTableResponse = this.getAssetGroupReportTable(reportQueryRequest);
-        // 表格行头
-        // List<String> dataList = new
-        // reportForm.setHeaderList(assetReportTableResponse.getChildren());
+        // 第二行标题
+        List<String> headerList = new ArrayList<>();
+        List<ReportTableHead> reportTableHeadList = assetReportTableResponse.getChildren();
+        for (ReportTableHead reportTableHead : reportTableHeadList) {
+            if (reportTableHead.getName() != "") {
+                headerList.add(reportTableHead.getName());
+            }
+        }
+        // 第一列标题
+        List<String> columnList = new ArrayList();
+        List<Map<String, String>> rows = assetReportTableResponse.getRows();
+        for (Map<String, String> map : rows) {
+            columnList.add(map.get("classifyName"));
+        }
+        columnList.add("总数");
+        columnList.add("新增数量");
+        // 数据
+        String[][] data = new String[columnList.size()][headerList.size()];
+
+        int i = 0;
+        for (Map<String, String> map : rows) {
+            int j = 0;
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                if (!entry.getKey().equals("classifyName")) {
+                    data[i][j] = entry.getValue();
+                    j++;
+                }
+            }
+            i++;
+        }
+        int[] total = new int[headerList.size()];
+        int[] add = new int[headerList.size()];
+        AssetReportResponse addResponse = this.getNewAssetWithGroup(reportQueryRequest);
+        List<ReportData> addList = addResponse.getList();
+        List<Integer> dataList = new ArrayList<>();
+        int initAdd = 0;
+        for (ReportData reportData : addList) {
+            initAdd += reportData.getData().get(0);
+        }
+        for (int n = 0; n < headerList.size(); n++) {
+            total[n] = 0;
+            add[n] = initAdd;
+            for (int m = 0; m < i; m++) {
+                total[n] += DataTypeUtils.stringToInteger(data[m][n]);
+                if (n != 0) {
+                    add[n] = total[n] - total[n - 1];
+                }
+            }
+        }
+        data[columnList.size() - 2] = ArrayTypeUtil.integerArrayToStringArray(total);
+        data[columnList.size() - 1] = ArrayTypeUtil.integerArrayToStringArray(add);
+        reportForm.setTitle("资产组" + titleStr + "统计");
+        reportForm.setHeaderList(headerList);
+        reportForm.setColumnList(columnList);
+        reportForm.setData(data);
         return reportForm;
     }
 
