@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.query.AssetQuery;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +43,6 @@ public class AssetLinkRelationController {
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('asset:linkrelation:saveSingle')")
     public ActionResponse saveSingle(@ApiParam(value = "assetLinkRelation") @RequestBody AssetLinkRelationRequest assetLinkRelationRequest) throws Exception {
         return ActionResponse.success(iAssetLinkRelationService.saveAssetLinkRelation(assetLinkRelationRequest));
     }
@@ -112,5 +112,31 @@ public class AssetLinkRelationController {
         ParamterExceptionUtils.isBlank(assetId, "资产Id不能为空");
         return ActionResponse
             .success(iAssetLinkRelationService.queryIpAddressByAssetId(assetId, enable == null ? true : enable));
+    }
+
+    /**
+     * 查询资产列表
+     *
+     * @param assetQuery
+     * @return actionResponse
+     */
+    @ApiOperation(value = "查询资产列表", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class), })
+    @RequestMapping(value = "/query/assetList", method = RequestMethod.GET)
+    public ActionResponse queryAssetList(@ApiParam(value = "主键封装对象") AssetQuery assetQuery) throws Exception {
+        return ActionResponse.success(iAssetLinkRelationService.queryAssetPage(assetQuery));
+    }
+
+    /**
+     * 查询已关联资产关系列表
+     *
+     * @param assetLinkRelationQuery
+     * @return actionResponse
+     */
+    @ApiOperation(value = "查询资产列表", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class), })
+    @RequestMapping(value = "/query/linekedRelationList", method = RequestMethod.GET)
+    public ActionResponse queryLinekedRelationList(@ApiParam(value = "主键封装对象") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
+        return ActionResponse.success(iAssetLinkRelationService.queryLinekedRelationPage(assetLinkRelationQuery));
     }
 }

@@ -154,6 +154,39 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </sql>
+
+
+    <!--资产条件查询-->
+    <sql id="Multiple_Query">
+        <if test=" areaIds != null ">
+            and area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+
+        <if test="assetStatus != null">
+            and asset_status = #{assetStatus}
+        </if>
+        <if test=" categoryModels != null and categoryModels.length > 0">
+            and category_model in
+            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" categoryModel != null">
+            and category_model = #{categoryModel}
+        </if>
+
+    </sql>
+
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetGroup" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
         insert into
@@ -217,7 +250,8 @@
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1)
         from
-        <include refid="Table_Name"></include> agroup
+        <include refid="Table_Name"></include>
+        agroup
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" name != null and name != '' ">
                 and agroup.name like #{name}"%"
@@ -236,7 +270,8 @@
             parameterType="com.antiy.common.base.ObjectQuery">
         select agroup.id, agroup.create_user,agroup.name,agroup.memo,agroup.gmt_create
         from
-        <include refid="Table_Name"></include> agroup
+        <include refid="Table_Name"></include>
+        agroup
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" name != null and name != '' ">
                 and agroup.name like #{name}"%"
@@ -284,5 +319,20 @@
         <include refid="Table_Name"></include>
         where
         status = 1
+    </select>
+
+
+    <select id="findPulldownUnconnectedGroup" resultMap="BaseResultMap"
+            parameterType="com.antiy.common.base.ObjectQuery">
+        select grou.id,grou.`name` from asset LEFT JOIN asset_group_relation relation ON asset.id=relation.asset_id
+        LEFT JOIN asset_group grou on grou.id=relation.asset_group_id
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Multiple_Query"></include>
+                and asset.id not in (SELECT distinct parent_asset_id from asset_link_relation where parent_asset_id is not null)
+                and asset.id not in (SELECT distinct asset_id from asset_link_relation where asset_id is not null)
+                and grou.`name` is not null
+            </trim>
+        </where>
     </select>
 </mapper>

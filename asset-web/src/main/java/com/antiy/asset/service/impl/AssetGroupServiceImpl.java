@@ -6,6 +6,11 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.dao.AssetCategoryModelDao;
+import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Component;
@@ -64,6 +69,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     private BaseConverter<AssetGroup, AssetGroupResponse> assetGroupToResponseConverter;
     @Resource
     private BaseConverter<AssetGroupRequest, AssetGroup>  assetGroupToAssetGroupConverter;
+    @Resource
+    private IAssetCategoryModelService                    assetCategoryModelService;
 
     @Override
     public String saveAssetGroup(AssetGroupRequest request) throws Exception {
@@ -220,6 +227,32 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public List<SelectResponse> queryGroupInfo() throws Exception {
         return selectConvert.convert(assetGroupDao.findPulldownGroup(), SelectResponse.class);
+    }
+
+    /**
+     * 通联查询的资产组下拉项接口
+     * @return
+     * @throws Exception
+     */
+    public List<SelectResponse> queryUnconnectedGroupInfo() throws Exception {
+        AssetQuery query = new AssetQuery();
+        List<Integer> categoryCondition = new ArrayList<>();
+        Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
+        for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
+            if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+                categoryCondition
+                    .addAll(assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
+            }
+            if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
+                categoryCondition
+                    .addAll(assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
+            }
+        }
+        query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
+        query.setAreaIds(
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        query.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        return selectConvert.convert(assetGroupDao.findPulldownUnconnectedGroup(query), SelectResponse.class);
     }
 
     @Override

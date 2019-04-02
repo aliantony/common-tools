@@ -132,4 +132,18 @@ public class AssetGroupController {
     public ActionResponse<List<SelectResponse>> queryGroupInfo() throws Exception {
         return ActionResponse.success(iAssetGroupService.queryGroupInfo());
     }
+
+    /**
+     * 查询下拉项的资产组信息（通联设置界面）
+     * @author zhangyajun
+     *
+     * @return 资产组名称集合
+     */
+    @ApiOperation(value = "查询下拉项的资产组信息（通联设置界面）", notes = "无查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/unconnectedGroupInfo", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:group:queryGroupInfo')")
+    public ActionResponse<List<SelectResponse>> queryUnconnectedGroupInfo() throws Exception {
+        return ActionResponse.success(iAssetGroupService.queryUnconnectedGroupInfo());
+    }
 }

@@ -10,10 +10,7 @@ import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.ActivityWaitingQuery;
-import com.antiy.asset.vo.query.AssetDetialCondition;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.query.AssetUserQuery;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
@@ -144,7 +141,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private RedisUtil                                                          redisUtil;
     @Resource
-    private AssetReportDao                                                     assetReportDao;
+    private AssetLinkRelationDao                                                     assetLinkRelationDao;
     private static final int                                                   ALL_PAGE = -1;
 
     @Override
@@ -486,6 +483,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     transactionStatus.setRollbackOnly();
                     ParamterExceptionUtils.isTrue(!StringUtils.equals("编号重复", e.getMessage()), "编号重复");
                     ParamterExceptionUtils.isTrue(!StringUtils.equals("资产名称重复", e.getMessage()), "资产名称重复");
+                    ParamterExceptionUtils.isTrue(!StringUtils.equals("IP不能重复！", e.getMessage()), "IP不能重复！");
+                    ParamterExceptionUtils.isTrue(!StringUtils.equals("内网IP不能重复！", e.getMessage()), "内网IP不能重复！");
                     logger.error("录入失败", e);
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
@@ -1310,11 +1309,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetNetworkCard.setAssetId(asset.getStringId());
                             // 修改的
                             if (StringUtils.isNotBlank(assetNetworkCard.getStringId())) {
+
+                                AssetNetworkCard byId = assetNetworkCardDao.getById (assetNetworkCard.getStringId ());
+                                if(!byId.getIpAddress ().equals (assetNetworkCard.getIpAddress ())){
+                                    ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress (),null), "IP不能重复！");
+                                    List<Integer> integers = new ArrayList<> ();
+                                    integers.add (Integer.parseInt (asset.getStringId ()));
+                                    assetLinkRelationDao.deleteRelationByAssetId (integers);
+                                }
+
+
                                 assetNetworkCard.setModifyUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
                                 assetNetworkCard.setGmtModified(System.currentTimeMillis());
                                 updateNetworkList.add(assetNetworkCard);
                             } else {// 新增的
+                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress (),null), "IP不能重复！");
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
@@ -1486,6 +1496,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (networkEquipment != null && StringUtils.isNotBlank(networkEquipment.getId())) {
                         AssetNetworkEquipment assetNetworkEquipment = BeanConvert.convertBean(networkEquipment,
                             AssetNetworkEquipment.class);
+                        //ip 变更，不重复 ，且删除关联关系
+                        AssetNetworkEquipment byId = assetNetworkEquipmentDao.getById (networkEquipment.getId ());
+                        if(!byId.getInnerIp ().equals (networkEquipment.getInnerIp ())){
+                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkEquipment.getInnerIp (),1), "内网IP不能重复！");
+                            List<Integer> integers = new ArrayList<> ();
+                            integers.add (Integer.parseInt (asset.getStringId ()));
+                            assetLinkRelationDao.deleteRelationByAssetId (integers);
+                        }
+
                         assetNetworkEquipment.setAssetId(asset.getStringId());
                         assetNetworkEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());

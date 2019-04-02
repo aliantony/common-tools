@@ -56,6 +56,7 @@ public interface IAssetGroupService extends IBaseService<AssetGroup> {
      * @return
      */
     List<SelectResponse> queryGroupInfo() throws Exception;
+
     /**
      * 通过id查询资产组
      *
@@ -63,10 +64,18 @@ public interface IAssetGroupService extends IBaseService<AssetGroup> {
      * @return
      */
     AssetGroupResponse findGroupById(String id) throws Exception;
+
     /**
      * 查询下拉框的资产组创建人
      *
      * @return
      */
     List<SelectResponse> queryCreateUser() throws Exception;
+
+    /**
+     * 通联查询的资产组下拉项接口
+     * @return
+     * @throws Exception
+     */
+    List<SelectResponse> queryUnconnectedGroupInfo() throws Exception;
 }
