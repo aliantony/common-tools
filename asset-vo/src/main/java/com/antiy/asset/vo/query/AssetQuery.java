@@ -1,15 +1,14 @@
 package com.antiy.asset.vo.query;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <p> Asset 查询条件 </p>
@@ -41,6 +40,16 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      */
 
     private String        assetName;
+    /**
+     * ip,重复判读使用
+     */
+
+    private String        ip;
+    /**
+     * 是否网络设备,重复判读使用
+     */
+
+    private Integer        isNet;
 
     /**
      * 资产编号
@@ -412,4 +421,21 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     public void setAssetName(String assetName) {
         this.assetName = assetName;
     }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public Integer getIsNet() {
+        return isNet;
+    }
+
+    public void setIsNet(Integer isNet) {
+        this.isNet = isNet;
+    }
 }
+

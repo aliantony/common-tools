@@ -69,6 +69,13 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<Asset> findListAssetByCategoryModel(AssetQuery query) throws Exception;
+    /**
+     * ip查重复
+     *
+     * @param query
+     * @return
+     */
+   Integer findCountIp(AssetQuery query) throws Exception;
 
     /**
      * 统计厂商数量
