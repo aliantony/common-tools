@@ -7,6 +7,9 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * <p> AssetNetworkEquipmentRequest 请求对象 </p>
  *
@@ -38,6 +41,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * 端口数目
      */
     @ApiModelProperty("端口数目")
+    @NotNull(message = "端口数目不为空")
     private Integer portSize;
     /**
      * 是否无线:0-否,1-是
@@ -48,11 +52,13 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * 内网IP
      */
     @ApiModelProperty("内网IP")
+    @NotBlank(message = "内网IP不能为空")
     private String  innerIp;
     /**
      * 外网IP
      */
     @ApiModelProperty("外网IP")
+    @NotBlank(message = "外网IP不能为空")
     private String  outerIp;
     /**
      * MAC地址
