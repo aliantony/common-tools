@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
@@ -19,7 +20,8 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer assetId;
+    @Encode(message = "子资产主键错误")
+    private String  assetId;
     /**
      * 资产IP
      */
@@ -34,7 +36,8 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
      * 父级设备主键
      */
     @ApiModelProperty("父级设备主键")
-    private Integer parentAssetId;
+    @Encode(message = "父级设备主键错误")
+    private String  parentAssetId;
     /**
      * 父级设备IP
      */
@@ -76,14 +79,6 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
 
-    public Integer getAssetId() {
-        return assetId;
-    }
-
-    public void setAssetId(Integer assetId) {
-        this.assetId = assetId;
-    }
-
     public String getAssetIp() {
         return assetIp;
     }
@@ -100,11 +95,19 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
         this.assetPort = assetPort;
     }
 
-    public Integer getParentAssetId() {
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
+
+    public String getParentAssetId() {
         return parentAssetId;
     }
 
-    public void setParentAssetId(Integer parentAssetId) {
+    public void setParentAssetId(String parentAssetId) {
         this.parentAssetId = parentAssetId;
     }
 
