@@ -88,6 +88,6 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     @Override
     public List<String> queryIpAddressByAssetId(String assetId, Boolean enable) throws Exception {
-        return null;
+        return assetLinkRelationDao.queryIpAddressByAssetId(assetId, enable);
     }
 }

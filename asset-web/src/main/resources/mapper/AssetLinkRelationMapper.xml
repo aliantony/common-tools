@@ -246,4 +246,8 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+
+    <select id="queryIpAddressByAssetId" resultType="java.lang.String">
+        
+    </select>
 </mapper>
