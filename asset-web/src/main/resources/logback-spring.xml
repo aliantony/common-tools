@@ -35,7 +35,7 @@
                         "thread":"%thread",
                         "logger":"%logger",
                         "method":"%method",
-                        "msg":"%msg"
+                        "msg":"%msg %throwable"
                         }
                     </pattern>
                 </pattern>
