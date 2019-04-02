@@ -2,10 +2,13 @@ package com.antiy.asset.service;
 
 import java.util.List;
 
+import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetLinkRelation;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
+import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.response.AssetLinkRelationResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -61,4 +64,31 @@ public interface IAssetLinkRelationService extends IBaseService<AssetLinkRelatio
      */
     String deleteAssetLinkRelationById(BaseRequest baseRequest) throws Exception;
 
+    /**
+     * 分页查询资产列表
+     * @param assetQuery
+     * @return
+     */
+    PageResult<AssetResponse> queryAssetPage(AssetQuery assetQuery);
+
+    /**
+     * 查询资产列表
+     * @param assetQuery
+     * @return
+     */
+    List<AssetResponse> queryAssetList(AssetQuery assetQuery);
+
+    /**
+     * 分页查询已关联资产关系列表
+     * @param assetLinkRelationQuery
+     * @return
+     */
+    PageResult<AssetLinkRelationResponse> queryLinekedRelationPage(AssetLinkRelationQuery assetLinkRelationQuery);
+
+    /**
+     * 查询已关联资产关系列表
+     * @param assetLinkRelationQuery
+     * @return
+     */
+    List<AssetLinkRelationResponse> queryLinekedRelationList(AssetLinkRelationQuery assetLinkRelationQuery);
 }

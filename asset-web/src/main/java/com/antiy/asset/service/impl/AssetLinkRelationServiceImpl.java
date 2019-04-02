@@ -4,6 +4,14 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.entity.Asset;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.response.AssetResponse;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -76,5 +84,67 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     public String deleteAssetLinkRelationById(BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         return assetLinkRelationDao.deleteById(baseRequest.getStringId()).toString();
+    }
+
+    @Override
+    public PageResult<AssetResponse> queryAssetPage(AssetQuery assetQuery) {
+        // 已入网的资产
+        assetQuery.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        if (StringUtils.isNotBlank(assetQuery.getPrimaryKey())) {
+            // 查询已关联（并绑定了端口）的资产id及其自身,查询时需要排除
+            List<String> assetIds = assetLinkRelationDao.queryLinkedAssetById(assetQuery.getPrimaryKey());
+            if (CollectionUtils.isNotEmpty(assetIds)) {
+                assetIds.add(assetQuery.getPrimaryKey());
+                String[] ids = assetIds.toArray(new String[assetIds.size()]);
+                assetQuery.setIds(ids);
+            } else {
+                assetQuery.setIds(new String[] { assetQuery.getPrimaryKey() });
+            }
+        } else {
+            // 查询已经在关系表中存在的资产,将其排除
+            List<String> assetIds = assetLinkRelationDao.queryLinkedAssetWithoutId();
+            if (CollectionUtils.isNotEmpty(assetIds)) {
+                assetQuery.setIds(assetIds.toArray(new String[assetIds.size()]));
+            }
+        }
+        List<AssetResponse> assetList = this.queryAssetList(assetQuery);
+        if (assetList.size() <= 0) {
+            return new PageResult<AssetResponse>(assetQuery.getPageSize(), 0, assetQuery.getCurrentPage(),
+                Lists.newArrayList());
+        }
+        return new PageResult<AssetResponse>(assetQuery.getPageSize(), assetList.size(), assetQuery.getCurrentPage(),
+            this.queryAssetList(assetQuery));
+    }
+
+    @Override
+    public List<AssetResponse> queryAssetList(AssetQuery assetQuery) {
+        List<Asset> assetResponseList = assetLinkRelationDao.queryAssetList(assetQuery);
+        if (CollectionUtils.isEmpty(assetResponseList)) {
+            return Lists.newArrayList();
+        }
+        return BeanConvert.convert(assetResponseList, AssetResponse.class);
+    }
+
+    @Override
+    public PageResult<AssetLinkRelationResponse> queryLinekedRelationPage(AssetLinkRelationQuery assetLinkRelationQuery) {
+        List<AssetLinkRelationResponse> assetLinkRelationResponseList = this
+            .queryLinekedRelationList(assetLinkRelationQuery);
+        if (assetLinkRelationResponseList.size() <= 0) {
+            return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(), 0,
+                assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
+        }
+        return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(),
+            assetLinkRelationResponseList.size(), assetLinkRelationQuery.getCurrentPage(),
+            this.queryLinekedRelationList(assetLinkRelationQuery));
+    }
+
+    @Override
+    public List<AssetLinkRelationResponse> queryLinekedRelationList(AssetLinkRelationQuery assetLinkRelationQuery) {
+        List<AssetLinkRelation> assetResponseList = assetLinkRelationDao
+            .queryLinekedRelationList(assetLinkRelationQuery);
+        if (CollectionUtils.isEmpty(assetResponseList)) {
+            return Lists.newArrayList();
+        }
+        return BeanConvert.convert(assetResponseList, AssetLinkRelationResponse.class);
     }
 }
