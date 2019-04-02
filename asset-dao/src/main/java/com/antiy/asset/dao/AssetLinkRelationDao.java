@@ -18,9 +18,10 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
     /**
      * 查询资产对应的IP地址
      * @param assetId 资产Id
-     * @param enable 是否可用
+     * @param enable 是否可用,true表示可用的资产IP,false表示全部IP
      * @return
      */
     List<String> queryIpAddressByAssetId(@Param(value = "assetId") String assetId,
-                                         @Param(value = "enable") Boolean enable);
+                                         @Param(value = "enable") Boolean enable,
+                                         @Param(value = "assetPort") String assetPort);
 }
