@@ -833,8 +833,9 @@
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
-                and id not in (SELECT distinct parent_asset_id from asset_link_relation)
-                and id not in (SELECT distinct asset_id from asset_link_relation)
+                and id not in (SELECT distinct parent_asset_id from asset_link_relation where parent_asset_id is not
+                null)
+                and id not in (SELECT distinct asset_id from asset_link_relation where asset_id is not null)
             </trim>
         </where>
     </select>
@@ -1012,8 +1013,8 @@
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
-                and id not in (SELECT asset_id from asset_link_relation)
-                and id not in(SELECT parent_asset_id from asset_link_relation)
+                and id not in (SELECT asset_id from asset_link_relation where parent_asset_id is not null)
+                and id not in(SELECT parent_asset_id from asset_link_relation where parent_asset_id is not null)
             </trim>
             ORDER BY
             <if test=" ids != null">

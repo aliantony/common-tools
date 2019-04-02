@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.vo.query.AssetGroupQuery;
+import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.common.base.IBaseDao;
 
 /**
@@ -36,4 +37,11 @@ public interface AssetGroupDao extends IBaseDao<AssetGroup> {
      * @return
      */
     List<AssetGroup> findCreateUser() throws Exception;
+
+    /**
+     * 通联设置页面-查询下拉项的资产组信息
+     * @param query
+     * @return
+     */
+    List<AssetGroup> findPulldownUnconnectedGroup(AssetQuery query);
 }
