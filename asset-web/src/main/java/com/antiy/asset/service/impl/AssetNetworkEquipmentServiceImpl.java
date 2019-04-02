@@ -87,7 +87,7 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
 
     @Override
     public List<SelectResponse> queryPortById(AssetNetworkEquipmentQuery query) {
-        Integer portAmount = assetNetworkEquipmentDao.findPortAmount();
+        Integer portAmount = assetNetworkEquipmentDao.findPortAmount(query);
         List<Integer> portList;
         List<SelectResponse> selectResponseList = null;
         if (portAmount != null) {
