@@ -206,7 +206,7 @@
     </update>
 
     <!-- 根据主键查询 -->
-    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
         from
@@ -214,7 +214,7 @@
         where id = #{id}
     </select>
 
-    <delete id="deleteById" parameterType="java.lang.Integer">
+    <delete id="deleteById" parameterType="java.lang.String">
         delete from
         <include refid="Table_Name"></include>
         where id = #{id}
