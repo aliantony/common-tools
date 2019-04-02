@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.util.Constants;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -735,6 +736,74 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.findListAsset(query));
     }
 
+    /**
+     * 通联设置的资产查询 与普通资产查询类似， 不同点在于品类型号显示二级品类， 只查已入网，网络设备和计算设备的资产,且会去掉通联表中已存在的资产
+     */
+    public PageResult<AssetResponse> findUnconnectedAsset(AssetQuery query) throws Exception {
+        query.setAreaIds(
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        // 只查已入网资产
+        query.setAssetStatusList(null);
+        query.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        // 若品类型号查询条件为空 默认只查已入网，网络设备和计算设备的资产
+        Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
+        if (Objects.isNull(query.getCategoryModels()) || query.getCategoryModels().length <= 0) {
+            List<Integer> categoryCondition = new ArrayList<>();
+            for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
+                if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+                    categoryCondition.addAll(
+                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
+                }
+                if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
+                    categoryCondition.addAll(
+                            assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
+                }
+            }
+            query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
+        } else {
+            // 品类型号及其子品类
+            List<Integer> categoryModels = Lists.newArrayList();
+            for (int i = 0; i < query.getCategoryModels().length; i++) {
+                categoryModels.addAll(assetCategoryModelService
+                    .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
+            }
+            query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryModels));
+        }
+        // 进行查询
+        Integer count = assetDao.findUnconnectedCount(query);
+        if (count == 0) {
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+        } else {
+            List<AssetResponse> assetResponseList = responseConverter.convert(assetDao.findListUnconnectedAsset(query),
+                AssetResponse.class);
+            // 处理品类型号使其均为二级品类型号
+            processCategoryToSecondCategory(assetResponseList, categoryMap);
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
+        }
+    }
+
+    private void processCategoryToSecondCategory(List<AssetResponse> assetResponseList,
+                                                 Map<String, String> categoryMap) throws Exception {
+        // 作为缓存使用，提高效率
+        Map<String, String> cache = new HashMap<>();
+        List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
+        for (AssetResponse assetResponse : assetResponseList) {
+            String categoryModel = assetResponse.getCategoryModel();
+            String cacheId = cache.get(categoryModel);
+            if (Objects.nonNull(cacheId)) {
+                assetResponse.setCategoryModel(categoryModel);
+                assetResponse.setCategoryModelName(categoryMap.get(cacheId));
+            } else {
+                String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
+                    categoryMap.keySet());
+                if (Objects.nonNull(second)) {
+                    assetResponse.setCategoryModelName(categoryMap.get(second));
+                    cache.put(categoryModel, second);
+                }
+            }
+        }
+    }
+
     @Override
     public void saveReportAsset(List<AssetOuterRequest> assetOuterRequestList) throws Exception {
 
@@ -1017,7 +1086,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 查询第二级每个分类下所有的分类id，并添加至list集合
                 List<AssetCategoryModel> search = iAssetCategoryModelService.recursionSearch(categoryModelDaoAll,
                     secondCategoryModel.getId());
-                List<String> categoryList=new ArrayList<>();
+                List<String> categoryList = new ArrayList<>();
                 categoryList.add(secondCategoryModel.getStringId());
                 enumCountResponse.setCode(categoryList);
                 // 设置查询资产条件参数，包括区域id，状态，资产品类型号

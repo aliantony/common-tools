@@ -826,6 +826,19 @@
         </where>
     </select>
 
+    <select id="findUnconnectedCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select count(1) count
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Multiple_Query"></include>
+                and id not in (SELECT distinct parent_asset_id from asset_link_relation)
+                and id not in (SELECT distinct asset_id from asset_link_relation)
+            </trim>
+        </where>
+    </select>
+
     <select id="findQuery" resultType="com.antiy.asset.entity.Asset" parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
@@ -935,6 +948,89 @@
         </if>
     </select>
 
+    <select id="findListUnconnectedAsset" resultMap="BaseResultMap"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select * from (select
+        a.id,
+        a.area_id,
+        a.asset_group,
+        a.category_model,
+        a.admittance_status,
+        a.number,
+        a.name,
+        a.install_type,
+        a.serial,
+        c.name as category_model_name,
+        a.manufacturer, asset_status,
+        a.operation_system,
+        a.system_bit,
+        a.location,
+        a.house_location,
+        a.latitude,
+        a.longitude,
+        a.firmware_version,
+        a.uuid,
+        a.responsible_user_id,
+        d.name as responsible_user_name,
+        a.contact_tel,
+        a.email,
+        a.asset_source,
+        a.importance_degree,
+        a.describle,
+        a.parent_id,
+        a.tags,
+        a.first_enter_nett,
+        a.service_life,
+        a. buy_date,
+        a.warranty,
+        a.gmt_create,
+        case
+        when group_concat(b.ip_address) is not null then
+        group_concat(b.ip_address)
+        when (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is
+        not
+        null then
+        (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
+        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as ip,
+        case
+        when group_concat( b.mac_address ) is not null then
+        group_concat( b.mac_address )
+        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
+        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as mac
+        from
+        asset a
+        left join asset_network_card b on a.id = b.asset_id and b.status = 1
+        left join asset_category_model c on a.category_model = c.id
+        left join asset_user d on a.responsible_user_id = d.id
+        group by a.id
+        order by a.gmt_create desc) asset
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Multiple_Query"></include>
+                and id not in (SELECT asset_id from asset_link_relation)
+                and id not in(SELECT parent_asset_id from asset_link_relation)
+            </trim>
+            ORDER BY
+            <if test=" ids != null">
+                FIELD(`id`,
+                <foreach index="index" item="item" collection="ids" separator=",">
+                    #{item}
+                </foreach>
+                ) DESC,
+            </if>
+            id desc
+        </where>
+
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+
     <select id="findListAsset" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
         select * from (select
@@ -1015,6 +1111,7 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+
 
     <select id="countManufacturer" resultMap="ManufacturerResultMap" parameterType="java.util.List">
         select manufacturer, count(manufacturer) num from

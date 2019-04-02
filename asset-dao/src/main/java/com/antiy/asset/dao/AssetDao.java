@@ -76,7 +76,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<Map<String, Object>> countManufacturer(@Param("areaIds") List<Integer> areaIds,
-                                              @Param("assetStatusList") List<Integer> statusList);
+                                                @Param("assetStatusList") List<Integer> statusList);
 
     /**
      * 统计状态数量
@@ -93,7 +93,6 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     List<Asset> queryAssetByIds(Integer[] ids);
 
-
     /**
      * 通过区域Id列表查询当前区域是否存在资产
      * @param areaIds
@@ -108,4 +107,18 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return Integer
      */
     Integer updateAssetGroupNameWithAssetId(Map<String, Object> map);
+
+    /**
+     * 查询通联设置的资产数(即除去未进行通联的资产)
+     * @param assetQuery
+     * @return
+     */
+    Integer findUnconnectedCount(AssetQuery assetQuery);
+
+    /**
+     * 查询通联设置的资产(即除去未进行通联的资产)
+     * @param assetQuery
+     * @return
+     */
+    List<Asset> findListUnconnectedAsset(AssetQuery assetQuery);
 }

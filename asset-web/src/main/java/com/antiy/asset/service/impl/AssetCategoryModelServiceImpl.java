@@ -272,7 +272,12 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         }
     }
 
-    private Map<String, String> getSecondCategoryMap() throws Exception {
+    /**
+     * 获取二级品类型号 id和name的映射
+     * @return
+     * @throws Exception
+     */
+    public Map<String, String> getSecondCategoryMap() throws Exception {
         List<AssetCategoryModelResponse> secondList = getNextLevelCategoryByName(
             Constants.FIRST_LEVEL_ASSET_CATEGORY_NAME);
         Map<String, String> secondMap = new HashMap<>();
@@ -322,6 +327,33 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter
             .columnToNode(assetCategoryModels, AssetCategoryModelNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
+    }
+
+    /**
+     * 递归查询该品类所属的二级id
+     * @param categoryId 品类id
+     * @param all 查询的列表范围，默认为所有品类
+     * @param secondCategorys 二级品类集合
+     * @return 二级品类id
+     */
+    public String recursionSearchParentCategory(String categoryId, List<AssetCategoryModel> all,
+                                                Set<String> secondCategorys) {
+        int id = Integer.parseInt(categoryId);
+        // 若id不符合要求
+        if (id <= Constants.FIRST_LEVEL_ASSET_CATEGORY_ID) {
+            return null;
+        }
+        if (secondCategorys.contains(categoryId)) {
+            return categoryId;
+        }
+        for (AssetCategoryModel assetCategoryModel : all) {
+            if (assetCategoryModel.getStringId().equals(categoryId)
+                && !categoryId.equals(assetCategoryModel.getParentId())) {
+                return recursionSearchParentCategory(assetCategoryModel.getParentId(), all, secondCategorys);
+            }
+        }
+        return null;
+
     }
 
     /**

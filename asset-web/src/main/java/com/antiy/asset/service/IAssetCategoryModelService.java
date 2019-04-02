@@ -2,6 +2,8 @@ package com.antiy.asset.service;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
@@ -114,5 +116,21 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @return
      */
     List<String> getCategoryIdList(List<AssetCategoryModel> search);
+
+    /**
+     * 递归查询该品类所属的二级id
+     * @param categoryId 品类id
+     * @param all 查询的列表范围，默认为所有品类
+     * @param secondCategorys 二级品类集合
+     * @return 二级品类id
+     */
+    String recursionSearchParentCategory(String categoryId, List<AssetCategoryModel> all, Set<String> secondCategorys);
+
+    /**
+     * 获取二级品类型号 id和name的映射
+     * @return
+     * @throws Exception
+     */
+    Map<String, String> getSecondCategoryMap() throws Exception;
 
 }
