@@ -461,4 +461,12 @@
             </if>
         </where>
     </update>
+    <select id="findUsePort" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select
+        asset_port
+        from
+        <include refid="Table_Name"></include>
+        where asset_id = #{assetId}
+    </select>
+
 </mapper>
