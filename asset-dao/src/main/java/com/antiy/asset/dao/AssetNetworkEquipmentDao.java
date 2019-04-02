@@ -24,5 +24,5 @@ public interface AssetNetworkEquipmentDao extends IBaseDao<AssetNetworkEquipment
      */
     List<AssetNetworkEquipment> findPortById(AssetNetworkEquipmentQuery query);
 
-    Integer findPortAmount();
+    Integer findPortAmount(AssetNetworkEquipmentQuery query);
 }
