@@ -396,4 +396,29 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+
+    <select id="findPortById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        id,
+        asset_soft_id,
+        PORT,
+        protocol,
+        description
+        FROM
+        asset_port_protocol
+        WHERE
+        asset_soft_id = #{assetSoftId}
+        AND source = #{assetTypeEnum.getCode()}
+        AND STATUS = 1
+        AND id IN ( ( SELECT id FROM asset_port_protocol WHERE asset_soft_id = #{assetSoftId} AND source = #{assetTypeEnum.getCode()} AND port IS NULL ) )
+    </select>
+
+    <select id="findPortAmount" resultType="int">
+        SELECT
+        port_size
+        FROM
+        <include refid="Table_Name"></include>
+        WHERE
+        asset_id = #{assetId}
+    </select>
 </mapper>
