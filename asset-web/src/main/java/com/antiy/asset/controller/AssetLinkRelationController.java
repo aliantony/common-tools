@@ -25,7 +25,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetLinkRelation", description = "通联关系表")
 @RestController
-@RequestMapping("/v1/asset/assetlinkrelation")
+@RequestMapping("/api/v1/asset/linkrelation")
 public class AssetLinkRelationController {
 
     @Resource
