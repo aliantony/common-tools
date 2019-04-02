@@ -111,7 +111,9 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             if (CollectionUtils.isNotEmpty(assetIds)) {
                 assetIds.add(assetQuery.getPrimaryKey());
                 String[] ids = assetIds.toArray(new String[assetIds.size()]);
-                assetQuery.setIds(ids);
+                if (ids.length > 0) {
+                    assetQuery.setIds(ids);
+                }
             } else {
                 assetQuery.setIds(new String[] { assetQuery.getPrimaryKey() });
             }

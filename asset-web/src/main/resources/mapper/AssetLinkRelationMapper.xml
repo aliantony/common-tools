@@ -213,13 +213,13 @@
     </sql>
     <!--资产条件查询-->
     <sql id="Multiple_Query">
-        <if test=" areaIds != null">
+        <if test=" areaIds != null and areaIds.length > 0">
             and area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
-        <if test=" ids != null">
+        <if test=" ids != null and ids.length > 0">
             and id not in
             <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
                 #{item}
@@ -239,13 +239,9 @@
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and outer_ip like
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_card b where asset.id = b.asset_id and mac_address like
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and mac_address like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and mac like
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             )
         </if>
@@ -368,16 +364,12 @@
         not
         null then
         (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
-        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
         else '' end as ip,
         case
         when group_concat( b.mac_address ) is not null then
         group_concat( b.mac_address )
         when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
         (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
-        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
         else '' end as mac
         from
         asset a
