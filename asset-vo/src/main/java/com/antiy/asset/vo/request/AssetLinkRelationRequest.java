@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.NotBlank;
+
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -21,11 +23,13 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
      */
     @ApiModelProperty("资产主键")
     @Encode(message = "子资产主键错误")
+    @NotBlank(message = "子资产主键不能为空")
     private String  assetId;
     /**
      * 资产IP
      */
     @ApiModelProperty("资产IP")
+    @NotBlank(message = "子资产IP不能为空")
     private String  assetIp;
     /**
      * 资产端口
@@ -37,16 +41,19 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
      */
     @ApiModelProperty("父级设备主键")
     @Encode(message = "父级设备主键错误")
+    @NotBlank(message = "父级设备主键不能为空")
     private String  parentAssetId;
     /**
      * 父级设备IP
      */
     @ApiModelProperty("父级设备IP")
+    @NotBlank(message = "父级设备IP不能为空")
     private String  parentAssetIp;
     /**
      * 父级设备端口
      */
     @ApiModelProperty("父级设备端口")
+    @NotBlank(message = "父级设备端口不能为空")
     private String  parentAssetPort;
     /**
      * 创建时间

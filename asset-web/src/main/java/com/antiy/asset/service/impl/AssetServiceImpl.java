@@ -1,33 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -56,8 +28,31 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
-import static java.util.Comparator.comparingInt;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -224,6 +219,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // 保存网络设备
                         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
                         if (networkEquipmentRequest != null) {
+                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(networkEquipmentRequest.getInnerIp (),1), "内网IP不能重复！");
                             Integer id = SaveNetwork(aid, networkEquipmentRequest);
                             networkEquipmentRequest.setId(String.valueOf(id));
                             assetOuterRequestToChangeRecord.setNetworkEquipment(networkEquipmentRequest);
@@ -282,6 +278,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 AssetNetworkCard.class);
                             for (AssetNetworkCard assetNetworkCard : networkCardList) {
                                 ParamterExceptionUtils.isBlank(assetNetworkCard.getBrand(), "网卡品牌为空");
+                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress (),null), "IP不能重复！");
                                 assetNetworkCard.setAssetId(aid);
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -521,6 +518,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return ActionResponse.success(id);
     }
 
+
+
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
                                 AssetStorageMedium medium) throws Exception {
         medium.setAssetId(asset.getStringId());
@@ -597,6 +596,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             });
             assetGroupRelationDao.insertBatch(groupRelations);
         }
+    }
+
+    private boolean CheckRepeatIp(String innerIp,Integer isNet)throws Exception {
+        AssetQuery assetQuery = new AssetQuery ();
+        assetQuery.setIp (innerIp);
+        assetQuery.setIsNet (isNet);
+        Integer countIp = assetDao.findCountIp (assetQuery);
+        return  countIp>=1;
     }
 
     private boolean CheckRepeat(String number) throws Exception {
@@ -733,6 +740,74 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
         }
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.findListAsset(query));
+    }
+
+    /**
+     * 通联设置的资产查询 与普通资产查询类似， 不同点在于品类型号显示二级品类， 只查已入网，网络设备和计算设备的资产,且会去掉通联表中已存在的资产
+     */
+    public PageResult<AssetResponse> findUnconnectedAsset(AssetQuery query) throws Exception {
+        query.setAreaIds(
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        // 只查已入网资产
+        query.setAssetStatusList(null);
+        query.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        // 若品类型号查询条件为空 默认只查已入网，网络设备和计算设备的资产
+        Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
+        if (Objects.isNull(query.getCategoryModels()) || query.getCategoryModels().length <= 0) {
+            List<Integer> categoryCondition = new ArrayList<>();
+            for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
+                if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+                    categoryCondition.addAll(
+                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
+                }
+                if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
+                    categoryCondition.addAll(
+                            assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
+                }
+            }
+            query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
+        } else {
+            // 品类型号及其子品类
+            List<Integer> categoryModels = Lists.newArrayList();
+            for (int i = 0; i < query.getCategoryModels().length; i++) {
+                categoryModels.addAll(assetCategoryModelService
+                    .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
+            }
+            query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryModels));
+        }
+        // 进行查询
+        Integer count = assetDao.findUnconnectedCount(query);
+        if (count == 0) {
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+        } else {
+            List<AssetResponse> assetResponseList = responseConverter.convert(assetDao.findListUnconnectedAsset(query),
+                AssetResponse.class);
+            // 处理品类型号使其均为二级品类型号
+            processCategoryToSecondCategory(assetResponseList, categoryMap);
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
+        }
+    }
+
+    private void processCategoryToSecondCategory(List<AssetResponse> assetResponseList,
+                                                 Map<String, String> categoryMap) throws Exception {
+        // 作为缓存使用，提高效率
+        Map<String, String> cache = new HashMap<>();
+        List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
+        for (AssetResponse assetResponse : assetResponseList) {
+            String categoryModel = assetResponse.getCategoryModel();
+            String cacheId = cache.get(categoryModel);
+            if (Objects.nonNull(cacheId)) {
+                assetResponse.setCategoryModel(categoryModel);
+                assetResponse.setCategoryModelName(categoryMap.get(cacheId));
+            } else {
+                String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
+                    categoryMap.keySet());
+                if (Objects.nonNull(second)) {
+                    assetResponse.setCategoryModelName(categoryMap.get(second));
+                    cache.put(categoryModel, second);
+                }
+            }
+        }
     }
 
     @Override
@@ -1017,7 +1092,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 查询第二级每个分类下所有的分类id，并添加至list集合
                 List<AssetCategoryModel> search = iAssetCategoryModelService.recursionSearch(categoryModelDaoAll,
                     secondCategoryModel.getId());
-                List<String> categoryList=new ArrayList<>();
+                List<String> categoryList = new ArrayList<>();
                 categoryList.add(secondCategoryModel.getStringId());
                 enumCountResponse.setCode(categoryList);
                 // 设置查询资产条件参数，包括区域id，状态，资产品类型号

@@ -3,6 +3,7 @@ package com.antiy.asset.controller;
 import javax.annotation.Resource;
 
 import com.antiy.asset.vo.query.AssetQuery;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,9 +16,10 @@ import com.antiy.asset.vo.response.AssetLinkRelationResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
-
 
 /**
  *
@@ -54,6 +56,7 @@ public class AssetLinkRelationController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('asset:linkrelation:updateSingle')")
     public ActionResponse updateSingle(@ApiParam(value = "assetLinkRelation") AssetLinkRelationRequest assetLinkRelationRequest) throws Exception {
         return ActionResponse.success(iAssetLinkRelationService.updateAssetLinkRelation(assetLinkRelationRequest));
     }
@@ -67,6 +70,7 @@ public class AssetLinkRelationController {
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetLinkRelationResponse.class, responseContainer = "List"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('asset:linkrelation:queryList')")
     public ActionResponse queryList(@ApiParam(value = "assetLinkRelation") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         return ActionResponse.success(iAssetLinkRelationService.queryPageAssetLinkRelation(assetLinkRelationQuery));
     }
@@ -80,6 +84,7 @@ public class AssetLinkRelationController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetLinkRelationResponse.class), })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('asset:linkrelation:queryById')")
     public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
         return ActionResponse.success(iAssetLinkRelationService.queryAssetLinkRelationById(queryCondition));
     }
@@ -93,8 +98,20 @@ public class AssetLinkRelationController {
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('asset:linkrelation:deleteById')")
     public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest) throws Exception {
         return ActionResponse.success(iAssetLinkRelationService.deleteAssetLinkRelationById(baseRequest));
+    }
+
+    @ApiOperation(value = "通过资产Id查询可用的IP地址", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
+    @RequestMapping(value = "/query/ip", method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('asset:linkrelation:queryAssetIpAddress')")
+    public ActionResponse queryAssetIpAddress(@Encode @ApiParam(value = "资产Id") String assetId,
+                                              @ApiParam(value = "是否可用,true表示可用的资产IP,false表示全部IP,默认为true") Boolean enable) throws Exception {
+        ParamterExceptionUtils.isBlank(assetId, "资产Id不能为空");
+        return ActionResponse
+            .success(iAssetLinkRelationService.queryIpAddressByAssetId(assetId, enable == null ? true : enable));
     }
 
     /**
@@ -123,4 +140,3 @@ public class AssetLinkRelationController {
         return ActionResponse.success(iAssetLinkRelationService.queryLinekedRelationPage(assetLinkRelationQuery));
     }
 }
-

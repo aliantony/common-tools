@@ -71,6 +71,21 @@ public class AssetController {
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
 
+
+    /**
+     * 通联设置资产查询接口
+     *
+     * @param asset
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通联设置资产查询接口", notes = "传入查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/unconnectedList", method = RequestMethod.GET)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
+    public ActionResponse findUnconnectedAsset(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
+        return ActionResponse.success(iAssetService.findUnconnectedAsset(asset));
+    }
+
     @ApiOperation(value = "通过区域Id查询当前区域是否存在资产", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/queryAssetCountByAreaIds", method = RequestMethod.GET)
@@ -346,4 +361,6 @@ public class AssetController {
         activityClient.completeTask(activityHandleRequest);
         return ActionResponse.success();
     }
+
+
 }

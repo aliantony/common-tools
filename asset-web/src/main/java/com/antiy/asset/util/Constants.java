@@ -25,6 +25,14 @@ public class Constants {
      */
     public static final String  FIRST_LEVEL_SOFTWARE_CATEGORY_NAME = "软件";
     /**
+     * 软件第一级ID
+     */
+    public static final int     FIRST_LEVEL_SOFTWARE_CATEGORY_ID   = 1;
+    /**
+     * 硬件第一级ID
+     */
+    public static final int     FIRST_LEVEL_ASSET_CATEGORY_ID      = 2;
+    /**
      * 设置pageSize为ALL_PAGE时，查所有数据，不需要分页
      */
     public static final int     ALL_PAGE                           = -1;

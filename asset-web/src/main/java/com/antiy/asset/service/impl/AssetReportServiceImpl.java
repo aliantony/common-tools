@@ -377,7 +377,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 throw new BusinessException("timeType参数异常");
         }
         reportForm.setTitle("资产" + titleStr + "品类型号总数");
-        assetReportCategoryCountQuery.setReportFormType(ReportFormType.ALL);
         AssetReportResponse assetReportResponse = this.queryCategoryCountByTime(assetReportCategoryCountQuery);
         List<String> headerList = assetReportResponse.getDate();
         List<ReportData> reportDataList = assetReportResponse.getList();
@@ -393,16 +392,14 @@ public class AssetReportServiceImpl implements IAssetReportService {
         columnList.add("总数");
         columnList.add("新增");
         int[] total = new int[headerList.size()];
-        assetReportCategoryCountQuery.setReportFormType(ReportFormType.NEW);
-        AssetReportResponse addReport = this.queryCategoryCountByTime(assetReportCategoryCountQuery);
-        List<ReportData> reportList = addReport.getList();
+        List<ReportData> reportList = assetReportResponse.getList();
         int[] add = new int[headerList.size()];
         for (int i = 0; i < headerList.size(); i++) {
             total[i] = 0;
             add[i] = 0;
             for (int j = 0; j < reportDataList.size(); j++) {
                 ReportData reportData = reportList.get(j);
-                List<Integer> addList = reportData.getData();
+                List<Integer> addList = reportData.getAdd();
                 add[i] += addList.get(i);
                 total[i] += Integer.parseInt(data[j][i]);
             }

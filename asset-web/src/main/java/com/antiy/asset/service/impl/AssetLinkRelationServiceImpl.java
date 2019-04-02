@@ -24,6 +24,7 @@ import com.antiy.asset.vo.response.AssetLinkRelationResponse;
 import com.antiy.common.base.*;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
@@ -48,6 +49,20 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Override
     public String saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
+
+        // 1.校验子资产IP是否可用
+        List<String> assetAddress = assetLinkRelationDao.queryIpAddressByAssetId(request.getAssetId(), true,
+            request.getAssetPort());
+        ParamterExceptionUtils.isTrue(assetAddress.contains(request.getAssetIp()), "子资产IP已经存在绑定关系,无法再次绑定");
+
+        // 2.校验父资产IP是否可用
+        List<String> parentAssetAddress = assetLinkRelationDao.queryIpAddressByAssetId(request.getParentAssetId(), true,
+            request.getParentAssetPort());
+        ParamterExceptionUtils.isTrue(parentAssetAddress.contains(request.getParentAssetIp()), "父资产IP已经存在绑定关系,无法再次绑定");
+
+        // 3.插入通联关系
+        assetLinkRelation.setCreateUser(LoginUserUtil.getLoginUser().getCreateUser());
+        assetLinkRelation.setGmtCreate(System.currentTimeMillis());
         assetLinkRelationDao.insert(assetLinkRelation);
         return assetLinkRelation.getStringId();
     }
@@ -146,5 +161,10 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             return Lists.newArrayList();
         }
         return BeanConvert.convert(assetResponseList, AssetLinkRelationResponse.class);
+    }
+
+    @Override
+    public List<String> queryIpAddressByAssetId(String assetId, Boolean enable) throws Exception {
+        return assetLinkRelationDao.queryIpAddressByAssetId(assetId, enable, null);
     }
 }

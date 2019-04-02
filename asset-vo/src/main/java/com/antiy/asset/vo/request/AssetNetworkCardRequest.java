@@ -1,14 +1,13 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * <p> AssetNetworkCardRequest 请求对象 </p>
@@ -54,6 +53,7 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
      * IP地址
      */
     @ApiModelProperty("IP地址")
+    @NotBlank(message = "IP地址不能为空")
     private String ipAddress;
     /**
      * MAC地址

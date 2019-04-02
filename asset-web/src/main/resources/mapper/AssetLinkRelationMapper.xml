@@ -308,8 +308,9 @@
     </select>
 
     <delete id="deleteById" parameterType="java.lang.String">
-        delete from
+        update
         <include refid="Table_Name"></include>
+        set status='0'
         where id = #{id}
     </delete>
 
@@ -419,4 +420,53 @@
         and parent_asset_id = #{parentAssetId}
         and status = 1
     </select>
+
+    <select id="queryIpAddressByAssetId" resultType="java.lang.String">
+        <choose>
+            <when test="enable">
+                select ip_address from asset_network_card t1 WHERE not exists
+                (select 1 from asset_link_relation t2 where (t2.asset_id=#{assetId} and t1.ip_address= t2.asset_ip)
+                or(t2.parent_asset_id=#{assetId} and t1.ip_address= t2.parent_asset_ip) and status='1'
+                <if test="assetPort!=null and assetPort!=''">
+                    and asset_port=#{assetPort}
+                </if>
+                ) and
+                asset_id=#{assetId} and
+                status='1'
+                union all select outer_ip as ip_address from asset_network_equipment t1 WHERE not exists
+                (select 1 from asset_link_relation t2 where (t2.asset_id=#{assetId} and t1.inner_ip= t2.asset_ip)
+                or(t2.parent_asset_id=#{assetId} and t1.inner_ip= t2.parent_asset_ip) and status='1'
+
+                <if test="assetPort!=null and assetPort!=''">
+                    and parent_asset_port=#{assetPort}
+                </if>
+
+                )
+                and
+                asset_id=#{assetId}
+                and
+                status='1'
+            </when>
+            <otherwise>
+                select ip_address from asset_network_card WHERE asset_id=#{assetId} and status='1' union all
+                select outer_ip as ip_address from asset_network_equipment WHERE asset_id=#{assetId} and status='1'
+            </otherwise>
+        </choose>
+    </select>
+
+    <update id="deleteRelationByAssetId">
+        update asset_link_relation set status='0'
+        <where>
+            <if test="assetIds!= null and assetIds.size() > 0">
+                asset_id in
+                <foreach item="assetId" collection="assetIds" open="(" separator="," close=")">
+                    #{assetId}
+                </foreach>
+                or parent_asset_id
+                <foreach item="assetId" collection="assetIds" open="(" separator="," close=")">
+                    #{assetId}
+                </foreach>
+            </if>
+        </where>
+    </update>
 </mapper>
