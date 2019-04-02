@@ -40,6 +40,14 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Override
     public String saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
+
+        // 1.校验子资产IP是否可用
+
+        // 2.校验父资产IP是否可用
+
+        // 3.校验通联关系是否存在
+
+        // 4.插入通联关系
         assetLinkRelationDao.insert(assetLinkRelation);
         return assetLinkRelation.getStringId();
     }
@@ -76,5 +84,10 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     public String deleteAssetLinkRelationById(BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         return assetLinkRelationDao.deleteById(baseRequest.getStringId()).toString();
+    }
+
+    @Override
+    public List<String> queryIpAddressByAssetId(String assetId, Boolean enable) throws Exception {
+        return null;
     }
 }

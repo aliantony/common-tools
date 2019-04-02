@@ -14,9 +14,10 @@ import com.antiy.asset.vo.response.AssetLinkRelationResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
-
 
 /**
  *
@@ -95,5 +96,14 @@ public class AssetLinkRelationController {
     public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest) throws Exception {
         return ActionResponse.success(iAssetLinkRelationService.deleteAssetLinkRelationById(baseRequest));
     }
-}
 
+    @ApiOperation(value = "通过资产Id查询可用的IP地址", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
+    @RequestMapping(value = "/query/ip", method = RequestMethod.GET)
+    public ActionResponse queryAssetIpAddress(@Encode @ApiParam(value = "资产Id") String assetId,
+                                              @ApiParam(value = "是否可用,true表示可用的资产IP,false表示全部IP,默认为true") Boolean enable) throws Exception {
+        ParamterExceptionUtils.isBlank(assetId, "资产Id不能为空");
+        return ActionResponse
+            .success(iAssetLinkRelationService.queryIpAddressByAssetId(assetId, enable == null ? true : enable));
+    }
+}

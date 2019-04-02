@@ -61,4 +61,12 @@ public interface IAssetLinkRelationService extends IBaseService<AssetLinkRelatio
      */
     String deleteAssetLinkRelationById(BaseRequest baseRequest) throws Exception;
 
+    /**
+     * 通过资产Id查询资产的Ip地址
+     * @param assetId 资产Id
+     * @return
+     * @throws Exception
+     */
+    List<String> queryIpAddressByAssetId(String assetId, Boolean enable) throws Exception;
+
 }
