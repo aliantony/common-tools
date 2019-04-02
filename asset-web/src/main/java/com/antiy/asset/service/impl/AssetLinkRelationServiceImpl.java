@@ -16,6 +16,7 @@ import com.antiy.asset.vo.response.AssetLinkRelationResponse;
 import com.antiy.common.base.*;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
@@ -52,6 +53,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         ParamterExceptionUtils.isTrue(parentAssetAddress.contains(request.getParentAssetIp()), "父资产IP已经存在绑定关系,无法再次绑定");
 
         // 3.插入通联关系
+        assetLinkRelation.setCreateUser(LoginUserUtil.getLoginUser().getCreateUser());
+        assetLinkRelation.setGmtCreate(System.currentTimeMillis());
         assetLinkRelationDao.insert(assetLinkRelation);
         return assetLinkRelation.getStringId();
     }
