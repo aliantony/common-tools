@@ -24,4 +24,11 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
     List<String> queryIpAddressByAssetId(@Param(value = "assetId") String assetId,
                                          @Param(value = "enable") Boolean enable,
                                          @Param(value = "assetPort") String assetPort);
+
+    /**
+     * 批量删除通联关系,父节点或者子节点为当前资产Id的均会删除
+     * @param assetIds 资产列表Id,注意资产列表一定不能为空,否则全部删除
+     * @return
+     */
+    Integer deleteRelationByAssetId(@Param(value = "assetIds") List<Integer> assetIds);
 }

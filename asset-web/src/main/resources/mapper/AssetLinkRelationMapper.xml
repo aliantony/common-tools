@@ -279,4 +279,20 @@
             </otherwise>
         </choose>
     </select>
+
+    <update id="deleteRelationByAssetId">
+        update asset_link_relation set status='0'
+        <where>
+            <if test="assetIds!= null and assetIds.size() > 0">
+                asset_id in
+                <foreach item="assetId" collection="assetIds" open="(" separator="," close=")">
+                    #{assetId}
+                </foreach>
+                or parent_asset_id
+                <foreach item="assetId" collection="assetIds" open="(" separator="," close=")">
+                    #{assetId}
+                </foreach>
+            </if>
+        </where>
+    </update>
 </mapper>
