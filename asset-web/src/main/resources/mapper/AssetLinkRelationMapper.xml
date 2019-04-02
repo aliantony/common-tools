@@ -215,8 +215,9 @@
     </select>
 
     <delete id="deleteById" parameterType="java.lang.String">
-        delete from
+        update
         <include refid="Table_Name"></include>
+        set status='0'
         where id = #{id}
     </delete>
 
