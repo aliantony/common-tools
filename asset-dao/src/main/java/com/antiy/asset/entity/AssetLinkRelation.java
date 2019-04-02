@@ -1,12 +1,13 @@
 package com.antiy.asset.entity;
 
+
 import com.antiy.common.base.BaseEntity;
 
 /**
- * <p> 通联关系表 </p>
+ * <p>通联关系表</p>
  *
  * @author zhangyajun
- * @since 2018-12-29
+ * @since 2019-04-02
  */
 
 public class AssetLinkRelation extends BaseEntity {
@@ -14,33 +15,29 @@ public class AssetLinkRelation extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 通联名称
+     * 资产主键
      */
-    private String            name;
+    private Integer           assetId;
     /**
-     * 通联类型:1光纤，2双绞线
+     * 资产IP
      */
-    private Integer           linkType;
+    private String            assetIp;
     /**
-     * 头节点资产
+     * 资产端口
      */
-    private Integer           headAsset;
+    private String            assetPort;
     /**
-     * 尾节点资产
+     * 父级设备主键
      */
-    private Integer           tailAsse;
+    private Integer           parentAssetId;
     /**
-     * 头节点类型
+     * 父级设备IP
      */
-    private Integer           headType;
+    private String            parentAssetIp;
     /**
-     * 尾节点类型
+     * 父级设备端口
      */
-    private Integer           tailType;
-    /**
-     * 状态
-     */
-    private Integer           linkStatus;
+    private String            parentAssetPort;
     /**
      * 创建时间
      */
@@ -66,65 +63,57 @@ public class AssetLinkRelation extends BaseEntity {
      */
     private Integer           status;
 
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
+
+
+    public Integer getAssetId() {
+        return assetId;
     }
 
-    public String getName() {
-        return name;
+    public void setAssetId(Integer assetId) {
+        this.assetId = assetId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+
+    public String getAssetIp() {
+        return assetIp;
     }
 
-    public Integer getLinkType() {
-        return linkType;
+    public void setAssetIp(String assetIp) {
+        this.assetIp = assetIp;
     }
 
-    public void setLinkType(Integer linkType) {
-        this.linkType = linkType;
+    public String getAssetPort() {
+        return assetPort;
     }
 
-    public Integer getHeadAsset() {
-        return headAsset;
+    public void setAssetPort(String assetPort) {
+        this.assetPort = assetPort;
     }
 
-    public void setHeadAsset(Integer headAsset) {
-        this.headAsset = headAsset;
+    public Integer getParentAssetId() {
+        return parentAssetId;
     }
 
-    public Integer getTailAsse() {
-        return tailAsse;
+    public void setParentAssetId(Integer parentAssetId) {
+        this.parentAssetId = parentAssetId;
     }
 
-    public void setTailAsse(Integer tailAsse) {
-        this.tailAsse = tailAsse;
+    public String getParentAssetIp() {
+        return parentAssetIp;
     }
 
-    public Integer getHeadType() {
-        return headType;
+    public void setParentAssetIp(String parentAssetIp) {
+        this.parentAssetIp = parentAssetIp;
     }
 
-    public void setHeadType(Integer headType) {
-        this.headType = headType;
+    public String getParentAssetPort() {
+        return parentAssetPort;
     }
 
-    public Integer getTailType() {
-        return tailType;
+    public void setParentAssetPort(String parentAssetPort) {
+        this.parentAssetPort = parentAssetPort;
     }
 
-    public void setTailType(Integer tailType) {
-        this.tailType = tailType;
-    }
-
-    public Integer getLinkStatus() {
-        return linkStatus;
-    }
-
-    public void setLinkStatus(Integer linkStatus) {
-        this.linkStatus = linkStatus;
-    }
 
     public Long getGmtCreate() {
         return gmtCreate;
@@ -134,8 +123,13 @@ public class AssetLinkRelation extends BaseEntity {
         this.gmtCreate = gmtCreate;
     }
 
+
     public Long getGmtModified() {
-        return System.currentTimeMillis();
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
     public String getMemo() {
@@ -146,6 +140,7 @@ public class AssetLinkRelation extends BaseEntity {
         this.memo = memo;
     }
 
+
     public Integer getCreateUser() {
         return createUser;
     }
@@ -153,6 +148,7 @@ public class AssetLinkRelation extends BaseEntity {
     public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
     }
+
 
     public Integer getModifyUser() {
         return modifyUser;
@@ -162,6 +158,7 @@ public class AssetLinkRelation extends BaseEntity {
         this.modifyUser = modifyUser;
     }
 
+
     public Integer getStatus() {
         return status;
     }
@@ -170,11 +167,12 @@ public class AssetLinkRelation extends BaseEntity {
         this.status = status;
     }
 
+
     @Override
     public String toString() {
-        return "AssetLinkRelation{" + ", name=" + name + ", linkType=" + linkType + ", headAsset=" + headAsset
-               + ", tailAsse=" + tailAsse + ", headType=" + headType + ", tailType=" + tailType + ", linkStatus="
-               + linkStatus + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo
+        return "AssetLinkRelation{" + ", assetId=" + assetId + ", assetIp=" + assetIp + ", assetPort=" + assetPort
+               + ", parentAssetId=" + parentAssetId + ", parentAssetIp=" + parentAssetIp + ", parentAssetPort="
+               + parentAssetPort + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo
                + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status + "}";
     }
 }

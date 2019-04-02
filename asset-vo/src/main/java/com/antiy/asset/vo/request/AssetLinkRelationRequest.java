@@ -1,6 +1,6 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BasicRequest;
+import com.antiy.common.base.BaseRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
@@ -13,110 +13,168 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetLinkRelationRequest extends BasicRequest implements ObjectValidator {
+public class AssetLinkRelationRequest extends BaseRequest implements ObjectValidator {
 
     /**
-     * 通联名称
+     * 资产主键
      */
-    @ApiModelProperty("通联名称")
-    private String  name;
+    @ApiModelProperty("资产主键")
+    private Integer assetId;
     /**
-     * 通联类型:1光纤，2双绞线
+     * 资产IP
      */
-    @ApiModelProperty("通联类型:1光纤，2双绞线")
-    private Integer linkType;
+    @ApiModelProperty("资产IP")
+    private String  assetIp;
     /**
-     * 头节点资产
+     * 资产端口
      */
-    @ApiModelProperty("头节点资产")
-    private Integer headAsset;
+    @ApiModelProperty("资产端口")
+    private String  assetPort;
     /**
-     * 尾节点资产
+     * 父级设备主键
      */
-    @ApiModelProperty("尾节点资产")
-    private Integer tailAsse;
+    @ApiModelProperty("父级设备主键")
+    private Integer parentAssetId;
     /**
-     * 头节点类型
+     * 父级设备IP
      */
-    @ApiModelProperty("头节点类型")
-    private Integer headType;
+    @ApiModelProperty("父级设备IP")
+    private String  parentAssetIp;
     /**
-     * 尾节点类型
+     * 父级设备端口
      */
-    @ApiModelProperty("尾节点类型")
-    private Integer tailType;
+    @ApiModelProperty("父级设备端口")
+    private String  parentAssetPort;
     /**
-     * 状态
+     * 创建时间
      */
-    @ApiModelProperty("状态")
-    private Integer linkStatus;
+    @ApiModelProperty("创建时间")
+    private Long    gmtCreate;
+    /**
+     * 修改时间
+     */
+    @ApiModelProperty("修改时间")
+    private Long    gmtModified;
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
+    private String  memo;
+    /**
+     * 创建人
+     */
+    @ApiModelProperty("创建人")
+    private Integer createUser;
+    /**
+     * 修改人
+     */
+    @ApiModelProperty("修改人")
+    private Integer modifyUser;
+    /**
+     * 状态,1未删除,0已删除
+     */
+    @ApiModelProperty("状态,1未删除,0已删除")
+    private Integer status;
 
-    public String getName() {
-        return name;
+    public Integer getAssetId() {
+        return assetId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAssetId(Integer assetId) {
+        this.assetId = assetId;
     }
 
-    public Integer getLinkType() {
-        return linkType;
+    public String getAssetIp() {
+        return assetIp;
     }
 
-    public void setLinkType(Integer linkType) {
-        this.linkType = linkType;
+    public void setAssetIp(String assetIp) {
+        this.assetIp = assetIp;
     }
 
-    public Integer getHeadAsset() {
-        return headAsset;
+    public String getAssetPort() {
+        return assetPort;
     }
 
-    public void setHeadAsset(Integer headAsset) {
-        this.headAsset = headAsset;
+    public void setAssetPort(String assetPort) {
+        this.assetPort = assetPort;
     }
 
-    public Integer getTailAsse() {
-        return tailAsse;
+    public Integer getParentAssetId() {
+        return parentAssetId;
     }
 
-    public void setTailAsse(Integer tailAsse) {
-        this.tailAsse = tailAsse;
+    public void setParentAssetId(Integer parentAssetId) {
+        this.parentAssetId = parentAssetId;
     }
 
-    public Integer getHeadType() {
-        return headType;
+    public String getParentAssetIp() {
+        return parentAssetIp;
     }
 
-    public void setHeadType(Integer headType) {
-        this.headType = headType;
+    public void setParentAssetIp(String parentAssetIp) {
+        this.parentAssetIp = parentAssetIp;
     }
 
-    public Integer getTailType() {
-        return tailType;
+    public String getParentAssetPort() {
+        return parentAssetPort;
     }
 
-    public void setTailType(Integer tailType) {
-        this.tailType = tailType;
+    public void setParentAssetPort(String parentAssetPort) {
+        this.parentAssetPort = parentAssetPort;
     }
 
-    public Integer getLinkStatus() {
-        return linkStatus;
+    public Long getGmtCreate() {
+        return gmtCreate;
     }
 
-    public void setLinkStatus(Integer linkStatus) {
-        this.linkStatus = linkStatus;
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
+    }
+
+    public Integer getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(Integer modifyUser) {
+        this.modifyUser = modifyUser;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Override
     public void validate() throws RequestParamValidateException {
 
-    }
-
-    @Override
-    public String toString() {
-        return "AssetLinkRelation{" + ", name=" + name + ", linkType=" + linkType + ", headAsset=" + headAsset
-               + ", tailAsse=" + tailAsse + ", headType=" + headType + ", tailType=" + tailType + ", linkStatus="
-               + linkStatus + "}";
     }
 
 }

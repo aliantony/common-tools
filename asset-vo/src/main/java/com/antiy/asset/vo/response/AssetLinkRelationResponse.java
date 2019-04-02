@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.base.BaseResponse;
+
 /**
  * <p> AssetLinkRelationResponse 响应对象 </p>
  *
@@ -7,8 +9,6 @@ package com.antiy.asset.vo.response;
  * @since 2018-12-27
  */
 
-public class AssetLinkRelationResponse {
-
-    private static final long serialVersionUID = 1L;
+public class AssetLinkRelationResponse extends BaseResponse {
 
 }
