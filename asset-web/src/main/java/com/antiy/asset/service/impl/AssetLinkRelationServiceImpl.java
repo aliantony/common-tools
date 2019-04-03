@@ -1,6 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -12,7 +11,6 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetLinkRelationDao;
-import com.antiy.asset.dao.AssetNetworkEquipmentDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetLinkRelation;
 import com.antiy.asset.service.IAssetLinkRelationService;
@@ -23,7 +21,6 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.response.AssetLinkRelationResponse;
 import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.*;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
@@ -45,8 +42,6 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Resource
     private AssetLinkRelationDao                                        assetLinkRelationDao;
     @Resource
-    private AssetNetworkEquipmentDao                                    assetNetworkEquipmentDao;
-    @Resource
     private BaseConverter<AssetLinkRelationRequest, AssetLinkRelation>  requestConverter;
     @Resource
     private BaseConverter<AssetLinkRelation, AssetLinkRelationResponse> responseConverter;
@@ -54,7 +49,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Override
     public String saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
-
+        assetLinkRelation.setAssetId(DataTypeUtils.stringToInteger(request.getAssetId()));
+        assetLinkRelation.setParentAssetId(DataTypeUtils.stringToInteger(request.getParentAssetId()));
         // 1.校验子资产IP是否可用
         List<String> assetAddress = assetLinkRelationDao.queryIpAddressByAssetId(request.getAssetId(), true,
             request.getAssetPort());
@@ -66,7 +62,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         ParamterExceptionUtils.isTrue(parentAssetAddress.contains(request.getParentAssetIp()), "父资产IP已经存在绑定关系,无法再次绑定");
 
         // 3.插入通联关系
-        assetLinkRelation.setCreateUser(LoginUserUtil.getLoginUser().getCreateUser());
+        assetLinkRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLinkRelation.setGmtCreate(System.currentTimeMillis());
         assetLinkRelationDao.insert(assetLinkRelation);
         return assetLinkRelation.getStringId();
@@ -173,53 +169,5 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Override
     public List<String> queryIpAddressByAssetId(String assetId, Boolean enable) throws Exception {
         return assetLinkRelationDao.queryIpAddressByAssetId(assetId, enable, null);
-    }
-
-    @Override
-    public List<SelectResponse> queryPortById(AssetLinkRelationQuery query) {
-
-        List<SelectResponse> selectResponseList = null;
-        // 排除已占用的端口
-        List<Integer> usePortList;
-        if (query.getAssetId() != null) {
-            Integer portAmountAssetId = assetNetworkEquipmentDao.findPortAmount(query.getAssetId());
-            usePortList = assetLinkRelationDao.findUsePort(query.getAssetId());
-            selectResponseList = getSelectResponses(query, portAmountAssetId, usePortList);
-        } else if (query.getParentAssetId() != null) {
-            Integer portAmountParentAssetId = assetNetworkEquipmentDao.findPortAmount(query.getParentAssetId());
-            usePortList = assetLinkRelationDao.findUsePort(query.getParentAssetId());
-            selectResponseList = getSelectResponses(query, portAmountParentAssetId, usePortList);
-        }
-        return selectResponseList;
-    }
-
-    /**
-     * 获取未占用的端口
-     * @param query
-     * @param portAmountAssetId
-     * @return
-     */
-    private List<SelectResponse> getSelectResponses(AssetLinkRelationQuery query, Integer portAmountAssetId,
-                                                    List<Integer> usePortList) {
-        List<Integer> portList = new ArrayList<>();
-        List<SelectResponse> selectResponseList;// 还原网络设备端口
-        if (portAmountAssetId > 1) {
-            for (int i = 1; i <= portAmountAssetId; i++) {
-                portList.add(i);
-            }
-
-            // 排除已占用的端口
-            for (Integer usePort : usePortList) {
-                portList.remove(usePort);
-            }
-        }
-
-        selectResponseList = new ArrayList<>();
-        for (Integer unUsePort : portList) {
-            SelectResponse selectResponse = new SelectResponse();
-            selectResponse.setValue(DataTypeUtils.integerToString(unUsePort));
-            selectResponseList.add(selectResponse);
-        }
-        return selectResponseList;
     }
 }

@@ -141,7 +141,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private RedisUtil                                                          redisUtil;
     @Resource
-    private AssetLinkRelationDao                                                     assetLinkRelationDao;
+    private AssetLinkRelationDao                                               assetLinkRelationDao;
     private static final int                                                   ALL_PAGE = -1;
 
     @Override
@@ -216,7 +216,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // 保存网络设备
                         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
                         if (networkEquipmentRequest != null) {
-                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(networkEquipmentRequest.getInnerIp (),1), "内网IP不能重复！");
+                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(networkEquipmentRequest.getInnerIp(), 1),
+                                "内网IP不能重复！");
                             Integer id = SaveNetwork(aid, networkEquipmentRequest);
                             networkEquipmentRequest.setId(String.valueOf(id));
                             assetOuterRequestToChangeRecord.setNetworkEquipment(networkEquipmentRequest);
@@ -275,7 +276,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 AssetNetworkCard.class);
                             for (AssetNetworkCard assetNetworkCard : networkCardList) {
                                 ParamterExceptionUtils.isBlank(assetNetworkCard.getBrand(), "网卡品牌为空");
-                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress (),null), "IP不能重复！");
+                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null),
+                                    "IP不能重复！");
                                 assetNetworkCard.setAssetId(aid);
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -517,8 +519,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return ActionResponse.success(id);
     }
 
-
-
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
                                 AssetStorageMedium medium) throws Exception {
         medium.setAssetId(asset.getStringId());
@@ -597,12 +597,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
-    private boolean CheckRepeatIp(String innerIp,Integer isNet)throws Exception {
-        AssetQuery assetQuery = new AssetQuery ();
-        assetQuery.setIp (innerIp);
-        assetQuery.setIsNet (isNet);
-        Integer countIp = assetDao.findCountIp (assetQuery);
-        return  countIp>=1;
+    private boolean CheckRepeatIp(String innerIp, Integer isNet) throws Exception {
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setIp(innerIp);
+        assetQuery.setIsNet(isNet);
+        Integer countIp = assetDao.findCountIp(assetQuery);
+        return countIp >= 1;
     }
 
     private boolean CheckRepeat(String number) throws Exception {
@@ -761,7 +761,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
                 if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
                     categoryCondition.addAll(
-                            assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
+                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
                 }
             }
             query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
@@ -1310,21 +1310,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             // 修改的
                             if (StringUtils.isNotBlank(assetNetworkCard.getStringId())) {
 
-                                AssetNetworkCard byId = assetNetworkCardDao.getById (assetNetworkCard.getStringId ());
-                                if(!byId.getIpAddress ().equals (assetNetworkCard.getIpAddress ())){
-                                    ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress (),null), "IP不能重复！");
-                                    List<Integer> integers = new ArrayList<> ();
-                                    integers.add (Integer.parseInt (asset.getStringId ()));
-                                    assetLinkRelationDao.deleteRelationByAssetId (integers);
+                                AssetNetworkCard byId = assetNetworkCardDao.getById(assetNetworkCard.getStringId());
+                                if (!byId.getIpAddress().equals(assetNetworkCard.getIpAddress())) {
+                                    ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null),
+                                        "IP不能重复！");
+                                    List<Integer> integers = new ArrayList<>();
+                                    integers.add(Integer.parseInt(asset.getStringId()));
+                                    assetLinkRelationDao.deleteRelationByAssetId(integers);
                                 }
-
 
                                 assetNetworkCard.setModifyUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
                                 assetNetworkCard.setGmtModified(System.currentTimeMillis());
                                 updateNetworkList.add(assetNetworkCard);
                             } else {// 新增的
-                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress (),null), "IP不能重复！");
+                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null),
+                                    "IP不能重复！");
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
@@ -1496,13 +1497,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (networkEquipment != null && StringUtils.isNotBlank(networkEquipment.getId())) {
                         AssetNetworkEquipment assetNetworkEquipment = BeanConvert.convertBean(networkEquipment,
                             AssetNetworkEquipment.class);
-                        //ip 变更，不重复 ，且删除关联关系
-                        AssetNetworkEquipment byId = assetNetworkEquipmentDao.getById (networkEquipment.getId ());
-                        if(!byId.getInnerIp ().equals (networkEquipment.getInnerIp ())){
-                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkEquipment.getInnerIp (),1), "内网IP不能重复！");
-                            List<Integer> integers = new ArrayList<> ();
-                            integers.add (Integer.parseInt (asset.getStringId ()));
-                            assetLinkRelationDao.deleteRelationByAssetId (integers);
+                        // ip 变更，不重复 ，且删除关联关系
+                        AssetNetworkEquipment byId = assetNetworkEquipmentDao.getById(networkEquipment.getId());
+                        if (!byId.getInnerIp().equals(networkEquipment.getInnerIp())) {
+                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkEquipment.getInnerIp(), 1),
+                                "内网IP不能重复！");
+                            List<Integer> integers = new ArrayList<>();
+                            integers.add(Integer.parseInt(asset.getStringId()));
+                            assetLinkRelationDao.deleteRelationByAssetId(integers);
                         }
 
                         assetNetworkEquipment.setAssetId(asset.getStringId());
@@ -1604,6 +1606,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     logger.info("资产变更失败:", e);
                     transactionStatus.setRollbackOnly();
+                    ParamterExceptionUtils.isTrue(!StringUtils.equals("IP不能重复！", e.getMessage()), "IP不能重复！");
+                    ParamterExceptionUtils.isTrue(!StringUtils.equals("内网IP不能重复！", e.getMessage()), "内网IP不能重复！");
                     throw new BusinessException("资产变更失败");
                 }
             }
@@ -2776,6 +2780,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
+    public List<String> pulldownUnconnectedManufacturer() throws Exception {
+        AssetQuery query = new AssetQuery();
+        Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
+        List<Integer> categoryCondition = new ArrayList<>();
+        for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
+            if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+                categoryCondition
+                    .addAll(assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
+            }
+            if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
+                categoryCondition
+                    .addAll(assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
+            }
+        }
+        query.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
+        query.setAreaIds(
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        return assetDao.pulldownUnconnectedManufacturer(query);
+    }
 }
 
 @Component

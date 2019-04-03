@@ -136,8 +136,8 @@ public class AssetLinkRelationController {
      */
     @ApiOperation(value = "查询资产列表", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class), })
-    @RequestMapping(value = "/query/linekedRelationList", method = RequestMethod.GET)
-    public ActionResponse queryLinekedRelationList(@ApiParam(value = "主键封装对象") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
+    @RequestMapping(value = "/query/assetLinkedList", method = RequestMethod.GET)
+    public ActionResponse queryAssetLinkedList(@ApiParam(value = "主键封装对象") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         return ActionResponse.success(iAssetLinkRelationService.queryLinekedRelationPage(assetLinkRelationQuery));
     }
 

@@ -71,7 +71,6 @@ public class AssetController {
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
 
-
     /**
      * 通联设置资产查询接口
      *
@@ -218,6 +217,20 @@ public class AssetController {
     }
 
     /**
+     * 查询通联设置厂商下拉接口
+     * @author zhangyajun
+     *
+     * @return 厂商名称集合
+     */
+    @ApiOperation(value = "查询通联设置厂商下拉接口", notes = "无查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/pulldown/unconnectedManufacturer", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
+    public ActionResponse<List<String>> pulldownUnconnectedManufacturer() throws Exception {
+        return ActionResponse.success(iAssetService.pulldownUnconnectedManufacturer());
+    }
+
+    /**
      * 通过ID数组查询资产列表
      * @author zhangyajun
      *
@@ -361,6 +374,5 @@ public class AssetController {
         activityClient.completeTask(activityHandleRequest);
         return ActionResponse.success();
     }
-
 
 }
