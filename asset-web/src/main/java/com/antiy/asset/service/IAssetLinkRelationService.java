@@ -103,8 +103,8 @@ public interface IAssetLinkRelationService extends IBaseService<AssetLinkRelatio
     /**
      * 通过ID查询设备端口
      *
-     * @param query
+     * @param queryCondition
      * @return
      */
-    List<SelectResponse> queryPortById(AssetLinkRelationQuery query);
+    List<SelectResponse> queryPortById(QueryCondition queryCondition);
 }
