@@ -185,22 +185,21 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         if (query.getAssetId() != null) {
             Integer portAmountAssetId = assetNetworkEquipmentDao.findPortAmount(query.getAssetId());
             usePortList = assetLinkRelationDao.findUsePort(query);
-            selectResponseList = getSelectResponses(query, portAmountAssetId, usePortList);
+            selectResponseList = getSelectResponses(portAmountAssetId, usePortList);
         } else if (query.getParentAssetId() != null) {
             Integer portAmountParentAssetId = assetNetworkEquipmentDao.findPortAmount(query.getParentAssetId());
             usePortList = assetLinkRelationDao.findUsePort(query);
-            selectResponseList = getSelectResponses(query, portAmountParentAssetId, usePortList);
+            selectResponseList = getSelectResponses(portAmountParentAssetId, usePortList);
         }
         return selectResponseList;
     }
 
     /**
      * 获取未占用的端口
-     * @param query
      * @param portAmountAssetId
      * @return
      */
-    private List<SelectResponse> getSelectResponses(AssetLinkRelationQuery query, Integer portAmountAssetId,
+    private List<SelectResponse> getSelectResponses(Integer portAmountAssetId,
                                                     List<Integer> usePortList) {
         List<Integer> portList = new ArrayList<>();
         List<SelectResponse> selectResponseList;// 还原网络设备端口
