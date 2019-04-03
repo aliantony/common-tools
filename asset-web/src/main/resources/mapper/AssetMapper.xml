@@ -834,28 +834,29 @@
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
                 and id not in (SELECT distinct parent_asset_id from asset_link_relation where parent_asset_id is not
-                null)
-                and id not in (SELECT distinct asset_id from asset_link_relation where asset_id is not null)
+                null and status=1)
+                and id not in (SELECT distinct asset_id from asset_link_relation where asset_id is not null and
+                status=1)
             </trim>
         </where>
     </select>
 
     <select id="findCountIp" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
- SELECT
-	count(1) count
-FROM
-	asset a
-LEFT JOIN asset_network_equipment b ON a.id = b.asset_id
-LEFT JOIN asset_network_card c ON a.id = c.asset_id
-WHERE
-	b.inner_ip = #{ip}
-OR c.ip_address =  #{ip}
-AND a.`status` = 1
+        SELECT
+        count(1) count
+        FROM
+        asset a
+        LEFT JOIN asset_network_equipment b ON a.id = b.asset_id
+        LEFT JOIN asset_network_card c ON a.id = c.asset_id
+        WHERE
+        b.inner_ip = #{ip}
+        OR c.ip_address = #{ip}
+        AND a.`status` = 1
         <if test=" isNet != null">
             AND b.`status` = 1
         </if>
 
-AND c.`status` = 1
+        AND c.`status` = 1
 
     </select>
 
@@ -922,6 +923,20 @@ AND c.`status` = 1
         select distinct manufacturer from
         <include refid="Table_Name"></include>
         where status = 1
+    </select>
+
+    <select id="pulldownUnconnectedManufacturer" resultType="string"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select distinct manufacturer from
+        <include refid="Table_Name"></include>
+        where
+        <trim prefixOverrides="and">
+            <include refid="Multiple_Query"></include>
+            and id not in (SELECT asset_id from asset_link_relation where parent_asset_id is not null and status=1)
+            and id not in(SELECT parent_asset_id from asset_link_relation where parent_asset_id is not null and
+            status=1)
+            and status=1
+        </trim>
     </select>
 
     <select id="findCountByCategoryModel" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
@@ -1032,8 +1047,9 @@ AND c.`status` = 1
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
-                and id not in (SELECT asset_id from asset_link_relation where parent_asset_id is not null)
-                and id not in(SELECT parent_asset_id from asset_link_relation where parent_asset_id is not null)
+                and id not in (SELECT asset_id from asset_link_relation where parent_asset_id is not null and status=1)
+                and id not in(SELECT parent_asset_id from asset_link_relation where parent_asset_id is not null and
+                status=1)
             </trim>
             ORDER BY
             <if test=" ids != null">
