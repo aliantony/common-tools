@@ -748,8 +748,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         // 只查已入网资产
-        query.setAssetStatusList(null);
-        query.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        List<Integer> statusList=new ArrayList<>();
+        statusList.add(AssetStatusEnum.NET_IN.getCode());
+        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
+        query.setAssetStatusList(statusList);
         // 若品类型号查询条件为空 默认只查已入网，网络设备和计算设备的资产
         Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
         List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
@@ -2809,7 +2811,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
             }
         }
-        query.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        List<Integer> statusList=new ArrayList<>();
+        statusList.add(AssetStatusEnum.NET_IN.getCode());
+        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
+        query.setAssetStatusList(statusList);
         query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
