@@ -936,6 +936,7 @@
             and id not in (SELECT asset_id from asset_link_relation where parent_asset_id is not null and status=1)
             and id not in(SELECT parent_asset_id from asset_link_relation where parent_asset_id is not null and
             status=1)
+            and manufacturer != ""
             and status=1
         </trim>
     </select>
