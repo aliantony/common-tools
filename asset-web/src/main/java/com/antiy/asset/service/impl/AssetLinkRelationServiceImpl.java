@@ -4,11 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.response.AssetResponse;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -16,11 +11,16 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetLinkRelationDao;
+import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetLinkRelation;
 import com.antiy.asset.service.IAssetLinkRelationService;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
+import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.response.AssetLinkRelationResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.*;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
@@ -49,7 +49,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Override
     public String saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
-
+        assetLinkRelation.setAssetId(DataTypeUtils.stringToInteger(request.getAssetId()));
+        assetLinkRelation.setParentAssetId(DataTypeUtils.stringToInteger(request.getParentAssetId()));
         // 1.校验子资产IP是否可用
         List<String> assetAddress = assetLinkRelationDao.queryIpAddressByAssetId(request.getAssetId(), true,
             request.getAssetPort());
@@ -61,7 +62,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         ParamterExceptionUtils.isTrue(parentAssetAddress.contains(request.getParentAssetIp()), "父资产IP已经存在绑定关系,无法再次绑定");
 
         // 3.插入通联关系
-        assetLinkRelation.setCreateUser(LoginUserUtil.getLoginUser().getCreateUser());
+        assetLinkRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLinkRelation.setGmtCreate(System.currentTimeMillis());
         assetLinkRelationDao.insert(assetLinkRelation);
         return assetLinkRelation.getStringId();
