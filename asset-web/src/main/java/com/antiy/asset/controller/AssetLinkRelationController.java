@@ -2,7 +2,6 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.query.AssetQuery;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetLinkRelationService;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
+import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.response.AssetLinkRelationResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
@@ -138,5 +139,19 @@ public class AssetLinkRelationController {
     @RequestMapping(value = "/query/linekedRelationList", method = RequestMethod.GET)
     public ActionResponse queryLinekedRelationList(@ApiParam(value = "主键封装对象") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         return ActionResponse.success(iAssetLinkRelationService.queryLinekedRelationPage(assetLinkRelationQuery));
+    }
+
+    /**
+     * 通过ID查询设备端口
+     *
+     * @param assetLinkRelationQuery 主键封装对象
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过ID查询设备端口", notes = "传入查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/portById", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:linkrelation:portById')")
+    public ActionResponse queryPortById(@ApiParam(value = "assetLinkRelationQuery") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
+        return ActionResponse.success(iAssetLinkRelationService.queryPortById(assetLinkRelationQuery));
     }
 }

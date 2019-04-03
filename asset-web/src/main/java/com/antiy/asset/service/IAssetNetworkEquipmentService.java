@@ -6,7 +6,6 @@ import com.antiy.asset.entity.AssetNetworkEquipment;
 import com.antiy.asset.vo.query.AssetNetworkEquipmentQuery;
 import com.antiy.asset.vo.request.AssetNetworkEquipmentRequest;
 import com.antiy.asset.vo.response.AssetNetworkEquipmentResponse;
-import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -49,13 +48,4 @@ public interface IAssetNetworkEquipmentService extends IBaseService<AssetNetwork
      * @return
      */
     PageResult<AssetNetworkEquipmentResponse> findPageAssetNetworkEquipment(AssetNetworkEquipmentQuery query) throws Exception;
-
-    /**
-     * 通过ID查询设备端口
-     *
-     * @param query
-     * @return
-     */
-    List<SelectResponse> queryPortById(AssetNetworkEquipmentQuery query);
-
 }

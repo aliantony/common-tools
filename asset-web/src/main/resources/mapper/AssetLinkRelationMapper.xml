@@ -466,7 +466,15 @@
         asset_port
         from
         <include refid="Table_Name"></include>
-        where asset_id = #{assetId}
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+
+            <if test=" assetId != null">
+                and asset_id = #{assetId }
+            </if>
+            <if test=" assetId != null">
+                and asset_id = #{assetId }
+            </if>
+        </trim>
     </select>
 
 </mapper>

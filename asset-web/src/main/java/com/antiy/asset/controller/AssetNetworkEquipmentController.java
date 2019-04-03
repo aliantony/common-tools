@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.antiy.asset.service.IAssetNetworkEquipmentService;
 import com.antiy.asset.vo.query.AssetNetworkEquipmentQuery;
 import com.antiy.asset.vo.request.AssetNetworkEquipmentRequest;
-import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
@@ -104,19 +103,5 @@ public class AssetNetworkEquipmentController {
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isNull(baseRequest.getStringId(), "ID不能为空");
         return ActionResponse.success(iAssetNetworkEquipmentService.deleteById(baseRequest.getStringId()));
-    }
-
-    /**
-     * 通过ID查询设备端口
-     *
-     * @param assetNetworkEquipmentQuery 主键封装对象
-     * @return actionResponse
-     */
-    @ApiOperation(value = "通过ID查询设备端口", notes = "传入查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/portById", method = RequestMethod.GET)
-    @PreAuthorize(value = "hasAuthority('asset:networkequipment:portById')")
-    public ActionResponse queryPortById(@ApiParam(value = "assetPortProtocolQuery") AssetNetworkEquipmentQuery assetNetworkEquipmentQuery) throws Exception {
-        return ActionResponse.success(iAssetNetworkEquipmentService.queryPortById(assetNetworkEquipmentQuery));
     }
 }
