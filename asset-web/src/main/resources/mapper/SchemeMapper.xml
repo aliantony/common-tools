@@ -19,6 +19,7 @@
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
+        <result column="asset_next_status" property="assetNextStatus"/>
         <result column="scheme_source" property="schemeSource"/>
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
@@ -86,6 +87,9 @@
         <if test=" modifyUser != null">
             modify_user,
         </if>
+        <if test=" assetNextStatus != null">
+            assetNextStatus,
+        </if>
         <if test=" status != null">
             status,
         </if>
@@ -142,6 +146,9 @@
         </if>
         <if test=" modifyUser != null">
             #{modifyUser },
+        </if>
+        <if test=" assetNextStatus != null">
+            #{assetNextStatus },
         </if>
         <if test=" status != null">
             #{status },
@@ -389,5 +396,14 @@
             and status = 1
             order by id desc limit 1
         </trim>
+    </select>
+
+    <select id="findMemoById" resultType="string" parameterType="com.antiy.common.base.ObjectQuery">
+        select
+        memo
+        from
+        <include refid="Table_Name"></include>
+        where asset_id = #{assetId} and asset_next_status = #{assetStatus} and scheme_source = #{assetTypeEnum.code}
+        and status = 1 order by id
     </select>
 </mapper>

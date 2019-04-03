@@ -60,6 +60,10 @@ public class Scheme extends BaseEntity {
      */
     private String  extension;
     /**
+     * 下一个资产状态
+     */
+    private Integer assetNextStatus;
+    /**
      * 创建时间
      */
     private Long    gmtCreate;
@@ -87,6 +91,14 @@ public class Scheme extends BaseEntity {
      * 方案内容
      */
     private String  content;
+
+    public Integer getAssetNextStatus() {
+        return assetNextStatus;
+    }
+
+    public void setAssetNextStatus(Integer assetNextStatus) {
+        this.assetNextStatus = assetNextStatus;
+    }
 
     public String getAssetId() {
         return assetId;
@@ -250,9 +262,12 @@ public class Scheme extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Scheme{" + ", type=" + type + ", result=" + result + ", putintoUserId=" + putintoUserId
-               + ", putintoTime=" + putintoTime + ", putintoUser=" + putintoUser + ", fileInfo=" + fileInfo
-               + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser="
-               + createUser + ", modifyUser=" + modifyUser + ", status=" + status + "}";
+        return "Scheme{" + "assetId='" + assetId + '\'' + ", type=" + type + ", result=" + result + ", putintoUserId="
+               + putintoUserId + ", putintoTime=" + putintoTime + ", putintoUser='" + putintoUser + '\''
+               + ", orderLevel=" + orderLevel + ", expecteStartTime=" + expecteStartTime + ", expecteEndTime="
+               + expecteEndTime + ", fileInfo='" + fileInfo + '\'' + ", schemeSource=" + schemeSource + ", extension='"
+               + extension + '\'' + ", assetNextStatus=" + assetNextStatus + ", gmtCreate=" + gmtCreate
+               + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
+               + ", modifyUser=" + modifyUser + ", status=" + status + ", content='" + content + '\'' + '}';
     }
 }

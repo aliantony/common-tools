@@ -46,7 +46,6 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @return
      */
     List<AssetLinkRelation> queryLinekedRelationList(AssetLinkRelationQuery assetLinkRelationQuery);
-
     /**
      * 查询资产对应的IP地址
      * @param assetId 资产Id
@@ -81,4 +80,5 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
     List<AssetLinkRelation> queryLinkedAssetListByAssetId(@Param(value = "id") Integer id);
 
 
+    List<Integer> findUsePort(String assetId);
 }

@@ -452,7 +452,7 @@
                 ) and
                 asset_id=#{assetId} and
                 status='1'
-                union all select outer_ip as ip_address from asset_network_equipment t1 WHERE not exists
+                union all select inner_ip as ip_address from asset_network_equipment t1 WHERE not exists
                 (select 1 from asset_link_relation t2 where (t2.asset_id=#{assetId} and t1.inner_ip= t2.asset_ip)
                 or(t2.parent_asset_id=#{assetId} and t1.inner_ip= t2.parent_asset_ip) and status='1'
 
@@ -468,7 +468,7 @@
             </when>
             <otherwise>
                 select ip_address from asset_network_card WHERE asset_id=#{assetId} and status='1' union all
-                select outer_ip as ip_address from asset_network_equipment WHERE asset_id=#{assetId} and status='1'
+                select inner_ip as ip_address from asset_network_equipment WHERE asset_id=#{assetId} and status='1'
             </otherwise>
         </choose>
     </select>
@@ -489,18 +489,22 @@
         </where>
     </update>
     <select id="findUsePort" resultType="java.lang.Integer" parameterType="com.antiy.common.base.ObjectQuery">
-        select
+        SELECT
         asset_port
-        from
-        <include refid="Table_Name"></include>
-        <trim prefix="WHERE" prefixOverrides="AND|OR">
-            <if test=" assetId != null">
-                and asset_id = #{assetId }
-            </if>
-            <if test=" parentAssetId != null">
-                and parent_asset_id = #{parentAssetId }
-            </if>
-        </trim>
+        FROM
+        `asset_link_relation`
+        WHERE
+        asset_id = #{assetId }
+        AND asset_port IS NOT NULL UNION ALL
+        SELECT
+        parent_asset_port
+        FROM
+        `asset_link_relation`
+        WHERE
+        parent_asset_id = #{assetId }
+        AND parent_asset_port IS NOT NULL;
+
+
     </select>
     <!--资产通联数量查询-->
     <select id="queryAssetLinkedCountList" resultType="com.antiy.asset.entity.AssetLinkedCount"

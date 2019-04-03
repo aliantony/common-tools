@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.query;
 
+import com.antiy.asset.vo.enums.AssetTypeEnum;
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -33,9 +34,31 @@ public class SchemeQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("资产id")
     private String assetId;
 
+    @ApiModelProperty("资产状态")
+    private Integer       assetStatus;
+
+    @ApiModelProperty("类型")
+    private AssetTypeEnum assetTypeEnum;
+
     @Override
     public void validate() throws RequestParamValidateException {
 
+    }
+
+    public AssetTypeEnum getAssetTypeEnum() {
+        return assetTypeEnum;
+    }
+
+    public void setAssetTypeEnum(AssetTypeEnum assetTypeEnum) {
+        this.assetTypeEnum = assetTypeEnum;
+    }
+
+    public Integer getAssetStatus() {
+        return assetStatus;
+    }
+
+    public void setAssetStatus(Integer assetStatus) {
+        this.assetStatus = assetStatus;
     }
 
     public String getAssetId() {
@@ -60,5 +83,11 @@ public class SchemeQuery extends ObjectQuery implements ObjectValidator {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "SchemeQuery{" + "type=" + type + ", putintoUser='" + putintoUser + '\'' + ", assetId='" + assetId + '\''
+               + ", assetStatus=" + assetStatus + ", assetTypeEnum=" + assetTypeEnum + '}';
     }
 }

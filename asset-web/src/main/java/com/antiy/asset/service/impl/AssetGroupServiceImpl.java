@@ -242,18 +242,21 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         List<AssetCategoryModel> all = assetCategoryModelService.getAll();
         for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
             if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-                categoryCondition
-                    .addAll(assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()),all));
+                categoryCondition.addAll(
+                    assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
             }
             if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-                categoryCondition
-                    .addAll(assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()),all));
+                categoryCondition.addAll(
+                    assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
             }
         }
         query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-        query.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        List<Integer> statusList = new ArrayList<>();
+        statusList.add(AssetStatusEnum.NET_IN.getCode());
+        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
+        query.setAssetStatusList(statusList);
         return selectConvert.convert(assetGroupDao.findPulldownUnconnectedGroup(query), SelectResponse.class);
     }
 

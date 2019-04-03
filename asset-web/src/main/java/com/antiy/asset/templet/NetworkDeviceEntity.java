@@ -98,12 +98,12 @@ public class NetworkDeviceEntity {
     /**
      * 外网IP
      */
-    @ExcelField(value = "outerIp", align = 1, title = "外网IP",dataType = DataTypeEnum.IP,required = true)
+    @ExcelField(value = "outerIp", align = 1, title = "外网IP",dataType = DataTypeEnum.IP,required = false)
     private String  outerIp;
     /**
      * mac地址
      */
-    @ExcelField(value = "mac", align = 1, title = "mac地址",dataType = DataTypeEnum.MAC)
+    @ExcelField(value = "mac", align = 1, title = "mac地址",dataType = DataTypeEnum.MAC,required = true)
     private String  mac;
     /**
      * 子网掩码

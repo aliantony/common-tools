@@ -5,7 +5,6 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import io.swagger.models.auth.In;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
-import com.antiy.asset.vo.enums.ReportFormType;
 import com.antiy.asset.vo.enums.ShowCycleType;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
@@ -135,12 +133,12 @@ public class AssetReportServiceImpl implements IAssetReportService {
         Map<String, Object> filterMap = new HashMap<>();
         filterMap.put("beginTime", query.getBeginTime());
         filterMap.put("areaIds", query.getAreaIds());
-        int amount = 0;
         int computerAmountSum = 0;
         int networkAmountSum = 0;
         int storageAmountSum = 0;
         int safetyAmountSum = 0;
         int otherAmountSum = 0;
+        boolean first = true;
         // 表格数据
         while (iterator.hasNext()) {
             Map.Entry<String, String> entry = iterator.next();
@@ -169,35 +167,45 @@ public class AssetReportServiceImpl implements IAssetReportService {
                         && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         computeNewAdd = computeNewAdd + categoryEntity.getCategoryCount();
-                            computeAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                        computeAmount = computeAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         networkNewAdd = networkNewAdd + categoryEntity.getCategoryCount();
-                            networkAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                        networkAmount = networkAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         storageNewAdd = storageNewAdd + categoryEntity.getCategoryCount();
-                            storageAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                        storageAmount = storageAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         safetyNewAdd = safetyNewAdd + categoryEntity.getCategoryCount();
-                            safetyAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                        safetyAmount = safetyAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         otherNewAdd = otherNewAdd + categoryEntity.getCategoryCount();
-                            otherAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                        otherAmount = otherAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     }
                 }
             }
+
+            if (first) {
                 computerAmountSum = computerAmountSum + computeAmount + computeNewAdd;
                 networkAmountSum = networkAmountSum + networkAmount + networkNewAdd;
                 storageAmountSum = storageAmountSum + storageAmount + storageNewAdd;
                 safetyAmountSum = safetyAmountSum + safetyAmount + +safetyNewAdd;
                 otherAmountSum = otherAmountSum + otherAmount + otherNewAdd;
+                first = false;
+            } else {
+                computerAmountSum = computerAmountSum + computeNewAdd;
+                networkAmountSum = networkAmountSum + networkNewAdd;
+                storageAmountSum = storageAmountSum + storageNewAdd;
+                safetyAmountSum = safetyAmountSum + safetyNewAdd;
+                otherAmountSum = otherAmountSum + otherNewAdd;
+            }
 
             computerTimeValueMap.put(key, String.valueOf(computerAmountSum));
             networkTimeValueMap.put(key, String.valueOf(networkAmountSum));
@@ -206,9 +214,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
             otherTimeValueMap.put(key, String.valueOf(otherAmountSum));
             newAddTimeValueMap.put(key,
                 String.valueOf(computeNewAdd + networkNewAdd + storageNewAdd + safetyNewAdd + otherNewAdd));
-            amount = amount + computeAmount + computeNewAdd + networkAmount + networkNewAdd + storageAmount
-                     + storageNewAdd + safetyAmount + +safetyNewAdd + otherAmount + otherNewAdd;
-            amountTimeValueMap.put(key, String.valueOf(amount));
+            amountTimeValueMap.put(key, String
+                .valueOf(computerAmountSum + networkAmountSum + storageAmountSum + safetyAmountSum + otherAmountSum));
 
             computerDataList.add(computerAmountSum);
             networkDataList.add(networkAmountSum);
@@ -460,7 +467,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // 获取top5的资产组信息
         List<AssetGroupEntity> groupReportEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
 
-        if (reportQueryRequest.getTopFive()) {
+        if (Objects.nonNull(reportQueryRequest.getTopFive())) {
             // 查询当前结束时间内TOP5的资产组Id列表
             List<Integer> groupIds = new ArrayList<>();
             groupReportEntityList.stream().forEach(assetGroupEntity -> groupIds.add(assetGroupEntity.getGroupId()));

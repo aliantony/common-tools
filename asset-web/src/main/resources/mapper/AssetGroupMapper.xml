@@ -324,14 +324,33 @@
 
     <select id="findPulldownUnconnectedGroup" resultMap="BaseResultMap"
             parameterType="com.antiy.common.base.ObjectQuery">
-        select distinct grou.id,grou.`name` from asset_group_relation relation LEFT JOIN asset ON asset.id=relation.asset_id
+        select distinct grou.id,grou.`name` from asset_group_relation relation LEFT JOIN asset ON
+        asset.id=relation.asset_id
         LEFT JOIN asset_group grou on grou.id=relation.asset_group_id
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
-                and asset.id not in (SELECT distinct parent_asset_id from asset_link_relation where parent_asset_id is
-                not null)
-                and asset.id not in (SELECT distinct asset_id from asset_link_relation where asset_id is not null)
+                and asset.id not in (
+                select distinct asset_id from
+                (
+                (select DISTINCT netcard.asset_id from asset_network_card netcard where netcard.status=1
+                GROUP BY netcard.asset_id HAVING count(netcard.asset_id) &lt;=
+                (select count(id) FROM asset_link_relation where asset_id=netcard.asset_id or
+                 parent_asset_id=netcard.asset_id and status=1))
+                union
+                (select DISTINCT relation.asset_id from asset_link_relation relation
+                LEFT JOIN asset_network_equipment net on net.asset_id=relation.asset_id
+                where (select count(id) from asset_link_relation where asset_id=net.asset_id or
+                parent_asset_id=net.asset_id and status=1) >= net.port_size
+                and relation.status=1 and net.status=1)
+                union
+                (select DISTINCT relation.parent_asset_id from asset_link_relation relation
+                LEFT JOIN asset_network_equipment net on net.asset_id=relation.parent_asset_id
+                where (select count(id) from asset_link_relation where asset_id=net.asset_id or
+                parent_asset_id=net.asset_id and status=1) >= net.port_size
+                and relation.status=1 and net.status=1)
+                ) as assets
+                )
                 and grou.`name` is not null
                 and asset.status=1
                 and grou.status=1

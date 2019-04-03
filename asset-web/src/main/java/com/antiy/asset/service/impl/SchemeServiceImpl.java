@@ -19,6 +19,7 @@ import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
  * * <p> 方案 服务实现类 </p>
@@ -73,5 +74,13 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     public SchemeResponse findSchemeByAssetIdAndType(AssetIDAndSchemeTypeQuery query) throws Exception {
         query.setAssetId(aesEncoder.decode(query.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         return responseBaseConverter.convert(schemeDao.findSchemeByAssetIdAndType(query), SchemeResponse.class);
+    }
+
+    @Override
+    public String queryMemoById(SchemeQuery query) {
+        ParamterExceptionUtils.isNull(query.getAssetId(), "资产ID不能为空");
+        ParamterExceptionUtils.isNull(query.getAssetStatus(), "资产状态不能为空");
+        ParamterExceptionUtils.isNull(query.getAssetTypeEnum(), "类型不能为空");
+        return schemeDao.findMemoById(query);
     }
 }

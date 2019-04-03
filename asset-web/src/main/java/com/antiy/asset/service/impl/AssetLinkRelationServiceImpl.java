@@ -28,7 +28,6 @@ import com.antiy.asset.vo.response.AssetLinkRelationResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.*;
-import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -195,23 +194,9 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     }
 
     @Override
-    public List<SelectResponse> queryPortById(AssetLinkRelationQuery query) {
-
-        List<SelectResponse> selectResponseList = null;
-        // 排除已占用的端口
-        List<Integer> usePortList;
-        if (query.getAssetId() != null && query.getParentAssetId() == null) {
-            Integer portAmountAssetId = assetNetworkEquipmentDao.findPortAmount(query.getAssetId());
-            usePortList = assetLinkRelationDao.findUsePort(query);
-            selectResponseList = getSelectResponses(portAmountAssetId, usePortList);
-        } else if (query.getParentAssetId() != null && query.getAssetId() == null) {
-            Integer portAmountParentAssetId = assetNetworkEquipmentDao.findPortAmount(query.getParentAssetId());
-            usePortList = assetLinkRelationDao.findUsePort(query);
-            selectResponseList = getSelectResponses(portAmountParentAssetId, usePortList);
-        } else {
-            throw new BusinessException("不能同时传入当前设备和关联设备的主键");
-        }
-        return selectResponseList;
+    public List<SelectResponse> queryPortById(QueryCondition queryCondition) {
+        return getSelectResponses(assetNetworkEquipmentDao.findPortAmount(queryCondition.getPrimaryKey()),
+            assetLinkRelationDao.findUsePort(queryCondition.getPrimaryKey()));
     }
 
     @Override
@@ -271,7 +256,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     private List<SelectResponse> getSelectResponses(Integer amount, List<Integer> usePortList) {
         List<Integer> portList = new ArrayList<>();
         List<SelectResponse> selectResponseList;// 还原网络设备端口
-        if (amount > 1) {
+        if (amount != null && amount > 1) {
             for (int i = 1; i <= amount; i++) {
                 portList.add(i);
             }

@@ -122,7 +122,7 @@ public class AssetReportController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/groupCountTop", method = RequestMethod.GET)
     // @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
-    public ActionResponse getAssetConutWithGroup(@RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
+    public ActionResponse getAssetConutWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
         reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         return ActionResponse.success(iAssetReportService.getAssetConutWithGroup(reportQueryRequest));
     }
