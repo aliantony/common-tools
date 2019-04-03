@@ -20,10 +20,12 @@
         SELECT
         <trim suffixOverrides=",">
             <foreach collection="assetAreaIds" item="item">
-                sum(CASE WHEN area_id IN (#{item.parentAreaId},
-                <foreach collection="item.childrenAradIds" separator="," item="area">
-                    #{area}
-                </foreach>
+                sum(CASE WHEN area_id IN (#{item.parentAreaId}
+                <if test="item.childrenAradIds !=null and item.childrenAradIds.size() > 0">
+                    <foreach collection="item.childrenAradIds" open="," separator="," item="area">
+                        #{area}
+                    </foreach>
+                </if>
                 )
                 THEN 1
                 ELSE 0
@@ -43,8 +45,8 @@
         SELECT
         CASE
         <foreach collection="list" item="item">
-            WHEN area_id IN (#{item.parentAreaId},
-            <foreach collection="item.childrenAradIds" separator="," item="area">
+            WHEN area_id IN (#{item.parentAreaId}
+            <foreach collection="item.childrenAradIds" open="," separator="," item="area">
                 #{area}
             </foreach>
             ) THEN #{item.parentAreaId}
@@ -59,8 +61,8 @@
         AND STATUS = 1
         AND area_id in
         <foreach collection="list" item="item" open="(" close=")" separator=",">
-            #{item.parentAreaId},
-            <foreach collection="item.childrenAradIds" separator="," item="area">
+            #{item.parentAreaId}
+            <foreach collection="item.childrenAradIds" open="," separator="," item="area">
                 #{area}
             </foreach>
         </foreach>
@@ -73,8 +75,8 @@
         replace(ltrim(replace(FROM_UNIXTIME(gmt_create/1000,#{timeType}),'0',' ')),' ','0') AS date,
         <trim suffixOverrides=",">
             <foreach collection="list" item="item">
-                sum(CASE WHEN area_id IN (#{item.parentAreaId},
-                <foreach collection="item.childrenAradIds" separator="," item="area">
+                sum(CASE WHEN area_id IN (#{item.parentAreaId}
+                <foreach collection="item.childrenAradIds" open="," separator="," item="area">
                     #{area}
                 </foreach>
                 )

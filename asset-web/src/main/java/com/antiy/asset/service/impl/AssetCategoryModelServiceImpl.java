@@ -383,6 +383,17 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public List<Integer> findAssetCategoryModelIdsById(Integer id) throws Exception {
         List<AssetCategoryModelResponse> categoryModelResponses = responseConverter
             .convert(recursionSearch(assetCategoryModelDao.getAll(), id), AssetCategoryModelResponse.class);
+        return getSonCategory(categoryModelResponses);
+    }
+
+    @Override
+    public List<Integer> findAssetCategoryModelIdsById(Integer id,List<AssetCategoryModel> assetCategoryModels) throws Exception{
+        List<AssetCategoryModelResponse> categoryModelResponses = responseConverter
+                .convert(recursionSearch(assetCategoryModels, id), AssetCategoryModelResponse.class);
+        return getSonCategory(categoryModelResponses);
+    }
+
+    private List<Integer> getSonCategory(List<AssetCategoryModelResponse> categoryModelResponses) {
         List<Integer> categoryModels = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(categoryModelResponses)) {
             categoryModelResponses.stream().forEach(assetCategoryModelResponse -> {

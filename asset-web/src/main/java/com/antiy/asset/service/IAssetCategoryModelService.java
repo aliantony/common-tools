@@ -97,11 +97,19 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
     List<AssetCategoryModelResponse> findAssetCategoryModelById(Integer id) throws Exception;
 
     /**
-     * 通过名称查询下一级的品类ID
+     * 通过id查询所有品类和子品类id
      *
      * @return
      */
     List<Integer> findAssetCategoryModelIdsById(Integer id) throws Exception;
+
+
+    /**
+     * 通过id查询所有品类和子品类id
+     *
+     * @return
+     */
+    List<Integer> findAssetCategoryModelIdsById(Integer id,List<AssetCategoryModel> assetCategoryModels) throws Exception;
 
     /**
      * 递归查询品类子节点

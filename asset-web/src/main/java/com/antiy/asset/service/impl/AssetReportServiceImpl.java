@@ -460,7 +460,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // 获取top5的资产组信息
         List<AssetGroupEntity> groupReportEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
 
-        if (reportQueryRequest.getTopFive()) {
+        if (Objects.nonNull(reportQueryRequest.getTopFive())) {
             // 查询当前结束时间内TOP5的资产组Id列表
             List<Integer> groupIds = new ArrayList<>();
             groupReportEntityList.stream().forEach(assetGroupEntity -> groupIds.add(assetGroupEntity.getGroupId()));
