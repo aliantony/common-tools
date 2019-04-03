@@ -590,6 +590,7 @@
     <select id="queryLinkedAssetListByAssetId" resultType="com.antiy.asset.entity.AssetLinkRelation"
             parameterType="java.lang.Integer">
         SELECT
+        c.id,
         a.id as assetId,
         a.NAME as assetName,
         c.asset_port as assetPort,
@@ -609,6 +610,7 @@
         a.id = #{id}
         UNION ALL
         SELECT
+        alr.id,
         t.id as assetId,
         t.NAME as assetName,
         t.port as assetPort,
@@ -649,6 +651,7 @@
         where  t.id is not null
         union all
         SELECT
+        a.id,
         a.parent_asset_id as assetId,
         b.name as assetName,
         a.parent_asset_port as assetPort,
