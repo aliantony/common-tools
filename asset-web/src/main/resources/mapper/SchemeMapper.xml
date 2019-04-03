@@ -403,7 +403,7 @@
         memo
         from
         <include refid="Table_Name"></include>
-        where asset_id = #{assetId} and asset_next_status = #{assetStatus} and scheme_source = #{assetTypeEnum.code}and
-        status = 1 order by id
+        where asset_id = #{assetId} and asset_next_status = #{assetStatus} and scheme_source = #{assetTypeEnum.code}
+        and status = 1 order by id
     </select>
 </mapper>
