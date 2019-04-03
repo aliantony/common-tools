@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.entity.AssetLinkedCount;
+import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.vo.response.AssetLinkedCountResponse;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -51,6 +54,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     private BaseConverter<AssetLinkRelationRequest, AssetLinkRelation>  requestConverter;
     @Resource
     private BaseConverter<AssetLinkRelation, AssetLinkRelationResponse> responseConverter;
+    @Resource
+    private IAssetCategoryModelService                                  assetCategoryModelService;
 
     @Override
     public String saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
@@ -207,6 +212,55 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             throw new BusinessException("不能同时传入当前设备和关联设备的主键");
         }
         return selectResponseList;
+    }
+
+    @Override
+    public PageResult<AssetLinkedCountResponse> queryAssetLinkedCountPage(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
+        List<AssetLinkedCountResponse> assetLinkedCountResponseList = this
+            .queryAssetLinkedCountList(assetLinkRelationQuery);
+        if (assetLinkedCountResponseList.size() <= 0) {
+            return new PageResult<AssetLinkedCountResponse>(assetLinkRelationQuery.getPageSize(), 0,
+                assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
+        }
+        return new PageResult<AssetLinkedCountResponse>(assetLinkRelationQuery.getPageSize(),
+            assetLinkedCountResponseList.size(), assetLinkRelationQuery.getCurrentPage(), assetLinkedCountResponseList);
+    }
+
+    @Override
+    public List<AssetLinkedCountResponse> queryAssetLinkedCountList(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
+        // 计算设备下所有品类型号
+        assetLinkRelationQuery.setPcCategoryModels(assetCategoryModelService.findAssetCategoryModelIdsById(4));
+        // 网络设备下所有品类型号
+        assetLinkRelationQuery.setNetCategoryModels(assetCategoryModelService.findAssetCategoryModelIdsById(5));
+        assetLinkRelationQuery.setAreaIds(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser() : Lists.newArrayList());
+        List<AssetLinkedCount> assetResponseList = assetLinkRelationDao
+            .queryAssetLinkedCountList(assetLinkRelationQuery);
+        if (CollectionUtils.isEmpty(assetResponseList)) {
+            return Lists.newArrayList();
+        }
+        return BeanConvert.convert(assetResponseList, AssetLinkedCountResponse.class);
+    }
+
+    @Override
+    public List<AssetLinkRelationResponse> queryLinkedAssetListByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) {
+        List<AssetLinkRelation> assetResponseList = assetLinkRelationDao
+                .queryLinkedAssetListByAssetId(DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()));
+        if (CollectionUtils.isEmpty(assetResponseList)) {
+            return Lists.newArrayList();
+        }
+        return BeanConvert.convert(assetResponseList, AssetLinkRelationResponse.class);
+    }
+
+    @Override
+    public PageResult<AssetLinkRelationResponse> queryLinkedAssetPageByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) {
+        List<AssetLinkRelationResponse> assetLinkRelationResponseList = this
+                .queryLinkedAssetListByAssetId(assetLinkRelationQuery);
+        if (assetLinkRelationResponseList.size() <= 0) {
+            return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(), 0,
+                    assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
+        }
+        return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(),
+                assetLinkRelationResponseList.size(), assetLinkRelationQuery.getCurrentPage(), assetLinkRelationResponseList);
     }
 
     /**

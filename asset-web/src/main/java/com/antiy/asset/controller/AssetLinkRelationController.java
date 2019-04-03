@@ -154,4 +154,32 @@ public class AssetLinkRelationController {
     public ActionResponse queryPortById(@ApiParam(value = "assetLinkRelationQuery") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         return ActionResponse.success(iAssetLinkRelationService.queryPortById(assetLinkRelationQuery));
     }
+
+    /**
+     * 资产通联数量列表查询
+     *
+     * @param assetLinkRelationQuery 主键封装对象
+     * @return actionResponse
+     */
+    @ApiOperation(value = "资产通联状态列表查询", notes = "传入查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/assetLinkedCount", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:linkrelation:portById')")
+    public ActionResponse queryAssetLinkedCount(@ApiParam(value = "assetLinkRelationQuery") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
+        return ActionResponse.success(iAssetLinkRelationService.queryAssetLinkedCountPage(assetLinkRelationQuery));
+    }
+
+    /**
+     * 与当前资产通联的资产列表查询
+     * @param assetLinkRelationQuery
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "与当前资产通联的资产列表查询", notes = "传入查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/linkedAssetListByAssetId", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:linkrelation:portById')")
+    public ActionResponse queryLinkedAssetListByAssetId(@ApiParam(value = "assetLinkRelationQuery") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
+        return ActionResponse.success(iAssetLinkRelationService.queryLinkedAssetPageByAssetId(assetLinkRelationQuery));
+    }
 }

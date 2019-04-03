@@ -7,12 +7,14 @@ import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.response.AssetLinkRelationResponse;
+import com.antiy.asset.vo.response.AssetLinkedCountResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p> 通联关系表 服务类 </p>
@@ -107,4 +109,31 @@ public interface IAssetLinkRelationService extends IBaseService<AssetLinkRelatio
      * @return
      */
     List<SelectResponse> queryPortById(AssetLinkRelationQuery query);
+
+    /**
+     * 资产通联数量分页查询
+     * @param assetLinkRelationQuery
+     * @return
+     */
+    PageResult<AssetLinkedCountResponse> queryAssetLinkedCountPage(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception;
+
+    /**
+     * 资产通联数量分页查询
+     * @param assetLinkRelationQuery
+     * @return
+     */
+    List<AssetLinkedCountResponse> queryAssetLinkedCountList(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception;
+
+    /**
+     * 与当前资产通联的资产列表查询
+     * @param assetLinkRelationQuery
+     * @return
+     */
+    List<AssetLinkRelationResponse> queryLinkedAssetListByAssetId(AssetLinkRelationQuery assetLinkRelationQuery);
+    /**
+     * 与当前资产通联的资产列表查询
+     * @param assetLinkRelationQuery
+     * @return
+     */
+    PageResult<AssetLinkRelationResponse> queryLinkedAssetPageByAssetId(AssetLinkRelationQuery assetLinkRelationQuery);
 }
