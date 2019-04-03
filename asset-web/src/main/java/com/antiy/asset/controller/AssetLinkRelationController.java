@@ -144,14 +144,14 @@ public class AssetLinkRelationController {
     /**
      * 通过ID查询设备端口
      *
-     * @param assetLinkRelationQuery 主键封装对象
+     * @param queryCondition 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询设备端口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/portById", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:linkrelation:portById')")
-    public ActionResponse queryPortById(@ApiParam(value = "assetLinkRelationQuery") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
-        return ActionResponse.success(iAssetLinkRelationService.queryPortById(assetLinkRelationQuery));
+    public ActionResponse queryPortById(@ApiParam(value = "assetLinkRelationQuery") QueryCondition queryCondition) throws Exception {
+        return ActionResponse.success(iAssetLinkRelationService.queryPortById(queryCondition));
     }
 }

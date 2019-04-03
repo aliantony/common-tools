@@ -60,5 +60,5 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      */
     Integer deleteRelationByAssetId(@Param(value = "assetIds") List<Integer> assetIds);
 
-    List<Integer> findUsePort(AssetLinkRelationQuery query);
+    List<Integer> findUsePort(String assetId);
 }
