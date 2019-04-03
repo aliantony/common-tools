@@ -5,7 +5,6 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import io.swagger.models.auth.In;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
-import com.antiy.asset.vo.enums.ReportFormType;
 import com.antiy.asset.vo.enums.ShowCycleType;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
@@ -169,27 +167,27 @@ public class AssetReportServiceImpl implements IAssetReportService {
                         && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         computeNewAdd = computeNewAdd + categoryEntity.getCategoryCount();
-                            computeAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                        computeAmount = computeAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         networkNewAdd = networkNewAdd + categoryEntity.getCategoryCount();
-                            networkAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                        networkAmount = networkAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         storageNewAdd = storageNewAdd + categoryEntity.getCategoryCount();
-                            storageAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                        storageAmount = storageAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         safetyNewAdd = safetyNewAdd + categoryEntity.getCategoryCount();
-                            safetyAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                        safetyAmount = safetyAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         otherNewAdd = otherNewAdd + categoryEntity.getCategoryCount();
-                            otherAmount = assetReportDao.findCategoryCountAmount(filterMap);
+                        otherAmount = otherAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     }
                 }
             }
