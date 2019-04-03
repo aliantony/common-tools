@@ -1,16 +1,14 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.entity.Asset;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetLinkRelation;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.common.base.IBaseDao;
-
-import java.util.List;
 
 /**
  * <p> 通联关系表 Mapper 接口 </p>
@@ -62,5 +60,5 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      */
     Integer deleteRelationByAssetId(@Param(value = "assetIds") List<Integer> assetIds);
 
-    List<Integer> findUsePort(String assetId);
+    List<Integer> findUsePort(AssetLinkRelationQuery query);
 }

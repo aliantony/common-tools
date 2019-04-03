@@ -184,11 +184,11 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         List<Integer> usePortList;
         if (query.getAssetId() != null) {
             Integer portAmountAssetId = assetNetworkEquipmentDao.findPortAmount(query.getAssetId());
-            usePortList = assetLinkRelationDao.findUsePort(query.getAssetId());
+            usePortList = assetLinkRelationDao.findUsePort(query);
             selectResponseList = getSelectResponses(query, portAmountAssetId, usePortList);
         } else if (query.getParentAssetId() != null) {
             Integer portAmountParentAssetId = assetNetworkEquipmentDao.findPortAmount(query.getParentAssetId());
-            usePortList = assetLinkRelationDao.findUsePort(query.getParentAssetId());
+            usePortList = assetLinkRelationDao.findUsePort(query);
             selectResponseList = getSelectResponses(query, portAmountParentAssetId, usePortList);
         }
         return selectResponseList;

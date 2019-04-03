@@ -461,18 +461,17 @@
             </if>
         </where>
     </update>
-    <select id="findUsePort" resultType="java.lang.Integer" parameterType="java.lang.String">
+    <select id="findUsePort" resultType="java.lang.Integer" parameterType="com.antiy.common.base.ObjectQuery">
         select
         asset_port
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND|OR">
-
             <if test=" assetId != null">
                 and asset_id = #{assetId }
             </if>
-            <if test=" assetId != null">
-                and asset_id = #{assetId }
+            <if test=" parentAssetId != null">
+                and parent_asset_id = #{parentAssetId }
             </if>
         </trim>
     </select>
