@@ -190,7 +190,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     private List<SelectResponse> getSelectResponses(Integer amount, List<Integer> usePortList) {
         List<Integer> portList = new ArrayList<>();
         List<SelectResponse> selectResponseList;// 还原网络设备端口
-        if (amount > 1) {
+        if (amount != null && amount > 1) {
             for (int i = 1; i <= amount; i++) {
                 portList.add(i);
             }
