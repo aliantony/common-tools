@@ -21,6 +21,45 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      */
     @ApiModelProperty("关联资产id")
     private String parentAssetId;
+    /**
+     * 资产品类型号
+     */
+    @ApiModelProperty("资产品类型号")
+    private String categoryModel;
+    /**
+     * 资产综合查询
+     */
+    @ApiModelProperty("资产综合查询")
+    private String multipleQuery;
+    /**
+     * 关联资产综合查询
+     */
+    @ApiModelProperty("关联资产综合查询")
+    private String parentMultipleQuery;
+
+    public String getCategoryModel() {
+        return categoryModel;
+    }
+
+    public void setCategoryModel(String categoryModel) {
+        this.categoryModel = categoryModel;
+    }
+
+    public String getMultipleQuery() {
+        return multipleQuery;
+    }
+
+    public void setMultipleQuery(String multipleQuery) {
+        this.multipleQuery = multipleQuery;
+    }
+
+    public String getParentMultipleQuery() {
+        return parentMultipleQuery;
+    }
+
+    public void setParentMultipleQuery(String parentMultipleQuery) {
+        this.parentMultipleQuery = parentMultipleQuery;
+    }
 
     public String getAssetId() {
         return assetId;
