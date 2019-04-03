@@ -98,7 +98,7 @@ public class NetworkDeviceEntity {
     /**
      * 外网IP
      */
-    @ExcelField(value = "outerIp", align = 1, title = "外网IP",dataType = DataTypeEnum.IP,required = true)
+    @ExcelField(value = "outerIp", align = 1, title = "外网IP",dataType = DataTypeEnum.IP,required = false)
     private String  outerIp;
     /**
      * mac地址

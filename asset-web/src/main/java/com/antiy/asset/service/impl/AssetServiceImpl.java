@@ -2010,6 +2010,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
+            if (CheckRepeatIp (entity.getNetworkIpAddress (),null)) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("资产网卡IP地址重复，");
+                continue;
+            }
 
             if ("".equals(CheckUser(entity.getUser()))) {
                 error++;
@@ -2253,6 +2259,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复，");
+                continue;
+            }
+
+            if (CheckRepeatIp (networkDeviceEntity.getInnerIp (),1)) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("资产内网IP地址重复，");
                 continue;
             }
 
