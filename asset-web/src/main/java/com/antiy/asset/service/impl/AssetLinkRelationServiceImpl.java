@@ -198,15 +198,14 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     /**
      * 获取未占用的端口
-     * @param portAmountAssetId
+     * @param amount
      * @return
      */
-    private List<SelectResponse> getSelectResponses(Integer portAmountAssetId,
-                                                    List<Integer> usePortList) {
+    private List<SelectResponse> getSelectResponses(Integer amount, List<Integer> usePortList) {
         List<Integer> portList = new ArrayList<>();
         List<SelectResponse> selectResponseList;// 还原网络设备端口
-        if (portAmountAssetId > 1) {
-            for (int i = 1; i <= portAmountAssetId; i++) {
+        if (amount > 1) {
+            for (int i = 1; i <= amount; i++) {
                 portList.add(i);
             }
 
