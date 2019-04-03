@@ -93,12 +93,12 @@ public class NetworkDeviceEntity {
     /**
      * 内网IP
      */
-    @ExcelField(value = "innerIp", align = 1, title = "内网IP")
+    @ExcelField(value = "innerIp", align = 1, title = "内网IP",required = true)
     private String  innerIp;
     /**
      * 外网IP
      */
-    @ExcelField(value = "outerIp", align = 1, title = "外网IP",dataType = DataTypeEnum.IP)
+    @ExcelField(value = "outerIp", align = 1, title = "外网IP",dataType = DataTypeEnum.IP,required = true)
     private String  outerIp;
     /**
      * mac地址
