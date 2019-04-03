@@ -1,6 +1,5 @@
 package com.antiy.asset.entity;
 
-
 import com.antiy.common.base.BaseEntity;
 
 /**
@@ -27,6 +26,14 @@ public class AssetLinkRelation extends BaseEntity {
      */
     private String            assetPort;
     /**
+     * 资产品类型号
+     */
+    private String            categoryModel;
+    /**
+     * 资产品类型号名称
+     */
+    private String            categoryModelName;
+    /**
      * 父级设备主键
      */
     private Integer           parentAssetId;
@@ -38,6 +45,14 @@ public class AssetLinkRelation extends BaseEntity {
      * 父级设备端口
      */
     private String            parentAssetPort;
+    /**
+     * 关联资产品类型号
+     */
+    private String            parentCategoryModel;
+    /**
+     * 关联资产品类型号名称
+     */
+    private String            parentCategoryModelName;
     /**
      * 创建时间
      */
@@ -63,8 +78,6 @@ public class AssetLinkRelation extends BaseEntity {
      */
     private Integer           status;
 
-
-
     public Integer getAssetId() {
         return assetId;
     }
@@ -72,7 +85,6 @@ public class AssetLinkRelation extends BaseEntity {
     public void setAssetId(Integer assetId) {
         this.assetId = assetId;
     }
-
 
     public String getAssetIp() {
         return assetIp;
@@ -114,7 +126,6 @@ public class AssetLinkRelation extends BaseEntity {
         this.parentAssetPort = parentAssetPort;
     }
 
-
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -122,7 +133,6 @@ public class AssetLinkRelation extends BaseEntity {
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
-
 
     public Long getGmtModified() {
         return gmtModified;
@@ -140,7 +150,6 @@ public class AssetLinkRelation extends BaseEntity {
         this.memo = memo;
     }
 
-
     public Integer getCreateUser() {
         return createUser;
     }
@@ -148,7 +157,6 @@ public class AssetLinkRelation extends BaseEntity {
     public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
     }
-
 
     public Integer getModifyUser() {
         return modifyUser;
@@ -158,7 +166,6 @@ public class AssetLinkRelation extends BaseEntity {
         this.modifyUser = modifyUser;
     }
 
-
     public Integer getStatus() {
         return status;
     }
@@ -167,12 +174,46 @@ public class AssetLinkRelation extends BaseEntity {
         this.status = status;
     }
 
+    public String getCategoryModel() {
+        return categoryModel;
+    }
+
+    public void setCategoryModel(String categoryModel) {
+        this.categoryModel = categoryModel;
+    }
+
+    public String getCategoryModelName() {
+        return categoryModelName;
+    }
+
+    public void setCategoryModelName(String categoryModelName) {
+        this.categoryModelName = categoryModelName;
+    }
+
+    public String getParentCategoryModel() {
+        return parentCategoryModel;
+    }
+
+    public void setParentCategoryModel(String parentCategoryModel) {
+        this.parentCategoryModel = parentCategoryModel;
+    }
+
+    public String getParentCategoryModelName() {
+        return parentCategoryModelName;
+    }
+
+    public void setParentCategoryModelName(String parentCategoryModelName) {
+        this.parentCategoryModelName = parentCategoryModelName;
+    }
 
     @Override
     public String toString() {
-        return "AssetLinkRelation{" + ", assetId=" + assetId + ", assetIp=" + assetIp + ", assetPort=" + assetPort
-               + ", parentAssetId=" + parentAssetId + ", parentAssetIp=" + parentAssetIp + ", parentAssetPort="
-               + parentAssetPort + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo=" + memo
-               + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status + "}";
+        return "AssetLinkRelation{" + "assetId=" + assetId + ", assetIp='" + assetIp + '\'' + ", assetPort='"
+               + assetPort + '\'' + ", categoryModel='" + categoryModel + '\'' + ", categoryModelName='"
+               + categoryModelName + '\'' + ", parentAssetId=" + parentAssetId + ", parentAssetIp='" + parentAssetIp
+               + '\'' + ", parentAssetPort='" + parentAssetPort + '\'' + ", parentCategoryModel='" + parentCategoryModel
+               + '\'' + ", parentCategoryModelName='" + parentCategoryModelName + '\'' + ", gmtCreate=" + gmtCreate
+               + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
+               + ", modifyUser=" + modifyUser + ", status=" + status + '}';
     }
 }

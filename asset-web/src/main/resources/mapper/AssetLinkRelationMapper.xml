@@ -402,15 +402,42 @@
         select distinct asset_id from asset_link_relation where status = 1
     </select>
     <!--查询资产通联关系-->
-    <select id="queryLinekedRelationList" resultMap="BaseResultMap"
+    <select id="queryLinekedRelationList" resultType="com.antiy.asset.entity.AssetLinkRelation"
             parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
-        select
-        <include refid="Base_Column_List"></include>
-        from
-        <include refid="Table_Name"></include>
-        where asset_id = #{assetId}
-        and parent_asset_id = #{parentAssetId}
-        and status = 1
+        SELECT
+        a.id,
+        a.asset_id as assetId,
+        b.category_model as categoryModel,
+        d.name as categoryModelName,
+        a.asset_ip as assetIp,
+        c.category_model as parentCategoryModel,
+        e.name as parentCategoryModelName,
+        a.asset_port as assetPort,
+        a.parent_asset_id as parentAssetId,
+        a.parent_asset_ip as parentAssetIp,
+        a.parent_asset_port as parentAssetPort
+        FROM
+        asset_link_relation a
+        LEFT JOIN asset b ON a.asset_id = b.id
+        LEFT JOIN asset c ON a.parent_asset_id = c.id
+        left join asset_category_model d on b.category_model = d.id
+        left join asset_category_model e on c.category_model = e.id
+        where 1 = 1
+        <if test="categoryModel != null">
+            b.category_model = #{categoryModel}
+        </if>
+        <if test=" multipleQuery != null">
+            and (b.name like CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or b.number like CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or a.asset_ip like CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            )
+        </if>
+        <if test=" parentMultipleQuery != null">
+            and (c.name like CONCAT('%',replace(replace(#{parentMultipleQuery},'%','\%'),'_','\_'),'%')
+            or c.number like CONCAT('%',replace(replace(#{parentMultipleQuery},'%','\%'),'_','\_'),'%')
+            or a.parent_asset_ip like CONCAT('%',replace(replace(#{parentMultipleQuery},'%','\%'),'_','\_'),'%')
+            )
+        </if>
     </select>
 
     <select id="queryIpAddressByAssetId" resultType="java.lang.String">

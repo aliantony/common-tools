@@ -55,6 +55,17 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Override
     public String saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
+        checkAssetIp(request, assetLinkRelation);
+        assetLinkRelationDao.insert(assetLinkRelation);
+        return assetLinkRelation.getStringId();
+    }
+
+    /**
+     * 检查IP信息
+     * @param request
+     * @param assetLinkRelation
+     */
+    private void checkAssetIp(AssetLinkRelationRequest request, AssetLinkRelation assetLinkRelation) {
         assetLinkRelation.setAssetId(DataTypeUtils.stringToInteger(request.getAssetId()));
         assetLinkRelation.setParentAssetId(DataTypeUtils.stringToInteger(request.getParentAssetId()));
         // 1.校验子资产IP是否可用
@@ -67,16 +78,17 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             request.getParentAssetPort());
         ParamterExceptionUtils.isTrue(parentAssetAddress.contains(request.getParentAssetIp()), "父资产IP已经存在绑定关系,无法再次绑定");
 
-        // 3.插入通联关系
+        // 3.组装通联关系
         assetLinkRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLinkRelation.setGmtCreate(System.currentTimeMillis());
-        assetLinkRelationDao.insert(assetLinkRelation);
-        return assetLinkRelation.getStringId();
     }
 
     @Override
     public String updateAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
+        checkAssetIp(request, assetLinkRelation);
+        assetLinkRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        assetLinkRelation.setGmtModified(System.currentTimeMillis());
         return assetLinkRelationDao.update(assetLinkRelation).toString();
     }
 
