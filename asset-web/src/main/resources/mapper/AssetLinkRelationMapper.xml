@@ -452,7 +452,7 @@
                 ) and
                 asset_id=#{assetId} and
                 status='1'
-                union all select outer_ip as ip_address from asset_network_equipment t1 WHERE not exists
+                union all select inner_ip as ip_address from asset_network_equipment t1 WHERE not exists
                 (select 1 from asset_link_relation t2 where (t2.asset_id=#{assetId} and t1.inner_ip= t2.asset_ip)
                 or(t2.parent_asset_id=#{assetId} and t1.inner_ip= t2.parent_asset_ip) and status='1'
 
@@ -468,7 +468,7 @@
             </when>
             <otherwise>
                 select ip_address from asset_network_card WHERE asset_id=#{assetId} and status='1' union all
-                select outer_ip as ip_address from asset_network_equipment WHERE asset_id=#{assetId} and status='1'
+                select inner_ip as ip_address from asset_network_equipment WHERE asset_id=#{assetId} and status='1'
             </otherwise>
         </choose>
     </select>
