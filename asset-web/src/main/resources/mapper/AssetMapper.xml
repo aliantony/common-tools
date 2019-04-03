@@ -833,11 +833,25 @@
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
-                and id not in (SELECT distinct parent_asset_id from asset_link_relation where parent_asset_id is not
-                null and status=1)
-                and id not in (SELECT distinct asset_id from asset_link_relation where asset_id is not null and
-                status=1)
                 and status=1
+                and id not in (SELECT DISTINCT netcard.asset_id
+                FROM asset_network_card netcard LEFT JOIN asset_link_relation relation on relation.asset_id=netcard.asset_id or relation.parent_asset_id=netcard.asset_id
+                WHERE netcard.status=1 and relation.status=1
+                )
+                and id not in (
+                select DISTINCT relation.asset_id from asset_link_relation relation
+                LEFT JOIN asset_network_equipment net on net.asset_id=relation.asset_id
+                where (select count(id) from asset_link_relation where asset_id=net.asset_id or
+                parent_asset_id=net.asset_id and status=1) >= net.port_size
+                and relation.status=1 and net.status=1
+                )
+                and id not in (
+                select DISTINCT relation.parent_asset_id from asset_link_relation relation
+                LEFT JOIN asset_network_equipment net on net.asset_id=relation.parent_asset_id
+                where (select count(id) from asset_link_relation where asset_id=net.asset_id or
+                parent_asset_id=net.asset_id and status=1) >= net.port_size
+                and relation.status=1 and net.status=1
+                )
             </trim>
         </where>
     </select>
@@ -932,10 +946,24 @@
         <include refid="Table_Name"></include>
         where
         <trim prefixOverrides="and">
-            <include refid="Multiple_Query"></include>
-            and id not in (SELECT asset_id from asset_link_relation where parent_asset_id is not null and status=1)
-            and id not in(SELECT parent_asset_id from asset_link_relation where parent_asset_id is not null and
-            status=1)
+            and id not in (SELECT DISTINCT netcard.asset_id
+            FROM asset_network_card netcard LEFT JOIN asset_link_relation relation on relation.asset_id=netcard.asset_id or relation.parent_asset_id=netcard.asset_id
+            WHERE netcard.status=1 and relation.status=1
+            )
+            and id not in (
+            select DISTINCT relation.asset_id from asset_link_relation relation
+            LEFT JOIN asset_network_equipment net on net.asset_id=relation.asset_id
+            where (select count(id) from asset_link_relation where asset_id=net.asset_id or
+            parent_asset_id=net.asset_id and status=1) >= net.port_size
+            and relation.status=1 and net.status=1
+            )
+            and id not in (
+            select DISTINCT relation.parent_asset_id from asset_link_relation relation
+            LEFT JOIN asset_network_equipment net on net.asset_id=relation.parent_asset_id
+            where (select count(id) from asset_link_relation where asset_id=net.asset_id or
+            parent_asset_id=net.asset_id and status=1) >= net.port_size
+            and relation.status=1 and net.status=1
+            )
             and manufacturer != ""
             and status=1
         </trim>
@@ -1049,9 +1077,24 @@
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
-                and id not in (SELECT asset_id from asset_link_relation where parent_asset_id is not null and status=1)
-                and id not in(SELECT parent_asset_id from asset_link_relation where parent_asset_id is not null and
-                status=1)
+                and id not in (SELECT DISTINCT netcard.asset_id
+                FROM asset_network_card netcard LEFT JOIN asset_link_relation relation on relation.asset_id=netcard.asset_id or relation.parent_asset_id=netcard.asset_id
+                WHERE netcard.status=1 and relation.status=1
+                )
+                and id not in (
+                select DISTINCT relation.asset_id from asset_link_relation relation
+                LEFT JOIN asset_network_equipment net on net.asset_id=relation.asset_id
+                where (select count(id) from asset_link_relation where asset_id=net.asset_id or
+                parent_asset_id=net.asset_id and status=1) >= net.port_size
+                and relation.status=1 and net.status=1
+                )
+                and id not in (
+                select DISTINCT relation.parent_asset_id from asset_link_relation relation
+                LEFT JOIN asset_network_equipment net on net.asset_id=relation.parent_asset_id
+                where (select count(id) from asset_link_relation where asset_id=net.asset_id or
+                parent_asset_id=net.asset_id and status=1) >= net.port_size
+                and relation.status=1 and net.status=1
+                )
             </trim>
             ORDER BY
             <if test=" ids != null">
