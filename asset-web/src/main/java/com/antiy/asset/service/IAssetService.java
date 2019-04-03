@@ -237,4 +237,9 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     PageResult<AssetResponse> findUnconnectedAsset(AssetQuery query) throws Exception;
 
+    /**
+     * 通联设置的厂商下拉查询
+     */
+    List<String> pulldownUnconnectedManufacturer() throws Exception;
+
 }

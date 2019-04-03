@@ -128,4 +128,11 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<Asset> findListUnconnectedAsset(AssetQuery assetQuery);
+
+    /**
+     * 查询通联设置页面资产下拉的厂商信息
+     * @param assetQuery
+     * @return
+     */
+    List<String> pulldownUnconnectedManufacturer(AssetQuery assetQuery);
 }
