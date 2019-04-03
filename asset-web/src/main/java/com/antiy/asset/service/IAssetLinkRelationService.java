@@ -2,13 +2,13 @@ package com.antiy.asset.service;
 
 import java.util.List;
 
-import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetLinkRelation;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.response.AssetLinkRelationResponse;
 import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -99,4 +99,12 @@ public interface IAssetLinkRelationService extends IBaseService<AssetLinkRelatio
      * @return
      */
     List<AssetLinkRelationResponse> queryLinekedRelationList(AssetLinkRelationQuery assetLinkRelationQuery);
+
+    /**
+     * 通过ID查询设备端口
+     *
+     * @param query
+     * @return
+     */
+    List<SelectResponse> queryPortById(AssetLinkRelationQuery query);
 }
