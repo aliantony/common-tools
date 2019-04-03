@@ -180,7 +180,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Override
     public List<SelectResponse> queryPortById(AssetLinkRelationQuery query) {
 
-        List<SelectResponse> selectResponseList = null;
+        List<SelectResponse> selectResponseList;
         // 排除已占用的端口
         List<Integer> usePortList;
         if (query.getAssetId() != null && query.getParentAssetId() == null) {
