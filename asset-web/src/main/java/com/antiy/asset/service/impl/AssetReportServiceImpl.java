@@ -139,6 +139,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         int storageAmountSum = 0;
         int safetyAmountSum = 0;
         int otherAmountSum = 0;
+        boolean first = true;
         // 表格数据
         while (iterator.hasNext()) {
             Map.Entry<String, String> entry = iterator.next();
@@ -191,11 +192,21 @@ public class AssetReportServiceImpl implements IAssetReportService {
                     }
                 }
             }
+
+            if (first) {
                 computerAmountSum = computerAmountSum + computeAmount + computeNewAdd;
                 networkAmountSum = networkAmountSum + networkAmount + networkNewAdd;
                 storageAmountSum = storageAmountSum + storageAmount + storageNewAdd;
                 safetyAmountSum = safetyAmountSum + safetyAmount + +safetyNewAdd;
                 otherAmountSum = otherAmountSum + otherAmount + otherNewAdd;
+                first = false;
+            } else {
+                computerAmountSum = computerAmountSum + computeNewAdd;
+                networkAmountSum = networkAmountSum + networkNewAdd;
+                storageAmountSum = storageAmountSum + storageNewAdd;
+                safetyAmountSum = safetyAmountSum + safetyNewAdd;
+                otherAmountSum = otherAmountSum + otherNewAdd;
+            }
 
             computerTimeValueMap.put(key, String.valueOf(computerAmountSum));
             networkTimeValueMap.put(key, String.valueOf(networkAmountSum));
