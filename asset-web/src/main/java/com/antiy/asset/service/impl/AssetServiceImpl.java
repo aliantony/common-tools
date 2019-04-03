@@ -752,16 +752,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         query.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         // 若品类型号查询条件为空 默认只查已入网，网络设备和计算设备的资产
         Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
+        List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
         if (Objects.isNull(query.getCategoryModels()) || query.getCategoryModels().length <= 0) {
             List<Integer> categoryCondition = new ArrayList<>();
             for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
                 if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
                     categoryCondition.addAll(
-                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
+                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
                 }
                 if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
                     categoryCondition.addAll(
-                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
+                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
                 }
             }
             query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
@@ -2784,14 +2785,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetQuery query = new AssetQuery();
         Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
         List<Integer> categoryCondition = new ArrayList<>();
+        List<AssetCategoryModel> all = assetCategoryModelService.getAll();
         for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
             if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-                categoryCondition
-                    .addAll(assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
+                categoryCondition.addAll(
+                    assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
             }
             if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-                categoryCondition
-                    .addAll(assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey())));
+                categoryCondition.addAll(
+                    assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
             }
         }
         query.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
