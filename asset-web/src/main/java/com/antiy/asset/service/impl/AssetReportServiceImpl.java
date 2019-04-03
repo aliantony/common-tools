@@ -133,7 +133,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
         Map<String, Object> filterMap = new HashMap<>();
         filterMap.put("beginTime", query.getBeginTime());
         filterMap.put("areaIds", query.getAreaIds());
-        int amount = 0;
         int computerAmountSum = 0;
         int networkAmountSum = 0;
         int storageAmountSum = 0;
@@ -215,9 +214,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
             otherTimeValueMap.put(key, String.valueOf(otherAmountSum));
             newAddTimeValueMap.put(key,
                 String.valueOf(computeNewAdd + networkNewAdd + storageNewAdd + safetyNewAdd + otherNewAdd));
-            amount = amount + computeAmount + computeNewAdd + networkAmount + networkNewAdd + storageAmount
-                     + storageNewAdd + safetyAmount + +safetyNewAdd + otherAmount + otherNewAdd;
-            amountTimeValueMap.put(key, String.valueOf(amount));
+            amountTimeValueMap.put(key, String
+                .valueOf(computerAmountSum + networkAmountSum + storageAmountSum + safetyAmountSum + otherAmountSum));
 
             computerDataList.add(computerAmountSum);
             networkDataList.add(networkAmountSum);
