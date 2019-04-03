@@ -947,6 +947,7 @@
         <include refid="Table_Name"></include>
         where
         <trim prefixOverrides="and">
+            <include refid="Multiple_Query"></include>
             and id not in (
             select DISTINCT netcard.asset_id from asset_network_card netcard  where netcard.status=1
             GROUP BY netcard.asset_id HAVING count(netcard.asset_id) &lt;=
