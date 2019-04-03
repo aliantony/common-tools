@@ -110,6 +110,43 @@ public class ComputeDeviceEntity {
      */
     @ExcelField(value = "description", align = 1, title = "描述")
     private String  description;
+
+    /**
+     * 网卡品牌
+     */
+    @ExcelField(value = "networkBrand", align = 1, title = "网卡品牌(必填)",required = true)
+    private String  networkBrand;
+    /**
+     * 网卡型号
+     */
+    @ExcelField(value = "networkModel", align = 1, title = "网卡型号")
+    private String  networkModel;
+    /**
+     * 网卡序列号
+     */
+    @ExcelField(value = "networkSerial", align = 1, title = "网卡序列号")
+    private String  networkSerial;
+    /**
+     * 网卡ip地址
+     */
+    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip(必填)",dataType = DataTypeEnum.IP,required = true)
+    private String  networkIpAddress;
+    /**
+     * 网卡mac地址
+     */
+    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac(必填)",dataType = DataTypeEnum.MAC,required = true)
+    private String  networkMacAddress;
+    /**
+     * 网卡子网掩码
+     */
+    @ExcelField(value = "networkSubnetMask", align = 1, title = "网卡子网掩码",dataType = DataTypeEnum.IP)
+    private String  networkSubnetMask;
+    /**
+     * 网卡默认网关
+     */
+    @ExcelField(value = "networkDefaultGateway", align = 1, title = "网卡默认网关",dataType = DataTypeEnum.IP)
+    private String  networkDefaultGateway;
+
     /**
      * 内存数量
      */
@@ -266,46 +303,8 @@ public class ComputeDeviceEntity {
      */
     @ExcelField(value = "cpuCoreSize", align = 1, title = "cpu核心数")
     private Integer cpuCoreSize;
-    // /**
-    // * 网卡数量
-    // */
-    // @ExcelField(value = "network_num", align = 1, title = "网卡数量")
-    // private Integer networkNum;
-    /**
-     * 网卡品牌
-     */
-    @ExcelField(value = "networkBrand", align = 1, title = "网卡品牌(必填)")
-    private String  networkBrand;
-    /**
-     * 网卡型号
-     */
-    @ExcelField(value = "networkModel", align = 1, title = "网卡型号")
-    private String  networkModel;
-    /**
-     * 网卡序列号
-     */
-    @ExcelField(value = "networkSerial", align = 1, title = "网卡序列号")
-    private String  networkSerial;
-    /**
-     * 网卡ip地址
-     */
-    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip(必填)",dataType = DataTypeEnum.IP)
-    private String  networkIpAddress;
-    /**
-     * 网卡mac地址
-     */
-    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac(必填)",dataType = DataTypeEnum.MAC)
-    private String  networkMacAddress;
-    /**
-     * 网卡子网掩码
-     */
-    @ExcelField(value = "networkSubnetMask", align = 1, title = "网卡子网掩码",dataType = DataTypeEnum.IP)
-    private String  networkSubnetMask;
-    /**
-     * 网卡默认网关
-     */
-    @ExcelField(value = "networkDefaultGateway", align = 1, title = "网卡默认网关",dataType = DataTypeEnum.IP)
-    private String  networkDefaultGateway;
+
+
 
     public String getName() {
         return name;
