@@ -839,8 +839,8 @@
                 (
                 (select DISTINCT netcard.asset_id from asset_network_card netcard where netcard.status=1
                 GROUP BY netcard.asset_id HAVING count(netcard.asset_id) &lt;=
-                (select count(id) FROM asset_link_relation relation where relation.asset_id=netcard.asset_id or
-                relation.parent_asset_id=netcard.asset_id and relation.status=1))
+                (select count(id) FROM asset_link_relation where asset_id=netcard.asset_id or
+                parent_asset_id=netcard.asset_id and status=1))
                 union
                 (select DISTINCT relation.asset_id from asset_link_relation relation
                 LEFT JOIN asset_network_equipment net on net.asset_id=relation.asset_id
@@ -955,8 +955,8 @@
             (
             (select DISTINCT netcard.asset_id from asset_network_card netcard where netcard.status=1
             GROUP BY netcard.asset_id HAVING count(netcard.asset_id) &lt;=
-            (select count(id) FROM asset_link_relation relation where relation.asset_id=netcard.asset_id or
-            relation.parent_asset_id=netcard.asset_id and relation.status=1))
+            (select count(id) FROM asset_link_relation where asset_id=netcard.asset_id or
+            parent_asset_id=netcard.asset_id and status=1))
             union
             (select DISTINCT relation.asset_id from asset_link_relation relation
             LEFT JOIN asset_network_equipment net on net.asset_id=relation.asset_id
@@ -1089,8 +1089,8 @@
                 (
                 (select DISTINCT netcard.asset_id from asset_network_card netcard where netcard.status=1
                 GROUP BY netcard.asset_id HAVING count(netcard.asset_id) &lt;=
-                (select count(id) FROM asset_link_relation relation where relation.asset_id=netcard.asset_id or
-                relation.parent_asset_id=netcard.asset_id and relation.status=1))
+                (select count(id) FROM asset_link_relation where asset_id=netcard.asset_id or
+                parent_asset_id=netcard.asset_id and status=1))
                 union
                 (select DISTINCT relation.asset_id from asset_link_relation relation
                 LEFT JOIN asset_network_equipment net on net.asset_id=relation.asset_id
