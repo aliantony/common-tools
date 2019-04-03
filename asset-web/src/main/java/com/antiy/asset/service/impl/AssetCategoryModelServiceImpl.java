@@ -257,6 +257,11 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                     assetCategoryModelNodeResponse, type, initMap);
                 nodeResponseList.add(secondCategoryModelNode);
             }
+            for (AssetCategoryModelNodeResponse nodeResponse : assetCategoryModelNodeResponse.getChildrenNode()) {
+                if (nodeResponse.getName().equals(Constants.FIRST_LEVEL_ASSET_CATEGORY_NAME)) {
+                    assetCategoryModelNodeResponse = nodeResponse;
+                }
+            }
             assetCategoryModelNodeResponse.setChildrenNode(nodeResponseList);
             return assetCategoryModelNodeResponse;
         }
@@ -387,9 +392,10 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public List<Integer> findAssetCategoryModelIdsById(Integer id,List<AssetCategoryModel> assetCategoryModels) throws Exception{
+    public List<Integer> findAssetCategoryModelIdsById(Integer id,
+                                                       List<AssetCategoryModel> assetCategoryModels) throws Exception {
         List<AssetCategoryModelResponse> categoryModelResponses = responseConverter
-                .convert(recursionSearch(assetCategoryModels, id), AssetCategoryModelResponse.class);
+            .convert(recursionSearch(assetCategoryModels, id), AssetCategoryModelResponse.class);
         return getSonCategory(categoryModelResponses);
     }
 
