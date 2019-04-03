@@ -43,12 +43,10 @@ public class AssetCpuServiceImpl extends BaseServiceImpl<AssetCpu> implements IA
     public Integer saveAssetCpu(AssetCpuRequest request) throws Exception {
         AssetCpu assetCpu = requestConverter.convert(request, AssetCpu.class);
         Integer result = assetCpuDao.insert(assetCpu);
-        if (!Objects.equals(result, 0)) {
-            // 写入业务日志
-            LogHandle
-                .log(assetCpu.toString(), AssetEventEnum.ASSET_CPU_INSERT.getName(), AssetEventEnum.ASSET_CPU_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.info(logger, AssetEventEnum.ASSET_CPU_INSERT.getName() + " {}", assetCpu.toString());
-        }
+        // 写入业务日志
+        LogHandle.log(assetCpu.toString(), AssetEventEnum.ASSET_CPU_INSERT.getName(),
+            AssetEventEnum.ASSET_CPU_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_CPU_INSERT.getName() + " {}", assetCpu.toString());
         return assetCpu.getId();
     }
 
@@ -56,12 +54,10 @@ public class AssetCpuServiceImpl extends BaseServiceImpl<AssetCpu> implements IA
     public Integer updateAssetCpu(AssetCpuRequest request) throws Exception {
         AssetCpu assetCpu = requestConverter.convert(request, AssetCpu.class);
         Integer result = assetCpuDao.update(assetCpu);
-        if ( Objects.equals(result, 0)) {
-            // 写入业务日志
-            LogHandle
-                .log(assetCpu.toString(), AssetEventEnum.ASSET_CPU_UPDATE.getName(), AssetEventEnum.ASSET_CPU_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.info(logger, AssetEventEnum.ASSET_CPU_UPDATE.getName() + " {}", assetCpu.toString());
-        }
+        // 写入业务日志
+        LogHandle.log(assetCpu.toString(), AssetEventEnum.ASSET_CPU_UPDATE.getName(),
+            AssetEventEnum.ASSET_CPU_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_CPU_UPDATE.getName() + " {}", assetCpu.toString());
         return assetCpuDao.update(assetCpu);
     }
 
