@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.BooleanUtils;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetReportDao;
@@ -44,7 +45,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         List<Integer> allAddList = Lists.newArrayList();
         List<Integer> topAreaIds;
         // 是否需要top5
-        if (reportRequest.getTopFive()) {
+        if (BooleanUtils.isTrue(reportRequest.getTopFive())) {
             // 1.查询TOP5的区域信息
             topAreaIds = getTopFive(reportRequest);
             reportRequest.setAssetAreaIds(reportRequest.getAssetAreaIds().stream()
