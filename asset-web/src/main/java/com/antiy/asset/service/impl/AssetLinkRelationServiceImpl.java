@@ -25,6 +25,7 @@ import com.antiy.asset.vo.response.AssetLinkRelationResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.*;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -190,6 +191,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             Integer portAmountParentAssetId = assetNetworkEquipmentDao.findPortAmount(query.getParentAssetId());
             usePortList = assetLinkRelationDao.findUsePort(query);
             selectResponseList = getSelectResponses(portAmountParentAssetId, usePortList);
+        } else {
+            throw new BusinessException("不能同时传入当前设备和关联设备的主键");
         }
         return selectResponseList;
     }
