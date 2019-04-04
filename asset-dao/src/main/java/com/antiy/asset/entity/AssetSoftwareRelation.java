@@ -39,7 +39,7 @@ public class AssetSoftwareRelation extends BaseEntity {
     /**
      * 安装方式1人工2自动
      */
-    private String  installType;
+    private Integer  installType;
     /**
      * 安装状态0失败、1成功，2安装中
      */
@@ -125,11 +125,11 @@ public class AssetSoftwareRelation extends BaseEntity {
         return port;
     }
 
-    public String getInstallType() {
+    public Integer getInstallType() {
         return installType;
     }
 
-    public void setInstallType(String installType) {
+    public void setInstallType(Integer installType) {
         this.installType = installType;
     }
 

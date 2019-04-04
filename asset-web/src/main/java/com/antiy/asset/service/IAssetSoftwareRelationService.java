@@ -6,6 +6,7 @@ import java.util.Map;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.entity.AssetSoftwareRelationMapper;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
+import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
@@ -102,5 +103,10 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      */
     Integer installAauto(List<AssetSoftwareRelationRequest> assetSoftwareRelationList);
 
-    Integer installSoftware(List<AssetSoftwareRelationRequest> assetSoftwareRelationList);
+    /**
+     * 软件安装
+     * @param assetSoftwareRelationList
+     * @return
+     */
+    void installSoftware(AssetSoftwareRelationList assetSoftwareRelationList);
 }

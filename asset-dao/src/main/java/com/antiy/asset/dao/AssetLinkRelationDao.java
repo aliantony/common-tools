@@ -2,6 +2,9 @@ package com.antiy.asset.dao;
 
 import java.util.List;
 
+import com.antiy.asset.entity.AssetLinkedCount;
+import com.antiy.asset.vo.response.AssetLinkRelationResponse;
+import com.antiy.common.base.PageResult;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.Asset;
@@ -43,6 +46,7 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @return
      */
     List<AssetLinkRelation> queryLinekedRelationList(AssetLinkRelationQuery assetLinkRelationQuery);
+
     /**
      * 查询资产对应的IP地址
      * @param assetId 资产Id
@@ -60,5 +64,30 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      */
     Integer deleteRelationByAssetId(@Param(value = "assetIds") List<Integer> assetIds);
 
+    List<Integer> findUsePort(AssetLinkRelationQuery query);
+
+    /**
+     * 资产通联数量查询
+     * @param assetLinkRelationQuery
+     * @return
+     */
+    List<AssetLinkedCount> queryAssetLinkedCountList(AssetLinkRelationQuery assetLinkRelationQuery);
+
+    /**
+     * 与当前资产通联的资产列表查询
+     * @param id
+     * @param portCount
+     * @return
+     */
+    List<AssetLinkRelation> queryLinkedAssetListByAssetId(@Param(value = "id") Integer id,
+                                                          @Param(value = "portCount") List<Integer> portCount);
+
     List<Integer> findUsePort(String assetId);
+
+    /**
+     * 查询网络设备端口数量
+     * @param id
+     * @return
+     */
+    Integer queryPortSize(@Param(value = "id") Integer id);
 }

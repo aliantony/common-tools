@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -200,19 +201,8 @@ public class AssetSoftwareRelationController {
     @RequestMapping(value = "/software/install", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:softwarerelation:installSoftware')")
     public ActionResponse installSoftware(@ApiParam(value = "softwareQuery") @RequestBody AssetSoftwareRelationList assetSoftwareRelationList) throws Exception {
-        iAssetSoftwareRelationService.installSoftware(assetSoftwareRelationList.getAssetSoftwareRelationRequestList());
+        iAssetSoftwareRelationService.installSoftware(assetSoftwareRelationList);
         return ActionResponse.success();
     }
 
-}
-class AssetSoftwareRelationList {
-    private List<AssetSoftwareRelationRequest> assetSoftwareRelationRequestList;
-
-    public List<AssetSoftwareRelationRequest> getAssetSoftwareRelationRequestList() {
-        return assetSoftwareRelationRequestList;
-    }
-
-    public void setAssetSoftwareRelationRequestList(List<AssetSoftwareRelationRequest> assetSoftwareRelationRequestList) {
-        this.assetSoftwareRelationRequestList = assetSoftwareRelationRequestList;
-    }
 }

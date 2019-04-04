@@ -17,6 +17,11 @@ public class AssetLinkRelationResponse extends BaseResponse {
     @ApiModelProperty("资产主键")
     private Integer assetId;
     /**
+     * 资产名称
+     */
+    @ApiModelProperty("资产名称")
+    private String  assetName;
+    /**
      * 资产IP
      */
     @ApiModelProperty("资产IP")
@@ -41,6 +46,11 @@ public class AssetLinkRelationResponse extends BaseResponse {
      */
     @ApiModelProperty("父级设备主键")
     private Integer parentAssetId;
+    /**
+     * 关联资产名称
+     */
+    @ApiModelProperty("关联资产名称")
+    private String parentAssetName;
     /**
      * 父级设备IP
      */
@@ -142,12 +152,30 @@ public class AssetLinkRelationResponse extends BaseResponse {
         this.parentCategoryModelName = parentCategoryModelName;
     }
 
+    public String getAssetName() {
+        return assetName;
+    }
+
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
+    }
+
+
+    public String getParentAssetName() {
+        return parentAssetName;
+    }
+
+    public void setParentAssetName(String parentAssetName) {
+        this.parentAssetName = parentAssetName;
+    }
+
     @Override
     public String toString() {
-        return "AssetLinkRelationResponse{" + "assetId=" + assetId + ", assetIp='" + assetIp + '\'' + ", assetPort='"
-               + assetPort + '\'' + ", categoryModel='" + categoryModel + '\'' + ", categoryModelName='"
-               + categoryModelName + '\'' + ", parentAssetId=" + parentAssetId + ", parentAssetIp='" + parentAssetIp
-               + '\'' + ", parentAssetPort='" + parentAssetPort + '\'' + ", parentCategoryModel='" + parentCategoryModel
-               + '\'' + ", parentCategoryModelName='" + parentCategoryModelName + '\'' + '}';
+        return "AssetLinkRelationResponse{" + "assetId=" + assetId + ", assetName='" + assetName + '\'' + ", assetIp='"
+               + assetIp + '\'' + ", assetPort='" + assetPort + '\'' + ", categoryModel='" + categoryModel + '\''
+               + ", categoryModelName='" + categoryModelName + '\'' + ", parentAssetId=" + parentAssetId
+               + ", parentAssetName=" + parentAssetName + ", parentAssetIp='" + parentAssetIp + '\''
+               + ", parentAssetPort='" + parentAssetPort + '\'' + ", parentCategoryModel='" + parentCategoryModel + '\''
+               + ", parentCategoryModelName='" + parentCategoryModelName + '\'' + '}';
     }
 }
