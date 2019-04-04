@@ -1,7 +1,6 @@
 package com.antiy.asset.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.vo.query.AssetOperationRecordQuery;
@@ -23,4 +22,11 @@ public interface IAssetOperationRecordService extends IBaseService<AssetOperatio
      * @return
      */
     List<NameValueVo> queryStatusBar(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception;
+
+    /**
+     * 通过资产主键查询资产操作记录,根据时间排序
+     * @param assetOperationRecordQuery
+     * @return
+     */
+    List<AssetOperationRecordBarResponse> queryStatusBarOrderByTime(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception;
 }

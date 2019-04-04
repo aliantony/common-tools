@@ -36,7 +36,7 @@ public class AssetOperationRecordController {
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:operationrecord:queryList')")
     public ActionResponse queryList(@ApiParam(value = "assetOperationRecordQuery") AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
-        return ActionResponse.success(assetOperationRecordService.queryStatusBar(assetOperationRecordQuery));
+        return ActionResponse.success(assetOperationRecordService.queryStatusBarOrderByTime(assetOperationRecordQuery));
     }
 
 }

@@ -1,8 +1,8 @@
 package com.antiy.asset.vo.response;
 
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.List;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetOperationRecordResponse 响应对象 </p>
@@ -19,7 +19,7 @@ public class AssetOperationRecordBarResponse extends BaseResponse {
     /**
      * 处理结果
      */
-    @ApiModelProperty("处理结果:=1同意/0拒绝")
+    @ApiModelProperty("处理结果:1同意/0拒绝")
     private Integer processResult;
     /**
      * 操作人角色名称
@@ -32,6 +32,11 @@ public class AssetOperationRecordBarResponse extends BaseResponse {
     @ApiModelProperty("操作人姓名")
     private String  userName;
     /**
+     * 下一步执行人姓名
+     */
+    @ApiModelProperty("下一步执行人姓名")
+    private String                       nextUserName;
+    /**
      * 附件信息（[{"XXX文件","10.12.5.1:5566/file/asset/dj"}]）
      */
     @ApiModelProperty("附件信息")
@@ -42,6 +47,14 @@ public class AssetOperationRecordBarResponse extends BaseResponse {
 
     @ApiModelProperty("原始状态")
     private Integer originStatus;
+
+    public String getNextUserName() {
+        return nextUserName;
+    }
+
+    public void setNextUserName(String nextUserName) {
+        this.nextUserName = nextUserName;
+    }
 
     public Integer getOriginStatus() {
         return originStatus;
