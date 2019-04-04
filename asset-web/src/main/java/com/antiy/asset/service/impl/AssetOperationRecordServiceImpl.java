@@ -88,18 +88,6 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
             netIn.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
             nameValueVoList.add(netIn);
 
-            map.put("originStatus", AssetStatusEnum.WAIT_RETIRE.getCode());
-            NameValueVo<AssetOperationRecordBarResponse> waitRetire = new NameValueVo<>();
-            waitRetire.setName(AssetStatusEnum.WAIT_RETIRE.getMsg());
-            waitRetire.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
-            nameValueVoList.add(waitRetire);
-
-            map.put("originStatus", AssetStatusEnum.RETIRE.getCode());
-            NameValueVo<AssetOperationRecordBarResponse> retire = new NameValueVo<>();
-            retire.setName(AssetStatusEnum.RETIRE.getMsg());
-            retire.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
-            nameValueVoList.add(retire);
-
             map.put("originStatus", AssetStatusEnum.NOT_REGSIST.getCode());
             NameValueVo<AssetOperationRecordBarResponse> notRegist = new NameValueVo<>();
             notRegist.setName(AssetStatusEnum.NOT_REGSIST.getMsg());
@@ -114,29 +102,11 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
             waitRegist.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
             nameValueVoList.add(waitRegist);
 
-            map.put("originStatus", SoftwareStatusEnum.WAIT_ANALYZE.getCode());
-            NameValueVo<AssetOperationRecordBarResponse> waitAnalyze = new NameValueVo<>();
-            waitAnalyze.setName("待分析");
-            waitAnalyze.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
-            nameValueVoList.add(waitAnalyze);
-
             map.put("originStatus", SoftwareStatusEnum.ALLOW_INSTALL.getCode());
             NameValueVo<AssetOperationRecordBarResponse> allowInstall = new NameValueVo<>();
             allowInstall.setName(SoftwareStatusEnum.ALLOW_INSTALL.getMsg());
             allowInstall.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
             nameValueVoList.add(allowInstall);
-
-            map.put("originStatus", SoftwareStatusEnum.WAIT_RETIRE.getCode());
-            NameValueVo<AssetOperationRecordBarResponse> re = new NameValueVo<>();
-            re.setName(SoftwareStatusEnum.WAIT_RETIRE.getMsg());
-            re.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
-            nameValueVoList.add(re);
-
-            map.put("originStatus", SoftwareStatusEnum.RETIRE.getCode());
-            NameValueVo<AssetOperationRecordBarResponse> retire = new NameValueVo<>();
-            retire.setName(SoftwareStatusEnum.RETIRE.getMsg());
-            retire.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
-            nameValueVoList.add(retire);
 
             map.put("originStatus", SoftwareStatusEnum.NOT_REGSIST.getCode());
             NameValueVo<AssetOperationRecordBarResponse> notRegist = new NameValueVo<>();
