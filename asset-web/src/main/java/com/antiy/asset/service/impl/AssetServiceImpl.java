@@ -5,6 +5,7 @@ import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
+import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.*;
@@ -142,6 +143,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private RedisUtil                                                          redisUtil;
     @Resource
     private AssetLinkRelationDao                                               assetLinkRelationDao;
+    @Resource
+    private OperatingSystemClient                                              operatingSystemClient;
     private static final int                                                   ALL_PAGE = -1;
 
     @Override
@@ -748,7 +751,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         // 只查已入网资产
-        List<Integer> statusList=new ArrayList<>();
+        List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
@@ -2012,7 +2015,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
-            if (CheckRepeatIp (entity.getNetworkIpAddress (),null)) {
+            if (CheckRepeatIp(entity.getNetworkIpAddress(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产网卡IP地址重复，");
@@ -2264,7 +2267,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatIp (networkDeviceEntity.getInnerIp (),1)) {
+            if (CheckRepeatIp(networkDeviceEntity.getInnerIp(), 1)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产内网IP地址重复，");
@@ -2811,7 +2814,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
             }
         }
-        List<Integer> statusList=new ArrayList<>();
+        List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
@@ -2820,6 +2823,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         return assetDao.pulldownUnconnectedManufacturer(query);
     }
+
+    /**
+     * 判断操作系统是否存在
+     * @return
+     */
+    private Boolean checkOperatingSystem(String checkStr) {
+        BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse = operatingSystemClient
+            .getInvokeOperatingSystem(checkStr);
+        return baselineCategoryModelNodeResponse != null;
+    }
+
 }
 
 @Component
