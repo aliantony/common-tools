@@ -27,7 +27,6 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      */
     List<AssetSoftware> getSoftByAssetId(Integer assetId);
 
-
     /**
      * 通过软件ID统计资产数量
      *
@@ -79,6 +78,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer insertBatch(List<AssetSoftwareRelation> assetSoftwareRelationList);
+
     /**
      * 批量修改软件状态
      *
@@ -98,5 +98,10 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     Integer installAauto(List<AssetSoftwareRelation> assetSoftwareRelation);
 
-    Integer installSoftware(List<AssetSoftwareRelation> relationList);
+    /**
+     * 软件安装
+     * @param relationList
+     * @return
+     */
+    Integer installSoftware(@Param(value = "list") List<AssetSoftwareRelation> relationList);
 }
