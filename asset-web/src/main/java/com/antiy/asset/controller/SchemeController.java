@@ -2,7 +2,6 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.query.AssetIDAndSchemeTypeQuery;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.service.ISchemeService;
+import com.antiy.asset.vo.query.AssetIDAndSchemeTypeQuery;
 import com.antiy.asset.vo.query.SchemeQuery;
 import com.antiy.asset.vo.response.SchemeResponse;
 import com.antiy.common.base.ActionResponse;
@@ -58,5 +58,19 @@ public class SchemeController {
     public ActionResponse queryByAssetIdAndType(@ApiParam(value = "queryCondition") AssetIDAndSchemeTypeQuery assetIDAndSchemeTypeQuery) throws Exception {
         ParamterExceptionUtils.isNull(assetIDAndSchemeTypeQuery.getAssetId(), "资产ID不能为空");
         return ActionResponse.success(iSchemeService.findSchemeByAssetIdAndType(assetIDAndSchemeTypeQuery));
+    }
+
+    /**
+     * 通过资产ID查询上一个状态的备注信息
+     *
+     * @param schemeQuery 查询条件
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过资产ID查询上一个状态的备注信息", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Scheme.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/memoById", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:scheme:memoByAssetId')")
+    public ActionResponse queryMemoByAssetId(@ApiParam(value = "schemeQuery") SchemeQuery schemeQuery) throws Exception {
+        return ActionResponse.success(iSchemeService.queryMemoById(schemeQuery));
     }
 }

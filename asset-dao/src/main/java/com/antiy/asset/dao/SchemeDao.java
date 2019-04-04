@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.vo.query.AssetIDAndSchemeTypeQuery;
+import com.antiy.asset.vo.query.SchemeQuery;
 import com.antiy.common.base.IBaseDao;
 
 /**
@@ -29,5 +30,12 @@ public interface SchemeDao extends IBaseDao<Scheme> {
      * @return
      */
     Scheme findSchemeByAssetIdAndType(AssetIDAndSchemeTypeQuery query);
+
+    /**
+     * 通过资产ID查询上一个状态的备注信息
+     * @param query
+     * @return
+     */
+    String findMemoById(SchemeQuery query);
 
 }

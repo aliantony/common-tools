@@ -8,10 +8,8 @@ import com.antiy.asset.vo.query.SchemeQuery;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.asset.vo.response.SchemeResponse;
-import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
 
 /**
  * <p> 方案表 服务类 </p>
@@ -60,5 +58,12 @@ public interface ISchemeService extends IBaseService<Scheme> {
      * @return
      */
     SchemeResponse findSchemeByAssetIdAndType(AssetIDAndSchemeTypeQuery query) throws Exception;
+
+    /**
+     * 通过资产ID查询上一个状态的备注信息
+     * @param query
+     * @return
+     */
+    String queryMemoById(SchemeQuery query);
 
 }

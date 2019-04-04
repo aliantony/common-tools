@@ -87,6 +87,7 @@ public class AssetLinkRelationController {
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('asset:linkrelation:queryById')")
     public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键不能为空");
         return ActionResponse.success(iAssetLinkRelationService.queryAssetLinkRelationById(queryCondition));
     }
 
@@ -101,6 +102,7 @@ public class AssetLinkRelationController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:linkrelation:deleteById')")
     public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest) throws Exception {
+        ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键不能为空");
         return ActionResponse.success(iAssetLinkRelationService.deleteAssetLinkRelationById(baseRequest));
     }
 
@@ -108,7 +110,7 @@ public class AssetLinkRelationController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/query/ip", method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('asset:linkrelation:queryAssetIpAddress')")
-    public ActionResponse queryAssetIpAddress(@Encode @ApiParam(value = "资产Id") String assetId,
+    public ActionResponse queryAssetIpAddress(@Encode @ApiParam(value = "资产Id", required = true) String assetId,
                                               @ApiParam(value = "是否可用,true表示可用的资产IP,false表示全部IP,默认为true") Boolean enable) throws Exception {
         ParamterExceptionUtils.isBlank(assetId, "资产Id不能为空");
         return ActionResponse
@@ -134,7 +136,7 @@ public class AssetLinkRelationController {
      * @param assetLinkRelationQuery
      * @return actionResponse
      */
-    @ApiOperation(value = "查询资产列表", notes = "主键封装对象")
+    @ApiOperation(value = "查询已关联资产关系列表", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class), })
     @RequestMapping(value = "/query/assetLinkedList", method = RequestMethod.GET)
     public ActionResponse queryAssetLinkedList(@ApiParam(value = "主键封装对象") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
@@ -152,6 +154,35 @@ public class AssetLinkRelationController {
     @RequestMapping(value = "/query/portById", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:linkrelation:portById')")
     public ActionResponse queryPortById(@ApiParam(value = "assetLinkRelationQuery") QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键不能为空");
         return ActionResponse.success(iAssetLinkRelationService.queryPortById(queryCondition));
+    }
+
+    /**
+     * 资产通联数量列表查询
+     *
+     * @param assetLinkRelationQuery 主键封装对象
+     * @return actionResponse
+     */
+    @ApiOperation(value = "资产通联状态列表查询", notes = "传入查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/assetLinkedCount", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:linkrelation:portById')")
+    public ActionResponse queryAssetLinkedCount(@ApiParam(value = "assetLinkRelationQuery") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
+        return ActionResponse.success(iAssetLinkRelationService.queryAssetLinkedCountPage(assetLinkRelationQuery));
+    }
+
+    /**
+     * 与当前资产通联的资产列表查询
+     * @param assetLinkRelationQuery
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "与当前资产通联的资产列表查询", notes = "传入查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/linkedAssetListByAssetId", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:linkrelation:portById')")
+    public ActionResponse queryLinkedAssetListByAssetId(@ApiParam(value = "assetLinkRelationQuery") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
+        return ActionResponse.success(iAssetLinkRelationService.queryLinkedAssetPageByAssetId(assetLinkRelationQuery));
     }
 }

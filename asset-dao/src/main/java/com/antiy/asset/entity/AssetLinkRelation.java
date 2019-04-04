@@ -18,6 +18,10 @@ public class AssetLinkRelation extends BaseEntity {
      */
     private Integer           assetId;
     /**
+     * 资产名称
+     */
+    private String            assetName;
+    /**
      * 资产IP
      */
     private String            assetIp;
@@ -37,6 +41,10 @@ public class AssetLinkRelation extends BaseEntity {
      * 父级设备主键
      */
     private Integer           parentAssetId;
+    /**
+     * 关联资产名称
+     */
+    private String            parentAssetName;
     /**
      * 父级设备IP
      */
@@ -206,13 +214,30 @@ public class AssetLinkRelation extends BaseEntity {
         this.parentCategoryModelName = parentCategoryModelName;
     }
 
+    public String getAssetName() {
+        return assetName;
+    }
+
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
+    }
+
+    public String getParentAssetName() {
+        return parentAssetName;
+    }
+
+    public void setParentAssetName(String parentAssetName) {
+        this.parentAssetName = parentAssetName;
+    }
+
     @Override
     public String toString() {
-        return "AssetLinkRelation{" + "assetId=" + assetId + ", assetIp='" + assetIp + '\'' + ", assetPort='"
-               + assetPort + '\'' + ", categoryModel='" + categoryModel + '\'' + ", categoryModelName='"
-               + categoryModelName + '\'' + ", parentAssetId=" + parentAssetId + ", parentAssetIp='" + parentAssetIp
-               + '\'' + ", parentAssetPort='" + parentAssetPort + '\'' + ", parentCategoryModel='" + parentCategoryModel
-               + '\'' + ", parentCategoryModelName='" + parentCategoryModelName + '\'' + ", gmtCreate=" + gmtCreate
+        return "AssetLinkRelation{" + "assetId=" + assetId + ", assetName='" + assetName + '\'' + ", assetIp='"
+               + assetIp + '\'' + ", assetPort='" + assetPort + '\'' + ", categoryModel='" + categoryModel + '\''
+               + ", categoryModelName='" + categoryModelName + '\'' + ", parentAssetId=" + parentAssetId
+               + ", parentAssetName=" + parentAssetName + ", parentAssetIp='" + parentAssetIp + '\''
+               + ", parentAssetPort='" + parentAssetPort + '\'' + ", parentCategoryModel='" + parentCategoryModel + '\''
+               + ", parentCategoryModelName='" + parentCategoryModelName + '\'' + ", gmtCreate=" + gmtCreate
                + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
                + ", modifyUser=" + modifyUser + ", status=" + status + '}';
     }

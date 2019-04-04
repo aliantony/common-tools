@@ -95,31 +95,12 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
 
         // 3.调用流程引擎
         ActionResponse actionResponse = null;
-        if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
-            .equals(AssetFlowCategoryEnum.HARDWARE_RETIRE.getCode())
-            || AssetFlowCategoryEnum.SOFTWARE_RETIRE.getCode()
-                .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
-            || AssetFlowCategoryEnum.SOFTWARE_UNINSTALL.getCode()
-                .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
-            // 启动流程
-            // 参数校验
-            ParamterExceptionUtils.isBlank(assetStatusReqeust.getManualStartActivityRequest().getBusinessId(),
-                "业务ID不能为空");
-            ParamterExceptionUtils.isBlank(assetStatusReqeust.getManualStartActivityRequest().getAssignee(), "启动人不能为空");
-            assetStatusReqeust.getManualStartActivityRequest().setAssignee(LoginUserUtil.getLoginUser().getName());
-            actionResponse = activityClient.manualStartProcess(assetStatusReqeust.getManualStartActivityRequest());
-        } else if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode()
-            .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
-                   || AssetFlowCategoryEnum.HARDWARE_CHANGE.getCode()
-                       .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
-                   || AssetFlowCategoryEnum.HARDWARE_IMPL_RETIRE.getCode()
-                       .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+        if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode()
+            .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             // 硬件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         } else if (AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode()
-            .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
-                   || AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE.getCode()
-                       .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+            .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             // 软件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         }
@@ -194,7 +175,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      * @param assetStatusReqeust
      * @return
      */
-    private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) {
+    private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) throws Exception {
         Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
         if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
             JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
@@ -216,6 +197,15 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             }
         }
         scheme.setAssetId(assetStatusReqeust.getAssetId());
+
+        if (assetStatusReqeust.getSoftware()) {
+            scheme.setSchemeSource(AssetTypeEnum.SOFTWARE.getCode());
+            scheme.setAssetNextStatus(this.getNextAssetStatus(assetStatusReqeust).getCode());
+        } else {
+            scheme.setSchemeSource(AssetTypeEnum.HARDWARE.getCode());
+            scheme.setAssetNextStatus(this.getNextSoftwareStatus(assetStatusReqeust).getCode());
+        }
+
         return scheme;
     }
 
