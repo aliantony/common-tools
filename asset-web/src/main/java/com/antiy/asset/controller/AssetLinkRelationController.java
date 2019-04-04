@@ -136,7 +136,7 @@ public class AssetLinkRelationController {
      * @param assetLinkRelationQuery
      * @return actionResponse
      */
-    @ApiOperation(value = "查询资产列表", notes = "主键封装对象")
+    @ApiOperation(value = "查询已关联资产关系列表", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class), })
     @RequestMapping(value = "/query/assetLinkedList", method = RequestMethod.GET)
     public ActionResponse queryAssetLinkedList(@ApiParam(value = "主键封装对象") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {

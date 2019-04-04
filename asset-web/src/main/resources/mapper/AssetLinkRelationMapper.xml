@@ -423,6 +423,12 @@
         left join asset_category_model d on b.category_model = d.id
         left join asset_category_model e on c.category_model = e.id
         where 1 = 1
+        <if test="assetId != null">
+            and a.asset_id = #{assetId}
+        </if>
+        <if test="parentAssetId != null">
+            and a.parent_asset_id = #{parentAssetId}
+        </if>
         <if test="categoryModel != null">
             and b.category_model = #{categoryModel}
         </if>
