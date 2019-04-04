@@ -37,6 +37,14 @@ public class OtherDeviceEntity {
      */
     @ExcelField(value = "area", align = 1, title = "所属区域(必填)", required = true)
     private String area;
+
+
+    /**
+     * 重要程度
+     */
+    @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
+    private String  importanceDegree;
+
     /**
      * 联系电话
      */
@@ -163,5 +171,13 @@ public class OtherDeviceEntity {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public String getImportanceDegree() {
+        return importanceDegree;
+    }
+
+    public void setImportanceDegree(String importanceDegree) {
+        this.importanceDegree = importanceDegree;
     }
 }

@@ -64,6 +64,14 @@ public class NetworkDeviceEntity {
      */
     @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
     private String  houseLocation;
+
+
+    /**
+     * 重要程度
+     */
+    @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
+    private String  importanceDegree;
+
     /**
      * 端口数目
      */
@@ -410,5 +418,13 @@ public class NetworkDeviceEntity {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public String getImportanceDegree() {
+        return importanceDegree;
+    }
+
+    public void setImportanceDegree(String importanceDegree) {
+        this.importanceDegree = importanceDegree;
     }
 }
