@@ -87,6 +87,7 @@ public class AssetLinkRelationController {
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('asset:linkrelation:queryById')")
     public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键不能为空");
         return ActionResponse.success(iAssetLinkRelationService.queryAssetLinkRelationById(queryCondition));
     }
 
@@ -101,6 +102,7 @@ public class AssetLinkRelationController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:linkrelation:deleteById')")
     public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest) throws Exception {
+        ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键不能为空");
         return ActionResponse.success(iAssetLinkRelationService.deleteAssetLinkRelationById(baseRequest));
     }
 
@@ -108,7 +110,7 @@ public class AssetLinkRelationController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/query/ip", method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('asset:linkrelation:queryAssetIpAddress')")
-    public ActionResponse queryAssetIpAddress(@Encode @ApiParam(value = "资产Id") String assetId,
+    public ActionResponse queryAssetIpAddress(@Encode @ApiParam(value = "资产Id", required = true) String assetId,
                                               @ApiParam(value = "是否可用,true表示可用的资产IP,false表示全部IP,默认为true") Boolean enable) throws Exception {
         ParamterExceptionUtils.isBlank(assetId, "资产Id不能为空");
         return ActionResponse
@@ -152,6 +154,7 @@ public class AssetLinkRelationController {
     @RequestMapping(value = "/query/portById", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:linkrelation:portById')")
     public ActionResponse queryPortById(@ApiParam(value = "assetLinkRelationQuery") QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键不能为空");
         return ActionResponse.success(iAssetLinkRelationService.queryPortById(queryCondition));
     }
 

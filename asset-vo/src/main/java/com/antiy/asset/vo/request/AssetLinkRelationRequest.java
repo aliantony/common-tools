@@ -21,14 +21,14 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
     /**
      * 资产主键
      */
-    @ApiModelProperty("资产主键")
+    @ApiModelProperty(value = "资产主键",required = true)
     @Encode(message = "子资产主键错误")
     @NotBlank(message = "子资产主键不能为空")
     private String  assetId;
     /**
      * 资产IP
      */
-    @ApiModelProperty("资产IP")
+    @ApiModelProperty(value = "资产IP",required = true)
     @NotBlank(message = "子资产IP不能为空")
     private String  assetIp;
     /**
@@ -39,20 +39,20 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
     /**
      * 父级设备主键
      */
-    @ApiModelProperty("父级设备主键")
+    @ApiModelProperty(value = "父级设备主键",required = true)
     @Encode(message = "父级设备主键错误")
     @NotBlank(message = "父级设备主键不能为空")
     private String  parentAssetId;
     /**
      * 父级设备IP
      */
-    @ApiModelProperty("父级设备IP")
+    @ApiModelProperty(value = "父级设备IP",required = true)
     @NotBlank(message = "父级设备IP不能为空")
     private String  parentAssetIp;
     /**
      * 父级设备端口
      */
-    @ApiModelProperty("父级设备端口")
+    @ApiModelProperty(value = "父级设备端口",required = true)
     @NotBlank(message = "父级设备端口不能为空")
     private String  parentAssetPort;
     /**
