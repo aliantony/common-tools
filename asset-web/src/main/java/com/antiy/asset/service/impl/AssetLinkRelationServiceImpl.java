@@ -217,7 +217,9 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         assetLinkRelationQuery.setPcCategoryModels(assetCategoryModelService.findAssetCategoryModelIdsById(4));
         // 网络设备下所有品类型号
         assetLinkRelationQuery.setNetCategoryModels(assetCategoryModelService.findAssetCategoryModelIdsById(5));
-        assetLinkRelationQuery.setAreaIds(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser() : Lists.newArrayList());
+        assetLinkRelationQuery
+            .setAreaIds(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()
+                : Lists.newArrayList());
         List<AssetLinkedCount> assetResponseList = assetLinkRelationDao
             .queryAssetLinkedCountList(assetLinkRelationQuery);
         if (CollectionUtils.isEmpty(assetResponseList)) {
@@ -228,8 +230,15 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     @Override
     public List<AssetLinkRelationResponse> queryLinkedAssetListByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) {
-        List<AssetLinkRelation> assetResponseList = assetLinkRelationDao
-                .queryLinkedAssetListByAssetId(DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()));
+        ParamterExceptionUtils.isBlank(assetLinkRelationQuery.getPrimaryKey(), "请选择资产");
+        Integer portSize = assetLinkRelationDao
+            .queryPortSize(DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()));
+        List<Integer> portCount = Lists.newArrayList();
+        for (int i = 1; i <= portSize; i++) {
+            portCount.add(i);
+        }
+        List<AssetLinkRelation> assetResponseList = assetLinkRelationDao.queryLinkedAssetListByAssetId(
+            DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()), portCount);
         if (CollectionUtils.isEmpty(assetResponseList)) {
             return Lists.newArrayList();
         }
@@ -239,13 +248,14 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Override
     public PageResult<AssetLinkRelationResponse> queryLinkedAssetPageByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) {
         List<AssetLinkRelationResponse> assetLinkRelationResponseList = this
-                .queryLinkedAssetListByAssetId(assetLinkRelationQuery);
+            .queryLinkedAssetListByAssetId(assetLinkRelationQuery);
         if (assetLinkRelationResponseList.size() <= 0) {
             return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(), 0,
-                    assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
+                assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
         }
         return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(),
-                assetLinkRelationResponseList.size(), assetLinkRelationQuery.getCurrentPage(), assetLinkRelationResponseList);
+            assetLinkRelationResponseList.size(), assetLinkRelationQuery.getCurrentPage(),
+            assetLinkRelationResponseList);
     }
 
     /**

@@ -61,7 +61,7 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      * 资产区域
      */
     @ApiModelProperty("资产区域")
-    private List<Integer>  areaIds;
+    private List<Integer> areaIds;
 
     public String getCategoryModel() {
         return categoryModel;

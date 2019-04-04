@@ -599,56 +599,68 @@
         b.ip_address as assetIp,
         c.parent_asset_id as parentAssetId,
         (select name from asset where id = c.parent_asset_id) as parentAssetName,
-        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id ) ) AS parentCategoryModelName,
+        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id
+        ) ) AS parentCategoryModelName,
         c.parent_asset_ip as parentAssetIp,
         c.parent_asset_port as parentAssetPort
         FROM
         asset a
-        LEFT JOIN asset_network_card b ON a.id = b.asset_id
-        LEFT JOIN asset_link_relation c ON ( b.asset_id = c.asset_id AND b.ip_address = c.asset_ip )
+        LEFT JOIN asset_network_card b ON a.id = b.asset_id and b.status = 1
+        LEFT JOIN asset_link_relation c ON ( b.asset_id = c.asset_id AND b.ip_address = c.asset_ip and c.status = 1)
         WHERE
         a.id = #{id}
-        UNION ALL
-        SELECT
-        alr.id,
-        t.id as assetId,
-        t.NAME as assetName,
-        t.port as assetPort,
-        t.category_model as categoryModel,
-        ( SELECT NAME FROM asset_category_model WHERE id = t.category_model ) AS categoryModelName,
-        t.inner_ip as assetIp,
-        alr.parent_asset_id as parentAssetId,
-        (select name from asset where id = alr.parent_asset_id) as parentAssetName,
-        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = alr.parent_asset_id ) ) AS parentCategoryModelName,
-        alr.parent_asset_ip as parentAssetIp,
-        alr.parent_asset_port as parentAssetPort
-        FROM
-        (
-        SELECT
-        t2.id,
-        t2.NAME,
-        t2.category_model,
-        t2.inner_ip,
-        t1.`port`
-        FROM
-        (SELECT 1 PORT UNION SELECT 2 UNION SELECT 3 ) t1
-        LEFT JOIN (
-        SELECT
-        a.id,
-        a.NAME,
-        a.category_model,
-        b.inner_ip,
-        b.port_size
-        FROM
-        asset a,asset_network_equipment b
-        WHERE
-        a.id = b.asset_id
-        and a.id = #{id}
-        ) t2 ON t1.port &lt;= t2.port_size
-        ) t
-        LEFT JOIN asset_link_relation alr ON t.id = alr.asset_id
-        AND t.port = alr.asset_port
-        where  t.id is not null
+        and b.ip_address is not null
+        <if test="portCount != null and portCount.size() > 0">
+            UNION ALL
+            SELECT
+            alr.id,
+            t.id as assetId,
+            t.NAME as assetName,
+            t.port as assetPort,
+            t.category_model as categoryModel,
+            ( SELECT NAME FROM asset_category_model WHERE id = t.category_model ) AS categoryModelName,
+            t.inner_ip as assetIp,
+            alr.parent_asset_id as parentAssetId,
+            (select name from asset where id = alr.parent_asset_id) as parentAssetName,
+            ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id =
+            alr.parent_asset_id ) ) AS parentCategoryModelName,
+            alr.parent_asset_ip as parentAssetIp,
+            alr.parent_asset_port as parentAssetPort
+            FROM
+            (
+            SELECT
+            t2.id,
+            t2.NAME,
+            t2.category_model,
+            t2.inner_ip,
+            t1.`port`
+            FROM
+            <foreach collection="portCount" item="item" index="index" open="(" close=")">
+                <if test="index == 0">
+                    select #{item} port
+                </if>
+                <if test="index > 0">
+                    union select #{item}
+                </if>
+            </foreach> t1
+            LEFT JOIN (
+            SELECT
+            a.id,
+            a.NAME,
+            a.category_model,
+            b.inner_ip,
+            b.port_size
+            FROM
+            asset a,asset_network_equipment b
+            WHERE
+            a.id = b.asset_id
+            and a.id = #{id}
+            ) t2 ON t1.port &lt;= t2.port_size
+            ) t
+            LEFT JOIN asset_link_relation alr ON t.id = alr.asset_id
+            AND t.port = alr.asset_port
+            where t.id is not null
+        </if>
         union all
         SELECT
         a.id,
@@ -660,12 +672,17 @@
         a.parent_asset_ip as assetIp,
         a.asset_id as parentAssetId,
         (select name from asset where id = a.asset_id) as parentAssetName,
-        (SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = asset_id ) ) AS parentCategoryModelName,
+        (SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = asset_id ) ) AS
+        parentCategoryModelName,
         a.asset_ip as parentAssetIp,
         a.asset_port as parentAssetPort
         FROM
         asset_link_relation a left join asset b on a.parent_asset_id = b.id
         WHERE
         a.parent_asset_id = #{id}
+        and a.status = 1
+    </select>
+    <select id="queryPortSize" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select b.port_size from asset a left join asset_network_equipment b on a.id = b.asset_id where a.id = #{id}
     </select>
 </mapper>
