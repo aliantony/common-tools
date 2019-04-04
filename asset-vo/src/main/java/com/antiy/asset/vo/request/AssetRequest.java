@@ -99,7 +99,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     /**
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
-    @ApiModelProperty("操作系统,如果type为IDS或者IPS则此字段存放软件版本信息")
+    @ApiModelProperty("操作系统。基准获取")
     @Size(message = "资产操作系统不能超过16位", max = 16)
     @NotBlank(message = "资产操作系统不能为空")
     private String                  operationSystem;
