@@ -1,12 +1,10 @@
 package com.antiy.asset.controller;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
-import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -135,7 +133,7 @@ public class AssetSoftwareRelationController {
 
     /**
      * 查询硬件资产关联的软件列表
-     *
+     * 
      * @param queryCondition
      * @return actionResponse
      */
