@@ -178,7 +178,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             }
         });
         if (CollectionUtils.isNotEmpty(autoInstallList)) {
-            // todo 下发智甲安装
+            // TODO 下发智甲安装
         }
     }
 }
