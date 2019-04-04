@@ -12,6 +12,11 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetSoftware extends BaseEntity {
+
+    /**
+     * 软件关联资产的端口
+     */
+    private String  port;
     /**
      * MD5/SHA
      */
@@ -382,5 +387,13 @@ public class AssetSoftware extends BaseEntity {
 
     public void setMd5Code(String md5Code) {
         this.md5Code = md5Code;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
     }
 }

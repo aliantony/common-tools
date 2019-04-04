@@ -64,7 +64,13 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      */
     List<AssetSoftwareResponse> getSoftByAssetId(Integer assetId);
 
-
+    /**
+     * 通过资产ID分页查询关联软件简要信息 id,名称,品类型号,软件大小,厂商,发布时间,端口,许可秘钥
+     *
+     * @param query
+     * @return
+     */
+    PageResult<AssetSoftwareResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query);
 
     /**
      * 通过软件ID统计资产数量

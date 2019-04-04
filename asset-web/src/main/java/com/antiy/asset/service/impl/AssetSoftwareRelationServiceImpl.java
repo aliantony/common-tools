@@ -106,6 +106,18 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     }
 
     @Override
+    public PageResult<AssetSoftwareResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query) {
+        int count = countByAssetId(DataTypeUtils.stringToInteger(query.getAssetId()));
+        if (count == 0) {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
+        }
+        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSimpleSoftwareByAssetId(query);
+        List<AssetSoftwareResponse> assetSoftwareResponseList = responseSoftConverter.convert(assetSoftwareList,
+            AssetSoftwareResponse.class);
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetSoftwareResponseList);
+    }
+
+    @Override
     public Integer countAssetBySoftId(Integer id) {
         return assetSoftwareRelationDao.countAssetBySoftId(id);
     }
@@ -185,5 +197,9 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         if (CollectionUtils.isNotEmpty(autoInstallList)) {
             // TODO 下发智甲安装
         }
+    }
+
+    private Integer countByAssetId(Integer assetId) {
+        return assetSoftwareRelationDao.countSoftwareByAssetId(assetId);
     }
 }

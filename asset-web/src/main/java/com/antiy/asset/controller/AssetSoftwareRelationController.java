@@ -205,4 +205,19 @@ public class AssetSoftwareRelationController {
         return ActionResponse.success();
     }
 
+    /**
+     * 根据资产id分页查询关联的软件信息
+     * @param queryCondition
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "分页查询硬件资产关联的软件列表", notes = "必传资产ID")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:querySimpleSoftwareByAssetId')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/simpleSoftwareList", method = RequestMethod.GET)
+    public ActionResponse getSimpleSoftwarePageByAssetId(@ApiParam(value = "assetId") AssetSoftwareRelationQuery queryCondition) throws Exception {
+        ParamterExceptionUtils.isNull(queryCondition.getAssetId(), "资产ID不能为空");
+        return ActionResponse.success(iAssetSoftwareRelationService.getSimpleSoftwarePageByAssetId(queryCondition));
+    }
+
 }
