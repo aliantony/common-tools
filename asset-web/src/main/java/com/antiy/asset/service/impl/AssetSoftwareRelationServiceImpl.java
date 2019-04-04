@@ -155,10 +155,15 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             relation.setGmtModified(System.currentTimeMillis());
             relation.setModifyUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
             if (assetSoftwareRelationList.getInstallType().equals(InstallType.MANUAL.getCode())) {
+                // 人工安装
+                relation.setAssetId(assetInstallRequest.getAssetId());
                 relation.setInstallType(InstallType.MANUAL.getCode());
                 relation.setInstallStatus(assetInstallRequest.getInstallStatus());
                 relation.setInstallTime(assetInstallRequest.getInstallTime());
             } else {
+                // 自动安装
+                relation.setAssetId(assetInstallRequest.getAssetId());
+                relation.setSoftwareId(assetSoftwareRelationList.getSoftwareId());
                 relation.setInstallType(InstallType.AUTOMATIC.getCode());
                 relation.setInstallStatus(InstallStatus.INSTALLING.getCode());
                 autoInstallList.add(relation);
@@ -166,10 +171,10 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             relationList.add(relation);
         });
         // 更新关系表
-        Integer count= transactionTemplate.execute(new TransactionCallback<Integer>() {
+        Integer count = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
-                try{
+                try {
                     return assetSoftwareRelationDao.installSoftware(relationList);
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
