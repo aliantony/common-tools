@@ -14,7 +14,7 @@ public class ComputeDeviceEntity {
     /**
      * 资产编号
      */
-    @ExcelField(value = "number", align = 1, title = "资产编号")
+    @ExcelField(value = "number", align = 1, title = "资产编号",required = true)
     private String  number;
 
     /**
@@ -114,7 +114,7 @@ public class ComputeDeviceEntity {
     /**
      * 网卡品牌
      */
-    @ExcelField(value = "networkBrand", align = 1, title = "网卡品牌(必填)",required = true)
+    @ExcelField(value = "networkBrand", align = 1, title = "网卡品牌(必填)")
     private String  networkBrand;
     /**
      * 网卡型号
