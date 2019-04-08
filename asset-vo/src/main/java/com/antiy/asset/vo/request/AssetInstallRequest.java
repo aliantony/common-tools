@@ -2,6 +2,7 @@ package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
 
@@ -15,20 +16,14 @@ public class AssetInstallRequest extends BaseRequest {
      */
     @Encode
     @NotBlank
+    @ApiModelProperty("资产id")
     private String  assetId;
     /**
      * 配置状态
      */
     @NotBlank
+    @ApiModelProperty("配置状态")
     private Integer configureStatus;
-    /**
-     * 安装状态
-     */
-    private Integer installStatus;
-    /**
-     * 安装时间
-     */
-    private Long    installTime;
 
     public Integer getConfigureStatus() {
         return configureStatus;
@@ -46,25 +41,8 @@ public class AssetInstallRequest extends BaseRequest {
         this.assetId = assetId;
     }
 
-    public Integer getInstallStatus() {
-        return installStatus;
-    }
-
-    public void setInstallStatus(Integer installStatus) {
-        this.installStatus = installStatus;
-    }
-
-    public Long getInstallTime() {
-        return installTime;
-    }
-
-    public void setInstallTime(Long installTime) {
-        this.installTime = installTime;
-    }
-
     @Override
     public String toString() {
-        return "AssetInstallRequest{" + "assetId='" + assetId + '\'' + ", configureStatus='" + configureStatus + '\''
-               + ", installStatus=" + installStatus + ", installTime=" + installTime + '}';
+        return "AssetInstallRequest{" + "assetId='" + assetId + '\'' + ", configureStatus=" + configureStatus + '}';
     }
 }

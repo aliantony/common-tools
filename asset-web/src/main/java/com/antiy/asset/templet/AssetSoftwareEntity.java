@@ -41,7 +41,7 @@ public class AssetSoftwareEntity {
     /**
      * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
      */
-    @ExcelField(value = "operationSystem", align = 1, title = "兼容系统", type = 0)
+    @ExcelField(value = "operationSystem", align = 1, title = "兼容系统(必填)", type = 0,required = true)
     private String  operationSystem;
 
     /**

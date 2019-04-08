@@ -1,34 +1,16 @@
 package com.antiy.asset.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.AreaClient;
-import com.antiy.asset.intergration.OperatingSystemClient;
-import com.antiy.asset.service.IAssetCategoryModelService;
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.*;
-import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.ActivityWaitingQuery;
-import com.antiy.asset.vo.query.AssetDetialCondition;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.query.AssetUserQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.*;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.download.DownloadVO;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.utils.*;
-import com.antiy.common.utils.DataTypeUtils;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -46,15 +28,33 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.HtmlUtils;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.intergration.AreaClient;
+import com.antiy.asset.intergration.OperatingSystemClient;
+import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.*;
+import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.*;
+import com.antiy.common.utils.DataTypeUtils;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -151,7 +151,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetLinkRelationDao                                               assetLinkRelationDao;
     @Resource
     private OperatingSystemClient                                              operatingSystemClient;
+    @Resource
+    private IAssetSoftwareService                                              softwareService;
     private static final int                                                   ALL_PAGE = -1;
+
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -532,6 +535,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
+
+            // 对接配置模块
+            ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
+            configRegisterRequest.setAssetId(String.valueOf(id));
+            configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
+            configRegisterRequest.setSuggest(request.getConfigRegisterRequest().getSuggest());
+            configRegisterRequest.setConfigUserId(request.getConfigRegisterRequest().getConfigUserId());
+            configRegisterRequest.setRelId(String.valueOf(id));
+            softwareService.configRegister(configRegisterRequest);
         }
 
         return ActionResponse.success(id);
