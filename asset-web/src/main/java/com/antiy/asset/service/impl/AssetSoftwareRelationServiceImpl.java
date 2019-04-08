@@ -111,14 +111,15 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     }
 
     @Override
-    public PageResult<AssetSoftwareResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query) {
+    public PageResult<AssetSoftwareRelationResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query) {
         int count = countByAssetId(DataTypeUtils.stringToInteger(query.getAssetId()));
         if (count == 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
         }
-        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSimpleSoftwareByAssetId(query);
-        List<AssetSoftwareResponse> assetSoftwareResponseList = responseSoftConverter.convert(assetSoftwareList,
-            AssetSoftwareResponse.class);
+        List<AssetSoftwareRelation> assetSoftwareRelationList = assetSoftwareRelationDao
+            .getSimpleSoftwareByAssetId(query);
+        List<AssetSoftwareRelationResponse> assetSoftwareResponseList = responseConverter
+            .convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class);
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetSoftwareResponseList);
     }
 
@@ -175,8 +176,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 // 人工安装
                 relation.setAssetId(assetInstallRequest.getAssetId());
                 relation.setInstallType(InstallType.MANUAL.getCode());
-                relation.setInstallStatus(assetInstallRequest.getInstallStatus());
-                relation.setInstallTime(assetInstallRequest.getInstallTime());
+                relation.setInstallStatus(assetSoftwareRelationList.getInstallStatus());
+                relation.setInstallTime(assetSoftwareRelationList.getInstallTime());
             } else {
                 // 自动安装
                 relation.setAssetId(assetInstallRequest.getAssetId());

@@ -5,6 +5,10 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetSoftwareRelation">
         <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="manufacturer" property="manufacturer"/>
+        <result column="version" property="version"/>
+        <result column="operation_system" property="operationSystem"/>
         <result column="asset_id" property="assetId"/>
         <result column="software_id" property="softwareId"/>
         <result column="software_status" property="softwareStatus"/>
@@ -408,22 +412,18 @@
             and asoftrel.status = 1
     </select>
 
-    <select id="getSimpleSoftwareByAssetId" resultType="com.antiy.asset.entity.AssetSoftware"
+    <select id="getSimpleSoftwareByAssetId" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareRelationQuery">
         select
-        asoft.id,
+        asoft.id as software_id,
         asoft.name,
-        asoft.size,
         asoft.manufacturer,
-        a.name as categorymodelname,
-        asoft.release_time as releasetime,
-        asoftrel.port,
-        asl.license_secret_key as licenseSecretKey
+        asoft.version,
+        asoft.operation_system,
+        asoftrel.install_time
         from
         asset_software_relation asoftrel
-        left join asset_software_license asl on asoftrel.software_id = asl.software_id
         left join asset_software asoft on asoftrel.software_id = asoft.id
-        left join asset_category_model a on asoft.category_model = a.id
         where
         asset_id = #{assetId}
         and asoft.id is not null

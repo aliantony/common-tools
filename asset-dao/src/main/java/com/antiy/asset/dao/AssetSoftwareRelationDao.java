@@ -12,8 +12,8 @@ import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareRelation;
+import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.common.base.IBaseDao;
-import org.springframework.security.core.parameters.P;
 
 /**
  * <p> 资产软件关系信息 Mapper 接口 </p>
@@ -36,7 +36,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @param query
      * @return
      */
-    List<AssetSoftware> getSimpleSoftwareByAssetId(AssetSoftwareRelationQuery query);
+    List<AssetSoftwareRelation> getSimpleSoftwareByAssetId(AssetSoftwareRelationQuery query);
 
     /**
      * 根据assetId资产id统计数量

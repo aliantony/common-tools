@@ -283,7 +283,7 @@ public class AssetSoftwareController {
 
     @ApiOperation(value = "资产配置(软件安装配置)", notes = "资产配置")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/deal/asset/setting", method = RequestMethod.POST)
+    @RequestMapping(value = "/asset/setting", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:assetSetting')")
     public ActionResponse assetSetting(@ApiParam @RequestBody ConfigRegisterRequest registerRequest) throws Exception {
         return iAssetSoftwareService.configRegister(registerRequest);
