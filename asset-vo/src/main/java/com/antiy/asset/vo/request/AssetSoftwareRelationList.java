@@ -23,14 +23,24 @@ public class AssetSoftwareRelationList extends BaseRequest {
     /**
      * 安装方式
      */
-    @ApiModelProperty("安装方式")
+    @ApiModelProperty("安装方式：1人工，2自动")
     @NotNull
-    private Integer                    installType;
+    private Integer                   installType;
     /**
      * 安装结果
      */
     @ApiModelProperty("安装结果")
     private List<AssetInstallRequest> assetInstallRequestList;
+    /**
+     * 安装状态
+     */
+    @ApiModelProperty("安装状态")
+    private Integer                   installStatus;
+    /**
+     * 安装时间
+     */
+    @ApiModelProperty("安装时间")
+    private Long                      installTime;
 
     public String getSoftwareId() {
         return softwareId;
@@ -48,6 +58,22 @@ public class AssetSoftwareRelationList extends BaseRequest {
         this.installType = installType;
     }
 
+    public Integer getInstallStatus() {
+        return installStatus;
+    }
+
+    public void setInstallStatus(Integer installStatus) {
+        this.installStatus = installStatus;
+    }
+
+    public Long getInstallTime() {
+        return installTime;
+    }
+
+    public void setInstallTime(Long installTime) {
+        this.installTime = installTime;
+    }
+
     public List<AssetInstallRequest> getAssetInstallRequestList() {
         return assetInstallRequestList;
     }
@@ -58,7 +84,8 @@ public class AssetSoftwareRelationList extends BaseRequest {
 
     @Override
     public String toString() {
-        return "AssetSoftwareRelationList{" + "softwareId='" + softwareId + '\'' + ", installType='" + installType
-               + '\'' + ", assetInstallRequestList=" + assetInstallRequestList + '}';
+        return "AssetSoftwareRelationList{" + "softwareId='" + softwareId + '\'' + ", installType=" + installType
+               + ", assetInstallRequestList=" + assetInstallRequestList + ", installStatus=" + installStatus
+               + ", installTime=" + installTime + '}';
     }
 }

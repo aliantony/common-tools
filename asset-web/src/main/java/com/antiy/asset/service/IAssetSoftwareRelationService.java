@@ -70,7 +70,7 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @param query
      * @return
      */
-    PageResult<AssetSoftwareResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query);
+    PageResult<AssetSoftwareRelationResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query);
 
     /**
      * 通过软件ID统计资产数量

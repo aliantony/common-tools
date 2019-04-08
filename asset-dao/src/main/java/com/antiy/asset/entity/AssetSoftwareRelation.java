@@ -12,6 +12,23 @@ import com.antiy.common.base.BaseEntity;
 public class AssetSoftwareRelation extends BaseEntity {
 
     /**
+     * 软件版本
+     */
+    private String  version;
+    /**
+     * 软件厂商
+     */
+    private String  manufacturer;
+    /**
+     * 软件兼容操作系统(WINDOWS7-32-64,WINDOWS8-64)
+     */
+    private String  operationSystem;
+    /**
+     * 软件名字
+     */
+    private String  name;
+
+    /**
      * 资产主键
      */
     private String  assetId;
@@ -39,7 +56,7 @@ public class AssetSoftwareRelation extends BaseEntity {
     /**
      * 安装方式1人工2自动
      */
-    private Integer  installType;
+    private Integer installType;
     /**
      * 安装状态0失败、1成功，2安装中
      */
@@ -217,13 +234,47 @@ public class AssetSoftwareRelation extends BaseEntity {
         this.userName = userName;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public String getOperationSystem() {
+        return operationSystem;
+    }
+
+    public void setOperationSystem(String operationSystem) {
+        this.operationSystem = operationSystem;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
-        return "AssetSoftwareRelation{" + "assetId='" + assetId + '\'' + ", softwareId='" + softwareId + '\''
-               + ", softwareStatus=" + softwareStatus + ", protocol='" + protocol + '\'' + ", port='" + port + '\''
-               + ", licenseSecretKey='" + licenseSecretKey + '\'' + ", installType=" + installType + ", installStatus="
-               + installStatus + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo='" + memo + '\''
-               + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status + ", installTime="
-               + installTime + ", userId='" + userId + '\'' + ", userName='" + userName + '\'' + '}';
+        return "AssetSoftwareRelation{" + "version='" + version + '\'' + ", manufacturer='" + manufacturer + '\''
+               + ", operationSystem='" + operationSystem + '\'' + ", name='" + name + '\'' + ", assetId='" + assetId
+               + '\'' + ", softwareId='" + softwareId + '\'' + ", softwareStatus=" + softwareStatus + ", protocol='"
+               + protocol + '\'' + ", port='" + port + '\'' + ", licenseSecretKey='" + licenseSecretKey + '\''
+               + ", installType=" + installType + ", installStatus=" + installStatus + ", gmtCreate=" + gmtCreate
+               + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
+               + ", modifyUser=" + modifyUser + ", status=" + status + ", installTime=" + installTime + ", userId='"
+               + userId + '\'' + ", userName='" + userName + '\'' + '}';
     }
 }
