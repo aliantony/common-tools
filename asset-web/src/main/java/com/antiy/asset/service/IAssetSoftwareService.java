@@ -1,7 +1,15 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.query.ConfigRegisterRequest;
 import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
@@ -9,11 +17,6 @@ import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p> 软件信息表 服务类 </p>
@@ -53,7 +56,8 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @param query
      * @return
      */
-    List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query,Map<String,WaitingTaskReponse> waitingTasks) throws Exception;
+    List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query,
+                                                      Map<String, WaitingTaskReponse> waitingTasks) throws Exception;
 
     /**
      * 批量查询
@@ -103,7 +107,6 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      */
     AssetSoftwareDetailResponse querySoftWareDetail(SoftwareQuery softwareQuery) throws Exception;
 
-
     /**
      * 通过ID修改软件状态
      *
@@ -122,7 +125,6 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
 
     void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception;
 
-
     PageResult<AssetSoftwareResponse> findPageInstallList(AssetSoftwareQuery softwareQuery) throws Exception;
 
     /**
@@ -140,5 +142,11 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
     List<AssetSoftwareInstallResponse> findAssetInstallList(AssetSoftwareQuery softwareQuery) throws Exception;
 
     PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery) throws Exception;
+
+    /**
+     * 软件配置
+     * @param request
+     */
+    ActionResponse configRegister(ConfigRegisterRequest request) throws Exception;
 
 }
