@@ -897,6 +897,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareDetailResponse.setSoftwareLicense(assetSoftwareLicenseResponses);
     }
 
+
 }
 
 @Component
