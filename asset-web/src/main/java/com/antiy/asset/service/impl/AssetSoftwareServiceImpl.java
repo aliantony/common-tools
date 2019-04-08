@@ -118,7 +118,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Resource
     private AssetChangeRecordDao                                             assetChangeRecordDao;
     @Resource
-    private OperatingSystemClient operatingSystemClient;
+    private OperatingSystemClient                                            operatingSystemClient;
     @Resource
     private BaseLineClient                                                   baseLineClient;
     @Resource
@@ -138,7 +138,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetPortProtocol.class);
 
                     ParamterExceptionUtils.isTrue(!CheckRepeatName(assetSoftware.getName()), "资产名称重复");
-                    BusinessExceptionUtils.isTrue(!checkOperatingSystem(assetSoftware.getOperationSystem ()), "兼容系统存在，或已经注销！");
+                    BusinessExceptionUtils.isTrue(!checkOperatingSystem(assetSoftware.getOperationSystem()),
+                        "兼容系统存在，或已经注销！");
                     BusinessExceptionUtils.isTrue(
                         !Objects.isNull(assetCategoryModelDao.getById(
                             com.antiy.common.utils.DataTypeUtils.stringToInteger(assetSoftware.getCategoryModel()))),
@@ -241,15 +242,18 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     }
 
-
     /**
      * 判断操作系统是否存在
      * @return
      */
     private Boolean checkOperatingSystem(String checkStr) {
-        BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse = operatingSystemClient
-                .getInvokeOperatingSystem(checkStr);
-        return baselineCategoryModelNodeResponse != null;
+        List<Map> operatingSystemMapList = operatingSystemClient.getInvokeOperatingSystem();
+        for (Map map : operatingSystemMapList) {
+            if (Objects.equals(map.get("name"), checkStr)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

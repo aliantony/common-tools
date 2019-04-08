@@ -11,6 +11,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class OperatingSystemClientImpl implements OperatingSystemClient {
@@ -20,24 +22,22 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
     /**
      * 获取操作系统列表url
      */
-    @Value("${checkOperatingSystemUrl}")
+    @Value("${getOperatingSystemUrl}")
     private String     getOperatingSystemUrl;
 
     @Override
-    public ActionResponse getOperatingSystem(String checkStr) {
-        CategoryByNameQuery categoryByNameQuery=new CategoryByNameQuery();
-        categoryByNameQuery.setName(checkStr);
-        return (ActionResponse) baseClient.post(categoryByNameQuery, new ParameterizedTypeReference<ActionResponse>() {
+    public ActionResponse getOperatingSystem() {
+        return (ActionResponse) baseClient.post(null, new ParameterizedTypeReference<ActionResponse>() {
         }, getOperatingSystemUrl);
     }
 
     @Override
-    public BaselineCategoryModelNodeResponse getInvokeOperatingSystem(String checkStr) {
-        ActionResponse actionResponse = this.getOperatingSystem(checkStr);
+    public List<Map> getInvokeOperatingSystem() {
+        ActionResponse actionResponse = this.getOperatingSystem();
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             return null;
         }
-        return (BaselineCategoryModelNodeResponse) actionResponse.getBody();
+        return (List<Map>) actionResponse.getBody();
     }
 }
