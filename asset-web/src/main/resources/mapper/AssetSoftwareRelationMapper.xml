@@ -31,6 +31,7 @@
         <result column="install_type" property="installType"/>
         <result column="install_status" property="installStatus"/>
         <result column="install_time" property="installTime"/>
+        <result column="category_model_name" property="categoryModelName"/>
         <result column="configure_status" property="configureStatus"/>
         <result column="ip" property="ip"/>
         <result column="mac" property="mac"/>
@@ -225,7 +226,7 @@
     <sql id="Multiple_Query">
 
         <if test="areaIds==null and areaIds.length>0">
-            and id in
+            and area_id in
             <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
                 #{item}
             </foreach>
@@ -233,7 +234,6 @@
         <if test=" multipleQuery != null">
             and (name LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or number LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or serial LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and inner_ip like
@@ -259,21 +259,23 @@
         <if test="installType != null ">
             and install_type =#{installType}
         </if>
-        <if test="configureStatus!=null and configureStatus=1">
-            and configure_status =#{configureStatus} or configure_status is null
-        </if>
-        <if test="configureStatus!=null and configureStatus != 1">
-            and configure_status =#{configureStatus}
-        </if>
-        <if test="installStatus!=null and installStatus=1">
-            and install_status =#{installStatus} or install_status is null
-        </if>
-        <if test="installStatus!=null and installStatus != 1">
-            and install_status =#{installStatus}
-        </if>
-        <if test="installStatus!=null and installStatus != 1">
-            and install_status =#{installStatus}
-        </if>
+        <choose>
+            <when test="configureStatus == 1">
+                and configure_status =#{configureStatus} or configure_status is null
+            </when>
+            <when test="configureStatus != null and configureStatus != 1">
+                and configure_status =#{configureStatus}
+            </when>
+        </choose>
+        <choose>
+            <when test="installStatus == 1">
+                and install_status =#{installStatus} or install_status is null
+            </when>
+            <when test="installStatus != null and installStatus != 1">
+                and install_status =#{installStatus}
+            </when>
+        </choose>
+
         <if test="operationSystem!=null">
             and operation_system=#{operationSystem}
         </if>
@@ -584,8 +586,8 @@
 	        and a.status = 1
     </select>
 
-    <select id="queryInstallList" resultMap="installResultMap" parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select * from (select
+    <select id="queryInstallList" resultMap="InstallResultMap" parameterType="com.antiy.asset.vo.query.InstallQuery">
+        select distinct * from (select
         a.id,
         a.area_id,
         a.asset_group,
@@ -594,11 +596,12 @@
         a.name,
         a.install_type,
         c.name as category_model_name,
-        a.manufacturer, asset_status,
+        a.manufacturer,
+        asset_status,
         a.operation_system,
         d.configure_status,
         d.install_status,
-        d.install_time
+        d.install_time,
         case
         when group_concat(b.ip_address) is not null then
         group_concat(b.ip_address)
@@ -621,24 +624,26 @@
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
         left join asset_category_model c on a.category_model = c.id
-        left join asset_software_relation d on a.id=d.asset_id
-        left join asset_software e on e.id=d.software_id and e.operation_system=d.operation_system
-        group by a.id
-        order by a.gmt_create desc) asset
+        left join asset_software_relation d on a.id=d.asset_id and d.software_id=#{softwareId} and d.status=1
+        where a.operation_system = ( select operation_system from asset_software where id =#{softwareId} and
+        status=1 )
+        group by a.id,d.id
+        ) asset
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
+        order by id desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
 
-    <select id="queryInstallCount" resultMap="java.lang.Integer"
+    <select id="queryInstallCount" resultType="java.lang.Integer"
             parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select count(id) from (select
-        a.id as asset_id,
+        select count(distinct(id)) from (select
+        a.id,
         a.area_id,
         a.asset_group,
         a.category_model,
@@ -646,11 +651,12 @@
         a.name,
         a.install_type,
         c.name as category_model_name,
-        a.manufacturer, asset_status,
+        a.manufacturer,
+        asset_status,
         a.operation_system,
         d.configure_status,
         d.install_status,
-        d.install_time
+        d.install_time,
         case
         when group_concat(b.ip_address) is not null then
         group_concat(b.ip_address)
@@ -673,10 +679,11 @@
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
         left join asset_category_model c on a.category_model = c.id
-        left join asset_software_relation d on a.id=d.asset_id
-        left join asset_software e on e.id=d.software_id and e.operation_system=d.operation_system
-        group by a.id
-        order by a.gmt_create desc) asset
+        left join asset_software_relation d on a.id=d.asset_id and d.software_id=#{softwareId} and d.status=1
+        where a.operation_system = ( select operation_system from asset_software where id =#{softwareId} and
+        status=1 )
+        group by a.id,d.id
+        ) asset
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
