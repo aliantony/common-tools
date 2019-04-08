@@ -1,20 +1,24 @@
 package com.antiy.asset.controller;
 
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.service.impl.AssetStatusChangeFactory;
-import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
-import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
-import com.antiy.asset.vo.request.AssetStatusJumpRequst;
-import com.antiy.asset.vo.request.AssetStatusReqeust;
-import com.antiy.common.base.ActionResponse;
-import io.swagger.annotations.*;
+import javax.annotation.Resource;
+
+import com.antiy.asset.service.IAssetSoftwareRelationService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.service.impl.AssetStatusChangeFactory;
+import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
+import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
+import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.vo.request.AssetStatusJumpRequst;
+import com.antiy.asset.vo.request.AssetStatusReqeust;
+import com.antiy.common.base.ActionResponse;
+
+import io.swagger.annotations.*;
 
 /**
  * 资产状态跃迁统一接口
@@ -28,7 +32,10 @@ import javax.annotation.Resource;
 public class AssetStatusJumpController {
 
     @Resource
-    public IAssetService assetService;
+    private IAssetService assetService;
+
+    @Resource
+    private IAssetSoftwareRelationService softwareRelationService;
     /**
      * 资产状态跃迁
      *
@@ -59,7 +66,20 @@ public class AssetStatusJumpController {
 //    @PreAuthorize("hasAuthority('asset:statusjump')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/waitConfiguration", method = RequestMethod.POST)
-    public ActionResponse statusJumpWith(@ApiParam(value = "assetStatusJumpRequst") @RequestBody(required = false) AssetStatusJumpRequst assetStatusJumpRequst) throws Exception {
+    public ActionResponse statusJumpWithAsset(@ApiParam(value = "assetStatusJumpRequst") @RequestBody(required = false) AssetStatusJumpRequst assetStatusJumpRequst) throws Exception {
        return ActionResponse.success (assetService.changeToNextStatus(assetStatusJumpRequst));
+    }
+    /**
+     * 资产状态跃迁代配置使用
+     *
+     * @param assetSoftwareRelationRequest
+     * @return actionResponse
+     */
+    @ApiOperation(value = "软件配置使用", notes = "传入实体对象信息")
+//    @PreAuthorize("hasAuthority('asset:statusjump')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/changeSoftConfiguration", method = RequestMethod.POST)
+    public ActionResponse statusJumpWithSoft(@ApiParam(value = "assetStatusJumpRequst") @RequestBody(required = false) AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
+       return ActionResponse.success (softwareRelationService.changeSoftConfiguration(assetSoftwareRelationRequest));
     }
 }

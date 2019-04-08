@@ -1,47 +1,39 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-
-import javax.annotation.Resource;
-
-import com.antiy.asset.entity.AssetSoftwareInstall;
-import com.antiy.asset.entity.AssetSoftwareRelationMapper;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.AssetSoftwareQuery;
-import com.antiy.asset.vo.query.InstallQuery;
-import com.antiy.asset.vo.request.AssetInstallRequest;
-import com.antiy.asset.vo.request.AssetSoftwareRelationList;
-import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.BusinessExceptionUtils;
-import com.antiy.common.utils.ParamterExceptionUtils;
-import com.sun.jersey.api.ParamException;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.springframework.stereotype.Service;
-
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.enums.ConfigureStatusEnum;
+import com.antiy.asset.vo.enums.InstallStatus;
+import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
+import com.antiy.asset.vo.query.InstallQuery;
+import com.antiy.asset.vo.request.AssetInstallRequest;
+import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -228,6 +220,13 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 responseInstallConverter.convert(queryInstallList, AssetSoftwareInstallResponse.class));
         }
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+    }
+
+    @Override
+    public Integer changeSoftConfiguration(AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
+        AssetSoftwareRelation assetSoftwareRelation = BeanConvert.convertBean (assetSoftwareRelationRequest, AssetSoftwareRelation.class);
+        assetSoftwareRelation.setConfigureStatus (ConfigureStatusEnum.CONFIGURED.getCode ());
+        return assetSoftwareRelationDao.update (assetSoftwareRelation);
     }
 
     /**

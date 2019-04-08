@@ -1,21 +1,18 @@
 package com.antiy.asset.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.antiy.asset.entity.AssetSoftwareRelation;
-import com.antiy.asset.entity.AssetSoftwareRelationMapper;
-import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
-import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p> 资产软件关系信息 服务类 </p>
@@ -124,4 +121,6 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @throws Exception
      */
     PageResult<AssetSoftwareInstallResponse> queryInstallList(InstallQuery query) throws Exception;
+
+    Integer changeSoftConfiguration(AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception;
 }
