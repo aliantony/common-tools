@@ -66,7 +66,11 @@ public class AssetSoftwareInstall {
      */
     @ApiModelProperty("安装状态")
     private Integer installStatus;
-
+    /**
+     * 配置方式
+     */
+    @ApiModelProperty("配置方式")
+    private String  configureStatus;
     /**
      * 安装时间
      */
@@ -204,6 +208,14 @@ public class AssetSoftwareInstall {
         this.installTime = installTime;
     }
 
+    public String getConfigureStatus() {
+        return configureStatus;
+    }
+
+    public void setConfigureStatus(String configureStatus) {
+        this.configureStatus = configureStatus;
+    }
+
     @Override
     public String toString() {
         return "AssetSoftwareInstall{" +
@@ -219,6 +231,7 @@ public class AssetSoftwareInstall {
                 ", manufacturer='" + manufacturer + '\'' +
                 ", installType=" + installType +
                 ", installStatus=" + installStatus +
+                ", configureStatus='" + configureStatus + '\'' +
                 ", installTime=" + installTime +
                 ", userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
