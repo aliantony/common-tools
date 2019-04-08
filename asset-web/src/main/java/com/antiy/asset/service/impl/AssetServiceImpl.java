@@ -543,7 +543,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             configRegisterRequest.setSuggest(request.getConfigRegisterRequest().getSuggest());
             configRegisterRequest.setConfigUserId(request.getConfigRegisterRequest().getConfigUserId());
             configRegisterRequest.setRelId(String.valueOf(id));
-            softwareService.configRegister(configRegisterRequest);
+            ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest);
+            if (null == actionResponseAsset
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {
+                // 调用失败，逻辑删登记的资产
+                assetDao.deleteById(id);
+                return actionResponseAsset == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
+                    : actionResponse;
+            }
         }
 
         return ActionResponse.success(id);
