@@ -20,6 +20,17 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
     </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="InstallResultMap" type="com.antiy.asset.entity.AssetSoftwareInstall">
+        <id column="id" property="id"/>
+        <result column="asset_id" property="assetId"/>
+        <result column="install_type" property="installType"/>
+        <result column="install_status" property="installStatus"/>
+        <result column="install_time" property="installTime"/>
+        <result column="configure_status" property="configureStatus"/>
+        <result column="ip" property="ip"/>
+        <result column="mac" property="mac"/>
+    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, asset_id, software_id, software_status, port, install_type, install_status, install_time, protocol, gmt_create, gmt_modified, memo, create_user, modify_user, status
@@ -241,7 +252,27 @@
                 #{assetStatus}
             </foreach>
         </if>
-
+        <if test="installType != null ">
+            and install_type =#{installType}
+        </if>
+        <if test="configureStatus!=null and configureStatus=1">
+            and configure_status =#{configureStatus} or configure_status is null
+        </if>
+        <if test="configureStatus!=null and configureStatus != 1">
+            and configure_status =#{configureStatus}
+        </if>
+        <if test="installStatus!=null and installStatus=1">
+            and install_status =#{installStatus} or install_status is null
+        </if>
+        <if test="installStatus!=null and installStatus != 1">
+            and install_status =#{installStatus}
+        </if>
+        <if test="installStatus!=null and installStatus != 1">
+            and install_status =#{installStatus}
+        </if>
+        <if test="operationSystem!=null">
+            and operation_system=#{operationSystem}
+        </if>
 
     </sql>
 
@@ -553,41 +584,21 @@
 	        and a.status = 1
     </select>
 
-    <select id="queryInstallList" resultType="com.antiy.asset.entity.AssetSoftwareRelation"
-            parameterType="java.lang.Integer">
+    <select id="queryInstallList" resultMap="installResultMap" parameterType="com.antiy.asset.vo.query.InstallQuery">
         select * from (select
         a.id,
         a.area_id,
         a.asset_group,
         a.category_model,
-        a.admittance_status,
         a.number,
         a.name,
         a.install_type,
-        a.serial,
         c.name as category_model_name,
         a.manufacturer, asset_status,
         a.operation_system,
-        a.system_bit,
-        a.location,
-        a.house_location,
-        a.latitude,
-        a.longitude,
-        a.firmware_version,
-        a.uuid,
-        a.responsible_user_id,
-        a.contact_tel,
-        a.email,
-        a.asset_source,
-        a.importance_degree,
-        a.describle,
-        a.parent_id,
-        a.tags,
-        a.first_enter_nett,
-        a.service_life,
-        a. buy_date,
-        a.warranty,
-        a.gmt_create,
+        d.configure_status,
+        d.install_status,
+        d.install_time
         case
         when group_concat(b.ip_address) is not null then
         group_concat(b.ip_address)
@@ -610,24 +621,66 @@
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
         left join asset_category_model c on a.category_model = c.id
+        left join asset_software_relation d on a.id=d.asset_id
+        left join asset_software e on e.id=d.software_id and e.operation_system=d.operation_system
         group by a.id
         order by a.gmt_create desc) asset
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
-            ORDER BY
-            <if test=" ids != null">
-                FIELD(`id`,
-                <foreach index="index" item="item" collection="ids" separator=",">
-                    #{item}
-                </foreach>
-                ) DESC,
-            </if>
-            id desc
         </where>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+    </select>
+
+    <select id="queryInstallCount" resultMap="java.lang.Integer"
+            parameterType="com.antiy.asset.vo.query.InstallQuery">
+        select count(id) from (select
+        a.id as asset_id,
+        a.area_id,
+        a.asset_group,
+        a.category_model,
+        a.number,
+        a.name,
+        a.install_type,
+        c.name as category_model_name,
+        a.manufacturer, asset_status,
+        a.operation_system,
+        d.configure_status,
+        d.install_status,
+        d.install_time
+        case
+        when group_concat(b.ip_address) is not null then
+        group_concat(b.ip_address)
+        when (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is
+        not
+        null then
+        (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
+        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as ip,
+        case
+        when group_concat( b.mac_address ) is not null then
+        group_concat( b.mac_address )
+        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
+        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as mac
+        from
+        asset a
+        left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
+        left join asset_category_model c on a.category_model = c.id
+        left join asset_software_relation d on a.id=d.asset_id
+        left join asset_software e on e.id=d.software_id and e.operation_system=d.operation_system
+        group by a.id
+        order by a.gmt_create desc) asset
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Multiple_Query"></include>
+            </trim>
+        </where>
     </select>
 </mapper>

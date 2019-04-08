@@ -86,6 +86,11 @@ public class AssetSoftwareInstallResponse {
      */
     @ApiModelProperty("安装时间")
     private Long installTime;
+    /**
+     * 配置方式
+     */
+    @ApiModelProperty("配置方式")
+    private String  configureStatus;
 
     public Integer getUserId() {
         return userId;
@@ -205,5 +210,35 @@ public class AssetSoftwareInstallResponse {
 
     public void setSoftwareId(String softwareId) {
         this.softwareId = softwareId;
+    }
+
+    public String getConfigureStatus() {
+        return configureStatus;
+    }
+
+    public void setConfigureStatus(String configureStatus) {
+        this.configureStatus = configureStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetSoftwareInstallResponse{" +
+                "id='" + id + '\'' +
+                ", assetId='" + assetId + '\'' +
+                ", softwareId='" + softwareId + '\'' +
+                ", number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", ip='" + ip + '\'' +
+                ", mac='" + mac + '\'' +
+                ", serial='" + serial + '\'' +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", installType=" + installType +
+                ", installStatus=" + installStatus +
+                ", installTime=" + installTime +
+                ", configureStatus='" + configureStatus + '\'' +
+                '}';
     }
 }

@@ -4,6 +4,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelationMapper;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
@@ -13,6 +14,7 @@ import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetInstallRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -62,6 +64,9 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     private BaseConverter<AssetSoftwareRelation, AssetSoftwareRelationResponse> responseConverter;
     @Resource
     private BaseConverter<AssetSoftware, AssetSoftwareResponse>                 responseSoftConverter;
+    @Resource
+    private BaseConverter<AssetSoftwareInstall, AssetSoftwareInstallResponse>   responseInstallConverter;
+
     @Resource
     private TransactionTemplate                                                 transactionTemplate;
 
@@ -208,12 +213,17 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
      * @param query
      * @return
      */
-    public List<AssetSoftwareRelationResponse> queryInstallList(InstallQuery query) throws Exception {
+    public PageResult<AssetSoftwareInstallResponse> queryInstallList(InstallQuery query) throws Exception {
         List<Integer> areaIdsList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         query.setAreaIds(DataTypeUtils.integerArrayToStringArray(areaIdsList));
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         query.setAssetStatusList(statusList);
-        return null;
+        Integer count = assetSoftwareRelationDao.queryInstallCount(query);
+        if (count != 0) {
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), responseInstallConverter
+                .convert(assetSoftwareRelationDao.queryInstallList(query), AssetSoftwareInstallResponse.class));
+        }
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
     }
 }

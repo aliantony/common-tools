@@ -3,8 +3,11 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelationMapper;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
+import com.antiy.asset.vo.query.InstallQuery;
+import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.AssetSoftware;
@@ -119,4 +122,18 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer installSoftware(@Param(value = "list") List<AssetSoftwareRelation> relationList);
+
+    /**
+     * 安装列表查询
+     * @param query
+     * @return
+     */
+    List<AssetSoftwareInstall> queryInstallList(InstallQuery query);
+
+    /**
+     * 安装列表数量查询
+     * @param query
+     * @return
+     */
+    Integer queryInstallCount(InstallQuery query);
 }
