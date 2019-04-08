@@ -5,6 +5,7 @@ import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
+import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.*;
@@ -148,6 +149,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private SchemeDao                                                          schemeDao;
     @Resource
     private AssetLinkRelationDao                                               assetLinkRelationDao;
+    @Resource
+    private OperatingSystemClient                                              operatingSystemClient;
     private static final int                                                   ALL_PAGE = -1;
 
     @Override
@@ -2825,6 +2828,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         return assetDao.pulldownUnconnectedManufacturer(query);
     }
+
+    /**
+     * 判断操作系统是否存在
+     * @return
+     */
+    private Boolean checkOperatingSystem(String checkStr) {
+        BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse = operatingSystemClient
+            .getInvokeOperatingSystem(checkStr);
+        return baselineCategoryModelNodeResponse != null;
+    }
+
 
     @Override
     @Transactional
