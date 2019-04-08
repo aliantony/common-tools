@@ -268,18 +268,13 @@
             </when>
         </choose>
         <choose>
-            <when test="installStatus == 1">
+            <when test="installStatus == 4">
                 and install_status =#{installStatus} or install_status is null
             </when>
-            <when test="installStatus != null and installStatus != 1">
+            <when test="installStatus != null and installStatus != 4">
                 and install_status =#{installStatus}
             </when>
         </choose>
-
-        <if test="operationSystem!=null">
-            and operation_system=#{operationSystem}
-        </if>
-
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetSoftwareRelation" useGeneratedKeys="true"
@@ -598,6 +593,7 @@
         c.name as category_model_name,
         a.manufacturer,
         asset_status,
+        a.gmt_modified,
         a.operation_system,
         d.configure_status,
         d.install_status,
@@ -634,7 +630,7 @@
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
-        order by id desc
+        order by gmt_modified desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
