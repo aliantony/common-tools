@@ -589,7 +589,6 @@
         a.category_model,
         a.number,
         a.name,
-        a.install_type,
         c.name as category_model_name,
         a.manufacturer,
         asset_status,
@@ -615,7 +614,11 @@
         (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
         when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as mac
+        else '' end as mac,
+        case
+        when d.install_type is not null then d.install_type
+        else a.install_type end as
+        install_type
         from
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
@@ -645,10 +648,10 @@
         a.category_model,
         a.number,
         a.name,
-        a.install_type,
         c.name as category_model_name,
         a.manufacturer,
         asset_status,
+        a.gmt_modified,
         a.operation_system,
         d.configure_status,
         d.install_status,
@@ -670,7 +673,11 @@
         (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
         when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as mac
+        else '' end as mac,
+        case
+        when d.install_type is not null then d.install_type
+        else a.install_type end as
+        install_type
         from
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
