@@ -6,6 +6,7 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
+import com.antiy.asset.vo.request.AssetStatusJumpRequst;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
@@ -242,4 +243,13 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     List<String> pulldownUnconnectedManufacturer() throws Exception;
 
+    /**
+     * 代配置状态变更
+     * @param assetStatusJumpRequst
+     * @return
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws Exception
+     */
+    String changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception;
 }

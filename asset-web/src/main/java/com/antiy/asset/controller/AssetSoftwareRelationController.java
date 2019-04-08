@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -158,6 +161,19 @@ public class AssetSoftwareRelationController {
     @RequestMapping(value = "/query/os", method = RequestMethod.GET)
     public ActionResponse<List<String>> queryOS() throws Exception {
         return ActionResponse.success(iAssetSoftwareRelationService.findOS());
+    }
+
+    /**
+     * 软件安装列表
+     *
+     * @return 操作系统名称集合
+     */
+    @ApiOperation(value = "软件安装列表", notes = "无查询条件")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:queryOS')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/installList", method = RequestMethod.GET)
+    public ActionResponse<List<AssetSoftwareRelationResponse>> queryInstallList(InstallQuery query) throws Exception {
+        return ActionResponse.success(iAssetSoftwareRelationService.queryInstallList(query));
     }
 
     /**

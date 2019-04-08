@@ -7,9 +7,9 @@ import javax.annotation.Resource;
 import com.antiy.asset.entity.AssetSoftwareRelationMapper;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.ConfigureStatusEnum;
-import com.antiy.asset.vo.enums.InstallStatus;
-import com.antiy.asset.vo.enums.InstallType;
+import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetInstallRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -202,5 +202,19 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     private Integer countByAssetId(Integer assetId) {
         return assetSoftwareRelationDao.countSoftwareByAssetId(assetId);
+    }
+
+    /**
+     *
+     * @param query
+     * @return
+     */
+    public List<AssetSoftwareRelationResponse> queryInstallList(InstallQuery query) throws Exception {
+        List<Integer> areaIdsList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        query.setAreaIds(DataTypeUtils.integerArrayToStringArray(areaIdsList));
+        List<Integer> statusList = new ArrayList<>();
+        statusList.add(AssetStatusEnum.NET_IN.getCode());
+        query.setAssetStatusList(statusList);
+        return null;
     }
 }

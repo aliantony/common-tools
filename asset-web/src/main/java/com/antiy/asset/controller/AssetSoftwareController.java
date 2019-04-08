@@ -16,6 +16,7 @@ import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.query.ConfigRegisterRequest;
 import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
@@ -111,7 +112,8 @@ public class AssetSoftwareController {
     @PreAuthorize(value = "hasAuthority('asset:software:deleteById')")
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isNull(baseRequest.getStringId(), "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareService.deleteById(DataTypeUtils.stringToInteger(baseRequest.getStringId())));
+        return ActionResponse
+            .success(iAssetSoftwareService.deleteById(DataTypeUtils.stringToInteger(baseRequest.getStringId())));
     }
 
     /**
@@ -158,7 +160,7 @@ public class AssetSoftwareController {
     @RequestMapping(value = "/import/file", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:importExcel')")
     public ActionResponse importExcel(@ApiParam(value = "multipartFile") MultipartFile multipartFile,
-                                     AssetImportRequest importRequest) throws Exception {
+                                      AssetImportRequest importRequest) throws Exception {
 
         return ActionResponse.success(iAssetSoftwareService.importExcel(multipartFile, importRequest));
 
@@ -273,10 +275,17 @@ public class AssetSoftwareController {
         ParamterExceptionUtils.isBlank(softwareQuery.getId(), "软件ID不能为空");
         SoftwareInstallResponse softwareInstallResponse = new SoftwareInstallResponse();
         softwareInstallResponse.setAssetSoftware(
-            BeanConvert.convertBean(iAssetSoftwareService.getById(softwareQuery.getId()),
-                AssetSoftwareResponse.class));
+            BeanConvert.convertBean(iAssetSoftwareService.getById(softwareQuery.getId()), AssetSoftwareResponse.class));
         softwareInstallResponse
             .setAssetSoftwareInstallResponseList(iAssetSoftwareService.findAssetInstallList(softwareQuery));
         return ActionResponse.success(softwareInstallResponse);
+    }
+
+    @ApiOperation(value = "资产配置(软件安装配置)", notes = "资产配置")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/deal/asset/setting", method = RequestMethod.POST)
+    @PreAuthorize(value = "hasAuthority('asset:software:assetSetting')")
+    public ActionResponse assetSetting(@ApiParam @RequestBody ConfigRegisterRequest registerRequest) throws Exception {
+        return iAssetSoftwareService.configRegister(registerRequest);
     }
 }

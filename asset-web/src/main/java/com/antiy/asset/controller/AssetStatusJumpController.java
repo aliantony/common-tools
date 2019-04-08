@@ -1,18 +1,20 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.service.impl.AssetStatusChangeFactory;
+import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
+import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
+import com.antiy.asset.vo.request.AssetStatusJumpRequst;
+import com.antiy.asset.vo.request.AssetStatusReqeust;
+import com.antiy.common.base.ActionResponse;
+import io.swagger.annotations.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.antiy.asset.service.impl.AssetStatusChangeFactory;
-import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
-import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
-import com.antiy.asset.vo.request.AssetStatusReqeust;
-import com.antiy.common.base.ActionResponse;
-
-import io.swagger.annotations.*;
+import javax.annotation.Resource;
 
 /**
  * 资产状态跃迁统一接口
@@ -24,6 +26,9 @@ import io.swagger.annotations.*;
 @RestController
 @RequestMapping("/api/v1/asset/statusjump")
 public class AssetStatusJumpController {
+
+    @Resource
+    public IAssetService assetService;
     /**
      * 资产状态跃迁
      *
@@ -42,5 +47,19 @@ public class AssetStatusJumpController {
             return AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeFlowProcessImpl.class)
                 .changeStatus(assetStatusReqeust);
         }
+    }
+
+    /**
+     * 资产状态跃迁代配置使用
+     *
+     * @param assetStatusJumpRequst
+     * @return actionResponse
+     */
+    @ApiOperation(value = "资产状态跃迁配置使用", notes = "传入实体对象信息")
+//    @PreAuthorize("hasAuthority('asset:statusjump')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/waitConfiguration", method = RequestMethod.POST)
+    public ActionResponse statusJumpWith(@ApiParam(value = "assetStatusJumpRequst") @RequestBody(required = false) AssetStatusJumpRequst assetStatusJumpRequst) throws Exception {
+       return ActionResponse.success (assetService.changeToNextStatus(assetStatusJumpRequst));
     }
 }

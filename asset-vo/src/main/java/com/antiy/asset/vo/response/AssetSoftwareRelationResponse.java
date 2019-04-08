@@ -70,6 +70,11 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
     @ApiModelProperty("许可密钥")
     private String  licenseSecretKey;
     /**
+     * 配置方式
+     */
+    @ApiModelProperty("配置方式")
+    private String  configureStatus;
+    /**
      * 安装方式
      */
     @ApiModelProperty("安装方式")
@@ -195,5 +200,13 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getConfigureStatus() {
+        return configureStatus;
+    }
+
+    public void setConfigureStatus(String configureStatus) {
+        this.configureStatus = configureStatus;
     }
 }
