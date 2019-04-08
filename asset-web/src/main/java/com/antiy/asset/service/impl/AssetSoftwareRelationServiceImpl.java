@@ -222,9 +222,26 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         query.setAssetStatusList(statusList);
         Integer count = assetSoftwareRelationDao.queryInstallCount(query);
         if (count != 0) {
+            List<AssetSoftwareInstall> queryInstallList = assetSoftwareRelationDao.queryInstallList(query);
+            processStatusData(queryInstallList);
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), responseInstallConverter
-                .convert(assetSoftwareRelationDao.queryInstallList(query), AssetSoftwareInstallResponse.class));
+                .convert(queryInstallList, AssetSoftwareInstallResponse.class));
         }
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+    }
+
+    /**
+     * 安装方式为null时 为未安装状态 配置方式为null时 为未配置状态 进行处理方便前端进行展示
+     * @param queryInstallList
+     */
+    private void processStatusData(List<AssetSoftwareInstall> queryInstallList) {
+        for (AssetSoftwareInstall assetSoftwareInstall : queryInstallList) {
+            if (assetSoftwareInstall.getInstallStatus() == null) {
+                assetSoftwareInstall.setInstallStatus(4);
+            }
+            if (assetSoftwareInstall.getConfigureStatus() == null) {
+                assetSoftwareInstall.setConfigureStatus("1");
+            }
+        }
     }
 }
