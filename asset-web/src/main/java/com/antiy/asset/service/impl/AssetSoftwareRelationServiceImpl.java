@@ -224,8 +224,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         if (count != 0) {
             List<AssetSoftwareInstall> queryInstallList = assetSoftwareRelationDao.queryInstallList(query);
             processStatusData(queryInstallList);
-            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), responseInstallConverter
-                .convert(queryInstallList, AssetSoftwareInstallResponse.class));
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
+                responseInstallConverter.convert(queryInstallList, AssetSoftwareInstallResponse.class));
         }
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
     }

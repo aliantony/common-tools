@@ -623,7 +623,7 @@
         left join asset_software_relation d on a.id=d.asset_id and d.software_id=#{softwareId} and d.status=1
         where a.operation_system = ( select operation_system from asset_software where id =#{softwareId} and
         status=1 )
-        group by a.id,d.id
+        group by a.id
         ) asset
         <where>
             <trim prefixOverrides="and">
@@ -678,7 +678,7 @@
         left join asset_software_relation d on a.id=d.asset_id and d.software_id=#{softwareId} and d.status=1
         where a.operation_system = ( select operation_system from asset_software where id =#{softwareId} and
         status=1 )
-        group by a.id,d.id
+        group by a.id
         ) asset
         <where>
             <trim prefixOverrides="and">
