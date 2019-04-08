@@ -31,8 +31,10 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("软件品类")
     @Encode
     private String        categoryModel;
+
     @ApiModelProperty("综合查询")
     private String        multipleQuery;
+
     @ApiModelProperty("软件品类型号列表")
     @Encode
     private String[]      categoryModels;
@@ -41,6 +43,7 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty(value = "序列号")
     private String        serial;
+
     @ApiModelProperty("区域id列表")
     @Encode
     private String[]      areaIds;
@@ -117,6 +120,9 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty("安装方式")
     private Integer       installType;
+
+
+
     /**
      * 安装状态
      */
@@ -409,6 +415,7 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     public void setMultipleQuery(String multipleQuery) {
         this.multipleQuery = multipleQuery;
     }
+
 
     @Override
     public void validate() throws RequestParamValidateException {

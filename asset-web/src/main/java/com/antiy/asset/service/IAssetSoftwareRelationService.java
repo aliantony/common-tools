@@ -5,7 +5,9 @@ import java.util.Map;
 
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.entity.AssetSoftwareRelationMapper;
+import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
+import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -44,8 +46,7 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @param query
      * @return
      */
-    List<AssetSoftwareRelationResponse> findListAssetSoftwareRelation(AssetSoftwareRelationQuery query)
-                                                                                                       throws Exception;
+    List<AssetSoftwareRelationResponse> findListAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception;
 
     /**
      * 批量查询
@@ -53,8 +54,7 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @param query
      * @return
      */
-    PageResult<AssetSoftwareRelationResponse> findPageAssetSoftwareRelation(AssetSoftwareRelationQuery query)
-                                                                                                             throws Exception;
+    PageResult<AssetSoftwareRelationResponse> findPageAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception;
 
     /**
      * 通过资产ID查询关联软件信息
@@ -70,7 +70,7 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @param query
      * @return
      */
-    PageResult<AssetSoftwareResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query);
+    PageResult<AssetSoftwareRelationResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query);
 
     /**
      * 通过软件ID统计资产数量
@@ -115,4 +115,12 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @return
      */
     void installSoftware(AssetSoftwareRelationList assetSoftwareRelationList);
+
+    /**
+     * 软件安装列表
+     * @param query
+     * @return
+     * @throws Exception
+     */
+    List<AssetSoftwareRelationResponse> queryInstallList(InstallQuery query) throws Exception;
 }

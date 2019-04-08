@@ -42,12 +42,13 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      * 邮箱
      */
     @ApiModelProperty("邮箱")
-    @Email(message = "邮箱不正确")
+    @Email(message = "邮箱格式不正确")
     private String                  email;
     /**
      * 资产编号
      */
     @ApiModelProperty("资产编号")
+    @NotBlank (message = "资产编号不能为空")
     @Size(message = "资产编号不能超过32位", max = 32)
     private String                  number;
 
@@ -55,7 +56,7 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      * 资产名称
      */
     @ApiModelProperty("资产名称")
-    @NotNull(message = "资产名称不能为空")
+    @NotBlank (message = "资产名称不能为空")
     @Size(message = "资产名字不能超过32位", max = 32)
     private String                  name;
     /**
@@ -64,6 +65,13 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
     @ApiModelProperty("上报来源,1-自动上报，2-人工上报")
     @NotNull(message = "上报来源不能为空")
     private Integer                 assetSource;
+    /**
+     * 1核心2重要3一般
+     */
+    @ApiModelProperty("1核心2重要3一般")
+    @NotNull(message = "重要程度不能为空")
+    private Integer                 importanceDegree;
+
     /**
      * 序列号
      */
@@ -319,5 +327,13 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
 
     public void setAssetSource(Integer assetSource) {
         this.assetSource = assetSource;
+    }
+
+    public Integer getImportanceDegree() {
+        return importanceDegree;
+    }
+
+    public void setImportanceDegree(Integer importanceDegree) {
+        this.importanceDegree = importanceDegree;
     }
 }

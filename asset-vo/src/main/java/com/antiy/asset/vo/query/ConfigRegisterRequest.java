@@ -54,6 +54,14 @@ public class ConfigRegisterRequest {
     @ApiModelProperty(value = "文件URL地址")
     private List<String> fileUrls;
 
+    public List<String> getFileUrls() {
+        return fileUrls;
+    }
+
+    public void setFileUrls(List<String> fileUrls) {
+        this.fileUrls = fileUrls;
+    }
+
     public String getSuggest() {
         return suggest;
     }

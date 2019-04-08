@@ -1,5 +1,28 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
+import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
@@ -8,6 +31,7 @@ import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareLicense;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
+import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetPortProtocolService;
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
@@ -33,25 +57,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -111,6 +116,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         .get(AssetSoftwareServiceImpl.class);
     @Resource
     private AssetChangeRecordDao                                             assetChangeRecordDao;
+
+    @Resource
+    private BaseLineClient                                                   baseLineClient;
+    @Resource
+    private SchemeDao                                                        schemeDao;
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -626,6 +636,37 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             softwareQuery.getCurrentPage(), this.findAssetInstallList(softwareQuery));
     }
 
+    @Override
+    public ActionResponse configRegister(ConfigRegisterRequest request) throws Exception {
+        // 1.保存操作流程
+        assetOperationRecordDao.insert(convertRecord(request));
+
+        // 2.调用配置接口
+        List<ConfigRegisterRequest> configRegisterList = new ArrayList<>();
+        return baseLineClient.configRegister(configRegisterList);
+    }
+
+    private AssetOperationRecord convertRecord(ConfigRegisterRequest request) {
+        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+        assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
+        if (request.getSource().equals("2")) {
+            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+            assetOperationRecord.setContent(SOFTWARE_INSTALL_CONFIG.getMsg());
+            assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
+        } else {
+            assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+            assetOperationRecord.setContent(HARDWARE_CONFIG_BASELINE.getMsg());
+        }
+
+        assetOperationRecord.setTargetObjectId(request.getAssetId());
+        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+        assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
+        assetOperationRecord.setProcessResult(1);
+        assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        return assetOperationRecord;
+    }
+
     public Integer findCountInstall(AssetSoftwareQuery query) throws Exception {
         return assetSoftwareDao.findCount(query);
     }
@@ -855,6 +896,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             .findListAssetSoftwareLicense(assetSoftwareLicenseQuery);
         assetSoftwareDetailResponse.setSoftwareLicense(assetSoftwareLicenseResponses);
     }
+
 
 }
 

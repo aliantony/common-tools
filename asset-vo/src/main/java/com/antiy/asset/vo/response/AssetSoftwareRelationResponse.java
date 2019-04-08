@@ -25,6 +25,26 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
     @Encode
     private String  softwareId;
     /**
+     * 软件版本
+     */
+    @ApiModelProperty("软件版本")
+    private String  version;
+    /**
+     * 软件厂商
+     */
+    @ApiModelProperty("软件厂商")
+    private String  manufacturer;
+    /**
+     * 软件兼容操作系统(WINDOWS7-32-64,WINDOWS8-64)
+     */
+    @ApiModelProperty("软件兼容操作系统")
+    private String  operationSystem;
+    /**
+     * 软件名字
+     */
+    @ApiModelProperty("软件名字")
+    private String  name;
+    /**
      * 软件资产状态：1待登记2待分析3可安装4已退役5不予登记
      */
     @ApiModelProperty("软件资产状态：1待登记2待分析3可安装4已退役5不予登记")
@@ -49,6 +69,11 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
      */
     @ApiModelProperty("许可密钥")
     private String  licenseSecretKey;
+    /**
+     * 配置方式
+     */
+    @ApiModelProperty("配置方式")
+    private String  configureStatus;
     /**
      * 安装方式
      */
@@ -143,5 +168,45 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
 
     public void setInstallTime(Long installTime) {
         this.installTime = installTime;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public String getOperationSystem() {
+        return operationSystem;
+    }
+
+    public void setOperationSystem(String operationSystem) {
+        this.operationSystem = operationSystem;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getConfigureStatus() {
+        return configureStatus;
+    }
+
+    public void setConfigureStatus(String configureStatus) {
+        this.configureStatus = configureStatus;
     }
 }

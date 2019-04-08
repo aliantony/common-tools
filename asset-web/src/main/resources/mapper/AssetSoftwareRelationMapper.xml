@@ -5,6 +5,10 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetSoftwareRelation">
         <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="manufacturer" property="manufacturer"/>
+        <result column="version" property="version"/>
+        <result column="operation_system" property="operationSystem"/>
         <result column="asset_id" property="assetId"/>
         <result column="software_id" property="softwareId"/>
         <result column="software_status" property="softwareStatus"/>
@@ -206,6 +210,45 @@
         </if>
     </sql>
 
+    <!--资产条件查询-->
+    <sql id="Multiple_Query">
+
+        <if test="areaIds==null and areaIds.length>0">
+            and id in
+            <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" multipleQuery != null">
+            and (name LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or number LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or serial LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and inner_ip like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and outer_ip like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and ip like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and mac_address like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and mac_address like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and mac like
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            )
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+
+
+    </sql>
+
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetSoftwareRelation" useGeneratedKeys="true"
             keyProperty="id">
         insert into
@@ -338,22 +381,18 @@
             and asoftrel.status = 1
     </select>
 
-    <select id="getSimpleSoftwareByAssetId" resultType="com.antiy.asset.entity.AssetSoftware"
+    <select id="getSimpleSoftwareByAssetId" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareRelationQuery">
         select
-        asoft.id,
+        asoft.id as software_id,
         asoft.name,
-        asoft.size,
         asoft.manufacturer,
-        a.name as categorymodelname,
-        asoft.release_time as releasetime,
-        asoftrel.port,
-        asl.license_secret_key as licenseSecretKey
+        asoft.version,
+        asoft.operation_system,
+        asoftrel.install_time
         from
         asset_software_relation asoftrel
-        left join asset_software_license asl on asoftrel.software_id = asl.software_id
         left join asset_software asoft on asoftrel.software_id = asoft.id
-        left join asset_category_model a on asoft.category_model = a.id
         where
         asset_id = #{assetId}
         and asoft.id is not null
@@ -512,5 +551,83 @@
         where
 	        a.asset_id = #{id}
 	        and a.status = 1
+    </select>
+
+    <select id="queryInstallList" resultType="com.antiy.asset.entity.AssetSoftwareRelation"
+            parameterType="java.lang.Integer">
+        select * from (select
+        a.id,
+        a.area_id,
+        a.asset_group,
+        a.category_model,
+        a.admittance_status,
+        a.number,
+        a.name,
+        a.install_type,
+        a.serial,
+        c.name as category_model_name,
+        a.manufacturer, asset_status,
+        a.operation_system,
+        a.system_bit,
+        a.location,
+        a.house_location,
+        a.latitude,
+        a.longitude,
+        a.firmware_version,
+        a.uuid,
+        a.responsible_user_id,
+        a.contact_tel,
+        a.email,
+        a.asset_source,
+        a.importance_degree,
+        a.describle,
+        a.parent_id,
+        a.tags,
+        a.first_enter_nett,
+        a.service_life,
+        a. buy_date,
+        a.warranty,
+        a.gmt_create,
+        case
+        when group_concat(b.ip_address) is not null then
+        group_concat(b.ip_address)
+        when (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is
+        not
+        null then
+        (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
+        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as ip,
+        case
+        when group_concat( b.mac_address ) is not null then
+        group_concat( b.mac_address )
+        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
+        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as mac
+        from
+        asset a
+        left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
+        left join asset_category_model c on a.category_model = c.id
+        group by a.id
+        order by a.gmt_create desc) asset
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Multiple_Query"></include>
+            </trim>
+            ORDER BY
+            <if test=" ids != null">
+                FIELD(`id`,
+                <foreach index="index" item="item" collection="ids" separator=",">
+                    #{item}
+                </foreach>
+                ) DESC,
+            </if>
+            id desc
+        </where>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
     </select>
 </mapper>

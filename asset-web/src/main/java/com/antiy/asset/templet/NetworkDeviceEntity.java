@@ -12,7 +12,7 @@ public class NetworkDeviceEntity {
     /**
      * 资产编号
      */
-    @ExcelField(value = "number", align = 1, title = "资产编号")
+    @ExcelField(value = "number", align = 1, title = "资产编号",required = true)
     private String  number;
     /**
      * 资产名称

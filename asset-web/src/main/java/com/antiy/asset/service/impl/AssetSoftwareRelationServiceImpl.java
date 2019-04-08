@@ -7,9 +7,9 @@ import javax.annotation.Resource;
 import com.antiy.asset.entity.AssetSoftwareRelationMapper;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.ConfigureStatusEnum;
-import com.antiy.asset.vo.enums.InstallStatus;
-import com.antiy.asset.vo.enums.InstallType;
+import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetInstallRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -106,14 +106,15 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     }
 
     @Override
-    public PageResult<AssetSoftwareResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query) {
+    public PageResult<AssetSoftwareRelationResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query) {
         int count = countByAssetId(DataTypeUtils.stringToInteger(query.getAssetId()));
         if (count == 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
         }
-        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSimpleSoftwareByAssetId(query);
-        List<AssetSoftwareResponse> assetSoftwareResponseList = responseSoftConverter.convert(assetSoftwareList,
-            AssetSoftwareResponse.class);
+        List<AssetSoftwareRelation> assetSoftwareRelationList = assetSoftwareRelationDao
+            .getSimpleSoftwareByAssetId(query);
+        List<AssetSoftwareRelationResponse> assetSoftwareResponseList = responseConverter
+            .convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class);
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetSoftwareResponseList);
     }
 
@@ -201,5 +202,19 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     private Integer countByAssetId(Integer assetId) {
         return assetSoftwareRelationDao.countSoftwareByAssetId(assetId);
+    }
+
+    /**
+     *
+     * @param query
+     * @return
+     */
+    public List<AssetSoftwareRelationResponse> queryInstallList(InstallQuery query) throws Exception {
+        List<Integer> areaIdsList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        query.setAreaIds(DataTypeUtils.integerArrayToStringArray(areaIdsList));
+        List<Integer> statusList = new ArrayList<>();
+        statusList.add(AssetStatusEnum.NET_IN.getCode());
+        query.setAssetStatusList(statusList);
+        return null;
     }
 }
