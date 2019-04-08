@@ -106,14 +106,15 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     }
 
     @Override
-    public PageResult<AssetSoftwareResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query) {
+    public PageResult<AssetSoftwareRelationResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query) {
         int count = countByAssetId(DataTypeUtils.stringToInteger(query.getAssetId()));
         if (count == 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
         }
-        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSimpleSoftwareByAssetId(query);
-        List<AssetSoftwareResponse> assetSoftwareResponseList = responseSoftConverter.convert(assetSoftwareList,
-            AssetSoftwareResponse.class);
+        List<AssetSoftwareRelation> assetSoftwareRelationList = assetSoftwareRelationDao
+            .getSimpleSoftwareByAssetId(query);
+        List<AssetSoftwareRelationResponse> assetSoftwareResponseList = responseConverter
+            .convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class);
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetSoftwareResponseList);
     }
 
