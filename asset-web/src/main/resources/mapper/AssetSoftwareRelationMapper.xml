@@ -587,7 +587,7 @@
     </select>
 
     <select id="queryInstallList" resultMap="InstallResultMap" parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select * from (select
+        select distinct * from (select
         a.id as asset_id,
         a.area_id,
         a.asset_group,
@@ -624,15 +624,17 @@
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
         left join asset_category_model c on a.category_model = c.id
         left join asset_software_relation d on a.id=d.asset_id
-        left join asset_software e on e.id=d.software_id and e.operation_system=a.operation_system
-        where e.id=#{softwareId}
-        group by a.id
-        order by a.gmt_create desc) asset
+        where a.operation_system = ( select operation_system from asset_software where id =#{softwareId} and
+        status=1 )
+        group by a.id,d.id
+        ) asset
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
+
             </trim>
         </where>
+        order by asset_id desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -640,7 +642,7 @@
 
     <select id="queryInstallCount" resultType="java.lang.Integer"
             parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select count(asset_id) from (select
+        select count(distinct(asset_id)) from (select
         a.id as asset_id,
         a.area_id,
         a.asset_group,
@@ -677,10 +679,10 @@
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
         left join asset_category_model c on a.category_model = c.id
         left join asset_software_relation d on a.id=d.asset_id and d.status=1
-        left join asset_software e on e.id=d.software_id and e.operation_system=a.operation_system and e.status=1
-        where e.id=#{softwareId}
-        group by a.id
-        order by a.gmt_create desc) asset
+        where a.operation_system = ( select operation_system from asset_software where id =#{softwareId} and
+        status=1 )
+        group by a.id,d.id
+        ) asset
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
