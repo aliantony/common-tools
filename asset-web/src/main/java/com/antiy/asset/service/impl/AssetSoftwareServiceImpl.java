@@ -214,6 +214,15 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
+
+            // 对接配置模块
+            ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
+            configRegisterRequest.setAssetId(String.valueOf(num));
+            configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.SOFTWARE.getCode()));
+            configRegisterRequest.setSuggest(request.getConfigRegisterRequest().getSuggest());
+            configRegisterRequest.setConfigUserId(request.getConfigRegisterRequest().getConfigUserId());
+            configRegisterRequest.setRelId(String.valueOf(num));
+            this.configRegister(configRegisterRequest);
         }
 
         return ActionResponse.success(num);
@@ -643,13 +652,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
         // 2.调用配置接口
         List<ConfigRegisterRequest> configRegisterList = new ArrayList<>();
+        configRegisterList.add(request);
         return baseLineClient.configRegister(configRegisterList);
     }
 
     private AssetOperationRecord convertRecord(ConfigRegisterRequest request) {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
-        if (request.getSource().equals("2")) {
+        if (AssetTypeEnum.SOFTWARE.getCode().equals(request.getSource())) {
             assetOperationRecord.setOriginStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
             assetOperationRecord.setContent(SOFTWARE_INSTALL_CONFIG.getMsg());
             assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
@@ -896,7 +906,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             .findListAssetSoftwareLicense(assetSoftwareLicenseQuery);
         assetSoftwareDetailResponse.setSoftwareLicense(assetSoftwareLicenseResponses);
     }
-
 
 }
 

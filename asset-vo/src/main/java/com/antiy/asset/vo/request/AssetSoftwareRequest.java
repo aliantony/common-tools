@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.antiy.asset.vo.query.ConfigRegisterRequest;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -171,6 +172,20 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     @ApiModelProperty(value = "购买日期")
     private Long                        buyDate;
+    /**
+     * 执行人员和配置建议
+     */
+    @ApiModelProperty(value = "执行人员和配置建议")
+    @Valid
+    private ConfigRegisterRequest       configRegisterRequest;
+
+    public ConfigRegisterRequest getConfigRegisterRequest() {
+        return configRegisterRequest;
+    }
+
+    public void setConfigRegisterRequest(ConfigRegisterRequest configRegisterRequest) {
+        this.configRegisterRequest = configRegisterRequest;
+    }
 
     public Long getBuyDate() {
         return buyDate;

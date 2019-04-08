@@ -1,14 +1,16 @@
 package com.antiy.asset.vo.request;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
+import com.antiy.asset.vo.query.ConfigRegisterRequest;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Objects;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -96,6 +98,20 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty(value = "其他设备")
     @Valid
     private AssetOthersRequest                 assetOthersRequest;
+    /**
+     * 执行人员和配置建议
+     */
+    @ApiModelProperty(value = "执行人员和配置建议")
+    @Valid
+    private ConfigRegisterRequest              configRegisterRequest;
+
+    public ConfigRegisterRequest getConfigRegisterRequest() {
+        return configRegisterRequest;
+    }
+
+    public void setConfigRegisterRequest(ConfigRegisterRequest configRegisterRequest) {
+        this.configRegisterRequest = configRegisterRequest;
+    }
 
     public ActivityHandleRequest getActivityHandleRequest() {
         return activityHandleRequest;
