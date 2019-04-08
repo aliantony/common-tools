@@ -144,7 +144,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
     PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery) throws Exception;
 
     /**
-     * 软件配置
+     * 硬件登记、软件安装配置接口
      * @param request
      */
     ActionResponse configRegister(ConfigRegisterRequest request) throws Exception;
