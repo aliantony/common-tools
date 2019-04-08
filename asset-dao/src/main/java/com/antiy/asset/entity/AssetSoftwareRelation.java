@@ -42,6 +42,10 @@ public class AssetSoftwareRelation extends BaseEntity {
      */
     private Integer softwareStatus;
     /**
+     * 配置状态：1未配置，2配置中，3已配置
+     */
+    private Integer configureStatus;
+    /**
      * 协议
      */
     private String  protocol;
@@ -276,5 +280,13 @@ public class AssetSoftwareRelation extends BaseEntity {
                + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
                + ", modifyUser=" + modifyUser + ", status=" + status + ", installTime=" + installTime + ", userId='"
                + userId + '\'' + ", userName='" + userName + '\'' + '}';
+    }
+
+    public Integer getConfigureStatus() {
+        return configureStatus;
+    }
+
+    public void setConfigureStatus(Integer configureStatus) {
+        this.configureStatus = configureStatus;
     }
 }

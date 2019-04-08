@@ -3,28 +3,6 @@
 <mapper namespace="com.antiy.asset.dao.AssetSoftwareRelationDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetSoftwareRelation">
-        <id column="id" property="id"/>
-        <result column="name" property="name"/>
-        <result column="manufacturer" property="manufacturer"/>
-        <result column="version" property="version"/>
-        <result column="operation_system" property="operationSystem"/>
-        <result column="asset_id" property="assetId"/>
-        <result column="software_id" property="softwareId"/>
-        <result column="software_status" property="softwareStatus"/>
-        <result column="port" property="port"/>
-        <result column="install_type" property="installType"/>
-        <result column="install_status" property="installStatus"/>
-        <result column="install_time" property="installTime"/>
-        <result column="protocol" property="protocol"/>
-        <result column="gmt_create" property="gmtCreate"/>
-        <result column="gmt_modified" property="gmtModified"/>
-        <result column="memo" property="memo"/>
-        <result column="create_user" property="createUser"/>
-        <result column="modify_user" property="modifyUser"/>
-        <result column="status" property="status"/>
-    </resultMap>
-    <!-- 通用查询映射结果 -->
     <resultMap id="InstallResultMap" type="com.antiy.asset.entity.AssetSoftwareInstall">
         <id column="id" property="id"/>
         <result column="asset_id" property="assetId"/>
@@ -36,9 +14,28 @@
         <result column="ip" property="ip"/>
         <result column="mac" property="mac"/>
     </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetSoftwareRelation">
+        <id column="id" property="id"/>
+        <result column="asset_id" property="assetId"/>
+        <result column="software_id" property="softwareId"/>
+        <result column="software_status" property="softwareStatus"/>
+        <result column="port" property="port"/>
+        <result column="configure_status" property="configureStatus"/>
+        <result column="install_type" property="installType"/>
+        <result column="install_status" property="installStatus"/>
+        <result column="install_time" property="installTime"/>
+        <result column="protocol" property="protocol"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="memo" property="memo"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modify_user" property="modifyUser"/>
+        <result column="status" property="status"/>
+    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, software_id, software_status, port, install_type, install_status, install_time, protocol, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_id, software_id, software_status, port, configure_status, install_type, install_status, install_time, protocol, gmt_create, gmt_modified, memo, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -58,6 +55,9 @@
         </if>
         <if test=" port != null">
             port,
+        </if>
+        <if test=" configureStatus != null">
+            configure_status,
         </if>
         <if test=" installType != null">
             install_type,
@@ -104,6 +104,9 @@
         <if test=" port != null">
             #{port },
         </if>
+        <if test=" configureStatus != null">
+            #{configureStatus },
+        </if>
         <if test=" installType != null">
             #{installType },
         </if>
@@ -135,6 +138,7 @@
             #{status },
         </if>
     </sql>
+
     <sql id="Set_Column_List">
         <if test=" assetId != null">
             asset_id = #{assetId },
@@ -147,6 +151,9 @@
         </if>
         <if test=" port != null">
             port = #{port },
+        </if>
+        <if test=" configureStatus != null">
+            configure_status = #{configureStatus },
         </if>
         <if test=" installType != null">
             install_type = #{installType },
@@ -179,7 +186,6 @@
             status = #{status },
         </if>
     </sql>
-
     <sql id="Where_Column_List">
         <if test=" assetId != null">
             and asset_id = #{assetId }
@@ -268,18 +274,13 @@
             </when>
         </choose>
         <choose>
-            <when test="installStatus == 1">
+            <when test="installStatus == 4">
                 and install_status =#{installStatus} or install_status is null
             </when>
-            <when test="installStatus != null and installStatus != 1">
+            <when test="installStatus != null and installStatus != 4">
                 and install_status =#{installStatus}
             </when>
         </choose>
-
-        <if test="operationSystem!=null">
-            and operation_system=#{operationSystem}
-        </if>
-
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetSoftwareRelation" useGeneratedKeys="true"
@@ -594,10 +595,10 @@
         a.category_model,
         a.number,
         a.name,
-        a.install_type,
         c.name as category_model_name,
         a.manufacturer,
         asset_status,
+        a.gmt_modified,
         a.operation_system,
         d.configure_status,
         d.install_status,
@@ -619,7 +620,11 @@
         (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
         when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as mac
+        else '' end as mac,
+        case
+        when d.install_type is not null then d.install_type
+        else a.install_type end as
+        install_type
         from
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
@@ -627,14 +632,14 @@
         left join asset_software_relation d on a.id=d.asset_id and d.software_id=#{softwareId} and d.status=1
         where a.operation_system = ( select operation_system from asset_software where id =#{softwareId} and
         status=1 )
-        group by a.id,d.id
+        group by a.id
         ) asset
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
-        order by id desc
+        order by gmt_modified desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -649,10 +654,10 @@
         a.category_model,
         a.number,
         a.name,
-        a.install_type,
         c.name as category_model_name,
         a.manufacturer,
         asset_status,
+        a.gmt_modified,
         a.operation_system,
         d.configure_status,
         d.install_status,
@@ -674,7 +679,11 @@
         (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
         when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as mac
+        else '' end as mac,
+        case
+        when d.install_type is not null then d.install_type
+        else a.install_type end as
+        install_type
         from
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
@@ -682,7 +691,7 @@
         left join asset_software_relation d on a.id=d.asset_id and d.software_id=#{softwareId} and d.status=1
         where a.operation_system = ( select operation_system from asset_software where id =#{softwareId} and
         status=1 )
-        group by a.id,d.id
+        group by a.id
         ) asset
         <where>
             <trim prefixOverrides="and">

@@ -1269,5 +1269,15 @@
         SET asset_group = #{assetGroupName} where id = #{assetId}
     </update>
 
+    <update id="updateAssetAreaId">
+        update asset
+        SET area_id = #{areaId}
+        where status=1 and
+        area_id in
+        <foreach collection="areaIds" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
 
 </mapper>
