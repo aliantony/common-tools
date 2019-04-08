@@ -88,7 +88,7 @@
             modify_user,
         </if>
         <if test=" assetNextStatus != null">
-            assetNextStatus,
+            asset_next_status,
         </if>
         <if test=" status != null">
             status,
