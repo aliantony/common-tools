@@ -643,6 +643,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
         // 2.调用配置接口
         List<ConfigRegisterRequest> configRegisterList = new ArrayList<>();
+        configRegisterList.add(request);
         return baseLineClient.configRegister(configRegisterList);
     }
 
