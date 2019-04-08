@@ -3,28 +3,6 @@
 <mapper namespace="com.antiy.asset.dao.AssetSoftwareRelationDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetSoftwareRelation">
-        <id column="id" property="id"/>
-        <result column="name" property="name"/>
-        <result column="manufacturer" property="manufacturer"/>
-        <result column="version" property="version"/>
-        <result column="operation_system" property="operationSystem"/>
-        <result column="asset_id" property="assetId"/>
-        <result column="software_id" property="softwareId"/>
-        <result column="software_status" property="softwareStatus"/>
-        <result column="port" property="port"/>
-        <result column="install_type" property="installType"/>
-        <result column="install_status" property="installStatus"/>
-        <result column="install_time" property="installTime"/>
-        <result column="protocol" property="protocol"/>
-        <result column="gmt_create" property="gmtCreate"/>
-        <result column="gmt_modified" property="gmtModified"/>
-        <result column="memo" property="memo"/>
-        <result column="create_user" property="createUser"/>
-        <result column="modify_user" property="modifyUser"/>
-        <result column="status" property="status"/>
-    </resultMap>
-    <!-- 通用查询映射结果 -->
     <resultMap id="InstallResultMap" type="com.antiy.asset.entity.AssetSoftwareInstall">
         <id column="id" property="id"/>
         <result column="asset_id" property="assetId"/>
@@ -36,9 +14,28 @@
         <result column="ip" property="ip"/>
         <result column="mac" property="mac"/>
     </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetSoftwareRelation">
+        <id column="id" property="id"/>
+        <result column="asset_id" property="assetId"/>
+        <result column="software_id" property="softwareId"/>
+        <result column="software_status" property="softwareStatus"/>
+        <result column="port" property="port"/>
+        <result column="configure_status" property="configureStatus"/>
+        <result column="install_type" property="installType"/>
+        <result column="install_status" property="installStatus"/>
+        <result column="install_time" property="installTime"/>
+        <result column="protocol" property="protocol"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="memo" property="memo"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modify_user" property="modifyUser"/>
+        <result column="status" property="status"/>
+    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, software_id, software_status, port, install_type, install_status, install_time, protocol, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_id, software_id, software_status, port, configure_status, install_type, install_status, install_time, protocol, gmt_create, gmt_modified, memo, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -58,6 +55,9 @@
         </if>
         <if test=" port != null">
             port,
+        </if>
+        <if test=" configureStatus != null">
+            configure_status,
         </if>
         <if test=" installType != null">
             install_type,
@@ -104,6 +104,9 @@
         <if test=" port != null">
             #{port },
         </if>
+        <if test=" configureStatus != null">
+            #{configureStatus },
+        </if>
         <if test=" installType != null">
             #{installType },
         </if>
@@ -135,6 +138,7 @@
             #{status },
         </if>
     </sql>
+
     <sql id="Set_Column_List">
         <if test=" assetId != null">
             asset_id = #{assetId },
@@ -147,6 +151,9 @@
         </if>
         <if test=" port != null">
             port = #{port },
+        </if>
+        <if test=" configureStatus != null">
+            configure_status = #{configureStatus },
         </if>
         <if test=" installType != null">
             install_type = #{installType },
@@ -179,7 +186,6 @@
             status = #{status },
         </if>
     </sql>
-
     <sql id="Where_Column_List">
         <if test=" assetId != null">
             and asset_id = #{assetId }
