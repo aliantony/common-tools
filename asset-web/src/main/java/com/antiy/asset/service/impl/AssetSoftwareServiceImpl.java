@@ -1,28 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
-import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
@@ -32,6 +9,7 @@ import com.antiy.asset.entity.AssetSoftwareLicense;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.intergration.BaseLineClient;
+import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetPortProtocolService;
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
@@ -57,6 +35,27 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
+import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -116,7 +115,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         .get(AssetSoftwareServiceImpl.class);
     @Resource
     private AssetChangeRecordDao                                             assetChangeRecordDao;
-
+    @Resource
+    private OperatingSystemClient operatingSystemClient;
     @Resource
     private BaseLineClient                                                   baseLineClient;
     @Resource
@@ -136,6 +136,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetPortProtocol.class);
 
                     ParamterExceptionUtils.isTrue(!CheckRepeatName(assetSoftware.getName()), "资产名称重复");
+                    BusinessExceptionUtils.isTrue(!checkOperatingSystem(assetSoftware.getOperationSystem ()), "兼容系统存在，或已经注销！");
                     BusinessExceptionUtils.isTrue(
                         !Objects.isNull(assetCategoryModelDao.getById(
                             com.antiy.common.utils.DataTypeUtils.stringToInteger(assetSoftware.getCategoryModel()))),
@@ -195,6 +196,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     transactionStatus.setRollbackOnly();
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("品类型号不存在，或已经注销", e.getMessage()),
                         "品类型号不存在，或已经注销");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals("兼容系统存在，或已经注销！", e.getMessage()),
+                        "兼容系统存在，或已经注销！");
                     logger.error("录入失败", e);
                 }
                 return 0;
@@ -227,6 +230,17 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
         return ActionResponse.success(num);
 
+    }
+
+
+    /**
+     * 判断操作系统是否存在
+     * @return
+     */
+    private Boolean checkOperatingSystem(String checkStr) {
+        BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse = operatingSystemClient
+                .getInvokeOperatingSystem(checkStr);
+        return baselineCategoryModelNodeResponse != null;
     }
 
     @Override
