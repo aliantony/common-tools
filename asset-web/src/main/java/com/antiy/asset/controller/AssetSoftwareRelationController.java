@@ -1,12 +1,10 @@
 package com.antiy.asset.controller;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
-import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -135,7 +133,7 @@ public class AssetSoftwareRelationController {
 
     /**
      * 查询硬件资产关联的软件列表
-     *
+     * 
      * @param queryCondition
      * @return actionResponse
      */
@@ -203,6 +201,21 @@ public class AssetSoftwareRelationController {
     public ActionResponse installSoftware(@ApiParam(value = "softwareQuery") @RequestBody AssetSoftwareRelationList assetSoftwareRelationList) throws Exception {
         iAssetSoftwareRelationService.installSoftware(assetSoftwareRelationList);
         return ActionResponse.success();
+    }
+
+    /**
+     * 根据资产id分页查询关联的软件信息
+     * @param queryCondition
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "分页查询硬件资产关联的软件列表", notes = "必传资产ID")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:querySimpleSoftwareByAssetId')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/simpleSoftwareList", method = RequestMethod.GET)
+    public ActionResponse getSimpleSoftwarePageByAssetId(@ApiParam(value = "assetId") AssetSoftwareRelationQuery queryCondition) throws Exception {
+        ParamterExceptionUtils.isNull(queryCondition.getAssetId(), "资产ID不能为空");
+        return ActionResponse.success(iAssetSoftwareRelationService.getSimpleSoftwarePageByAssetId(queryCondition));
     }
 
 }

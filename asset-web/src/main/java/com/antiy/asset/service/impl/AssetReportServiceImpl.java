@@ -670,12 +670,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
             dateKeyList.forEach(date -> {
                 Integer num = 0;
                 for (AssetGroupEntity groupReportEntity : groupReportEntityList) {
-                    // 去掉数据库返回的数据中开头为0的部分
-                    String groupReportEntityDate = groupReportEntity.getDate().startsWith("0")
-                        ? groupReportEntity.getDate().substring(1)
-                        : groupReportEntity.getDate();
                     // 资产组别且对应周数匹配
-                    if (groupReportEntity.getName().equals(groupName) && groupReportEntityDate.equals(date)) {
+                    if (groupReportEntity.getName().equals(groupName) && groupReportEntity.getDate().equals(date)) {
                         num = groupReportEntity.getGroupCount();
                     }
                 }
@@ -892,6 +888,107 @@ public class AssetReportServiceImpl implements IAssetReportService {
             }
         }
         assetReportTableResponse.setRows(rows);
+        return assetReportTableResponse;
+    }
+
+    private AssetReportTableResponse buildAssetReportTable2(ReportQueryRequest reportQueryRequest,
+                                                            Map<String, String> timeMap, String title) {
+        // 1.获取截止时间之前的数据
+        ReportQueryRequest initReportQueryRequest = new ReportQueryRequest();
+        initReportQueryRequest.setEndTime(reportQueryRequest.getEndTime());
+        List<AssetGroupEntity> initAssetGroupEntities = assetReportDao.getAssetConutWithGroup(initReportQueryRequest);
+        // 所有资产组名字
+        List<String> initNameList = new ArrayList<>();
+        for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {
+            initNameList.add(assetGroupEntity.getName());
+        }
+        // 2.组装数据
+        AssetReportTableResponse assetReportTableResponse = new AssetReportTableResponse();
+        // 设置标题
+        assetReportTableResponse.setFormName("资产组" + title + "总数统计");
+        // 设置表第一行第一格数据
+        List<ReportTableHead> reportTableHeadList = new ArrayList<>();
+        ReportTableHead reportTableHeadFirst = new ReportTableHead();
+        reportTableHeadFirst.setName("");
+        reportTableHeadFirst.setKey("classifyName");
+        reportTableHeadList.add(reportTableHeadFirst);
+
+        // 添加时间节点,第一行剩余格
+        for (Map.Entry<String, String> entry : timeMap.entrySet()) {
+            ReportTableHead reportTableHead = new ReportTableHead();
+            reportTableHead.setKey(entry.getKey());
+            reportTableHead.setName(entry.getValue());
+            reportTableHeadList.add(reportTableHead);
+        }
+        assetReportTableResponse.setChildren(reportTableHeadList);
+
+        // 设置每行的数据
+        List<Map<String, String>> rowList = new ArrayList<>();
+        for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {
+            // 获取日期map的第一个key
+            String firstDateKey = timeMap.keySet().iterator().next();
+            Map<String, String> map = new LinkedHashMap<>();
+            map.put("classifyName", assetGroupEntity.getName());
+            map.put(firstDateKey, DataTypeUtils.integerToString(assetGroupEntity.getGroupCount()));
+            rowList.add(map);
+        }
+        // assetReportTableResponse.setRows(rows);
+        // --------------------------------初始化数据完毕--------------------------------
+        // --------------------------------开始增加新数据--------------------------------
+
+        // 获取本时间段新增数据
+        List<AssetGroupEntity> newAssetGroupEntities = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
+        // 初始化新增的数据
+        List<Map<String, String>> addRowsResult = new ArrayList<>();
+        for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {
+            for (int i = 2; i <= timeMap.size(); i++) {
+                Map<String, String> initaddMap = new HashMap<>();
+                initaddMap.put(DataTypeUtils.integerToString(i), "0");
+                initaddMap.put("classifyName", assetGroupEntity.getName());
+                addRowsResult.add(initaddMap);
+            }
+        }
+
+        // 获得新增的数据
+        List<Map<String, String>> addRows = new ArrayList<>();
+        for (AssetGroupEntity assetGroupEntity : newAssetGroupEntities) {
+            Map<String, String> addMap = new HashMap<>();
+            if (initNameList.contains(assetGroupEntity.getName())) {
+                addMap.put("classifyName", assetGroupEntity.getName());
+                addMap.put(assetGroupEntity.getDate(), DataTypeUtils.integerToString(assetGroupEntity.getGroupCount()));
+                addRows.add(addMap);
+            }
+        }
+
+        // 将新增数据与初始化的新增数据进行比较配对。将有变化的数据进行修改
+        for (int i = 0; i < addRows.size(); i++) {
+            for (int j = 0; j < addRowsResult.size(); j++) {
+                if (addRows.get(i).get("classifyName").equals(addRowsResult.get(j).get("classifyName")) && addRows
+                    .get(i).keySet().iterator().next().equals(addRowsResult.get(j).keySet().iterator().next())) {
+                    addRowsResult.get(j).put(addRows.get(i).keySet().iterator().next(),
+                        addRows.get(i).get(addRows.get(i).keySet().iterator().next()));
+                }
+            }
+        }
+
+        // 把旧数据和新数据加起来
+        for (int i = 0; i < rowList.size(); i++) {
+            for (int j = 0; j < addRowsResult.size(); j++) {
+                if (rowList.get(i).get("classifyName").equals(addRowsResult.get(j).get("classifyName"))) {
+                    String day = addRowsResult.get(j).keySet().iterator().next();
+                    String addCount = addRowsResult.get(j).get(addRowsResult.get(j).keySet().iterator().next());
+                    Iterator<String> iterator = rowList.get(i).keySet().iterator();
+                    String lastKey = null;
+                    while (iterator.hasNext()) {
+                        lastKey = iterator.next();
+                    }
+                    String oldCount = rowList.get(i).get(lastKey);
+                    int sum = DataTypeUtils.stringToInteger(oldCount) + DataTypeUtils.stringToInteger(addCount);
+                    rowList.get(i).put(day, DataTypeUtils.integerToString(sum));
+                }
+            }
+        }
+        assetReportTableResponse.setRows(rowList);
         return assetReportTableResponse;
     }
 }

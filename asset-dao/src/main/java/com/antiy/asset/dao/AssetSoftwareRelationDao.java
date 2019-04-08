@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.antiy.asset.entity.AssetSoftwareRelationMapper;
+import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.AssetSoftware;
@@ -27,6 +28,19 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      */
     List<AssetSoftware> getSoftByAssetId(Integer assetId);
 
+    /**
+     * 通过资产id查询关联软件简要信息 id,名称,品类型号,软件大小,厂商,发布时间,端口,许可秘钥
+     * @param query
+     * @return
+     */
+    List<AssetSoftware> getSimpleSoftwareByAssetId(AssetSoftwareRelationQuery query);
+
+    /**
+     * 根据assetId资产id统计数量
+     * @param assetId
+     * @return
+     */
+    Integer countSoftwareByAssetId(Integer assetId);
 
     /**
      * 通过软件ID统计资产数量
@@ -79,6 +93,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer insertBatch(List<AssetSoftwareRelation> assetSoftwareRelationList);
+
     /**
      * 批量修改软件状态
      *
@@ -98,5 +113,10 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     Integer installAauto(List<AssetSoftwareRelation> assetSoftwareRelation);
 
-    Integer installSoftware(List<AssetSoftwareRelation> relationList);
+    /**
+     * 软件安装
+     * @param relationList
+     * @return
+     */
+    Integer installSoftware(@Param(value = "list") List<AssetSoftwareRelation> relationList);
 }

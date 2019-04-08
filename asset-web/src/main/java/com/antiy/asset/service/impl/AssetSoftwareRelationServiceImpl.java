@@ -106,6 +106,18 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     }
 
     @Override
+    public PageResult<AssetSoftwareResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query) {
+        int count = countByAssetId(DataTypeUtils.stringToInteger(query.getAssetId()));
+        if (count == 0) {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
+        }
+        List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao.getSimpleSoftwareByAssetId(query);
+        List<AssetSoftwareResponse> assetSoftwareResponseList = responseSoftConverter.convert(assetSoftwareList,
+            AssetSoftwareResponse.class);
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetSoftwareResponseList);
+    }
+
+    @Override
     public Integer countAssetBySoftId(Integer id) {
         return assetSoftwareRelationDao.countAssetBySoftId(id);
     }
@@ -155,10 +167,15 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             relation.setGmtModified(System.currentTimeMillis());
             relation.setModifyUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
             if (assetSoftwareRelationList.getInstallType().equals(InstallType.MANUAL.getCode())) {
+                // 人工安装
+                relation.setAssetId(assetInstallRequest.getAssetId());
                 relation.setInstallType(InstallType.MANUAL.getCode());
                 relation.setInstallStatus(assetInstallRequest.getInstallStatus());
                 relation.setInstallTime(assetInstallRequest.getInstallTime());
             } else {
+                // 自动安装
+                relation.setAssetId(assetInstallRequest.getAssetId());
+                relation.setSoftwareId(assetSoftwareRelationList.getSoftwareId());
                 relation.setInstallType(InstallType.AUTOMATIC.getCode());
                 relation.setInstallStatus(InstallStatus.INSTALLING.getCode());
                 autoInstallList.add(relation);
@@ -166,10 +183,10 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             relationList.add(relation);
         });
         // 更新关系表
-        Integer count= transactionTemplate.execute(new TransactionCallback<Integer>() {
+        Integer count = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
-                try{
+                try {
                     return assetSoftwareRelationDao.installSoftware(relationList);
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
@@ -180,5 +197,9 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         if (CollectionUtils.isNotEmpty(autoInstallList)) {
             // TODO 下发智甲安装
         }
+    }
+
+    private Integer countByAssetId(Integer assetId) {
+        return assetSoftwareRelationDao.countSoftwareByAssetId(assetId);
     }
 }
