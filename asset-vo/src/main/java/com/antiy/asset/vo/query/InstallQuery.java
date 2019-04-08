@@ -12,6 +12,9 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty("综合查询")
     private String        multipleQuery;
+
+    @ApiModelProperty("软件id")
+    private String        softwareId;
     /**
      * 安装方式
      */
@@ -27,6 +30,8 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
     @Encode
     private String[]      areaIds;
 
+    @ApiModelProperty("操作系统")
+    private String        operationSystem;
     /**
      * 安装状态
      */
@@ -84,6 +89,22 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
 
     public void setAssetStatusList(List<Integer> assetStatusList) {
         this.assetStatusList = assetStatusList;
+    }
+
+    public String getSoftwareId() {
+        return softwareId;
+    }
+
+    public void setSoftwareId(String softwareId) {
+        this.softwareId = softwareId;
+    }
+
+    public String getOperationSystem() {
+        return operationSystem;
+    }
+
+    public void setOperationSystem(String operationSystem) {
+        this.operationSystem = operationSystem;
     }
 
     @Override
