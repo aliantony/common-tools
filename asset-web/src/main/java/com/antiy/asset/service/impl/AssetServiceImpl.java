@@ -174,6 +174,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         String name = requestAsset.getName();
                         ParamterExceptionUtils.isTrue(!CheckRepeatName(name), "资产名称重复");
 
+
+                        if (StringUtils.isNotBlank(requestAsset.getOperationSystem())) {
+
+                            BusinessExceptionUtils.isTrue(!checkOperatingSystem (requestAsset.getOperationSystem ()), "操作系统不存在，或已经注销");
+                        }
+
                         String areaId = requestAsset.getAreaId();
 
                         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
@@ -241,40 +247,41 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetOuterRequestToChangeRecord.setAssetStorageMedium(assetStorageMedium);
                         }
                         // 软件关联表
-//                        List<AssetSoftwareRelationRequest> computerReques = request.getAssetSoftwareRelationList();
-//                        List<AssetSoftwareRelationRequest> softwareRelationRequestListToChangeRecord = new ArrayList<>();
-//                        assetOuterRequestToChangeRecord.setAssetSoftwareRelationList(computerReques);
-//                        if (CollectionUtils.isNotEmpty(computerReques)) {
-//                            for (AssetSoftwareRelationRequest computerReque : computerReques) {
-//                                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-//                                assetSoftwareRelation.setAssetId(aid);
-//                                assetSoftwareRelation.setSoftwareId(computerReque.getSoftwareId());
-//                                assetSoftwareRelation.setPort(computerReque.getPort());
-//                                assetSoftwareRelation.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
-//                                assetSoftwareRelation.setLicenseSecretKey(computerReque.getLicenseSecretKey());
-//                                assetSoftwareRelation.setMemo(computerReque.getMemo());
-//                                assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
-//                                assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-//                                // assetSoftwareRelation.setInstallType(computerReque.getInstallType());
-//                                // assetSoftwareRelation.setProtocol(computerReque.getProtocol());
-//                                assetSoftwareRelationDao.insert(assetSoftwareRelation);
-//                                AssetSoftwareRelationRequest assetSoftwareRelationRequest = softRelationToRequestConverter
-//                                    .convert(assetSoftwareRelation, AssetSoftwareRelationRequest.class);
-//                                assetSoftwareRelationRequest
-//                                    .setId(DataTypeUtils.integerToString(assetSoftwareRelation.getId()));
-//
-//                                softwareRelationRequestListToChangeRecord.add(assetSoftwareRelationRequest);
-//                                // if (StringUtils.isNotBlank(computerReque.getLicenseSecretKey())) {
-//                                // AssetSoftwareLicense license = new AssetSoftwareLicense();
-//                                // license.setSoftwareId(assetSoftwareRelation.getId());
-//                                // license.setLicenseSecretKey(computerReque.getLicenseSecretKey());
-//                                // license.setGmtCreate(System.currentTimeMillis());
-//                                // license.setCreateUser(LoginUserUtil.getLoginUser().getId());
-//                                // }
-//                            }
-//                            assetOuterRequestToChangeRecord
-//                                .setAssetSoftwareRelationList(softwareRelationRequestListToChangeRecord);
-//                        }
+                        // List<AssetSoftwareRelationRequest> computerReques = request.getAssetSoftwareRelationList();
+                        // List<AssetSoftwareRelationRequest> softwareRelationRequestListToChangeRecord = new
+                        // ArrayList<>();
+                        // assetOuterRequestToChangeRecord.setAssetSoftwareRelationList(computerReques);
+                        // if (CollectionUtils.isNotEmpty(computerReques)) {
+                        // for (AssetSoftwareRelationRequest computerReque : computerReques) {
+                        // AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                        // assetSoftwareRelation.setAssetId(aid);
+                        // assetSoftwareRelation.setSoftwareId(computerReque.getSoftwareId());
+                        // assetSoftwareRelation.setPort(computerReque.getPort());
+                        // assetSoftwareRelation.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
+                        // assetSoftwareRelation.setLicenseSecretKey(computerReque.getLicenseSecretKey());
+                        // assetSoftwareRelation.setMemo(computerReque.getMemo());
+                        // assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+                        // assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        // // assetSoftwareRelation.setInstallType(computerReque.getInstallType());
+                        // // assetSoftwareRelation.setProtocol(computerReque.getProtocol());
+                        // assetSoftwareRelationDao.insert(assetSoftwareRelation);
+                        // AssetSoftwareRelationRequest assetSoftwareRelationRequest = softRelationToRequestConverter
+                        // .convert(assetSoftwareRelation, AssetSoftwareRelationRequest.class);
+                        // assetSoftwareRelationRequest
+                        // .setId(DataTypeUtils.integerToString(assetSoftwareRelation.getId()));
+                        //
+                        // softwareRelationRequestListToChangeRecord.add(assetSoftwareRelationRequest);
+                        // // if (StringUtils.isNotBlank(computerReque.getLicenseSecretKey())) {
+                        // // AssetSoftwareLicense license = new AssetSoftwareLicense();
+                        // // license.setSoftwareId(assetSoftwareRelation.getId());
+                        // // license.setLicenseSecretKey(computerReque.getLicenseSecretKey());
+                        // // license.setGmtCreate(System.currentTimeMillis());
+                        // // license.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        // // }
+                        // }
+                        // assetOuterRequestToChangeRecord
+                        // .setAssetSoftwareRelationList(softwareRelationRequestListToChangeRecord);
+                        // }
 
                         List<AssetNetworkCardRequest> networkCardRequestList = request.getNetworkCard();
                         List<AssetNetworkCardRequest> networkRequestListToChangeRecord = new ArrayList<>();
@@ -496,10 +503,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     ParamterExceptionUtils.isTrue(!StringUtils.equals("资产名称重复", e.getMessage()), "资产名称重复");
                     ParamterExceptionUtils.isTrue(!StringUtils.equals("IP不能重复！", e.getMessage()), "IP不能重复！");
                     ParamterExceptionUtils.isTrue(!StringUtils.equals("内网IP不能重复！", e.getMessage()), "内网IP不能重复！");
+
                     logger.error("录入失败", e);
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()), "操作系统不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("资产组名称获取失败", e.getMessage()), "资产组名称获取失败");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("使用者不存在，或已经注销", e.getMessage()), "使用者不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("品类型号不存在，或已经注销", e.getMessage()),
@@ -1562,30 +1571,30 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     // 10. 更新资产软件关系信息
                     // 删除已有资产软件关系
-//                    assetSoftwareRelationDao.deleteByAssetId(asset.getId());
-//                    // 删除软件许可
-//                    assetSoftwareLicenseDao.deleteByAssetId(asset.getId());
-//                    if (CollectionUtils.isNotEmpty(assetOuterRequest.getAssetSoftwareRelationList())) {
-//                        List<AssetSoftwareRelation> assetSoftwareRelationList = BeanConvert
-//                            .convert(assetOuterRequest.getAssetSoftwareRelationList(), AssetSoftwareRelation.class);
-//                        assetSoftwareRelationList.stream().forEach(relation -> {
-//                            relation.setAssetId(asset.getStringId());
-//                            relation.setGmtCreate(System.currentTimeMillis());
-//                            // relation.setSoftwareStatus();
-//                            relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-//                            try {
-//                                // 插入资产软件关系
-//                                assetSoftwareRelationDao.insert(relation);
-//                                AssetSoftwareLicense assetSoftwareLicense = new AssetSoftwareLicense();
-//                                assetSoftwareLicense.setLicenseSecretKey(relation.getLicenseSecretKey());
-//                                assetSoftwareLicense.setSoftwareId(relation.getStringId());
-//                                // 插入资产软件许可
-//                                assetSoftwareLicenseDao.insert(assetSoftwareLicense);
-//                            } catch (Exception e) {
-//                                logger.error(e.getMessage());
-//                            }
-//                        });
-//                    }
+                    // assetSoftwareRelationDao.deleteByAssetId(asset.getId());
+                    // // 删除软件许可
+                    // assetSoftwareLicenseDao.deleteByAssetId(asset.getId());
+                    // if (CollectionUtils.isNotEmpty(assetOuterRequest.getAssetSoftwareRelationList())) {
+                    // List<AssetSoftwareRelation> assetSoftwareRelationList = BeanConvert
+                    // .convert(assetOuterRequest.getAssetSoftwareRelationList(), AssetSoftwareRelation.class);
+                    // assetSoftwareRelationList.stream().forEach(relation -> {
+                    // relation.setAssetId(asset.getStringId());
+                    // relation.setGmtCreate(System.currentTimeMillis());
+                    // // relation.setSoftwareStatus();
+                    // relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    // try {
+                    // // 插入资产软件关系
+                    // assetSoftwareRelationDao.insert(relation);
+                    // AssetSoftwareLicense assetSoftwareLicense = new AssetSoftwareLicense();
+                    // assetSoftwareLicense.setLicenseSecretKey(relation.getLicenseSecretKey());
+                    // assetSoftwareLicense.setSoftwareId(relation.getStringId());
+                    // // 插入资产软件许可
+                    // assetSoftwareLicenseDao.insert(assetSoftwareLicense);
+                    // } catch (Exception e) {
+                    // logger.error(e.getMessage());
+                    // }
+                    // });
+                    // }
                     // 记录资产变更记录
                     AssetChangeRecord assetChangeRecord = new AssetChangeRecord();
                     assetChangeRecord.setType(1);
@@ -2168,18 +2177,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // assetCpuDao.insertBatch(assetCpus);
                 }
 
-
-                    AssetNetworkCard assetNetworkCard = new AssetNetworkCard();
-                    assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                    assetNetworkCard.setGmtCreate(System.currentTimeMillis());
-                    assetNetworkCard.setSerial(entity.getNetworkSerial());
-                    assetNetworkCard.setBrand(entity.getNetworkBrand());
-                    assetNetworkCard.setModel(entity.getNetworkModel());
-                    assetNetworkCard.setSubnetMask(entity.getNetworkSubnetMask());
-                    assetNetworkCard.setDefaultGateway(entity.getNetworkDefaultGateway());
-                    assetNetworkCard.setIpAddress(entity.getNetworkIpAddress());
-                    assetNetworkCard.setMacAddress(entity.getNetworkMacAddress());
-                    computerVo.setAssetNetworkCard(assetNetworkCard);
+                AssetNetworkCard assetNetworkCard = new AssetNetworkCard();
+                assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                assetNetworkCard.setGmtCreate(System.currentTimeMillis());
+                assetNetworkCard.setSerial(entity.getNetworkSerial());
+                assetNetworkCard.setBrand(entity.getNetworkBrand());
+                assetNetworkCard.setModel(entity.getNetworkModel());
+                assetNetworkCard.setSubnetMask(entity.getNetworkSubnetMask());
+                assetNetworkCard.setDefaultGateway(entity.getNetworkDefaultGateway());
+                assetNetworkCard.setIpAddress(entity.getNetworkIpAddress());
+                assetNetworkCard.setMacAddress(entity.getNetworkMacAddress());
+                computerVo.setAssetNetworkCard(assetNetworkCard);
 
                 computerVos.add(computerVo);
             }
@@ -2839,7 +2847,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return baselineCategoryModelNodeResponse != null;
     }
 
-
     @Override
     @Transactional
     public String changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception {
@@ -2848,12 +2855,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         String assetId = assetStatusJumpRequst.getAssetId();
         this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
         Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
-        //写入方案
+        // 写入方案
         if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
             JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
         }
         scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
-        scheme.setAssetId (assetId);
+        scheme.setAssetId(assetId);
         schemeDao.insert(scheme);
         // 写入业务日志
         LogHandle.log(scheme.toString(), AssetEventEnum.ASSET_SCHEME_INSERT.getName(),
