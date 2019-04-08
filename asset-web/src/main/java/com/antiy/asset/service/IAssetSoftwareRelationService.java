@@ -7,6 +7,7 @@ import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.entity.AssetSoftwareRelationMapper;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
+import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -121,5 +122,5 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @return
      * @throws Exception
      */
-    List<AssetSoftwareRelationResponse> queryInstallList(AssetSoftwareQuery query) throws Exception;
+    List<AssetSoftwareRelationResponse> queryInstallList(InstallQuery query) throws Exception;
 }

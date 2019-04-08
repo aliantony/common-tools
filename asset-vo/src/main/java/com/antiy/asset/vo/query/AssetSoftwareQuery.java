@@ -122,11 +122,7 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     private Integer       installType;
 
 
-    /**
-     * 安装方式
-     */
-    @ApiModelProperty("安装方式")
-    private Integer       configureStatus;
+
     /**
      * 安装状态
      */
@@ -420,13 +416,6 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
         this.multipleQuery = multipleQuery;
     }
 
-    public Integer getConfigureStatus() {
-        return configureStatus;
-    }
-
-    public void setConfigureStatus(Integer configureStatus) {
-        this.configureStatus = configureStatus;
-    }
 
     @Override
     public void validate() throws RequestParamValidateException {
