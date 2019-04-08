@@ -6,6 +6,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class InstallQuery extends ObjectQuery implements ObjectValidator {
@@ -13,34 +14,34 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("综合查询")
     private String        multipleQuery;
 
-    @ApiModelProperty("软件id")
+    @ApiModelProperty(value = "软件id", required = true)
+    @NotNull
+    @Encode
     private String        softwareId;
     /**
      * 安装方式
      */
-    @ApiModelProperty("安装方式")
+    @ApiModelProperty("安装方式 1人工 2自动")
     private Integer       installType;
     /**
      * 安装方式
      */
-    @ApiModelProperty("配置方式")
+    @ApiModelProperty("配置方式 1未配置，2配置中，3已配置")
     private Integer       configureStatus;
 
-    @ApiModelProperty("区域id列表")
+    @ApiModelProperty("区域id列表 不传")
     @Encode
     private String[]      areaIds;
 
-    @ApiModelProperty("操作系统")
-    private String        operationSystem;
     /**
      * 安装状态
      */
-    @ApiModelProperty("安装状态")
+    @ApiModelProperty("安装状态 1未配置，2配置中，3已配置")
     private Integer       installStatus;
     /**
      * 资产状态
      */
-    @ApiModelProperty("资产状态[列表]")
+    @ApiModelProperty("资产状态[列表] 不传")
     private List<Integer> assetStatusList;
 
     public String getMultipleQuery() {
@@ -97,14 +98,6 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
 
     public void setSoftwareId(String softwareId) {
         this.softwareId = softwareId;
-    }
-
-    public String getOperationSystem() {
-        return operationSystem;
-    }
-
-    public void setOperationSystem(String operationSystem) {
-        this.operationSystem = operationSystem;
     }
 
     @Override

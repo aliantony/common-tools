@@ -73,12 +73,12 @@ public class AssetSoftwareInstallResponse {
     /**
      * 安装类型
      */
-    @ApiModelProperty("安装类型")
+    @ApiModelProperty("安装类型 1人工 2自动")
     private Integer installType;
     /**
      * 安装状态
      */
-    @ApiModelProperty("安装状态")
+    @ApiModelProperty("安装状态 1失败、2成功，3安装中 4未安装")
     private Integer installStatus;
 
     /**
@@ -89,7 +89,7 @@ public class AssetSoftwareInstallResponse {
     /**
      * 配置方式
      */
-    @ApiModelProperty("配置方式")
+    @ApiModelProperty("配置方式 1未配置，2配置中，3已配置")
     private String  configureStatus;
 
     public Integer getUserId() {
