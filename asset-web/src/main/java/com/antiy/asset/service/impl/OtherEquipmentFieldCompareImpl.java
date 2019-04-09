@@ -113,9 +113,18 @@ public class OtherEquipmentFieldCompareImpl extends AbstractChangeRecordCompareI
                 networkEquipmentCompareResult = CompareUtils.compareClass(oldOtherEquipment, newOtherEquipment,
                     InfoLabelEnum.BUSINESSINFO.getMsg());
             }
-            changeValList.addAll(assetCommonInoCompareResult);
-            changeValList.addAll(assetBusinessInfoCompareResult);
-            changeValList.addAll(networkEquipmentCompareResult);
+
+            if (assetCommonInoCompareResult != null) {
+                changeValList.addAll(assetCommonInoCompareResult);
+            }
+
+            if (assetBusinessInfoCompareResult != null) {
+                changeValList.addAll(assetBusinessInfoCompareResult);
+            }
+
+            if (networkEquipmentCompareResult != null) {
+                changeValList.addAll(networkEquipmentCompareResult);
+            }
         }
         return changeValList;
     }
