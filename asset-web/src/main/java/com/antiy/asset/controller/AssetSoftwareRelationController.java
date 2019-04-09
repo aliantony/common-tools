@@ -170,8 +170,8 @@ public class AssetSoftwareRelationController {
      *
      * @return 操作系统名称集合
      */
-    @ApiOperation(value = "软件安装列表", notes = "无查询条件")
-    @PreAuthorize("hasAuthority('asset:softwarerelation:queryOS')")
+    @ApiOperation(value = "软件安装列表", notes = "返回的id即为资产id 需要传的参数为multipleQuery,softwareId,configureStatus,installType,installStatus 其中softwareId必传")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:installList')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/installList", method = RequestMethod.GET)
     public ActionResponse<PageResult<AssetSoftwareInstallResponse>> queryInstallList(InstallQuery query) throws Exception {

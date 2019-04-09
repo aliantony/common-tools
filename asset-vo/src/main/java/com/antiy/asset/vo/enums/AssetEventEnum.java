@@ -77,6 +77,16 @@ public enum AssetEventEnum {
     ASSET_OTHERS_INSERT(69,"资产其他设备新增"),
     ASSET_OTHERS_UPDATE(70,"资产其他设备修改"),
     ASSET_OTHERS_DELETE(71,"资产其他设备删除"),
+    ASSET_LABEL_RELATION_INSERT(72,"资产标签关系插入"),
+    ASSET_LABEL_RELATION_UPDATE(73,"资产标签关系更新"),
+    ASSET_LABEL_RELATION_DELETE(74,"资产标签关系删除"),
+    ASSET_LABEL_INSERT(75,"资产标签插入"),
+    ASSET_LABEL_UPDATE(76,"资产标签更新"),
+    ASSET_LABEL_DELETE(77,"资产标签删除"),
+    ASSET_LINK_RELATION_INSERT(78,"资产通联关系插入"),
+    ASSET_LINK_RELATION_UPDATE(79,"资产通联关系更新"),
+    ASSET_LINK_RELATION_DELETE(80,"资产通联关系删除"),
+    ASSET_ADMITTANCE_INSERT(81,"资产进入准入管理"),
     ;
 
 

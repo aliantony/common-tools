@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
+import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.entity.AssetOperationRecord;
+import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.entity.AssetSoftwareLicense;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.intergration.BaseLineClient;
@@ -225,7 +229,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             configRegisterRequest.setSuggest(request.getConfigRegisterRequest().getSuggest());
             configRegisterRequest.setConfigUserId(request.getConfigRegisterRequest().getConfigUserId());
             configRegisterRequest.setRelId(String.valueOf(num));
-            this.configRegister(configRegisterRequest);
+            ActionResponse actionResponseSoftware = this.configRegister(configRegisterRequest);
+            if (null == actionResponseSoftware
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseSoftware.getHead().getCode())) {
+                // 调用失败，逻辑删登记的资产
+                assetSoftwareDao.deleteById(num);
+                return actionResponseSoftware == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
+                    : actionResponse;
+            }
         }
 
         return ActionResponse.success(num);
@@ -237,9 +248,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @return
      */
     private Boolean checkOperatingSystem(String checkStr) {
-        BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse = operatingSystemClient
-            .getInvokeOperatingSystem(checkStr);
-        return baselineCategoryModelNodeResponse != null;
+        List<Map> operatingSystemMapList = operatingSystemClient.getInvokeOperatingSystem();
+        for (Map map : operatingSystemMapList) {
+            if (Objects.equals(map.get("name"), checkStr)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -429,12 +444,20 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         if (MapUtils.isEmpty(waitingTasks) && query.getEnterControl()) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
         }
-
+        if (!Objects.isNull(query.getCategoryModels()) && query.getCategoryModels().length > 0) {
+            List<Integer> categoryModels = Lists.newArrayList();
+            for (int i = 0; i < query.getCategoryModels().length; i++) {
+                categoryModels.addAll(iAssetCategoryModelService.findAssetCategoryModelIdsById(
+                        com.antiy.common.utils.DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
+            }
+            query.setCategoryModels(com.antiy.common.utils.DataTypeUtils.integerArrayToStringArray(categoryModels));
+        }
         // 如果count 小于等于0，则表示没数据，也直接返回
         int count = this.findCountAssetSoftware(query);
         if (count <= 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
         }
+
 
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
             this.findListAssetSoftware(query, waitingTasks));
@@ -618,7 +641,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
-        exportData(AssetSoftwareEntity.class, "软件信息表", assetSoftwareQuery, response);
+        exportData("软件信息表", assetSoftwareQuery, response);
     }
 
     @Override
@@ -663,29 +686,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // 1.保存操作流程
         assetOperationRecordDao.insert(convertRecord(request));
 
-        // 2.保存配置建议信息
-        schemeDao.insert(convertScheme(request));
-
-        // 3.调用配置接口
+        // 2.调用配置接口
         List<ConfigRegisterRequest> configRegisterList = new ArrayList<>();
         configRegisterList.add(request);
         return baseLineClient.configRegister(configRegisterList);
-    }
-
-    private Scheme convertScheme(ConfigRegisterRequest registerRequest) {
-        Scheme scheme = new Scheme();
-        scheme.setContent(registerRequest.getSuggest());
-        if (AssetTypeEnum.SOFTWARE.getCode().equals(registerRequest.getSource())) {
-            scheme.setAssetNextStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
-            scheme.setSchemeSource(2);
-        } else {
-            scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
-            scheme.setSchemeSource(1);
-        }
-        scheme.setAssetId(registerRequest.getAssetId());
-        scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        scheme.setGmtCreate(System.currentTimeMillis());
-        return scheme;
     }
 
     private AssetOperationRecord convertRecord(ConfigRegisterRequest request) {
@@ -832,20 +836,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return stringBuilder.append(builder).append(sb).toString();
     }
 
-    private void exportData(Class<AssetSoftwareEntity> assetSoftwareEntityClass, String s,
-                            AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
+    private void exportData(String s, AssetSoftwareQuery assetSoftwareQuery,
+                            HttpServletResponse response) throws Exception {
         assetSoftwareQuery.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         assetSoftwareQuery.setQueryAssetCount(true);
         assetSoftwareQuery.setPageSize(com.antiy.asset.util.Constants.ALL_PAGE);
-        Map<String, WaitingTaskReponse> waitingTasks = getAllSoftWaitingTask("soft");
-
-        // 如果流程引擎返回数据未空，并且导出的时候从工作台进入，则直接返回
-        if (MapUtils.isEmpty(waitingTasks) && assetSoftwareQuery.getEnterControl()) {
-            return;
-        }
-
-        List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery, waitingTasks);
+        List<AssetSoftwareResponse> list = this.findPageAssetSoftware(assetSoftwareQuery).getItems();
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setSheetName("资产信息表");
         List<ExportSoftwareEntity> softwareEntities = softwareEntityConvert.convert(list, ExportSoftwareEntity.class);

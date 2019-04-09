@@ -30,17 +30,21 @@ public class AssetSoftwareRelation extends BaseEntity {
 
     /**
      * 资产主键
-     */
-    private String  assetId;
+         */
+        private String  assetId;
 
-    /**
-     * 软件主键
-     */
-    private String  softwareId;
+        /**
+         * 软件主键
+         */
+        private String  softwareId;
     /**
      * 软件资产状态：1待登记2待分析3可安装4已退役5不予登记
      */
     private Integer softwareStatus;
+    /**
+     * 配置状态：1未配置，2配置中，3已配置
+     */
+    private Integer configureStatus;
     /**
      * 协议
      */
@@ -276,5 +280,13 @@ public class AssetSoftwareRelation extends BaseEntity {
                + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
                + ", modifyUser=" + modifyUser + ", status=" + status + ", installTime=" + installTime + ", userId='"
                + userId + '\'' + ", userName='" + userName + '\'' + '}';
+    }
+
+    public Integer getConfigureStatus() {
+        return configureStatus;
+    }
+
+    public void setConfigureStatus(Integer configureStatus) {
+        this.configureStatus = configureStatus;
     }
 }

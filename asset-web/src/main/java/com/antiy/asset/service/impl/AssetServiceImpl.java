@@ -11,12 +11,16 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.common.config.kafka.KafkaConfig;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -543,7 +547,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             configRegisterRequest.setSuggest(request.getConfigRegisterRequest().getSuggest());
             configRegisterRequest.setConfigUserId(request.getConfigRegisterRequest().getConfigUserId());
             configRegisterRequest.setRelId(String.valueOf(id));
-            softwareService.configRegister(configRegisterRequest);
+            ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest);
+            if (null == actionResponseAsset
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {
+                // 调用失败，逻辑删登记的资产
+                assetDao.deleteById(id);
+                return actionResponseAsset == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
+                    : actionResponse;
+            }
         }
 
         return ActionResponse.success(id);
@@ -1036,6 +1047,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
+    @Transactional
     public Integer changeStatus(String[] ids, Integer targetStatus) throws Exception {
         int row;
         Map<String, Object> map = new HashMap<>();
@@ -2806,7 +2818,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetQuery.setAreaIds(
             ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         assetQuery.setPageSize(ALL_PAGE);
-        List<AssetResponse> list = this.findListAsset(assetQuery);
+        List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
         List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setSheetName("资产信息表");
@@ -2848,9 +2860,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @return
      */
     private Boolean checkOperatingSystem(String checkStr) {
-        BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse = operatingSystemClient
-            .getInvokeOperatingSystem(checkStr);
-        return baselineCategoryModelNodeResponse != null;
+        List<Map> operatingSystemMapList = operatingSystemClient.getInvokeOperatingSystem();
+        for (Map map : operatingSystemMapList) {
+            if (Objects.equals(map.get("name"), checkStr)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -2895,6 +2911,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
             assetOperationRecord.toString());
         return "配置成功";
+    }
+
+    @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
+    public void listen(String data, Acknowledgment ack) {
+        AreaOperationRequest areaOperationRequest = JsonUtil.json2Object(data, AreaOperationRequest.class);
+        if (areaOperationRequest != null) {
+            try {
+                LogUtils.info(logger, "消息消费成功 " + data);
+                assetDao.updateAssetAreaId(areaOperationRequest.getTargetAreaId(),
+                    areaOperationRequest.getSourceAreaIds());
+                ack.acknowledge();
+            } catch (Exception e) {
+                LogUtils.error(logger, e, "消息消费失败");
+            }
+        }
     }
 }
 

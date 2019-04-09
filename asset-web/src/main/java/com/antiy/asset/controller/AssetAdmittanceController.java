@@ -1,28 +1,31 @@
 package com.antiy.asset.controller;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import com.antiy.asset.vo.enums.AdmittanceStatusEnum;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.AccessExport;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AdmittanceStatusEnum;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AdmittanceRequest;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * @author 吕梁
@@ -68,6 +71,11 @@ public class AssetAdmittanceController {
         Asset asset = new Asset();
         asset.setId(DataTypeUtils.stringToInteger(admittance.getStringId()));
         asset.setAdmittanceStatus(admittance.getAdmittanceStatus());
+        // 写入业务日志
+        LogHandle.log(asset.toString(), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName(),
+                AssetEventEnum.ASSET_ADMITTANCE_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName() + " {}", asset.toString());
+
         return ActionResponse.success(assetService.update(asset));
     }
 

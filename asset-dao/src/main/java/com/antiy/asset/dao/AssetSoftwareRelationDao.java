@@ -136,4 +136,6 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer queryInstallCount(InstallQuery query);
+
+    Integer updateByAssetId(AssetSoftwareRelation assetSoftwareRelation);
 }

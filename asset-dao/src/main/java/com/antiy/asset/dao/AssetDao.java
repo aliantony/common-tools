@@ -69,13 +69,14 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<Asset> findListAssetByCategoryModel(AssetQuery query) throws Exception;
+
     /**
      * ip查重复
      *
      * @param query
      * @return
      */
-   Integer findCountIp(AssetQuery query) throws Exception;
+    Integer findCountIp(AssetQuery query) throws Exception;
 
     /**
      * 统计厂商数量
@@ -135,4 +136,11 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<String> pulldownUnconnectedManufacturer(AssetQuery assetQuery);
+
+    /**
+     * 更新资产的区域id
+     * @param
+     * @return
+     */
+    Integer updateAssetAreaId(@Param("areaId") String areaId, @Param("areaIds") List<String> areaIds);
 }
