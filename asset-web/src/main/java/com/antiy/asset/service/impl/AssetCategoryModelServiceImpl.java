@@ -1,26 +1,11 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.io.Serializable;
-import java.util.*;
-
-import javax.annotation.Resource;
-
-import com.antiy.asset.util.Constants;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.utils.LoginUserUtil;
-import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
 import com.antiy.asset.convert.CategoryRequestConvert;
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.util.NodeUtilsConverter;
@@ -30,10 +15,27 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.asset.vo.response.AssetCategoryModelResponse;
-import com.antiy.common.base.*;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.PageResult;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.*;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 品类型号表 服务实现类 </p>
@@ -65,6 +67,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @throws Exception
      */
     @Override
+    @Transactional
     public ActionResponse saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel assetCategoryModel = requestConverter.convert(request, AssetCategoryModel.class);
         request.setStringId(null);
@@ -115,6 +118,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
+    @Transactional
     public ActionResponse updateAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         AssetCategoryModel updateCategory = categoryRequestConvert.convert(request, AssetCategoryModel.class);
         BusinessExceptionUtils.isTrue(!request.getStringId().equals(request.getParentId()), "上级品类不能为自身");
@@ -200,6 +204,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @return ActionResponse
      */
     @Override
+    @Transactional
     public ActionResponse delete(Serializable id) throws Exception {
         AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getById(id);
         // 判断是否自定义品类
