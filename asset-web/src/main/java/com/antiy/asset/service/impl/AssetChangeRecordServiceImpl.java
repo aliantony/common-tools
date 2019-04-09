@@ -1,15 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetChangeRecord;
@@ -28,6 +18,15 @@ import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * <p> 变更记录表 服务实现类 </p>
@@ -71,6 +70,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
     private AssetCategoryModelDao                                       categoryModelDao;
 
     @Override
+    @Transactional
     public ActionResponse saveAssetChangeRecord(AssetChangeRecordRequest request) throws Exception {
         AssetChangeRecord assetChangeRecord = requestConverter.convert(request, AssetChangeRecord.class);
         AssetOuterRequest assetOuterRequest = request.getAssetOuterRequest();
@@ -101,6 +101,7 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
     }
 
     @Override
+    @Transactional
     public Integer updateAssetChangeRecord(AssetChangeRecordRequest request) throws Exception {
         AssetChangeRecord assetChangeRecord = requestConverter.convert(request, AssetChangeRecord.class);
         return assetChangeRecordDao.update(assetChangeRecord);

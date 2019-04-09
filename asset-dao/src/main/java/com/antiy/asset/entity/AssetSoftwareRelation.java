@@ -30,13 +30,13 @@ public class AssetSoftwareRelation extends BaseEntity {
 
     /**
      * 资产主键
-     */
-    private String  assetId;
+         */
+        private String  assetId;
 
-    /**
-     * 软件主键
-     */
-    private String  softwareId;
+        /**
+         * 软件主键
+         */
+        private String  softwareId;
     /**
      * 软件资产状态：1待登记2待分析3可安装4已退役5不予登记
      */

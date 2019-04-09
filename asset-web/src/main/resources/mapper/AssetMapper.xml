@@ -1043,7 +1043,6 @@
         a.firmware_version,
         a.uuid,
         a.responsible_user_id,
-        d.name as responsible_user_name,
         a.contact_tel,
         a.email,
         a.asset_source,
@@ -1078,7 +1077,6 @@
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
         left join asset_category_model c on a.category_model = c.id
-        left join asset_user d on a.responsible_user_id = d.id
         group by a.id
         order by a.gmt_create desc) asset
         <where>
@@ -1145,7 +1143,6 @@
         a.firmware_version,
         a.uuid,
         a.responsible_user_id,
-        d.name as responsible_user_name,
         a.contact_tel,
         a.email,
         a.asset_source,
@@ -1180,7 +1177,6 @@
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1
         left join asset_category_model c on a.category_model = c.id
-        left join asset_user d on a.responsible_user_id = d.id
         group by a.id
         order by a.gmt_create desc) asset
         <where>
