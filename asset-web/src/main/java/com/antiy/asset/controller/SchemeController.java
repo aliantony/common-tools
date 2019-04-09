@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,6 +14,7 @@ import com.antiy.asset.vo.query.AssetIDAndSchemeTypeQuery;
 import com.antiy.asset.vo.query.SchemeQuery;
 import com.antiy.asset.vo.response.SchemeResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
@@ -27,6 +29,7 @@ import io.swagger.annotations.*;
 @RestController
 @RequestMapping("/api/v1/asset/scheme")
 public class SchemeController {
+    private Logger         logger = LogUtils.get(this.getClass());
 
     @Resource
     private ISchemeService iSchemeService;

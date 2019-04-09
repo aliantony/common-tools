@@ -1,25 +1,26 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONArray;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
@@ -28,8 +29,10 @@ import com.antiy.common.utils.LoginUserUtil;
  * @date: 2019/1/22 15:48
  * @description:
  */
+@Transactional(rollbackFor = RuntimeException.class)
 @Service
 public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangeProcessImpl {
+    private Logger           logger = LogUtils.get(this.getClass());
     @Resource
     private AssetSoftwareDao assetSoftwareDao;
 
@@ -63,11 +66,11 @@ public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangePr
             }
         }
 
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName(),
+            assetSoftware.getId(), null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName() + " {}", assetSoftware);
         assetSoftwareDao.update(assetSoftware);
-
-        LogHandle.log(assetSoftware.toString(), AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName(),
-            AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName() + " {}", assetSoftware.toString());
         return ActionResponse.success(assetSoftwareDao.update(assetSoftware));
     }
 }

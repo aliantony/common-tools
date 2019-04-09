@@ -22,6 +22,7 @@ import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
@@ -35,7 +36,7 @@ import com.antiy.common.utils.LoginUserUtil;
 @Transactional(rollbackFor = RuntimeException.class)
 public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafetyEquipment>
                                              implements IAssetSafetyEquipmentService {
-
+    private Logger                                                            logger = LogUtils.get(this.getClass());
     @Resource
     private AssetSafetyEquipmentDao                                           assetSafetyEquipmentDao;
     @Resource
@@ -44,7 +45,6 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
     private BaseConverter<AssetSafetyEquipmentRequest, AssetSafetyEquipment>  requestConverter;
     @Resource
     private BaseConverter<AssetSafetyEquipment, AssetSafetyEquipmentResponse> responseConverter;
-    private static Logger logger = LogUtils.get(AssetSafetyEquipmentServiceImpl.class);
     @Override
     public String saveAssetSafetyEquipment(AssetSafetyEquipmentRequest request) throws Exception {
         AssetSafetyEquipment assetSafetyEquipment = requestConverter.convert(request, AssetSafetyEquipment.class);
@@ -53,7 +53,8 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
         assetSafetyEquipmentDao.insert(assetSafetyEquipment);
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SAFETY_EQUIPMENT_INSERT.getName(),
-            assetSafetyEquipment.getId(), null, assetSafetyEquipment, BusinessModuleEnum.SAFETY, null));
+            assetSafetyEquipment.getId(), null, assetSafetyEquipment, BusinessModuleEnum.SAFETY,
+            BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getName() + " {}", assetSafetyEquipment);
         return aesEncoder.decode(assetSafetyEquipment.getStringId(),LoginUserUtil.getLoginUser().getUsername());
     }
@@ -64,7 +65,8 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
         assetSafetyEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SAFETY_EQUIPMENT_UPDATE.getName(),
-            assetSafetyEquipment.getId(), null, assetSafetyEquipment, BusinessModuleEnum.SAFETY, null));
+            assetSafetyEquipment.getId(), null, assetSafetyEquipment, BusinessModuleEnum.SAFETY,
+            BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getName() + " {}", assetSafetyEquipment);
         return assetSafetyEquipmentDao.update(assetSafetyEquipment);
     }

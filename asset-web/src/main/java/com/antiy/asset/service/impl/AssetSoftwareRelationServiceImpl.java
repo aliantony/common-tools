@@ -77,7 +77,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_RELATION_INSERT.getName(), null, null,
-            assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, null));
+            assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_RELATION_INSERT.getName() + " {}", assetSoftwareRelation);
         assetSoftwareRelationDao.insert(assetSoftwareRelation);
         return assetSoftwareRelation.getId();
@@ -91,7 +91,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         assetSoftwareRelation.setGmtModified(System.currentTimeMillis());
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_RELATION_UPDATE.getName(), null, null,
-            assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, null));
+            assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_RELATION_UPDATE.getName() + " {}", assetSoftwareRelation);
         return assetSoftwareRelationDao.update(assetSoftwareRelation);
     }
@@ -151,7 +151,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     public Integer changeSoftwareStatus(Map<String, Object> map) throws Exception {
         // 记录操作日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName(), null, null, map,
-            BusinessModuleEnum.SOFTWARE_ASSET, null));
+            BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
         return assetSoftwareRelationDao.changeSoftwareStatus(map);
     }
 

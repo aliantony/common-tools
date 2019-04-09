@@ -32,6 +32,7 @@ import com.antiy.asset.vo.response.ReportData;
 import com.antiy.asset.vo.response.ReportTableHead;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
@@ -47,6 +48,8 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 @Transactional(rollbackFor = RuntimeException.class)
 @Service
 public class AssetReportServiceImpl implements IAssetReportService {
+    private Logger              logger = LogUtils.get(this.getClass());
+
     private final static String DAY    = "%w";
     private final static String WEEK   = "%u";
     private final static String MONTH  = "%Y-%m";
@@ -55,7 +58,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
     AssetReportDao              assetReportDao;
     @Resource
     AssetCategoryModelDao       categoryModelDao;
-    private static Logger       logger = LogUtils.get(AssetReportServiceImpl.class);
 
     @Override
     public AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
@@ -423,7 +425,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setColumnList(columnList);
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_REPORT_EXPORT.getName(), null, null, reportForm,
-            BusinessModuleEnum.REPORT, null));
+            BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}", reportForm);
         ExcelUtils.exportFormToClient(reportForm, "报表导出.xlsx");
     }

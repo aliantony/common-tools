@@ -6,30 +6,27 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.templet.AssetUserEntity;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.SysArea;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.antiy.asset.convert.UserSelectResponseConverter;
 import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.IAssetUserService;
-import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
 import com.antiy.asset.vo.response.AssetUserResponse;
 import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -40,6 +37,7 @@ import com.antiy.common.utils.LoginUserUtil;
  * @author zhangyajun
  * @since 2019-01-02
  */
+@Transactional(rollbackFor = RuntimeException.class)
 @Service
 public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements IAssetUserService {
 
@@ -57,34 +55,33 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     private RedisUtil                                   redisUtil;
 
     @Override
-    @Transactional
     public String saveAssetUser(AssetUserRequest request) throws Exception {
         AssetUser assetUser = requestConverter.convert(request, AssetUser.class);
         assetUser.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetUser.setGmtCreate(System.currentTimeMillis());
         assetUserDao.insert(assetUser);
-        // 写入业务日志
-        LogHandle.log(assetUser.toString(), AssetEventEnum.ASSET_USER_INSERT.getName(),
-            AssetEventEnum.ASSET_USER_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_USER_INSERT.getName() + " {}", assetUser.toString());
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_USER_INSERT.getName(), assetUser.getId(), null,
+            assetUser, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+        LogUtils.info(logger, AssetEventEnum.ASSET_USER_INSERT.getName() + " {}", assetUser);
         return aesEncoder.encode(assetUser.getStringId(), LoginUserUtil.getLoginUser().getUsername());
     }
 
     @Override
-    @Transactional
     public Integer updateAssetUser(AssetUserRequest request) throws Exception {
         AssetUser assetUser = requestConverter.convert(request, AssetUser.class);
         assetUser.setId(DataTypeUtils.stringToInteger(request.getId()));
         assetUser.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetUser.setGmtCreate(System.currentTimeMillis());
-        // 写入业务日志
-        LogHandle.log(assetUser.toString(), AssetEventEnum.ASSET_USER_UPDATE.getName(),
-            AssetEventEnum.ASSET_USER_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_USER_UPDATE.getName() + " {}", assetUser.toString());
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_USER_UPDATE.getName(), assetUser.getId(), null,
+            assetUser, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+        LogUtils.info(logger, AssetEventEnum.ASSET_USER_UPDATE.getName() + " {}", assetUser);
         return assetUserDao.update(assetUser);
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AssetUserResponse> findListAssetUser(AssetUserQuery query) throws Exception {
         List<AssetUser> assetUser = assetUserDao.queryUserList(query);
         if (CollectionUtils.isNotEmpty(assetUser)) {
@@ -111,22 +108,24 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetUserResponse> findPageAssetUser(AssetUserQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetUser(query), query.getCurrentPage(),
             this.findListAssetUser(query));
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
     public List<SelectResponse> queryUserInAsset() throws Exception {
         return userSelectResponseConverter.convert(assetUserDao.findUserInAsset(), SelectResponse.class);
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void importUser(List<AssetUser> assetUserList) {
         assetUserDao.insertBatch(assetUserList);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
     public List<AssetUser> findExportListAssetUser(AssetUserQuery assetUser) {
         return assetUserDao.findExportListAssetUser(assetUser);

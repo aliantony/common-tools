@@ -1,7 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
 import javax.annotation.Resource;
 
 import org.springframework.web.util.HtmlUtils;
@@ -20,7 +18,6 @@ import com.antiy.asset.intergration.WorkOrderClient;
 import com.antiy.asset.service.IAssetStatusChangeProcessService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.EnumUtil;
-import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.asset.vo.request.SchemeRequest;
@@ -29,9 +26,7 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
@@ -68,11 +63,6 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             // 1.保存方案信息
             scheme = convertScheme(assetStatusReqeust);
             schemeDao.insert(scheme);
-
-            // 写入业务日志
-            LogHandle.log(scheme.toString(), AssetEventEnum.ASSET_SCHEME_INSERT.getName(),
-                AssetEventEnum.ASSET_SCHEME_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme.toString());
         }
 
         // 2.保存流程
@@ -85,14 +75,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             assetOperationRecord.setOriginStatus(assetStatusReqeust.getSoftwareStatusEnum().getCode());
         }
         assetOperationRecord.setSchemeId(scheme != null ? scheme.getId() : null);
+
         assetOperationRecordDao.insert(assetOperationRecord);
-
-        // 写入业务日志
-        LogHandle.log(assetOperationRecord.toString(), AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(),
-            AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
-            assetOperationRecord.toString());
-
         // 3.调用流程引擎
         ActionResponse actionResponse = null;
         if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode()

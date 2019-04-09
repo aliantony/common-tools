@@ -16,11 +16,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.biz.file.FileRespVO;
 import com.antiy.biz.file.FileResponse;
 import com.antiy.biz.file.FileUtils;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
@@ -34,7 +38,7 @@ import io.swagger.annotations.*;
 @RestController
 @RequestMapping("/api/v1/asset")
 public class FileController {
-    private static final Logger logger = LogUtils.get(FileController.class);
+    private Logger              logger = LogUtils.get(this.getClass());
 
     @Resource
     public FileUtils            fileUtils;
@@ -63,9 +67,13 @@ public class FileController {
             fileList.forEach(tmpFile -> {
                 // 调用上传方法
                 try {
+                    // 记录操作日志
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.FILE_UPLOAD.getName(), null, null,
+                        fileRespVOS, BusinessModuleEnum.COMMON, BusinessPhaseEnum.NONE));
                     uploadToHdfs(tmpFile, fileRespVOS);
                 } catch (Exception e) {
-                    logger.error(e.getMessage());
+                    // 记录运行日志
+                    LogUtils.info(logger, AssetEventEnum.FILE_UPLOAD.getName() + " {}", fileRespVOS);
                 }
             });
             return ActionResponse.success(fileRespVOS);
@@ -92,6 +100,11 @@ public class FileController {
         response.setContentType("application/x-msdownload;");
         response.setHeader("Content-disposition",
             "attachment; filename=" + new String(fileName.getBytes(UTF8), "ISO8859-1"));
+        // 记录操作日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.FILE_DOWNLOAD.getName(), null, null, fileName,
+            BusinessModuleEnum.COMMON, BusinessPhaseEnum.NONE));
+        // 记录运行日志
+        LogUtils.info(logger, AssetEventEnum.FILE_DOWNLOAD.getName() + " {}", fileName);
         FileResponse fileResponse = fileUtils.download(defaultHDFSUrl.concat(url));
         if (fileResponse != null && RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
             InputStream inputStream = (InputStream) fileResponse.getData();
@@ -139,7 +152,9 @@ public class FileController {
             FileRespVO fileRep = (FileRespVO) fileResponse.getData();
             fileRespVOS.add(fileRep);
         } else {
-            logger.info(RespBasicCode.BUSSINESS_EXCETION.getResultDes());
+            // 记录运行日志
+            LogUtils.info(logger, AssetEventEnum.FILE_UPLOAD.getName() + " {}",
+                RespBasicCode.BUSSINESS_EXCETION.getResultDes());
         }
 
         // 删除临时文件
