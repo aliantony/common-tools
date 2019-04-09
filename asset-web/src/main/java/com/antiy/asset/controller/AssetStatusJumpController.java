@@ -1,24 +1,21 @@
 package com.antiy.asset.controller;
 
-import javax.annotation.Resource;
-
+import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
+import com.antiy.asset.service.impl.AssetStatusChangeFactory;
+import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
+import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
+import com.antiy.asset.vo.request.AssetStatusJumpRequst;
+import com.antiy.asset.vo.request.AssetStatusReqeust;
+import com.antiy.common.base.ActionResponse;
+import io.swagger.annotations.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.service.impl.AssetStatusChangeFactory;
-import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
-import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
-import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
-import com.antiy.asset.vo.request.AssetStatusJumpRequst;
-import com.antiy.asset.vo.request.AssetStatusReqeust;
-import com.antiy.common.base.ActionResponse;
-
-import io.swagger.annotations.*;
+import javax.annotation.Resource;
 
 /**
  * 资产状态跃迁统一接口
@@ -79,7 +76,7 @@ public class AssetStatusJumpController {
 //    @PreAuthorize("hasAuthority('asset:statusjump')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/changeSoftConfiguration", method = RequestMethod.POST)
-    public ActionResponse statusJumpWithSoft(@ApiParam(value = "assetStatusJumpRequst") @RequestBody(required = false) AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
+    public ActionResponse statusJumpWithSoft(@ApiParam(value = "assetStatusJumpRequst") @RequestBody(required = false) AssetStatusJumpRequst assetSoftwareRelationRequest) throws Exception {
        return ActionResponse.success (softwareRelationService.changeSoftConfiguration(assetSoftwareRelationRequest));
     }
 }

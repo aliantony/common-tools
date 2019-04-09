@@ -1,25 +1,9 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
-import com.antiy.asset.util.Constants;
-import com.antiy.common.utils.BusinessExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
 import com.antiy.asset.dao.AssetDepartmentDao;
 import com.antiy.asset.entity.AssetDepartment;
 import com.antiy.asset.service.IAssetDepartmentService;
+import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.util.NodeUtilsConverter;
@@ -28,11 +12,29 @@ import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
 import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
-import com.antiy.common.base.*;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 资产部门信息 服务实现类 </p>
@@ -53,6 +55,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     private AesEncoder                                              aesEncoder;
 
     @Override
+    @Transactional
     public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
         request.setId(null);
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
@@ -81,6 +84,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     }
 
     @Override
+    @Transactional
     public ActionResponse updateAssetDepartment(AssetDepartmentRequest request) throws Exception {
         AssetDepartment assetDepartment = requestConverter.convert(request, AssetDepartment.class);
         BusinessExceptionUtils.isTrue(!request.getId().equals(request.getParentId()), "上级部门不能为自身");

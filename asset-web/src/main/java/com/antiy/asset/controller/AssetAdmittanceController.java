@@ -25,7 +25,6 @@ import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * @author 吕梁
@@ -74,7 +73,7 @@ public class AssetAdmittanceController {
         // 写入业务日志
         LogHandle.log(asset.toString(), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName(),
                 AssetEventEnum.ASSET_ADMITTANCE_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName() + " {}", asset.toString());
+        LogUtils.info(LogUtils.get (AssetAdmittanceController.class), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName() + " {}", asset.toString());
 
         return ActionResponse.success(assetService.update(asset));
     }
@@ -101,6 +100,10 @@ public class AssetAdmittanceController {
             asset.setAdmittanceStatusString(AdmittanceStatusEnum.getAdmittanceStatusEnum(asset.getAdmittanceStatus()));
         });
         ExcelUtils.exportToClient(AccessExport.class, "资产准入管理.xlsx", "", accessExportList);
+        // 写入业务日志
+        LogHandle.log(accessExportList.toString(), AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(),
+                AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(LogUtils.get (AssetAdmittanceController.class), AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName() + " {}", accessExportList.toString());
         return ActionResponse.success();
     }
 }

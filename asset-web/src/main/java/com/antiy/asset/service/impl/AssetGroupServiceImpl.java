@@ -1,34 +1,22 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.util.*;
-
-import javax.annotation.Resource;
-
-import com.antiy.asset.dao.AssetCategoryModelDao;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.service.IAssetCategoryModelService;
-import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetQuery;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.dao.AssetGroupRelationDao;
+import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetGroupRelation;
+import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetGroupQuery;
+import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
 import com.antiy.asset.vo.response.SelectResponse;
@@ -44,6 +32,16 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.*;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 资产组表 服务实现类 </p>
@@ -74,6 +72,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     private IAssetCategoryModelService                    assetCategoryModelService;
 
     @Override
+    @Transactional
     public String saveAssetGroup(AssetGroupRequest request) throws Exception {
         // 判重
         String assetName = request.getName();

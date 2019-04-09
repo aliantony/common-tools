@@ -27,6 +27,12 @@ public class AssetStatusJumpRequst extends BasicRequest   {
     @ApiModelProperty("资产主键")
     @NotBlank(message = "资产主键不能为空")
     private String                     assetId;
+    /**
+     * 资产主键
+     */
+    @Encode
+    @ApiModelProperty("软件主键")
+    private String                     softId;
 
 
 
@@ -47,5 +53,11 @@ public class AssetStatusJumpRequst extends BasicRequest   {
     }
 
 
+    public String getSoftId() {
+        return softId;
+    }
 
+    public void setSoftId(String softId) {
+        this.softId = softId;
+    }
 }
