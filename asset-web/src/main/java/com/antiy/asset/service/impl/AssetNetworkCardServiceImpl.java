@@ -22,6 +22,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.LoginUserUtil;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p> 网卡信息表 服务实现类 </p>
@@ -41,6 +42,7 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
     private static Logger logger = LogUtils.get(AssetNetworkCardServiceImpl.class);
 
     @Override
+    @Transactional
     public Integer saveAssetNetworkCard(AssetNetworkCardRequest request) throws Exception {
         AssetNetworkCard assetNetworkCard = BeanConvert.convertBean(request, AssetNetworkCard.class);
         assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -53,6 +55,7 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
     }
 
     @Override
+    @Transactional
     public Integer updateAssetNetworkCard(AssetNetworkCardRequest request) throws Exception {
         AssetNetworkCard assetNetworkCard = BeanConvert.convertBean(request, AssetNetworkCard.class);
         assetNetworkCard.setModifyUser(LoginUserUtil.getLoginUser().getId());

@@ -21,6 +21,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.LoginUserUtil;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p> 标签信息表 服务实现类 </p>
@@ -41,7 +42,7 @@ public class AssetLableServiceImpl extends BaseServiceImpl<AssetLable> implement
             .get(AssetLabelRelationServiceImpl.class);
 
     @Override
-
+    @Transactional
     public Integer saveAssetLable(AssetLableRequest request) throws Exception {
         AssetLable assetLable = requestConverter.convert(request, AssetLable.class);
         assetLable.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -53,6 +54,7 @@ public class AssetLableServiceImpl extends BaseServiceImpl<AssetLable> implement
     }
 
     @Override
+    @Transactional
     public Integer updateAssetLable(AssetLableRequest request) throws Exception {
         AssetLable assetLable = requestConverter.convert(request, AssetLable.class);
         assetLable.setModifyUser(LoginUserUtil.getLoginUser().getId());

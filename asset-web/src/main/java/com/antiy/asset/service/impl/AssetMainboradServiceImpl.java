@@ -22,6 +22,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.LoginUserUtil;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p> 主板表 服务实现类 </p>
@@ -42,6 +43,7 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
     private BaseConverter<AssetMainborad, AssetMainboradResponse> responseConverter;
 
     @Override
+    @Transactional
     public Integer saveAssetMainborad(AssetMainboradRequest request) throws Exception {
         AssetMainborad assetMainborad = requestConverter.convert(request, AssetMainborad.class);
         assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -54,6 +56,7 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
     }
 
     @Override
+    @Transactional
     public Integer updateAssetMainborad(AssetMainboradRequest request) throws Exception {
         AssetMainborad assetMainborad = requestConverter.convert(request, AssetMainborad.class);
         assetMainborad.setModifyUser(LoginUserUtil.getLoginUser().getId());

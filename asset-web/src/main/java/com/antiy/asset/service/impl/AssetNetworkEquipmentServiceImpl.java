@@ -22,6 +22,7 @@ import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p> 网络设备详情表 服务实现类 </p>
@@ -36,30 +37,32 @@ public class AssetNetworkEquipmentServiceImpl extends BaseServiceImpl<AssetNetwo
     @Resource
     private AssetNetworkEquipmentDao                                            assetNetworkEquipmentDao;
     @Resource
-    AssetLinkRelationDao                                                        linkRelationDao;
-    @Resource
     private BaseConverter<AssetNetworkEquipmentRequest, AssetNetworkEquipment>  requestConverter;
     @Resource
     private BaseConverter<AssetNetworkEquipment, AssetNetworkEquipmentResponse> responseConverter;
-    private static Logger logger = LogUtils.get(AssetNetworkEquipmentServiceImpl.class);
+    private static Logger                                                       logger = LogUtils
+        .get(AssetNetworkEquipmentServiceImpl.class);
+
     @Override
+    @Transactional
     public Integer saveAssetNetworkEquipment(AssetNetworkEquipmentRequest request) throws Exception {
         AssetNetworkEquipment assetNetworkEquipment = requestConverter.convert(request, AssetNetworkEquipment.class);
         assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetNetworkEquipmentDao.insert(assetNetworkEquipment);
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getName(), assetNetworkEquipment.getId(), null,
-                assetNetworkEquipment, BusinessModuleEnum.HARD_ASSET, null));
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getName(),
+            assetNetworkEquipment.getId(), null, assetNetworkEquipment, BusinessModuleEnum.HARD_ASSET, null));
         LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getName() + " {}", assetNetworkEquipment);
         return assetNetworkEquipment.getId();
     }
 
     @Override
+    @Transactional
     public Integer updateAssetNetworkEquipment(AssetNetworkEquipmentRequest request) throws Exception {
         AssetNetworkEquipment assetNetworkEquipment = requestConverter.convert(request, AssetNetworkEquipment.class);
         assetNetworkEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetNetworkEquipment.setGmtModified(System.currentTimeMillis());
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getName(), assetNetworkEquipment.getId(), null,
-                assetNetworkEquipment, BusinessModuleEnum.HARD_ASSET, null));
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getName(),
+            assetNetworkEquipment.getId(), null, assetNetworkEquipment, BusinessModuleEnum.HARD_ASSET, null));
         LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getName() + " {}", assetNetworkEquipment);
         return assetNetworkEquipmentDao.update(assetNetworkEquipment);
     }

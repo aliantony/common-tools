@@ -21,6 +21,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.LoginUserUtil;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p> 端口协议 服务实现类 </p>
@@ -41,6 +42,7 @@ public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProto
     private static Logger logger = LogUtils.get(AssetNetworkEquipmentServiceImpl.class);
 
     @Override
+    @Transactional
     public Integer saveAssetPortProtocol(AssetPortProtocolRequest request) throws Exception {
         AssetPortProtocol assetPortProtocol = requestConverter.convert(request, AssetPortProtocol.class);
         assetPortProtocol.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -53,6 +55,7 @@ public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProto
     }
 
     @Override
+    @Transactional
     public Integer updateAssetPortProtocol(AssetPortProtocolRequest request) throws Exception {
         AssetPortProtocol assetPortProtocol = requestConverter.convert(request, AssetPortProtocol.class);
         assetPortProtocol.setModifyUser(LoginUserUtil.getLoginUser().getId());

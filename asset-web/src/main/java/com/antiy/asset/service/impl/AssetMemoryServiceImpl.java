@@ -23,6 +23,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.LoginUserUtil;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p> 内存表 服务实现类 </p>
@@ -41,6 +42,7 @@ public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> impleme
     private BaseConverter<AssetMemory, AssetMemoryResponse> responseConverter;
 
     @Override
+    @Transactional
     public Integer saveAssetMemory(AssetMemoryRequest request) throws Exception {
         AssetMemory assetMemory = requestConverter.convert(request, AssetMemory.class);
         assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -52,6 +54,7 @@ public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> impleme
     }
 
     @Override
+    @Transactional
     public Integer updateAssetMemory(AssetMemoryRequest request) throws Exception {
         AssetMemory assetMemory = requestConverter.convert(request, AssetMemory.class);
         assetMemory.setModifyUser(LoginUserUtil.getLoginUser().getId());
