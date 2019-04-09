@@ -1,15 +1,14 @@
 package com.antiy.asset.service.impl;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.base.BusinessData;
+import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.LoginUserUtil;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p> 内存表 服务实现类 </p>
@@ -33,7 +33,7 @@ import com.antiy.common.utils.LoginUserUtil;
  */
 @Service
 public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> implements IAssetMemoryService {
-    private static Logger                                          logger = LogUtils.get(AssetMemoryServiceImpl.class);
+    private static Logger                                   logger = LogUtils.get(AssetMemoryServiceImpl.class);
     @Resource
     private AssetMemoryDao                                  assetMemoryDao;
     @Resource
@@ -42,24 +42,26 @@ public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> impleme
     private BaseConverter<AssetMemory, AssetMemoryResponse> responseConverter;
 
     @Override
+    @Transactional
     public Integer saveAssetMemory(AssetMemoryRequest request) throws Exception {
         AssetMemory assetMemory = requestConverter.convert(request, AssetMemory.class);
         assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetMemory.setGmtCreate(System.currentTimeMillis());
-        LogHandle.log(request, AssetEventEnum.ASSET_MEMORY_INSERT.getName(),
-            AssetEventEnum.ASSET_MEMORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_INSERT.getName() + " {}", request.toString());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MEMORY_INSERT.getName(), assetMemory.getId(), null,
+            assetMemory, BusinessModuleEnum.HARD_ASSET, null));
+        LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_INSERT.getName() + " {}", assetMemory);
         return assetMemoryDao.insert(assetMemory);
     }
 
     @Override
+    @Transactional
     public Integer updateAssetMemory(AssetMemoryRequest request) throws Exception {
         AssetMemory assetMemory = requestConverter.convert(request, AssetMemory.class);
         assetMemory.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetMemory.setGmtModified(System.currentTimeMillis());
-        LogHandle.log(request, AssetEventEnum.ASSET_MEMORY_UPDATE.getName(),
-            AssetEventEnum.ASSET_MEMORY_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_UPDATE.getName() + " {}", request.toString());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MEMORY_UPDATE.getName(), assetMemory.getId(),
+            null, assetMemory, BusinessModuleEnum.HARD_ASSET, null));
+        LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_UPDATE.getName() + " {}", assetMemory);
         return assetMemoryDao.update(assetMemory);
     }
 
@@ -83,8 +85,8 @@ public class AssetMemoryServiceImpl extends BaseServiceImpl<AssetMemory> impleme
 
     @Override
     public Integer deleteById(Serializable id) throws Exception {
-        LogHandle.log(id, AssetEventEnum.ASSET_MEMORY_DELETE.getName(), AssetEventEnum.ASSET_MEMORY_DELETE.getStatus(),
-            ModuleEnum.ASSET.getCode());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MEMORY_DELETE.getName(), (Integer) id, null, id,
+            BusinessModuleEnum.HARD_ASSET, null));
         LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_DELETE.getName() + " {}", id);
         return super.deleteById(id);
     }

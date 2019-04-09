@@ -1047,6 +1047,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
+    @Transactional
     public Integer changeStatus(String[] ids, Integer targetStatus) throws Exception {
         int row;
         Map<String, Object> map = new HashMap<>();
@@ -2804,12 +2805,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public Integer queryAssetCountByAreaIds(List<Integer> areaIds) {
 
-        // 移除区域信息不是当前用户的区域
-        if (CollectionUtils.isNotEmpty(areaIds)) {
-            List<Integer> loginAreaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-            areaIds.removeIf(s -> !loginAreaIds.contains(s));
-        }
-
         // 如果移除以后全部为空，则直接返回0
         if (CollectionUtils.isEmpty(areaIds)) {
             return 0;
@@ -2823,7 +2818,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetQuery.setAreaIds(
             ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         assetQuery.setPageSize(ALL_PAGE);
-        List<AssetResponse> list = this.findListAsset(assetQuery);
+        List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
         List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setSheetName("资产信息表");

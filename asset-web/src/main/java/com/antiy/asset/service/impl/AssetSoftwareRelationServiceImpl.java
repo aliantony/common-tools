@@ -226,7 +226,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     public Integer changeSoftConfiguration(AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
         AssetSoftwareRelation assetSoftwareRelation = BeanConvert.convertBean (assetSoftwareRelationRequest, AssetSoftwareRelation.class);
         assetSoftwareRelation.setConfigureStatus (ConfigureStatusEnum.CONFIGURED.getCode ());
-        return assetSoftwareRelationDao.update (assetSoftwareRelation);
+        return assetSoftwareRelationDao.updateByAssetId(assetSoftwareRelation);
     }
 
     /**
