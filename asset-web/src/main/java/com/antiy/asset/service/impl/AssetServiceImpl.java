@@ -155,7 +155,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private IAssetSoftwareService                                              softwareService;
     private static final int                                                   ALL_PAGE = -1;
 
-
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
 
@@ -177,10 +176,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         String name = requestAsset.getName();
                         ParamterExceptionUtils.isTrue(!CheckRepeatName(name), "资产名称重复");
 
-
                         if (StringUtils.isNotBlank(requestAsset.getOperationSystem())) {
 
-                            BusinessExceptionUtils.isTrue(!checkOperatingSystem (requestAsset.getOperationSystem ()), "操作系统不存在，或已经注销");
+                            BusinessExceptionUtils.isTrue(!checkOperatingSystem(requestAsset.getOperationSystem()),
+                                "操作系统不存在，或已经注销");
                         }
 
                         String areaId = requestAsset.getAreaId();
@@ -511,7 +510,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()), "操作系统不存在，或已经注销");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()),
+                        "操作系统不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("资产组名称获取失败", e.getMessage()), "资产组名称获取失败");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("使用者不存在，或已经注销", e.getMessage()), "使用者不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("品类型号不存在，或已经注销", e.getMessage()),
@@ -2792,12 +2792,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer queryAssetCountByAreaIds(List<Integer> areaIds) {
-
-        // 移除区域信息不是当前用户的区域
-        if (CollectionUtils.isNotEmpty(areaIds)) {
-            List<Integer> loginAreaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-            areaIds.removeIf(s -> !loginAreaIds.contains(s));
-        }
 
         // 如果移除以后全部为空，则直接返回0
         if (CollectionUtils.isEmpty(areaIds)) {
