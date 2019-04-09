@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.entity.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -27,10 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.entity.AssetOperationRecord;
-import com.antiy.asset.entity.AssetSoftware;
-import com.antiy.asset.entity.AssetSoftwareLicense;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.intergration.BaseLineClient;
@@ -724,11 +721,32 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // 1.保存操作流程
         assetOperationRecordDao.insert(convertRecord(request));
 
-        // 2.调用配置接口
+        // 2.保存配置建议信息
+        schemeDao.insert(convertScheme(request));
+
+        // 3.调用配置接口
         List<ConfigRegisterRequest> configRegisterList = new ArrayList<>();
         configRegisterList.add(request);
         return baseLineClient.configRegister(configRegisterList);
     }
+
+    private Scheme convertScheme(ConfigRegisterRequest registerRequest) {
+        Scheme scheme = new Scheme();
+        scheme.setContent(registerRequest.getSuggest());
+        if (AssetTypeEnum.SOFTWARE.getCode().equals(registerRequest.getSource())) {
+            scheme.setAssetNextStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+            scheme.setSchemeSource(2);
+        } else {
+            scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
+            scheme.setSchemeSource(1);
+        }
+        scheme.setAssetId(registerRequest.getAssetId());
+        scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        scheme.setGmtCreate(System.currentTimeMillis());
+        return scheme;
+    }
+
+
 
     private AssetOperationRecord convertRecord(ConfigRegisterRequest request) {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
