@@ -252,4 +252,11 @@ public interface IAssetService extends IBaseService<Asset> {
      * @throws Exception
      */
     String changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception;
+
+    /**
+     * 批量保存资产（对外接口）
+     * @param assetList
+     * @return
+     */
+    ActionResponse saveAssetList(List<AssetOuterRequest> assetList);
 }
