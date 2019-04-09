@@ -396,4 +396,20 @@ public class AssetSoftware extends BaseEntity {
     public void setPort(String port) {
         this.port = port;
     }
+
+    @Override
+    public String toString() {
+        return "AssetSoftware{" + "port='" + port + '\'' + ", md5Code='" + md5Code + '\'' + ", size=" + size
+               + ", operationSystem='" + operationSystem + '\'' + ", categoryModel='" + categoryModel + '\''
+               + ", categoryModelName='" + categoryModelName + '\'' + ", name='" + name + '\'' + ", serial='" + serial
+               + '\'' + ", uploadSoftwareName='" + uploadSoftwareName + '\'' + ", path='" + path + '\'' + ", version='"
+               + version + '\'' + ", manufacturer='" + manufacturer + '\'' + ", description='" + description + '\''
+               + ", assetGroup='" + assetGroup + '\'' + ", softwareLabel=" + softwareLabel + ", softwareStatus="
+               + softwareStatus + ", authorization=" + authorization + ", reportSource=" + reportSource + ", protocol='"
+               + protocol + '\'' + ", language='" + language + '\'' + ", releaseTime=" + releaseTime + ", publisher='"
+               + publisher + '\'' + ", gmtCreate=" + gmtCreate + ", memo='" + memo + '\'' + ", gmtModified="
+               + gmtModified + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status
+               + ", buyDate=" + buyDate + ", serviceLife=" + serviceLife + ", assetCount=" + assetCount
+               + ", licenseSecretKey='" + licenseSecretKey + '\'' + '}';
+    }
 }

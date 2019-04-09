@@ -55,7 +55,8 @@ public enum AssetEventEnum {
     SOFT_DELETE(47,"软件资产删除"),
     SOFT_UPDATE(48,"软件资产修改"),
     SOFT_INSERT(49,"软件资产新增"),
-    SOFT_EXPORT(50,"软件资产导入"),
+                            SOFT_EXPORT(50,
+                                        "软件资产导出"),
     SOFT_INSTALL(51,"软件资产安装"),
     SOFT_LICENSE_DELETE(52,"软件资产许可删除"),
     SOFT_LICENSE_UPDATE(53,"软件资产许可修改"),
@@ -83,6 +84,10 @@ public enum AssetEventEnum {
                                                                                                                         "硬件资产安全设备新增"), ASSET_SAFETY_EQUIPMENT_UPDATE(75,
                                                                                                                                                                      "硬件资产安全设备修改"), ASSET_SAFETY_EQUIPMENT_DELETE(76,
                                                                                                                                                                                                                   "硬件资产安全设备删除"),
+                            SOFTWARE_LICENSE_INSERT(78,
+                                                    "软件许可新增"), SOFTWARE_LICENSE_DELETE(79,
+                                                                                       "软件许可删除"), SOFTWARE_LICENSE_UPDATE(80,
+                                                                                                                          "软件许可修改")
     ;
 
 

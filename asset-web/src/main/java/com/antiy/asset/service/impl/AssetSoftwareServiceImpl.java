@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -54,6 +55,7 @@ import com.antiy.common.base.Constants;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -66,6 +68,7 @@ import com.antiy.common.utils.*;
  * @since 2019-01-02
  */
 @Service
+@Transactional(rollbackFor = RuntimeException.class)
 public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> implements IAssetSoftwareService {
     @Resource
     private AssetSoftwareDao                                                 assetSoftwareDao;
@@ -123,6 +126,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private BaseLineClient                                                   baseLineClient;
     @Resource
     private SchemeDao                                                        schemeDao;
+
+    @Resource
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -185,10 +190,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetOperationRecord.setGmtCreate(System.currentTimeMillis());
                     assetOperationRecord.setProcessResult(1);
                     assetOperationRecordDao.insert(assetOperationRecord);
-                    // 写入业务日志
-                    LogHandle.log(assetSoftware.toString(), AssetEventEnum.SOFT_INSERT.getName(),
-                        AssetEventEnum.SOFT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                    LogUtils.info(logger, AssetEventEnum.SOFT_INSERT.getName() + " {}", assetSoftware.toString());
+                    // 记录操作日志和运行日志
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(), assetSoftware.getId(),
+                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, null));
+                    LogUtils.info(logger, AssetEventEnum.SOFT_INSERT.getName() + " {}", assetSoftware);
                     return DataTypeUtils.stringToInteger(sid);
                 } catch (RequestParamValidateException e) {
                     transactionStatus.setRollbackOnly();
@@ -332,10 +337,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                      */
                     // 记录更新操作
                     assetOperationRecordDao.insert(convertAssetOperationRecord(request, softwareStatus));
-                    // 写入业务日志
-                    LogHandle.log(assetSoftware.toString(), AssetEventEnum.SOFT_UPDATE.getName(),
-                        AssetEventEnum.SOFT_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-                    LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetSoftware.toString());
+                    // 记录操作日志和运行日志
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(), assetSoftware.getId(),
+                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, null));
+                    LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetSoftware);
                     return assetSoftwareCount;
                 } catch (Exception e) {
                     LOGGER.error("修改软件信息失败", e);
@@ -394,6 +399,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query,
                                                              Map<String, WaitingTaskReponse> waitingTasks) throws Exception {
         List<AssetSoftware> assetSoftware = assetSoftwareDao.findListAssetSoftware(query);
@@ -435,6 +441,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareResponse> findPageAssetSoftware(AssetSoftwareQuery query) throws Exception {
         Map<String, WaitingTaskReponse> waitingTasks = getAllSoftWaitingTask("soft");
         query.setTaskBussinessIds(new ArrayList<>(waitingTasks.keySet()));
@@ -475,12 +482,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<String> getManufacturerName(String manufacturerName) throws Exception {
         List<Integer> list = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         return assetSoftwareDao.findManufacturerName(manufacturerName, list);
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<EnumCountResponse> countManufacturer() throws Exception {
         int maxNum = 5;
         List<Integer> status = StatusEnumUtil.getSoftwareNotRetireStatusList();
@@ -490,6 +499,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<EnumCountResponse> countStatus() throws Exception {
         List<EnumCountResponse> resultList = new ArrayList<>();
         List<Map<String, Long>> list = assetSoftwareDao.countStatus();
@@ -569,6 +579,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<EnumCountResponse> countCategory() throws Exception {
         // 查询第二级分类id
         List<EnumCountResponse> resultList = new ArrayList<>();
@@ -608,6 +619,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public AssetSoftwareDetailResponse querySoftWareDetail(SoftwareQuery softwareQuery) throws Exception {
 
         // 1 获取软件资产详情
@@ -631,11 +643,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
         exportData(AssetSoftwareEntity.class, "软件信息表", assetSoftwareQuery, response);
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AssetSoftwareResponse> findInstallList(AssetSoftwareQuery softwareQuery) throws Exception {
         List<AssetSoftware> assetSoftwareList = assetSoftwareDao.findInstallList(softwareQuery);
         List<AssetSoftwareResponse> assetSoftwareResponseList = BeanConvert.convert(assetSoftwareList,
@@ -644,12 +658,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareResponse> findPageInstall(AssetSoftwareQuery softwareQuery) throws Exception {
         return new PageResult<>(softwareQuery.getPageSize(), this.findCountInstall(softwareQuery),
             softwareQuery.getCurrentPage(), this.findInstallList(softwareQuery));
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AssetSoftwareInstallResponse> findAssetInstallList(AssetSoftwareQuery softwareQuery) throws Exception {
         return BeanConvert.convert(assetSoftwareDao.findAssetInstallList(softwareQuery),
             AssetSoftwareInstallResponse.class);
@@ -667,6 +683,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery) throws Exception {
         return new PageResult<>(softwareQuery.getPageSize(), this.findAssetInstallCount(softwareQuery),
             softwareQuery.getCurrentPage(), this.findAssetInstallList(softwareQuery));
@@ -709,12 +726,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareResponse> findPageInstallList(AssetSoftwareQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountInstall(query), query.getCurrentPage(),
             this.findInstallList(query));
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public String importExcel(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         ImportResult<AssetSoftwareEntity> importResult = ExcelUtils.importExcelFromClient(AssetSoftwareEntity.class,
             file, 5, 0);
@@ -846,6 +865,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         List<ExportSoftwareEntity> softwareEntities = softwareEntityConvert.convert(list, ExportSoftwareEntity.class);
         downloadVO.setDownloadList(softwareEntities);
         if (Objects.nonNull(softwareEntities) && softwareEntities.size() > 0) {
+            // 记录操作日志和运行日志
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_EXPORT.getName(), null, null, downloadVO,
+                BusinessModuleEnum.SOFTWARE_ASSET, null));
+            LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", downloadVO);
             excelDownloadUtil.excelDownload(response, s, downloadVO);
         } else {
             throw new BusinessException("导出数据为空");
@@ -854,17 +877,19 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Integer changeStatusById(Map<String, Object> map) throws Exception {
         return assetSoftwareDao.changeStatusById(map);
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void exportTemplate() throws Exception {
-
         exportToClient(AssetSoftwareEntity.class, "软件信息模板.xlsx", "软件信息");
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<String> pulldownManufacturer() {
         return assetSoftwareDao.pulldownManufacturer();
     }
