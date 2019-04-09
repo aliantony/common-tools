@@ -535,6 +535,16 @@
             #{softwareId}
         </foreach>
     </update>
+    <!--变更软件状态-->
+    <update id="updateByAssetId" parameterType="com.antiy.asset.entity.AssetSoftwareRelation">
+        update
+        <include refid="Table_Name"></include>
+        set
+
+        configure_status = 3
+        where `software_id`  = #{softwareId}  and   asset_id  = #{assetId}
+
+    </update>
 
     <update id="installArtificial" parameterType="java.util.List">
         <foreach collection="list" item="item" separator=";" index="index">
