@@ -1,5 +1,6 @@
 package com.antiy.asset.templet;
 
+import java.util.Arrays;
 import java.util.List;
 
 // 封装的excel表单
@@ -44,5 +45,11 @@ public class ReportForm {
 
     public void setData(String[][] data) {
         this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "ReportForm{" + "title='" + title + '\'' + ", headerList=" + headerList + ", columnList=" + columnList
+               + ", data=" + Arrays.toString(data) + '}';
     }
 }
