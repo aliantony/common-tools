@@ -78,7 +78,7 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
      * 安装方式
      */
     @ApiModelProperty("安装方式")
-    private String  installType;
+    private Integer  installType;
     /**
      * 安装状态0失败、1成功，2安装中
      */
@@ -138,11 +138,11 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
         this.port = port;
     }
 
-    public String getInstallType() {
+    public Integer getInstallType() {
         return installType;
     }
 
-    public void setInstallType(String installType) {
+    public void setInstallType(Integer installType) {
         this.installType = installType;
     }
 
