@@ -128,7 +128,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Resource
     private SchemeDao                                                        schemeDao;
 
-    @Resource
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
