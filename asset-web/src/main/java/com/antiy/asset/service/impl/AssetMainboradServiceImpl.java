@@ -5,10 +5,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.base.BusinessData;
+import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,8 @@ import com.antiy.common.utils.LoginUserUtil;
  */
 @Service
 public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> implements IAssetMainboradService {
-    private static Logger                                         logger = LogUtils.get(AssetMainboradServiceImpl.class);
+    private static Logger                                         logger = LogUtils
+        .get(AssetMainboradServiceImpl.class);
 
     @Resource
     private AssetMainboradDao                                     assetMainboradDao;
@@ -47,9 +47,9 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
         assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetMainborad.setGmtCreate(System.currentTimeMillis());
         assetMainboradDao.insert(assetMainborad);
-        LogHandle.log(request, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(),
-            AssetEventEnum.ASSET_MAINBORAD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName() + " {}", request.toString());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(), assetMainborad.getId(),
+            null, assetMainborad, BusinessModuleEnum.HARD_ASSET, null));
+        LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName() + " {}", assetMainborad);
         return assetMainborad.getId();
     }
 
@@ -58,9 +58,9 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
         AssetMainborad assetMainborad = requestConverter.convert(request, AssetMainborad.class);
         assetMainborad.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetMainborad.setGmtModified(System.currentTimeMillis());
-        LogHandle.log(request, AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName(),
-            AssetEventEnum.ASSET_MAINBORAD_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName() + " {}", request.toString());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName(), assetMainborad.getId(),
+            null, assetMainborad, BusinessModuleEnum.HARD_ASSET, null));
+        LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName() + " {}", assetMainborad);
         return assetMainboradDao.update(assetMainborad);
     }
 
@@ -85,8 +85,8 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
 
     @Override
     public Integer deleteById(Serializable id) throws Exception {
-        LogHandle.log(id, AssetEventEnum.ASSET_MAINBORAD_DELETE.getName(),
-            AssetEventEnum.ASSET_MAINBORAD_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MAINBORAD_DELETE.getName(), (Integer) id, null, id,
+            BusinessModuleEnum.HARD_ASSET, null));
         LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_DELETE.getName() + " {}", id);
         return super.deleteById(id);
     }

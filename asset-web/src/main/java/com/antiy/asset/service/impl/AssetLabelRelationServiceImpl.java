@@ -5,6 +5,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.common.base.BusinessData;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.utils.LogUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetLabelRelationDao;
@@ -34,12 +39,17 @@ public class AssetLabelRelationServiceImpl extends BaseServiceImpl<AssetLabelRel
     private BaseConverter<AssetLabelRelationRequest, AssetLabelRelation>  requestConverter;
     @Resource
     private BaseConverter<AssetLabelRelation, AssetLabelRelationResponse> responseConverter;
+    private static final Logger                                           logger = LogUtils
+        .get(AssetLabelRelationServiceImpl.class);
 
     @Override
     public Integer saveAssetLabelRelation(AssetLabelRelationRequest request) throws Exception {
         AssetLabelRelation assetLabelRelation = requestConverter.convert(request, AssetLabelRelation.class);
         assetLabelRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLabelRelation.setGmtCreate(System.currentTimeMillis());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LABEL_RELATION_INSERT.getName(),
+            assetLabelRelation.getId(), null, assetLabelRelation, BusinessModuleEnum.HARD_ASSET, null));
+        LogUtils.info(logger, AssetEventEnum.ASSET_LABEL_RELATION_INSERT.getName() + "{}", assetLabelRelation);
         return assetLabelRelationDao.insert(assetLabelRelation);
     }
 
@@ -48,6 +58,10 @@ public class AssetLabelRelationServiceImpl extends BaseServiceImpl<AssetLabelRel
         AssetLabelRelation assetLabelRelation = requestConverter.convert(request, AssetLabelRelation.class);
         assetLabelRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetLabelRelation.setGmtModified(System.currentTimeMillis());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LABEL_RELATION_UPDATE.getName(),
+                assetLabelRelation.getId(), null, assetLabelRelation, BusinessModuleEnum.HARD_ASSET, null));
+        LogUtils.info(logger, AssetEventEnum.ASSET_LABEL_RELATION_UPDATE.getName() + "{}", assetLabelRelation);
+
         return assetLabelRelationDao.update(assetLabelRelation);
     }
 

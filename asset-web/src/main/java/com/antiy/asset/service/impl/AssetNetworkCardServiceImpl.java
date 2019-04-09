@@ -5,10 +5,9 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.base.BusinessData;
+import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -47,8 +46,9 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
         assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetNetworkCard.setGmtCreate(System.currentTimeMillis());
         assetNetworkCardDao.insert(assetNetworkCard);
-        LogHandle.log(request, AssetEventEnum.ASSET_INSERT.getName(), AssetEventEnum.ASSET_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum .ASSET_INSERT.getName() + " {}", request.toString());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_INSERT.getName(), assetNetworkCard.getId(), null,
+                assetNetworkCard, BusinessModuleEnum.HARD_ASSET, null));
+        LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_INSERT.getName() + " {}", assetNetworkCard);
         return assetNetworkCard.getId();
     }
 
@@ -57,8 +57,9 @@ public class AssetNetworkCardServiceImpl extends BaseServiceImpl<AssetNetworkCar
         AssetNetworkCard assetNetworkCard = BeanConvert.convertBean(request, AssetNetworkCard.class);
         assetNetworkCard.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetNetworkCard.setGmtModified(System.currentTimeMillis());
-        LogHandle.log(request, AssetEventEnum.ASSET_MODIFY.getName(), AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", request.toString());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_UPDATE.getName(), assetNetworkCard.getId(), null,
+                assetNetworkCard, BusinessModuleEnum.HARD_ASSET, null));
+        LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_UPDATE.getName() + " {}", assetNetworkCard);
         return assetNetworkCardDao.update(assetNetworkCard);
     }
 

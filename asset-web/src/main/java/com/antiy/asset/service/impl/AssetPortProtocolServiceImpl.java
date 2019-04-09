@@ -4,6 +4,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.common.base.BusinessData;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.utils.LogUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetPortProtocolDao;
@@ -33,12 +38,17 @@ public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProto
     private BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>  requestConverter;
     @Resource
     private BaseConverter<AssetPortProtocol, AssetPortProtocolResponse> responseConverter;
+    private static Logger logger = LogUtils.get(AssetNetworkEquipmentServiceImpl.class);
 
     @Override
     public Integer saveAssetPortProtocol(AssetPortProtocolRequest request) throws Exception {
         AssetPortProtocol assetPortProtocol = requestConverter.convert(request, AssetPortProtocol.class);
         assetPortProtocol.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetPortProtocol.setGmtCreate(System.currentTimeMillis());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_PORT_INSERT.getName(), assetPortProtocol.getId(), null,
+                assetPortProtocol, BusinessModuleEnum.HARD_ASSET, null));
+        LogUtils.info(logger, AssetEventEnum.ASSET_PORT_INSERT.getName() + " {}", assetPortProtocol);
+
         return assetPortProtocolDao.insert(assetPortProtocol);
     }
 
@@ -47,6 +57,9 @@ public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProto
         AssetPortProtocol assetPortProtocol = requestConverter.convert(request, AssetPortProtocol.class);
         assetPortProtocol.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetPortProtocol.setGmtCreate(System.currentTimeMillis());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_PORT_UPDATE.getName(), assetPortProtocol.getId(), null,
+                assetPortProtocol, BusinessModuleEnum.HARD_ASSET, null));
+        LogUtils.info(logger, AssetEventEnum.ASSET_PORT_UPDATE.getName() + " {}", assetPortProtocol);
         return assetPortProtocolDao.update(assetPortProtocol);
     }
 
