@@ -501,7 +501,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public List<EnumCountResponse> countStatus() throws Exception {
         List<EnumCountResponse> resultList = new ArrayList<>();
-        List<Map<String, Long>> list = assetSoftwareDao.countStatus();
+        List<Map<String, Object>> list = assetSoftwareDao.countStatus();
         Map<SoftwareStatusEnum, EnumCountResponse> resultMap = new HashMap<>();
         // 初始化result
         initResultMap(resultMap);
@@ -519,7 +519,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
     }
 
-    private void searchResultToMap(List<EnumCountResponse> resultList, List<Map<String, Long>> list,
+    private void searchResultToMap(List<EnumCountResponse> resultList, List<Map<String, Object>> list,
                                    Map<SoftwareStatusEnum, EnumCountResponse> resultMap) {
         for (Map map : list) {
             SoftwareStatusEnum softwareStatusEnum = SoftwareStatusEnum.getAssetByCode((Integer) map.get("key"));
