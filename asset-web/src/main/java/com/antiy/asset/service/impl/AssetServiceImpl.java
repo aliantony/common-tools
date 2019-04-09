@@ -1,37 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import com.antiy.common.config.kafka.KafkaConfig;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -51,6 +19,7 @@ import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
 import com.antiy.common.base.SysArea;
+import com.antiy.common.config.kafka.KafkaConfig;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
@@ -59,6 +28,34 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -2253,6 +2250,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
+        // 写入业务日志
+        LogHandle.log(computerVos.toString(), AssetEventEnum.ASSET_EXPORT_NET.getName(),
+                AssetEventEnum.ASSET_EXPORT_NET.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_NET.getName() + " {}", computerVos.toString());
 
         String res = "导入成功" + success + "条。";
         // re += repeat > 0 ? ", " + repeat + "条编号重复" : ",";
@@ -2396,6 +2397,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
+        // 写入业务日志
+        LogHandle.log(networkEquipments.toString(), AssetEventEnum.ASSET_EXPORT_NET.getName(),
+                AssetEventEnum.ASSET_EXPORT_NET.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_NET.getName() + " {}", networkEquipments.toString());
 
         String re = "导入成功" + success + "条。";
         // re += repeat > 0 ? ", " + repeat + "条编号重复" : "";
@@ -2515,6 +2520,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
+        // 写入业务日志
+        LogHandle.log(assetSafetyEquipments.toString(), AssetEventEnum.ASSET_EXPORT_SAFETY.getName(),
+                AssetEventEnum.ASSET_EXPORT_SAFETY.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_SAFETY.getName() + " {}", assetSafetyEquipments.toString());
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // res += error > 0 ? ", " + error + "条数据导入失败" : "";
@@ -2645,7 +2654,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
-
+        // 写入业务日志
+        LogHandle.log(assetStorageMedia.toString(), AssetEventEnum.ASSET_EXPORT_STORAGE.getName(),
+                AssetEventEnum.ASSET_EXPORT_STORAGE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_STORAGE.getName() + " {}", assetStorageMedia.toString());
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // res += error > 0 ? ", " + error + "条数据导入失败" : "";
@@ -2749,6 +2761,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
 
+        // 写入业务日志
+        LogHandle.log(assets.toString(), AssetEventEnum.ASSET_EXPORT_OTHERS.getName(),
+                AssetEventEnum.ASSET_EXPORT_OTHERS.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_OTHERS.getName() + " {}", assets.toString());
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // res += error > 0 ? ", " + error + "条数据导入失败" : "";
@@ -2764,8 +2780,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     private void importActivity(List<ManualStartActivityRequest> manualStartActivityRequests, String stringId) {
-        // ActionResponse actionResponse = areaClient.queryCdeAndAreaId ("zichanguanliyuan");
-        ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
+         ActionResponse actionResponse = areaClient.queryCdeAndAreaId ("zichanguanliyuan");
+//        ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
         List<LinkedHashMap> mapList = (List<LinkedHashMap>) actionResponse.getBody();
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -2891,10 +2907,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 2.保存流程
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        assetOperationRecord.setAreaId(assetId);
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setSchemeId(scheme.getId());
-        assetOperationRecord.setAreaId(assetId);
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
         assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_CONFIG_BASELINE.getMsg());

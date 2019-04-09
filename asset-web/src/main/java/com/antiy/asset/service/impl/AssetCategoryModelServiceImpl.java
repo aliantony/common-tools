@@ -209,6 +209,11 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getById(id);
         // 判断是否自定义品类
         BusinessExceptionUtils.isTrue(checkIsDefault(assetCategoryModel), "系统内置品类不能更新或删除");
+        // 写入业务日志
+        LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
+                AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}",
+                assetCategoryModel.toString());
         return deleteAllById(id);
     }
 

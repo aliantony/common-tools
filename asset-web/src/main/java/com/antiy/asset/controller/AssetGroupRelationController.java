@@ -1,21 +1,19 @@
 package com.antiy.asset.controller;
 
-import javax.annotation.Resource;
-
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.antiy.asset.service.IAssetGroupRelationService;
 import com.antiy.asset.vo.query.AssetGroupRelationQuery;
 import com.antiy.asset.vo.request.AssetGroupRelationRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author zhangyajun
@@ -24,7 +22,7 @@ import io.swagger.annotations.*;
 @Api(value = "AssetGroupRelation", description = "资产与资产组关系表")
 @RestController
 @RequestMapping("/api/v1/asset/grouprelation")
-public class AssetGroupRelationController {
+public class                       AssetGroupRelationController {
 
     @Resource
     public IAssetGroupRelationService iAssetGroupRelationService;

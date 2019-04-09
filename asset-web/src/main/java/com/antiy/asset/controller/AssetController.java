@@ -1,20 +1,11 @@
 package com.antiy.asset.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
@@ -27,9 +18,19 @@ import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author zhangyajun
@@ -154,6 +155,11 @@ public class AssetController {
     public void export(@ApiParam(value = "query") AssetQuery assetQuery,
                        HttpServletResponse response) throws Exception {
         iAssetService.exportData(assetQuery, response);
+        // 写入业务日志
+        LogHandle.log(assetQuery.toString(), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName(),
+                AssetEventEnum.ASSET_ADMITTANCE_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(LogUtils.get (AssetController.class), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName() + " {}", assetQuery.toString());
+
     }
 
     /**
@@ -168,6 +174,7 @@ public class AssetController {
     public void exportTemplate(@ApiParam("导出的模板类型") Integer[] type) throws Exception {
         ParamterExceptionUtils.isNull(type, "类型不能为空");
         iAssetService.exportTemplate(type);
+
     }
 
     /**
