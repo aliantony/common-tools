@@ -87,7 +87,9 @@ public enum AssetEventEnum {
                             SOFTWARE_LICENSE_INSERT(78,
                                                     "软件许可新增"), SOFTWARE_LICENSE_DELETE(79,
                                                                                        "软件许可删除"), SOFTWARE_LICENSE_UPDATE(80,
-                                                                                                                          "软件许可修改")
+                                                                                                                          "软件许可修改"), SOFT_INSTALL_MANUAL(81,
+                                                                                                                                                         "软件资产人工安装"), SOFT_INSTALL_AUTO(81,
+                                                                                                                                                                                        "软件资产自动安装"),
     ;
 
 

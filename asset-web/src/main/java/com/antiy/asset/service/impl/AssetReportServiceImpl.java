@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetReportDao;
@@ -43,6 +44,7 @@ import com.antiy.common.utils.ParamterExceptionUtils;
  * @author zhangyajun
  * @create 2019-03-26 13:41
  **/
+@Transactional(rollbackFor = RuntimeException.class)
 @Service
 public class AssetReportServiceImpl implements IAssetReportService {
     private final static String DAY    = "%w";

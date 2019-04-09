@@ -4,14 +4,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.entity.AssetSoftware;
-import com.antiy.asset.vo.query.AssetSoftwareQuery;
-import com.antiy.asset.vo.query.InstallQuery;
-import com.antiy.asset.vo.request.AssetSoftwareRelationList;
-import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
-import com.antiy.common.base.PageResult;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,12 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
+import com.antiy.asset.vo.query.InstallQuery;
+import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
+import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -36,6 +36,7 @@ import io.swagger.annotations.*;
  * @author zhangyajun
  * @since 2019-01-04
  */
+@Transactional(rollbackFor = RuntimeException.class)
 @Api(value = "AssetSoftwareRelation", description = "资产软件关系信息")
 @RestController
 @RequestMapping("/api/v1/asset/softwarerelation")
@@ -126,6 +127,7 @@ public class AssetSoftwareRelationController {
      * @param queryCondition
      * @return actionResponse
      */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @ApiOperation(value = "通过软件ID统计资产数量", notes = "软件ID")
     @PreAuthorize("hasAuthority('asset:softwarerelation:countAssetBySoftId')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
@@ -142,6 +144,7 @@ public class AssetSoftwareRelationController {
      * @param queryCondition
      * @return actionResponse
      */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @ApiOperation(value = "查询硬件资产关联的软件列表", notes = "资产ID")
     @PreAuthorize("hasAuthority('asset:softwarerelation:getSoftwareByAssetId')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareResponse.class, responseContainer = "actionResponse"), })
@@ -157,6 +160,7 @@ public class AssetSoftwareRelationController {
      *
      * @return 操作系统名称集合
      */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @ApiOperation(value = "查询操作系统接口", notes = "无查询条件")
     @PreAuthorize("hasAuthority('asset:softwarerelation:queryOS')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
@@ -170,6 +174,7 @@ public class AssetSoftwareRelationController {
      *
      * @return 操作系统名称集合
      */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @ApiOperation(value = "软件安装列表", notes = "返回的id即为资产id 需要传的参数为multipleQuery,softwareId,configureStatus,installType,installStatus 其中softwareId必传")
     @PreAuthorize("hasAuthority('asset:softwarerelation:installList')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
@@ -227,6 +232,7 @@ public class AssetSoftwareRelationController {
      * @return
      * @throws Exception
      */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @ApiOperation(value = "分页查询硬件资产关联的软件列表", notes = "必传资产ID")
     @PreAuthorize("hasAuthority('asset:softwarerelation:querySimpleSoftwareByAssetId')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareResponse.class, responseContainer = "actionResponse"), })

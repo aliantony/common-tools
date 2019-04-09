@@ -1,5 +1,22 @@
 package com.antiy.asset.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
@@ -7,10 +24,7 @@ import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.enums.ConfigureStatusEnum;
-import com.antiy.asset.vo.enums.InstallStatus;
-import com.antiy.asset.vo.enums.InstallType;
+import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetInstallRequest;
@@ -21,22 +35,14 @@ import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.BusinessExceptionUtils;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产软件关系信息 服务实现类 </p>
@@ -44,9 +50,11 @@ import java.util.stream.Collectors;
  * @author zhangyajun
  * @since 2019-01-02
  */
+@Transactional(rollbackFor = RuntimeException.class)
 @Service
 public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftwareRelation>
                                               implements IAssetSoftwareRelationService {
+    private Logger                                                              logger = LogUtils.get(this.getClass());
 
     @Resource
     private AssetSoftwareRelationDao                                            assetSoftwareRelationDao;
@@ -67,6 +75,10 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         AssetSoftwareRelation assetSoftwareRelation = requestConverter.convert(request, AssetSoftwareRelation.class);
         assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_RELATION_INSERT.getName(), null, null,
+            assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, null));
+        LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_RELATION_INSERT.getName() + " {}", assetSoftwareRelation);
         assetSoftwareRelationDao.insert(assetSoftwareRelation);
         return assetSoftwareRelation.getId();
     }
@@ -77,10 +89,15 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         // TODO 添加修改人信息
         assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
         assetSoftwareRelation.setGmtModified(System.currentTimeMillis());
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_RELATION_UPDATE.getName(), null, null,
+            assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, null));
+        LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_RELATION_UPDATE.getName() + " {}", assetSoftwareRelation);
         return assetSoftwareRelationDao.update(assetSoftwareRelation);
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AssetSoftwareRelationResponse> findListAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception {
         List<AssetSoftwareRelation> assetSoftwareRelationList = assetSoftwareRelationDao.findQuery(query);
         List<AssetSoftwareRelationResponse> assetSoftwareRelationResponse = responseConverter
@@ -89,11 +106,13 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareRelationResponse> findPageAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
             this.findListAssetSoftwareRelation(query));
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
     public List<AssetSoftwareResponse> getSoftByAssetId(Integer assetId) {
         List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao.getSoftByAssetId(assetId);
@@ -102,6 +121,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         return assetSoftwareRelationResponse;
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
     public PageResult<AssetSoftwareRelationResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query) {
         int count = countByAssetId(DataTypeUtils.stringToInteger(query.getAssetId()));
@@ -115,11 +135,13 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetSoftwareResponseList);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
     public Integer countAssetBySoftId(Integer id) {
         return assetSoftwareRelationDao.countAssetBySoftId(id);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
     public List<String> findOS() throws Exception {
         return assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
@@ -127,6 +149,9 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     @Override
     public Integer changeSoftwareStatus(Map<String, Object> map) throws Exception {
+        // 记录操作日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName(), null, null, map,
+            BusinessModuleEnum.SOFTWARE_ASSET, null));
         return assetSoftwareRelationDao.changeSoftwareStatus(map);
     }
 
@@ -134,6 +159,10 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     public Integer installArtificial(List<AssetSoftwareRelationRequest> assetSoftwareRelationList) {
         List<AssetSoftwareRelation> assetSoftwareRelation = BeanConvert.convert(assetSoftwareRelationList,
             AssetSoftwareRelation.class);
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSTALL_MANUAL.getName(), null, null,
+            assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.INSTALLABLE));
+        LogUtils.info(logger, AssetEventEnum.SOFT_INSTALL_MANUAL.getName() + " {}", assetSoftwareRelation);
         return assetSoftwareRelationDao.installArtificial(assetSoftwareRelation);
     }
 
@@ -142,10 +171,15 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<AssetSoftwareRelation> assetSoftwareRelation = BeanConvert.convert(assetSoftwareRelationList,
             AssetSoftwareRelation.class);
         // TODO 下发智甲安装
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSTALL_AUTO.getName(), null, null,
+            assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.INSTALLABLE));
+        LogUtils.info(logger, AssetEventEnum.SOFT_INSTALL_AUTO.getName() + " {}", assetSoftwareRelation);
         return assetSoftwareRelationDao.installAauto(assetSoftwareRelation);
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void installSoftware(AssetSoftwareRelationList assetSoftwareRelationList) {
         // 未配置、配置中资产id列表
         List<String> assetIds = assetSoftwareRelationList.getAssetInstallRequestList().stream()
@@ -185,8 +219,12 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
+                    // 记录操作日志和运行日志
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSTALL.getName(), null, null,
+                        relationList, BusinessModuleEnum.SOFTWARE_ASSET, null));
                     return assetSoftwareRelationDao.installSoftware(relationList);
                 } catch (Exception e) {
+                    LogUtils.info(logger, AssetEventEnum.SOFT_INSTALL.getName() + " {}", relationList);
                     transactionStatus.setRollbackOnly();
                 }
                 return 0;
@@ -206,6 +244,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
      * @param query
      * @return
      */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Override
     public PageResult<AssetSoftwareInstallResponse> queryInstallList(InstallQuery query) throws Exception {
         List<Integer> areaIdsList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         query.setAreaIds(DataTypeUtils.integerArrayToStringArray(areaIdsList));
@@ -226,6 +266,10 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     public Integer changeSoftConfiguration(AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
         AssetSoftwareRelation assetSoftwareRelation = BeanConvert.convertBean (assetSoftwareRelationRequest, AssetSoftwareRelation.class);
         assetSoftwareRelation.setConfigureStatus (ConfigureStatusEnum.CONFIGURED.getCode ());
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_RELATION_UPDATE.getName(), null, null,
+            assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, null));
+        LogUtils.info(logger, AssetEventEnum.SOFT_INSTALL.getName() + " {}", assetSoftwareRelation);
         return assetSoftwareRelationDao.update (assetSoftwareRelation);
     }
 

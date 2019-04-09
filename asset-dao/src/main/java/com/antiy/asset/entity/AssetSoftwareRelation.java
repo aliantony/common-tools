@@ -274,12 +274,12 @@ public class AssetSoftwareRelation extends BaseEntity {
     public String toString() {
         return "AssetSoftwareRelation{" + "version='" + version + '\'' + ", manufacturer='" + manufacturer + '\''
                + ", operationSystem='" + operationSystem + '\'' + ", name='" + name + '\'' + ", assetId='" + assetId
-               + '\'' + ", softwareId='" + softwareId + '\'' + ", softwareStatus=" + softwareStatus + ", protocol='"
-               + protocol + '\'' + ", port='" + port + '\'' + ", licenseSecretKey='" + licenseSecretKey + '\''
-               + ", installType=" + installType + ", installStatus=" + installStatus + ", gmtCreate=" + gmtCreate
-               + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
-               + ", modifyUser=" + modifyUser + ", status=" + status + ", installTime=" + installTime + ", userId='"
-               + userId + '\'' + ", userName='" + userName + '\'' + '}';
+               + '\'' + ", softwareId='" + softwareId + '\'' + ", softwareStatus=" + softwareStatus
+               + ", configureStatus=" + configureStatus + ", protocol='" + protocol + '\'' + ", port='" + port + '\''
+               + ", licenseSecretKey='" + licenseSecretKey + '\'' + ", installType=" + installType + ", installStatus="
+               + installStatus + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo='" + memo + '\''
+               + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status + ", installTime="
+               + installTime + ", userId='" + userId + '\'' + ", userName='" + userName + '\'' + '}';
     }
 
     public Integer getConfigureStatus() {
