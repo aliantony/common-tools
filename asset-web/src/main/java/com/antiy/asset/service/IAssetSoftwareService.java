@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.antiy.asset.entity.AssetSoftware;
@@ -149,4 +150,10 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      */
     ActionResponse configRegister(ConfigRegisterRequest request) throws Exception;
 
+    /**
+     * 处理资产上报的软件信息
+     * @param assetId
+     * @param softwareReportRequestList
+     */
+    void reportData(Integer assetId, List<AssetSoftwareReportRequest> softwareReportRequestList);
 }

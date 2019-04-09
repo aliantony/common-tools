@@ -2927,6 +2927,31 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return "配置成功";
     }
 
+    /**
+     * 资产上报接口
+     * @param assetList
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ActionResponse saveAssetList(List<AssetOuterRequest> assetList) {
+        ParamterExceptionUtils.isEmpty(assetList, "资产上报数据为空");
+        assetList.stream().forEach(assetOuterRequest -> {
+            try {
+                // 保存资产信息,并返回资产id
+                ActionResponse<Integer> response = saveAsset(assetOuterRequest);
+                Integer assetId = response.getBody();
+                // 处理软件
+                if (CollectionUtils.isNotEmpty(assetOuterRequest.getSoftwareReportRequestList())) {
+                    softwareService.reportData(assetId, assetOuterRequest.getSoftwareReportRequestList());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return null;
+    }
+
     @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
     public void listen(String data, Acknowledgment ack) {
         AreaOperationRequest areaOperationRequest = JsonUtil.json2Object(data, AreaOperationRequest.class);

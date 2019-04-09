@@ -84,7 +84,7 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty(value = "资产软件关系表")
     @Valid
-    private List<AssetSoftwareRelationRequest> assetSoftwareRelationList;
+    private List<AssetSoftwareReportRequest> softwareReportRequestList;
 
     @ApiModelProperty(value = "启动流程数据")
     @Valid
@@ -201,12 +201,12 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator {
         this.assetStorageMedium = assetStorageMedium;
     }
 
-    public List<AssetSoftwareRelationRequest> getAssetSoftwareRelationList() {
-        return assetSoftwareRelationList;
+    public List<AssetSoftwareReportRequest> getSoftwareReportRequestList() {
+        return softwareReportRequestList;
     }
 
-    public void setAssetSoftwareRelationList(List<AssetSoftwareRelationRequest> assetSoftwareRelationList) {
-        this.assetSoftwareRelationList = assetSoftwareRelationList;
+    public void setSoftwareReportRequestList(List<AssetSoftwareReportRequest> softwareReportRequestList) {
+        this.softwareReportRequestList = softwareReportRequestList;
     }
 
     public AssetOthersRequest getAssetOthersRequest() {

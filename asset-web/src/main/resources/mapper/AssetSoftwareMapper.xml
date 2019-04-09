@@ -1007,4 +1007,12 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <select id="isExsit" resultType="java.lang.Integer">
+        select id
+        from
+        <include refid="Table_Name"/>
+        where name = #{name} and version = #{version}
+        and status = 1
+        limit 0,1
+    </select>
 </mapper>

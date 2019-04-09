@@ -383,5 +383,17 @@ public class AssetController {
         activityClient.completeTask(activityHandleRequest);
         return ActionResponse.success();
     }
-
+    /**
+     * 批量保存资产
+     *
+     * @param assetList
+     * @return actionResponse
+     */
+    @ApiOperation(value = "资产批量保存", notes = "传入实体对象信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/save/list", method = RequestMethod.POST)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:saveSingle')")
+    public ActionResponse saveList(@RequestBody(required = false) @ApiParam(value = "assetList") List<AssetOuterRequest> assetList) throws Exception {
+        return iAssetService.saveAssetList(assetList);
+    }
 }
