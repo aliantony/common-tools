@@ -411,6 +411,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             @Override
             protected void convert(AssetSoftware assetSoftware, AssetSoftwareResponse assetSoftwareResponse) {
                 super.convert(assetSoftware, assetSoftwareResponse);
+                assetSoftwareResponse.setAssetCount(0);
                 if (MapUtils.isNotEmpty(finalSoftAssetCount)) {
                     assetSoftwareResponse.setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null
                         ? finalSoftAssetCount.get(assetSoftware.getId()).intValue()
