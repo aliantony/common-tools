@@ -47,7 +47,7 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
      *
      * @return
      */
-    List<Map<String, Long>> countStatus();
+    List<Map<String, Object>> countStatus();
 
     Long findCountByCategoryModel(AssetSoftwareQuery assetSoftwareQuery);
 
