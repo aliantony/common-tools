@@ -1047,6 +1047,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
+    @Transactional
     public Integer changeStatus(String[] ids, Integer targetStatus) throws Exception {
         int row;
         Map<String, Object> map = new HashMap<>();

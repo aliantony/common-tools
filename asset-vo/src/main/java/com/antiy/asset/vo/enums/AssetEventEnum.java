@@ -86,6 +86,7 @@ public enum AssetEventEnum {
     ASSET_LINK_RELATION_INSERT(78,"资产通联关系插入"),
     ASSET_LINK_RELATION_UPDATE(79,"资产通联关系更新"),
     ASSET_LINK_RELATION_DELETE(80,"资产通联关系删除"),
+    ASSET_ADMITTANCE_INSERT(81,"资产进入准入管理"),
     ;
 
 
