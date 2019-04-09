@@ -397,14 +397,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query,
                                                              Map<String, WaitingTaskReponse> waitingTasks) throws Exception {
-        if (!Objects.isNull(query.getCategoryModels()) && query.getCategoryModels().length > 0) {
-            List<Integer> categoryModels = Lists.newArrayList();
-            for (int i = 0; i < query.getCategoryModels().length; i++) {
-                categoryModels.addAll(iAssetCategoryModelService.findAssetCategoryModelIdsById(
-                    com.antiy.common.utils.DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
-            }
-            query.setCategoryModels(com.antiy.common.utils.DataTypeUtils.integerArrayToStringArray(categoryModels));
-        }
         List<AssetSoftware> assetSoftware = assetSoftwareDao.findListAssetSoftware(query);
         Map<Integer, Long> softAssetCount = null;
         if (query.getQueryAssetCount()) {
@@ -457,6 +449,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         int count = this.findCountAssetSoftware(query);
         if (count <= 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
+        }
+        if (!Objects.isNull(query.getCategoryModels()) && query.getCategoryModels().length > 0) {
+            List<Integer> categoryModels = Lists.newArrayList();
+            for (int i = 0; i < query.getCategoryModels().length; i++) {
+                categoryModels.addAll(iAssetCategoryModelService.findAssetCategoryModelIdsById(
+                        com.antiy.common.utils.DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
+            }
+            query.setCategoryModels(com.antiy.common.utils.DataTypeUtils.integerArrayToStringArray(categoryModels));
         }
 
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
@@ -842,14 +842,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         assetSoftwareQuery.setQueryAssetCount(true);
         assetSoftwareQuery.setPageSize(com.antiy.asset.util.Constants.ALL_PAGE);
-        Map<String, WaitingTaskReponse> waitingTasks = getAllSoftWaitingTask("soft");
-
-        // 如果流程引擎返回数据未空，并且导出的时候从工作台进入，则直接返回
-        if (MapUtils.isEmpty(waitingTasks) && assetSoftwareQuery.getEnterControl()) {
-            return;
-        }
-
-        List<AssetSoftwareResponse> list = this.findListAssetSoftware(assetSoftwareQuery, waitingTasks);
+        List<AssetSoftwareResponse> list = this.findPageAssetSoftware(assetSoftwareQuery).getItems();
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setSheetName("资产信息表");
         List<ExportSoftwareEntity> softwareEntities = softwareEntityConvert.convert(list, ExportSoftwareEntity.class);
