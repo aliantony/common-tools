@@ -249,18 +249,21 @@ public class Asset extends BaseEntity {
                + ", memory='" + memory + '\'' + ", cpu='" + cpu + '\'' + ", networkCard='" + networkCard + '\''
                + ", parentId='" + parentId + '\'' + ", ip='" + ip + '\'' + ", mac='" + mac + '\'' + ", assetGroup='"
                + assetGroup + '\'' + ", number='" + number + '\'' + ", name='" + name + '\'' + ", ethernetPort="
-               + ethernetPort + ", serialPort=" + serialPort + ", installType=" + installType + ", serial='" + serial
-               + '\'' + ", areaId=" + areaId + ", categoryModel=" + categoryModel + ", manufacturer='" + manufacturer
-               + '\'' + ", assetStatus=" + assetStatus + ", admittanceStatus=" + admittanceStatus
-               + ", operationSystem='" + operationSystem + '\'' + ", systemBit=" + systemBit + ", responsibleUserId="
-               + responsibleUserId + ", location='" + location + '\'' + ", latitude='" + latitude + '\''
-               + ", longitude='" + longitude + '\'' + ", houseLocation='" + houseLocation + '\'' + ", firmwareVersion='"
-               + firmwareVersion + '\'' + ", uuid='" + uuid + '\'' + ", contactTel='" + contactTel + '\'' + ", email='"
+               + ethernetPort + ", serialPort=" + serialPort + ", installType=" + installType + ", installTypeName='"
+               + installTypeName + '\'' + ", serial='" + serial + '\'' + ", areaId='" + areaId + '\'' + ", areaName='"
+               + areaName + '\'' + ", categoryModel='" + categoryModel + '\'' + ", manufacturer='" + manufacturer + '\''
+               + ", assetStatus=" + assetStatus + ", admittanceStatus=" + admittanceStatus + ", operationSystem='"
+               + operationSystem + '\'' + ", systemBit=" + systemBit + ", responsibleUserId='" + responsibleUserId
+               + '\'' + ", responsibleUserName='" + responsibleUserName + '\'' + ", location='" + location + '\''
+               + ", latitude='" + latitude + '\'' + ", longitude='" + longitude + '\'' + ", houseLocation='"
+               + houseLocation + '\'' + ", firmwareVersion='" + firmwareVersion + '\'' + ", softwareVersion='"
+               + softwareVersion + '\'' + ", uuid='" + uuid + '\'' + ", contactTel='" + contactTel + '\'' + ", email='"
                + email + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
-               + ", describle='" + describle + '\'' + ", tags='" + tags + '\'' + ", firstEnterNett=" + firstEnterNett
-               + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty=" + warranty + ", gmtCreate="
-               + gmtCreate + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
-               + ", modifyUser=" + modifyUser + ", status=" + status + '}';
+               + ", importanceDegreeName='" + importanceDegreeName + '\'' + ", describle='" + describle + '\''
+               + ", tags='" + tags + '\'' + ", firstEnterNett=" + firstEnterNett + ", serviceLife=" + serviceLife
+               + ", buyDate=" + buyDate + ", warranty=" + warranty + ", gmtCreate=" + gmtCreate + ", gmtModified="
+               + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser + ", modifyUser=" + modifyUser
+               + ", status=" + status + '}';
     }
 
     public String getAreaName() {
