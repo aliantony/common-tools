@@ -444,12 +444,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         if (MapUtils.isEmpty(waitingTasks) && query.getEnterControl()) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
         }
-
-        // 如果count 小于等于0，则表示没数据，也直接返回
-        int count = this.findCountAssetSoftware(query);
-        if (count <= 0) {
-            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
-        }
         if (!Objects.isNull(query.getCategoryModels()) && query.getCategoryModels().length > 0) {
             List<Integer> categoryModels = Lists.newArrayList();
             for (int i = 0; i < query.getCategoryModels().length; i++) {
@@ -458,6 +452,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             }
             query.setCategoryModels(com.antiy.common.utils.DataTypeUtils.integerArrayToStringArray(categoryModels));
         }
+        // 如果count 小于等于0，则表示没数据，也直接返回
+        int count = this.findCountAssetSoftware(query);
+        if (count <= 0) {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
+        }
+
 
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
             this.findListAssetSoftware(query, waitingTasks));
