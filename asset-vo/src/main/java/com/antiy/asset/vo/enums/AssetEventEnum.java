@@ -77,7 +77,12 @@ public enum AssetEventEnum {
     ASSET_OTHERS_INSERT(69,"资产其他设备新增"),
     ASSET_OTHERS_UPDATE(70,"资产其他设备修改"),
     ASSET_OTHERS_DELETE(71,"资产其他设备删除"),
-                            ASSET_REPORT_EXPORT(72, "资产报表导出"), ASSET_REPORT_IMPORT(73, "资产报表导入"),
+                            ASSET_REPORT_EXPORT(72,
+                                                "资产报表导出"), ASSET_REPORT_IMPORT(73,
+                                                                               "资产报表导入"), ASSET_SAFETY_EQUIPMENT_INSERT(74,
+                                                                                                                        "硬件资产安全设备新增"), ASSET_SAFETY_EQUIPMENT_UPDATE(75,
+                                                                                                                                                                     "硬件资产安全设备修改"), ASSET_SAFETY_EQUIPMENT_DELETE(76,
+                                                                                                                                                                                                                  "硬件资产安全设备删除"),
     ;
 
 

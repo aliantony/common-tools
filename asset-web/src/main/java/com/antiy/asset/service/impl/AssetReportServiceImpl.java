@@ -20,6 +20,7 @@ import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.util.ReportDateUtils;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
 import com.antiy.asset.vo.enums.ShowCycleType;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
@@ -28,6 +29,8 @@ import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.asset.vo.response.ReportData;
 import com.antiy.asset.vo.response.ReportTableHead;
+import com.antiy.common.base.BusinessData;
+import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
@@ -416,6 +419,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setHeaderList(headerList);
         reportForm.setData(data);
         reportForm.setColumnList(columnList);
+        // 记录操作日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_REPORT_EXPORT.getName(), null, null, reportForm,
+            BusinessModuleEnum.REPORT, null));
+        LogUtils.info(logger, AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}", reportForm);
         ExcelUtils.exportFormToClient(reportForm, "报表导出.xlsx");
     }
 
