@@ -2895,8 +2895,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    @Transactional
-    public String changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception {
+    @Transactional(rollbackFor = Exception.class)
+    public RespBasicCode changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception {
         SchemeRequest schemeRequest = assetStatusJumpRequst.getSchemeRequest();
         String assetId = assetStatusJumpRequst.getAssetId();
         // 修改资产状态
@@ -2947,7 +2947,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.getId(),
             null, scheme, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}", assetOperationRecord);
-        return "配置成功";
+        return RespBasicCode.SUCCESS;
     }
 
     /**
