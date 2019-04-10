@@ -50,8 +50,7 @@ public enum DataTypeEnum {
                 return val.matches(reg);
             case IDCARD:
                 reg = "(^[1-9]\\d{5}(18|19|20)\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)|(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}$)";
-                val.matches(reg);
-                break;
+                return val.matches(reg);
             case IP:
                 reg = "((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))$";
                 return val.matches(reg);
@@ -61,6 +60,5 @@ public enum DataTypeEnum {
             default:
                 return true;
         }
-        return true;
     }
 }
