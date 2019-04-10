@@ -53,6 +53,8 @@ import com.antiy.common.config.kafka.KafkaConfig;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -67,7 +69,7 @@ import com.antiy.common.utils.DataTypeUtils;
  */
 @Service
 public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetService {
-
+    private Logger                                                             logger   = LogUtils.get(this.getClass());
     @Resource
     private AssetDao                                                           assetDao;
     @Resource
@@ -784,6 +786,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     /**
      * 通联设置的资产查询 与普通资产查询类似， 不同点在于品类型号显示二级品类， 只查已入网，网络设备和计算设备的资产,且会去掉通联表中已存在的资产
      */
+    @Override
     public PageResult<AssetResponse> findUnconnectedAsset(AssetQuery query) throws Exception {
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
@@ -2912,11 +2915,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
         scheme.setAssetId(assetId);
         schemeDao.insert(scheme);
-        // 写入业务日志
-        LogHandle.log(scheme.toString(), AssetEventEnum.ASSET_SCHEME_INSERT.getName(),
-            AssetEventEnum.ASSET_SCHEME_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme.toString());
-
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SCHEME_INSERT.getName(), scheme.getId(), null,
+            scheme, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme);
         // 2.保存流程
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetObjectId(assetId);
@@ -2932,10 +2934,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOperationRecordDao.insert(assetOperationRecord);
 
         // 写入业务日志
-        LogHandle.log(assetOperationRecord.toString(), AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(),
-            AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
-            assetOperationRecord.toString());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(), scheme.getId(),
+            null, scheme, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}", scheme);
         return "配置成功";
     }
 
