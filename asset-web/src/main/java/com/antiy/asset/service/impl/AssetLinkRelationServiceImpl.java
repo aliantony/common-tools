@@ -220,7 +220,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                 assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
         }
         return new PageResult<AssetLinkedCountResponse>(assetLinkRelationQuery.getPageSize(),
-            this.queryAssetLinkedCount(assetLinkRelationQuery), assetLinkRelationQuery.getCurrentPage(), assetLinkedCountResponseList);
+            this.queryAssetLinkedCount(assetLinkRelationQuery), assetLinkRelationQuery.getCurrentPage(),
+            assetLinkedCountResponseList);
     }
 
     private Integer queryAssetLinkedCount(AssetLinkRelationQuery assetLinkRelationQuery) {
@@ -263,16 +264,28 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         return BeanConvert.convert(assetResponseList, AssetLinkRelationResponse.class);
     }
 
+    public Integer queryLinkedCountAssetByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) {
+        ParamterExceptionUtils.isBlank(assetLinkRelationQuery.getPrimaryKey(), "请选择资产");
+        Integer portSize = assetLinkRelationDao
+            .queryPortSize(DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()));
+        List<Integer> portCount = Lists.newArrayList();
+        for (int i = 1; i <= portSize; i++) {
+            portCount.add(i);
+        }
+        return assetLinkRelationDao.queryLinkedCountAssetByAssetId(
+            DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()), portCount);
+    }
+
     @Override
     public PageResult<AssetLinkRelationResponse> queryLinkedAssetPageByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) {
         List<AssetLinkRelationResponse> assetLinkRelationResponseList = this
             .queryLinkedAssetListByAssetId(assetLinkRelationQuery);
-        if (assetLinkRelationResponseList.size() <= 0) {
+        if (CollectionUtils.isEmpty(assetLinkRelationResponseList)) {
             return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(), 0,
                 assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
         }
         return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(),
-            assetLinkRelationResponseList.size(), assetLinkRelationQuery.getCurrentPage(),
+            this.queryLinkedCountAssetByAssetId(assetLinkRelationQuery), assetLinkRelationQuery.getCurrentPage(),
             assetLinkRelationResponseList);
     }
 

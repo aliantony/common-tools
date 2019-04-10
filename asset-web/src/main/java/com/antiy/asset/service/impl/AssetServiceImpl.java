@@ -144,8 +144,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private ActivityClient                                                     activityClient;
     @Resource
     private AreaClient                                                         areaClient;
-    private static final Logger                                                logger   = LogUtils
-        .get(AssetServiceImpl.class);
     @Resource
     private AesEncoder                                                         aesEncoder;
     @Resource
