@@ -215,12 +215,16 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     public PageResult<AssetLinkedCountResponse> queryAssetLinkedCountPage(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         List<AssetLinkedCountResponse> assetLinkedCountResponseList = this
             .queryAssetLinkedCountList(assetLinkRelationQuery);
-        if (assetLinkedCountResponseList.size() <= 0) {
+        if (CollectionUtils.isEmpty(assetLinkedCountResponseList)) {
             return new PageResult<AssetLinkedCountResponse>(assetLinkRelationQuery.getPageSize(), 0,
                 assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
         }
         return new PageResult<AssetLinkedCountResponse>(assetLinkRelationQuery.getPageSize(),
-            assetLinkedCountResponseList.size(), assetLinkRelationQuery.getCurrentPage(), assetLinkedCountResponseList);
+            this.queryAssetLinkedCount(assetLinkRelationQuery), assetLinkRelationQuery.getCurrentPage(), assetLinkedCountResponseList);
+    }
+
+    private Integer queryAssetLinkedCount(AssetLinkRelationQuery assetLinkRelationQuery) {
+        return assetLinkRelationDao.queryAssetLinkedCount(assetLinkRelationQuery);
     }
 
     @Override

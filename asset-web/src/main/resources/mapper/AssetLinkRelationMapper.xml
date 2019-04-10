@@ -590,6 +590,9 @@
             and a.number like CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
         </if>
         GROUP BY a.id
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
     </select>
 
     <!--与当前资产通联的资产列表查询-->
@@ -690,5 +693,82 @@
     </select>
     <select id="queryPortSize" parameterType="java.lang.Integer" resultType="java.lang.Integer">
         select b.port_size from asset a left join asset_network_equipment b on a.id = b.asset_id where a.id = #{id}
+    </select>
+    <select id="queryAssetLinkedCount" resultType="java.lang.Integer">
+        select count(1) count from (SELECT
+        a.id as assetId,
+        a.name,
+        a.number,
+        a.category_model as categoryModel,
+        t.NAME as categoryModelName,
+        count( b.id ) AS canBind,
+        count( b.id ) - count( c.id ) AS noBind
+        FROM
+        asset a
+        LEFT JOIN asset_category_model t ON a.category_model = t.id
+        LEFT JOIN asset_network_card b ON ( a.id = b.asset_id AND b.STATUS = 1 )
+        LEFT JOIN asset_link_relation c ON ( a.id = c.asset_id AND b.ip_address = c.asset_ip AND c.STATUS = 1 )
+        WHERE 1 = 1
+        and b.asset_id IS NOT NULL
+        <if test="areaIds != null and areaIds.size() > 0">
+            and a.area_id in
+            <foreach collection="areaIds" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="pcCategoryModels != null and pcCategoryModels.size() > 0">
+            and a.category_model in
+            <foreach collection="pcCategoryModels" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="categoryModel != null and categoryModel != ''">
+            and a.category_model = #{categoryModel}
+        </if>
+        <if test="assetName != null and assetName != ''">
+            and a.name like CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="assetNumber != null and assetNumber != ''">
+            and a.number like CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
+        </if>
+        GROUP BY a.id
+        UNION ALL
+        SELECT
+        a.id as assetId,
+        a.name,
+        a.number,
+        a.category_model as categoryModel,
+        t.NAME as categoryModelName,
+        b.port_size AS canBind,
+        b.port_size - count( c.id ) AS noBind
+        FROM
+        asset a
+        LEFT JOIN asset_category_model t ON a.category_model = t.id
+        LEFT JOIN asset_network_equipment b ON a.id = b.asset_id
+        LEFT JOIN asset_link_relation c ON ( a.id = c.asset_id AND c.STATUS = 1 )
+        WHERE 1 = 1
+        and b.asset_id IS NOT NULL
+        <if test="areaIds != null and areaIds.size() > 0">
+            and a.area_id in
+            <foreach collection="areaIds" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="netCategoryModels != null and netCategoryModels.size() > 0">
+            and a.category_model in
+            <foreach collection="netCategoryModels" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="categoryModel != null and categoryModel != ''">
+            and a.category_model = #{categoryModel}
+        </if>
+        <if test="assetName != null and assetName != ''">
+            and a.name like CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="assetNumber != null and assetNumber != ''">
+            and a.number like CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
+        </if>
+        GROUP BY a.id) t
     </select>
 </mapper>
