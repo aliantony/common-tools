@@ -562,8 +562,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
             configRegisterRequest.setAssetId(String.valueOf(id));
             configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
-            configRegisterRequest.setSuggest(request.getConfigRegisterRequest().getSuggest());
-            configRegisterRequest.setConfigUserId(request.getConfigRegisterRequest().getConfigUserId());
+            configRegisterRequest.setSuggest(request.getAsset().getMemo());
+            configRegisterRequest.setConfigUserId(request.getManualStartActivityRequest().getConfigUserId());
             configRegisterRequest.setRelId(String.valueOf(id));
             ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest);
             if (null == actionResponseAsset
