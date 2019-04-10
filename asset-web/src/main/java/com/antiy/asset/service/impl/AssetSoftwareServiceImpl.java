@@ -144,7 +144,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Resource
     private SchemeDao                                                        schemeDao;
 
-
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
         Integer num = transactionTemplate.execute(new TransactionCallback<Integer>() {
@@ -471,7 +470,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             List<Integer> categoryModels = Lists.newArrayList();
             for (int i = 0; i < query.getCategoryModels().length; i++) {
                 categoryModels.addAll(iAssetCategoryModelService.findAssetCategoryModelIdsById(
-                        com.antiy.common.utils.DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
+                    com.antiy.common.utils.DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
             }
             query.setCategoryModels(com.antiy.common.utils.DataTypeUtils.integerArrayToStringArray(categoryModels));
         }
@@ -480,7 +479,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         if (count <= 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
         }
-
 
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
             this.findListAssetSoftware(query, waitingTasks));
@@ -710,8 +708,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery) throws Exception {
-        return new PageResult<>(softwareQuery.getPageSize(), this.findAssetInstallCount(softwareQuery),
-            softwareQuery.getCurrentPage(), this.findAssetInstallList(softwareQuery));
+        List<AssetSoftwareInstallResponse> assetSoftwareInstallResponseList = this.findAssetInstallList(softwareQuery);
+        if (CollectionUtils.isEmpty(assetSoftwareInstallResponseList)) {
+            return new PageResult<>(softwareQuery.getPageSize(), 0, softwareQuery.getCurrentPage(),
+                Lists.newArrayList());
+        }
+        return new PageResult<>(softwareQuery.getPageSize(), assetSoftwareInstallResponseList.size(),
+            softwareQuery.getCurrentPage(), assetSoftwareInstallResponseList);
     }
 
     @Override
@@ -750,7 +753,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                         e.printStackTrace();
                     }
                 }
-                //保存资产软件关系
+                // 保存资产软件关系
                 AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                 assetSoftwareRelation.setAssetId(DataTypeUtils.integerToString(assetId));
                 assetSoftwareRelation.setSoftwareId(DataTypeUtils.integerToString(softwareId));
@@ -758,11 +761,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 assetSoftwareRelation.setInstallTime(softwareReportRequest.getInstallTime());
                 assetSoftwareRelation.setInstallType(InstallType.MANUAL.getCode());
                 assetSoftwareRelation
-                        .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
+                    .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
                 assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                 assetSoftwareRelationList.add(assetSoftwareRelation);
             });
-            //保存资产软件关系
+            // 保存资产软件关系
             assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
         }
     }
@@ -790,8 +793,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         scheme.setGmtCreate(System.currentTimeMillis());
         return scheme;
     }
-
-
 
     private AssetOperationRecord convertRecord(ConfigRegisterRequest request) {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
@@ -901,8 +902,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 assetOperationRecord.setGmtCreate(System.currentTimeMillis());
                 assetOperationRecord.setOriginStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
                 assetOperationRecordDao.insert(assetOperationRecord);
-                 ActionResponse actionResponse = areaClient.queryCdeAndAreaId ("zichanguanliyuan");
-//                ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
+                ActionResponse actionResponse = areaClient.queryCdeAndAreaId("zichanguanliyuan");
+                // ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
                 List<LinkedHashMap> mapList = (List<LinkedHashMap>) actionResponse.getBody();
                 StringBuilder stringBuilder = new StringBuilder();
 
