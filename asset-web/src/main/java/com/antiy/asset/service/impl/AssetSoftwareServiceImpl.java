@@ -769,6 +769,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         scheme.setAssetId(registerRequest.getAssetId());
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         scheme.setGmtCreate(System.currentTimeMillis());
+        scheme.setFileInfo(registerRequest.getFiles());
+
         return scheme;
     }
 

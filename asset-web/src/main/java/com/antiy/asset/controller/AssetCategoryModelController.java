@@ -174,25 +174,11 @@ public class AssetCategoryModelController {
      *
      * @return actionResponse
      */
-    @ApiOperation(value = "通过二级品类查询品类树", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/secondTypeNode", method = RequestMethod.GET)
-    // @PreAuthorize(value = "hasAuthority('asset:categorymodel:querySecondCategoryNode')")
-    public ActionResponse querySecondCategoryNode(@ApiParam(value = "4-计算设备 5-网络设备 6-存储设备 7-安全设备 8-其他设备") String[] types) throws Exception {
-        ParamterExceptionUtils.isNull(types, "types不能为null");
-        return ActionResponse.success(iAssetCategoryModelService.querySecondCategoryNode(types));
-    }
-
-    /**
-     * 品类树查询
-     *
-     * @return actionResponse
-     */
     @ApiOperation(value = "通过计算设备和安全设备树", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/computeNetNode", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:querySecondCategoryNode')")
-    public ActionResponse queryComputeAndNetCategoryNode() throws Exception {
-        return ActionResponse.success(iAssetCategoryModelService.queryComputeAndNetCategoryNode());
+    public ActionResponse queryComputeAndNetCategoryNode(@ApiParam("是否只查网络设备 若为是则只查网络设备，若为否则两者都查 默认为两者都查") Boolean searchNetworkDevice) throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.queryComputeAndNetCategoryNode(searchNetworkDevice));
     }
 }

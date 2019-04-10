@@ -1,35 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -60,6 +30,34 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -221,6 +219,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         LogHandle.log(requestAsset, AssetEventEnum.ASSET_INSERT.getName(),
                             AssetEventEnum.ASSET_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        // 记录操作日志和运行日志
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), asset.getId(),
+                            asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
                         LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", requestAsset.toString());
 
                         insertBatchAssetGroupRelation(asset, assetGroup);
@@ -305,6 +306,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetNetworkCardDao.insert(assetNetworkCard);
                                 LogHandle.log(assetNetworkCard, AssetEventEnum.ASSET_NETWORK_INSERT.getName(),
                                     AssetEventEnum.ASSET_NETWORK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_INSERT.getName(),
+                                    assetNetworkCard.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                    BusinessPhaseEnum.WAIT_REGISTER));
                                 LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_INSERT.getName() + " {}",
                                     assetNetworkCard.toString());
                                 // network.add(assetNetworkCard);
@@ -330,6 +334,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
                                 LogHandle.log(assetMainborad, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(),
                                     AssetEventEnum.ASSET_MAINBORAD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(),
+                                    asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                    BusinessPhaseEnum.WAIT_REGISTER));
                                 LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName() + " {}",
                                     assetMainborad.toString());
                                 // mainboard.add(assetMainborad);
@@ -357,6 +364,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
                                 LogHandle.log(assetMemory, AssetEventEnum.ASSET_MEMORY_INSERT.getName(),
                                     AssetEventEnum.ASSET_MEMORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MEMORY_INSERT.getName(),
+                                    asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                    BusinessPhaseEnum.WAIT_REGISTER));
                                 LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_INSERT.getName() + " {}",
                                     assetMemory.toString());
                                 // memory.add(assetMemory);
@@ -383,6 +393,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetCpu.setCreateUser(LoginUserUtil.getLoginUser().getId());
                                 LogHandle.log(assetCpu, AssetEventEnum.ASSET_CPU_INSERT.getName(),
                                     AssetEventEnum.ASSET_CPU_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CPU_INSERT.getName(),
+                                    asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                    BusinessPhaseEnum.WAIT_REGISTER));
                                 LogUtils.info(logger, AssetEventEnum.ASSET_CPU_INSERT.getName() + " {}",
                                     assetCpu.toString());
                                 assetCpuDao.insert(assetCpu);
@@ -409,6 +422,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetHardDisk.setCreateUser(LoginUserUtil.getLoginUser().getId());
                                 LogHandle.log(assetHardDisk, AssetEventEnum.ASSET_DISK_INSERT.getName(),
                                     AssetEventEnum.ASSET_DISK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DISK_INSERT.getName(),
+                                    asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                    BusinessPhaseEnum.WAIT_REGISTER));
                                 LogUtils.info(logger, AssetEventEnum.ASSET_DISK_INSERT.getName() + " {}",
                                     assetHardDisk.toString());
                                 // assetHardDisks.add(assetHardDisk);
@@ -474,6 +490,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         LogHandle.log(assetOthersRequest, AssetEventEnum.ASSET_OTHERS_INSERT.getName(),
                             AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_OTHERS_INSERT.getName(),
+                            asset1.getId(), asset1.getNumber(), asset1, BusinessModuleEnum.HARD_ASSET,
+                            BusinessPhaseEnum.WAIT_REGISTER));
                         LogUtils.info(logger, AssetEventEnum.ASSET_OTHERS_INSERT.getName() + " {}",
                             assetOthersRequest.toString());
                     }
@@ -566,6 +585,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         medium.setCreateUser(LoginUserUtil.getLoginUser().getId());
         LogHandle.log(assetStorageMedium, AssetEventEnum.ASSET_STORAGE_INSERT.getName(),
             AssetEventEnum.ASSET_STORAGE_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_STORAGE_INSERT.getName(), asset.getId(),
+            asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         LogUtils.info(logger, AssetEventEnum.ASSET_STORAGE_INSERT.getName() + " {}", assetStorageMedium.toString());
         assetStorageMediumDao.insert(medium);
         return medium.getId();
@@ -577,11 +598,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetNetworkEquipment.setAssetId(aid);
         assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
         assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetNetworkEquipmentDao.insert(assetNetworkEquipment);
         LogHandle.log(networkEquipmentRequest, AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getName(),
             AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.recordOperLog(
+            new BusinessData(AssetEventEnum.ASSET_STORAGE_INSERT.getName(), assetNetworkEquipment.getId(), "",
+                assetNetworkEquipment, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DETAIL_INSERT.getName() + " {}",
             networkEquipmentRequest.toString());
-        assetNetworkEquipmentDao.insert(assetNetworkEquipment);
         return assetNetworkEquipment.getId();
     }
 
@@ -591,11 +615,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         safetyEquipment.setAssetId(aid);
         safetyEquipment.setGmtCreate(System.currentTimeMillis());
         safetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetSafetyEquipmentDao.insert(safetyEquipment);
         LogHandle.log(safetyEquipmentRequest, AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getName(),
             AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_STORAGE_INSERT.getName(), safetyEquipment.getId(),
+            "", safetyEquipment, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         LogUtils.info(logger, AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getName() + " {}",
             safetyEquipmentRequest.toString());
-        assetSafetyEquipmentDao.insert(safetyEquipment);
         return safetyEquipment.getId();
     }
 
@@ -630,6 +656,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 groupRelations.add(assetGroupRelation);
                 LogHandle.log(assetGroupRequest, AssetEventEnum.ASSET_GROUP_INSERT.getName(),
                     AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_INSERT.getName(), asset1.getId(), "",
+                    asset1, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
                 LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}",
                     assetGroupRequest.toString());
             });
@@ -799,9 +827,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (Objects.isNull(query.getCategoryModels()) || query.getCategoryModels().length <= 0) {
             List<Integer> categoryCondition = new ArrayList<>();
             for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
-                if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-                    categoryCondition.addAll(
-                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
+                if (query.getSearchNetworkDevice() == null || !query.getSearchNetworkDevice()) {
+                    if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+                        categoryCondition.addAll(assetCategoryModelService
+                            .findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
+                    }
                 }
                 if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
                     categoryCondition.addAll(
@@ -1296,12 +1326,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     LogHandle.log(asset, AssetEventEnum.ASSET_MODIFY.getName(), AssetEventEnum.ASSET_MODIFY.getStatus(),
                         ModuleEnum.ASSET.getCode());
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
+                        asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
                     int count = assetDao.update(asset);
 
                     // 2. 更新cpu信息
                     // 先删除再新增
                     LogHandle.log(asset.getId(), AssetEventEnum.ASSET_CPU_DELETE.getName(),
                         AssetEventEnum.ASSET_CPU_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CPU_DELETE.getName(), asset.getId(),
+                        asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
                     LogUtils.info(logger, AssetEventEnum.ASSET_CPU_DELETE.getName() + " {}", asset.getStringId());
                     assetCpuDao.deleteByAssetId(asset.getId());
                     List<AssetCpuRequest> assetCpuRequestList = assetOuterRequest.getCpu();
@@ -1330,11 +1364,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 AssetEventEnum.ASSET_CPU_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                             LogUtils.info(logger, AssetEventEnum.ASSET_CPU_INSERT.getName() + " {}",
                                 assetCpuList.toString());
+                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CPU_INSERT.getName(),
+                                asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                BusinessPhaseEnum.WAIT_SETTING));
                             assetCpuDao.insertBatch(insertCpuList);
                         }
                         if (CollectionUtils.isNotEmpty(updateCpuList)) {
                             LogHandle.log(assetCpuList, AssetEventEnum.ASSET_CPU_UPDATE.getName(),
                                 AssetEventEnum.ASSET_CPU_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CPU_UPDATE.getName(),
+                                asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                BusinessPhaseEnum.WAIT_SETTING));
                             LogUtils.info(logger, AssetEventEnum.ASSET_CPU_UPDATE.getName() + " {}",
                                 assetCpuList.toString());
                             assetCpuDao.updateBatch(updateCpuList);
@@ -1346,6 +1386,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 先删除再新增
                     LogHandle.log(asset.getId(), AssetEventEnum.ASSET_NETWORK_DELETE.getName(),
                         AssetEventEnum.ASSET_NETWORK_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils
+                        .recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_DELETE.getName(), asset.getId(),
+                            asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
                     LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DELETE.getName() + " {}", asset.getStringId());
                     assetNetworkCardDao.deleteByAssetId(asset.getId());
                     List<AssetNetworkCardRequest> assetNetworkCardRequestList = assetOuterRequest.getNetworkCard();
@@ -1387,6 +1430,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 AssetEventEnum.ASSET_NETWORK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                             LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_INSERT.getName() + " {}",
                                 insertNetworkList.toString());
+                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_INSERT.getName(),
+                                asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                BusinessPhaseEnum.WAIT_SETTING));
                             assetNetworkCardDao.insertBatch(insertNetworkList);
                         }
                         if (CollectionUtils.isNotEmpty(updateNetworkList)) {
@@ -1394,6 +1440,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 AssetEventEnum.ASSET_NETWORK_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
                             LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_UPDATE.getName() + " {}",
                                 updateNetworkList.toString());
+                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_UPDATE.getName(),
+                                asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                BusinessPhaseEnum.WAIT_SETTING));
                             assetNetworkCardDao.updateBatch(updateNetworkList);
                         }
                         insertNetworkList.addAll(updateNetworkList);
@@ -1404,6 +1453,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 先删除再新增
                     LogHandle.log(asset.getId(), AssetEventEnum.ASSET_MAINBORAD_DELETE.getName(),
                         AssetEventEnum.ASSET_MAINBORAD_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils
+                        .recordOperLog(new BusinessData(AssetEventEnum.ASSET_MAINBORAD_DELETE.getName(), asset.getId(),
+                            asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
                     LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_DELETE.getName() + " {}", asset.getStringId());
                     assetMainboradDao.deleteByAssetId(asset.getId());
                     List<AssetMainboradRequest> assetMainboradRequest = assetOuterRequest.getMainboard();
@@ -1431,6 +1483,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         if (CollectionUtils.isNotEmpty(insertMainboradList)) {
                             LogHandle.log(insertMainboradList, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(),
                                 AssetEventEnum.ASSET_MAINBORAD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(),
+                                asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                BusinessPhaseEnum.WAIT_SETTING));
                             LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName() + " {}",
                                 insertMainboradList.toString());
                             assetMainboradDao.insertBatch(insertMainboradList);
@@ -1438,6 +1493,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         if (CollectionUtils.isNotEmpty(updateMainboradList)) {
                             LogHandle.log(updateMainboradList, AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName(),
                                 AssetEventEnum.ASSET_MAINBORAD_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName(),
+                                asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                BusinessPhaseEnum.WAIT_SETTING));
                             LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName() + " {}",
                                 updateMainboradList.toString());
                             assetMainboradDao.updateBatch(updateMainboradList);
@@ -1451,6 +1509,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 先删除再新增
                     LogHandle.log(asset.getId(), AssetEventEnum.ASSET_MEMORY_DELETE.getName(),
                         AssetEventEnum.ASSET_MEMORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MEMORY_DELETE.getName(), asset.getId(),
+                        asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
                     LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_DELETE.getName() + " {}", asset.getStringId());
                     assetMemoryDao.deleteByAssetId(asset.getId());
                     if (CollectionUtils.isNotEmpty(assetMemoryRequestList)) {
@@ -1477,6 +1537,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         if (CollectionUtils.isNotEmpty(insertMemoryList)) {
                             LogHandle.log(insertMemoryList, AssetEventEnum.ASSET_MEMORY_INSERT.getName(),
                                 AssetEventEnum.ASSET_MEMORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MEMORY_INSERT.getName(),
+                                asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                BusinessPhaseEnum.WAIT_SETTING));
                             LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_INSERT.getName() + " {}",
                                 insertMemoryList.toString());
                             assetMemoryDao.insertBatch(insertMemoryList);
@@ -1484,6 +1547,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         if (CollectionUtils.isNotEmpty(updateMemoryList)) {
                             LogHandle.log(updateMemoryList, AssetEventEnum.ASSET_MEMORY_UPDATE.getName(),
                                 AssetEventEnum.ASSET_MEMORY_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MEMORY_UPDATE.getName(),
+                                asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                BusinessPhaseEnum.WAIT_SETTING));
                             LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_UPDATE.getName() + " {}",
                                 updateMemoryList.toString());
                             assetMemoryDao.updateBatch(updateMemoryList);
@@ -1495,6 +1561,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 先删除再新增
                     LogHandle.log(asset.getId(), AssetEventEnum.ASSET_DISK_DELETE.getName(),
                         AssetEventEnum.ASSET_DISK_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DISK_DELETE.getName(), asset.getId(),
+                        asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
                     LogUtils.info(logger, AssetEventEnum.ASSET_DISK_DELETE.getName() + " {}", asset.getStringId());
                     assetHardDiskDao.deleteByAssetId(asset.getId());
                     List<AssetHardDiskRequest> assetHardDiskRequestList = assetOuterRequest.getHardDisk();
@@ -1523,6 +1591,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         if (CollectionUtils.isNotEmpty(insertHardDiskList)) {
                             LogHandle.log(insertHardDiskList, AssetEventEnum.ASSET_DISK_INSERT.getName(),
                                 AssetEventEnum.ASSET_DISK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DISK_INSERT.getName(),
+                                asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                BusinessPhaseEnum.WAIT_SETTING));
                             LogUtils.info(logger, AssetEventEnum.ASSET_DISK_INSERT.getName() + " {}",
                                 insertHardDiskList.toString());
                             assetHardDiskDao.insertBatch(insertHardDiskList);
@@ -1530,6 +1601,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         if (CollectionUtils.isNotEmpty(updateHardDiskList)) {
                             LogHandle.log(updateHardDiskList, AssetEventEnum.ASSET_DISK_UPDATE.getName(),
                                 AssetEventEnum.ASSET_DISK_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DISK_UPDATE.getName(),
+                                asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                                BusinessPhaseEnum.WAIT_SETTING));
                             LogUtils.info(logger, AssetEventEnum.ASSET_DISK_UPDATE.getName() + " {}",
                                 updateHardDiskList.toString());
                             assetHardDiskDao.updateBatch(updateHardDiskList);
@@ -1541,6 +1615,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 7. 更新网络设备信息
                     LogHandle.log(asset.getId(), AssetEventEnum.ASSET_NETWORK_DETAIL_DELETE.getName(),
                         AssetEventEnum.ASSET_NETWORK_DETAIL_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    LogUtils.recordOperLog(
+                        new BusinessData(AssetEventEnum.ASSET_NETWORK_DETAIL_DELETE.getName(), asset.getId(),
+                            asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
                     LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DETAIL_DELETE.getName() + " {}",
                         asset.getStringId());
                     AssetNetworkEquipmentRequest networkEquipment = assetOuterRequest.getNetworkEquipment();
@@ -1564,6 +1641,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetNetworkEquipment.setGmtModified(System.currentTimeMillis());
                         LogHandle.log(assetNetworkEquipment, AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getName(),
                             AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getName(),
+                            asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                            BusinessPhaseEnum.WAIT_SETTING));
                         LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getName() + " {}",
                             assetNetworkEquipment.toString());
                         assetNetworkEquipmentDao.update(assetNetworkEquipment);
@@ -1579,6 +1659,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetSafetyEquipment.setGmtModified(System.currentTimeMillis());
                         LogHandle.log(assetSafetyEquipment, AssetEventEnum.ASSET_SAFE_DETAIL_UPDATE.getName(),
                             AssetEventEnum.ASSET_SAFE_DETAIL_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SAFE_DETAIL_UPDATE.getName(),
+                            asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                            BusinessPhaseEnum.WAIT_SETTING));
                         LogUtils.info(logger, AssetEventEnum.ASSET_SAFE_DETAIL_UPDATE.getName() + " {}",
                             assetSafetyEquipment.toString());
                         assetSafetyEquipmentDao.update(assetSafetyEquipment);
@@ -1594,6 +1677,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetStorageMedium.setGmtModified(System.currentTimeMillis());
                         LogHandle.log(assetStorageMedium, AssetEventEnum.ASSET_STORAGE_UPDATE.getName(),
                             AssetEventEnum.ASSET_STORAGE_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_STORAGE_UPDATE.getName(),
+                            asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                            BusinessPhaseEnum.WAIT_SETTING));
                         LogUtils.info(logger, AssetEventEnum.ASSET_STORAGE_UPDATE.getName() + " {}",
                             assetStorageMedium.toString());
                         assetStorageMediumDao.update(assetStorageMedium);
@@ -2263,9 +2349,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
         }
         // 写入业务日志
-        LogHandle.log(computerVos.toString(), AssetEventEnum.ASSET_EXPORT_NET.getName(),
+        LogHandle.log(computerVos.toString(), AssetEventEnum.ASSET_EXPORT_COMPUTER.getName(),
             AssetEventEnum.ASSET_EXPORT_NET.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_NET.getName() + " {}", computerVos.toString());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_COMPUTER.getName(), 0, "", null,
+            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
+        LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_COMPUTER.getName() + " {}", computerVos.toString());
 
         String res = "导入成功" + success + "条。";
         // re += repeat > 0 ? ", " + repeat + "条编号重复" : ",";
@@ -2413,7 +2501,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogHandle.log(networkEquipments.toString(), AssetEventEnum.ASSET_EXPORT_NET.getName(),
             AssetEventEnum.ASSET_EXPORT_NET.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_NET.getName() + " {}", networkEquipments.toString());
-
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_NET.getName(), 0, "", null,
+            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         String re = "导入成功" + success + "条。";
         // re += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // re += error > 0 ? ", " + error + "条数据导入失败" : "";
@@ -2536,6 +2625,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogHandle.log(assetSafetyEquipments.toString(), AssetEventEnum.ASSET_EXPORT_SAFETY.getName(),
             AssetEventEnum.ASSET_EXPORT_SAFETY.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_SAFETY.getName() + " {}", assetSafetyEquipments.toString());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_SAFETY.getName(), 0, "", null,
+            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // res += error > 0 ? ", " + error + "条数据导入失败" : "";
@@ -2670,6 +2761,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogHandle.log(assetStorageMedia.toString(), AssetEventEnum.ASSET_EXPORT_STORAGE.getName(),
             AssetEventEnum.ASSET_EXPORT_STORAGE.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_STORAGE.getName() + " {}", assetStorageMedia.toString());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_STORAGE.getName(), 0, "", null,
+            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // res += error > 0 ? ", " + error + "条数据导入失败" : "";
@@ -2776,6 +2869,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 写入业务日志
         LogHandle.log(assets.toString(), AssetEventEnum.ASSET_EXPORT_OTHERS.getName(),
             AssetEventEnum.ASSET_EXPORT_OTHERS.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_OTHERS.getName(), 0, "", null,
+            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_OTHERS.getName() + " {}", assets.toString());
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
@@ -2859,15 +2954,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<String> pulldownUnconnectedManufacturer() throws Exception {
+    public List<String> pulldownUnconnectedManufacturer(Boolean searchNetworkDevice) throws Exception {
         AssetQuery query = new AssetQuery();
         Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
         List<Integer> categoryCondition = new ArrayList<>();
         List<AssetCategoryModel> all = assetCategoryModelService.getAll();
         for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
-            if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-                categoryCondition.addAll(
-                    assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
+            if (query.getSearchNetworkDevice() == null || !query.getSearchNetworkDevice()) {
+                if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+                    categoryCondition.addAll(
+                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
+                }
             }
             if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
                 categoryCondition.addAll(
@@ -2939,7 +3036,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             schemeDao.insert(scheme);
 
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SCHEME_INSERT.getName(), scheme.getId(), null,
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SCHEME_INSERT.getName(), scheme.getId(), "",
                 scheme, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme);
         }
@@ -2948,8 +3045,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 写入业务日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(),
-            assetOperationRecord.getId(),
-            null, scheme, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            assetOperationRecord.getId(), "", scheme, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}", assetOperationRecord);
         return RespBasicCode.SUCCESS;
     }

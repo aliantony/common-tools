@@ -12,11 +12,10 @@ import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
 import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
-import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
+import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
@@ -66,6 +65,9 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             // 写入业务日志
             LogHandle.log(assetDepartment.toString(), AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName(),
                 AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            // 记录操作日志和运行日志
+            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName(), assetDepartment.getId (), assetDepartment.getName (),
+                    assetDepartment, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName() + " {}", assetDepartment.toString());
         }
         return ActionResponse.success(aesEncoder.encode(assetDepartment.getStringId(), LoginUserUtil.getLoginUser()
@@ -95,6 +97,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             // 写入业务日志
             LogHandle.log(assetDepartment.toString(), AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName(),
                 AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName(), assetDepartment.getId (), assetDepartment.getName (),
+                    assetDepartment, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName() + " {}", assetDepartment.toString());
         }
         return ActionResponse.success(result);
@@ -195,6 +199,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         // 写入业务日志
         LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
             AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), 0, "",
+                null, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
         return ActionResponse.success(result >= 1 ? 1 : 0);
     }
@@ -222,6 +228,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             // 写入业务日志
             LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
                 AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), 0, "",
+                    null, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
         }
         return ActionResponse.success(result);
