@@ -36,7 +36,7 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 安装状态
      */
-    @ApiModelProperty("安装状态 1未配置，2配置中，3已配置")
+    @ApiModelProperty("安装状态 1失败、2成功，3安装中4未安装")
     private Integer       installStatus;
     /**
      * 资产状态
