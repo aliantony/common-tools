@@ -329,13 +329,13 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
 
             // 提取关联软件变更信息
             List<List<Map<String, Object>>> relateSoftewareCompareResult = new ArrayList<>();
-            List<AssetSoftwareRelationRequest> oldSoftwareRelationList = oldAssetOuterRequest
+            /*List<AssetSoftwareRelationRequest> oldSoftwareRelationList = oldAssetOuterRequest
                 .getAssetSoftwareRelationList();
             List<AssetSoftwareRelationRequest> newSoftwareRelationList = newAssetOuterRequest
-                .getAssetSoftwareRelationList();
+                .getAssetSoftwareRelationList();*/
             RelateSoftware oldRelateSoftware = new RelateSoftware();
             RelateSoftware newRelateSoftware = new RelateSoftware();
-            if (newSoftwareRelationList == null && oldSoftwareRelationList != null) {
+            /*if (newSoftwareRelationList == null && oldSoftwareRelationList != null) {
                 for (AssetSoftwareRelationRequest assetSoftwareRelationRequest : oldSoftwareRelationList) {
                     buildSoftwareRelationCompareData(oldRelateSoftware, assetSoftwareRelationRequest);
                     relateSoftewareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
@@ -368,7 +368,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                 // 处理新增的部件
                 processRelateSofwareComponent(relateSoftewareCompareResult, newRelateSoftware, oldRelateSoftware,
                     newSoftwareRelationMap);
-            }
+            }*/
 
             // 合并集合
             if (CollectionUtils.isNotEmpty(assetCommonInoCompareResult)) {

@@ -476,6 +476,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             return null;
         }
         // 获取top5的资产组信息
+        reportQueryRequest.setTopFive(true);
         List<AssetGroupEntity> groupReportEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
 
         if (Objects.nonNull(reportQueryRequest.getTopFive())) {
@@ -484,6 +485,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
             groupReportEntityList.stream().forEach(assetGroupEntity -> groupIds.add(assetGroupEntity.getGroupId()));
             reportQueryRequest.setGroupIds(groupIds);
         }
+
+        // 获取本时间段各资产组新增数量信息
+        List<AssetGroupEntity> addAssetGroupEntityList = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
 
         // 获取新增资产组的统计信息
         reportQueryRequest.setStartTime(null);
@@ -516,10 +520,12 @@ public class AssetReportServiceImpl implements IAssetReportService {
         groupNameList.forEach(groupName -> {
             ReportData reportData = new ReportData();
             reportData.setClassify(groupName);
+            List<Integer> totalNumList = new ArrayList<>();
             List<Integer> addNumList = new ArrayList<>();
 
             dateKeyList.forEach(date -> {
                 Integer num = 0;
+                Integer addNum = 0;
                 Optional<AssetGroupEntity> assetGroupEntityOptional = assetGroupEntities.stream()
                     .filter(assetGroupEntity -> date
                         .equals(assetGroupEntity.getDate().startsWith("0") ? assetGroupEntity.getDate().substring(1)
@@ -528,9 +534,18 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 if (assetGroupEntityOptional.isPresent() && null != assetGroupEntityOptional.get()) {
                     num += assetGroupEntityOptional.get().getGroupCount();
                 }
-                addNumList.add(num);
+                Optional<AssetGroupEntity> addAssetGroupEntityOptional = addAssetGroupEntityList.stream()
+                    .filter(assetGroupEntity -> date.equals(assetGroupEntity.getDate())
+                                                && groupName.equals(assetGroupEntity.getName()))
+                    .findFirst();
+                if (addAssetGroupEntityOptional.isPresent() && null != addAssetGroupEntityOptional.get()) {
+                    addNum = assetGroupEntityOptional.get().getGroupCount();
+                }
+                totalNumList.add(num);
+                addNumList.add(addNum);
             });
-            reportData.setData(addNumList);
+            reportData.setData(totalNumList);
+            reportData.setAdd(addNumList);
             dataList.add(reportData);
         });
         assetReportResponse.setDate(dateValueList);

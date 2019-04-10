@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import com.antiy.asset.entity.*;
+import com.antiy.asset.vo.request.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -43,10 +44,6 @@ import com.antiy.asset.util.*;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.request.AssetImportRequest;
-import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
-import com.antiy.asset.vo.request.AssetSoftwareRequest;
-import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.antiy.common.base.Constants;
@@ -729,6 +726,53 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         List<ConfigRegisterRequest> configRegisterList = new ArrayList<>();
         configRegisterList.add(request);
         return baseLineClient.configRegister(configRegisterList);
+    }
+
+    /**
+     * 处理资产上报的软件数据
+     * @param assetId
+     * @param softwareReportRequestList
+     */
+    @Override
+    public void reportData(Integer assetId, List<AssetSoftwareReportRequest> softwareReportRequestList) {
+        List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(softwareReportRequestList)) {
+            softwareReportRequestList.stream().forEach(softwareReportRequest -> {
+                // 判断软件是否存在
+                Integer softwareId = isExsit(softwareReportRequest.getName(), softwareReportRequest.getVersion());
+                // 不存在该软件，添加软件信息
+                if (Objects.isNull(softwareId)) {
+                    AssetSoftware assetSoftware = BeanConvert.convertBean(softwareReportRequest, AssetSoftware.class);
+                    assetSoftware.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+                    try {
+                        softwareId = assetSoftwareDao.insert(assetSoftware);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                //保存资产软件关系
+                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                assetSoftwareRelation.setAssetId(DataTypeUtils.integerToString(assetId));
+                assetSoftwareRelation.setSoftwareId(DataTypeUtils.integerToString(softwareId));
+                assetSoftwareRelation.setInstallStatus(InstallStatus.SUCCESS.getCode());
+                assetSoftwareRelation.setInstallTime(softwareReportRequest.getInstallTime());
+                assetSoftwareRelation.setInstallType(InstallType.MANUAL.getCode());
+                assetSoftwareRelation
+                        .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
+                assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+                assetSoftwareRelationList.add(assetSoftwareRelation);
+            });
+            //保存资产软件关系
+            assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
+        }
+    }
+
+    /**
+     * 判断软件是否存在
+     * @return
+     */
+    public Integer isExsit(String name, String version) {
+        return assetSoftwareDao.isExsit(name, version);
     }
 
     private Scheme convertScheme(ConfigRegisterRequest registerRequest) {
