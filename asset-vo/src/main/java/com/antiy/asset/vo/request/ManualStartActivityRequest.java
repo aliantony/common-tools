@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.request;
 
+import java.util.List;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -32,6 +34,17 @@ public class ManualStartActivityRequest {
     @ApiModelProperty(value = "流程表单数据,JSON串")
     @NotBlank(message = "流程处理数据不能为空")
     private String formData;
+
+    @ApiModelProperty(value = "配置人员")
+    private List<String> configUserId;
+
+    public List<String> getConfigUserId() {
+        return configUserId;
+    }
+
+    public void setConfigUserId(List<String> configUserId) {
+        this.configUserId = configUserId;
+    }
 
     @ApiModelProperty(value = "流程定义Id")
     @NotNull(message = "流程定义Id不能为空")

@@ -1,14 +1,16 @@
 package com.antiy.asset.vo.request;
 
+import java.util.List;
+
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -203,6 +205,19 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     @ApiModelProperty("描述")
     @Size(message = "描述不能超过128位", max = 128)
     private String            describle;
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
+    private String                  memo;
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
     public Long getFirstEnterNett() {
         return firstEnterNett;
