@@ -1052,7 +1052,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int row;
         Map<String, Object> map = new HashMap<>();
         map.put("ids", ids);
-        map.put("assetStatus", new String[] { targetStatus.toString() });
+        map.put("targetStatus", new String[] { targetStatus.toString() });
         map.put("gmtModified", LoginUserUtil.getLoginUser().getId());
         map.put("modifyUser", System.currentTimeMillis());
         row = assetDao.changeStatus(map);
@@ -1062,8 +1062,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public Integer changeStatusById(String id, Integer targetStatus) throws Exception {
         Map<String, Object> map = new HashMap<>();
-        map.put("ids", new String[] { id });
-        map.put("assetStatus", new String[] { targetStatus.toString() });
+        map.put("id", id);
+        map.put("targetStatus", targetStatus);
         map.put("gmtModified", System.currentTimeMillis());
         if (LoginUserUtil.getLoginUser() != null) {
             map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
@@ -1785,6 +1785,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         otherDeviceEntity.setManufacturer("捷显");
         otherDeviceEntity.setWarranty(System.currentTimeMillis());
         otherDeviceEntity.setNumber("000001");
+        otherDeviceEntity.setImportanceDegree("1");
         dataList.add(otherDeviceEntity);
         return dataList;
     }
@@ -1818,6 +1819,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         safetyEquipmentEntiy.setSerial("ANFRWGDFETYRYF");
         safetyEquipmentEntiy.setLocation("成都市青羊区");
         safetyEquipmentEntiy.setHouseLocation("501机房004号");
+        safetyEquipmentEntiy.setImportanceDegree("1");
         dataList.add(safetyEquipmentEntiy);
         return dataList;
     }
@@ -1855,6 +1857,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         storageDeviceEntity.setUser("留小查");
         storageDeviceEntity.setSerial("ANFRWGDFETYRYF");
         storageDeviceEntity.setLocation("成都市青羊区");
+        storageDeviceEntity.setImportanceDegree("1");
         dataList.add(storageDeviceEntity);
         return dataList;
 
@@ -1901,6 +1904,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         networkDeviceEntity.setCpuSize(3);
         networkDeviceEntity.setInterfaceSize(4);
         networkDeviceEntity.setSubnetMask("255.255.252.0");
+        networkDeviceEntity.setImportanceDegree("1");
         networkDeviceEntity.setMemo("该产品的基本原理是通过信号整形，增加敏感度来实现距离延长的，其电压、波形完全符合以太网国际标准，不会对网络带来危害，请放心在五类或超五类非屏蔽网线上使用。");
         dataList.add(networkDeviceEntity);
         return dataList;
@@ -2260,7 +2264,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         // 写入业务日志
         LogHandle.log(computerVos.toString(), AssetEventEnum.ASSET_EXPORT_NET.getName(),
-                AssetEventEnum.ASSET_EXPORT_NET.getStatus(), ModuleEnum.ASSET.getCode());
+            AssetEventEnum.ASSET_EXPORT_NET.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_NET.getName() + " {}", computerVos.toString());
 
         String res = "导入成功" + success + "条。";
@@ -2407,7 +2411,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         // 写入业务日志
         LogHandle.log(networkEquipments.toString(), AssetEventEnum.ASSET_EXPORT_NET.getName(),
-                AssetEventEnum.ASSET_EXPORT_NET.getStatus(), ModuleEnum.ASSET.getCode());
+            AssetEventEnum.ASSET_EXPORT_NET.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_NET.getName() + " {}", networkEquipments.toString());
 
         String re = "导入成功" + success + "条。";
@@ -2530,7 +2534,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         // 写入业务日志
         LogHandle.log(assetSafetyEquipments.toString(), AssetEventEnum.ASSET_EXPORT_SAFETY.getName(),
-                AssetEventEnum.ASSET_EXPORT_SAFETY.getStatus(), ModuleEnum.ASSET.getCode());
+            AssetEventEnum.ASSET_EXPORT_SAFETY.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_SAFETY.getName() + " {}", assetSafetyEquipments.toString());
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
@@ -2664,7 +2668,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         // 写入业务日志
         LogHandle.log(assetStorageMedia.toString(), AssetEventEnum.ASSET_EXPORT_STORAGE.getName(),
-                AssetEventEnum.ASSET_EXPORT_STORAGE.getStatus(), ModuleEnum.ASSET.getCode());
+            AssetEventEnum.ASSET_EXPORT_STORAGE.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_STORAGE.getName() + " {}", assetStorageMedia.toString());
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
@@ -2771,7 +2775,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 写入业务日志
         LogHandle.log(assets.toString(), AssetEventEnum.ASSET_EXPORT_OTHERS.getName(),
-                AssetEventEnum.ASSET_EXPORT_OTHERS.getStatus(), ModuleEnum.ASSET.getCode());
+            AssetEventEnum.ASSET_EXPORT_OTHERS.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_OTHERS.getName() + " {}", assets.toString());
         String res = "导入成功" + success + "条";
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
@@ -2788,8 +2792,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     private void importActivity(List<ManualStartActivityRequest> manualStartActivityRequests, String stringId) {
-         ActionResponse actionResponse = areaClient.queryCdeAndAreaId ("zichanguanliyuan");
-//        ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
+        ActionResponse actionResponse = areaClient.queryCdeAndAreaId("zichanguanliyuan");
+        // ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
         List<LinkedHashMap> mapList = (List<LinkedHashMap>) actionResponse.getBody();
         StringBuilder stringBuilder = new StringBuilder();
 

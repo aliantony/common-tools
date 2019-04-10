@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -230,12 +231,23 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     @Override
     public List<AssetLinkedCountResponse> queryAssetLinkedCountList(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
-        // 计算设备下所有品类型号
-        assetLinkRelationQuery.setPcCategoryModels(
-            assetCategoryModelService.findAssetCategoryModelIdsById(assetLinkRelationQuery.getPcRootCategoryModel()));
-        // 网络设备下所有品类型号
-        assetLinkRelationQuery.setNetCategoryModels(
-            assetCategoryModelService.findAssetCategoryModelIdsById(assetLinkRelationQuery.getNetRootCategoryModel()));
+        Map<String, String> category = assetCategoryModelService.getSecondCategoryMap();
+        category.forEach((k, v) -> {
+            try {
+                if (v.equals("计算设备")) {
+                    // 计算设备下所有品类型号
+                    assetLinkRelationQuery.setPcCategoryModels(
+                        assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
+                } else if (v.equals("网络设备")) {
+                    // 网络设备下所有品类型号
+                    assetLinkRelationQuery.setNetCategoryModels(
+                        assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
+                }
+            } catch (Exception e) {
+                logger.error("获取{}子品类型号出错", v, e.getStackTrace());
+            }
+
+        });
         assetLinkRelationQuery
             .setAreaIds(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()
                 : Lists.newArrayList());
