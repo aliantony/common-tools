@@ -1067,11 +1067,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         map.put("gmtModified", System.currentTimeMillis());
         if (LoginUserUtil.getLoginUser() != null) {
             map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
+            return assetDao.changeStatus(map);
         } else {
             LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName() + "{}", "用户获取失败");
+            throw new BusinessException("用户获取失败");
         }
-
-        return assetDao.changeStatus(map);
     }
 
     @Override
@@ -2912,21 +2912,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
         Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
-        // 写入方案
-        if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
-            JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
-        }
-        scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
-        scheme.setAssetId(assetId);
-        schemeDao.insert(scheme);
-        // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SCHEME_INSERT.getName(), scheme.getId(), null,
-            scheme, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
-        LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme);
         // 2.保存流程
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetObjectId(assetId);
-        assetOperationRecord.setSchemeId(scheme.getId());
+
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
         assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_CONFIG_BASELINE.getMsg());
@@ -2935,12 +2924,29 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+
+        // 写入方案
+        if (scheme != null && scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
+            assetOperationRecord.setSchemeId(scheme.getId());
+
+            JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+            scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
+            scheme.setAssetId(assetId);
+            schemeDao.insert(scheme);
+
+            // 记录操作日志和运行日志
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SCHEME_INSERT.getName(), scheme.getId(), null,
+                scheme, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme);
+        }
+
         assetOperationRecordDao.insert(assetOperationRecord);
 
         // 写入业务日志
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(), scheme.getId(),
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(),
+            assetOperationRecord.getId(),
             null, scheme, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-        LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}", scheme);
+        LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}", assetOperationRecord);
         return "配置成功";
     }
 
