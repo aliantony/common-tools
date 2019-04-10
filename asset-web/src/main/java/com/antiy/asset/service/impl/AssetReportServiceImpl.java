@@ -830,12 +830,13 @@ public class AssetReportServiceImpl implements IAssetReportService {
         AssetReportTableResponse assetReportTableResponse = new AssetReportTableResponse();
         // 设置标题
         assetReportTableResponse.setFormName("资产组" + title + "总数统计");
-        // 设置表格头对象
+        // 设置表格头对象,按格式要求首元素留空
         List<ReportTableHead> reportTableHeadList = new ArrayList<>();
         ReportTableHead reportTableHeadFirst = new ReportTableHead();
         reportTableHeadFirst.setName("");
         reportTableHeadFirst.setKey("classifyName");
         reportTableHeadList.add(reportTableHeadFirst);
+        // 添加时间节点信息
         for (Map.Entry<String, String> entry : timeMap.entrySet()) {
             ReportTableHead reportTableHead = new ReportTableHead();
             reportTableHead.setKey(entry.getKey());
@@ -868,7 +869,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 addRowsResult.add(initaddMap);
             }
         }
-
         // 获得新增的数据
         List<Map<String, String>> addRows = new ArrayList<>();
         for (AssetGroupEntity assetGroupEntity : assetGroupEntities) {
@@ -908,6 +908,23 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 }
             }
         }
+        // 最后一行新增的数据
+        Map<String, String> addMap = new HashMap<>(timeMap.size() + 1);
+        addMap.put("classifyName", "新增数量");
+        // 根据时间节点遍历设置数据
+        for (Map.Entry<String, String> entry : timeMap.entrySet()) {
+            Integer addNum = 0;
+            for (AssetGroupEntity assetGroupEntity : assetGroupEntities) {
+                // 当前时间节点下的数量(不考虑类型)全部相加
+                if (assetGroupEntity.getDate().equals(entry.getKey())) {
+                    addMap.put(entry.getKey(), assetGroupEntity.getGroupCount().toString());
+                    addNum += assetGroupEntity.getGroupCount();
+                }
+            }
+            addMap.put(entry.getKey(), addNum.toString());
+        }
+        rows.add(addMap);
+
         assetReportTableResponse.setRows(rows);
         return assetReportTableResponse;
     }
