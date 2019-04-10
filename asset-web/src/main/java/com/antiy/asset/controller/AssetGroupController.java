@@ -143,7 +143,7 @@ public class AssetGroupController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/unconnectedGroupInfo", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:group:queryGroupInfo')")
-    public ActionResponse<List<SelectResponse>> queryUnconnectedGroupInfo() throws Exception {
-        return ActionResponse.success(iAssetGroupService.queryUnconnectedGroupInfo());
+    public ActionResponse<List<SelectResponse>> queryUnconnectedGroupInfo(Boolean search) throws Exception {
+        return ActionResponse.success(iAssetGroupService.queryUnconnectedGroupInfo(search));
     }
 }
