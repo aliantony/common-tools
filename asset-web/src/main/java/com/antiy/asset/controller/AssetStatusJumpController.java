@@ -79,7 +79,7 @@ public class AssetStatusJumpController {
     @ApiOperation(value = "软件配置使用", notes = "传入实体对象信息")
 //    @PreAuthorize("hasAuthority('asset:statusjump')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SoftwareConfigRequest.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/configurateSoftware", method = RequestMethod.POST)
+    @RequestMapping(value = "/baseline/configurateSoftware", method = RequestMethod.POST)
     public ActionResponse configurateSoftware(@ApiParam(value = "softwareConfigRequest") @RequestBody(required = false) SoftwareConfigRequest softwareConfigRequest) throws Exception {
         return ActionResponse.success(softwareRelationService.configurateSoftware(softwareConfigRequest));
     }
