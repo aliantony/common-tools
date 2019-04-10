@@ -90,4 +90,11 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @return
      */
     Integer queryPortSize(@Param(value = "id") Integer id);
+
+    /**
+     * 资产通联数量
+     * @param assetLinkRelationQuery
+     * @return
+     */
+    Integer queryAssetLinkedCount(AssetLinkRelationQuery assetLinkRelationQuery);
 }

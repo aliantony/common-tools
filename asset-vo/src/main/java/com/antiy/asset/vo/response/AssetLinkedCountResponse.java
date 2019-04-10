@@ -18,8 +18,13 @@ public class AssetLinkedCountResponse extends BaseResponse {
     /**
      * 资产名称
      */
-    @ApiModelProperty("资产id")
+    @ApiModelProperty("资产名称")
     private String  name;
+    /**
+     * 资产编号
+     */
+    @ApiModelProperty("资产编号")
+    private String  number;
     /**
      * 资产品类型号
      */
@@ -40,6 +45,14 @@ public class AssetLinkedCountResponse extends BaseResponse {
      */
     @ApiModelProperty("未绑定数量")
     private Integer noBind;
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
 
     public String getAssetId() {
         return assetId;
@@ -91,8 +104,8 @@ public class AssetLinkedCountResponse extends BaseResponse {
 
     @Override
     public String toString() {
-        return "AssetLinkedCountResponse{" + "assetId='" + assetId + '\'' + ", name='" + name + '\''
-               + ", categoryModel='" + categoryModel + '\'' + ", categoryModelName='" + categoryModelName + '\''
-               + ", canBind=" + canBind + ", noBind=" + noBind + '}';
+        return "AssetLinkedCountResponse{" + "assetId='" + assetId + '\'' + ", name='" + name + '\'' + ", number='"
+               + number + '\'' + ", categoryModel='" + categoryModel + '\'' + ", categoryModelName='"
+               + categoryModelName + '\'' + ", canBind=" + canBind + ", noBind=" + noBind + '}';
     }
 }
