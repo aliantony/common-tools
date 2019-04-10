@@ -908,10 +908,7 @@
         asset_status = #{targetStatus},
         gmt_modified = #{gmtModified},
         modify_user = #{modifyUser}
-        where `id` in
-        <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
-            #{id}
-        </foreach>
+        where `id` = #{id}
     </update>
 
     <select id="checkRepeatAsset" resultType="com.antiy.asset.entity.Asset" parameterType="java.util.List">

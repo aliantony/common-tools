@@ -1062,8 +1062,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public Integer changeStatusById(String id, Integer targetStatus) throws Exception {
         Map<String, Object> map = new HashMap<>();
-        map.put("ids", new String[] { id });
-        map.put("targetStatus", new String[] { targetStatus.toString() });
+        map.put("id", id);
+        map.put("targetStatus", targetStatus);
         map.put("gmtModified", System.currentTimeMillis());
         if (LoginUserUtil.getLoginUser() != null) {
             map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
