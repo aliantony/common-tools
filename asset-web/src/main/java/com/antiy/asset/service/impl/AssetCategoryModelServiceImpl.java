@@ -251,12 +251,12 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @param types 4-计算设备 5-网络设备 6-存储设备 7-安全设备 8-其他设备
      * @return
      */
-    public AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types) throws Exception {
+    public AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types,
+                                                                  Map<String, String> initMap) throws Exception {
         checkParameterTypes(types);
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
         query.setPageSize(Constants.ALL_PAGE);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
-        Map<String, String> initMap = getSecondCategoryMap();
         AssetCategoryModelNodeResponse assetCategoryModelNodeResponse = getAssetCategoryModelNodeResponse(
             assetCategoryModels);
         if (assetCategoryModelNodeResponse != null) {
@@ -293,7 +293,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                 category[i++] = entry.getKey();
             }
         }
-        return querySecondCategoryNode(category);
+        return querySecondCategoryNode(category, secondCategoryMap);
     }
 
     private void checkParameterTypes(String[] types) {

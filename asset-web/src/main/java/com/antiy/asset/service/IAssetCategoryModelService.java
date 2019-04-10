@@ -78,9 +78,10 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
     /**
      * 查询二级品类组合树 若参数为4和5 则结果为硬件(根节点)-(计算设备+网络设备) 树
      * @param types 4-计算设备 5-网络设备 6-存储设备 7-安全设备 8-其他设备
+     * @param initMap 二级品类 id 和 name的映射 若没有这个参数 可直接调用getSecondCategoryMap方法作为传参
      * @return
      */
-    AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types) throws Exception;
+    AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types, Map<String, String> initMap) throws Exception;
 
     /**
      * 通过名称查询下一级的品类
