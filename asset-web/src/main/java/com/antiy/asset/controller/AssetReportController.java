@@ -114,7 +114,7 @@ public class AssetReportController {
     }
 
     /**
-     * 根据时间条件查询分类统计资产新增数量
+     * 根据时间条件查询资产组统计资产总数及新增数量
      *
      * @return actionResponse
      */
@@ -125,21 +125,6 @@ public class AssetReportController {
     public ActionResponse getAssetConutWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
         reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         return ActionResponse.success(iAssetReportService.getAssetConutWithGroup(reportQueryRequest));
-    }
-
-    /**
-     * 根据资产组查询资产新增数量信息
-     *
-     * @param reportQueryRequest
-     * @return
-     * @throws Exception
-     */
-    @ApiOperation(value = "(未用)按资产组查询资产新增数量信息", notes = "根据资产组查询资产新增数量信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/groupNewAsset", method = RequestMethod.GET)
-    public ActionResponse getNewAssetWithGroup(@ApiParam("报表查询对象") ReportQueryRequest reportQueryRequest) throws Exception {
-        reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
-        return ActionResponse.success(iAssetReportService.getNewAssetWithGroup(reportQueryRequest));
     }
 
     /**
