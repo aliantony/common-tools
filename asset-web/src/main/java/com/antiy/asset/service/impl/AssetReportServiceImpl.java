@@ -45,7 +45,7 @@ import com.antiy.common.utils.ParamterExceptionUtils;
  * @author zhangyajun
  * @create 2019-03-26 13:41
  **/
-@Transactional(rollbackFor = RuntimeException.class)
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class AssetReportServiceImpl implements IAssetReportService {
     private Logger              logger = LogUtils.get(this.getClass());

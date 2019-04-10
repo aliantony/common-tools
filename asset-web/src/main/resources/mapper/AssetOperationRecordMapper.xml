@@ -166,7 +166,8 @@
         </if>
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetOperationRecord">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetOperationRecord" useGeneratedKeys="true"
+            keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">

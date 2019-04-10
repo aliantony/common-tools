@@ -1,5 +1,35 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -23,39 +53,13 @@ import com.antiy.common.config.kafka.KafkaConfig;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -65,7 +69,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetService {
-
+    private Logger                                                             logger   = LogUtils.get(this.getClass());
     @Resource
     private AssetDao                                                           assetDao;
     @Resource
@@ -140,8 +144,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private ActivityClient                                                     activityClient;
     @Resource
     private AreaClient                                                         areaClient;
-    private static final Logger                                                logger   = LogUtils
-        .get(AssetServiceImpl.class);
     @Resource
     private AesEncoder                                                         aesEncoder;
     @Resource
@@ -782,6 +784,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     /**
      * 通联设置的资产查询 与普通资产查询类似， 不同点在于品类型号显示二级品类， 只查已入网，网络设备和计算设备的资产,且会去掉通联表中已存在的资产
      */
+    @Override
     public PageResult<AssetResponse> findUnconnectedAsset(AssetQuery query) throws Exception {
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
@@ -1061,9 +1064,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Map<String, Object> map = new HashMap<>();
         map.put("ids", new String[] { id });
         map.put("assetStatus", new String[] { targetStatus.toString() });
-        map.put("gmtModified", LoginUserUtil.getLoginUser().getId());
-        map.put("modifyUser", System.currentTimeMillis());
-        return assetDao.changeStatus(map);
+        map.put("gmtModified", System.currentTimeMillis());
+        if (LoginUserUtil.getLoginUser() != null) {
+            map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
+            return assetDao.changeStatus(map);
+        } else {
+            LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName() + "{}", "用户获取失败");
+            throw new BusinessException("用户获取失败");
+        }
     }
 
     @Override
@@ -2846,6 +2854,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
+    @Override
     public List<String> pulldownUnconnectedManufacturer() throws Exception {
         AssetQuery query = new AssetQuery();
         Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
@@ -2886,29 +2895,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    @Transactional
-    public String changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception {
+    @Transactional(rollbackFor = Exception.class)
+    public RespBasicCode changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception {
         SchemeRequest schemeRequest = assetStatusJumpRequst.getSchemeRequest();
-        // 修改资产状态
         String assetId = assetStatusJumpRequst.getAssetId();
-        this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
-        Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
-        // 写入方案
-        if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
-            JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+        // 修改资产状态
+        if (AssetStatusEnum.WAIT_SETTING.getCode().equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
+            this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
+        } else if (AssetStatusEnum.WAIT_VALIDATE.getCode()
+            .equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
+            ParamterExceptionUtils.isNull(assetStatusJumpRequst.getAgree(), "agree不能为空");
+            if (assetStatusJumpRequst.getAgree()) {
+                this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
+            } else {
+                this.changeStatusById(assetId, AssetStatusEnum.WAIT_SETTING.getCode());
+            }
         }
-        scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
-        scheme.setAssetId(assetId);
-        schemeDao.insert(scheme);
-        // 写入业务日志
-        LogHandle.log(scheme.toString(), AssetEventEnum.ASSET_SCHEME_INSERT.getName(),
-            AssetEventEnum.ASSET_SCHEME_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme.toString());
-
+        Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
         // 2.保存流程
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetObjectId(assetId);
-        assetOperationRecord.setSchemeId(scheme.getId());
+
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
         assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_CONFIG_BASELINE.getMsg());
@@ -2917,14 +2924,30 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+
+        // 写入方案
+        if (scheme != null && scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
+            assetOperationRecord.setSchemeId(scheme.getId());
+
+            JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+            scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
+            scheme.setAssetId(assetId);
+            schemeDao.insert(scheme);
+
+            // 记录操作日志和运行日志
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SCHEME_INSERT.getName(), scheme.getId(), null,
+                scheme, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme);
+        }
+
         assetOperationRecordDao.insert(assetOperationRecord);
 
         // 写入业务日志
-        LogHandle.log(assetOperationRecord.toString(), AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(),
-            AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
-            assetOperationRecord.toString());
-        return "配置成功";
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(),
+            assetOperationRecord.getId(),
+            null, scheme, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}", assetOperationRecord);
+        return RespBasicCode.SUCCESS;
     }
 
     /**

@@ -37,7 +37,7 @@ import com.antiy.common.utils.LoginUserUtil;
  * @author zhangyajun
  * @since 2019-01-02
  */
-@Transactional(rollbackFor = RuntimeException.class)
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements IAssetUserService {
 

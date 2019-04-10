@@ -63,8 +63,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
         checkAssetIp(request, assetLinkRelation);
         assetLinkRelationDao.insert(assetLinkRelation);
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LABEL_INSERT.getName(),
-                assetLinkRelation.getId(), null, assetLinkRelation, BusinessModuleEnum.HARD_ASSET, null));
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LABEL_INSERT.getName(), assetLinkRelation.getId(),
+            null, assetLinkRelation, BusinessModuleEnum.HARD_ASSET, null));
         LogUtils.info(logger, AssetEventEnum.ASSET_LINK_RELATION_INSERT.getName() + "{}", assetLinkRelation);
         return assetLinkRelation.getStringId();
     }
@@ -99,7 +99,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         assetLinkRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetLinkRelation.setGmtModified(System.currentTimeMillis());
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LINK_RELATION_UPDATE.getName(),
-                assetLinkRelation.getId(), null, assetLinkRelation, BusinessModuleEnum.HARD_ASSET, null));
+            assetLinkRelation.getId(), null, assetLinkRelation, BusinessModuleEnum.HARD_ASSET, null));
         LogUtils.info(logger, AssetEventEnum.ASSET_LINK_RELATION_UPDATE.getName() + "{}", assetLinkRelation);
         return assetLinkRelationDao.update(assetLinkRelation).toString();
     }
@@ -130,7 +130,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     public String deleteAssetLinkRelationById(BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LINK_RELATION_DELETE.getName(),
-                baseRequest.getId(), null, baseRequest, BusinessModuleEnum.SOFTWARE_ASSET, null));
+            baseRequest.getId(), null, baseRequest, BusinessModuleEnum.SOFTWARE_ASSET, null));
         LogUtils.info(logger, AssetEventEnum.ASSET_LINK_RELATION_DELETE.getName() + "{}", baseRequest.getStringId());
 
         return assetLinkRelationDao.deleteById(baseRequest.getStringId()).toString();
@@ -215,20 +215,27 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     public PageResult<AssetLinkedCountResponse> queryAssetLinkedCountPage(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         List<AssetLinkedCountResponse> assetLinkedCountResponseList = this
             .queryAssetLinkedCountList(assetLinkRelationQuery);
-        if (assetLinkedCountResponseList.size() <= 0) {
+        if (CollectionUtils.isEmpty(assetLinkedCountResponseList)) {
             return new PageResult<AssetLinkedCountResponse>(assetLinkRelationQuery.getPageSize(), 0,
                 assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
         }
         return new PageResult<AssetLinkedCountResponse>(assetLinkRelationQuery.getPageSize(),
-            assetLinkedCountResponseList.size(), assetLinkRelationQuery.getCurrentPage(), assetLinkedCountResponseList);
+            this.queryAssetLinkedCount(assetLinkRelationQuery), assetLinkRelationQuery.getCurrentPage(),
+            assetLinkedCountResponseList);
+    }
+
+    private Integer queryAssetLinkedCount(AssetLinkRelationQuery assetLinkRelationQuery) {
+        return assetLinkRelationDao.queryAssetLinkedCount(assetLinkRelationQuery);
     }
 
     @Override
     public List<AssetLinkedCountResponse> queryAssetLinkedCountList(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         // 计算设备下所有品类型号
-        assetLinkRelationQuery.setPcCategoryModels(assetCategoryModelService.findAssetCategoryModelIdsById(4));
+        assetLinkRelationQuery.setPcCategoryModels(
+            assetCategoryModelService.findAssetCategoryModelIdsById(assetLinkRelationQuery.getPcRootCategoryModel()));
         // 网络设备下所有品类型号
-        assetLinkRelationQuery.setNetCategoryModels(assetCategoryModelService.findAssetCategoryModelIdsById(5));
+        assetLinkRelationQuery.setNetCategoryModels(
+            assetCategoryModelService.findAssetCategoryModelIdsById(assetLinkRelationQuery.getNetRootCategoryModel()));
         assetLinkRelationQuery
             .setAreaIds(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()
                 : Lists.newArrayList());
@@ -257,16 +264,28 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         return BeanConvert.convert(assetResponseList, AssetLinkRelationResponse.class);
     }
 
+    public Integer queryLinkedCountAssetByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) {
+        ParamterExceptionUtils.isBlank(assetLinkRelationQuery.getPrimaryKey(), "请选择资产");
+        Integer portSize = assetLinkRelationDao
+            .queryPortSize(DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()));
+        List<Integer> portCount = Lists.newArrayList();
+        for (int i = 1; i <= portSize; i++) {
+            portCount.add(i);
+        }
+        return assetLinkRelationDao.queryLinkedCountAssetByAssetId(
+            DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()), portCount);
+    }
+
     @Override
     public PageResult<AssetLinkRelationResponse> queryLinkedAssetPageByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) {
         List<AssetLinkRelationResponse> assetLinkRelationResponseList = this
             .queryLinkedAssetListByAssetId(assetLinkRelationQuery);
-        if (assetLinkRelationResponseList.size() <= 0) {
+        if (CollectionUtils.isEmpty(assetLinkRelationResponseList)) {
             return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(), 0,
                 assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
         }
         return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(),
-            assetLinkRelationResponseList.size(), assetLinkRelationQuery.getCurrentPage(),
+            this.queryLinkedCountAssetByAssetId(assetLinkRelationQuery), assetLinkRelationQuery.getCurrentPage(),
             assetLinkRelationResponseList);
     }
 

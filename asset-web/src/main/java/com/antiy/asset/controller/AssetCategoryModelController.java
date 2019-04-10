@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.query.AssetQuery;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -178,7 +179,20 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/query/secondTypeNode", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:querySecondCategoryNode')")
     public ActionResponse querySecondCategoryNode(@ApiParam(value = "4-计算设备 5-网络设备 6-存储设备 7-安全设备 8-其他设备") String[] types) throws Exception {
-        ParamterExceptionUtils.isNull(types,"types不能为null");
+        ParamterExceptionUtils.isNull(types, "types不能为null");
         return ActionResponse.success(iAssetCategoryModelService.querySecondCategoryNode(types));
+    }
+
+    /**
+     * 品类树查询
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过计算设备和安全设备树", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/computeNetNode", method = RequestMethod.GET)
+    // @PreAuthorize(value = "hasAuthority('asset:categorymodel:querySecondCategoryNode')")
+    public ActionResponse queryComputeAndNetCategoryNode() throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.queryComputeAndNetCategoryNode());
     }
 }

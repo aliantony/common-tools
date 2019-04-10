@@ -39,7 +39,12 @@ public class CountTypeUtil {
             setResultMap(maxNum, list, enumCountResponses);
             return enumCountResponses;
         }
-        return null;
+        EnumCountResponse enumCountResponse = new EnumCountResponse();
+        enumCountResponse.setMsg("");
+        enumCountResponse.setNumber(0);
+        List<EnumCountResponse> responses = new ArrayList<>();
+        responses.add(enumCountResponse);
+        return responses;
     }
 
     /**

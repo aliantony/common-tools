@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
-import com.antiy.asset.entity.*;
-import com.antiy.asset.vo.request.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -29,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.intergration.BaseLineClient;
@@ -44,6 +43,7 @@ import com.antiy.asset.util.*;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.antiy.common.base.Constants;
@@ -55,28 +55,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
-import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -85,7 +63,7 @@ import static com.antiy.biz.file.FileHelper.logger;
  * @since 2019-01-02
  */
 @Service
-@Transactional(rollbackFor = RuntimeException.class)
+@Transactional(rollbackFor = Exception.class)
 public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> implements IAssetSoftwareService {
     @Resource
     private AssetSoftwareDao                                                 assetSoftwareDao;
@@ -143,7 +121,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private BaseLineClient                                                   baseLineClient;
     @Resource
     private SchemeDao                                                        schemeDao;
-
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -471,7 +448,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             List<Integer> categoryModels = Lists.newArrayList();
             for (int i = 0; i < query.getCategoryModels().length; i++) {
                 categoryModels.addAll(iAssetCategoryModelService.findAssetCategoryModelIdsById(
-                        com.antiy.common.utils.DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
+                    com.antiy.common.utils.DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
             }
             query.setCategoryModels(com.antiy.common.utils.DataTypeUtils.integerArrayToStringArray(categoryModels));
         }
@@ -480,7 +457,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         if (count <= 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
         }
-
 
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
             this.findListAssetSoftware(query, waitingTasks));
@@ -710,8 +686,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery) throws Exception {
+        List<AssetSoftwareInstallResponse> assetSoftwareInstallResponseList = this.findAssetInstallList(softwareQuery);
+        if (CollectionUtils.isEmpty(assetSoftwareInstallResponseList)) {
+            return new PageResult<>(softwareQuery.getPageSize(), 0, softwareQuery.getCurrentPage(),
+                Lists.newArrayList());
+        }
         return new PageResult<>(softwareQuery.getPageSize(), this.findAssetInstallCount(softwareQuery),
-            softwareQuery.getCurrentPage(), this.findAssetInstallList(softwareQuery));
+            softwareQuery.getCurrentPage(), assetSoftwareInstallResponseList);
     }
 
     @Override
@@ -750,7 +731,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                         e.printStackTrace();
                     }
                 }
-                //保存资产软件关系
+                // 保存资产软件关系
                 AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                 assetSoftwareRelation.setAssetId(DataTypeUtils.integerToString(assetId));
                 assetSoftwareRelation.setSoftwareId(DataTypeUtils.integerToString(softwareId));
@@ -758,11 +739,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 assetSoftwareRelation.setInstallTime(softwareReportRequest.getInstallTime());
                 assetSoftwareRelation.setInstallType(InstallType.MANUAL.getCode());
                 assetSoftwareRelation
-                        .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
+                    .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
                 assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                 assetSoftwareRelationList.add(assetSoftwareRelation);
             });
-            //保存资产软件关系
+            // 保存资产软件关系
             assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
         }
     }
@@ -778,7 +759,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private Scheme convertScheme(ConfigRegisterRequest registerRequest) {
         Scheme scheme = new Scheme();
         scheme.setContent(registerRequest.getSuggest());
-        if (AssetTypeEnum.SOFTWARE.getCode().equals(registerRequest.getSource())) {
+        if (AssetTypeEnum.SOFTWARE.getCode().equals(DataTypeUtils.stringToInteger(registerRequest.getSource()))) {
             scheme.setAssetNextStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
             scheme.setSchemeSource(2);
         } else {
@@ -790,8 +771,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         scheme.setGmtCreate(System.currentTimeMillis());
         return scheme;
     }
-
-
 
     private AssetOperationRecord convertRecord(ConfigRegisterRequest request) {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
@@ -901,8 +880,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 assetOperationRecord.setGmtCreate(System.currentTimeMillis());
                 assetOperationRecord.setOriginStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
                 assetOperationRecordDao.insert(assetOperationRecord);
-                 ActionResponse actionResponse = areaClient.queryCdeAndAreaId ("zichanguanliyuan");
-//                ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
+                ActionResponse actionResponse = areaClient.queryCdeAndAreaId("zichanguanliyuan");
+                // ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
                 List<LinkedHashMap> mapList = (List<LinkedHashMap>) actionResponse.getBody();
                 StringBuilder stringBuilder = new StringBuilder();
 

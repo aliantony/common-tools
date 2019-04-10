@@ -7,6 +7,11 @@
         <artifactId>csos-parent</artifactId>
         <version>1.0.2-SNAPSHOT</version>
     </parent>
+
+    <artifactId>asset-vo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <modelVersion>4.0.0</modelVersion>
+
     <dependencies>
         <dependency>
             <groupId>com.antiy</groupId>
@@ -24,8 +29,15 @@
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
     </dependencies>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.antiy</groupId>
-    <artifactId>asset-vo</artifactId>
-    <version>1.0-SNAPSHOT</version>
+
+    <repositories>
+        <repository>
+            <id>cd-nexus</id>
+            <url>http://10.240.50.102:8081/repository/maven-public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
