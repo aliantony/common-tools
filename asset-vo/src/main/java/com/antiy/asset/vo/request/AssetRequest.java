@@ -103,7 +103,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("操作系统。基准获取")
     @Size(message = "资产操作系统不能超过16位", max = 16)
-    @NotBlank(message = "资产操作系统不能为空")
+    // @NotBlank(message = "资产操作系统不能为空")
     private String                  operationSystem;
     /**
      * 系统位数
