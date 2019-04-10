@@ -486,10 +486,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
             reportQueryRequest.setGroupIds(groupIds);
         }
 
-        // 获取本时间段各资产组新增数量信息
+        // 获取所选本时间段各资产组新增数量信息
         List<AssetGroupEntity> addAssetGroupEntityList = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
 
-        // 获取新增资产组的统计信息
+        // 获取截止当前日期前,资产组的统计信息
         reportQueryRequest.setStartTime(null);
         List<AssetGroupEntity> assetGroupEntities = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
 
@@ -508,14 +508,14 @@ public class AssetReportServiceImpl implements IAssetReportService {
         assetReportResponse.setDate(dateValueList);
 
         // 3.资产组名字信息
-        List<String> groupNameList = new ArrayList<>();
+        List<String> groupNameList = new ArrayList<>(5);
         groupReportEntityList.forEach(groupReportEntity -> {
             if (!groupNameList.contains(groupReportEntity.getName())) {
                 groupNameList.add(groupReportEntity.getName());
             }
         });
 
-        // 4.根据资产组信息封装
+        // 4.根据资产组名字信息和日期进行封装数据
         List<ReportData> dataList = new ArrayList<>();
         groupNameList.forEach(groupName -> {
             ReportData reportData = new ReportData();
@@ -523,27 +523,22 @@ public class AssetReportServiceImpl implements IAssetReportService {
             List<Integer> totalNumList = new ArrayList<>();
             List<Integer> addNumList = new ArrayList<>();
 
-            dateKeyList.forEach(date -> {
-                Integer num = 0;
+            for (int i = 0; i < dateKeyList.size(); i++) {
+                Integer totalNum = 0;
                 Integer addNum = 0;
-                Optional<AssetGroupEntity> assetGroupEntityOptional = assetGroupEntities.stream()
-                    .filter(assetGroupEntity -> date
-                        .equals(assetGroupEntity.getDate().startsWith("0") ? assetGroupEntity.getDate().substring(1)
-                            : assetGroupEntity.getDate()) && groupName.equals(assetGroupEntity.getName()))
-                    .findFirst();
-                if (assetGroupEntityOptional.isPresent() && null != assetGroupEntityOptional.get()) {
-                    num += assetGroupEntityOptional.get().getGroupCount();
+                for (AssetGroupEntity assetGroupEntity : addAssetGroupEntityList) {
+                    // 从新增列表获取名字和日期均匹配的新增数量
+                    if (dateKeyList.get(i).equals(assetGroupEntity.getDate())
+                        && groupName.equals(assetGroupEntity.getName())) {
+                        addNum = assetGroupEntity.getGroupCount();
+                    }
+                    // 总数,第一个数据从截止日期前的总数量获取,第二个起加上新增的数据
+                    totalNum = (i == 0 ? assetGroupEntities.get(0).getGroupCount() + addNum
+                        : totalNumList.get(i - 1) + addNum);
                 }
-                Optional<AssetGroupEntity> addAssetGroupEntityOptional = addAssetGroupEntityList.stream()
-                    .filter(assetGroupEntity -> date.equals(assetGroupEntity.getDate())
-                                                && groupName.equals(assetGroupEntity.getName()))
-                    .findFirst();
-                if (addAssetGroupEntityOptional.isPresent() && null != addAssetGroupEntityOptional.get()) {
-                    addNum = assetGroupEntityOptional.get().getGroupCount();
-                }
-                totalNumList.add(num);
+                totalNumList.add(totalNum);
                 addNumList.add(addNum);
-            });
+            }
             reportData.setData(totalNumList);
             reportData.setAdd(addNumList);
             dataList.add(reportData);
@@ -657,7 +652,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     /**
-     * 根据资产组类别查新增资产情况-封装数据
+     * 根据资产组类别查新增资产情况-封装数据(未用)
      * @param reportQueryRequest
      * @return
      */
