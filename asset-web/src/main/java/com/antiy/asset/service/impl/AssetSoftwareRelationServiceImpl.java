@@ -1,36 +1,21 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.util.HtmlUtils;
-
-import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.dao.SchemeDao;
-import com.antiy.asset.entity.*;
+import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.entity.AssetSoftwareInstall;
+import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
-import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.request.AssetInstallRequest;
+import com.antiy.asset.vo.request.AssetSoftwareRelationList;
+import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.vo.request.AssetStatusJumpRequst;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
@@ -40,11 +25,25 @@ import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
-import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产软件关系信息 服务实现类 </p>
@@ -275,36 +274,36 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         String softwareId = assetSoftwareRelationRequest.getSoftId ();
         assetSoftwareRelation.setSoftwareId (softwareId);
         assetSoftwareRelation.setConfigureStatus (ConfigureStatusEnum.CONFIGURED.getCode ());
-        SchemeRequest schemeRequest = assetSoftwareRelationRequest.getSchemeRequest ();
-
-        Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
-        // 写入方案
-        if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
-            JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
-        }
-        scheme.setAssetNextStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
-        scheme.setAssetId(softwareId);
-        schemeDao.insert(scheme);
-
-        // 2.保存流程
-        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        assetOperationRecord.setTargetObjectId(softwareId);
-        assetOperationRecord.setSchemeId(scheme.getId());
-        assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
-        assetOperationRecord.setTargetStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
-        assetOperationRecord.setContent(AssetEventEnum.SOFT_CONFIG.getName());
-        assetOperationRecord.setProcessResult(1);
-        assetOperationRecord.setOriginStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
-        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
-        assetOperationRecordDao.insert(assetOperationRecord);
-
-        // 写入业务日志
-        LogHandle.log(assetOperationRecord.toString(), AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(),
-                AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(LogUtils.get (this.getClass ()), AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
-                assetOperationRecord.toString());
+//        SchemeRequest schemeRequest = assetSoftwareRelationRequest.getSchemeRequest ();
+//
+//        Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
+//        // 写入方案
+//        if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
+//            JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+//        }
+//        scheme.setAssetNextStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+//        scheme.setAssetId(softwareId);
+//        schemeDao.insert(scheme);
+//
+//        // 2.保存流程
+//        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+//        assetOperationRecord.setTargetObjectId(softwareId);
+//        assetOperationRecord.setSchemeId(scheme.getId());
+//        assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
+//        assetOperationRecord.setTargetStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+//        assetOperationRecord.setContent(AssetEventEnum.SOFT_CONFIG.getName());
+//        assetOperationRecord.setProcessResult(1);
+//        assetOperationRecord.setOriginStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+//        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+//        assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+//        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+//        assetOperationRecordDao.insert(assetOperationRecord);
+//
+//        // 写入业务日志
+//        LogHandle.log(assetOperationRecord.toString(), AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(),
+//                AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+//        LogUtils.info(LogUtils.get (this.getClass ()), AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
+//                assetOperationRecord.toString());
 
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_RELATION_UPDATE.getName(), null, null,
