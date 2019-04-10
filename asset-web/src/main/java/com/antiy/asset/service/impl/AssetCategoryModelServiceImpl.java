@@ -10,6 +10,7 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.util.NodeUtilsConverter;
 import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
@@ -211,9 +212,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         BusinessExceptionUtils.isTrue(checkIsDefault(assetCategoryModel), "系统内置品类不能更新或删除");
         // 写入业务日志
         LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
-                AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}",
-                assetCategoryModel.toString());
+            AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", assetCategoryModel.toString());
         return deleteAllById(id);
     }
 
@@ -251,7 +251,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @param types 4-计算设备 5-网络设备 6-存储设备 7-安全设备 8-其他设备
      * @return
      */
-    @Override
     public AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types) throws Exception {
         checkParameterTypes(types);
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
@@ -276,6 +275,25 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             return assetCategoryModelNodeResponse;
         }
         return null;
+    }
+
+    /**
+     * 获取计算设备和网络设备树
+     * @return
+     */
+    public AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode() throws Exception {
+        Map<String, String> secondCategoryMap = this.getSecondCategoryMap();
+        String[] category = new String[2];
+        int i = 0;
+        for (Map.Entry<String, String> entry : secondCategoryMap.entrySet()) {
+            if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+                category[i++] = entry.getKey();
+            }
+            if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
+                category[i++] = entry.getKey();
+            }
+        }
+        return querySecondCategoryNode(category);
     }
 
     private void checkParameterTypes(String[] types) {

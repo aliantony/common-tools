@@ -69,20 +69,22 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         List<Map<String, Integer>> initData = assetReportDao.queryAssetWithAreaByDate(reportRequest.getAssetAreaIds(),
             reportRequest.getStartTime());
         // 计算初始值
-        topAreaIds.stream().forEach(top -> {
-            boolean flag = false;
-            for (Map iData : initData) {
-                if (top.equals(iData.get("areaId"))) {
-                    flag = true;
+        if (CollectionUtils.isNotEmpty(topAreaIds)) {
+            topAreaIds.stream().forEach(top -> {
+                boolean flag = false;
+                for (Map iData : initData) {
+                    if (top.equals(iData.get("areaId"))) {
+                        flag = true;
+                    }
                 }
-            }
-            if (!flag) {
-                Map m = new HashMap(2);
-                m.put("areaId", top);
-                m.put("assetCount", Integer.valueOf(0));
-                initData.add(m);
-            }
-        });
+                if (!flag) {
+                    Map m = new HashMap(2);
+                    m.put("areaId", top);
+                    m.put("assetCount", Integer.valueOf(0));
+                    initData.add(m);
+                }
+            });
+        }
         // 4.获取每个地区在每个时间区间的增量
         List<Map<String, String>> addData = assetReportDao.queryAddAssetWithArea(reportRequest.getAssetAreaIds(),
             reportRequest.getStartTime(), reportRequest.getEndTime(),

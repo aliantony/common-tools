@@ -182,4 +182,17 @@ public class AssetCategoryModelController {
         ParamterExceptionUtils.isNull(types, "types不能为null");
         return ActionResponse.success(iAssetCategoryModelService.querySecondCategoryNode(types));
     }
+
+    /**
+     * 品类树查询
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过计算设备和安全设备树", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/computeNetNode", method = RequestMethod.GET)
+    // @PreAuthorize(value = "hasAuthority('asset:categorymodel:querySecondCategoryNode')")
+    public ActionResponse queryComputeAndNetCategoryNode() throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.queryComputeAndNetCategoryNode());
+    }
 }
