@@ -24,13 +24,17 @@ import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
+import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
+import com.antiy.asset.vo.query.ConfigRegisterRequest;
 import com.antiy.asset.vo.query.InstallQuery;
-import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.query.SoftwareConfigRequest;
+import com.antiy.asset.vo.request.AssetInstallRequest;
+import com.antiy.asset.vo.request.AssetSoftwareRelationList;
+import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
@@ -40,7 +44,7 @@ import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
-import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -68,7 +72,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     private BaseConverter<AssetSoftware, AssetSoftwareResponse>                 responseSoftConverter;
     @Resource
     private BaseConverter<AssetSoftwareInstall, AssetSoftwareInstallResponse>   responseInstallConverter;
-
+    @Resource
+    IAssetSoftwareService                                                       softwareService;
     @Resource
     private TransactionTemplate                                                 transactionTemplate;
     @Resource
@@ -227,7 +232,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 try {
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSTALL.getName(), null, null,
-                        relationList, BusinessModuleEnum.SOFTWARE_ASSET, null));
+                        relationList, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
                     return assetSoftwareRelationDao.installSoftware(relationList);
                 } catch (Exception e) {
                     LogUtils.info(logger, AssetEventEnum.SOFT_INSTALL.getName() + " {}", relationList);
@@ -269,46 +274,68 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     }
 
     @Override
-    public Integer changeSoftConfiguration(AssetStatusJumpRequst assetSoftwareRelationRequest) throws Exception {
-        AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation ();
-        assetSoftwareRelation.setAssetId ( assetSoftwareRelationRequest.getAssetId ());
-        String softwareId = assetSoftwareRelationRequest.getSoftId ();
-        assetSoftwareRelation.setSoftwareId (softwareId);
-        assetSoftwareRelation.setConfigureStatus (ConfigureStatusEnum.CONFIGURED.getCode ());
-        SchemeRequest schemeRequest = assetSoftwareRelationRequest.getSchemeRequest ();
-
-        Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
-        // 写入方案
-        if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
-            JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
-        }
-        scheme.setAssetNextStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
-        scheme.setAssetId(softwareId);
-        schemeDao.insert(scheme);
+    public Integer configurateSoftware(SoftwareConfigRequest request) throws Exception {
 
         // 2.保存流程
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        assetOperationRecord.setTargetObjectId(softwareId);
-        assetOperationRecord.setSchemeId(scheme.getId());
+        assetOperationRecord.setTargetObjectId(request.getSoftwareId());
         assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
         assetOperationRecord.setTargetStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
         assetOperationRecord.setContent(AssetEventEnum.SOFT_CONFIG.getName());
         assetOperationRecord.setProcessResult(1);
         assetOperationRecord.setOriginStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
-        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
-        assetOperationRecordDao.insert(assetOperationRecord);
+        if (LoginUserUtil.getLoginUser() != null) {
+            assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+        } else {
+            throw new BusinessException("获取用户失败");
+        }
 
-        // 写入业务日志
-        LogHandle.log(assetOperationRecord.toString(), AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(),
-                AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(LogUtils.get (this.getClass ()), AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
-                assetOperationRecord.toString());
+        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+
+        AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation ();
+        assetSoftwareRelation.setAssetId(request.getAssetId());
+        assetSoftwareRelation.setSoftwareId(request.getSoftwareId());
+        assetSoftwareRelation.setConfigureStatus(ConfigureStatusEnum.CONFIGURING.getCode());
+        Scheme scheme = new Scheme();
+        // 写入方案
+        if (request.getFileInfo() != null && request.getFileInfo().length() > 0) {
+            JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+        }
+        scheme.setAssetNextStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+        scheme.setAssetId(request.getAssetId());
+        scheme.setMemo(request.getSuggest());
+        scheme.setSchemeSource(AssetTypeEnum.SOFTWARE.getCode());
+        scheme.setGmtCreate(System.currentTimeMillis());
+        if (LoginUserUtil.getLoginUser() != null) {
+            scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            schemeDao.insert(scheme);
+
+            assetOperationRecord.setSchemeId(scheme.getId());
+
+            // 调用配置模块
+            ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
+            configRegisterRequest.setSuggest(scheme.getMemo());
+            configRegisterRequest.setRelId(request.getSoftwareId());
+            configRegisterRequest.setConfigUserId(request.getConfigUserId());
+            configRegisterRequest.setSource(AssetTypeEnum.SOFTWARE.getCode().toString());
+            configRegisterRequest.setAssetId(request.getSoftwareId());
+            // configRegisterRequest.setFileUrls();
+            softwareService.configRegister(configRegisterRequest);
+        } else {
+            throw new BusinessException("获取用户失败");
+        }
+
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(), null, null,
+            assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.info(logger, AssetEventEnum.SOFT_CONFIG.getName() + " {}", assetSoftwareRelation);
+
+        assetOperationRecordDao.insert(assetOperationRecord);
 
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_RELATION_UPDATE.getName(), null, null,
-            assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, null));
+            assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.SOFT_CONFIG.getName() + " {}", assetSoftwareRelation);
         return assetSoftwareRelationDao.updateByAssetId(assetSoftwareRelation);
     }
