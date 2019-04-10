@@ -36,7 +36,7 @@ import io.swagger.annotations.*;
  * @author zhangyajun
  * @since 2019-01-04
  */
-@Transactional(rollbackFor = RuntimeException.class)
+@Transactional(rollbackFor = Exception.class)
 @Api(value = "AssetSoftwareRelation", description = "资产软件关系信息")
 @RestController
 @RequestMapping("/api/v1/asset/softwarerelation")

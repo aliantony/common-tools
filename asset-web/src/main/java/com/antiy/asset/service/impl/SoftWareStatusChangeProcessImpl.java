@@ -29,7 +29,7 @@ import com.antiy.common.utils.LoginUserUtil;
  * @date: 2019/1/22 15:48
  * @description:
  */
-@Transactional(rollbackFor = RuntimeException.class)
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangeProcessImpl {
     private Logger           logger = LogUtils.get(this.getClass());

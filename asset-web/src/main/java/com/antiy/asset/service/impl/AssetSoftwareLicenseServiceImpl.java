@@ -31,7 +31,7 @@ import com.antiy.common.utils.LoginUserUtil;
  * @since 2019-01-02
  */
 @Service
-@Transactional(rollbackFor = RuntimeException.class)
+@Transactional(rollbackFor = Exception.class)
 public class AssetSoftwareLicenseServiceImpl extends BaseServiceImpl<AssetSoftwareLicense>
                                              implements IAssetSoftwareLicenseService {
 
