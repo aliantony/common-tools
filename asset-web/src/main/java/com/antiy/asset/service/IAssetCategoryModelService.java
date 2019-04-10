@@ -103,13 +103,13 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      */
     List<Integer> findAssetCategoryModelIdsById(Integer id) throws Exception;
 
-
     /**
      * 通过id查询所有品类和子品类id
      *
      * @return
      */
-    List<Integer> findAssetCategoryModelIdsById(Integer id,List<AssetCategoryModel> assetCategoryModels) throws Exception;
+    List<Integer> findAssetCategoryModelIdsById(Integer id,
+                                                List<AssetCategoryModel> assetCategoryModels) throws Exception;
 
     /**
      * 递归查询品类子节点
@@ -140,5 +140,10 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @throws Exception
      */
     Map<String, String> getSecondCategoryMap() throws Exception;
+
+    /**
+     * 获取安全设备和网络设备树
+     */
+    AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode() throws Exception;
 
 }
