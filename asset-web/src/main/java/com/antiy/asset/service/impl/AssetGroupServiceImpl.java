@@ -234,15 +234,17 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
      * @return
      * @throws Exception
      */
-    public List<SelectResponse> queryUnconnectedGroupInfo() throws Exception {
+    public List<SelectResponse> queryUnconnectedGroupInfo(Boolean searchNetworkDevice) throws Exception {
         AssetQuery query = new AssetQuery();
         List<Integer> categoryCondition = new ArrayList<>();
         Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
         List<AssetCategoryModel> all = assetCategoryModelService.getAll();
         for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
-            if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-                categoryCondition.addAll(
-                    assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
+            if (searchNetworkDevice == null || !searchNetworkDevice) {
+                if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+                    categoryCondition.addAll(
+                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
+                }
             }
             if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
                 categoryCondition.addAll(

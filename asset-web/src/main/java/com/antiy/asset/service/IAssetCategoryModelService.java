@@ -13,6 +13,7 @@ import com.antiy.asset.vo.response.AssetCategoryModelResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
+import io.swagger.annotations.ApiParam;
 
 /**
  * <p> 品类型号表 服务类 </p>
@@ -81,7 +82,8 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @param initMap 二级品类 id 和 name的映射 若没有这个参数 可直接调用getSecondCategoryMap方法作为传参
      * @return
      */
-    AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types, Map<String, String> initMap) throws Exception;
+    AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types,
+                                                           Map<String, String> initMap) throws Exception;
 
     /**
      * 通过名称查询下一级的品类
@@ -145,6 +147,6 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
     /**
      * 获取安全设备和网络设备树
      */
-    AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode() throws Exception;
+    AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode(Boolean searchNetworkDevice) throws Exception;
 
 }

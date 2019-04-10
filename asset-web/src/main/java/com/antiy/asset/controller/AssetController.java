@@ -157,8 +157,9 @@ public class AssetController {
         iAssetService.exportData(assetQuery, response);
         // 写入业务日志
         LogHandle.log(assetQuery.toString(), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName(),
-                AssetEventEnum.ASSET_ADMITTANCE_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(LogUtils.get (AssetController.class), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName() + " {}", assetQuery.toString());
+            AssetEventEnum.ASSET_ADMITTANCE_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(LogUtils.get(AssetController.class), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName() + " {}",
+            assetQuery.toString());
 
     }
 
@@ -235,8 +236,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/pulldown/unconnectedManufacturer", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
-    public ActionResponse<List<String>> pulldownUnconnectedManufacturer() throws Exception {
-        return ActionResponse.success(iAssetService.pulldownUnconnectedManufacturer());
+    public ActionResponse<List<String>> pulldownUnconnectedManufacturer(@ApiParam("是否只查网络设备 若为是则只查网络设备，若为否则两者都查 默认为两者都查") Boolean searchNetworkDevice) throws Exception {
+        return ActionResponse.success(iAssetService.pulldownUnconnectedManufacturer(searchNetworkDevice));
     }
 
     /**
@@ -383,6 +384,7 @@ public class AssetController {
         activityClient.completeTask(activityHandleRequest);
         return ActionResponse.success();
     }
+
     /**
      * 批量保存资产
      *
