@@ -143,7 +143,7 @@ public class AssetGroupController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/unconnectedGroupInfo", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:group:queryGroupInfo')")
-    public ActionResponse<List<SelectResponse>> queryUnconnectedGroupInfo(Boolean search) throws Exception {
-        return ActionResponse.success(iAssetGroupService.queryUnconnectedGroupInfo(search));
+    public ActionResponse<List<SelectResponse>> queryUnconnectedGroupInfo(@ApiParam("是否只查网络设备 若为是则只查网络设备，若为否则两者都查 默认为两者都查") Boolean searchNetworkDevice) throws Exception {
+        return ActionResponse.success(iAssetGroupService.queryUnconnectedGroupInfo(searchNetworkDevice));
     }
 }
