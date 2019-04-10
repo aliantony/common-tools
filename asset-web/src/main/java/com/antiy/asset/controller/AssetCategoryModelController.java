@@ -175,7 +175,7 @@ public class AssetCategoryModelController {
      */
     @ApiOperation(value = "通过二级品类查询品类树", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/secondTypeNode", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/secondTypeNode", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:querySecondCategoryNode')")
     public ActionResponse querySecondCategoryNode(@ApiParam(value = "4-计算设备 5-网络设备 6-存储设备 7-安全设备 8-其他设备") String[] types) throws Exception {
         ParamterExceptionUtils.isNull(types,"types不能为null");
