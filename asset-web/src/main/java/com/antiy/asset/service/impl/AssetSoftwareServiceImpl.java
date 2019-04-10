@@ -691,7 +691,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             return new PageResult<>(softwareQuery.getPageSize(), 0, softwareQuery.getCurrentPage(),
                 Lists.newArrayList());
         }
-        return new PageResult<>(softwareQuery.getPageSize(), assetSoftwareInstallResponseList.size(),
+        return new PageResult<>(softwareQuery.getPageSize(), this.findAssetInstallCount(softwareQuery),
             softwareQuery.getCurrentPage(), assetSoftwareInstallResponseList);
     }
 

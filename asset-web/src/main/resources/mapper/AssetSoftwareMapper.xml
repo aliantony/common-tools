@@ -919,8 +919,42 @@
     </select>
     <select id="findAssetInstallCount" parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery"
             resultType="java.lang.Integer">
-        select
-        count(1) count
+        select count(1) count from (select
+        a.id,
+        a.asset_id as assetId,
+        a.software_id as softwareId,
+        c.number,
+        c.name,
+        d.id as userId,
+        d.name as userName,
+        case
+        when group_concat(b.ip_address) is not null then
+        group_concat(b.ip_address)
+        when (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is
+        not
+        null then
+        (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
+        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as ip,
+        case
+        when group_concat( b.mac_address ) is not null then
+        group_concat( b.mac_address )
+        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
+        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as mac,
+        c.serial,
+        c.category_model as categoryModel,
+        (select name from asset_category_model where id = c.category_model) as categoryModelName,
+        c.manufacturer,
+        a.install_time as installTime,
+        a.install_status as installStatus,
+        case
+        when a.install_type is not null then a.install_type
+        else c.install_type
+        end as installType
         from
         asset_software_relation a
         left join asset_network_card b on a.asset_id = b.asset_id and b.status = 1
@@ -942,6 +976,9 @@
         <if test=" assetId != null">
             and a.asset_id = #{assetId}
         </if>
+        group by
+        a.asset_id
+        order by c.first_enter_nett desc) t
     </select>
     <select id="findAssetInstallList" parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery"
             resultType="com.antiy.asset.entity.AssetSoftwareInstall">
