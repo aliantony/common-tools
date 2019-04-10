@@ -51,15 +51,15 @@ public class ConfigRegisterRequest {
     @Encode(message = "配置人员Id解密失败")
     private List<String> configUserId;
 
-    @ApiModelProperty(value = "文件URL地址")
-    private List<String> fileUrls;
+    @ApiModelProperty(value = "文件JSON传")
+    private String       files;
 
-    public List<String> getFileUrls() {
-        return fileUrls;
+    public String getFiles() {
+        return files;
     }
 
-    public void setFileUrls(List<String> fileUrls) {
-        this.fileUrls = fileUrls;
+    public void setFiles(String files) {
+        this.files = files;
     }
 
     public String getSuggest() {
