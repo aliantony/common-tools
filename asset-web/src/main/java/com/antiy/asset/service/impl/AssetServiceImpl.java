@@ -2849,6 +2849,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
+    @Override
     public List<String> pulldownUnconnectedManufacturer() throws Exception {
         AssetQuery query = new AssetQuery();
         Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
