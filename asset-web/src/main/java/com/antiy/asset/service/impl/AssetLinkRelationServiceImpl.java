@@ -233,23 +233,20 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     public List<AssetLinkedCountResponse> queryAssetLinkedCountList(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         Map<String, String> category = assetCategoryModelService.getSecondCategoryMap();
         category.forEach((k, v) -> {
-            if (v.equals("计算设备")) {
-                // 计算设备下所有品类型号
-                try {
+            try {
+                if (v.equals("计算设备")) {
+                    // 计算设备下所有品类型号
                     assetLinkRelationQuery.setPcCategoryModels(
-                            assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
-                } catch (Exception e) {
-                    logger.error("获取计算设备子品类型号出错",e.getStackTrace());
-                }
-            } else if (v.equals("网络设备")) {
-                // 网络设备下所有品类型号
-                try {
+                        assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
+                } else if (v.equals("网络设备")) {
+                    // 网络设备下所有品类型号
                     assetLinkRelationQuery.setNetCategoryModels(
-                            assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
-                } catch (Exception e) {
-                    logger.error("获取网络设备设备子品类型号出错",e.getStackTrace());
+                        assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
                 }
+            } catch (Exception e) {
+                logger.error("获取{}子品类型号出错", v, e.getStackTrace());
             }
+
         });
         assetLinkRelationQuery
             .setAreaIds(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()
