@@ -19,6 +19,10 @@ public class AssetLinkedCount extends BaseEntity {
      */
     private String  name;
     /**
+     * 资产编号
+     */
+    private String number;
+    /**
      * 资产品类型号
      */
     private String  categoryModel;
@@ -34,6 +38,14 @@ public class AssetLinkedCount extends BaseEntity {
      * 未绑定数量
      */
     private Integer noBind;
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
 
     public String getAssetId() {
         return assetId;
