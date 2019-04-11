@@ -37,8 +37,16 @@ public class CountTypeUtil {
             List<EnumCountResponse> enumCountResponses = new ArrayList<>();
             // 处理返回结果，若结果条数大于maxNum，则归为其他
             setResultMap(maxNum, list, enumCountResponses);
-            return enumCountResponses;
+            if (CollectionUtils.isNotEmpty(enumCountResponses)) {
+                return enumCountResponses;
+            } else {
+                return getEmptyEnumCountResponses();
+            }
         }
+        return getEmptyEnumCountResponses();
+    }
+
+    private static List<EnumCountResponse> getEmptyEnumCountResponses() {
         EnumCountResponse enumCountResponse = new EnumCountResponse();
         enumCountResponse.setMsg("");
         enumCountResponse.setNumber(0);
