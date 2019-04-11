@@ -1,14 +1,16 @@
 package com.antiy.asset.vo.request;
 
+import java.util.List;
+
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -102,7 +104,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("操作系统。基准获取")
     @Size(message = "资产操作系统不能超过16位", max = 16)
-     @NotBlank(message = "资产操作系统不能为空")
     private String                  operationSystem;
     /**
      * 系统位数
