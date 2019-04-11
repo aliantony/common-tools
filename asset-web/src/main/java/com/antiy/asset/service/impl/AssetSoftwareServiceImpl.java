@@ -51,6 +51,7 @@ import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -185,7 +186,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetOperationRecordDao.insert(assetOperationRecord);
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(), assetSoftware.getId(),
-                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, null));
+                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
                     LogUtils.info(logger, AssetEventEnum.SOFT_INSERT.getName() + " {}", assetSoftware);
                     return DataTypeUtils.stringToInteger(sid);
                 } catch (RequestParamValidateException e) {
@@ -332,7 +333,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetOperationRecordDao.insert(convertAssetOperationRecord(request, softwareStatus));
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(), assetSoftware.getId(),
-                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, null));
+                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
                     LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetSoftware);
                     return assetSoftwareCount;
                 } catch (Exception e) {
@@ -935,7 +936,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         if (Objects.nonNull(softwareEntities) && softwareEntities.size() > 0) {
             // 记录操作日志和运行日志
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_EXPORT.getName(), null, null, downloadVO,
-                BusinessModuleEnum.SOFTWARE_ASSET, null));
+                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", downloadVO);
             excelDownloadUtil.excelDownload(response, s, downloadVO);
         } else {

@@ -16,6 +16,7 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
@@ -49,7 +50,7 @@ public class AssetStatusChangeProcessImpl extends AbstractAssetStatusChangeProce
         // 更新资产状态
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName(), asset.getId(), null,
-            asset, BusinessModuleEnum.HARD_ASSET, null));
+            asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName() + " {}", asset);
         assetDao.update(asset);
         return ActionResponse.success();
