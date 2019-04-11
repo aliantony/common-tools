@@ -165,9 +165,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
         AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
-        if (requestAsset != null && (networkEquipmentRequest == null || assetStorageMedium == null)) {
-            ParamterExceptionUtils.isNull(requestAsset.getOperationSystem(), "资产操作系统不能为空");
-        }
+        AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest();
         Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -444,7 +442,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                     } else {
                         // 保存其他资产
-                        AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest();
 
                         if (StringUtils.isNotBlank(assetOthersRequest.getNumber())) {
 
