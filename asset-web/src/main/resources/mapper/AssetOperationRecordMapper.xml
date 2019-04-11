@@ -272,7 +272,6 @@
             <if test="originStatus != null">
                 AND aor.origin_status=#{originStatus}
             </if>
-            and status = 1
         </trim>
         ORDER BY aor.id desc
     </select>
