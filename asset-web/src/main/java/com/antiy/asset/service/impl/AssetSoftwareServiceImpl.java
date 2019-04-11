@@ -759,6 +759,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private Scheme convertScheme(ConfigRegisterRequest registerRequest) {
         Scheme scheme = new Scheme();
         scheme.setContent(registerRequest.getSuggest());
+        scheme.setMemo(registerRequest.getSuggest());
         if (AssetTypeEnum.SOFTWARE.getCode().equals(DataTypeUtils.stringToInteger(registerRequest.getSource()))) {
             scheme.setAssetNextStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
             scheme.setSchemeSource(2);
