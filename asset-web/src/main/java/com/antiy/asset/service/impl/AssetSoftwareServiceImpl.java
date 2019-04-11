@@ -791,7 +791,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
 
         assetOperationRecord.setTargetObjectId(request.getAssetId());
-        assetOperationRecord.setAreaId(assetDao.getById(request.getAssetId()).getAreaId());
+        assetOperationRecord.setAreaId("");
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setProcessResult(1);
