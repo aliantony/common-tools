@@ -184,10 +184,10 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
 
         if (assetStatusReqeust.getSoftware()) {
             scheme.setSchemeSource(AssetTypeEnum.SOFTWARE.getCode());
-            scheme.setAssetNextStatus(this.getNextAssetStatus(assetStatusReqeust).getCode());
+            scheme.setAssetNextStatus(this.getNextSoftwareStatus(assetStatusReqeust).getCode());
         } else {
             scheme.setSchemeSource(AssetTypeEnum.HARDWARE.getCode());
-            scheme.setAssetNextStatus(this.getNextSoftwareStatus(assetStatusReqeust).getCode());
+            scheme.setAssetNextStatus(this.getNextAssetStatus(assetStatusReqeust).getCode());
         }
 
         return scheme;
