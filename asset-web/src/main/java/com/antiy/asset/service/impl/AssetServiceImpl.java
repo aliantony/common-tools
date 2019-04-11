@@ -162,6 +162,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
 
         AssetRequest requestAsset = request.getAsset();
+        AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
+        AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
+        AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
+        if (safetyEquipmentRequest == null || networkEquipmentRequest == null || assetStorageMedium == null) {
+            throw new BusinessException("资产操作系统不能为空");
+        }
         Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -230,14 +236,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         aid = asset.getStringId();
                         // 保存安全设备
-                        AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
                         if (safetyEquipmentRequest != null) {
                             Integer id = saveSafety(aid, safetyEquipmentRequest);
                             safetyEquipmentRequest.setId(String.valueOf(id));
                             assetOuterRequestToChangeRecord.setSafetyEquipment(safetyEquipmentRequest);
                         }
                         // 保存网络设备
-                        AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
                         if (networkEquipmentRequest != null) {
                             ParamterExceptionUtils.isTrue(!CheckRepeatIp(networkEquipmentRequest.getInnerIp(), 1),
                                 "内网IP不能重复！");
@@ -246,7 +250,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetOuterRequestToChangeRecord.setNetworkEquipment(networkEquipmentRequest);
                         }
                         // 保存存储设备
-                        AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
                         if (assetStorageMedium != null) {
                             AssetStorageMedium medium = BeanConvert.convertBean(assetStorageMedium,
                                 AssetStorageMedium.class);
