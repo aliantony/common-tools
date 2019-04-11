@@ -4,24 +4,25 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.antiy.asset.dao.AssetLableDao;
 import com.antiy.asset.entity.AssetLable;
 import com.antiy.asset.service.IAssetLableService;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetLableQuery;
 import com.antiy.asset.vo.request.AssetLableRequest;
 import com.antiy.asset.vo.response.AssetLableResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p> 标签信息表 服务实现类 </p>
@@ -48,7 +49,7 @@ public class AssetLableServiceImpl extends BaseServiceImpl<AssetLable> implement
         assetLable.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLable.setGmtCreate(System.currentTimeMillis());
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LABEL_INSERT.getName(),
-                assetLable.getId(), null, assetLable, BusinessModuleEnum.HARD_ASSET, null));
+            assetLable.getId(), null, assetLable, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_LABEL_INSERT.getName() + "{}",assetLable);
         return assetLableDao.insert(assetLable);
     }
@@ -60,7 +61,7 @@ public class AssetLableServiceImpl extends BaseServiceImpl<AssetLable> implement
         assetLable.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetLable.setGmtModified(System.currentTimeMillis());
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LABEL_UPDATE.getName(),
-                assetLable.getId(), null, assetLable, BusinessModuleEnum.HARD_ASSET, null));
+            assetLable.getId(), null, assetLable, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_LABEL_UPDATE.getName() + "{}",assetLable);
         return assetLableDao.update(assetLable);
     }

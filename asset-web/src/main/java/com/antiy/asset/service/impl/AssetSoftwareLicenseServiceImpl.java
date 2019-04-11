@@ -21,6 +21,7 @@ import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
@@ -50,7 +51,8 @@ public class AssetSoftwareLicenseServiceImpl extends BaseServiceImpl<AssetSoftwa
         assetSoftwareLicenseDao.insert(assetSoftwareLicense);
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFTWARE_LICENSE_INSERT.getName(),
-            assetSoftwareLicense.getId(), null, assetSoftwareLicense, BusinessModuleEnum.SOFTWARE_ASSET, null));
+            assetSoftwareLicense.getId(), null, assetSoftwareLicense, BusinessModuleEnum.SOFTWARE_ASSET,
+            BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.SOFTWARE_LICENSE_INSERT.getName() + " {}", assetSoftwareLicense);
         return assetSoftwareLicense.getId();
     }
@@ -62,7 +64,8 @@ public class AssetSoftwareLicenseServiceImpl extends BaseServiceImpl<AssetSoftwa
         assetSoftwareLicense.setGmtModified(System.currentTimeMillis());
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFTWARE_LICENSE_UPDATE.getName(),
-            assetSoftwareLicense.getId(), null, assetSoftwareLicense, BusinessModuleEnum.SOFTWARE_ASSET, null));
+            assetSoftwareLicense.getId(), null, assetSoftwareLicense, BusinessModuleEnum.SOFTWARE_ASSET,
+            BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.SOFTWARE_LICENSE_UPDATE.getName() + " {}", assetSoftwareLicense);
         return assetSoftwareLicenseDao.update(assetSoftwareLicense);
     }
