@@ -398,9 +398,9 @@
         </trim>
     </select>
 
-    <select id="findMemoById" resultType="string" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findMemoById" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
         select
-        memo
+        memo,file_info
         from
         <include refid="Table_Name"></include>
         where asset_id = #{assetId} and asset_next_status = #{assetStatus} and scheme_source = #{assetTypeEnum.code}
