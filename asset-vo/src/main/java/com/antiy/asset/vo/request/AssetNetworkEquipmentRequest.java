@@ -58,7 +58,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * 外网IP
      */
     @ApiModelProperty("外网IP")
-    @NotBlank(message = "外网IP不能为空")
+//    @NotBlank(message = "外网IP不能为空")
     private String  outerIp;
     /**
      * MAC地址

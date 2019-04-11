@@ -12,7 +12,7 @@ public class NetworkDeviceEntity {
     /**
      * 资产编号
      */
-    @ExcelField(value = "number", align = 1, title = "资产编号",required = true)
+    @ExcelField(value = "number", align = 1, title = "资产编号(必填)",required = true)
     private String  number;
     /**
      * 资产名称
@@ -75,7 +75,7 @@ public class NetworkDeviceEntity {
     /**
      * 端口数目
      */
-    @ExcelField(value = "portSize", align = 1, title = "端口数目")
+    @ExcelField(value = "portSize", align = 1, title = "网口数目(必填)")
     private Integer portSize;
     /**
      * 接口数目
