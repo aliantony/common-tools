@@ -165,8 +165,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
         AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
-        if (networkEquipmentRequest == null || assetStorageMedium == null) {
-            throw new BusinessException("资产操作系统不能为空");
+        if (requestAsset != null && (networkEquipmentRequest == null || assetStorageMedium == null)) {
+            ParamterExceptionUtils.isNull(requestAsset.getOperationSystem(), "资产操作系统不能为空");
         }
         Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
