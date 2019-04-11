@@ -1,16 +1,14 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -56,6 +54,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 资产编号
      */
     @ApiModelProperty("资产编号")
+    @NotBlank(message = "资产编号不能为空")
     @Size(message = "资产编号不能超过32位", max = 32)
     private String                  number;
 
@@ -103,7 +102,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("操作系统。基准获取")
     @Size(message = "资产操作系统不能超过16位", max = 16)
-    // @NotBlank(message = "资产操作系统不能为空")
+     @NotBlank(message = "资产操作系统不能为空")
     private String                  operationSystem;
     /**
      * 系统位数
@@ -120,7 +119,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     /**
      * 安装方式
      */
-    @ApiModelProperty("安装方式1人工2自动")
+    @ApiModelProperty("维护方式1人工2自动")
     private Integer                 installType;
 
     /**
@@ -153,7 +152,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 上报来源,1-自动上报，2-人工上报
      */
     @ApiModelProperty("上报来源,1-自动上报，2-人工上报")
-    @NotNull(message = "上报来源不能为空")
+//    @NotNull(message = "上报来源不能为空")
     private Integer                 assetSource;
     /**
      * 1核心2重要3一般

@@ -36,6 +36,8 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     private AesEncoder                            aesEncoder;
     @Resource
     private BaseConverter<Scheme, SchemeResponse> responseBaseConverter;
+    @Resource
+    private BaseConverter<List<Scheme>, SchemeResponse> schemeListToResponseConverter;
 
     @Override
     public String saveScheme(AssetStatusReqeust assetStatusReqeust) throws Exception {
@@ -77,10 +79,10 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     }
 
     @Override
-    public String queryMemoById(SchemeQuery query) {
+    public SchemeResponse queryMemoById(SchemeQuery query) {
         ParamterExceptionUtils.isNull(query.getAssetId(), "资产ID不能为空");
         ParamterExceptionUtils.isNull(query.getAssetStatus(), "资产状态不能为空");
         ParamterExceptionUtils.isNull(query.getAssetTypeEnum(), "类型不能为空");
-        return schemeDao.findMemoById(query);
+        return responseBaseConverter.convert(schemeDao.findMemoById(query), SchemeResponse.class);
     }
 }

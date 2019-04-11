@@ -36,6 +36,6 @@ public interface SchemeDao extends IBaseDao<Scheme> {
      * @param query
      * @return
      */
-    String findMemoById(SchemeQuery query);
+    Scheme findMemoById(SchemeQuery query);
 
 }
