@@ -227,7 +227,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             configRegisterRequest.setAssetId(String.valueOf(num));
             configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.SOFTWARE.getCode()));
             configRegisterRequest.setSuggest(request.getMemo());
-            configRegisterRequest.setConfigUserId(request.getActivityRequest().getConfigUserId());
+            configRegisterRequest.setConfigUserIds(request.getActivityRequest().getConfigUserId());
             configRegisterRequest.setRelId(String.valueOf(num));
             ActionResponse actionResponseSoftware = this.configRegister(configRegisterRequest);
             if (null == actionResponseSoftware
