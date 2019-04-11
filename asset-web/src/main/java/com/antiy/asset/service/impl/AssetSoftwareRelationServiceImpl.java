@@ -255,9 +255,10 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
      * @param query
      * @return
      */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareInstallResponse> queryInstallList(InstallQuery query) throws Exception {
+        logger.info( LoginUserUtil.getLoginUser().toString());
         List<Integer> areaIdsList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         query.setAreaIds(DataTypeUtils.integerArrayToStringArray(areaIdsList));
         List<Integer> statusList = new ArrayList<>();
