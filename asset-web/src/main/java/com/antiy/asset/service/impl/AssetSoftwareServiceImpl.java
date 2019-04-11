@@ -122,6 +122,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private BaseLineClient                                                   baseLineClient;
     @Resource
     private SchemeDao                                                        schemeDao;
+    @Resource
+    AssetDao                                                                 assetDao;
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -776,7 +778,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return scheme;
     }
 
-    private AssetOperationRecord convertRecord(ConfigRegisterRequest request) {
+    private AssetOperationRecord convertRecord(ConfigRegisterRequest request) throws Exception {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         if (AssetTypeEnum.SOFTWARE.getCode().equals(request.getSource())) {
@@ -789,6 +791,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
 
         assetOperationRecord.setTargetObjectId(request.getAssetId());
+        assetOperationRecord.setAreaId(assetDao.getById(request.getAssetId()).getAreaId());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setProcessResult(1);
