@@ -2996,6 +2996,31 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return false;
     }
 
+    /**
+     * 通过ID判断操作系统是否存在且是叶子节点
+     * @return
+     */
+    private Boolean checkOperatingSystemById(String id) {
+        BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse = operatingSystemClient
+            .getInvokeOperatingSystemTree();
+        Set<String> result = new HashSet<>();
+        operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
+        return result.contains(id);
+    }
+
+    private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
+        if (!CollectionUtils.isEmpty(result)) {
+            if (CollectionUtils.isEmpty(response.getChildrenNode())) {
+                result.add(response.getStringId());
+            } else {
+                for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse : response.getChildrenNode()) {
+                    operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
+                }
+            }
+        }
+
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RespBasicCode changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception {
