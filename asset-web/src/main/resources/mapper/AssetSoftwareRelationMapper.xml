@@ -603,6 +603,7 @@
         a.area_id,
         a.asset_group,
         a.category_model,
+        a.first_enter_nett,
         a.number,
         a.name,
         c.name as category_model_name,
@@ -643,6 +644,7 @@
         where a.operation_system = ( select operation_system from asset_software where id =#{softwareId} and
         status=1 )
         group by a.id
+        order by a.first_enter_nett desc
         ) asset
         <where>
             <trim prefixOverrides="and">

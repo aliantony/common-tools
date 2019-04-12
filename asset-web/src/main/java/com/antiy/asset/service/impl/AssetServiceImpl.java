@@ -855,12 +855,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         } else {
             List<AssetResponse> assetResponseList = responseConverter.convert(assetDao.findListUnconnectedAsset(query),
                 AssetResponse.class);
-            // 处理品类型号使其均为二级品类型号
-            processCategoryToSecondCategory(assetResponseList, categoryMap);
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
         }
     }
 
+    // 处理品类型号使其均为二级品类型号
     private void processCategoryToSecondCategory(List<AssetResponse> assetResponseList,
                                                  Map<String, String> categoryMap) throws Exception {
         // 作为缓存使用，提高效率
