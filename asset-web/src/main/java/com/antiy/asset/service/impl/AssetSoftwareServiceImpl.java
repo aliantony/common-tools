@@ -1,30 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
-import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -56,6 +31,29 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
+import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -139,8 +137,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetPortProtocol.class);
 
                     ParamterExceptionUtils.isTrue(!CheckRepeatName(assetSoftware.getName()), "资产名称重复");
-                    BusinessExceptionUtils.isTrue(!checkOperatingSystem(assetSoftware.getOperationSystem()),
-                        "兼容系统存在，或已经注销！");
+//                    BusinessExceptionUtils.isTrue(!checkOperatingSystemById (assetSoftware.getOperationSystem()),
+//                        "兼容系统存在，或已经注销！");
                     BusinessExceptionUtils.isTrue(
                         !Objects.isNull(assetCategoryModelDao.getById(
                             com.antiy.common.utils.DataTypeUtils.stringToInteger(assetSoftware.getCategoryModel()))),
@@ -255,6 +253,47 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             }
         }
         return false;
+    }
+
+    /**
+     * 通过ID判断操作系统是否存在且是叶子节点
+     * @return
+     */
+    private Boolean checkOperatingSystemById(String id) {
+        List<Map> baselineCategoryModelNodeResponse = operatingSystemClient
+                .getInvokeOperatingSystemTree();
+        Set<String> result = new HashSet<>();
+        if (CollectionUtils.isNotEmpty(baselineCategoryModelNodeResponse)) {
+            operatingSystemRecursion(result, (Map<String, Object>) baselineCategoryModelNodeResponse.get(0));
+        }
+        return result.contains(id);
+    }
+
+    private void operatingSystemRecursion(Set<String> result, Map<String, Object> response) {
+        if (!MapUtils.isEmpty(response)) {
+            if (CollectionUtils.isEmpty((List) response.get("childrenNode"))) {
+                result.add((String) response.get("stringId"));
+            } else {
+                for (Map baselineCategoryModelNodeResponse : (List<Map>) response.get("childrenNode")) {
+                    operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
+                }
+            }
+        }
+
+    }
+
+
+    private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
+        if (!CollectionUtils.isEmpty(result)) {
+            if (CollectionUtils.isEmpty(response.getChildrenNode())) {
+                result.add(response.getStringId());
+            } else {
+                for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse : response.getChildrenNode()) {
+                    operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
+                }
+            }
+        }
+
     }
 
     @Override
@@ -689,6 +728,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery) throws Exception {
+        // 只查询已入网、待退役的资产
+        softwareQuery.setAssetStatus(new ArrayList<Integer>() {
+            {
+                add(AssetStatusEnum.NET_IN.getCode());
+                add(AssetStatusEnum.WAIT_RETIRE.getCode());
+            }
+        });
         List<AssetSoftwareInstallResponse> assetSoftwareInstallResponseList = this.findAssetInstallList(softwareQuery);
         if (CollectionUtils.isEmpty(assetSoftwareInstallResponseList)) {
             return new PageResult<>(softwareQuery.getPageSize(), 0, softwareQuery.getCurrentPage(),
