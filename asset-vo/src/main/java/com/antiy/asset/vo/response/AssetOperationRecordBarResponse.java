@@ -45,7 +45,7 @@ public class AssetOperationRecordBarResponse extends BaseResponse {
     @ApiModelProperty("备注")
     private String  memo;
 
-    @ApiModelProperty("原始状态")
+    @ApiModelProperty(value = "原始状态", hidden = false)
     private Integer originStatus;
 
     @ApiModelProperty("操作描述")
