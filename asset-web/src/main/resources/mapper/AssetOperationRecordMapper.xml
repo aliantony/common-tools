@@ -257,6 +257,7 @@
             aor.target_object_id AS id,
             aor.origin_status AS originStatus,
             c.file_info as fileInfo,
+        aor.content,
             c.memo
         FROM
             asset_operation_record aor
