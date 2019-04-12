@@ -16,10 +16,6 @@
         <result property="key" column="asset_status"/>
         <result property="value" column="num"/>
     </resultMap>
-    <resultMap id="countMap" type="java.util.HashMap">
-        <result property="key" column="asset_id"/>
-        <result property="value" column="count"/>
-    </resultMap>
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.Asset">
         <id column="id" property="id"/>
@@ -873,7 +869,7 @@
         LEFT JOIN asset_network_card c ON a.id = c.asset_id
         WHERE
         b.inner_ip = #{ip}
-        OR c.ip_address = #{ip}   OR  d.ip = #{ip}
+        OR c.ip_address = #{ip} OR d.ip = #{ip}
         AND a.`status` = 1
         <if test=" isNet != null">
             AND b.`status` = 1
@@ -1280,11 +1276,43 @@
         </foreach>
     </update>
     <!--查询资产漏洞数量-->
-    <select id="queryAssetVulCount" parameterType="java.lang.Integer" resultMap="countMap">
-        SELECT asset_id,count(1) as count FROM asset_vul_rel where asset_id = #{assetId} and vul_status = 5 and status = 1
+    <select id="queryAssetVulCount" resultType="com.antiy.asset.entity.IdCount">
+        SELECT
+            asset_id,
+            count(1) count
+        FROM
+            asset_vul_rel
+        WHERE
+            1 = 1
+        <if test="assetIds != null and assetIds.size() > 0">
+            and asset_id IN
+            <foreach collection="assetIds" open="(" close=")" separator="," item="item">
+               #{item}
+            </foreach>
+        </if>
+            and vul_status != 5
+            and status = 1
+        GROUP BY
+            asset_id
     </select>
     <!--查询资产补丁数量-->
-    <select id="queryAssetPatchCount" parameterType="java.lang.Integer" resultMap="countMap">
-        SELECT asset_id,count(1) as count FROM asset_vul_rel where asset_id = #{assetId} and patch_status = 5 and status = 1
+    <select id="queryAssetPatchCount" resultType="com.antiy.asset.entity.IdCount">
+        SELECT
+        asset_id as id,
+        count(1) as count
+        FROM
+        asset_patch_rel
+        WHERE
+        1 = 1
+        <if test="assetIds != null and assetIds.size() > 0">
+            and asset_id IN
+            <foreach collection="assetIds" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        and patch_status != 5
+        and status = 1
+        GROUP BY
+        asset_id
     </select>
 </mapper>
