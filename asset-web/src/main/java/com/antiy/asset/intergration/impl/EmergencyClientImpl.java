@@ -1,6 +1,7 @@
 package com.antiy.asset.intergration.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.intergration.EmergencyClient;
 import com.antiy.asset.util.BaseClient;
 import com.antiy.common.base.ActionResponse;
@@ -24,7 +25,7 @@ public class EmergencyClientImpl implements EmergencyClient {
     private BaseClient baseClient;
 
     @Override
-    public ActionResponse queryEmergencyCount(List<Integer> assetIds) {
+    public ActionResponse<List<IdCount>> queryEmergencyCount(List<Integer> assetIds) {
         return (ActionResponse) baseClient.post(assetIds, new ParameterizedTypeReference<ActionResponse>() {
         }, emergencyClientUrl);
     }
