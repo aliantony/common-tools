@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.response.*;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Propagation;
@@ -19,10 +20,6 @@ import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
-import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
-import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
-import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
-import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.PageResult;
@@ -163,9 +160,9 @@ public class AssetSoftwareRelationController {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @ApiOperation(value = "查询操作系统接口", notes = "无查询条件")
     @PreAuthorize("hasAuthority('asset:softwarerelation:queryOS')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/os", method = RequestMethod.GET)
-    public ActionResponse<List<String>> queryOS() throws Exception {
+    public ActionResponse<List<SelectResponse>> queryOS() throws Exception {
         return ActionResponse.success(iAssetSoftwareRelationService.findOS());
     }
 

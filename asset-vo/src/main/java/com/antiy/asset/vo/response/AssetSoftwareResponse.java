@@ -23,6 +23,12 @@ public class AssetSoftwareResponse extends BaseResponse {
      */
     @ApiModelProperty("操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)")
     private String             operationSystem;
+
+    /**
+     * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
+     */
+    @ApiModelProperty("操作系统名")
+    private String             operationSystemName;
     /**
      * 软件品类
      */
@@ -415,5 +421,13 @@ public class AssetSoftwareResponse extends BaseResponse {
 
     public void setBuyDate(Long buyDate) {
         this.buyDate = buyDate;
+    }
+
+    public String getOperationSystemName() {
+        return operationSystemName;
+    }
+
+    public void setOperationSystemName(String operationSystemName) {
+        this.operationSystemName = operationSystemName;
     }
 }

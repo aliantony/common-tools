@@ -9,10 +9,12 @@ import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.redis.CategoryOsResponse;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
@@ -154,6 +156,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private OperatingSystemClient                                              operatingSystemClient;
     @Resource
     private IAssetSoftwareService                                              softwareService;
+    @Resource
+    private IRedisService                                                      redisService;
+
     private static final int                                                   ALL_PAGE = -1;
 
     @Override
@@ -181,11 +186,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         String name = requestAsset.getName();
                         ParamterExceptionUtils.isTrue(!CheckRepeatName(name), "资产名称重复");
 
-//                        if (StringUtils.isNotBlank(requestAsset.getOperationSystem())) {
-//
-//                            BusinessExceptionUtils.isTrue(!checkOperatingSystemById(requestAsset.getOperationSystem()),
-//                                "操作系统不存在，或已经注销");
-//                        }
+                        // if (StringUtils.isNotBlank(requestAsset.getOperationSystem())) {
+                        //
+                        // BusinessExceptionUtils.isTrue(!checkOperatingSystemById(requestAsset.getOperationSystem()),
+                        // "操作系统不存在，或已经注销");
+                        // }
 
                         String areaId = requestAsset.getAreaId();
 
@@ -232,15 +237,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         aid = asset.getStringId();
                         // 保存安全设备
                         if (safetyEquipmentRequest != null) {
-                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(safetyEquipmentRequest.getIp (), null,1),
-                                    "IP不能重复！");
+                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(safetyEquipmentRequest.getIp(), null, 1),
+                                "IP不能重复！");
                             Integer id = saveSafety(aid, safetyEquipmentRequest);
                             safetyEquipmentRequest.setId(String.valueOf(id));
                             assetOuterRequestToChangeRecord.setSafetyEquipment(safetyEquipmentRequest);
                         }
                         // 保存网络设备
                         if (networkEquipmentRequest != null) {
-                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(networkEquipmentRequest.getInnerIp(), 1,null),
+                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(networkEquipmentRequest.getInnerIp(), 1, null),
                                 "内网IP不能重复！");
                             Integer id = SaveNetwork(aid, networkEquipmentRequest);
                             networkEquipmentRequest.setId(String.valueOf(id));
@@ -300,8 +305,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 AssetNetworkCard.class);
                             for (AssetNetworkCard assetNetworkCard : networkCardList) {
                                 ParamterExceptionUtils.isBlank(assetNetworkCard.getBrand(), "网卡品牌为空");
-                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null,null),
-                                    "IP不能重复！");
+                                ParamterExceptionUtils
+                                    .isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null, null), "IP不能重复！");
                                 assetNetworkCard.setAssetId(aid);
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -668,11 +673,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
-    private boolean CheckRepeatIp(String innerIp, Integer isNet,Integer isSafety) throws Exception {
+    private boolean CheckRepeatIp(String innerIp, Integer isNet, Integer isSafety) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setIp(innerIp);
         assetQuery.setIsNet(isNet);
-        assetQuery.setIsSafety (isSafety);
+        assetQuery.setIsSafety(isSafety);
         Integer countIp = assetDao.findCountIp(assetQuery);
         return countIp >= 1;
     }
@@ -1219,9 +1224,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<Asset> assetList = assetDao.findListAsset(assetQuery);
         BusinessExceptionUtils.isEmpty(assetList, "资产不存在");
         Asset asset = assetList.get(0);
+
         // 查询资产组
         param.put("assetId", asset.getId());
         AssetResponse assetResponse = BeanConvert.convertBean(asset, AssetResponse.class);
+
+        //设置操作系统名
+        if (StringUtils.isNotEmpty(asset.getOperationSystem())) {
+            List<CategoryOsResponse> categoryOsResponseList = redisService.getAllSystemOs();
+            for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {
+                if (asset.getOperationSystem().equals(categoryOsResponse.getStringId())) {
+                    assetResponse.setOperationSystemName(categoryOsResponse.getName());
+                }
+            }
+        }
+
         assetResponse.setAssetGroups(
             BeanConvert.convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class));
         assetOuterResponse.setAsset(assetResponse);
@@ -1408,8 +1425,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                                 AssetNetworkCard byId = assetNetworkCardDao.getById(assetNetworkCard.getStringId());
                                 if (!byId.getIpAddress().equals(assetNetworkCard.getIpAddress())) {
-                                    ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null,null),
-                                        "IP不能重复！");
+                                    ParamterExceptionUtils
+                                        .isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null, null), "IP不能重复！");
                                     List<Integer> integers = new ArrayList<>();
                                     integers.add(Integer.parseInt(asset.getStringId()));
                                     assetLinkRelationDao.deleteRelationByAssetId(integers);
@@ -1420,8 +1437,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetNetworkCard.setGmtModified(System.currentTimeMillis());
                                 updateNetworkList.add(assetNetworkCard);
                             } else {// 新增的
-                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null,null),
-                                    "IP不能重复！");
+                                ParamterExceptionUtils
+                                    .isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null, null), "IP不能重复！");
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
@@ -1630,7 +1647,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // ip 变更，不重复 ，且删除关联关系
                         AssetNetworkEquipment byId = assetNetworkEquipmentDao.getById(networkEquipment.getId());
                         if (!byId.getInnerIp().equals(networkEquipment.getInnerIp())) {
-                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkEquipment.getInnerIp(), 1,null),
+                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkEquipment.getInnerIp(), 1, null),
                                 "内网IP不能重复！");
                             List<Integer> integers = new ArrayList<>();
                             integers.add(Integer.parseInt(asset.getStringId()));
@@ -2152,7 +2169,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
-            if (CheckRepeatIp(entity.getNetworkIpAddress(), null,null)) {
+            if (CheckRepeatIp(entity.getNetworkIpAddress(), null, null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产网卡IP地址重复，");
@@ -2408,7 +2425,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatIp(networkDeviceEntity.getInnerIp(), 1,null)) {
+            if (CheckRepeatIp(networkDeviceEntity.getInnerIp(), 1, null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产内网IP地址重复，");
@@ -3003,8 +3020,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @return
      */
     private Boolean checkOperatingSystemById(String id) {
-        List<Map> baselineCategoryModelNodeResponse = operatingSystemClient
-            .getInvokeOperatingSystemTree();
+        List<Map> baselineCategoryModelNodeResponse = operatingSystemClient.getInvokeOperatingSystemTree();
         Set<String> result = new HashSet<>();
         if (CollectionUtils.isNotEmpty(baselineCategoryModelNodeResponse)) {
             operatingSystemRecursion(result, (Map<String, Object>) baselineCategoryModelNodeResponse.get(0));
