@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -41,6 +42,17 @@ public class AssetOperationRecordBarPO extends BaseEntity {
 
     @ApiModelProperty("原始状态")
     private Integer originStatus;
+
+    @ApiModelProperty("操作描述")
+    private String  content;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public Integer getOriginStatus() {
         return originStatus;
