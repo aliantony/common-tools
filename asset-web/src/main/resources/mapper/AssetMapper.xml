@@ -864,21 +864,16 @@
         count(1) count
         FROM
         asset a
-        LEFT JOIN asset_network_equipment b ON a.id = b.asset_id
-        LEFT JOIN asset_safety_equipment d ON a.id = d.asset_id
-        LEFT JOIN asset_network_card c ON a.id = c.asset_id
+        INNER JOIN asset_network_equipment b
+        INNER JOIN asset_safety_equipment d
+        INNER JOIN asset_network_card c
         WHERE
         b.inner_ip = #{ip}
-        OR c.ip_address = #{ip}   OR  d.ip = #{ip}
-        AND a.`status` = 1
-        <if test=" isNet != null">
-            AND b.`status` = 1
-        </if>
-        <if test=" isSafety!= null">
-            AND d.`status` = 1
-        </if>
-
+        OR c.ip_address = #{ip} OR d.ip = #{ip}
+        AND a.`status` = 1 AND a.status !=9
         AND c.`status` = 1
+        AND d.`status` = 1
+        AND b.`status` = 1
 
     </select>
 
@@ -1275,6 +1270,44 @@
             #{item}
         </foreach>
     </update>
-
-
+    <!--查询资产漏洞数量-->
+    <select id="queryAssetVulCount" resultType="com.antiy.asset.entity.IdCount">
+        SELECT
+            asset_id,
+            count(1) count
+        FROM
+            asset_vul_rel
+        WHERE
+            1 = 1
+        <if test="assetIds != null and assetIds.size() > 0">
+            and asset_id IN
+            <foreach collection="assetIds" open="(" close=")" separator="," item="item">
+               #{item}
+            </foreach>
+        </if>
+            and vul_status != 5
+            and status = 1
+        GROUP BY
+            asset_id
+    </select>
+    <!--查询资产补丁数量-->
+    <select id="queryAssetPatchCount" resultType="com.antiy.asset.entity.IdCount">
+        SELECT
+        asset_id as id,
+        count(1) as count
+        FROM
+        asset_patch_rel
+        WHERE
+        1 = 1
+        <if test="assetIds != null and assetIds.size() > 0">
+            and asset_id IN
+            <foreach collection="assetIds" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        and patch_status != 5
+        and status = 1
+        GROUP BY
+        asset_id
+    </select>
 </mapper>

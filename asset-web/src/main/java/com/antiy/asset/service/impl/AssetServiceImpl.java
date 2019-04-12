@@ -1,10 +1,41 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
+import com.antiy.asset.intergration.EmergencyClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetService;
@@ -32,34 +63,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -160,6 +163,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private IRedisService                                                      redisService;
 
     private static final int                                                   ALL_PAGE = -1;
+
+    @Resource
+    private EmergencyClient                                                    emergencyClient;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -304,9 +310,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             List<AssetNetworkCard> networkCardList = BeanConvert.convert(networkCardRequestList,
                                 AssetNetworkCard.class);
                             for (AssetNetworkCard assetNetworkCard : networkCardList) {
-                                ParamterExceptionUtils.isBlank(assetNetworkCard.getBrand(), "网卡品牌为空");
-                                ParamterExceptionUtils
-                                    .isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null, null), "IP不能重复！");
 
                                 ParamterExceptionUtils
                                     .isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null, null), "IP不能重复！");
@@ -733,9 +736,42 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return null;
         }
 
-        List<Asset> asset = assetDao.findListAsset(query);
-        if (CollectionUtils.isNotEmpty(asset)) {
-            asset.stream().forEach(a -> {
+        // 查询资产信息
+        List<Asset> assetList = assetDao.findListAsset(query);
+        List<Integer> assetIds = new ArrayList<>();
+        for (Asset asset : assetList) {
+            assetIds.add(DataTypeUtils.stringToInteger(asset.getStringId()));
+        }
+
+        // 1.查询补丁个数
+        Map<String, String> vulCountMaps = new HashMap<>();
+        if (query.getQueryVulCount() != null && query.getQueryVulCount() && CollectionUtils.isNotEmpty(assetIds)) {
+            List<IdCount> vulCountList = assetDao.queryAssetVulCount(assetIds);
+            vulCountMaps = vulCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
+        }
+
+        // 2.查询漏洞个数
+        Map<String, String> patchCountMaps = null;
+        if (query.getQueryPatchCount() != null && query.getQueryPatchCount() && CollectionUtils.isNotEmpty(assetIds)) {
+            List<IdCount> patchCountList = assetDao.queryAssetPatchCount(assetIds);
+            patchCountMaps = patchCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
+        }
+
+        // 3.查询告警个数
+
+        Map<String, String> alarmCountMaps = null;
+        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount() && CollectionUtils.isNotEmpty(assetIds)) {
+            ActionResponse<List<IdCount>> actionResponse = emergencyClient.queryEmergencyCount(assetIds);
+            if (actionResponse != null
+                && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                List<IdCount> alarmCountList = actionResponse.getBody();
+                alarmCountMaps = alarmCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
+                ;
+            }
+        }
+
+        if (CollectionUtils.isNotEmpty(assetList)) {
+            assetList.stream().forEach(a -> {
                 try {
                     String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                         DataTypeUtils.stringToInteger(a.getAreaId()));
@@ -746,13 +782,30 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             });
         }
-        List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);
-        if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
-            objects.forEach(object -> {
+        List<AssetResponse> objects = responseConverter.convert(assetList, AssetResponse.class);
+        for (AssetResponse object : objects) {
+            if (Objects.isNull(processMap) && !processMap.isEmpty()) {
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
-            });
+            }
+
+            if (MapUtils.isNotEmpty(vulCountMaps)) {
+                object.setVulCount(
+                    vulCountMaps.containsKey(object.getStringId()) ? vulCountMaps.get(object.getStringId()) : "0");
+            }
+
+            if (MapUtils.isNotEmpty(patchCountMaps)) {
+                object.setPatchCount(
+                    patchCountMaps.containsKey(object.getStringId()) ? patchCountMaps.get(object.getStringId()) : "0");
+            }
+
+            if (MapUtils.isNotEmpty(alarmCountMaps)) {
+                object.setAlarmCount(
+                    alarmCountMaps.containsKey(object.getStringId()) ? alarmCountMaps.get(object.getStringId()) : "0");
+            }
         }
+
         return objects;
+
     }
 
     public Integer findCountAsset(AssetQuery query) throws Exception {

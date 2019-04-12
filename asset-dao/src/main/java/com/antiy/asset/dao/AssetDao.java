@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.entity.Topology;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -143,4 +144,18 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer updateAssetAreaId(@Param("areaId") String areaId, @Param("areaIds") List<String> areaIds);
+
+    /**
+     * 查询资产漏洞数
+     * @param assetIds
+     * @return
+     */
+    List<IdCount> queryAssetVulCount(@Param(value = "assetIds") List<Integer> assetIds);
+
+    /**
+     * 查询资产补丁数
+     * @param assetIds
+     * @return
+     */
+    List<IdCount> queryAssetPatchCount(@Param(value = "assetIds") List<Integer> assetIds);
 }

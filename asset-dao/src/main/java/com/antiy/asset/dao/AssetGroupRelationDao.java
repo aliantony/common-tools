@@ -69,5 +69,5 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @param id
      * @return
      */
-    List<String> findAssetGroupNameByAssetId(Integer id) throws Exception;
+    List<String> findAssetGroupNameByAssetId(String id) throws Exception;
 }
