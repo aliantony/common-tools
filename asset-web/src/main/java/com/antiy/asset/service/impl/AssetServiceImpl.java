@@ -578,8 +578,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", configRegisterRequest);
                 // 调用失败，逻辑删登记的资产
                 assetDao.deleteById(id);
-                return actionResponseAsset == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
-                    : actionResponse;
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
             }
         }
 
