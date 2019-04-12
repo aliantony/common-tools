@@ -149,12 +149,12 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param assetIds
      * @return
      */
-    Map<Integer, Integer> queryAssetVulCount(@Param(value = "assetId") List<Integer> assetIds);
+    Map<String, String> queryAssetVulCount(@Param(value = "assetId") List<Integer> assetIds);
 
     /**
      * 查询资产补丁数
      * @param assetIds
      * @return
      */
-    Map<Integer, Integer> queryAssetPatchCount(@Param(value = "assetId") List<Integer> assetIds);
+    Map<String, String> queryAssetPatchCount(@Param(value = "assetId") List<Integer> assetIds);
 }
