@@ -1,8 +1,9 @@
 package com.antiy.asset.intergration;
 
-import com.antiy.common.base.ActionResponse;
-
 import java.util.List;
+
+import com.antiy.asset.entity.IdCount;
+import com.antiy.common.base.ActionResponse;
 
 /**
  * 资产告警远程调用
@@ -15,5 +16,5 @@ public interface EmergencyClient {
      * @param assetIds
      * @return
      */
-    ActionResponse queryEmergencyCount(List<Integer> assetIds);
+    ActionResponse<List<IdCount>> queryEmergencyCount(List<Integer> assetIds);
 }
