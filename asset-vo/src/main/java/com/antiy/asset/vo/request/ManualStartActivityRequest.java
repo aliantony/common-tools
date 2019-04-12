@@ -36,14 +36,14 @@ public class ManualStartActivityRequest {
     private String formData;
 
     @ApiModelProperty(value = "配置人员")
-    private List<String> configUserId;
+    private List<String> configUserIds;
 
-    public List<String> getConfigUserId() {
-        return configUserId;
+    public List<String> getConfigUserIds() {
+        return configUserIds;
     }
 
-    public void setConfigUserId(List<String> configUserId) {
-        this.configUserId = configUserId;
+    public void setConfigUserIds(List<String> configUserIds) {
+        this.configUserIds = configUserIds;
     }
 
     @ApiModelProperty(value = "流程定义Id")
