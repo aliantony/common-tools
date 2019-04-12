@@ -181,11 +181,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         String name = requestAsset.getName();
                         ParamterExceptionUtils.isTrue(!CheckRepeatName(name), "资产名称重复");
 
-                        if (StringUtils.isNotBlank(requestAsset.getOperationSystem())) {
-
-                            BusinessExceptionUtils.isTrue(!checkOperatingSystemById(requestAsset.getOperationSystem()),
-                                "操作系统不存在，或已经注销");
-                        }
+//                        if (StringUtils.isNotBlank(requestAsset.getOperationSystem())) {
+//
+//                            BusinessExceptionUtils.isTrue(!checkOperatingSystemById(requestAsset.getOperationSystem()),
+//                                "操作系统不存在，或已经注销");
+//                        }
 
                         String areaId = requestAsset.getAreaId();
 

@@ -137,8 +137,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetPortProtocol.class);
 
                     ParamterExceptionUtils.isTrue(!CheckRepeatName(assetSoftware.getName()), "资产名称重复");
-                    BusinessExceptionUtils.isTrue(!checkOperatingSystemById (assetSoftware.getOperationSystem()),
-                        "兼容系统存在，或已经注销！");
+//                    BusinessExceptionUtils.isTrue(!checkOperatingSystemById (assetSoftware.getOperationSystem()),
+//                        "兼容系统存在，或已经注销！");
                     BusinessExceptionUtils.isTrue(
                         !Objects.isNull(assetCategoryModelDao.getById(
                             com.antiy.common.utils.DataTypeUtils.stringToInteger(assetSoftware.getCategoryModel()))),
