@@ -121,8 +121,6 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("安装方式")
     private Integer       installType;
 
-
-
     /**
      * 安装状态
      */
@@ -155,6 +153,18 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty(value = "是否从控制台进入，默认false 不从控制台进入，true为控制台进入")
     private Boolean       enterControl    = false;
+    /**
+     * 资产状态
+     */
+    private List<Integer> assetStatus;
+
+    public List<Integer> getAssetStatus() {
+        return assetStatus;
+    }
+
+    public void setAssetStatus(List<Integer> assetStatus) {
+        this.assetStatus = assetStatus;
+    }
 
     public Boolean getEnterControl() {
         return enterControl;
@@ -415,7 +425,6 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     public void setMultipleQuery(String multipleQuery) {
         this.multipleQuery = multipleQuery;
     }
-
 
     @Override
     public void validate() throws RequestParamValidateException {
