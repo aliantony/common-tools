@@ -143,4 +143,18 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer updateAssetAreaId(@Param("areaId") String areaId, @Param("areaIds") List<String> areaIds);
+
+    /**
+     * 查询资产漏洞数
+     * @param assetId
+     * @return
+     */
+    Map<Integer, Integer> queryAssetVulCount(@Param(value = "assetId") Integer assetId);
+
+    /**
+     * 查询资产补丁数
+     * @param assetId
+     * @return
+     */
+    Map<Integer, Integer> queryAssetPatchCount(@Param(value = "assetId") Integer assetId);
 }
