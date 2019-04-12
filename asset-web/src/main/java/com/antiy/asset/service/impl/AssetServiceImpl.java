@@ -308,8 +308,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 ParamterExceptionUtils
                                     .isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null, null), "IP不能重复！");
 
-                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null,null),
-                                    "IP不能重复！");
+                                ParamterExceptionUtils
+                                    .isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null, null), "IP不能重复！");
                                 assetNetworkCard.setAssetId(aid);
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -366,9 +366,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             List<AssetMemory> memoryList = BeanConvert.convert(memoryRequestList, AssetMemory.class);
                             // List<AssetMemory> memory = new ArrayList<>();
                             for (AssetMemory assetMemory : memoryList) {
-//                                ParamterExceptionUtils.isBlank(assetMemory.getBrand(), "内存品牌为空");
-//                                ParamterExceptionUtils.isNull(assetMemory.getFrequency(), "内存主频为空");
-//                                ParamterExceptionUtils.isNull(assetMemory.getCapacity(), "内存容量为空");
+                                // ParamterExceptionUtils.isBlank(assetMemory.getBrand(), "内存品牌为空");
+                                // ParamterExceptionUtils.isNull(assetMemory.getFrequency(), "内存主频为空");
+                                // ParamterExceptionUtils.isNull(assetMemory.getCapacity(), "内存容量为空");
                                 assetMemory.setAssetId(aid);
                                 assetMemory.setGmtCreate(System.currentTimeMillis());
                                 assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -396,8 +396,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             List<AssetCpu> assetCpuList = BeanConvert.convert(cpuRequestList, AssetCpu.class);
                             // List<AssetCpu> cpu = new ArrayList<>();
                             for (AssetCpu assetCpu : assetCpuList) {
-//                                ParamterExceptionUtils.isBlank(assetCpu.getBrand(), "CPU品牌为空");
-//                                ParamterExceptionUtils.isNull(assetCpu.getMainFrequency(), "CPU主频为空");
+                                // ParamterExceptionUtils.isBlank(assetCpu.getBrand(), "CPU品牌为空");
+                                // ParamterExceptionUtils.isNull(assetCpu.getMainFrequency(), "CPU主频为空");
                                 assetCpu.setAssetId(aid);
                                 assetCpu.setGmtCreate(System.currentTimeMillis());
                                 assetCpu.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -425,8 +425,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             // List<AssetHardDisk> assetHardDisks = new ArrayList<>();
                             List<AssetHardDisk> hardDisks = BeanConvert.convert(hardDisk, AssetHardDisk.class);
                             for (AssetHardDisk assetHardDisk : hardDisks) {
-//                                ParamterExceptionUtils.isBlank(assetHardDisk.getBrand(), "硬盘品牌为空");
-//                                ParamterExceptionUtils.isNull(assetHardDisk.getCapacity(), "硬盘容量空");
+                                // ParamterExceptionUtils.isBlank(assetHardDisk.getBrand(), "硬盘品牌为空");
+                                // ParamterExceptionUtils.isNull(assetHardDisk.getCapacity(), "硬盘容量空");
                                 assetHardDisk.setAssetId(aid);
                                 assetHardDisk.setGmtCreate(System.currentTimeMillis());
                                 assetHardDisk.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -1232,7 +1232,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         param.put("assetId", asset.getId());
         AssetResponse assetResponse = BeanConvert.convertBean(asset, AssetResponse.class);
 
-        //设置操作系统名
+        // 设置操作系统名
         if (StringUtils.isNotEmpty(asset.getOperationSystem())) {
             List<CategoryOsResponse> categoryOsResponseList = redisService.getAllSystemOs();
             for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {
@@ -3009,9 +3009,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @return
      */
     private Boolean checkOperatingSystem(String checkStr) {
-        List<Map> operatingSystemMapList = operatingSystemClient.getInvokeOperatingSystem();
-        for (Map map : operatingSystemMapList) {
-            if (Objects.equals(map.get("name"), checkStr)) {
+        List<CategoryOsResponse> categoryOsResponseList = operatingSystemClient.getInvokeOperatingSystem();
+        for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {
+            if (Objects.equals(categoryOsResponse.getName(), checkStr)) {
                 return true;
             }
         }
@@ -3023,25 +3023,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @return
      */
     private Boolean checkOperatingSystemById(String id) {
-        List<Map> baselineCategoryModelNodeResponse = operatingSystemClient.getInvokeOperatingSystemTree();
+        List<BaselineCategoryModelNodeResponse> baselineCategoryModelNodeResponse = operatingSystemClient
+            .getInvokeOperatingSystemTree();
         Set<String> result = new HashSet<>();
         if (CollectionUtils.isNotEmpty(baselineCategoryModelNodeResponse)) {
-            operatingSystemRecursion(result, (Map<String, Object>) baselineCategoryModelNodeResponse.get(0));
+            operatingSystemRecursion(result, baselineCategoryModelNodeResponse.get(0));
         }
         return result.contains(id);
     }
 
-    private void operatingSystemRecursion(Set<String> result, Map<String, Object> response) {
-        if (!MapUtils.isEmpty(response)) {
-            if (CollectionUtils.isEmpty((List) response.get("childrenNode"))) {
-                result.add((String) response.get("stringId"));
+    private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
+        if (response != null) {
+            if (CollectionUtils.isEmpty(response.getChildrenNode())) {
+                result.add(response.getStringId());
             } else {
-                for (Map baselineCategoryModelNodeResponse : (List<Map>) response.get("childrenNode")) {
+                for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse : response.getChildrenNode()) {
                     operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
                 }
             }
         }
-
     }
 
     @Override

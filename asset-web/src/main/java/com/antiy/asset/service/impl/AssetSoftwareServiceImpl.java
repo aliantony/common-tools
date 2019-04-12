@@ -249,9 +249,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @return
      */
     private Boolean checkOperatingSystem(String checkStr) {
-        List<Map> operatingSystemMapList = operatingSystemClient.getInvokeOperatingSystem();
-        for (Map map : operatingSystemMapList) {
-            if (Objects.equals(map.get("name"), checkStr)) {
+        List<CategoryOsResponse> categoryOsResponseList = operatingSystemClient.getInvokeOperatingSystem();
+        for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {
+            if (Objects.equals(categoryOsResponse.getName(), checkStr)) {
                 return true;
             }
         }
@@ -263,29 +263,17 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @return
      */
     private Boolean checkOperatingSystemById(String id) {
-        List<Map> baselineCategoryModelNodeResponse = operatingSystemClient.getInvokeOperatingSystemTree();
+        List<BaselineCategoryModelNodeResponse> baselineCategoryModelNodeResponse = operatingSystemClient
+            .getInvokeOperatingSystemTree();
         Set<String> result = new HashSet<>();
         if (CollectionUtils.isNotEmpty(baselineCategoryModelNodeResponse)) {
-            operatingSystemRecursion(result, (Map<String, Object>) baselineCategoryModelNodeResponse.get(0));
+            operatingSystemRecursion(result, baselineCategoryModelNodeResponse.get(0));
         }
         return result.contains(id);
     }
 
-    private void operatingSystemRecursion(Set<String> result, Map<String, Object> response) {
-        if (!MapUtils.isEmpty(response)) {
-            if (CollectionUtils.isEmpty((List) response.get("childrenNode"))) {
-                result.add((String) response.get("stringId"));
-            } else {
-                for (Map baselineCategoryModelNodeResponse : (List<Map>) response.get("childrenNode")) {
-                    operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
-                }
-            }
-        }
-
-    }
-
     private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
-        if (!CollectionUtils.isEmpty(result)) {
+        if (response != null) {
             if (CollectionUtils.isEmpty(response.getChildrenNode())) {
                 result.add(response.getStringId());
             } else {
@@ -294,7 +282,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 }
             }
         }
-
     }
 
     @Override
@@ -651,7 +638,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return assetSoftwareDetailResponse;
     }
 
-    private void setOperationName(AssetSoftware assetSoftware, AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+    private void setOperationName(AssetSoftware assetSoftware,
+                                  AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
         if (StringUtils.isNotEmpty(assetSoftware.getOperationSystem())) {
             List<CategoryOsResponse> categoryOsResponseList = redisService.getAllSystemOs();
             for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {

@@ -1,5 +1,6 @@
 package com.antiy.asset.intergration;
 
+import com.antiy.asset.vo.redis.CategoryOsResponse;
 import com.antiy.asset.vo.response.BaselineCategoryModelNodeResponse;
 import com.antiy.common.base.ActionResponse;
 
@@ -12,11 +13,11 @@ import java.util.Map;
  * @create 2019-02-21 15:47
  **/
 public interface OperatingSystemClient {
-    ActionResponse getOperatingSystem();
+    ActionResponse<List<CategoryOsResponse>> getOperatingSystem();
 
-    List<Map> getInvokeOperatingSystem();
+    List<CategoryOsResponse> getInvokeOperatingSystem();
 
     ActionResponse getOperatingSystemTree();
 
-    List<Map> getInvokeOperatingSystemTree();
+    List<BaselineCategoryModelNodeResponse> getInvokeOperatingSystemTree();
 }
