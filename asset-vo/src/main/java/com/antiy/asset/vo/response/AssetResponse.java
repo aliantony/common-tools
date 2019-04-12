@@ -1,9 +1,10 @@
 package com.antiy.asset.vo.response;
 
-import com.antiy.common.encoder.Encode;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.List;
+
+import com.antiy.common.encoder.Encode;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -205,6 +206,39 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("资产流程信息")
     private WaitingTaskReponse       waitingTaskReponse;
+
+    @ApiModelProperty(value = "漏洞个数")
+    private String                   vulCount;
+
+    @ApiModelProperty(value = "补丁个数")
+    private String                   patchCount;
+
+    @ApiModelProperty(value = "告警个数")
+    private String                   alarmCount;
+
+    public String getVulCount() {
+        return vulCount;
+    }
+
+    public void setVulCount(String vulCount) {
+        this.vulCount = vulCount;
+    }
+
+    public String getPatchCount() {
+        return patchCount;
+    }
+
+    public void setPatchCount(String patchCount) {
+        this.patchCount = patchCount;
+    }
+
+    public String getAlarmCount() {
+        return alarmCount;
+    }
+
+    public void setAlarmCount(String alarmCount) {
+        this.alarmCount = alarmCount;
+    }
 
     public String getAreaName() {
         return areaName;
