@@ -3109,7 +3109,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             .equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
             ParamterExceptionUtils.isNull(assetStatusJumpRequst.getAgree(), "agree不能为空");
             if (assetStatusJumpRequst.getAgree()) {
-                this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
+                this.changeStatusById(assetId, AssetStatusEnum.WAIT_NET.getCode());
             } else {
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_SETTING.getCode());
             }
