@@ -45,4 +45,9 @@ public class Constants {
      */
     public static final int     NOT_SYSTEM_DEFAULT_CATEGORY        = 1;
 
+    /**
+     * redis 存放操作系统redis key
+     */
+    public static final String  SYSTEM_OS_REDIS_KEY                = "system:Baseline:os";
+
 }
