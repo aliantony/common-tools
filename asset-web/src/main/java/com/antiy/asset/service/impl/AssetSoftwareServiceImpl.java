@@ -38,7 +38,6 @@ import com.antiy.asset.util.*;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.redis.CategoryOsResponse;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
@@ -249,9 +248,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @return
      */
     private Boolean checkOperatingSystem(String checkStr) {
-        List<CategoryOsResponse> categoryOsResponseList = operatingSystemClient.getInvokeOperatingSystem();
-        for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {
-            if (Objects.equals(categoryOsResponse.getName(), checkStr)) {
+        List<LinkedHashMap> categoryOsResponseList = operatingSystemClient.getInvokeOperatingSystem();
+        for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
+            if (Objects.equals(linkedHashMap.get("name"), checkStr)) {
                 return true;
             }
         }
