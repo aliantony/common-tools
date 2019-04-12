@@ -50,6 +50,11 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      */
 
     private Integer       isNet;
+    /**
+     * 是否安全设备,重复判读使用
+     */
+
+    private Integer       isSafety;
 
     /**
      * 资产编号
@@ -447,5 +452,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     public void setIsNet(Integer isNet) {
         this.isNet = isNet;
+    }
+
+    public Integer getIsSafety() {
+        return isSafety;
+    }
+
+    public void setIsSafety(Integer isSafety) {
+        this.isSafety = isSafety;
     }
 }

@@ -1,35 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -60,6 +30,34 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -185,7 +183,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         if (StringUtils.isNotBlank(requestAsset.getOperationSystem())) {
 
-                            BusinessExceptionUtils.isTrue(!checkOperatingSystem(requestAsset.getOperationSystem()),
+                            BusinessExceptionUtils.isTrue(!checkOperatingSystemById(requestAsset.getOperationSystem()),
                                 "操作系统不存在，或已经注销");
                         }
 
@@ -235,13 +233,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         aid = asset.getStringId();
                         // 保存安全设备
                         if (safetyEquipmentRequest != null) {
+                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(safetyEquipmentRequest.getIp (), null,1),
+                                    "IP不能重复！");
                             Integer id = saveSafety(aid, safetyEquipmentRequest);
                             safetyEquipmentRequest.setId(String.valueOf(id));
                             assetOuterRequestToChangeRecord.setSafetyEquipment(safetyEquipmentRequest);
                         }
                         // 保存网络设备
                         if (networkEquipmentRequest != null) {
-                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(networkEquipmentRequest.getInnerIp(), 1),
+                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(networkEquipmentRequest.getInnerIp(), 1,null),
                                 "内网IP不能重复！");
                             Integer id = SaveNetwork(aid, networkEquipmentRequest);
                             networkEquipmentRequest.setId(String.valueOf(id));
@@ -301,7 +301,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 AssetNetworkCard.class);
                             for (AssetNetworkCard assetNetworkCard : networkCardList) {
                                 ParamterExceptionUtils.isBlank(assetNetworkCard.getBrand(), "网卡品牌为空");
-                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null),
+                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null,null),
                                     "IP不能重复！");
                                 assetNetworkCard.setAssetId(aid);
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
@@ -667,10 +667,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
-    private boolean CheckRepeatIp(String innerIp, Integer isNet) throws Exception {
+    private boolean CheckRepeatIp(String innerIp, Integer isNet,Integer isSafety) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setIp(innerIp);
         assetQuery.setIsNet(isNet);
+        assetQuery.setIsSafety (isSafety);
         Integer countIp = assetDao.findCountIp(assetQuery);
         return countIp >= 1;
     }
@@ -1406,7 +1407,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                                 AssetNetworkCard byId = assetNetworkCardDao.getById(assetNetworkCard.getStringId());
                                 if (!byId.getIpAddress().equals(assetNetworkCard.getIpAddress())) {
-                                    ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null),
+                                    ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null,null),
                                         "IP不能重复！");
                                     List<Integer> integers = new ArrayList<>();
                                     integers.add(Integer.parseInt(asset.getStringId()));
@@ -1418,7 +1419,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetNetworkCard.setGmtModified(System.currentTimeMillis());
                                 updateNetworkList.add(assetNetworkCard);
                             } else {// 新增的
-                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null),
+                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null,null),
                                     "IP不能重复！");
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(
@@ -1628,7 +1629,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // ip 变更，不重复 ，且删除关联关系
                         AssetNetworkEquipment byId = assetNetworkEquipmentDao.getById(networkEquipment.getId());
                         if (!byId.getInnerIp().equals(networkEquipment.getInnerIp())) {
-                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkEquipment.getInnerIp(), 1),
+                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkEquipment.getInnerIp(), 1,null),
                                 "内网IP不能重复！");
                             List<Integer> integers = new ArrayList<>();
                             integers.add(Integer.parseInt(asset.getStringId()));
@@ -2150,7 +2151,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
-            if (CheckRepeatIp(entity.getNetworkIpAddress(), null)) {
+            if (CheckRepeatIp(entity.getNetworkIpAddress(), null,null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产网卡IP地址重复，");
@@ -2406,7 +2407,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatIp(networkDeviceEntity.getInnerIp(), 1)) {
+            if (CheckRepeatIp(networkDeviceEntity.getInnerIp(), 1,null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产内网IP地址重复，");
