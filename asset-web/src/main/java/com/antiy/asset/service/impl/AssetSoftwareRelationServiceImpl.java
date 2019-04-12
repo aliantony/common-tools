@@ -7,6 +7,11 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.vo.redis.CategoryOsResponse;
+import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
@@ -80,6 +85,10 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     private SchemeDao                                                           schemeDao;
     @Resource
     private AssetOperationRecordDao                                             assetOperationRecordDao;
+    @Resource
+    private RedisUtil                                                           redisUtil;
+    @Resource
+    private IRedisService                                                       redisService;
 
     @Override
     public Integer saveAssetSoftwareRelation(AssetSoftwareRelationRequest request) throws Exception {
@@ -154,8 +163,19 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
-    public List<String> findOS() throws Exception {
-        return assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+    public List<SelectResponse> findOS() throws Exception {
+        List<String> osList = assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        List<CategoryOsResponse> categoryOsResponseList = redisService.getAllSystemOs();
+        List<SelectResponse> result = new ArrayList<>();
+        for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {
+            if (osList.contains(categoryOsResponse.getStringId())) {
+                SelectResponse selectResponse = new SelectResponse();
+                selectResponse.setId(categoryOsResponse.getStringId());
+                selectResponse.setValue(categoryOsResponse.getName());
+                result.add(selectResponse);
+            }
+        }
+        return result;
     }
 
     @Override

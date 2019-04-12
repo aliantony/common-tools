@@ -2,10 +2,7 @@ package com.antiy.asset.vo.request;
 
 import java.util.Arrays;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Length;
 
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
@@ -48,6 +45,22 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
     @Encode
     @Size(max = 1000, message = "资产组Id数组长度不能超过1000")
     private String[] assetIds;
+
+    /**
+     * 被移除的资产
+     */
+    @ApiModelProperty("被移除的资产数组")
+    @Encode
+    @Size(max = 1000, message = "资产组Id数组长度不能超过1000")
+    private String[] deleteAssetIds;
+
+    public String[] getDeleteAssetIds() {
+        return deleteAssetIds;
+    }
+
+    public void setDeleteAssetIds(String[] deleteAssetIds) {
+        this.deleteAssetIds = deleteAssetIds;
+    }
 
     public String getMemo() {
         return memo;

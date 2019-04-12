@@ -30,10 +30,7 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
-import com.antiy.asset.service.IAssetCategoryModelService;
-import com.antiy.asset.service.IAssetPortProtocolService;
-import com.antiy.asset.service.IAssetSoftwareLicenseService;
-import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.service.*;
 import com.antiy.asset.templet.AssetSoftwareEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
 import com.antiy.asset.templet.ImportResult;
@@ -41,6 +38,7 @@ import com.antiy.asset.util.*;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.redis.CategoryOsResponse;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
@@ -121,7 +119,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Resource
     private SchemeDao                                                        schemeDao;
     @Resource
-    AssetDao                                                                 assetDao;
+    private AssetDao                                                         assetDao;
+    @Resource
+    private IRedisService                                                    redisService;
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -645,7 +645,21 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             querySoftwareLicense(softwareQuery, assetSoftwareDetailResponse);
         }
 
+        // 获取软件的操作系统名
+        // 设置操作系统名
+        setOperationName(assetSoftware, assetSoftwareDetailResponse);
         return assetSoftwareDetailResponse;
+    }
+
+    private void setOperationName(AssetSoftware assetSoftware, AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+        if (StringUtils.isNotEmpty(assetSoftware.getOperationSystem())) {
+            List<CategoryOsResponse> categoryOsResponseList = redisService.getAllSystemOs();
+            for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {
+                if (assetSoftware.getOperationSystem().equals(categoryOsResponse.getStringId())) {
+                    assetSoftwareDetailResponse.setOperationSystemName(categoryOsResponse.getName());
+                }
+            }
+        }
     }
 
     @Override

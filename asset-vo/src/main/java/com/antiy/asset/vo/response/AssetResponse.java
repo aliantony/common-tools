@@ -73,6 +73,13 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("操作系统")
     private String                   operationSystem;
+
+    /**
+     * 操作系统名
+     */
+    @ApiModelProperty("操作系统名")
+    private String                   operationSystemName;
+
     /**
      * 系统位数
      */
@@ -487,45 +494,29 @@ public class AssetResponse extends BaseResponse {
         this.houseLocation = houseLocation;
     }
 
+    public String getOperationSystemName() {
+        return operationSystemName;
+    }
+
+    public void setOperationSystemName(String operationSystemName) {
+        this.operationSystemName = operationSystemName;
+    }
+
     @Override
     public String toString() {
-        return "AssetResponse{" +
-                "number='" + number + '\'' +
-                ", name='" + name + '\'' +
-                ", assetGroup='" + assetGroup + '\'' +
-                ", assetGroups=" + assetGroups +
-                ", ip='" + ip + '\'' +
-                ", mac='" + mac + '\'' +
-                ", serial='" + serial + '\'' +
-                ", categoryModel='" + categoryModel + '\'' +
-                ", categoryModelName='" + categoryModelName + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", assetStatus=" + assetStatus +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", systemBit=" + systemBit +
-                ", firmwareVersion='" + firmwareVersion + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", responsibleUserId='" + responsibleUserId + '\'' +
-                ", responsibleUserName='" + responsibleUserName + '\'' +
-                ", contactTel='" + contactTel + '\'' +
-                ", email='" + email + '\'' +
-                ", assetSource=" + assetSource +
-                ", importanceDegree=" + importanceDegree +
-                ", describle='" + describle + '\'' +
-                ", parentId=" + parentId +
-                ", tags='" + tags + '\'' +
-                ", serviceLife=" + serviceLife +
-                ", buyDate=" + buyDate +
-                ", warranty=" + warranty +
-                ", admittanceStatus=" + admittanceStatus +
-                ", gmtCreate=" + gmtCreate +
-                ", firstEnterNett=" + firstEnterNett +
-                ", areaId='" + areaId + '\'' +
-                ", areaName='" + areaName + '\'' +
-                ", location='" + location + '\'' +
-                ", houseLocation='" + houseLocation + '\'' +
-                ", installType=" + installType +
-                ", waitingTaskReponse=" + waitingTaskReponse +
-                '}';
+        return "AssetResponse{" + "number='" + number + '\'' + ", name='" + name + '\'' + ", assetGroup='" + assetGroup
+               + '\'' + ", assetGroups=" + assetGroups + ", ip='" + ip + '\'' + ", mac='" + mac + '\'' + ", serial='"
+               + serial + '\'' + ", categoryModel='" + categoryModel + '\'' + ", categoryModelName='"
+               + categoryModelName + '\'' + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
+               + ", operationSystem='" + operationSystem + '\'' + ", systemBit=" + systemBit + ", firmwareVersion='"
+               + firmwareVersion + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='" + responsibleUserId + '\''
+               + ", responsibleUserName='" + responsibleUserName + '\'' + ", contactTel='" + contactTel + '\''
+               + ", email='" + email + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
+               + ", describle='" + describle + '\'' + ", parentId=" + parentId + ", tags='" + tags + '\''
+               + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty=" + warranty
+               + ", admittanceStatus=" + admittanceStatus + ", gmtCreate=" + gmtCreate + ", firstEnterNett="
+               + firstEnterNett + ", areaId='" + areaId + '\'' + ", areaName='" + areaName + '\'' + ", location='"
+               + location + '\'' + ", houseLocation='" + houseLocation + '\'' + ", installType=" + installType
+               + ", waitingTaskReponse=" + waitingTaskReponse + '}';
     }
 }
