@@ -16,6 +16,10 @@
         <result property="key" column="asset_status"/>
         <result property="value" column="num"/>
     </resultMap>
+    <resultMap id="countMap" type="java.util.HashMap">
+        <result property="key" column="asset_id"/>
+        <result property="value" column="count"/>
+    </resultMap>
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.Asset">
         <id column="id" property="id"/>
@@ -1275,6 +1279,12 @@
             #{item}
         </foreach>
     </update>
-
-
+    <!--查询资产漏洞数量-->
+    <select id="queryAssetVulCount" parameterType="java.lang.Integer" resultMap="countMap">
+        SELECT asset_id,count(1) as count FROM asset_vul_rel where asset_id = #{assetId} and vul_status = 5 and status = 1
+    </select>
+    <!--查询资产补丁数量-->
+    <select id="queryAssetPatchCount" parameterType="java.lang.Integer" resultMap="countMap">
+        SELECT asset_id,count(1) as count FROM asset_vul_rel where asset_id = #{assetId} and patch_status = 5 and status = 1
+    </select>
 </mapper>
