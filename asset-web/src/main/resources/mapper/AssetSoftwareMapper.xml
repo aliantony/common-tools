@@ -976,6 +976,12 @@
         <if test=" assetId != null">
             and a.asset_id = #{assetId}
         </if>
+        <if test="assetStatus != null and assetStatus.size() > 0">
+            and c.asset_status in
+            <foreach collection="assetStatus" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
         group by
         a.asset_id
         order by c.first_enter_nett desc) t
@@ -1038,6 +1044,12 @@
         </if>
         <if test=" assetId != null">
             and a.asset_id = #{assetId}
+        </if>
+        <if test="assetStatus != null and assetStatus.size() > 0">
+            and c.asset_status in
+            <foreach collection="assetStatus" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
         </if>
         group by
         a.asset_id

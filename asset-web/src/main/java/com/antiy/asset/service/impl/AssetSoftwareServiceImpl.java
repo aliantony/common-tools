@@ -139,8 +139,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetPortProtocol.class);
 
                     ParamterExceptionUtils.isTrue(!CheckRepeatName(assetSoftware.getName()), "资产名称重复");
-                    BusinessExceptionUtils.isTrue(!checkOperatingSystemById (assetSoftware.getOperationSystem()),
-                        "兼容系统存在，或已经注销！");
+//                    BusinessExceptionUtils.isTrue(!checkOperatingSystemById (assetSoftware.getOperationSystem()),
+//                        "兼容系统存在，或已经注销！");
                     BusinessExceptionUtils.isTrue(
                         !Objects.isNull(assetCategoryModelDao.getById(
                             com.antiy.common.utils.DataTypeUtils.stringToInteger(assetSoftware.getCategoryModel()))),
@@ -734,6 +734,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery) throws Exception {
+        // 只查询已入网、待退役的资产
+        softwareQuery.setAssetStatus(new ArrayList<Integer>() {
+            {
+                add(AssetStatusEnum.NET_IN.getCode());
+                add(AssetStatusEnum.WAIT_RETIRE.getCode());
+            }
+        });
         List<AssetSoftwareInstallResponse> assetSoftwareInstallResponseList = this.findAssetInstallList(softwareQuery);
         if (CollectionUtils.isEmpty(assetSoftwareInstallResponseList)) {
             return new PageResult<>(softwareQuery.getPageSize(), 0, softwareQuery.getCurrentPage(),

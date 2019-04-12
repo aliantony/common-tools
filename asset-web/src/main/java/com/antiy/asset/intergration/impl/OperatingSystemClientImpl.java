@@ -1,7 +1,9 @@
 package com.antiy.asset.intergration.impl;
 
+import com.antiy.asset.aop.AssetLog;
 import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.util.BaseClient;
+import com.antiy.asset.vo.enums.AssetLogOperationType;
 import com.antiy.asset.vo.query.BaselineCategoryModelQuery;
 import com.antiy.asset.vo.query.CategoryByNameQuery;
 import com.antiy.asset.vo.response.BaselineCategoryModelNodeResponse;
@@ -34,12 +36,14 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
      * @return
      */
     @Override
+    @AssetLog(description = "获取操作系统列表", operationType = AssetLogOperationType.QUERY)
     public ActionResponse getOperatingSystem() {
         return (ActionResponse) baseClient.post(null, new ParameterizedTypeReference<ActionResponse>() {
         }, getOperatingSystemListUrl);
     }
 
     @Override
+    @AssetLog(description = "获取操作系统列表", operationType = AssetLogOperationType.QUERY)
     public List<Map> getInvokeOperatingSystem() {
         ActionResponse actionResponse = this.getOperatingSystem();
         if (null == actionResponse
@@ -54,6 +58,7 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
      * @return
      */
     @Override
+    @AssetLog(description = "获取操作系统树", operationType = AssetLogOperationType.QUERY)
     public ActionResponse getOperatingSystemTree() {
         BaselineCategoryModelQuery baselineCategoryModelQuery=new BaselineCategoryModelQuery();
         baselineCategoryModelQuery.setType(2);
@@ -62,6 +67,7 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
     }
 
     @Override
+    @AssetLog(description = "获取操作系统树", operationType = AssetLogOperationType.QUERY)
     public List<Map> getInvokeOperatingSystemTree() {
         ActionResponse actionResponse = this.getOperatingSystemTree();
         if (null == actionResponse

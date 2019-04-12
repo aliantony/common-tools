@@ -36,7 +36,7 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      * 资产品类型号
      */
     @ApiModelProperty("资产品类型号")
-    private String        categoryModel;
+    private List<String>        categoryModels;
     /**
      * 计算设备资产品类型号列表
      */
@@ -62,39 +62,13 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      */
     @ApiModelProperty("资产区域")
     private List<Integer> areaIds;
-    /**
-     * 网络设备根节点品类型号
-     */
-    @ApiModelProperty("网络设备根节点品类型号")
-    private Integer pcRootCategoryModel;
-    /**
-     * 计算设备根节点品类型号
-     */
-    @ApiModelProperty("计算设备根节点品类型号")
-    private Integer netRootCategoryModel;
 
-    public Integer getPcRootCategoryModel() {
-        return pcRootCategoryModel;
+    public List<String> getCategoryModels() {
+        return categoryModels;
     }
 
-    public void setPcRootCategoryModel(Integer pcRootCategoryModel) {
-        this.pcRootCategoryModel = pcRootCategoryModel;
-    }
-
-    public Integer getNetRootCategoryModel() {
-        return netRootCategoryModel;
-    }
-
-    public void setNetRootCategoryModel(Integer netRootCategoryModel) {
-        this.netRootCategoryModel = netRootCategoryModel;
-    }
-
-    public String getCategoryModel() {
-        return categoryModel;
-    }
-
-    public void setCategoryModel(String categoryModel) {
-        this.categoryModel = categoryModel;
+    public void setCategoryModels(List<String> categoryModels) {
+        this.categoryModels = categoryModels;
     }
 
     public String getAssetName() {

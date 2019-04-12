@@ -77,9 +77,9 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Resource
     private TransactionTemplate                                                 transactionTemplate;
     @Resource
-    private SchemeDao schemeDao;
+    private SchemeDao                                                           schemeDao;
     @Resource
-    private AssetOperationRecordDao assetOperationRecordDao;
+    private AssetOperationRecordDao                                             assetOperationRecordDao;
 
     @Override
     public Integer saveAssetSoftwareRelation(AssetSoftwareRelationRequest request) throws Exception {
@@ -258,11 +258,12 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareInstallResponse> queryInstallList(InstallQuery query) throws Exception {
-        logger.info( LoginUserUtil.getLoginUser().toString());
+        logger.info(LoginUserUtil.getLoginUser().toString());
         List<Integer> areaIdsList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         query.setAreaIds(DataTypeUtils.integerArrayToStringArray(areaIdsList));
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.NET_IN.getCode());
+        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
         Integer count = assetSoftwareRelationDao.queryInstallCount(query);
         if (count != 0) {
@@ -294,7 +295,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
 
-        AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation ();
+        AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
         assetSoftwareRelation.setAssetId(request.getAssetId());
         assetSoftwareRelation.setSoftwareId(request.getSoftwareId());
         assetSoftwareRelation.setConfigureStatus(ConfigureStatusEnum.CONFIGURING.getCode());
