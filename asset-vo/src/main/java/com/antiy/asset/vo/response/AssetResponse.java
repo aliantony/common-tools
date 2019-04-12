@@ -1,9 +1,10 @@
 package com.antiy.asset.vo.response;
 
-import com.antiy.common.encoder.Encode;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.List;
+
+import com.antiy.common.encoder.Encode;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -73,6 +74,13 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("操作系统")
     private String                   operationSystem;
+
+    /**
+     * 操作系统名
+     */
+    @ApiModelProperty("操作系统名")
+    private String                   operationSystemName;
+
     /**
      * 系统位数
      */
@@ -198,6 +206,39 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("资产流程信息")
     private WaitingTaskReponse       waitingTaskReponse;
+
+    @ApiModelProperty(value = "漏洞个数")
+    private String                   vulCount;
+
+    @ApiModelProperty(value = "补丁个数")
+    private String                   patchCount;
+
+    @ApiModelProperty(value = "告警个数")
+    private String                   alarmCount;
+
+    public String getVulCount() {
+        return vulCount;
+    }
+
+    public void setVulCount(String vulCount) {
+        this.vulCount = vulCount;
+    }
+
+    public String getPatchCount() {
+        return patchCount;
+    }
+
+    public void setPatchCount(String patchCount) {
+        this.patchCount = patchCount;
+    }
+
+    public String getAlarmCount() {
+        return alarmCount;
+    }
+
+    public void setAlarmCount(String alarmCount) {
+        this.alarmCount = alarmCount;
+    }
 
     public String getAreaName() {
         return areaName;
@@ -487,45 +528,29 @@ public class AssetResponse extends BaseResponse {
         this.houseLocation = houseLocation;
     }
 
+    public String getOperationSystemName() {
+        return operationSystemName;
+    }
+
+    public void setOperationSystemName(String operationSystemName) {
+        this.operationSystemName = operationSystemName;
+    }
+
     @Override
     public String toString() {
-        return "AssetResponse{" +
-                "number='" + number + '\'' +
-                ", name='" + name + '\'' +
-                ", assetGroup='" + assetGroup + '\'' +
-                ", assetGroups=" + assetGroups +
-                ", ip='" + ip + '\'' +
-                ", mac='" + mac + '\'' +
-                ", serial='" + serial + '\'' +
-                ", categoryModel='" + categoryModel + '\'' +
-                ", categoryModelName='" + categoryModelName + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", assetStatus=" + assetStatus +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", systemBit=" + systemBit +
-                ", firmwareVersion='" + firmwareVersion + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", responsibleUserId='" + responsibleUserId + '\'' +
-                ", responsibleUserName='" + responsibleUserName + '\'' +
-                ", contactTel='" + contactTel + '\'' +
-                ", email='" + email + '\'' +
-                ", assetSource=" + assetSource +
-                ", importanceDegree=" + importanceDegree +
-                ", describle='" + describle + '\'' +
-                ", parentId=" + parentId +
-                ", tags='" + tags + '\'' +
-                ", serviceLife=" + serviceLife +
-                ", buyDate=" + buyDate +
-                ", warranty=" + warranty +
-                ", admittanceStatus=" + admittanceStatus +
-                ", gmtCreate=" + gmtCreate +
-                ", firstEnterNett=" + firstEnterNett +
-                ", areaId='" + areaId + '\'' +
-                ", areaName='" + areaName + '\'' +
-                ", location='" + location + '\'' +
-                ", houseLocation='" + houseLocation + '\'' +
-                ", installType=" + installType +
-                ", waitingTaskReponse=" + waitingTaskReponse +
-                '}';
+        return "AssetResponse{" + "number='" + number + '\'' + ", name='" + name + '\'' + ", assetGroup='" + assetGroup
+               + '\'' + ", assetGroups=" + assetGroups + ", ip='" + ip + '\'' + ", mac='" + mac + '\'' + ", serial='"
+               + serial + '\'' + ", categoryModel='" + categoryModel + '\'' + ", categoryModelName='"
+               + categoryModelName + '\'' + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
+               + ", operationSystem='" + operationSystem + '\'' + ", systemBit=" + systemBit + ", firmwareVersion='"
+               + firmwareVersion + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='" + responsibleUserId + '\''
+               + ", responsibleUserName='" + responsibleUserName + '\'' + ", contactTel='" + contactTel + '\''
+               + ", email='" + email + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
+               + ", describle='" + describle + '\'' + ", parentId=" + parentId + ", tags='" + tags + '\''
+               + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty=" + warranty
+               + ", admittanceStatus=" + admittanceStatus + ", gmtCreate=" + gmtCreate + ", firstEnterNett="
+               + firstEnterNett + ", areaId='" + areaId + '\'' + ", areaName='" + areaName + '\'' + ", location='"
+               + location + '\'' + ", houseLocation='" + houseLocation + '\'' + ", installType=" + installType
+               + ", waitingTaskReponse=" + waitingTaskReponse + '}';
     }
 }

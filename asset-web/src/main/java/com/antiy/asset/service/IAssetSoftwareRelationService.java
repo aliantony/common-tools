@@ -12,6 +12,7 @@ import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -84,7 +85,7 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      *
      * @return
      */
-    List<String> findOS() throws Exception;
+    List<SelectResponse> findOS() throws Exception;
 
     /**
      * 批量修改软件状态
