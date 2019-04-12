@@ -6,7 +6,6 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 /**
@@ -33,7 +32,7 @@ public class AssetMainboradRequest extends BasicRequest implements ObjectValidat
      * 品牌
      */
     @ApiModelProperty("品牌")
-    @NotBlank(message = "主板品牌不能为空")
+//    @NotBlank(message = "主板品牌不能为空")
     @Size(message = "主板品牌长度不能超过32位",max = 32)
     private String brand;
     /**

@@ -49,7 +49,12 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 是否网络设备,重复判读使用
      */
 
-    private Integer        isNet;
+    private Integer       isNet;
+    /**
+     * 是否安全设备,重复判读使用
+     */
+
+    private Integer       isSafety;
 
     /**
      * 资产编号
@@ -87,7 +92,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 厂商列表
      */
     @ApiModelProperty("厂商列表")
-    private List<String> manufacturers;
+    private List<String>  manufacturers;
     /**
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
@@ -169,6 +174,8 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     private Long          beginTime;
     @ApiModelProperty("结束时间")
     private Long          endTime;
+    @ApiModelProperty("是否只查网络设备 若为是则只查网络设备，若为否则两者都查 默认为两者都查")
+    private Boolean       searchNetworkDevice;
 
     public List<String> getManufacturers() {
         return manufacturers;
@@ -177,8 +184,9 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     public void setManufacturers(List<String> manufacturers) {
         this.manufacturers = manufacturers;
     }
+
     @ApiModelProperty(value = "是否从控制台进入，默认false 不从控制台进入，true为控制台进入")
-    private Boolean       enterControl = false;
+    private Boolean enterControl = false;
 
     public Boolean getEnterControl() {
         return enterControl;
@@ -392,6 +400,14 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
         this.number = number;
     }
 
+    public Boolean getSearchNetworkDevice() {
+        return searchNetworkDevice;
+    }
+
+    public void setSearchNetworkDevice(Boolean searchNetworkDevice) {
+        this.searchNetworkDevice = searchNetworkDevice;
+    }
+
     @Override
     public String toString() {
         return "AssetQuery{" + "ids=" + Arrays.toString(ids) + ", multipleQuery='" + multipleQuery + '\'' + ", name='"
@@ -437,5 +453,12 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     public void setIsNet(Integer isNet) {
         this.isNet = isNet;
     }
-}
 
+    public Integer getIsSafety() {
+        return isSafety;
+    }
+
+    public void setIsSafety(Integer isSafety) {
+        this.isSafety = isSafety;
+    }
+}

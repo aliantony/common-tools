@@ -1,5 +1,17 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.util.*;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.dao.AssetGroupRelationDao;
@@ -22,26 +34,15 @@ import com.antiy.asset.vo.response.AssetGroupResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.SysUser;
+import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.*;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 资产组表 服务实现类 </p>
@@ -100,6 +101,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         if (!Objects.equals(0, result)) { // 写入业务日志
             LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_INSERT.getName(),
                 AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            // 记录操作日志和运行日志
+            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_GROUP_INSERT.getName(), assetGroup.getId (), assetGroup.getName (),
+                    assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}", assetGroup.toString());
         }
 
@@ -141,6 +145,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             // 写入业务日志
             LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(),
                 AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+            // 记录操作日志和运行日志
+            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(), assetGroup.getId (), assetGroup.getName (),
+                    assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}", assetGroup.toString());
         }
         int result = 0;
@@ -161,6 +168,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             // 写入业务日志
             LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
                 AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(), assetGroup.getId (), assetGroup.getName (),
+                    assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}", assetGroup.toString());
         }
         assetGroupDao.update(assetGroup);
@@ -183,6 +192,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             // 写入业务日志
             LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
                 AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(), assetGroup.getId (), assetGroup.getName (),
+                    assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}", assetGroup.toString());
         }
 
@@ -234,15 +245,18 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
      * @return
      * @throws Exception
      */
-    public List<SelectResponse> queryUnconnectedGroupInfo() throws Exception {
+    @Override
+    public List<SelectResponse> queryUnconnectedGroupInfo(Boolean searchNetworkDevice) throws Exception {
         AssetQuery query = new AssetQuery();
         List<Integer> categoryCondition = new ArrayList<>();
         Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
         List<AssetCategoryModel> all = assetCategoryModelService.getAll();
         for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
-            if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-                categoryCondition.addAll(
-                    assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
+            if (searchNetworkDevice == null || !searchNetworkDevice) {
+                if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+                    categoryCondition.addAll(
+                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
+                }
             }
             if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
                 categoryCondition.addAll(

@@ -2,6 +2,7 @@ package com.antiy.asset.intergration.impl;
 
 import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.util.BaseClient;
+import com.antiy.asset.vo.query.BaselineCategoryModelQuery;
 import com.antiy.asset.vo.query.CategoryByNameQuery;
 import com.antiy.asset.vo.response.BaselineCategoryModelNodeResponse;
 import com.antiy.common.base.ActionResponse;
@@ -22,13 +23,20 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
     /**
      * 获取操作系统列表url
      */
-    @Value("${getOperatingSystemUrl}")
-    private String     getOperatingSystemUrl;
+    @Value("${getOperatingSystemListUrl}")
+    private String     getOperatingSystemListUrl;
 
+    @Value("${getOperatingSystemTreeUrl}")
+    private String     getOperatingSystemTreeUrl;
+
+    /**
+     * 获取操作系统列表，非树
+     * @return
+     */
     @Override
     public ActionResponse getOperatingSystem() {
         return (ActionResponse) baseClient.post(null, new ParameterizedTypeReference<ActionResponse>() {
-        }, getOperatingSystemUrl);
+        }, getOperatingSystemListUrl);
     }
 
     @Override
@@ -40,4 +48,27 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
         }
         return (List<Map>) actionResponse.getBody();
     }
+
+    /**
+     * 获取操作系统列表，树
+     * @return
+     */
+    @Override
+    public ActionResponse getOperatingSystemTree() {
+        BaselineCategoryModelQuery baselineCategoryModelQuery=new BaselineCategoryModelQuery();
+        baselineCategoryModelQuery.setType(2);
+        return (ActionResponse) baseClient.post(baselineCategoryModelQuery, new ParameterizedTypeReference<ActionResponse>() {
+        }, getOperatingSystemTreeUrl);
+    }
+
+    @Override
+    public List<Map> getInvokeOperatingSystemTree() {
+        ActionResponse actionResponse = this.getOperatingSystemTree();
+        if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            return null;
+        }
+        return (List<Map>) actionResponse.getBody();
+    }
+
 }

@@ -11,7 +11,7 @@ public class StorageDeviceEntity {
     /**
      * 资产编号
      */
-    @ExcelField(value = "number", align = 1, title = "资产编号",required = true)
+    @ExcelField(value = "number", align = 1, title = "资产编号(必填)",required = true)
     private String  number;
     /**
      * 资产名称
@@ -73,7 +73,7 @@ public class StorageDeviceEntity {
     /**
      * 最大存储量
      */
-    @ExcelField(value = "capacity", align = 1, title = "最大存储量")
+    @ExcelField(value = "capacity", align = 1, title = "最大存储量(必填)",required = true)
     private String  capacity;
     /**
      * 单机磁盘数

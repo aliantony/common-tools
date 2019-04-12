@@ -64,6 +64,6 @@ public interface ISchemeService extends IBaseService<Scheme> {
      * @param query
      * @return
      */
-    String queryMemoById(SchemeQuery query);
+    SchemeResponse queryMemoById(SchemeQuery query);
 
 }

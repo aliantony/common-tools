@@ -41,14 +41,6 @@ public interface IAssetReportService {
     AssetReportResponse getAssetConutWithGroup(ReportQueryRequest reportQueryRequest) throws Exception;
 
     /**
-     * 查询资产组的新增资产信息
-     * @param reportQueryRequest
-     * @return
-     * @throws Exception
-     */
-    AssetReportResponse getNewAssetWithGroup(ReportQueryRequest reportQueryRequest) throws Exception;
-
-    /**
      * 根据时间条件分类统计查询数据，返回表格信息
      * @param query
      * @return

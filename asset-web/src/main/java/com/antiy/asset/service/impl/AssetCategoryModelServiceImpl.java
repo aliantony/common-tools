@@ -85,7 +85,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_INSERT.getName(),
                 AssetEventEnum.ASSET_CATEGORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_CATEGORY_INSERT.getName(), result, assetCategoryModel.getName (),
+            LogUtils.recordOperLog(
+                new BusinessData(AssetEventEnum.ASSET_CATEGORY_INSERT.getName(), result, assetCategoryModel.getName(),
                     assetCategoryModel, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}",
                 assetCategoryModel.toString());
@@ -138,8 +139,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             LogHandle.log(updateCategory.toString(), AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(),
                 AssetEventEnum.ASSET_CATEGORY_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(), result, updateCategory.getName (),
-                    updateCategory, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(), result,
+                updateCategory.getName(), updateCategory, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_UPDATE.getName() + " {}", updateCategory.toString());
         }
         return ActionResponse.success(result);
@@ -219,8 +220,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
             AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(),assetCategoryModel.getId (), assetCategoryModel.getName (),
-                assetCategoryModel, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(),
+            assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel, BusinessModuleEnum.HARD_ASSET,
+            BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", assetCategoryModel.toString());
         return deleteAllById(id);
     }
@@ -289,19 +291,30 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * 获取计算设备和网络设备树
      * @return
      */
-    public AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode() throws Exception {
+    public AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode(Boolean searchNetworkDevice) throws Exception {
         Map<String, String> secondCategoryMap = this.getSecondCategoryMap();
-        String[] category = new String[2];
-        int i = 0;
-        for (Map.Entry<String, String> entry : secondCategoryMap.entrySet()) {
-            if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-                category[i++] = entry.getKey();
+        if (searchNetworkDevice == null || !searchNetworkDevice) {
+            String[] category = new String[2];
+            int i = 0;
+            for (Map.Entry<String, String> entry : secondCategoryMap.entrySet()) {
+                if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+                    category[i++] = entry.getKey();
+                }
+                if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
+                    category[i++] = entry.getKey();
+                }
             }
-            if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-                category[i++] = entry.getKey();
+            return querySecondCategoryNode(category, secondCategoryMap);
+        } else {
+            String[] category = new String[1];
+            int i = 0;
+            for (Map.Entry<String, String> entry : secondCategoryMap.entrySet()) {
+                if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
+                    category[i++] = entry.getKey();
+                }
             }
+            return querySecondCategoryNode(category, secondCategoryMap);
         }
-        return querySecondCategoryNode(category, secondCategoryMap);
     }
 
     private void checkParameterTypes(String[] types) {
@@ -465,8 +478,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             LogHandle.log(list.toString(), AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
                 AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(),0, "",
-                    assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(), 0, "", assetQuery,
+                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", list.toString());
         }
         return ActionResponse.success(result);

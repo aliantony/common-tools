@@ -6,11 +6,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.entity.AssetLinkedCount;
-import com.antiy.asset.service.IAssetCategoryModelService;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.response.AssetLinkedCountResponse;
-import com.antiy.common.enums.BusinessModuleEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -21,16 +16,22 @@ import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetNetworkEquipmentDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetLinkRelation;
+import com.antiy.asset.entity.AssetLinkedCount;
+import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetLinkRelationService;
 import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.response.AssetLinkRelationResponse;
+import com.antiy.asset.vo.response.AssetLinkedCountResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.*;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -65,7 +66,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         checkAssetIp(request, assetLinkRelation);
         assetLinkRelationDao.insert(assetLinkRelation);
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LABEL_INSERT.getName(), assetLinkRelation.getId(),
-            null, assetLinkRelation, BusinessModuleEnum.HARD_ASSET, null));
+            null, assetLinkRelation, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_LINK_RELATION_INSERT.getName() + "{}", assetLinkRelation);
         return assetLinkRelation.getStringId();
     }
@@ -100,7 +101,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         assetLinkRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetLinkRelation.setGmtModified(System.currentTimeMillis());
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LINK_RELATION_UPDATE.getName(),
-            assetLinkRelation.getId(), null, assetLinkRelation, BusinessModuleEnum.HARD_ASSET, null));
+            assetLinkRelation.getId(), null, assetLinkRelation, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_LINK_RELATION_UPDATE.getName() + "{}", assetLinkRelation);
         return assetLinkRelationDao.update(assetLinkRelation).toString();
     }
@@ -131,7 +132,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     public String deleteAssetLinkRelationById(BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LINK_RELATION_DELETE.getName(),
-            baseRequest.getId(), null, baseRequest, BusinessModuleEnum.SOFTWARE_ASSET, null));
+            baseRequest.getId(), null, baseRequest, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_LINK_RELATION_DELETE.getName() + "{}", baseRequest.getStringId());
 
         return assetLinkRelationDao.deleteById(baseRequest.getStringId()).toString();

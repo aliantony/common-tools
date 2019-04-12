@@ -555,7 +555,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @param reportQueryRequest
      * @return
      */
-    @Override
     public AssetReportResponse getNewAssetWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
         // 1-本周,2-本月,3-本季度,4-本年,5-时间范围
         switch (reportQueryRequest.getTimeType()) {
@@ -652,7 +651,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     /**
-     * 根据资产组类别查新增资产情况-封装数据(未用)
+     * 根据资产组类别查新增资产情况-封装数据
      * @param reportQueryRequest
      * @return
      */
@@ -821,6 +820,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // 获取初始化数据,截止开始时间之前的数据
         ReportQueryRequest initReportQueryRequest = new ReportQueryRequest();
         initReportQueryRequest.setEndTime(reportQueryRequest.getStartTime());
+        initReportQueryRequest.setAreaIds(reportQueryRequest.getAreaIds());
         List<AssetGroupEntity> initAssetGroupEntities = assetReportDao.getAssetConutWithGroup(initReportQueryRequest);
         List<String> initNameList = new ArrayList<>();
         for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {

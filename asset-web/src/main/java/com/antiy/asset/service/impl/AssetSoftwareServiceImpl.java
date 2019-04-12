@@ -1,30 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
-import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -51,10 +26,34 @@ import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
+import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -121,6 +120,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private BaseLineClient                                                   baseLineClient;
     @Resource
     private SchemeDao                                                        schemeDao;
+    @Resource
+    AssetDao                                                                 assetDao;
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -136,7 +137,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetPortProtocol.class);
 
                     ParamterExceptionUtils.isTrue(!CheckRepeatName(assetSoftware.getName()), "资产名称重复");
-                    BusinessExceptionUtils.isTrue(!checkOperatingSystem(assetSoftware.getOperationSystem()),
+                    BusinessExceptionUtils.isTrue(!checkOperatingSystemById (assetSoftware.getOperationSystem()),
                         "兼容系统存在，或已经注销！");
                     BusinessExceptionUtils.isTrue(
                         !Objects.isNull(assetCategoryModelDao.getById(
@@ -145,7 +146,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
-                    assetSoftware.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
+                    assetSoftware.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
                     assetSoftwareDao.insert(assetSoftware);
                     String sid = String.valueOf(assetSoftware.getId());
                     // protocol.setAssetSoftId(sid);
@@ -185,7 +186,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetOperationRecordDao.insert(assetOperationRecord);
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(), assetSoftware.getId(),
-                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, null));
+                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
                     LogUtils.info(logger, AssetEventEnum.SOFT_INSERT.getName() + " {}", assetSoftware);
                     return DataTypeUtils.stringToInteger(sid);
                 } catch (RequestParamValidateException e) {
@@ -223,8 +224,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
             configRegisterRequest.setAssetId(String.valueOf(num));
             configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.SOFTWARE.getCode()));
-            configRegisterRequest.setSuggest(request.getConfigRegisterRequest().getSuggest());
-            configRegisterRequest.setConfigUserId(request.getConfigRegisterRequest().getConfigUserId());
+            configRegisterRequest.setSuggest(request.getMemo());
+            configRegisterRequest.setConfigUserIds(request.getActivityRequest().getConfigUserId());
             configRegisterRequest.setRelId(String.valueOf(num));
             ActionResponse actionResponseSoftware = this.configRegister(configRegisterRequest);
             if (null == actionResponseSoftware
@@ -252,6 +253,47 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             }
         }
         return false;
+    }
+
+    /**
+     * 通过ID判断操作系统是否存在且是叶子节点
+     * @return
+     */
+    private Boolean checkOperatingSystemById(String id) {
+        List<Map> baselineCategoryModelNodeResponse = operatingSystemClient
+                .getInvokeOperatingSystemTree();
+        Set<String> result = new HashSet<>();
+        if (CollectionUtils.isNotEmpty(baselineCategoryModelNodeResponse)) {
+            operatingSystemRecursion(result, (Map<String, Object>) baselineCategoryModelNodeResponse.get(0));
+        }
+        return result.contains(id);
+    }
+
+    private void operatingSystemRecursion(Set<String> result, Map<String, Object> response) {
+        if (!MapUtils.isEmpty(response)) {
+            if (CollectionUtils.isEmpty((List) response.get("childrenNode"))) {
+                result.add((String) response.get("stringId"));
+            } else {
+                for (Map baselineCategoryModelNodeResponse : (List<Map>) response.get("childrenNode")) {
+                    operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
+                }
+            }
+        }
+
+    }
+
+
+    private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
+        if (!CollectionUtils.isEmpty(result)) {
+            if (CollectionUtils.isEmpty(response.getChildrenNode())) {
+                result.add(response.getStringId());
+            } else {
+                for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse : response.getChildrenNode()) {
+                    operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
+                }
+            }
+        }
+
     }
 
     @Override
@@ -332,7 +374,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetOperationRecordDao.insert(convertAssetOperationRecord(request, softwareStatus));
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(), assetSoftware.getId(),
-                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, null));
+                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
                     LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetSoftware);
                     return assetSoftwareCount;
                 } catch (Exception e) {
@@ -766,6 +808,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private Scheme convertScheme(ConfigRegisterRequest registerRequest) {
         Scheme scheme = new Scheme();
         scheme.setContent(registerRequest.getSuggest());
+        scheme.setMemo(registerRequest.getSuggest());
         if (AssetTypeEnum.SOFTWARE.getCode().equals(DataTypeUtils.stringToInteger(registerRequest.getSource()))) {
             scheme.setAssetNextStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
             scheme.setSchemeSource(2);
@@ -776,10 +819,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         scheme.setAssetId(registerRequest.getAssetId());
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         scheme.setGmtCreate(System.currentTimeMillis());
+        scheme.setFileInfo(registerRequest.getFiles());
+
         return scheme;
     }
 
-    private AssetOperationRecord convertRecord(ConfigRegisterRequest request) {
+    private AssetOperationRecord convertRecord(ConfigRegisterRequest request) throws Exception {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         if (AssetTypeEnum.SOFTWARE.getCode().equals(request.getSource())) {
@@ -792,6 +837,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
 
         assetOperationRecord.setTargetObjectId(request.getAssetId());
+        assetOperationRecord.setAreaId("");
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setProcessResult(1);
@@ -939,7 +985,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         if (Objects.nonNull(softwareEntities) && softwareEntities.size() > 0) {
             // 记录操作日志和运行日志
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_EXPORT.getName(), null, null, downloadVO,
-                BusinessModuleEnum.SOFTWARE_ASSET, null));
+                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", downloadVO);
             excelDownloadUtil.excelDownload(response, s, downloadVO);
         } else {

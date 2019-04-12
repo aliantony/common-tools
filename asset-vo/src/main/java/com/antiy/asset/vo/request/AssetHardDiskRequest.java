@@ -6,7 +6,6 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -34,7 +33,7 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      * 硬盘品牌
      */
     @ApiModelProperty("硬盘品牌")
-    @NotBlank(message = "硬盘品牌不能为空")
+//    @NotBlank(message = "硬盘品牌不能为空")
     @Size(message = "硬盘品牌长度不能超过32位", max = 32)
     private String  brand;
     /**

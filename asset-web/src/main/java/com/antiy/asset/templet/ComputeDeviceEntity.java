@@ -14,7 +14,7 @@ public class ComputeDeviceEntity {
     /**
      * 资产编号
      */
-    @ExcelField(value = "number", align = 1, title = "资产编号",required = true)
+    @ExcelField(value = "number", align = 1, title = "资产编号(必填)",required = true)
     private String  number;
 
     /**
@@ -79,7 +79,7 @@ public class ComputeDeviceEntity {
     /**
      * 操作系统
      */
-    @ExcelField(value = "operationSystem", align = 1, title = "操作系统")
+    @ExcelField(value = "operationSystem", align = 1, title = "操作系统(必填)",required = true)
     private String  operationSystem;
 
     /**
@@ -114,7 +114,7 @@ public class ComputeDeviceEntity {
     /**
      * 网卡品牌
      */
-    @ExcelField(value = "networkBrand", align = 1, title = "网卡品牌(必填)")
+    @ExcelField(value = "networkBrand", align = 1, title = "网卡品牌")
     private String  networkBrand;
     /**
      * 网卡型号
@@ -155,7 +155,7 @@ public class ComputeDeviceEntity {
     /**
      * 内存品牌
      */
-    @ExcelField(value = "memoryBrand", align = 1, title = "内存品牌(必填)")
+    @ExcelField(value = "memoryBrand", align = 1, title = "内存品牌")
     private String  memoryBrand;
 
     /**
@@ -204,7 +204,7 @@ public class ComputeDeviceEntity {
     /**
      * 硬盘品牌
      */
-    @ExcelField(value = "hardDiskBrand", align = 1, title = "硬盘品牌(必填)")
+    @ExcelField(value = "hardDiskBrand", align = 1, title = "硬盘品牌")
     private String  hardDiskBrand;
     /**
      * 硬盘型号
@@ -231,7 +231,7 @@ public class ComputeDeviceEntity {
     /**
      * 硬盘磁盘类型
      */
-    @ExcelField(value = "hardDiskType", align = 1, title = "硬盘磁盘类型", dictType = "disk_type")
+    @ExcelField(value = "hardDiskType", align = 1, title = "硬盘磁盘类型(必填)", dictType = "disk_type")
     private Integer hardDiskType;
     /**
      * 硬盘购买时间
@@ -246,7 +246,7 @@ public class ComputeDeviceEntity {
     /**
      * 主板品牌
      */
-    @ExcelField(value = "mainboradBrand", align = 1, title = "主板品牌(必填)")
+    @ExcelField(value = "mainboradBrand", align = 1, title = "主板品牌")
     private String  mainboradBrand;
     /**
      * 主板型号
@@ -276,7 +276,7 @@ public class ComputeDeviceEntity {
     /**
      * cpu品牌
      */
-    @ExcelField(value = "cpuBrand", align = 1, title = "cpu品牌(必填)")
+    @ExcelField(value = "cpuBrand", align = 1, title = "cpu品牌")
     private String  cpuBrand;
     /**
      * cpu型号

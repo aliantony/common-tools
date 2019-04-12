@@ -15,4 +15,8 @@ public interface OperatingSystemClient {
     ActionResponse getOperatingSystem();
 
     List<Map> getInvokeOperatingSystem();
+
+    ActionResponse getOperatingSystemTree();
+
+    List<Map> getInvokeOperatingSystemTree();
 }
