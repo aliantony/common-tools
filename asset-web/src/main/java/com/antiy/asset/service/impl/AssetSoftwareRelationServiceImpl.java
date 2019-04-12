@@ -1,17 +1,13 @@
 package com.antiy.asset.service.impl;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.vo.redis.CategoryOsResponse;
-import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
@@ -30,6 +26,7 @@ import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.*;
@@ -43,6 +40,8 @@ import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.BusinessData;
@@ -165,13 +164,13 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     public List<SelectResponse> findOS() throws Exception {
         List<String> osList = assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
-        List<CategoryOsResponse> categoryOsResponseList = redisService.getAllSystemOs();
+        List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
         List<SelectResponse> result = new ArrayList<>();
-        for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {
-            if (osList.contains(categoryOsResponse.getStringId())) {
+        for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
+            if (osList.contains(linkedHashMap.get("stringId"))) {
                 SelectResponse selectResponse = new SelectResponse();
-                selectResponse.setId(categoryOsResponse.getStringId());
-                selectResponse.setValue(categoryOsResponse.getName());
+                selectResponse.setId((String) linkedHashMap.get("stringId"));
+                selectResponse.setValue((String) linkedHashMap.get("name"));
                 result.add(selectResponse);
             }
         }
@@ -277,7 +276,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
      */
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public PageResult<AssetSoftwareInstallResponse> queryInstallList(InstallQuery query) throws Exception {
+    public PageResult<AssetSoftwareInstallResponse> queryInstallList(InstallQuery query) {
         logger.info(LoginUserUtil.getLoginUser().toString());
         List<Integer> areaIdsList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         query.setAreaIds(DataTypeUtils.integerArrayToStringArray(areaIdsList));

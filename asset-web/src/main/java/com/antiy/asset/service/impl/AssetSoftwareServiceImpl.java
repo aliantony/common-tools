@@ -38,7 +38,6 @@ import com.antiy.asset.util.*;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.redis.CategoryOsResponse;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
@@ -653,10 +652,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     private void setOperationName(AssetSoftware assetSoftware, AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
         if (StringUtils.isNotEmpty(assetSoftware.getOperationSystem())) {
-            List<CategoryOsResponse> categoryOsResponseList = redisService.getAllSystemOs();
-            for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {
-                if (assetSoftware.getOperationSystem().equals(categoryOsResponse.getStringId())) {
-                    assetSoftwareDetailResponse.setOperationSystemName(categoryOsResponse.getName());
+            List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
+            for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
+                if (assetSoftware.getOperationSystem().equals(linkedHashMap.get("stringId"))) {
+                    assetSoftwareDetailResponse.setOperationSystemName((String) linkedHashMap.get("name"));
                 }
             }
         }
