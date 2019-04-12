@@ -741,14 +741,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 1.查询补丁个数
         Map<String, String> vulCountMaps = new HashMap<>();
-        if (query.getQueryVulCount()) {
+        if (query.getQueryVulCount() != null && query.getQueryVulCount() && CollectionUtils.isNotEmpty(assetIds)) {
             List<IdCount> vulCountList = assetDao.queryAssetVulCount(assetIds);
             vulCountMaps = vulCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
         }
 
         // 2.查询漏洞个数
         Map<String, String> patchCountMaps = null;
-        if (query.getQueryPatchCount()) {
+        if (query.getQueryPatchCount() != null && query.getQueryPatchCount() && CollectionUtils.isNotEmpty(assetIds)) {
             List<IdCount> patchCountList = assetDao.queryAssetPatchCount(assetIds);
             patchCountMaps = patchCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
         }
@@ -756,7 +756,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 3.查询告警个数
 
         Map<String, String> alarmCountMaps = null;
-        if (query.getQueryAlarmCount()) {
+        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount() && CollectionUtils.isNotEmpty(assetIds)) {
             alarmCountMaps = null;
         }
 
