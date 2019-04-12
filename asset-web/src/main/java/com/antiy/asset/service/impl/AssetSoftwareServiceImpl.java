@@ -232,6 +232,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             ActionResponse actionResponseSoftware = this.configRegister(configRegisterRequest);
             if (null == actionResponseSoftware
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseSoftware.getHead().getCode())) {
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(), num, null,
+                    configRegisterRequest, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+                // 记录操作日志和运行日志
+                LogUtils.info(logger, AssetEventEnum.SOFT_INSERT.getName() + " {}", configRegisterRequest);
                 // 调用失败，逻辑删登记的资产
                 assetSoftwareDao.deleteById(num);
                 return actionResponseSoftware == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
