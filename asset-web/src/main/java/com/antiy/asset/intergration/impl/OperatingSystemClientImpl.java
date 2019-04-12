@@ -14,7 +14,6 @@ import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.enums.AssetLogOperationType;
 import com.antiy.asset.vo.query.BaselineCategoryModelQuery;
-import com.antiy.asset.vo.redis.CategoryOsResponse;
 import com.antiy.asset.vo.response.BaselineCategoryModelNodeResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
@@ -40,7 +39,8 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
     @Override
     @AssetLog(description = "获取操作系统列表", operationType = AssetLogOperationType.QUERY)
     public ActionResponse<List<LinkedHashMap>> getOperatingSystem() {
-        return (ActionResponse) baseClient.post(null, new ParameterizedTypeReference<ActionResponse<List<CategoryOsResponse>>>() {
+        return (ActionResponse) baseClient.post(null,
+            new ParameterizedTypeReference<ActionResponse<List<LinkedHashMap>>>() {
         }, getOperatingSystemListUrl);
     }
 
