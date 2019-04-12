@@ -340,7 +340,7 @@
         LEFT JOIN asset ON asset.id = agrelation.asset_id
         where agrelation.asset_group_id = #{assetGroupId}
     </select>
-    <select id="findAssetGroupNameByAssetId" resultType="java.lang.String" parameterType="int">
+    <select id="findAssetGroupNameByAssetId" resultType="java.lang.String" parameterType="string">
         select agroup.name
         from
         <include refid="Table_Name"></include> agrelation
