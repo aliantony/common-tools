@@ -731,8 +731,11 @@
                 #{item}
             </foreach>
         </if>
-        <if test="categoryModel != null and categoryModel != ''">
-            and a.category_model = #{categoryModel}
+        <if test="categoryModels != null and categoryModels.size() > 0">
+            and a.category_model in
+            <foreach collection="categoryModels" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
         </if>
         <if test="assetName != null and assetName != ''">
             and a.name like CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
@@ -769,8 +772,11 @@
                 #{item}
             </foreach>
         </if>
-        <if test="categoryModel != null and categoryModel != ''">
-            and a.category_model = #{categoryModel}
+        <if test="categoryModels != null and categoryModels.size() > 0">
+            and a.category_model in
+            <foreach collection="categoryModels" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
         </if>
         <if test="assetName != null and assetName != ''">
             and a.name like CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')

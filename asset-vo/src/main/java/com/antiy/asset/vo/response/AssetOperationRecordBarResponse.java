@@ -48,6 +48,17 @@ public class AssetOperationRecordBarResponse extends BaseResponse {
     @ApiModelProperty("原始状态")
     private Integer originStatus;
 
+    @ApiModelProperty("操作描述")
+    private String                       content;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public String getNextUserName() {
         return nextUserName;
     }

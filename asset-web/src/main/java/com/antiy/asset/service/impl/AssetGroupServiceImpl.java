@@ -112,7 +112,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
             for (String assetId : request.getAssetIds()) {
                 List<String> assetGroupNameList = assetGroupRelationDao
-                    .findAssetGroupNameByAssetId(DataTypeUtils.stringToInteger(assetId));
+                    .findAssetGroupNameByAssetId(assetId);
                 String assetGroupName = assetGroupNameList.toString();
                 updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
             }
@@ -135,7 +135,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         assetGroup.setId(DataTypeUtils.stringToInteger(request.getId()));
         assetGroup.setGmtModified(System.currentTimeMillis());
         assetGroup.setModifyUser(LoginUserUtil.getLoginUser().getId());
-        Integer[] assetIdArr = DataTypeUtils.stringArrayToIntegerArray(request.getAssetIds());
+        String[] assetIdArr = request.getAssetIds();
 
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
 
@@ -151,10 +151,10 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}", assetGroup.toString());
         }
         int result = 0;
-        for (Integer assetId : assetIdArr) {
+        for (String assetId : assetIdArr) {
             AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
             assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
-            assetGroupRelation.setAssetId(assetId.toString());
+            assetGroupRelation.setAssetId(assetId);
             assetGroupRelation.setGmtCreate(System.currentTimeMillis());
             assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
             assetGroupRelationList.add(assetGroupRelation);
@@ -177,7 +177,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         // -----------------------------更新资产主表的资产组字段内容start-----------------------------
         Map<String, Object> map = new HashMap<>();
         StringBuilder assetNameBuilder = new StringBuilder();
-        for (Integer assetId : assetIdArr) {
+        for (String assetId : assetIdArr) {
             List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
             // 资产关联的资产组不能超过10个
             ParamterExceptionUtils.isTrue(assetGroupNameList.size() <= Constants.MAX_ASSET_RELATION_GROUP_COUNT,
@@ -193,7 +193,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         if (ArrayUtils.isNotEmpty(request.getDeleteAssetIds())) {
             for (String assetId : request.getDeleteAssetIds()) {
                 List<String> assetGroupNameList = assetGroupRelationDao
-                    .findAssetGroupNameByAssetId(DataTypeUtils.stringToInteger(assetId));
+                    .findAssetGroupNameByAssetId(assetId);
                 String assetGroupName = assetGroupNameList.toString();
                 updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
             }
@@ -326,6 +326,10 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             LogHandle.log(assetGroupNameList.toString(), AssetEventEnum.ASSET_MODIFY.getName(),
                 AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetGroupNameList.toString());
+        } else {
+            map.put("assetGroupName", null);
+            map.put("assetId", assetId);
+            assetDao.updateAssetGroupNameWithAssetId(map);
         }
     }
 }
