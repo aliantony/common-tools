@@ -1,5 +1,35 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -30,34 +60,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -160,6 +162,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
 
         AssetRequest requestAsset = request.getAsset();
+        AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
+        AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
+        AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
+        AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest();
         Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -228,14 +234,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         aid = asset.getStringId();
                         // 保存安全设备
-                        AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
                         if (safetyEquipmentRequest != null) {
                             Integer id = saveSafety(aid, safetyEquipmentRequest);
                             safetyEquipmentRequest.setId(String.valueOf(id));
                             assetOuterRequestToChangeRecord.setSafetyEquipment(safetyEquipmentRequest);
                         }
                         // 保存网络设备
-                        AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
                         if (networkEquipmentRequest != null) {
                             ParamterExceptionUtils.isTrue(!CheckRepeatIp(networkEquipmentRequest.getInnerIp(), 1),
                                 "内网IP不能重复！");
@@ -244,7 +248,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetOuterRequestToChangeRecord.setNetworkEquipment(networkEquipmentRequest);
                         }
                         // 保存存储设备
-                        AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
                         if (assetStorageMedium != null) {
                             AssetStorageMedium medium = BeanConvert.convertBean(assetStorageMedium,
                                 AssetStorageMedium.class);
@@ -439,7 +442,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                     } else {
                         // 保存其他资产
-                        AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest();
 
                         if (StringUtils.isNotBlank(assetOthersRequest.getNumber())) {
 
@@ -563,7 +565,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             configRegisterRequest.setAssetId(String.valueOf(id));
             configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
             configRegisterRequest.setSuggest(request.getAsset().getMemo());
-            configRegisterRequest.setConfigUserId(request.getManualStartActivityRequest().getConfigUserId());
+            configRegisterRequest.setConfigUserIds(request.getManualStartActivityRequest().getConfigUserId());
             configRegisterRequest.setRelId(String.valueOf(id));
             ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest);
             if (null == actionResponseAsset

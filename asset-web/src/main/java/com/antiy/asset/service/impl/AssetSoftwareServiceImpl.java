@@ -122,6 +122,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private BaseLineClient                                                   baseLineClient;
     @Resource
     private SchemeDao                                                        schemeDao;
+    @Resource
+    AssetDao                                                                 assetDao;
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -146,7 +148,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
-                    assetSoftware.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
+                    assetSoftware.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
                     assetSoftwareDao.insert(assetSoftware);
                     String sid = String.valueOf(assetSoftware.getId());
                     // protocol.setAssetSoftId(sid);
@@ -224,8 +226,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
             configRegisterRequest.setAssetId(String.valueOf(num));
             configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.SOFTWARE.getCode()));
-            configRegisterRequest.setSuggest(request.getConfigRegisterRequest().getSuggest());
-            configRegisterRequest.setConfigUserId(request.getConfigRegisterRequest().getConfigUserId());
+            configRegisterRequest.setSuggest(request.getMemo());
+            configRegisterRequest.setConfigUserIds(request.getActivityRequest().getConfigUserId());
             configRegisterRequest.setRelId(String.valueOf(num));
             ActionResponse actionResponseSoftware = this.configRegister(configRegisterRequest);
             if (null == actionResponseSoftware
@@ -776,7 +778,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return scheme;
     }
 
-    private AssetOperationRecord convertRecord(ConfigRegisterRequest request) {
+    private AssetOperationRecord convertRecord(ConfigRegisterRequest request) throws Exception {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         if (AssetTypeEnum.SOFTWARE.getCode().equals(request.getSource())) {
@@ -789,6 +791,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
 
         assetOperationRecord.setTargetObjectId(request.getAssetId());
+        assetOperationRecord.setAreaId("");
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setProcessResult(1);

@@ -318,7 +318,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
             configRegisterRequest.setSuggest(scheme.getMemo());
             configRegisterRequest.setRelId(request.getSoftwareId());
-            configRegisterRequest.setConfigUserId(request.getConfigUserId());
+            configRegisterRequest.setConfigUserIds(request.getConfigUserId());
             configRegisterRequest.setSource(AssetTypeEnum.SOFTWARE.getCode().toString());
             configRegisterRequest.setAssetId(request.getSoftwareId());
             // configRegisterRequest.setFileUrls();
