@@ -45,6 +45,7 @@ import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.redis.CategoryOsResponse;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
