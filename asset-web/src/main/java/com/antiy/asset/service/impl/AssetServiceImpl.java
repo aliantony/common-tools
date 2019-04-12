@@ -35,6 +35,7 @@ import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
+import com.antiy.asset.intergration.EmergencyClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetService;
@@ -161,6 +162,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private IRedisService                                                      redisService;
 
     private static final int                                                   ALL_PAGE = -1;
+
+    @Resource
+    private EmergencyClient                                                    emergencyClient;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -740,14 +744,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 1.查询补丁个数
         Map<String, String> vulCountMaps = new HashMap<>();
-        if (query.getQueryVulCount()) {
+        if (query.getQueryVulCount() != null && query.getQueryVulCount() && CollectionUtils.isNotEmpty(assetIds)) {
             List<IdCount> vulCountList = assetDao.queryAssetVulCount(assetIds);
             vulCountMaps = vulCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
         }
 
         // 2.查询漏洞个数
         Map<String, String> patchCountMaps = null;
-        if (query.getQueryPatchCount()) {
+        if (query.getQueryPatchCount() != null && query.getQueryPatchCount() && CollectionUtils.isNotEmpty(assetIds)) {
             List<IdCount> patchCountList = assetDao.queryAssetPatchCount(assetIds);
             patchCountMaps = patchCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
         }
@@ -755,8 +759,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 3.查询告警个数
 
         Map<String, String> alarmCountMaps = null;
-        if (query.getQueryAlarmCount()) {
-            alarmCountMaps = null;
+        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount() && CollectionUtils.isNotEmpty(assetIds)) {
+            ActionResponse<List<IdCount>> actionResponse = emergencyClient.queryEmergencyCount(assetIds);
+            if (actionResponse != null
+                && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                List<IdCount> alarmCountList = actionResponse.getBody();
+                alarmCountMaps = alarmCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
+                ;
+            }
         }
 
         if (CollectionUtils.isNotEmpty(assetList)) {
@@ -3051,9 +3061,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @return
      */
     private Boolean checkOperatingSystem(String checkStr) {
-        List<Map> operatingSystemMapList = operatingSystemClient.getInvokeOperatingSystem();
-        for (Map map : operatingSystemMapList) {
-            if (Objects.equals(map.get("name"), checkStr)) {
+        List<CategoryOsResponse> categoryOsResponseList = operatingSystemClient.getInvokeOperatingSystem();
+        for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {
+            if (Objects.equals(categoryOsResponse.getName(), checkStr)) {
                 return true;
             }
         }
@@ -3065,25 +3075,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @return
      */
     private Boolean checkOperatingSystemById(String id) {
-        List<Map> baselineCategoryModelNodeResponse = operatingSystemClient.getInvokeOperatingSystemTree();
+        List<BaselineCategoryModelNodeResponse> baselineCategoryModelNodeResponse = operatingSystemClient
+            .getInvokeOperatingSystemTree();
         Set<String> result = new HashSet<>();
         if (CollectionUtils.isNotEmpty(baselineCategoryModelNodeResponse)) {
-            operatingSystemRecursion(result, (Map<String, Object>) baselineCategoryModelNodeResponse.get(0));
+            operatingSystemRecursion(result, baselineCategoryModelNodeResponse.get(0));
         }
         return result.contains(id);
     }
 
-    private void operatingSystemRecursion(Set<String> result, Map<String, Object> response) {
-        if (!MapUtils.isEmpty(response)) {
-            if (CollectionUtils.isEmpty((List) response.get("childrenNode"))) {
-                result.add((String) response.get("stringId"));
+    private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
+        if (response != null) {
+            if (CollectionUtils.isEmpty(response.getChildrenNode())) {
+                result.add(response.getStringId());
             } else {
-                for (Map baselineCategoryModelNodeResponse : (List<Map>) response.get("childrenNode")) {
+                for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse : response.getChildrenNode()) {
                     operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
                 }
             }
         }
-
     }
 
     @Override

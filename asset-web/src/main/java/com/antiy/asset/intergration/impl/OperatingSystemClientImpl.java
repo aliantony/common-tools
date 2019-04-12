@@ -6,6 +6,7 @@ import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.enums.AssetLogOperationType;
 import com.antiy.asset.vo.query.BaselineCategoryModelQuery;
 import com.antiy.asset.vo.query.CategoryByNameQuery;
+import com.antiy.asset.vo.redis.CategoryOsResponse;
 import com.antiy.asset.vo.response.BaselineCategoryModelNodeResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
@@ -37,20 +38,20 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
      */
     @Override
     @AssetLog(description = "获取操作系统列表", operationType = AssetLogOperationType.QUERY)
-    public ActionResponse getOperatingSystem() {
-        return (ActionResponse) baseClient.post(null, new ParameterizedTypeReference<ActionResponse>() {
+    public ActionResponse<List<CategoryOsResponse>> getOperatingSystem() {
+        return (ActionResponse) baseClient.post(null, new ParameterizedTypeReference<ActionResponse<List<CategoryOsResponse>>>() {
         }, getOperatingSystemListUrl);
     }
 
     @Override
     @AssetLog(description = "获取操作系统列表", operationType = AssetLogOperationType.QUERY)
-    public List<Map> getInvokeOperatingSystem() {
-        ActionResponse actionResponse = this.getOperatingSystem();
+    public List<CategoryOsResponse> getInvokeOperatingSystem() {
+        ActionResponse<List<CategoryOsResponse>> actionResponse = this.getOperatingSystem();
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             return null;
         }
-        return (List<Map>) actionResponse.getBody();
+        return  actionResponse.getBody();
     }
 
     /**
@@ -59,22 +60,23 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
      */
     @Override
     @AssetLog(description = "获取操作系统树", operationType = AssetLogOperationType.QUERY)
-    public ActionResponse getOperatingSystemTree() {
-        BaselineCategoryModelQuery baselineCategoryModelQuery=new BaselineCategoryModelQuery();
+    public ActionResponse<List<BaselineCategoryModelNodeResponse>> getOperatingSystemTree() {
+        BaselineCategoryModelQuery baselineCategoryModelQuery = new BaselineCategoryModelQuery();
         baselineCategoryModelQuery.setType(2);
-        return (ActionResponse) baseClient.post(baselineCategoryModelQuery, new ParameterizedTypeReference<ActionResponse>() {
-        }, getOperatingSystemTreeUrl);
+        return (ActionResponse) baseClient.post(baselineCategoryModelQuery,
+            new ParameterizedTypeReference<ActionResponse<List<BaselineCategoryModelNodeResponse>>>() {
+            }, getOperatingSystemTreeUrl);
     }
 
     @Override
     @AssetLog(description = "获取操作系统树", operationType = AssetLogOperationType.QUERY)
-    public List<Map> getInvokeOperatingSystemTree() {
+    public List<BaselineCategoryModelNodeResponse> getInvokeOperatingSystemTree() {
         ActionResponse actionResponse = this.getOperatingSystemTree();
         if (null == actionResponse
-                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             return null;
         }
-        return (List<Map>) actionResponse.getBody();
+        return (List<BaselineCategoryModelNodeResponse>) actionResponse.getBody();
     }
 
 }

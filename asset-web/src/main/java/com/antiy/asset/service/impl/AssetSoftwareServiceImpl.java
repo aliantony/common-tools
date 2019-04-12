@@ -1,28 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
-import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.util.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -51,6 +28,27 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+
+import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
+import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -205,19 +203,19 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             }
         });
 
-        if (num != null && num > 0) {
-            // 启动流程
-            ManualStartActivityRequest activityRequest = request.getActivityRequest();
-            activityRequest.setBusinessId(String.valueOf(num));
-            activityRequest.setAssignee(DataTypeUtils.integerToString(LoginUserUtil.getLoginUser().getId()));
-            activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
-            activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
-            ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
-            // 如果流程引擎为空,直接返回错误信息
-            if (null == actionResponse
-                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
-            }
+        // if (num != null && num > 0) {
+        // // 启动流程
+        // ManualStartActivityRequest activityRequest = request.getActivityRequest();
+        // activityRequest.setBusinessId(String.valueOf(num));
+        // activityRequest.setAssignee(DataTypeUtils.integerToString(LoginUserUtil.getLoginUser().getId()));
+        // activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE.getCode());
+        // activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
+        // ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
+        // // 如果流程引擎为空,直接返回错误信息
+        // if (null == actionResponse
+        // || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+        // return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+        // }
 
             // 对接配置模块
             // ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
@@ -237,7 +235,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             // assetSoftwareDao.deleteById(num);
             // return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
             // }
-        }
+        // }
 
         return ActionResponse.success(num);
 
@@ -248,9 +246,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @return
      */
     private Boolean checkOperatingSystem(String checkStr) {
-        List<Map> operatingSystemMapList = operatingSystemClient.getInvokeOperatingSystem();
-        for (Map map : operatingSystemMapList) {
-            if (Objects.equals(map.get("name"), checkStr)) {
+        List<CategoryOsResponse> categoryOsResponseList = operatingSystemClient.getInvokeOperatingSystem();
+        for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {
+            if (Objects.equals(categoryOsResponse.getName(), checkStr)) {
                 return true;
             }
         }
@@ -262,29 +260,17 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @return
      */
     private Boolean checkOperatingSystemById(String id) {
-        List<Map> baselineCategoryModelNodeResponse = operatingSystemClient.getInvokeOperatingSystemTree();
+        List<BaselineCategoryModelNodeResponse> baselineCategoryModelNodeResponse = operatingSystemClient
+            .getInvokeOperatingSystemTree();
         Set<String> result = new HashSet<>();
         if (CollectionUtils.isNotEmpty(baselineCategoryModelNodeResponse)) {
-            operatingSystemRecursion(result, (Map<String, Object>) baselineCategoryModelNodeResponse.get(0));
+            operatingSystemRecursion(result, baselineCategoryModelNodeResponse.get(0));
         }
         return result.contains(id);
     }
 
-    private void operatingSystemRecursion(Set<String> result, Map<String, Object> response) {
-        if (!MapUtils.isEmpty(response)) {
-            if (CollectionUtils.isEmpty((List) response.get("childrenNode"))) {
-                result.add((String) response.get("stringId"));
-            } else {
-                for (Map baselineCategoryModelNodeResponse : (List<Map>) response.get("childrenNode")) {
-                    operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
-                }
-            }
-        }
-
-    }
-
     private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
-        if (!CollectionUtils.isEmpty(result)) {
+        if (response != null) {
             if (CollectionUtils.isEmpty(response.getChildrenNode())) {
                 result.add(response.getStringId());
             } else {
@@ -293,7 +279,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 }
             }
         }
-
     }
 
     @Override
@@ -650,7 +635,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return assetSoftwareDetailResponse;
     }
 
-    private void setOperationName(AssetSoftware assetSoftware, AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+    private void setOperationName(AssetSoftware assetSoftware,
+                                  AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
         if (StringUtils.isNotEmpty(assetSoftware.getOperationSystem())) {
             List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
             for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
