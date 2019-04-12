@@ -18,5 +18,5 @@ public interface OperatingSystemClient {
 
     ActionResponse getOperatingSystemTree();
 
-    BaselineCategoryModelNodeResponse getInvokeOperatingSystemTree();
+    List<Map> getInvokeOperatingSystemTree();
 }

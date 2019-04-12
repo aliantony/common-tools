@@ -62,13 +62,13 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
     }
 
     @Override
-    public BaselineCategoryModelNodeResponse getInvokeOperatingSystemTree() {
+    public List<Map> getInvokeOperatingSystemTree() {
         ActionResponse actionResponse = this.getOperatingSystemTree();
         if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             return null;
         }
-        return (BaselineCategoryModelNodeResponse) actionResponse.getBody();
+        return (List<Map>) actionResponse.getBody();
     }
 
 }

@@ -264,4 +264,6 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     ActionResponse saveAssetList(List<AssetOuterRequest> assetList);
+
+
 }

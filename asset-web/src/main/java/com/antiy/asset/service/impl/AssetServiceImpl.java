@@ -3001,19 +3001,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @return
      */
     private Boolean checkOperatingSystemById(String id) {
-        BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse = operatingSystemClient
+        List<Map> baselineCategoryModelNodeResponse = operatingSystemClient
             .getInvokeOperatingSystemTree();
         Set<String> result = new HashSet<>();
-        operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
+        if (CollectionUtils.isNotEmpty(baselineCategoryModelNodeResponse)) {
+            operatingSystemRecursion(result, (Map<String, Object>) baselineCategoryModelNodeResponse.get(0));
+        }
         return result.contains(id);
     }
 
-    private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
-        if (!CollectionUtils.isEmpty(result)) {
-            if (CollectionUtils.isEmpty(response.getChildrenNode())) {
-                result.add(response.getStringId());
+    private void operatingSystemRecursion(Set<String> result, Map<String, Object> response) {
+        if (!MapUtils.isEmpty(response)) {
+            if (CollectionUtils.isEmpty((List) response.get("childrenNode"))) {
+                result.add((String) response.get("stringId"));
             } else {
-                for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse : response.getChildrenNode()) {
+                for (Map baselineCategoryModelNodeResponse : (List<Map>) response.get("childrenNode")) {
                     operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
                 }
             }
