@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 资产告警数量获取
@@ -29,7 +30,7 @@ public class EmergencyClientImpl implements EmergencyClient {
     @Override
     @AssetLog(description = "远程调用获取资产告警数量")
     public ActionResponse<List<IdCount>> queryEmergencyCount(List<Integer> assetIds) {
-        return (ActionResponse) baseClient.get(assetIds, new ParameterizedTypeReference<ActionResponse>() {
+        return (ActionResponse) baseClient.post(assetIds, new ParameterizedTypeReference<ActionResponse>() {
         }, emergencyClientUrl);
     }
 }
