@@ -1,14 +1,15 @@
 package com.antiy.asset.vo.query;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Arrays;
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> Asset 查询条件 </p>
@@ -176,6 +177,39 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     private Long          endTime;
     @ApiModelProperty("是否只查网络设备 若为是则只查网络设备，若为否则两者都查 默认为两者都查")
     private Boolean       searchNetworkDevice;
+
+    @ApiModelProperty(value = "是否查询漏洞个数,true 表示查询，false表示不查询", allowableValues = "true,false")
+    private Boolean       queryVulCount;
+
+    @ApiModelProperty(value = "是否查询补丁个数,true 表示查询，false表示不查询", allowableValues = "true,false")
+    private Boolean       queryPatchCount;
+
+    @ApiModelProperty(value = "是否查询告警个数，true表示查询，false表示不查询", allowableValues = "true,false")
+    private Boolean       queryAlarmCount;
+
+    public Boolean getQueryVulCount() {
+        return queryVulCount;
+    }
+
+    public void setQueryVulCount(Boolean queryVulCount) {
+        this.queryVulCount = queryVulCount;
+    }
+
+    public Boolean getQueryPatchCount() {
+        return queryPatchCount;
+    }
+
+    public void setQueryPatchCount(Boolean queryPatchCount) {
+        this.queryPatchCount = queryPatchCount;
+    }
+
+    public Boolean getQueryAlarmCount() {
+        return queryAlarmCount;
+    }
+
+    public void setQueryAlarmCount(Boolean queryAlarmCount) {
+        this.queryAlarmCount = queryAlarmCount;
+    }
 
     public List<String> getManufacturers() {
         return manufacturers;
