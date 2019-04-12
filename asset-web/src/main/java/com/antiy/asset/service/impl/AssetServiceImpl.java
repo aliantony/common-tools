@@ -307,6 +307,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 ParamterExceptionUtils.isBlank(assetNetworkCard.getBrand(), "网卡品牌为空");
                                 ParamterExceptionUtils
                                     .isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null, null), "IP不能重复！");
+
+                                ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null,null),
+                                    "IP不能重复！");
                                 assetNetworkCard.setAssetId(aid);
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -335,7 +338,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             List<AssetMainborad> mainboradList = BeanConvert.convert(mainboradRequestList,
                                 AssetMainborad.class);
                             for (AssetMainborad assetMainborad : mainboradList) {
-                                ParamterExceptionUtils.isBlank(assetMainborad.getBrand(), "主板品牌为空");
+
                                 assetMainborad.setAssetId(aid);
                                 assetMainborad.setGmtCreate(System.currentTimeMillis());
                                 assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -363,9 +366,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             List<AssetMemory> memoryList = BeanConvert.convert(memoryRequestList, AssetMemory.class);
                             // List<AssetMemory> memory = new ArrayList<>();
                             for (AssetMemory assetMemory : memoryList) {
-                                ParamterExceptionUtils.isBlank(assetMemory.getBrand(), "内存品牌为空");
-                                ParamterExceptionUtils.isNull(assetMemory.getFrequency(), "内存主频为空");
-                                ParamterExceptionUtils.isNull(assetMemory.getCapacity(), "内存容量为空");
+//                                ParamterExceptionUtils.isBlank(assetMemory.getBrand(), "内存品牌为空");
+//                                ParamterExceptionUtils.isNull(assetMemory.getFrequency(), "内存主频为空");
+//                                ParamterExceptionUtils.isNull(assetMemory.getCapacity(), "内存容量为空");
                                 assetMemory.setAssetId(aid);
                                 assetMemory.setGmtCreate(System.currentTimeMillis());
                                 assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -393,8 +396,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             List<AssetCpu> assetCpuList = BeanConvert.convert(cpuRequestList, AssetCpu.class);
                             // List<AssetCpu> cpu = new ArrayList<>();
                             for (AssetCpu assetCpu : assetCpuList) {
-                                ParamterExceptionUtils.isBlank(assetCpu.getBrand(), "CPU品牌为空");
-                                ParamterExceptionUtils.isNull(assetCpu.getMainFrequency(), "CPU主频为空");
+//                                ParamterExceptionUtils.isBlank(assetCpu.getBrand(), "CPU品牌为空");
+//                                ParamterExceptionUtils.isNull(assetCpu.getMainFrequency(), "CPU主频为空");
                                 assetCpu.setAssetId(aid);
                                 assetCpu.setGmtCreate(System.currentTimeMillis());
                                 assetCpu.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -422,8 +425,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             // List<AssetHardDisk> assetHardDisks = new ArrayList<>();
                             List<AssetHardDisk> hardDisks = BeanConvert.convert(hardDisk, AssetHardDisk.class);
                             for (AssetHardDisk assetHardDisk : hardDisks) {
-                                ParamterExceptionUtils.isBlank(assetHardDisk.getBrand(), "硬盘品牌为空");
-                                ParamterExceptionUtils.isNull(assetHardDisk.getCapacity(), "硬盘容量空");
+//                                ParamterExceptionUtils.isBlank(assetHardDisk.getBrand(), "硬盘品牌为空");
+//                                ParamterExceptionUtils.isNull(assetHardDisk.getCapacity(), "硬盘容量空");
                                 assetHardDisk.setAssetId(aid);
                                 assetHardDisk.setGmtCreate(System.currentTimeMillis());
                                 assetHardDisk.setCreateUser(LoginUserUtil.getLoginUser().getId());

@@ -188,6 +188,17 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
         // -----------------------------更新资产主表的资产组字段内容end-----------------------------
 
+        // 移除资产后，更新资产主表中对应资产组字段
+        assetNameBuilder.setLength(0);
+        if (ArrayUtils.isNotEmpty(request.getDeleteAssetIds())) {
+            for (String assetId : request.getDeleteAssetIds()) {
+                List<String> assetGroupNameList = assetGroupRelationDao
+                    .findAssetGroupNameByAssetId(DataTypeUtils.stringToInteger(assetId));
+                String assetGroupName = assetGroupNameList.toString();
+                updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
+            }
+        }
+
         if (!Objects.equals(0, result)) {
             // 写入业务日志
             LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),

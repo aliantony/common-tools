@@ -1,5 +1,28 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
+import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.util.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -29,29 +52,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
-import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -436,8 +436,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query,
-                                                             Map<String, WaitingTaskReponse> waitingTasks) throws Exception {
+    public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query) throws Exception {
         List<AssetSoftware> assetSoftware = assetSoftwareDao.findListAssetSoftware(query);
         Map<Integer, Long> softAssetCount = null;
         if (query.getQueryAssetCount()) {
@@ -458,18 +457,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                         ? finalSoftAssetCount.get(assetSoftware.getId()).intValue()
                         : 0);
                 }
-
-                if (MapUtils.isNotEmpty(waitingTasks)) {
-                    assetSoftwareResponse.setWaitingTaskReponse(waitingTasks.get(assetSoftware.getStringId()));
-                }
             }
         };
         List<AssetSoftwareResponse> objects = baseConverter.convert(assetSoftware, AssetSoftwareResponse.class);
-        if (!Objects.isNull(waitingTasks) && !waitingTasks.isEmpty()) {
-            objects.forEach(object -> {
-                object.setWaitingTaskReponse(waitingTasks.get(object.getStringId()));
-            });
-        }
         return objects;
     }
 
@@ -480,13 +470,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareResponse> findPageAssetSoftware(AssetSoftwareQuery query) throws Exception {
-        Map<String, WaitingTaskReponse> waitingTasks = getAllSoftWaitingTask("soft");
-        query.setTaskBussinessIds(new ArrayList<>(waitingTasks.keySet()));
-
-        // 如果从控制台进入，并且流程引擎返回数据为空，则直接返回
-        if (MapUtils.isEmpty(waitingTasks) && query.getEnterControl()) {
-            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
-        }
         if (!Objects.isNull(query.getCategoryModels()) && query.getCategoryModels().length > 0) {
             List<Integer> categoryModels = Lists.newArrayList();
             for (int i = 0; i < query.getCategoryModels().length; i++) {
@@ -501,28 +484,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
         }
 
-        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
-            this.findListAssetSoftware(query, waitingTasks));
-    }
-
-    /**
-     * 获取流程引擎数据，并且返回map对象
-     * @return
-     */
-    public Map<String, WaitingTaskReponse> getAllSoftWaitingTask(String definitionKeyType) {
-        // 1.获取当前用户的所有代办任务
-        ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
-        activityWaitingQuery.setUser(
-            aesEncoder.encode(LoginUserUtil.getLoginUser().getStringId(), LoginUserUtil.getLoginUser().getUsername()));
-        activityWaitingQuery.setProcessDefinitionKey(definitionKeyType);
-        ActionResponse<List<WaitingTaskReponse>> actionResponse = activityClient
-            .queryAllWaitingTask(activityWaitingQuery);
-        ParamterExceptionUtils.isTrue(
-            actionResponse != null && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode()),
-            "获取工作流异常");
-        List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
-        return waitingTaskReponses.stream()
-            .collect(Collectors.toMap(WaitingTaskReponse::getBusinessId, Function.identity(), (key1, key2) -> key2));
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.findListAssetSoftware(query));
     }
 
     @Override
