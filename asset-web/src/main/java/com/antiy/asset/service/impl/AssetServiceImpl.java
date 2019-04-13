@@ -1283,6 +1283,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         param.put("assetId", asset.getId());
         AssetResponse assetResponse = BeanConvert.convertBean(asset, AssetResponse.class);
 
+        // 设置使用者
+        if (StringUtils.isNotEmpty(asset.getResponsibleUserId())) {
+            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
+                com.antiy.asset.util.DataTypeUtils.stringToInteger(asset.getResponsibleUserId()));
+            SysUser sysUser = redisUtil.getObject(key, SysUser.class);
+            assetResponse.setResponsibleUserName(sysUser != null ? sysUser.getName() : null);
+        }
+
         // 设置操作系统名
         if (StringUtils.isNotEmpty(asset.getOperationSystem())) {
             List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
