@@ -1,8 +1,13 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.asset.vo.enums.SoftwareStatusEnum;
+import com.antiy.common.base.BaseConverter;
 import com.antiy.common.encoder.Encode;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 public class AssetSoftwareInstallResponse {
     /**
@@ -73,24 +78,42 @@ public class AssetSoftwareInstallResponse {
     /**
      * 安装类型
      */
-    @ApiModelProperty("安装类型 1人工 2自动")
+    @ApiModelProperty("安装类型code 1人工 2自动")
     private Integer installType;
+
+    /**
+     * 安装类型
+     */
+    @ApiModelProperty("安装类型code 1人工 2自动")
+    private String  installTypeStr;
+
     /**
      * 安装状态
      */
-    @ApiModelProperty("安装状态 1失败、2成功，3安装中 4未安装")
+    @ApiModelProperty("安装状态code 1失败、2成功，3安装中 4未安装")
     private Integer installStatus;
+
+    /**
+     * 安装状态
+     */
+    @ApiModelProperty("安装状态名 1失败、2成功，3安装中 4未安装")
+    private String  installStatusStr;
 
     /**
      * 安装时间
      */
     @ApiModelProperty("安装时间")
-    private Long installTime;
+    private Long    installTime;
     /**
      * 配置方式
      */
-    @ApiModelProperty("配置方式 1未配置，2配置中，3已配置")
+    @ApiModelProperty("配置方式code 1未配置，2配置中，3已配置")
     private String  configureStatus;
+    /**
+     * 配置方式
+     */
+    @ApiModelProperty("配置方式名 1未配置，2配置中，3已配置")
+    private String  configureStatusStr;
 
     public Integer getUserId() {
         return userId;
@@ -220,25 +243,37 @@ public class AssetSoftwareInstallResponse {
         this.configureStatus = configureStatus;
     }
 
+    public String getInstallStatusStr() {
+        return installStatusStr;
+    }
+
+    public void setInstallStatusStr(String installStatusStr) {
+        this.installStatusStr = installStatusStr;
+    }
+
+    public String getConfigureStatusStr() {
+        return configureStatusStr;
+    }
+
+    public void setConfigureStatusStr(String configureStatusStr) {
+        this.configureStatusStr = configureStatusStr;
+    }
+
+    public String getInstallTypeStr() {
+        return installTypeStr;
+    }
+
+    public void setInstallTypeStr(String installTypeStr) {
+        this.installTypeStr = installTypeStr;
+    }
+
     @Override
     public String toString() {
-        return "AssetSoftwareInstallResponse{" +
-                "id='" + id + '\'' +
-                ", assetId='" + assetId + '\'' +
-                ", softwareId='" + softwareId + '\'' +
-                ", number='" + number + '\'' +
-                ", name='" + name + '\'' +
-                ", userId=" + userId +
-                ", userName='" + userName + '\'' +
-                ", ip='" + ip + '\'' +
-                ", mac='" + mac + '\'' +
-                ", serial='" + serial + '\'' +
-                ", categoryModelName='" + categoryModelName + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", installType=" + installType +
-                ", installStatus=" + installStatus +
-                ", installTime=" + installTime +
-                ", configureStatus='" + configureStatus + '\'' +
-                '}';
+        return "AssetSoftwareInstallResponse{" + "id='" + id + '\'' + ", assetId='" + assetId + '\'' + ", softwareId='"
+               + softwareId + '\'' + ", number='" + number + '\'' + ", name='" + name + '\'' + ", userId=" + userId
+               + ", userName='" + userName + '\'' + ", ip='" + ip + '\'' + ", mac='" + mac + '\'' + ", serial='"
+               + serial + '\'' + ", categoryModelName='" + categoryModelName + '\'' + ", manufacturer='" + manufacturer
+               + '\'' + ", installType=" + installType + ", installStatus=" + installStatus + ", installTime="
+               + installTime + ", configureStatus='" + configureStatus + '\'' + '}';
     }
 }

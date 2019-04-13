@@ -1,16 +1,15 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import io.swagger.models.auth.In;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
@@ -75,7 +74,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Resource
     private BaseConverter<AssetSoftware, AssetSoftwareResponse>                 responseSoftConverter;
     @Resource
-    private BaseConverter<AssetSoftwareInstall, AssetSoftwareInstallResponse>   responseInstallConverter;
+    private SoftwareInstallResponseConvert                                      responseInstallConverter;
     @Resource
     IAssetSoftwareService                                                       softwareService;
     @Resource
@@ -374,5 +373,27 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 assetSoftwareInstall.setConfigureStatus("1");
             }
         }
+    }
+}
+
+@Component
+class SoftwareInstallResponseConvert extends BaseConverter<AssetSoftwareInstall, AssetSoftwareInstallResponse> {
+    @Override
+    protected void convert(AssetSoftwareInstall assetSoftwareInstall,
+                           AssetSoftwareInstallResponse assetSoftwareInstallResponse) {
+        if (assetSoftwareInstall.getConfigureStatus() != null) {
+            assetSoftwareInstallResponse.setConfigureStatusStr(ConfigureStatusEnum
+                .getConfigureStatusByCode(Integer.parseInt(assetSoftwareInstall.getConfigureStatus())).getName());
+        }
+        if (assetSoftwareInstall.getInstallType() != null) {
+            assetSoftwareInstallResponse
+                .setInstallTypeStr(InstallType.getInstallTypeByCode(assetSoftwareInstall.getInstallType()).getStatus());
+        }
+        if (assetSoftwareInstall.getInstallStatus() != null) {
+            assetSoftwareInstallResponse.setInstallStatusStr(
+                InstallStatus.getInstallStatusByCode(assetSoftwareInstall.getInstallStatus()).getStatus());
+        }
+
+        super.convert(assetSoftwareInstall, assetSoftwareInstallResponse);
     }
 }
