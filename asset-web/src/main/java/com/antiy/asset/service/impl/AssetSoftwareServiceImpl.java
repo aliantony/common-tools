@@ -747,15 +747,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareRelation.setConfigureStatus(ConfigureStatusEnum.CONFIGURING.getCode());
         assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
         assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        int n = assetSoftwareRelationDao.insert(assetSoftwareRelation);
-        if (n > 0) {
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_CONFIG.getName(), assetSoftwareRelation.getId(),
-                null, assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
-            return ActionResponse.success(n);
-        } else {
-            LogUtils.info(logger, AssetEventEnum.SOFT_CONFIG.getName() + " {}", assetSoftwareRelation);
-            throw new BusinessException("数据错误");
-        }
+        return ActionResponse.success(assetSoftwareRelationDao.insert(assetSoftwareRelation));
     }
 
     /**
