@@ -174,7 +174,6 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         return assetSoftwareRelationDao.countAssetBySoftId(id);
     }
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
     public List<SelectResponse> findOS() throws Exception {
         List<String> osList = assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
@@ -319,6 +318,9 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                                                    int pageOffset) {
         if (pageOffset >= adaptationResult.size()) {
             return new ArrayList<>();
+        }
+        if (pageSize == -1) {
+            return adaptationResult;
         }
         int max = Math.min((pageOffset + pageSize), adaptationResult.size());
         List<AssetSoftwareInstall> assetSoftwareInstallList = new ArrayList<>();
