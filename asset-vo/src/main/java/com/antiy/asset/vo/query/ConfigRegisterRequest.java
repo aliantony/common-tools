@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import com.antiy.common.encoder.Encode;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -15,6 +16,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author xuemeng
  * @create 2019-04-04 15:14
  */
+@ApiModel("配置请求")
 public class ConfigRegisterRequest {
     /**
      * 配置建议
