@@ -28,6 +28,7 @@
         <result column="install_time" property="installTime"/>
         <result column="protocol" property="protocol"/>
         <result column="gmt_create" property="gmtCreate"/>
+        <result column="operation_system" property="operationSystem"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
         <result column="create_user" property="createUser"/>
