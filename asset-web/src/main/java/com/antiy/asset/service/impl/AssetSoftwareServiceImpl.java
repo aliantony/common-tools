@@ -730,17 +730,24 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public ActionResponse softwareInstallConfig(ConfigRegisterRequest request) throws Exception {
-        ActionResponse actionResponse = this.configRegister(request);
-        if (null == actionResponse
-            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+        if (LoginUserUtil.getLoginUser() != null) {
+            ActionResponse actionResponse = this.configRegister(request);
+            if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+            }
+        } else {
+            LogUtils.info(logger, AssetEventEnum.SOFT_CONFIG.getName() + " {}", request);
+            throw new BusinessException("获取用户失败");
         }
         // 配置调用成功，更改软硬件关系表状态
         AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
         assetSoftwareRelation.setAssetId(request.getAssetId());
         assetSoftwareRelation.setSoftwareId(request.getSoftwareId());
         assetSoftwareRelation.setConfigureStatus(ConfigureStatusEnum.CONFIGURING.getCode());
-        int n = assetSoftwareRelationDao.updateByAssetId(assetSoftwareRelation);
+        assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+        assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        int n = assetSoftwareRelationDao.insert(assetSoftwareRelation);
         if (n > 0) {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_CONFIG.getName(), assetSoftwareRelation.getId(),
                 null, assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
