@@ -44,7 +44,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     @Resource
     private AssetDao                             assetDao;
     @Resource
-    private AssetSoftwareDao                             assetSoftwareDao;
+    private AssetSoftwareDao                     assetSoftwareDao;
     @Resource
     private BaseConverter<SchemeRequest, Scheme> schemeRequestToSchemeConverter;
 
@@ -54,7 +54,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     @Resource
     private WorkOrderClient                      workOrderClient;
     @Resource
-    private AesEncoder                                   aesEncoder;
+    private AesEncoder                           aesEncoder;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
@@ -80,7 +80,9 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         // 3.调用流程引擎
         ActionResponse actionResponse = null;
         if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode()
-            .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+            .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
+            || AssetFlowCategoryEnum.HARDWARE_IMPL_RETIRE.getCode()
+                .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             // 硬件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         } else if (AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode()
@@ -96,8 +98,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         }
 
         // 4.调用工单系统(选择自己不发工单，选择它人发起工单)
-        if (null != assetStatusReqeust.getWorkOrderVO()
-                && !LoginUserUtil.getLoginUser().getId().toString().equals(assetStatusReqeust.getSchemeRequest().getPutintoUserId())) {
+        if (null != assetStatusReqeust.getWorkOrderVO() && !LoginUserUtil.getLoginUser().getId().toString()
+            .equals(assetStatusReqeust.getSchemeRequest().getPutintoUserId())) {
             // 参数校验
             WorkOrderVO workOrderVO = assetStatusReqeust.getWorkOrderVO();
             workOrderVO.setOrderSource(1);
