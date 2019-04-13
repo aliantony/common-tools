@@ -3,6 +3,7 @@ package com.antiy.asset.vo.query;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.antiy.common.encoder.Encode;
 
@@ -49,6 +50,7 @@ public class ConfigRegisterRequest {
      */
     @ApiModelProperty("配置人员Id,如果是多个配置人员则以逗号分开")
     @Encode(message = "配置人员Id解密失败")
+    @NotNull(message = "配置人员不能为空")
     private List<String> configUserIds;
 
     @ApiModelProperty(value = "文件JSON传")
