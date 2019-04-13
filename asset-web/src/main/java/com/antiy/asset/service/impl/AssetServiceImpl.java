@@ -782,7 +782,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         List<AssetResponse> objects = responseConverter.convert(assetList, AssetResponse.class);
         for (AssetResponse object : objects) {
-            if (Objects.isNull(processMap) && !processMap.isEmpty()) {
+            if (MapUtils.isNotEmpty(processMap)) {
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
             }
 
@@ -1293,8 +1293,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 设置操作系统名
         if (StringUtils.isNotEmpty(asset.getOperationSystem())) {
-            List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
-            for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
+            List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
+            for (LinkedHashMap linkedHashMap : linkedHashMapList) {
                 if (asset.getOperationSystem().equals(linkedHashMap.get("stringId"))) {
                     assetResponse.setOperationSystemName((String) linkedHashMap.get("name"));
                 }
@@ -3068,8 +3068,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @return
      */
     private Boolean checkOperatingSystem(String checkStr) {
-        List<LinkedHashMap> categoryOsResponseList = operatingSystemClient.getInvokeOperatingSystem();
-        for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
+        List<LinkedHashMap> linkedHashMapList = operatingSystemClient.getInvokeOperatingSystem();
+        for (LinkedHashMap linkedHashMap : linkedHashMapList) {
             if (Objects.equals(linkedHashMap.get("name"), checkStr)) {
                 return true;
             }

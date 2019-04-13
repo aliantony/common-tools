@@ -178,9 +178,9 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     public List<SelectResponse> findOS() throws Exception {
         List<String> osList = assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
-        List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
+        List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
         List<SelectResponse> result = new ArrayList<>();
-        for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
+        for (LinkedHashMap linkedHashMap : linkedHashMapList) {
             if (osList.contains(linkedHashMap.get("stringId"))) {
                 SelectResponse selectResponse = new SelectResponse();
                 selectResponse.setId((String) linkedHashMap.get("stringId"));
