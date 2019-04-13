@@ -23,4 +23,15 @@ public enum InstallType {
         return status;
     }
 
+    public static InstallType getInstallTypeByCode(Integer code) {
+        if (code != null) {
+            for (InstallType installType : InstallType.values()) {
+                if (installType.getCode().equals(code)) {
+                    return installType;
+                }
+            }
+        }
+        return null;
+    }
+
 }

@@ -29,4 +29,16 @@ public enum ConfigureStatusEnum {
     public void setName(String name) {
         this.name = name;
     }
+
+    public static ConfigureStatusEnum getConfigureStatusByCode(Integer code) {
+        if (code != null) {
+            for (ConfigureStatusEnum configureStatusEnum : ConfigureStatusEnum.values()) {
+                if (configureStatusEnum.getCode().equals(code)) {
+                    return configureStatusEnum;
+                }
+            }
+        }
+        return null;
+    }
+
 }
