@@ -639,6 +639,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     private void setOperationName(AssetSoftware assetSoftware,
                                   AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+
+        if (assetSoftware == null) {
+            return;
+        }
         if (StringUtils.isNotEmpty(assetSoftware.getOperationSystem())) {
             List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
             for (LinkedHashMap linkedHashMap : linkedHashMapList) {
