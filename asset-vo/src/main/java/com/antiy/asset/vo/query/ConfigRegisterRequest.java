@@ -58,7 +58,7 @@ public class ConfigRegisterRequest {
     /**
      * 对象Id，漏洞Id或者补丁Id
      */
-    @ApiModelProperty("配置人员Id,如果是多个配置人员则以逗号分开")
+    @ApiModelProperty("配置人员Id")
     @Encode(message = "配置人员Id解密失败")
     @NotNull(message = "配置人员不能为空")
     private List<String> configUserIds;
