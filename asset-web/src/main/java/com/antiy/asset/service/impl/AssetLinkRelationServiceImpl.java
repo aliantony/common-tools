@@ -221,17 +221,21 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                 if (v.equals("计算设备")) {
                     // 计算设备下所有品类型号
                     assetLinkRelationQuery.setPcCategoryModels(
-                            assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
+                        assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
                 } else if (v.equals("网络设备")) {
                     // 网络设备下所有品类型号
                     assetLinkRelationQuery.setNetCategoryModels(
-                            assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
+                        assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
                 }
             } catch (Exception e) {
                 logger.error("获取{}子品类型号出错", v, e.getStackTrace());
             }
 
         });
+        List<String> statusList = new ArrayList<>();
+        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode().toString());
+        statusList.add(AssetStatusEnum.NET_IN.getCode().toString());
+        assetLinkRelationQuery.setStatusList(statusList);
         List<AssetLinkedCountResponse> assetLinkedCountResponseList = this
             .queryAssetLinkedCountList(assetLinkRelationQuery);
         if (CollectionUtils.isEmpty(assetLinkedCountResponseList)) {

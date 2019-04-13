@@ -548,6 +548,12 @@
                 #{item}
             </foreach>
         </if>
+        <if test="statusList != null and statusList.size() > 0">
+            and a.asset_status in
+            <foreach collection="statusList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
         <if test="assetName != null and assetName != ''">
             and a.name like CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
         </if>
@@ -586,6 +592,12 @@
         <if test="categoryModels != null and categoryModels.size() > 0">
             and a.category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="statusList != null and statusList.size() > 0">
+            and a.asset_status in
+            <foreach collection="statusList" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
         </if>
@@ -657,7 +669,8 @@
                 <if test="index > 0">
                     union select #{item}
                 </if>
-            </foreach> t1
+            </foreach>
+            t1
             LEFT JOIN (
             SELECT
             a.id,
@@ -731,6 +744,13 @@
                 #{item}
             </foreach>
         </if>
+        <if test="statusList != null and statusList.size() > 0">
+            and a.asset_status in
+            <foreach collection="statusList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+
         <if test="categoryModels != null and categoryModels.size() > 0">
             and a.category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," item="item">
@@ -775,6 +795,12 @@
         <if test="categoryModels != null and categoryModels.size() > 0">
             and a.category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="statusList != null and statusList.size() > 0">
+            and a.asset_status in
+            <foreach collection="statusList" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
         </if>
@@ -840,7 +866,8 @@
                 <if test="index > 0">
                     union select #{item}
                 </if>
-            </foreach> t1
+            </foreach>
+            t1
             LEFT JOIN (
             SELECT
             a.id,

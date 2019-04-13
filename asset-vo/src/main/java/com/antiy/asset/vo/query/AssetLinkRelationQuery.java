@@ -36,7 +36,7 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      * 资产品类型号
      */
     @ApiModelProperty("资产品类型号")
-    private List<String>        categoryModels;
+    private List<String>  categoryModels;
     /**
      * 计算设备资产品类型号列表
      */
@@ -62,6 +62,11 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      */
     @ApiModelProperty("资产区域")
     private List<Integer> areaIds;
+    /**
+     * 关联资产综合查询
+     */
+    @ApiModelProperty("资产状态列表")
+    private List<String>  statusList;
 
     public List<String> getCategoryModels() {
         return categoryModels;
@@ -141,5 +146,13 @@ public class AssetLinkRelationQuery extends ObjectQuery {
 
     public void setAreaIds(List<Integer> areaIds) {
         this.areaIds = areaIds;
+    }
+
+    public List<String> getStatusList() {
+        return statusList;
+    }
+
+    public void setStatusList(List<String> statusList) {
+        this.statusList = statusList;
     }
 }

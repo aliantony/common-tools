@@ -286,6 +286,6 @@ public class AssetSoftwareController {
     @RequestMapping(value = "/asset/setting", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:assetSetting')")
     public ActionResponse assetSetting(@ApiParam @RequestBody ConfigRegisterRequest registerRequest) throws Exception {
-        return iAssetSoftwareService.configRegister(registerRequest);
+        return iAssetSoftwareService.softwareInstallConfig(registerRequest);
     }
 }

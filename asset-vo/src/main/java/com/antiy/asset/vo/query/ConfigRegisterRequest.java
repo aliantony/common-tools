@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import com.antiy.common.encoder.Encode;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -15,6 +16,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author xuemeng
  * @create 2019-04-04 15:14
  */
+@ApiModel("配置请求")
 public class ConfigRegisterRequest {
     /**
      * 配置建议
@@ -30,6 +32,14 @@ public class ConfigRegisterRequest {
     @NotBlank(message = "资产Id不能为空")
     @Encode(message = "资产Id解密失败")
     private String       assetId;
+
+    /**
+     * 软件Id
+     */
+    @ApiModelProperty(value = "软件Id", required = true)
+    @NotBlank(message = "软件Id不能为空")
+    @Encode(message = "软件Id解密失败")
+    private String       softwareId;
 
     /**
      * 来源 1,硬件登记; 2,软件; 3,漏洞修复; 4,补丁安装
@@ -48,13 +58,21 @@ public class ConfigRegisterRequest {
     /**
      * 对象Id，漏洞Id或者补丁Id
      */
-    @ApiModelProperty("配置人员Id,如果是多个配置人员则以逗号分开")
+    @ApiModelProperty("配置人员Id")
     @Encode(message = "配置人员Id解密失败")
     @NotNull(message = "配置人员不能为空")
     private List<String> configUserIds;
 
     @ApiModelProperty(value = "文件JSON传")
     private String       files;
+
+    public String getSoftwareId() {
+        return softwareId;
+    }
+
+    public void setSoftwareId(String softwareId) {
+        this.softwareId = softwareId;
+    }
 
     public String getFiles() {
         return files;
