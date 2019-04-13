@@ -79,10 +79,15 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         assetOperationRecordDao.insert(assetOperationRecord);
         // 3.调用流程引擎
         ActionResponse actionResponse = null;
-        if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode()
+        if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
+            .equals(AssetFlowCategoryEnum.HARDWARE_RETIRE.getCode())) {
+            // 启动流程
+            assetStatusReqeust.getManualStartActivityRequest().setAssignee(LoginUserUtil.getLoginUser().getName());
+            actionResponse = activityClient.manualStartProcess(assetStatusReqeust.getManualStartActivityRequest());
+        } else if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode()
             .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
-            || AssetFlowCategoryEnum.HARDWARE_IMPL_RETIRE.getCode()
-                .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+                   || AssetFlowCategoryEnum.HARDWARE_IMPL_RETIRE.getCode()
+                       .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             // 硬件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         } else if (AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode()
