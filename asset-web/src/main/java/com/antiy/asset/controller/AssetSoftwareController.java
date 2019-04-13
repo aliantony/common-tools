@@ -16,7 +16,6 @@ import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
-import com.antiy.asset.vo.query.ConfigRegisterRequest;
 import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetImportRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
@@ -279,13 +278,5 @@ public class AssetSoftwareController {
         softwareInstallResponse
             .setAssetSoftwareInstallResponseList(iAssetSoftwareService.findAssetInstallList(softwareQuery));
         return ActionResponse.success(softwareInstallResponse);
-    }
-
-    @ApiOperation(value = "资产配置(软件安装配置)", notes = "资产配置")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/asset/setting", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:software:assetSetting')")
-    public ActionResponse assetSetting(@ApiParam @RequestBody ConfigRegisterRequest registerRequest) throws Exception {
-        return iAssetSoftwareService.configRegister(registerRequest);
     }
 }
