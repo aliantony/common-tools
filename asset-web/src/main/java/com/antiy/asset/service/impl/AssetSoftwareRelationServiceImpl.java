@@ -289,21 +289,24 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
      * @return
      */
     @Override
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareInstallResponse> queryInstallList(InstallQuery query) throws Exception {
         logger.info(LoginUserUtil.getLoginUser().toString());
         List<Integer> areaIdsList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         query.setAreaIds(DataTypeUtils.integerArrayToStringArray(areaIdsList));
         List<Integer> statusList = new ArrayList<>();
+        // 已入网和待退役
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
         Integer count = assetSoftwareRelationDao.queryInstallCount(query);
         if (count != 0) {
             List<AssetSoftwareInstall> queryInstallList = assetSoftwareRelationDao.queryInstallList(query);
+            // 处理安装状态和配置状态
             processStatusData(queryInstallList);
+            // 处理操作系统，排除操作系统不满足的列表
             List<AssetSoftwareInstall> adaptationResult = processOperationAdaptation(queryInstallList,
                 query.getSoftwareId());
+            // 进行分页
             List<AssetSoftwareInstall> pageResult = processPage(adaptationResult, query.getPageSize(),
                 query.getPageOffset());
             return new PageResult<>(query.getPageSize(), adaptationResult.size(), query.getCurrentPage(),
