@@ -78,7 +78,7 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
      * 安装方式
      */
     @ApiModelProperty("安装方式")
-    private Integer  installType;
+    private Integer installType;
     /**
      * 安装状态0失败、1成功，2安装中
      */
@@ -88,7 +88,10 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
      * 安装时间
      */
     @ApiModelProperty("安装时间")
-    private Long installTime;
+    private Long    installTime;
+
+    @ApiModelProperty("操作系统名")
+    private String  operationSystemName;
 
     public String getAssetId() {
         return assetId;
@@ -208,5 +211,13 @@ public class AssetSoftwareRelationResponse extends BaseResponse {
 
     public void setConfigureStatus(String configureStatus) {
         this.configureStatus = configureStatus;
+    }
+
+    public String getOperationSystemName() {
+        return operationSystemName;
+    }
+
+    public void setOperationSystemName(String operationSystemName) {
+        this.operationSystemName = operationSystemName;
     }
 }

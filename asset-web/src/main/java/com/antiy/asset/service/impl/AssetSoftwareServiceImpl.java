@@ -611,11 +611,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public AssetSoftwareDetailResponse querySoftWareDetail(SoftwareQuery softwareQuery) throws Exception {
 
         // 1 获取软件资产详情
         AssetSoftware assetSoftware = this.getById(softwareQuery.getPrimaryKey());
+        if (assetSoftware == null) {
+            throw new BusinessException("该软件不存在");
+        }
         AssetSoftwareDetailResponse assetSoftwareDetailResponse = assetSoftwareDetailConverter.convert(assetSoftware,
             AssetSoftwareDetailResponse.class);
 
@@ -639,6 +641,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     private void setOperationName(AssetSoftware assetSoftware,
                                   AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+
+        if (assetSoftware == null) {
+            return;
+        }
         if (StringUtils.isNotEmpty(assetSoftware.getOperationSystem())) {
             List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
             for (LinkedHashMap linkedHashMap : linkedHashMapList) {

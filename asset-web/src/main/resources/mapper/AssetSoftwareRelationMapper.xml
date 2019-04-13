@@ -11,6 +11,7 @@
         <result column="install_time" property="installTime"/>
         <result column="category_model_name" property="categoryModelName"/>
         <result column="configure_status" property="configureStatus"/>
+        <result column="operation_system" property="operationSystem"/>
         <result column="ip" property="ip"/>
         <result column="mac" property="mac"/>
     </resultMap>
@@ -27,6 +28,7 @@
         <result column="install_time" property="installTime"/>
         <result column="protocol" property="protocol"/>
         <result column="gmt_create" property="gmtCreate"/>
+        <result column="operation_system" property="operationSystem"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
         <result column="create_user" property="createUser"/>
@@ -606,11 +608,11 @@
         a.first_enter_nett,
         a.number,
         a.name,
+        a.operation_system,
         c.name as category_model_name,
         a.manufacturer,
         asset_status,
         a.gmt_modified,
-        a.operation_system,
         d.configure_status,
         d.install_status,
         d.install_time,
@@ -641,8 +643,6 @@
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
         left join asset_category_model c on a.category_model = c.id
         left join asset_software_relation d on a.id=d.asset_id and d.software_id=#{softwareId} and d.status=1
-        where a.operation_system = ( select operation_system from asset_software where id =#{softwareId} and
-        status=1 )
         group by a.id
         order by a.first_enter_nett desc
         ) asset
@@ -651,10 +651,6 @@
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
-        order by gmt_modified desc
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
     </select>
 
     <select id="queryInstallCount" resultType="java.lang.Integer"
@@ -701,8 +697,6 @@
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
         left join asset_category_model c on a.category_model = c.id
         left join asset_software_relation d on a.id=d.asset_id and d.software_id=#{softwareId} and d.status=1
-        where a.operation_system = ( select operation_system from asset_software where id =#{softwareId} and
-        status=1 )
         group by a.id
         ) asset
         <where>

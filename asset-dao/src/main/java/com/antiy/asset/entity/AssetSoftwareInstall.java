@@ -75,18 +75,24 @@ public class AssetSoftwareInstall {
      * 安装时间
      */
     @ApiModelProperty("安装时间")
-    private Long installTime;
+    private Long    installTime;
     /**
      * 责任人主键
      */
     @ApiModelProperty("责任人主键")
     @Encode
-    private String userId;
+    private String  userId;
     /**
      * 责任人
      */
     @ApiModelProperty("责任人")
     private String  userName;
+
+    /**
+     * 操作系统
+     */
+    @ApiModelProperty("操作系统")
+    private String  operationSystem;
 
     public String getUserId() {
         return userId;
@@ -216,25 +222,21 @@ public class AssetSoftwareInstall {
         this.configureStatus = configureStatus;
     }
 
+    public String getOperationSystem() {
+        return operationSystem;
+    }
+
+    public void setOperationSystem(String operationSystem) {
+        this.operationSystem = operationSystem;
+    }
+
     @Override
     public String toString() {
-        return "AssetSoftwareInstall{" +
-                "id='" + id + '\'' +
-                ", assetId='" + assetId + '\'' +
-                ", softwareId='" + softwareId + '\'' +
-                ", number='" + number + '\'' +
-                ", name='" + name + '\'' +
-                ", ip='" + ip + '\'' +
-                ", mac='" + mac + '\'' +
-                ", serial='" + serial + '\'' +
-                ", categoryModelName='" + categoryModelName + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", installType=" + installType +
-                ", installStatus=" + installStatus +
-                ", configureStatus='" + configureStatus + '\'' +
-                ", installTime=" + installTime +
-                ", userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                '}';
+        return "AssetSoftwareInstall{" + "id='" + id + '\'' + ", assetId='" + assetId + '\'' + ", softwareId='"
+               + softwareId + '\'' + ", number='" + number + '\'' + ", name='" + name + '\'' + ", ip='" + ip + '\''
+               + ", mac='" + mac + '\'' + ", serial='" + serial + '\'' + ", categoryModelName='" + categoryModelName
+               + '\'' + ", manufacturer='" + manufacturer + '\'' + ", installType=" + installType + ", installStatus="
+               + installStatus + ", configureStatus='" + configureStatus + '\'' + ", installTime=" + installTime
+               + ", userId='" + userId + '\'' + ", userName='" + userName + '\'' + '}';
     }
 }
