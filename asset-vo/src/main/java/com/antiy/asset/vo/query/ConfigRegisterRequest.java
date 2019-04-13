@@ -31,6 +31,14 @@ public class ConfigRegisterRequest {
     private String       assetId;
 
     /**
+     * 软件Id
+     */
+    @ApiModelProperty(value = "软件Id", required = true)
+    @NotBlank(message = "软件Id不能为空")
+    @Encode(message = "软件Id解密失败")
+    private String       softwareId;
+
+    /**
      * 来源 1,硬件登记; 2,软件; 3,漏洞修复; 4,补丁安装
      */
     @ApiModelProperty(value = "来源 1,硬件登记, 2,软件配置;", required = true)
@@ -53,6 +61,14 @@ public class ConfigRegisterRequest {
 
     @ApiModelProperty(value = "文件JSON传")
     private String       files;
+
+    public String getSoftwareId() {
+        return softwareId;
+    }
+
+    public void setSoftwareId(String softwareId) {
+        this.softwareId = softwareId;
+    }
 
     public String getFiles() {
         return files;

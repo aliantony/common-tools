@@ -722,6 +722,21 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return baseLineClient.configRegister(configRegisterList);
     }
 
+    @Override
+    public ActionResponse softwareInstallConfig(ConfigRegisterRequest request) throws Exception {
+        ActionResponse actionResponse = this.configRegister(request);
+        if (null == actionResponse
+            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+        }
+        // 配置调用成功，更改软硬件关系表状态
+        AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+        assetSoftwareRelation.setAssetId(request.getAssetId());
+        assetSoftwareRelation.setSoftwareId(request.getSoftwareId());
+        assetSoftwareRelation.setConfigureStatus(ConfigureStatusEnum.CONFIGURING.getCode());
+        return ActionResponse.success(assetSoftwareRelationDao.updateByAssetId(assetSoftwareRelation));
+    }
+
     /**
      * 处理资产上报的软件数据
      * @param assetId

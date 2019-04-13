@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.antiy.asset.entity.AssetSoftware;
@@ -13,8 +12,12 @@ import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.ConfigRegisterRequest;
 import com.antiy.asset.vo.query.SoftwareQuery;
 import com.antiy.asset.vo.request.AssetImportRequest;
+import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRequest;
-import com.antiy.asset.vo.response.*;
+import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
+import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
+import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.asset.vo.response.EnumCountResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -155,4 +158,12 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @param softwareReportRequestList
      */
     void reportData(Integer assetId, List<AssetSoftwareReportRequest> softwareReportRequestList);
+
+    /**
+     * 软件配置调用接口
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    ActionResponse softwareInstallConfig(ConfigRegisterRequest request) throws Exception;
 }
