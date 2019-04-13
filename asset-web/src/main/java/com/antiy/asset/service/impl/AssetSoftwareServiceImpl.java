@@ -616,6 +616,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
         // 1 获取软件资产详情
         AssetSoftware assetSoftware = this.getById(softwareQuery.getPrimaryKey());
+        if (assetSoftware == null) {
+            throw new BusinessException("该软件不存在");
+        }
         AssetSoftwareDetailResponse assetSoftwareDetailResponse = assetSoftwareDetailConverter.convert(assetSoftware,
             AssetSoftwareDetailResponse.class);
 
