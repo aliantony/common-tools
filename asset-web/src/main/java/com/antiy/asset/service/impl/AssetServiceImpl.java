@@ -45,7 +45,6 @@ import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.redis.CategoryOsResponse;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
@@ -1286,10 +1285,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 设置操作系统名
         if (StringUtils.isNotEmpty(asset.getOperationSystem())) {
-            List<CategoryOsResponse> categoryOsResponseList = redisService.getAllSystemOs();
-            for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {
-                if (asset.getOperationSystem().equals(categoryOsResponse.getStringId())) {
-                    assetResponse.setOperationSystemName(categoryOsResponse.getName());
+            List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
+            for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
+                if (asset.getOperationSystem().equals(linkedHashMap.get("stringId"))) {
+                    assetResponse.setOperationSystemName((String) linkedHashMap.get("name"));
                 }
             }
         }
@@ -3061,9 +3060,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @return
      */
     private Boolean checkOperatingSystem(String checkStr) {
-        List<CategoryOsResponse> categoryOsResponseList = operatingSystemClient.getInvokeOperatingSystem();
-        for (CategoryOsResponse categoryOsResponse : categoryOsResponseList) {
-            if (Objects.equals(categoryOsResponse.getName(), checkStr)) {
+        List<LinkedHashMap> categoryOsResponseList = operatingSystemClient.getInvokeOperatingSystem();
+        for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
+            if (Objects.equals(linkedHashMap.get("name"), checkStr)) {
                 return true;
             }
         }
@@ -3108,7 +3107,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             .equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
             ParamterExceptionUtils.isNull(assetStatusJumpRequst.getAgree(), "agree不能为空");
             if (assetStatusJumpRequst.getAgree()) {
-                this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
+                this.changeStatusById(assetId, AssetStatusEnum.WAIT_NET.getCode());
             } else {
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_SETTING.getCode());
             }

@@ -1,11 +1,10 @@
 package com.antiy.asset.intergration;
 
-import com.antiy.asset.vo.redis.CategoryOsResponse;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import com.antiy.asset.vo.response.BaselineCategoryModelNodeResponse;
 import com.antiy.common.base.ActionResponse;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 操作系统查询接口
@@ -13,9 +12,9 @@ import java.util.Map;
  * @create 2019-02-21 15:47
  **/
 public interface OperatingSystemClient {
-    ActionResponse<List<CategoryOsResponse>> getOperatingSystem();
+    ActionResponse<List<LinkedHashMap>> getOperatingSystem();
 
-    List<CategoryOsResponse> getInvokeOperatingSystem();
+    List<LinkedHashMap> getInvokeOperatingSystem();
 
     ActionResponse getOperatingSystemTree();
 
