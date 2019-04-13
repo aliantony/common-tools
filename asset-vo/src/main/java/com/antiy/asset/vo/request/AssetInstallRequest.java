@@ -1,10 +1,11 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.NotBlank;
+
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotBlank;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 安装结果
@@ -14,14 +15,14 @@ public class AssetInstallRequest extends BaseRequest {
     /**
      * 资产id
      */
-    @Encode
-    @NotBlank
+    @Encode(message = "资产Id解密失败")
+    @NotBlank(message = "资产Id不能为空")
     @ApiModelProperty("资产id")
     private String  assetId;
     /**
      * 配置状态
      */
-    @NotBlank
+    @NotBlank(message = "配置状态不能为空")
     @ApiModelProperty("配置状态")
     private Integer configureStatus;
 

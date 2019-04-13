@@ -4,6 +4,7 @@ import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -16,20 +17,21 @@ public class AssetSoftwareRelationList extends BaseRequest {
     /**
      * 软件id
      */
-    @Encode
-    @NotBlank
+    @Encode(message = "软件Id解密失败")
+    @NotBlank(message = "软件Id不能为空")
     @ApiModelProperty("软件id")
     private String                    softwareId;
     /**
      * 安装方式
      */
     @ApiModelProperty("安装方式：1人工，2自动")
-    @NotNull
+    @NotNull(message = "安装方式不能为空")
     private Integer                   installType;
     /**
      * 安装结果
      */
     @ApiModelProperty("安装结果")
+    @Valid
     private List<AssetInstallRequest> assetInstallRequestList;
     /**
      * 安装状态

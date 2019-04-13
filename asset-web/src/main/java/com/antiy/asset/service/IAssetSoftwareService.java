@@ -149,6 +149,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      */
     ActionResponse configRegister(ConfigRegisterRequest request) throws Exception;
 
+
     /**
      * 处理资产上报的软件信息
      * @param assetId
