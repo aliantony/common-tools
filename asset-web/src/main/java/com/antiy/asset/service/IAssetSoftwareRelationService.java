@@ -6,7 +6,6 @@ import java.util.Map;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
-import com.antiy.asset.vo.query.SoftwareConfigRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
@@ -123,12 +122,4 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @throws Exception
      */
     PageResult<AssetSoftwareInstallResponse> queryInstallList(InstallQuery query) throws Exception;
-
-    /**
-     * 软件配置
-     * @param softConfigRegisterRequest
-     * @return
-     * @throws Exception
-     */
-    Integer configurateSoftware(SoftwareConfigRequest softConfigRegisterRequest) throws Exception;
 }

@@ -2,7 +2,6 @@ package com.antiy.asset.service.impl;
 
 import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
 import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
-import static com.antiy.biz.file.FileHelper.logger;
 
 import java.util.*;
 
@@ -61,6 +60,9 @@ import com.antiy.common.utils.*;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> implements IAssetSoftwareService {
+    private Logger                                                           logger = LogUtils
+        .get(AssetSoftwareServiceImpl.class);
+
     @Resource
     private AssetSoftwareDao                                                 assetSoftwareDao;
     @Resource
@@ -107,8 +109,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Resource
     private SoftwareEntityConvert                                            softwareEntityConvert;
 
-    private static final Logger                                              LOGGER = LogUtils
-        .get(AssetSoftwareServiceImpl.class);
     @Resource
     private AssetChangeRecordDao                                             assetChangeRecordDao;
     @Resource
@@ -365,7 +365,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetSoftware);
                     return assetSoftwareCount;
                 } catch (Exception e) {
-                    LOGGER.error("修改软件信息失败", e);
+                    logger.error("修改软件信息失败", e);
                 }
                 return 0;
             }
@@ -726,6 +726,36 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         List<ConfigRegisterRequest> configRegisterList = new ArrayList<>();
         configRegisterList.add(request);
         return baseLineClient.configRegister(configRegisterList);
+    }
+
+    @Override
+    public ActionResponse softwareInstallConfig(ConfigRegisterRequest request) throws Exception {
+        if (LoginUserUtil.getLoginUser() != null) {
+            ActionResponse actionResponse = this.configRegister(request);
+            if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+            }
+        } else {
+            LogUtils.info(logger, AssetEventEnum.SOFT_CONFIG.getName() + " {}", request);
+            throw new BusinessException("获取用户失败");
+        }
+        // 配置调用成功，更改软硬件关系表状态
+        AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+        assetSoftwareRelation.setAssetId(request.getAssetId());
+        assetSoftwareRelation.setSoftwareId(request.getSoftwareId());
+        assetSoftwareRelation.setConfigureStatus(ConfigureStatusEnum.CONFIGURING.getCode());
+        assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+        assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        int n = assetSoftwareRelationDao.insert(assetSoftwareRelation);
+        if (n > 0) {
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_CONFIG.getName(), assetSoftwareRelation.getId(),
+                null, assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+            return ActionResponse.success(assetSoftwareRelationDao.updateByAssetId(assetSoftwareRelation));
+        } else {
+            LogUtils.info(logger, AssetEventEnum.SOFT_CONFIG.getName() + " {}", assetSoftwareRelation);
+            throw new BusinessException("数据错误");
+        }
     }
 
     /**
