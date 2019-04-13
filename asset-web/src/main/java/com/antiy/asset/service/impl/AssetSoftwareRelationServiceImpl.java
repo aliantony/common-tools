@@ -1,13 +1,17 @@
 package com.antiy.asset.service.impl;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.dao.AssetSoftwareDao;
+import com.antiy.asset.vo.response.*;
 import io.swagger.models.auth.In;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -36,10 +40,6 @@ import com.antiy.asset.vo.query.SoftwareConfigRequest;
 import com.antiy.asset.vo.request.AssetInstallRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
-import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
-import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
-import com.antiy.asset.vo.response.AssetSoftwareResponse;
-import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
@@ -87,6 +87,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     private RedisUtil                                                           redisUtil;
     @Resource
     private IRedisService                                                       redisService;
+    @Resource
+    private AssetSoftwareDao                                                    assetSoftwareDao;
 
     @Override
     public Integer saveAssetSoftwareRelation(AssetSoftwareRelationRequest request) throws Exception {
@@ -139,9 +141,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         return assetSoftwareRelationResponse;
     }
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
-    public PageResult<AssetSoftwareRelationResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query) {
+    public PageResult<AssetSoftwareRelationResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query) throws Exception {
         int count = countByAssetId(DataTypeUtils.stringToInteger(query.getAssetId()));
         if (count == 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
@@ -150,7 +151,21 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             .getSimpleSoftwareByAssetId(query);
         List<AssetSoftwareRelationResponse> assetSoftwareResponseList = responseConverter
             .convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class);
+        for (AssetSoftwareRelationResponse assetSoftwareRelationResponse : assetSoftwareResponseList) {
+            setOperationName(assetSoftwareRelationResponse);
+        }
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetSoftwareResponseList);
+    }
+
+    private void setOperationName(AssetSoftwareRelationResponse assetSoftwareRelationResponse) throws Exception {
+        if (StringUtils.isNotEmpty(assetSoftwareRelationResponse.getOperationSystem())) {
+            List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
+            for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
+                if (assetSoftwareRelationResponse.getOperationSystem().equals(linkedHashMap.get("stringId"))) {
+                    assetSoftwareRelationResponse.setOperationSystemName((String) linkedHashMap.get("name"));
+                }
+            }
+        }
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -275,7 +290,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
      */
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public PageResult<AssetSoftwareInstallResponse> queryInstallList(InstallQuery query) {
+    public PageResult<AssetSoftwareInstallResponse> queryInstallList(InstallQuery query) throws Exception {
         logger.info(LoginUserUtil.getLoginUser().toString());
         List<Integer> areaIdsList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         query.setAreaIds(DataTypeUtils.integerArrayToStringArray(areaIdsList));
@@ -287,10 +302,42 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         if (count != 0) {
             List<AssetSoftwareInstall> queryInstallList = assetSoftwareRelationDao.queryInstallList(query);
             processStatusData(queryInstallList);
-            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
-                responseInstallConverter.convert(queryInstallList, AssetSoftwareInstallResponse.class));
+            List<AssetSoftwareInstall> adaptationResult = processOperationAdaptation(queryInstallList,
+                query.getSoftwareId());
+            List<AssetSoftwareInstall> pageResult = processPage(adaptationResult, query.getPageSize(),
+                query.getPageOffset());
+            return new PageResult<>(query.getPageSize(), adaptationResult.size(), query.getCurrentPage(),
+                responseInstallConverter.convert(pageResult, AssetSoftwareInstallResponse.class));
         }
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+    }
+
+    private List<AssetSoftwareInstall> processPage(List<AssetSoftwareInstall> adaptationResult, int pageSize,
+                                                   int pageOffset) {
+        if (pageOffset >= adaptationResult.size()) {
+            return new ArrayList<>();
+        }
+        int max = Math.min((pageOffset + pageSize), adaptationResult.size());
+        List<AssetSoftwareInstall> assetSoftwareInstallList = new ArrayList<>();
+        for (int i = pageOffset; i < max; i++) {
+            assetSoftwareInstallList.add(adaptationResult.get(i));
+        }
+        return assetSoftwareInstallList;
+    }
+
+    private List<AssetSoftwareInstall> processOperationAdaptation(List<AssetSoftwareInstall> queryInstallList,
+                                                                  String id) throws Exception {
+        AssetSoftware assetSoftware = assetSoftwareDao.getById(id);
+        String operationSystem = assetSoftware.getOperationSystem();
+        String[] operationSystemArray = operationSystem.split(",");
+        List<String> operationSystemList = Arrays.asList(operationSystemArray);
+        List<AssetSoftwareInstall> result = new ArrayList<>();
+        for (AssetSoftwareInstall assetSoftwareInstall : queryInstallList) {
+            if (operationSystemList.contains(assetSoftwareInstall.getOperationSystem())) {
+                result.add(assetSoftwareInstall);
+            }
+        }
+        return result;
     }
 
     @Override
