@@ -782,7 +782,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         List<AssetResponse> objects = responseConverter.convert(assetList, AssetResponse.class);
         for (AssetResponse object : objects) {
-            if (Objects.isNull(processMap) && !processMap.isEmpty()) {
+            if (MapUtils.isNotEmpty(processMap)) {
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
             }
 
