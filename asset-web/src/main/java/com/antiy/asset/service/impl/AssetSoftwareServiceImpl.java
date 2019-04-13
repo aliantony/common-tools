@@ -740,7 +740,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             LogUtils.info(logger, AssetEventEnum.SOFT_CONFIG.getName() + " {}", request);
             throw new BusinessException("获取用户失败");
         }
-        // 配置调用成功，更改软硬件关系表状态
+        // 配置调用成功，新增软硬件关系表状态
         AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
         assetSoftwareRelation.setAssetId(request.getAssetId());
         assetSoftwareRelation.setSoftwareId(request.getSoftwareId());
@@ -751,7 +751,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         if (n > 0) {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_CONFIG.getName(), assetSoftwareRelation.getId(),
                 null, assetSoftwareRelation, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
-            return ActionResponse.success(assetSoftwareRelationDao.updateByAssetId(assetSoftwareRelation));
+            return ActionResponse.success(n);
         } else {
             LogUtils.info(logger, AssetEventEnum.SOFT_CONFIG.getName() + " {}", assetSoftwareRelation);
             throw new BusinessException("数据错误");
