@@ -248,8 +248,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @return
      */
     private Boolean checkOperatingSystem(String checkStr) {
-        List<LinkedHashMap> categoryOsResponseList = operatingSystemClient.getInvokeOperatingSystem();
-        for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
+        List<LinkedHashMap> linkedHashMapList = operatingSystemClient.getInvokeOperatingSystem();
+        for (LinkedHashMap linkedHashMap : linkedHashMapList) {
             if (Objects.equals(linkedHashMap.get("name"), checkStr)) {
                 return true;
             }
@@ -640,8 +640,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private void setOperationName(AssetSoftware assetSoftware,
                                   AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
         if (StringUtils.isNotEmpty(assetSoftware.getOperationSystem())) {
-            List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
-            for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
+            List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
+            for (LinkedHashMap linkedHashMap : linkedHashMapList) {
                 if (assetSoftware.getOperationSystem().equals(linkedHashMap.get("stringId"))) {
                     assetSoftwareDetailResponse.setOperationSystemName((String) linkedHashMap.get("name"));
                 }
