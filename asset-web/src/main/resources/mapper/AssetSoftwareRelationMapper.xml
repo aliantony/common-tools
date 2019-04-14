@@ -601,7 +601,7 @@
 
     <select id="queryInstallList" resultMap="InstallResultMap" parameterType="com.antiy.asset.vo.query.InstallQuery">
         select distinct * from (select
-        a.id,
+        d.id,
         a.id as asset_id,
         a.area_id,
         a.asset_group,
