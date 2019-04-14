@@ -3106,6 +3106,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RespBasicCode changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception {
+        Long gmtCreateTime = System.currentTimeMillis();
         SchemeRequest schemeRequest = assetStatusJumpRequst.getSchemeRequest();
         String assetId = assetStatusJumpRequst.getAssetId();
         // 修改资产状态
@@ -3132,29 +3133,34 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOperationRecord.setOriginStatus(AssetStatusEnum.WATI_REGSIST.getCode());
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+        assetOperationRecord.setGmtCreate(gmtCreateTime);
 
         // 写入方案
         if (scheme != null && scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
-            assetOperationRecord.setSchemeId(scheme.getId());
 
             JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
             scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             scheme.setAssetId(assetId);
-            schemeDao.insert(scheme);
+            scheme.setGmtCreate(gmtCreateTime);
+            if (null != LoginUserUtil.getLoginUser()) {
+                scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                schemeDao.insert(scheme);
+                // 记录操作日志和运行日志
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SCHEME_INSERT.getName(), scheme.getId(),
+                    "", scheme, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+                LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme);
 
-            // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SCHEME_INSERT.getName(), scheme.getId(), "",
-                scheme, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
-            LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme);
+                assetOperationRecord.setSchemeId(scheme.getId());
+            } else {
+                throw new BusinessException("获取用户失败");
+            }
+
         }
-
-        assetOperationRecordDao.insert(assetOperationRecord);
-
         // 写入业务日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(),
             assetOperationRecord.getId(), "", scheme, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}", assetOperationRecord);
+        assetOperationRecordDao.insert(assetOperationRecord);
         return RespBasicCode.SUCCESS;
     }
 
