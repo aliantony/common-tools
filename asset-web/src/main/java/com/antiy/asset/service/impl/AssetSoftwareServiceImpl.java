@@ -734,6 +734,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     public ActionResponse softwareInstallConfig(ConfigRegisterRequest request) throws Exception {
         if (LoginUserUtil.getLoginUser() != null) {
+            // 软件安装
+            request.setSource("2");
             ActionResponse actionResponse = this.configRegister(request);
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
