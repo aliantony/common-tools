@@ -3138,27 +3138,29 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 写入方案
         if (scheme != null && scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
 
-
             JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
             scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             scheme.setAssetId(assetId);
             scheme.setGmtCreate(gmtCreateTime);
-            scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            schemeDao.insert(scheme);
+            if (null != LoginUserUtil.getLoginUser()) {
+                scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                schemeDao.insert(scheme);
+                // 记录操作日志和运行日志
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SCHEME_INSERT.getName(), scheme.getId(),
+                    "", scheme, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+                LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme);
 
-            // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SCHEME_INSERT.getName(), scheme.getId(), "",
-                scheme, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
-            LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme);
+                assetOperationRecord.setSchemeId(scheme.getId());
+            } else {
+                throw new BusinessException("获取用户失败");
+            }
+
         }
-
-        assetOperationRecord.setSchemeId(scheme.getId());
-        assetOperationRecordDao.insert(assetOperationRecord);
-
         // 写入业务日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(),
             assetOperationRecord.getId(), "", scheme, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}", assetOperationRecord);
+        assetOperationRecordDao.insert(assetOperationRecord);
         return RespBasicCode.SUCCESS;
     }
 
