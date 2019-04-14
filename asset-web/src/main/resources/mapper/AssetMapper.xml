@@ -725,6 +725,14 @@
                 #{item}
             </foreach>
         </if>
+
+        <if test="removeManufacturers != null and removeManufacturers.size() > 0">
+            and manufacturer not in
+            <foreach collection="removeManufacturers" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+
         <if test=" operationSystem != null">
             and operation_system = #{operationSystem}
         </if>

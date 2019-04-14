@@ -23,77 +23,89 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 资产id列表
      */
     @Encode
-    private String[]      ids;
+    private String[]     ids;
 
     /**
      * 综合查询条件
      */
     @ApiModelProperty("综合查询条件")
-    private String        multipleQuery;
+    private String       multipleQuery;
 
     /**
      * 资产名称
      */
     @ApiModelProperty("资产名称")
-    private String        name;
+    private String       name;
     /**
      * 资产名称,重复判读使用
      */
 
-    private String        assetName;
+    private String       assetName;
     /**
      * ip,重复判读使用
      */
 
-    private String        ip;
+    private String       ip;
     /**
      * 是否网络设备,重复判读使用
      */
 
-    private Integer       isNet;
+    private Integer      isNet;
     /**
      * 是否安全设备,重复判读使用
      */
 
-    private Integer       isSafety;
+    private Integer      isSafety;
 
     /**
      * 资产编号
      */
     @ApiModelProperty("资产编号")
-    private String        number;
+    private String       number;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    private String        serial;
+    private String       serial;
     /**
      * 品类型号
      */
     @ApiModelProperty("品类型号")
     @Encode
-    private String        categoryModel;
+    private String       categoryModel;
     /**
      * 品类型号列表
      */
     @ApiModelProperty("品类型号列表")
     @Encode
-    private String[]      categoryModels;
+    private String[]     categoryModels;
     /**
      * 行政区划主键列表
      */
     @Encode
-    private String[]      areaIds;
+    private String[]     areaIds;
     /**
      * 厂商
      */
     @ApiModelProperty("厂商")
-    private String        manufacturer;
+    private String       manufacturer;
     /**
      * 厂商列表
      */
     @ApiModelProperty("厂商列表")
-    private List<String>  manufacturers;
+    private List<String> manufacturers;
+
+    @ApiModelProperty(value = "排除的厂商列表")
+    private List<String> removeManufacturers;
+
+    public List<String> getRemoveManufacturers() {
+        return removeManufacturers;
+    }
+
+    public void setRemoveManufacturers(List<String> removeManufacturers) {
+        this.removeManufacturers = removeManufacturers;
+    }
+
     /**
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
