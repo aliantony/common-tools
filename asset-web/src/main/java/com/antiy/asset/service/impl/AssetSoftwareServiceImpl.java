@@ -825,17 +825,17 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                                                Long gmtCreateTime) throws Exception {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
-        if (AssetTypeEnum.SOFTWARE.getCode().equals(request.getSource())) {
+        if (AssetTypeEnum.SOFTWARE.getCode().equals(DataTypeUtils.stringToInteger(request.getSource()))) {
             assetOperationRecord.setOriginStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
             assetOperationRecord.setContent(SOFTWARE_INSTALL_CONFIG.getMsg());
             assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
+            assetOperationRecord.setTargetObjectId(request.getSoftwareId());
         } else {
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setContent(HARDWARE_CONFIG_BASELINE.getMsg());
             assetOperationRecord.setSchemeId(scheme.getId());
+            assetOperationRecord.setTargetObjectId(request.getAssetId());
         }
-
-        assetOperationRecord.setTargetObjectId(request.getAssetId());
         assetOperationRecord.setAreaId("");
         assetOperationRecord.setGmtCreate(gmtCreateTime);
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
