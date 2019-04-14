@@ -716,11 +716,15 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public ActionResponse configRegister(ConfigRegisterRequest request) throws Exception {
-        // 1.保存操作流程
-        assetOperationRecordDao.insert(convertRecord(request));
+        Scheme scheme = convertScheme(request);
 
         // 2.保存配置建议信息
-        schemeDao.insert(convertScheme(request));
+        schemeDao.insert(scheme);
+
+        // 1.保存操作流程
+        assetOperationRecordDao.insert(convertRecord(request, scheme));
+
+
 
         // 3.调用配置接口
         List<ConfigRegisterRequest> configRegisterList = new ArrayList<>();
@@ -816,7 +820,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return scheme;
     }
 
-    private AssetOperationRecord convertRecord(ConfigRegisterRequest request) throws Exception {
+    private AssetOperationRecord convertRecord(ConfigRegisterRequest request, Scheme scheme) throws Exception {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         if (AssetTypeEnum.SOFTWARE.getCode().equals(request.getSource())) {
@@ -826,6 +830,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         } else {
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setContent(HARDWARE_CONFIG_BASELINE.getMsg());
+            assetOperationRecord.setSchemeId(scheme.getId());
         }
 
         assetOperationRecord.setTargetObjectId(request.getAssetId());
