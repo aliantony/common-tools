@@ -3143,7 +3143,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             scheme.setAssetId(assetId);
             scheme.setGmtCreate(gmtCreateTime);
-            scheme.setGmtCreate(gmtCreateTime);
+            scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
             schemeDao.insert(scheme);
 
             // 记录操作日志和运行日志
