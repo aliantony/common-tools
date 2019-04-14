@@ -1082,7 +1082,7 @@
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
         left join asset_category_model c on a.category_model = c.id
         group by a.id
-        order by a.gmt_create desc) asset
+        ) asset
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
@@ -1281,22 +1281,22 @@
     <!--查询资产漏洞数量-->
     <select id="queryAssetVulCount" resultType="com.antiy.asset.entity.IdCount">
         SELECT
-            asset_id,
-            count(1) count
+        asset_id,
+        count(1) count
         FROM
-            asset_vul_rel
+        asset_vul_rel
         WHERE
-            1 = 1
+        1 = 1
         <if test="assetIds != null and assetIds.size() > 0">
             and asset_id IN
             <foreach collection="assetIds" open="(" close=")" separator="," item="item">
-               #{item}
+                #{item}
             </foreach>
         </if>
-            and vul_status != 5
-            and status = 1
+        and vul_status != 5
+        and status = 1
         GROUP BY
-            asset_id
+        asset_id
     </select>
     <!--查询资产补丁数量-->
     <select id="queryAssetPatchCount" resultType="com.antiy.asset.entity.IdCount">

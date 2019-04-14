@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
@@ -22,7 +23,7 @@ public class AssetInstallRequest extends BaseRequest {
     /**
      * 配置状态
      */
-    @NotBlank(message = "配置状态不能为空")
+    @NotNull(message = "配置状态不能为空")
     @ApiModelProperty("配置状态")
     private Integer configureStatus;
 
