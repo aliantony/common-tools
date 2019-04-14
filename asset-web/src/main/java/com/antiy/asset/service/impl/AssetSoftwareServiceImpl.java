@@ -716,15 +716,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public ActionResponse configRegister(ConfigRegisterRequest request) throws Exception {
-        Scheme scheme = convertScheme(request);
+        Long gmtCreateTime = System.currentTimeMillis();
+        Scheme scheme = convertScheme(request, gmtCreateTime);
 
         // 2.保存配置建议信息
         schemeDao.insert(scheme);
 
         // 1.保存操作流程
-        assetOperationRecordDao.insert(convertRecord(request, scheme));
-
-
+        assetOperationRecordDao.insert(convertRecord(request, scheme, gmtCreateTime));
 
         // 3.调用配置接口
         List<ConfigRegisterRequest> configRegisterList = new ArrayList<>();
@@ -801,7 +800,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return assetSoftwareDao.isExsit(name, version);
     }
 
-    private Scheme convertScheme(ConfigRegisterRequest registerRequest) {
+    private Scheme convertScheme(ConfigRegisterRequest registerRequest, Long gmtCreateTime) {
         Scheme scheme = new Scheme();
         scheme.setContent(registerRequest.getSuggest());
         scheme.setMemo(registerRequest.getSuggest());
@@ -814,13 +813,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
         scheme.setAssetId(registerRequest.getAssetId());
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        scheme.setGmtCreate(System.currentTimeMillis());
+        scheme.setGmtCreate(gmtCreateTime);
         scheme.setFileInfo(registerRequest.getFiles());
 
         return scheme;
     }
 
-    private AssetOperationRecord convertRecord(ConfigRegisterRequest request, Scheme scheme) throws Exception {
+    private AssetOperationRecord convertRecord(ConfigRegisterRequest request, Scheme scheme,
+                                               Long gmtCreateTime) throws Exception {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         if (AssetTypeEnum.SOFTWARE.getCode().equals(request.getSource())) {
@@ -835,7 +835,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
         assetOperationRecord.setTargetObjectId(request.getAssetId());
         assetOperationRecord.setAreaId("");
-        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+        assetOperationRecord.setGmtCreate(gmtCreateTime);
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setProcessResult(1);
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());

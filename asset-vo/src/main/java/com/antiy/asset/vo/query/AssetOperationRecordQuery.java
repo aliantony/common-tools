@@ -37,6 +37,17 @@ public class AssetOperationRecordQuery extends ObjectQuery {
     @ApiModelProperty(value = "当前资产的状态")
     private String                  originStatus;
 
+    @ApiModelProperty(value = "创建时间", hidden = true)
+    private Long                    gmtCreateTime;
+
+    public Long getGmtCreateTime() {
+        return gmtCreateTime;
+    }
+
+    public void setGmtCreateTime(Long gmtCreateTime) {
+        this.gmtCreateTime = gmtCreateTime;
+    }
+
     public String getOriginStatus() {
         return originStatus;
     }

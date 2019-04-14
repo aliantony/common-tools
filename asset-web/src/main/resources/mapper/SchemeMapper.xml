@@ -374,7 +374,7 @@
         on asset.id = sch.asset_id
         left join asset_operation_record aor
         on aor.scheme_id = sch.id
-        where asset_id = #{assetId} and aor.origin_status = #{originStatus}
+        where asset_id = #{assetId} and aor.gmt_create = #{gmtCreateTime}
     </select>
 
     <!--通过资产ID查询方案信息-->

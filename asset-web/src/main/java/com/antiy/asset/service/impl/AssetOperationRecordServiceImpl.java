@@ -146,6 +146,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
         for (AssetOperationRecordBarPO assetOperationRecordBarPO : assetOperationRecordBarPOList) {
             if (assetOperationRecordBarPO != null) {
                 map.put("assetId", assetOperationRecordBarPO.getId());
+                map.put("gtmCreateTime", assetOperationRecordBarPO.getGmtCreate());
 
                 AssetOperationRecordBarResponse assetOperationRecordBarResponse = operationRecordBarPOToResponseConverter
                     .convert(assetOperationRecordBarPO, AssetOperationRecordBarResponse.class);

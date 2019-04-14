@@ -58,15 +58,16 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
+        Long gmtCreateTime = System.currentTimeMillis();
         Scheme scheme = null;
         if (assetStatusReqeust.getSchemeRequest() != null) {
             // 1.保存方案信息
-            scheme = convertScheme(assetStatusReqeust);
+            scheme = convertScheme(assetStatusReqeust, gmtCreateTime);
             schemeDao.insert(scheme);
         }
 
         // 2.保存流程
-        AssetOperationRecord assetOperationRecord = convertAssetOperationRecord(assetStatusReqeust);
+        AssetOperationRecord assetOperationRecord = convertAssetOperationRecord(assetStatusReqeust, gmtCreateTime);
 
         if (!assetStatusReqeust.getSoftware()) {
             assetOperationRecord.setOriginStatus(assetStatusReqeust.getAssetStatus().getCode());
@@ -133,7 +134,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      * @param assetStatusReqeust
      * @return
      */
-    private AssetOperationRecord convertAssetOperationRecord(AssetStatusReqeust assetStatusReqeust) {
+    private AssetOperationRecord convertAssetOperationRecord(AssetStatusReqeust assetStatusReqeust,
+                                                             Long gmtCreateTime) {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         if (assetStatusReqeust.getSoftware()) {
             SoftwareFlowEnum softwareFlowEnum = EnumUtil.getByCode(SoftwareFlowEnum.class,
@@ -153,7 +155,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             : AssetOperationTableEnum.ASSET.getCode());
 
         assetOperationRecord.setTargetObjectId(assetStatusReqeust.getAssetId());
-        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+        assetOperationRecord.setGmtCreate(gmtCreateTime);
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setProcessResult(assetStatusReqeust.getAgree() ? 1 : 0);
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
@@ -166,12 +168,12 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      * @param assetStatusReqeust
      * @return
      */
-    private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust) throws Exception {
+    private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust, Long gmtCreateTime) throws Exception {
         Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
         if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
             JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
         }
-        scheme.setGmtCreate(System.currentTimeMillis());
+        scheme.setGmtCreate(gmtCreateTime);
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         if (null != assetStatusReqeust.getWorkOrderVO()) {
             ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getStartTime(), "工单开始时间不能为空");
