@@ -33,6 +33,7 @@ import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetInstallRequest;
+import com.antiy.asset.vo.request.AssetRelationSoftRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
@@ -310,6 +311,15 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 responseInstallConverter.convert(pageResult, AssetSoftwareInstallResponse.class));
         }
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+    }
+
+    @Override
+    public Integer updateAssetReleation(AssetRelationSoftRequest assetRelationSoftRequest) throws Exception {
+        AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+        assetSoftwareRelation.setConfigureStatus(ConfigureStatusEnum.CONFIGURED.getCode());
+        assetSoftwareRelation.setAssetId(assetRelationSoftRequest.getAssetId());
+        assetSoftwareRelation.setSoftwareId(assetRelationSoftRequest.getSoftId());
+        return assetSoftwareRelationDao.updateByAssetId(assetSoftwareRelation);
     }
 
     private List<AssetSoftwareInstall> processPage(List<AssetSoftwareInstall> adaptationResult, int pageSize,
