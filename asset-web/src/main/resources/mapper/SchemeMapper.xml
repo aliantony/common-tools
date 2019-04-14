@@ -363,7 +363,7 @@
         </if>
     </select>
     <!--通过资产ID和状态查询方案信息-->
-    <select id="findSchemeByAssetIdAndStatus" resultMap="BaseResultMap" parameterType="int">
+    <select id="findSchemeByAssetIdAndGmtCreateTime" resultMap="BaseResultMap" parameterType="map">
         select
         sch.file_info,
         sch.memo

@@ -21,7 +21,7 @@ public interface SchemeDao extends IBaseDao<Scheme> {
      * @param map
      * @return
      */
-    List<Scheme> findSchemeByAssetIdAndStatus(Map<String, Object> map);
+    List<Scheme> findSchemeByAssetIdAndGmtCreateTime(Map<String, Object> map);
 
     /**
      * 通过资产ID和方案类型查询方案信息

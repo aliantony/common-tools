@@ -146,12 +146,12 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
         for (AssetOperationRecordBarPO assetOperationRecordBarPO : assetOperationRecordBarPOList) {
             if (assetOperationRecordBarPO != null) {
                 map.put("assetId", assetOperationRecordBarPO.getId());
-                map.put("gtmCreateTime", assetOperationRecordBarPO.getGmtCreate());
+                map.put("gmtCreateTime", assetOperationRecordBarPO.getGmtCreate());
 
                 AssetOperationRecordBarResponse assetOperationRecordBarResponse = operationRecordBarPOToResponseConverter
                     .convert(assetOperationRecordBarPO, AssetOperationRecordBarResponse.class);
 
-                List<Scheme> schemeList = schemeDao.findSchemeByAssetIdAndStatus(map);
+                List<Scheme> schemeList = schemeDao.findSchemeByAssetIdAndGmtCreateTime(map);
 
                 List<AssetStatusBarResponse> fileInfoList = new ArrayList<>();
 
