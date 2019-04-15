@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
-import com.antiy.asset.vo.request.RemoveAssociateAssetRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
@@ -148,17 +147,19 @@ public class AssetGroupController {
         return ActionResponse.success(iAssetGroupService.queryUnconnectedGroupInfo(searchNetworkDevice));
     }
 
-    /**
-     * 移除关联资产
-     * @author zhangyajun
-     *
-     * @return 移除关联资产
-     */
-    @ApiOperation(value = "移除关联资产", notes = "移除关联资产")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/removeAssociateAsset", method = RequestMethod.GET)
-    @PreAuthorize(value = "hasAuthority('asset:group:removeAssociateAsset')")
-    public ActionResponse removeAssociateAsset(@ApiParam("removeAssociateAssetRequest") RemoveAssociateAssetRequest removeAssociateAssetRequest) throws Exception {
-        return ActionResponse.success(iAssetGroupService.removeAssociateAsset(removeAssociateAssetRequest));
-    }
+    // /**
+    // * 移除关联资产
+    // * @author zhangyajun
+    // *
+    // * @return 移除关联资产
+    // */
+    // @ApiOperation(value = "移除关联资产", notes = "移除关联资产")
+    // @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer =
+    // "actionResponse"), })
+    // @RequestMapping(value = "/removeAssociateAsset", method = RequestMethod.GET)
+    // @PreAuthorize(value = "hasAuthority('asset:group:removeAssociateAsset')")
+    // public ActionResponse removeAssociateAsset(@ApiParam("removeAssociateAssetRequest") RemoveAssociateAssetRequest
+    // removeAssociateAssetRequest) throws Exception {
+    // return ActionResponse.success(iAssetGroupService.removeAssociateAsset(removeAssociateAssetRequest));
+    // }
 }
