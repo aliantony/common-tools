@@ -158,7 +158,7 @@
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
-        <if test=" areaIds != null ">
+        <if test=" areaIds != null and areaIds.length > 0">
             and area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
                 #{item}
