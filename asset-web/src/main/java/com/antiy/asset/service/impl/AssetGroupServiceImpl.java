@@ -306,8 +306,13 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             SysUser sysUser = redisUtil.getObject(key, SysUser.class);
             SelectResponse selectResponse = new SelectResponse();
             selectResponse.setId(DataTypeUtils.integerToString(assetGroup.getCreateUser()));
-            selectResponse.setValue(sysUser != null ? sysUser.getName() : null);
-            selectResponseList.add(selectResponse);
+            if (sysUser != null) {
+                selectResponse.setValue(sysUser.getName());
+                selectResponseList.add(selectResponse);
+            } else {
+                throw new BusinessException("获取用户信息失败");
+            }
+
         }
         return selectResponseList;
     }
