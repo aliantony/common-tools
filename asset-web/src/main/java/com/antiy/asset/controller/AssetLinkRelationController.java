@@ -179,7 +179,7 @@ public class AssetLinkRelationController {
      * @throws Exception
      */
     @ApiOperation(value = "与当前资产通联的资产列表查询", notes = "传入查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetLinkRelationResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/linkedAssetListByAssetId", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:linkrelation:portById')")
     public ActionResponse queryLinkedAssetListByAssetId(@ApiParam(value = "assetLinkRelationQuery") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {

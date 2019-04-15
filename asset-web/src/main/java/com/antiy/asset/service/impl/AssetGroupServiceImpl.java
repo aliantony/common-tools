@@ -30,6 +30,7 @@ import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
+import com.antiy.asset.vo.request.RemoveAssociateAssetRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.biz.util.RedisKeyUtil;
@@ -285,6 +286,11 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     }
 
     @Override
+    public Integer removeAssociateAsset(RemoveAssociateAssetRequest request) {
+        return assetGroupRelationDao.batchDeleteById(request);
+    }
+
+    @Override
     public AssetGroupResponse findGroupById(String id) throws Exception {
         AssetGroupResponse assetGroupResponse = assetGroupToResponseConverter.convert(assetGroupDao.getById(id),
             AssetGroupResponse.class);
@@ -300,8 +306,13 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             SysUser sysUser = redisUtil.getObject(key, SysUser.class);
             SelectResponse selectResponse = new SelectResponse();
             selectResponse.setId(DataTypeUtils.integerToString(assetGroup.getCreateUser()));
-            selectResponse.setValue(sysUser.getName());
-            selectResponseList.add(selectResponse);
+            if (sysUser != null) {
+                selectResponse.setValue(sysUser.getName());
+                selectResponseList.add(selectResponse);
+            } else {
+                throw new BusinessException("获取创建人信息失败");
+            }
+
         }
         return selectResponseList;
     }

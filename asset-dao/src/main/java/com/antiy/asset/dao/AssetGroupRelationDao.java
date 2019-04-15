@@ -5,6 +5,7 @@ import java.util.List;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.vo.query.AssetGroupRelationQuery;
+import com.antiy.asset.vo.request.RemoveAssociateAssetRequest;
 import com.antiy.common.base.IBaseDao;
 
 /**
@@ -70,4 +71,11 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @return
      */
     List<String> findAssetGroupNameByAssetId(String id) throws Exception;
+
+    /**
+     * 批量删除关联资产
+     * @param request
+     * @return
+     */
+    Integer batchDeleteById(RemoveAssociateAssetRequest request);
 }
