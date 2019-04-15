@@ -1,15 +1,13 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.utils.LogUtils;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetGroupRelationDao;
@@ -17,6 +15,9 @@ import com.antiy.asset.dao.AssetNetworkCardDao;
 import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.service.IAssetGroupRelationService;
 import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetGroupRelationDetailQuery;
 import com.antiy.asset.vo.query.AssetGroupRelationQuery;
 import com.antiy.asset.vo.request.AssetGroupRelationRequest;
@@ -24,9 +25,8 @@ import com.antiy.asset.vo.response.AssetGroupRelationResponse;
 import com.antiy.asset.vo.response.AssetNetworkCardResponse;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
-import com.antiy.common.encoder.AesEncoder;
-
-import static com.antiy.biz.file.FileHelper.logger;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
 
 /**
  * <p> 资产与资产组关系表 服务实现类 </p>
@@ -120,7 +120,6 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
 
     @Override
     public Integer findCountDetailByGroupId(AssetGroupRelationQuery query) throws Exception {
-        return assetGroupRelationDao.findCountDetailByGroupId((Integer) BeanConvert.convert(query.getAssetGroupId(),
-            Integer.class));
+        return assetGroupRelationDao.findCountDetailByGroupId(DataTypeUtils.stringToInteger(query.getAssetGroupId()));
     }
 }
