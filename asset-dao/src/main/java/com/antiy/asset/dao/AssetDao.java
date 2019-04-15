@@ -3,13 +3,13 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.entity.Topology;
-import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.common.base.IBaseDao;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -147,15 +147,31 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 查询资产漏洞数
-     * @param assetIds
+     * @param areaIds
      * @return
      */
-    List<IdCount> queryAssetVulCount(@Param(value = "assetIds") List<Integer> assetIds);
+    List<IdCount> queryAssetVulCount(@Param(value = "areaIds") List<Integer> areaIds,
+                                     @Param("pageSize") Integer pageSize,
+                                     @Param("pageOffset") Integer pageOffset);
 
     /**
      * 查询资产补丁数
-     * @param assetIds
+     * @param areaIds
      * @return
      */
-    List<IdCount> queryAssetPatchCount(@Param(value = "assetIds") List<Integer> assetIds);
+    List<IdCount> queryAssetPatchCount(@Param(value = "areaIds") List<Integer> areaIds,
+                                       @Param("pageSize") Integer pageSize,
+                                       @Param("pageOffset") Integer pageOffset);
+
+    /**
+     * 查询补丁的资产总数
+     * @return
+     */
+    Integer queryAllAssetPatchCount();
+
+    /**
+     * 查询漏洞的资产总数
+     * @return
+     */
+    Integer queryAllAssetVulCount();
 }
