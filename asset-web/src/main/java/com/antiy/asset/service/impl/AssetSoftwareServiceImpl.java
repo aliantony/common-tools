@@ -135,7 +135,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
                     // AssetPortProtocol.class);
 
-                    ParamterExceptionUtils.isTrue(!CheckRepeatName(assetSoftware.getName()), "资产名称重复");
+                    ParamterExceptionUtils.isTrue(!checkRepeatName(assetSoftware.getName()), "资产名称重复");
                     BusinessExceptionUtils.isTrue(checkOperatingSystemById(assetSoftware.getOperationSystem()),
                         "兼容系统不存在，或已经注销！");
                     BusinessExceptionUtils.isTrue(
@@ -449,6 +449,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return objects;
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Integer findCountAssetSoftware(AssetSoftwareQuery query) throws Exception {
         return assetSoftwareDao.findCount(query);
     }
@@ -611,6 +612,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public AssetSoftwareDetailResponse querySoftWareDetail(SoftwareQuery softwareQuery) throws Exception {
 
         // 1 获取软件资产详情
@@ -688,7 +690,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return assetSoftwareDao.findAssetInstallCount(query);
     }
 
-    private boolean CheckRepeatName(String name) throws Exception {
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public boolean checkRepeatName(String name) throws Exception {
         AssetSoftwareQuery assetQuery = new AssetSoftwareQuery();
         assetQuery.setAssetName(name);
         Integer countAsset = assetSoftwareDao.findCountCheck(assetQuery);
@@ -696,7 +699,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery) throws Exception {
         // 只查询已入网、待退役的资产
         softwareQuery.setAssetStatus(new ArrayList<Integer>() {
@@ -845,6 +847,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return assetOperationRecord;
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Integer findCountInstall(AssetSoftwareQuery query) throws Exception {
         return assetSoftwareDao.findCount(query);
     }
@@ -886,7 +889,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 continue;
             }
 
-            if (CheckRepeatName(entity.getName())) {
+            if (checkRepeatName(entity.getName())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("软件名称重复，");
@@ -1050,7 +1053,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param assetSoftwareDetailResponse
      * @throws Exception
      */
-    private void querySoftwarePort(SoftwareQuery softwareQuery,
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void querySoftwarePort(SoftwareQuery softwareQuery,
                                    AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
         AssetPortProtocolQuery assetPortProtocolQuery = new AssetPortProtocolQuery();
         assetPortProtocolQuery.setAssetSoftId(softwareQuery.getPrimaryKey());
@@ -1066,7 +1070,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param assetSoftwareDetailResponse
      * @throws Exception
      */
-    private void querySoftwareLicense(SoftwareQuery softwareQuery,
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void querySoftwareLicense(SoftwareQuery softwareQuery,
                                       AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
         AssetSoftwareLicenseQuery assetSoftwareLicenseQuery = new AssetSoftwareLicenseQuery();
         assetSoftwareLicenseQuery.setSoftwareId(DataTypeUtils.stringToInteger(softwareQuery.getPrimaryKey()));

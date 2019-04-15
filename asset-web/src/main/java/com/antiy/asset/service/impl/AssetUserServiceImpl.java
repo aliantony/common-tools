@@ -99,6 +99,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         return convert(assetUser);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Integer findCountAssetUser(AssetUserQuery query) throws Exception {
         return assetUserDao.findCount(query);
     }

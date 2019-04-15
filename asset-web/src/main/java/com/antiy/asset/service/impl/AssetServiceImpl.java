@@ -22,6 +22,7 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -189,7 +190,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
 
                         String name = requestAsset.getName();
-                        ParamterExceptionUtils.isTrue(!CheckRepeatName(name), "资产名称重复");
+                        ParamterExceptionUtils.isTrue(!checkRepeatName(name), "资产名称重复");
 
                         if (StringUtils.isNotBlank(requestAsset.getOperationSystem())) {
                             BusinessExceptionUtils.isTrue(checkOperatingSystemById(requestAsset.getOperationSystem()),
@@ -458,7 +459,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         String name = assetOthersRequest.getName();
 
-                        ParamterExceptionUtils.isTrue(!CheckRepeatName(name), "资产名称重复");
+                        ParamterExceptionUtils.isTrue(!checkRepeatName(name), "资产名称重复");
 
                         Asset asset1 = BeanConvert.convertBean(assetOthersRequest, Asset.class);
 
@@ -693,14 +694,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return countAsset >= 1;
     }
 
-    private boolean CheckRepeatName(String name) throws Exception {
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public boolean checkRepeatName(String name) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setAssetName(name);
         Integer countAsset = findCountAssetNumber(assetQuery);
         return countAsset >= 1;
     }
 
-    private String CheckUser(String user) throws Exception {
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public String checkUser(String user) throws Exception {
         AssetUserQuery assetUserQuery = new AssetUserQuery();
         assetUserQuery.setExportName(user);
         List<AssetUser> assetUsers = assetUserDao.findListAssetUser(assetUserQuery);
@@ -719,6 +722,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AssetResponse> findListAsset(AssetQuery query) throws Exception {
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
@@ -788,7 +792,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             if (MapUtils.isNotEmpty(vulCountMaps)) {
                 object.setVulCount(
-                    vulCountMaps.containsKey(object.getStringId()) ? vulCountMaps.get(object.getStringId()) : "0");
+                    vulCountMaps.getOrDefault(object.getStringId(), "0"));
             }
 
             if (MapUtils.isNotEmpty(patchCountMaps)) {
@@ -2218,7 +2222,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         for (ComputeDeviceEntity entity : dataList) {
 
-            if (CheckRepeatName(entity.getName())) {
+            if (checkRepeatName(entity.getName())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产名称重复，");
@@ -2238,7 +2242,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if ("".equals(CheckUser(entity.getUser()))) {
+            if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
                 builder.append("第").append(a).append("行").append("没有此使用者，");
@@ -2260,7 +2264,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (repeat + error == 0) {
                 ComputerVo computerVo = new ComputerVo();
                 Asset asset = new Asset();
-                asset.setResponsibleUserId(CheckUser(entity.getUser()));
+                asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(importRequest.getAreaId());
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -2473,7 +2477,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         for (NetworkDeviceEntity networkDeviceEntity : entities) {
 
-            if (CheckRepeatName(networkDeviceEntity.getName())) {
+            if (checkRepeatName(networkDeviceEntity.getName())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产名称重复，");
@@ -2494,7 +2498,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if ("".equals(CheckUser(networkDeviceEntity.getUser()))) {
+            if ("".equals(checkUser(networkDeviceEntity.getUser()))) {
                 error++;
                 a++;
                 builder.append("第").append(a).append("行").append("没有此使用者，");
@@ -2515,7 +2519,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (repeat + error == 0) {
 
                 Asset asset = new Asset();
-                asset.setResponsibleUserId(CheckUser(networkDeviceEntity.getUser()));
+                asset.setResponsibleUserId(checkUser(networkDeviceEntity.getUser()));
                 AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(importRequest.getAreaId());
@@ -2622,7 +2626,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetSafetyEquipment> assetSafetyEquipments = new ArrayList<>();
         for (SafetyEquipmentEntiy entity : resultDataList) {
 
-            if (CheckRepeatName(entity.getName())) {
+            if (checkRepeatName(entity.getName())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产名称重复，");
@@ -2636,7 +2640,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if ("".equals(CheckUser(entity.getUser()))) {
+            if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
                 builder.append("第").append(a).append("行").append("没有此使用者，");
@@ -2656,7 +2660,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             if (repeat + error == 0) {
                 Asset asset = new Asset();
-                asset.setResponsibleUserId(CheckUser(entity.getUser()));
+                asset.setResponsibleUserId(checkUser(entity.getUser()));
                 AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(importRequest.getAreaId());
@@ -2747,7 +2751,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetStorageMedium> assetStorageMedia = new ArrayList<>();
         for (StorageDeviceEntity entity : resultDataList) {
 
-            if (CheckRepeatName(entity.getName())) {
+            if (checkRepeatName(entity.getName())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产名称重复");
@@ -2761,7 +2765,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if ("".equals(CheckUser(entity.getUser()))) {
+            if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
                 builder.append("第").append(a).append("行").append("没有此使用者");
@@ -2783,7 +2787,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (repeat + error == 0) {
 
                 Asset asset = new Asset();
-                asset.setResponsibleUserId(CheckUser(entity.getUser()));
+                asset.setResponsibleUserId(checkUser(entity.getUser()));
                 AssetStorageMedium assetStorageMedium = new AssetStorageMedium();
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(importRequest.getAreaId());
@@ -2879,7 +2883,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<Asset> assets = new ArrayList<>();
         for (OtherDeviceEntity entity : resultDataList) {
 
-            if (CheckRepeatName(entity.getName())) {
+            if (checkRepeatName(entity.getName())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产名称重复，");
@@ -2892,7 +2896,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
-            if ("".equals(CheckUser(entity.getUser()))) {
+            if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
                 builder.append("第").append(a).append("行").append("没有此使用者，");
@@ -2912,7 +2916,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             if (repeat + error == 0) {
                 Asset asset = new Asset();
-                asset.setResponsibleUserId(CheckUser(entity.getUser()));
+                asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(importRequest.getAreaId());
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
