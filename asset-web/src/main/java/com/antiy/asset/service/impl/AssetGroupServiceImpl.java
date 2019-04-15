@@ -30,6 +30,7 @@ import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
+import com.antiy.asset.vo.request.RemoveAssociateAssetRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.biz.util.RedisKeyUtil;
@@ -282,6 +283,11 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
         return selectConvert.convert(assetGroupDao.findPulldownUnconnectedGroup(query), SelectResponse.class);
+    }
+
+    @Override
+    public Integer removeAssociateAsset(RemoveAssociateAssetRequest request) {
+        return assetGroupRelationDao.batchDeleteById(request);
     }
 
     @Override
