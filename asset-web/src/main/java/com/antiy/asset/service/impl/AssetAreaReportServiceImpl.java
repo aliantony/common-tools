@@ -84,58 +84,60 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
                     initData.add(m);
                 }
             });
-        }
-        // 4.获取每个地区在每个时间区间的增量
-        List<Map<String, String>> addData = assetReportDao.queryAddAssetWithArea(reportRequest.getAssetAreaIds(),
-            reportRequest.getStartTime(), reportRequest.getEndTime(),
-            ReportDateUtils.getTimeType(DataTypeUtils.stringToInteger(reportRequest.getTimeType())));
-        topAreaIds.stream().forEach(top -> {
-            ReportData reportData = new ReportData();
-            // 区域在区间总数
-            List<Integer> totalList = Lists.newArrayList();
-            // 区域在区间增量
-            List<Integer> addList = Lists.newArrayList();
-            reportData.setClassify(getAreaNameById(top, reportRequest.getAssetAreaIds()));
-            // 循环横坐标[2019-01,2019-02......]
-            for (String date : dateList.keySet()) {
-                boolean flag = false;
-                // 遍历增量数据
-                for (Map<String, String> data : addData) {
-                    if (date.equals(data.get("date"))) {
-                        addList.add(DataTypeUtils.stringToInteger(
-                            String.valueOf(data.get(getAreaNameById(top, reportRequest.getAssetAreaIds())))));
-                        flag = true;
-                    }
-                }
-                if (!flag) {
-                    addList.add(Integer.valueOf(0));
-                }
-            }
-            // 计算每个区间总数
-            for (int i = 0; i < addList.size(); i++) {
-                // 第一列，初始值加上本区间增量
-                if (i == 0) {
-                    for (Map<String, Integer> init : initData) {
-                        if (top.equals(init.get("areaId"))) {
-                            totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.get("assetCount")))
-                                          + Integer.valueOf(addList.get(i) + ""));
-                            break;
+
+            // 4.获取每个地区在每个时间区间的增量
+            List<Map<String, String>> addData = assetReportDao.queryAddAssetWithArea(reportRequest.getAssetAreaIds(),
+                reportRequest.getStartTime(), reportRequest.getEndTime(),
+                ReportDateUtils.getTimeType(DataTypeUtils.stringToInteger(reportRequest.getTimeType())));
+            topAreaIds.stream().forEach(top -> {
+                ReportData reportData = new ReportData();
+                // 区域在区间总数
+                List<Integer> totalList = Lists.newArrayList();
+                // 区域在区间增量
+                List<Integer> addList = Lists.newArrayList();
+                reportData.setClassify(getAreaNameById(top, reportRequest.getAssetAreaIds()));
+                // 循环横坐标[2019-01,2019-02......]
+                for (String date : dateList.keySet()) {
+                    boolean flag = false;
+                    // 遍历增量数据
+                    for (Map<String, String> data : addData) {
+                        if (date.equals(data.get("date"))) {
+                            addList.add(DataTypeUtils.stringToInteger(
+                                String.valueOf(data.get(getAreaNameById(top, reportRequest.getAssetAreaIds())))));
+                            flag = true;
                         }
                     }
+                    if (!flag) {
+                        addList.add(Integer.valueOf(0));
+                    }
                 }
-                // 上个区间加上本区间增量
-                else {
-                    int t = Integer.valueOf(totalList.get(i - 1) + "");
-                    int a = Integer.valueOf(addList.get(i) + "");
-                    totalList.add(t + a);
+                // 计算每个区间总数
+                for (int i = 0; i < addList.size(); i++) {
+                    // 第一列，初始值加上本区间增量
+                    if (i == 0) {
+                        for (Map<String, Integer> init : initData) {
+                            if (top.equals(init.get("areaId"))) {
+                                totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.get("assetCount")))
+                                              + Integer.valueOf(addList.get(i) + ""));
+                                break;
+                            }
+                        }
+                    }
+                    // 上个区间加上本区间增量
+                    else {
+                        int t = Integer.valueOf(totalList.get(i - 1) + "");
+                        int a = Integer.valueOf(addList.get(i) + "");
+                        totalList.add(t + a);
+                    }
                 }
-            }
-            // 设置增量数据
-            reportData.setAdd(addList);
-            // 设置区域区间总数
-            reportData.setData(totalList);
-            reportDataList.add(reportData);
-        });
+                // 设置增量数据
+                reportData.setAdd(addList);
+                // 设置区域区间总数
+                reportData.setData(totalList);
+                reportDataList.add(reportData);
+            });
+        }
+
         for (int i = 0; i < abscissa.size(); i++) {
             int allData = 0;
             int allAdd = 0;

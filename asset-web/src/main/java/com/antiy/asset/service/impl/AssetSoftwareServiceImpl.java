@@ -421,7 +421,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query) throws Exception {
         List<AssetSoftware> assetSoftware = assetSoftwareDao.findListAssetSoftware(query);
         Map<Integer, Long> softAssetCount = null;
