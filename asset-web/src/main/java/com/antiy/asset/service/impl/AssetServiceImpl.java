@@ -848,13 +848,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         activityWaitingQuery.setProcessDefinitionKey(definitionKeyType);
         ActionResponse<List<WaitingTaskReponse>> actionResponse = activityClient
             .queryAllWaitingTask(activityWaitingQuery);
-        ParamterExceptionUtils.isTrue(
-            actionResponse != null && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode()),
-            "获取工作流异常");
-        List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
-        return waitingTaskReponses.stream()
-            .filter(waitingTaskReponse -> StringUtils.isNotBlank(waitingTaskReponse.getBusinessId()))
-            .collect(Collectors.toMap(WaitingTaskReponse::getBusinessId, Function.identity(), (key1, key2) -> key2));
+        if (actionResponse != null
+            && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
+            return waitingTaskReponses.stream()
+                .filter(waitingTaskReponse -> StringUtils.isNotBlank(waitingTaskReponse.getBusinessId())).collect(
+                    Collectors.toMap(WaitingTaskReponse::getBusinessId, Function.identity(), (key1, key2) -> key2));
+        } else {
+            LogUtils.info(logger, "获取当前用户的所有代办任务失败" + " {}", definitionKeyType);
+            throw new BusinessException("获取工作流异常");
+        }
     }
 
     public Integer findCountAssetNumber(AssetQuery query) throws Exception {
