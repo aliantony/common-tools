@@ -686,12 +686,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             AssetSoftwareInstallResponse.class);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Integer findAssetInstallCount(AssetSoftwareQuery query) throws Exception {
         return assetSoftwareDao.findAssetInstallCount(query);
     }
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public boolean checkRepeatName(String name) throws Exception {
+    private boolean checkRepeatName(String name) throws Exception {
         AssetSoftwareQuery assetQuery = new AssetSoftwareQuery();
         assetQuery.setAssetName(name);
         Integer countAsset = assetSoftwareDao.findCountCheck(assetQuery);

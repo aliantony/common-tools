@@ -90,6 +90,9 @@
         <if test=" assetNextStatus != null">
             asset_next_status,
         </if>
+        <if test=" schemeSource != null">
+            scheme_source,
+        </if>
         <if test=" status != null">
             status,
         </if>
@@ -149,6 +152,9 @@
         </if>
         <if test=" assetNextStatus != null">
             #{assetNextStatus },
+        </if>
+        <if test=" schemeSource != null">
+            #{schemeSource },
         </if>
         <if test=" status != null">
             #{status },

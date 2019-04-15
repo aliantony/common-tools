@@ -738,39 +738,49 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return null;
         }
 
-        // 查询资产信息
-        List<Asset> assetList = assetDao.findListAsset(query);
-        List<Integer> assetIds = new ArrayList<>();
-        for (Asset asset : assetList) {
-            assetIds.add(DataTypeUtils.stringToInteger(asset.getStringId()));
-        }
-
         // 1.查询补丁个数
         Map<String, String> vulCountMaps = new HashMap<>();
-        if (query.getQueryVulCount() != null && query.getQueryVulCount() && CollectionUtils.isNotEmpty(assetIds)) {
-            List<IdCount> vulCountList = assetDao.queryAssetVulCount(assetIds);
+        if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
+            List<IdCount> vulCountList = assetDao.queryAssetVulCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(),
+                query.getPageOffset());
             vulCountMaps = vulCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
+            String[] ids = new String[vulCountMaps.size()];
+            query.setIds(vulCountMaps.keySet().toArray(ids));
+
+            // 由于计算Id列表添加了区域，此处不用添加
+            query.setAreaIds(null);
         }
 
         // 2.查询漏洞个数
         Map<String, String> patchCountMaps = null;
-        if (query.getQueryPatchCount() != null && query.getQueryPatchCount() && CollectionUtils.isNotEmpty(assetIds)) {
-            List<IdCount> patchCountList = assetDao.queryAssetPatchCount(assetIds);
+        if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
+            List<IdCount> patchCountList = assetDao.queryAssetPatchCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(),
+                query.getPageOffset());
             patchCountMaps = patchCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
+            String[] ids = new String[patchCountMaps.size()];
+            query.setIds(patchCountMaps.keySet().toArray(ids));
+            // 由于计算Id列表添加了区域，此处不用添加
+            query.setAreaIds(null);
         }
 
         // 3.查询告警个数
 
         Map<String, String> alarmCountMaps = null;
-        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount() && CollectionUtils.isNotEmpty(assetIds)) {
-            ActionResponse<List<IdCount>> actionResponse = emergencyClient.queryEmergencyCount(assetIds);
+        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
+            ActionResponse<List<IdCount>> actionResponse = emergencyClient.queryEmergencyCount(query);
             if (actionResponse != null
                 && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 List<IdCount> alarmCountList = actionResponse.getBody();
                 alarmCountMaps = alarmCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
-                ;
+                String[] ids = new String[alarmCountMaps.size()];
+                query.setIds(alarmCountMaps.keySet().toArray(ids));
+                // 由于计算Id列表添加了区域，此处不用添加
+                query.setAreaIds(null);
             }
         }
+
+        // 查询资产信息
+        List<Asset> assetList = assetDao.findListAsset(query);
 
         if (CollectionUtils.isNotEmpty(assetList)) {
             assetList.stream().forEach(a -> {
@@ -791,8 +801,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
             if (MapUtils.isNotEmpty(vulCountMaps)) {
-                object.setVulCount(
-                    vulCountMaps.getOrDefault(object.getStringId(), "0"));
+                object.setVulCount(vulCountMaps.getOrDefault(object.getStringId(), "0"));
             }
 
             if (MapUtils.isNotEmpty(patchCountMaps)) {
@@ -839,13 +848,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         activityWaitingQuery.setProcessDefinitionKey(definitionKeyType);
         ActionResponse<List<WaitingTaskReponse>> actionResponse = activityClient
             .queryAllWaitingTask(activityWaitingQuery);
-        ParamterExceptionUtils.isTrue(
-            actionResponse != null && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode()),
-            "获取工作流异常");
-        List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
-        return waitingTaskReponses.stream()
-            .filter(waitingTaskReponse -> StringUtils.isNotBlank(waitingTaskReponse.getBusinessId()))
-            .collect(Collectors.toMap(WaitingTaskReponse::getBusinessId, Function.identity(), (key1, key2) -> key2));
+        if (actionResponse != null
+            && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
+            return waitingTaskReponses.stream()
+                .filter(waitingTaskReponse -> StringUtils.isNotBlank(waitingTaskReponse.getBusinessId())).collect(
+                    Collectors.toMap(WaitingTaskReponse::getBusinessId, Function.identity(), (key1, key2) -> key2));
+        } else {
+            LogUtils.info(logger, "获取当前用户的所有代办任务失败" + " {}", definitionKeyType);
+            throw new BusinessException("获取工作流异常");
+        }
     }
 
     public Integer findCountAssetNumber(AssetQuery query) throws Exception {
@@ -878,12 +890,48 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setIds(processMap.keySet().toArray(new String[] {}));
         }
 
+        int count = 0;
+        // 如果会查询漏洞数量
+        if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
+            count = assetDao.queryAllAssetVulCount();
+            if (count <= 0) {
+                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+            }
+        }
+
+        // 如果会查询补丁数据
+        if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
+            count = assetDao.queryAllAssetPatchCount();
+            if (count <= 0) {
+                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+            }
+        }
+
+        // 如果会查询告警数量
+        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
+            ActionResponse<AlarmAssetIdResponse> actionResponse = emergencyClient.queryEmergecyAllCount();
+            if (actionResponse != null
+                && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                count = actionResponse.getBody() != null ? actionResponse.getBody().getCurrentAlarmAssetIdNum() : 0;
+                if (count <= 0) {
+                    return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+                }
+            }
+        }
+
         // 如果count为0 直接返回结果即可
-        int count = this.findCountAsset(query);
-        if (count < 1) {
+        if (count <= 0) {
+            query.setAreaIds(
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+            count = this.findCountAsset(query);
+        }
+
+        if (count <= 0) {
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
         }
-        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.findListAsset(query));
+
+        List<AssetResponse> assetResponse = this.findListAsset(query);
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponse);
     }
 
     /**
@@ -3155,6 +3203,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
             scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             scheme.setAssetId(assetId);
+            scheme.setSchemeSource(1);
             scheme.setGmtCreate(gmtCreateTime);
             if (null != LoginUserUtil.getLoginUser()) {
                 scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
