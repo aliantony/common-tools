@@ -921,6 +921,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 如果count为0 直接返回结果即可
         if (count <= 0) {
+            query.setAreaIds(
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
             count = this.findCountAsset(query);
         }
 

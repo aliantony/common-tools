@@ -1,5 +1,16 @@
 package com.antiy.asset.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
@@ -21,16 +32,8 @@ import com.antiy.common.encoder.Encode;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -251,7 +254,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{ids}", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetByIds')")
-    public ActionResponse queryAssetByIds(@ApiParam(value = "资产ID数组") @RequestParam("ids") @Encode String[] ids) throws Exception {
+    public ActionResponse queryAssetByIds(@ApiParam(value = "资产ID数组") @RequestParam("idfs") @Encode String[] ids) throws Exception {
         Integer[] id = DataTypeUtils.stringArrayToIntegerArray(ids);
         return ActionResponse.success(iAssetService.queryAssetByIds(id));
     }
