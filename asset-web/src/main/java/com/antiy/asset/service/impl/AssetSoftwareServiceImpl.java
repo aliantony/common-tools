@@ -686,6 +686,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             AssetSoftwareInstallResponse.class);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Integer findAssetInstallCount(AssetSoftwareQuery query) throws Exception {
         return assetSoftwareDao.findAssetInstallCount(query);
     }
