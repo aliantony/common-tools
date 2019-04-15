@@ -270,11 +270,13 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         Integer portSize = assetLinkRelationDao
             .queryPortSize(DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()));
         List<Integer> portCount = Lists.newArrayList();
-        for (int i = 1; i <= portSize; i++) {
-            portCount.add(i);
+        if (portSize != null && portSize > 0) {
+            for (int i = 1; i <= portSize; i++) {
+                portCount.add(i);
+            }
+            assetLinkRelationQuery.setPortCount(portCount);
         }
-        List<AssetLinkRelation> assetResponseList = assetLinkRelationDao.queryLinkedAssetListByAssetId(
-            DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()), portCount);
+        List<AssetLinkRelation> assetResponseList = assetLinkRelationDao.queryLinkedAssetListByAssetId(assetLinkRelationQuery);
         if (CollectionUtils.isEmpty(assetResponseList)) {
             return Lists.newArrayList();
         }
@@ -286,11 +288,13 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         Integer portSize = assetLinkRelationDao
             .queryPortSize(DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()));
         List<Integer> portCount = Lists.newArrayList();
-        for (int i = 1; i <= portSize; i++) {
-            portCount.add(i);
+        if (portSize != null && portSize > 0) {
+            for (int i = 1; i <= portSize; i++) {
+                portCount.add(i);
+            }
+            assetLinkRelationQuery.setPortCount(portCount);
         }
-        return assetLinkRelationDao.queryLinkedCountAssetByAssetId(
-            DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()), portCount);
+        return assetLinkRelationDao.queryLinkedCountAssetByAssetId(assetLinkRelationQuery);
     }
 
     @Override
