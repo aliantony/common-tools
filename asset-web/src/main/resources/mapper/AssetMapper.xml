@@ -762,10 +762,11 @@
             and service_life &lt;= #{endTime }
         </if>
         <if test="associateGroup and existAssociateIds != null ">
-            and id is not in
+            and id not in (
             <foreach index="index" item="item" collection="existAssociateIds" separator=",">
                 #{item}
             </foreach>
+            )
         </if>
     </sql>
 
