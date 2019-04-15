@@ -66,6 +66,9 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("厂商")
     private String        manufacturer;
 
+    @ApiModelProperty(value = "排除的厂商列表")
+    private List<String>  removeManufacturers;
+
     /**
      * 软件标签
      */
@@ -157,6 +160,14 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      * 资产状态
      */
     private List<Integer> assetStatus;
+
+    public List<String> getRemoveManufacturers() {
+        return removeManufacturers;
+    }
+
+    public void setRemoveManufacturers(List<String> removeManufacturers) {
+        this.removeManufacturers = removeManufacturers;
+    }
 
     public List<Integer> getAssetStatus() {
         return assetStatus;
