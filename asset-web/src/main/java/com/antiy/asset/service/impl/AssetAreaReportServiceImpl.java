@@ -136,18 +136,19 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
                 reportData.setData(totalList);
                 reportDataList.add(reportData);
             });
+
+            for (int i = 0; i < abscissa.size(); i++) {
+                int allData = 0;
+                int allAdd = 0;
+                for (int j = 0; j < topAreaIds.size(); j++) {
+                    allData += reportDataList.get(j).getData().get(i);
+                    allAdd += reportDataList.get(j).getAdd().get(i);
+                }
+                allDataList.add(allData);
+                allAddList.add(allAdd);
+            }
         }
 
-        for (int i = 0; i < abscissa.size(); i++) {
-            int allData = 0;
-            int allAdd = 0;
-            for (int j = 0; j < topAreaIds.size(); j++) {
-                allData += reportDataList.get(j).getData().get(i);
-                allAdd += reportDataList.get(j).getAdd().get(i);
-            }
-            allDataList.add(allData);
-            allAddList.add(allAdd);
-        }
         // 3.组装基础数据和总数
         assetReportResponse.setList(reportDataList);
         assetReportResponse.setAlldata(allDataList);
