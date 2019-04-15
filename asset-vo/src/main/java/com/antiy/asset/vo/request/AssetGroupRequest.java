@@ -56,21 +56,6 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
     @Size(max = 1000, message = "资产组Id数组长度不能超过1000")
     private String[] deleteAssetIds;
 
-    /**
-     * 新增的关联资产(不包含已关联资产)
-     */
-    @ApiModelProperty("新增的关联资产ID数组")
-    @Encode
-    private String[] addAssociateIds;
-
-    public String[] getAddAssociateIds() {
-        return addAssociateIds;
-    }
-
-    public void setAddAssociateIds(String[] addAssociateIds) {
-        this.addAssociateIds = addAssociateIds;
-    }
-
     public String[] getDeleteAssetIds() {
         return deleteAssetIds;
     }
