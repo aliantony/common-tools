@@ -16,12 +16,12 @@ public class AssetSafetyEquipment extends BaseEntity {
     /**
      * 资产主键
      */
-    private String assetId;
+    private String  assetId;
     /**
      * MAC地址
      */
     @ApiModelProperty("MAC地址")
-    private String mac;
+    private String  mac;
     /**
      * 特征库版本
      */
@@ -63,6 +63,44 @@ public class AssetSafetyEquipment extends BaseEntity {
      * 状态,1未删除,0已删除
      */
     private Integer status;
+
+    private String  avlxVersion;
+
+    private String  commandControlChannel;
+    private String  isManage;
+    private String  newVersion;
+
+    public String getAvlxVersion() {
+        return avlxVersion;
+    }
+
+    public void setAvlxVersion(String avlxVersion) {
+        this.avlxVersion = avlxVersion;
+    }
+
+    public String getCommandControlChannel() {
+        return commandControlChannel;
+    }
+
+    public void setCommandControlChannel(String commandControlChannel) {
+        this.commandControlChannel = commandControlChannel;
+    }
+
+    public String getIsManage() {
+        return isManage;
+    }
+
+    public void setIsManage(String isManage) {
+        this.isManage = isManage;
+    }
+
+    public String getNewVersion() {
+        return newVersion;
+    }
+
+    public void setNewVersion(String newVersion) {
+        this.newVersion = newVersion;
+    }
 
     public String getSoftwareVersion() {
         return softwareVersion;
@@ -154,19 +192,10 @@ public class AssetSafetyEquipment extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetSafetyEquipment{" +
-                "assetId='" + assetId + '\'' +
-                ", featureLibrary='" + featureLibrary + '\'' +
-                ", strategy='" + strategy + '\'' +
-                ", softwareVersion='" + softwareVersion + '\'' +
-                ", ip='" + ip + '\'' +
-                ", memo='" + memo + '\'' +
-                ", createUser=" + createUser +
-                ", modifyUser=" + modifyUser +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", status=" + status +
-                '}';
+        return "AssetSafetyEquipment{" + "assetId='" + assetId + '\'' + ", featureLibrary='" + featureLibrary + '\''
+               + ", strategy='" + strategy + '\'' + ", softwareVersion='" + softwareVersion + '\'' + ", ip='" + ip
+               + '\'' + ", memo='" + memo + '\'' + ", createUser=" + createUser + ", modifyUser=" + modifyUser
+               + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", status=" + status + '}';
     }
 
     public String getMac() {
