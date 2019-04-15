@@ -421,6 +421,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AssetSoftwareResponse> findListAssetSoftware(AssetSoftwareQuery query) throws Exception {
         List<AssetSoftware> assetSoftware = assetSoftwareDao.findListAssetSoftware(query);
         Map<Integer, Long> softAssetCount = null;
@@ -448,6 +449,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return objects;
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Integer findCountAssetSoftware(AssetSoftwareQuery query) throws Exception {
         return assetSoftwareDao.findCount(query);
     }
@@ -1050,7 +1052,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param assetSoftwareDetailResponse
      * @throws Exception
      */
-    private void querySoftwarePort(SoftwareQuery softwareQuery,
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void querySoftwarePort(SoftwareQuery softwareQuery,
                                    AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
         AssetPortProtocolQuery assetPortProtocolQuery = new AssetPortProtocolQuery();
         assetPortProtocolQuery.setAssetSoftId(softwareQuery.getPrimaryKey());
@@ -1066,7 +1069,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param assetSoftwareDetailResponse
      * @throws Exception
      */
-    private void querySoftwareLicense(SoftwareQuery softwareQuery,
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void querySoftwareLicense(SoftwareQuery softwareQuery,
                                       AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
         AssetSoftwareLicenseQuery assetSoftwareLicenseQuery = new AssetSoftwareLicenseQuery();
         assetSoftwareLicenseQuery.setSoftwareId(DataTypeUtils.stringToInteger(softwareQuery.getPrimaryKey()));
