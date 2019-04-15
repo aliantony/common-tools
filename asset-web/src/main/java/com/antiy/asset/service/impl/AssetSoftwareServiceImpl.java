@@ -670,7 +670,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PageResult<AssetSoftwareResponse> findPageInstall(AssetSoftwareQuery softwareQuery) throws Exception {
         return new PageResult<>(softwareQuery.getPageSize(), this.findCountInstall(softwareQuery),
             softwareQuery.getCurrentPage(), this.findInstallList(softwareQuery));
