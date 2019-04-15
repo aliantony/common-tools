@@ -310,7 +310,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 selectResponse.setValue(sysUser.getName());
                 selectResponseList.add(selectResponse);
             } else {
-                throw new BusinessException("获取用户信息失败");
+                throw new BusinessException("获取创建人信息失败");
             }
 
         }
