@@ -101,7 +101,7 @@ public class AssetLinkRelationController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:linkrelation:deleteById')")
-    public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest) throws Exception {
+    public ActionResponse deleteById(@RequestBody @ApiParam(value = "主键封装对象") BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键不能为空");
         return ActionResponse.success(iAssetLinkRelationService.deleteAssetLinkRelationById(baseRequest));
     }
