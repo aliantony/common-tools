@@ -1285,20 +1285,20 @@
     <!--查询资产漏洞数量-->
     <select id="queryAssetVulCount" resultType="com.antiy.asset.entity.IdCount">
         SELECT
-        asset_id,
+        asset_id as id,
         count(1) count
         FROM
         asset_vul_rel
-        WHERE
-        1 = 1
-        <if test="assetIds != null and assetIds.size() > 0">
-            and asset_id IN
-            <foreach collection="assetIds" open="(" close=")" separator="," item="item">
-                #{item}
-            </foreach>
-        </if>
-        and vul_status != 5
-        and status = 1
+        <where>
+            and vul_status != 5
+            and status = 1
+            <if test="assetIds != null and assetIds.size() > 0">
+                and asset_id IN
+                <foreach collection="assetIds" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
         GROUP BY
         asset_id
     </select>

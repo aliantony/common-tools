@@ -75,20 +75,16 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
 
     /**
      * 与当前资产通联的资产列表查询
-     * @param id
-     * @param portCount
+     * @param assetLinkRelationQuery
      * @return
      */
-    List<AssetLinkRelation> queryLinkedAssetListByAssetId(@Param(value = "id") Integer id,
-                                                          @Param(value = "portCount") List<Integer> portCount);
+    List<AssetLinkRelation> queryLinkedAssetListByAssetId(AssetLinkRelationQuery assetLinkRelationQuery);
     /**
      * 与当前资产通联的资产数量查询
-     * @param id
-     * @param portCount
+     * @param assetLinkRelationQuery
      * @return
      */
-    Integer queryLinkedCountAssetByAssetId(@Param(value = "id") Integer id,
-                                                          @Param(value = "portCount") List<Integer> portCount);
+    Integer queryLinkedCountAssetByAssetId(AssetLinkRelationQuery assetLinkRelationQuery);
 
     List<Integer> findUsePort(String assetId);
 

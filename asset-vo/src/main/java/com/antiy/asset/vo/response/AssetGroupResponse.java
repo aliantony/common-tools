@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.List;
 
 /**
@@ -13,6 +15,7 @@ public class AssetGroupResponse extends BaseResponse {
     /**
      * 资产组名称
      */
+    @ApiModelProperty("资产组名称")
     private String name;
     /**
      * 创建时间
