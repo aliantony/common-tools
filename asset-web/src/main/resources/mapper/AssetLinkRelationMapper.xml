@@ -688,6 +688,8 @@
             LEFT JOIN asset_link_relation alr ON t.id = alr.asset_id
             AND t.port = alr.asset_port
             where t.id is not null
+            and not EXISTS(select 1 from asset_link_relation where asset_id = t.id and asset_port = t.port)
+            and not EXISTS(select 1 from asset_link_relation where parent_asset_id = t.id and parent_asset_port = t.port)
         </if>
         union all
         SELECT
@@ -885,6 +887,8 @@
             LEFT JOIN asset_link_relation alr ON t.id = alr.asset_id
             AND t.port = alr.asset_port
             where t.id is not null
+            and not EXISTS(select 1 from asset_link_relation where asset_id = t.id and asset_port = t.port)
+            and not EXISTS(select 1 from asset_link_relation where parent_asset_id = t.id and parent_asset_port = t.port)
         </if>
         union all
         SELECT
