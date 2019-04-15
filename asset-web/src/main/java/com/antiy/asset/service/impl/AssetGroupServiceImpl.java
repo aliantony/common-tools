@@ -140,17 +140,18 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
 
-        Integer delResult = assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
-
-        if (!Objects.equals(0, delResult)) {
-            // 写入业务日志
-            LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(),
-                AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-            // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(), assetGroup.getId (), assetGroup.getName (),
-                    assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}", assetGroup.toString());
-        }
+        // Integer delResult = assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
+        //
+        // if (!Objects.equals(0, delResult)) {
+        // // 写入业务日志
+        // LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(),
+        // AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+        // // 记录操作日志和运行日志
+        // LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(),
+        // assetGroup.getId (), assetGroup.getName (),
+        // assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+        // LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}", assetGroup.toString());
+        // }
         int result = 0;
         for (String assetId : assetIdArr) {
             AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
@@ -198,7 +199,13 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 String assetGroupName = assetGroupNameList.toString();
                 updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
             }
+            RemoveAssociateAssetRequest removeAssociateAssetRequest = new RemoveAssociateAssetRequest();
+            removeAssociateAssetRequest.setGroupId(request.getId());
+            removeAssociateAssetRequest.setRemoveAsset(request.getDeleteAssetIds());
+            assetGroupRelationDao.batchDeleteById(removeAssociateAssetRequest);
+
         }
+
 
         if (!Objects.equals(0, result)) {
             // 写入业务日志

@@ -341,11 +341,21 @@
         where agrelation.asset_group_id = #{assetGroupId}
     </select>
     <select id="findAssetGroupNameByAssetId" resultType="java.lang.String" parameterType="string">
-        select agroup.name
+        select agroup.id, agroup.name
         from
         <include refid="Table_Name"></include> agrelation
         LEFT JOIN asset_group agroup
         ON agroup.id = agrelation.asset_group_id
         where agrelation.asset_id = #{assetId}
     </select>
+
+    <delete id="batchDeleteById" parameterType="com.antiy.asset.vo.request.RemoveAssociateAssetRequest">
+        delete from
+        <include refid="Table_Name"></include>
+        where asset_group_id = #{groupId} and
+        asset_id in
+        <foreach item="assetId" collection="removeAsset" open="(" separator="," close=")">
+            #{assetId}
+        </foreach>
+    </delete>
 </mapper>

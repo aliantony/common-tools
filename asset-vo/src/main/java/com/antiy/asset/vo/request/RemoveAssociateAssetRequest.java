@@ -1,7 +1,5 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
-
 import javax.validation.constraints.NotNull;
 
 import com.antiy.common.base.BasicRequest;
@@ -29,7 +27,7 @@ public class RemoveAssociateAssetRequest extends BasicRequest implements ObjectV
     @Encode
     @NotNull(message = "移除资产不能为空")
     @ApiModelProperty("被移除资产")
-    private List<String> removeAsset;
+    private String[] removeAsset;
 
     public String getGroupId() {
         return groupId;
@@ -39,11 +37,11 @@ public class RemoveAssociateAssetRequest extends BasicRequest implements ObjectV
         this.groupId = groupId;
     }
 
-    public List<String> getRemoveAsset() {
+    public String[] getRemoveAsset() {
         return removeAsset;
     }
 
-    public void setRemoveAsset(List<String> removeAsset) {
+    public void setRemoveAsset(String[] removeAsset) {
         this.removeAsset = removeAsset;
     }
 
