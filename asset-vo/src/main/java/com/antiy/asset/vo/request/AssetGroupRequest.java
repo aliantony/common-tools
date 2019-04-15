@@ -9,6 +9,7 @@ import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -18,6 +19,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
+@ApiModel("资产组请求对象")
 public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
     /**
      * 主键
@@ -53,6 +55,21 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
     @Encode
     @Size(max = 1000, message = "资产组Id数组长度不能超过1000")
     private String[] deleteAssetIds;
+
+    /**
+     * 新增的关联资产(不包含已关联资产)
+     */
+    @ApiModelProperty("新增的关联资产ID数组")
+    @Encode
+    private String[] addAssociateIds;
+
+    public String[] getAddAssociateIds() {
+        return addAssociateIds;
+    }
+
+    public void setAddAssociateIds(String[] addAssociateIds) {
+        this.addAssociateIds = addAssociateIds;
+    }
 
     public String[] getDeleteAssetIds() {
         return deleteAssetIds;

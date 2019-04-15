@@ -5,6 +5,7 @@ import java.util.List;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
+import com.antiy.asset.vo.request.RemoveAssociateAssetRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseService;
@@ -78,4 +79,11 @@ public interface IAssetGroupService extends IBaseService<AssetGroup> {
      * @throws Exception
      */
     List<SelectResponse> queryUnconnectedGroupInfo(Boolean searchNetworkDevice) throws Exception;
+
+    /**
+     * 移除关联资产
+     * @param request
+     * @return
+     */
+    Integer removeAssociateAsset(RemoveAssociateAssetRequest request);
 }
