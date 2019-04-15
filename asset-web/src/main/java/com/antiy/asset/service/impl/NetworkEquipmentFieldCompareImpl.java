@@ -112,8 +112,14 @@ public class NetworkEquipmentFieldCompareImpl extends AbstractChangeRecordCompar
                 newAssetBusinessInfo, InfoLabelEnum.BUSINESSINFO.getMsg());
 
             // 组合数据
-            changeValList.addAll(assetCommonInoCompareResult);
-            changeValList.addAll(assetBusinessInfoCompareResult);
+            if (assetCommonInoCompareResult != null) {
+                changeValList.addAll(assetCommonInoCompareResult);
+            }
+
+            if (assetBusinessInfoCompareResult != null) {
+                changeValList.addAll(assetBusinessInfoCompareResult);
+            }
+
             changeValList.addAll(getDetailCompareResult(oldAssetOuterRequest, newAssetOuterRequest));
         }
         return changeValList;
