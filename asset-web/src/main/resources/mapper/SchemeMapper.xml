@@ -154,7 +154,7 @@
             #{assetNextStatus },
         </if>
         <if test=" schemeSource != null">
-            #{scheme_source },
+            #{schemeSource },
         </if>
         <if test=" status != null">
             #{status },
