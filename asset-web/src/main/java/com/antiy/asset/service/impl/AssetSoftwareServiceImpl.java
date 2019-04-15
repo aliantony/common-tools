@@ -612,6 +612,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public AssetSoftwareDetailResponse querySoftWareDetail(SoftwareQuery softwareQuery) throws Exception {
 
         // 1 获取软件资产详情
