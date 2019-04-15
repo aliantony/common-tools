@@ -3201,6 +3201,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
             scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             scheme.setAssetId(assetId);
+            scheme.setSchemeSource(1);
             scheme.setGmtCreate(gmtCreateTime);
             if (null != LoginUserUtil.getLoginUser()) {
                 scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
