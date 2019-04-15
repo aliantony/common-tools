@@ -854,6 +854,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception {
+        // 是否资产组关联资产查询
+        if (null != query.getAssociateGroup()) {
+            ParamterExceptionUtils.isBlank(query.getGroupId(), "资产组ID不能为空");
+            List<String> associateAssetIdList = assetGroupRelationDao
+                .findAssetNameByAssetGroupId(DataTypeUtils.stringToInteger(query.getGroupId()));
+            if (CollectionUtils.isNotEmpty(associateAssetIdList)) {
+                query.setExistAssociateIds(associateAssetIdList);
+            }
+        }
+
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
         // 品类型号及其子品类
         if (!Objects.isNull(query.getCategoryModels()) && query.getCategoryModels().length > 0) {

@@ -199,6 +199,39 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty(value = "是否查询告警个数，true表示查询，false表示不查询", allowableValues = "true,false")
     private Boolean       queryAlarmCount;
 
+    @ApiModelProperty(value = "是否资产组关联资产查询，true表示查询，false表示不查询", allowableValues = "true,false")
+    private Boolean       associateGroup;
+
+    @ApiModelProperty(value = "资产组ID")
+    @Encode(message = "资产组ID解密失败")
+    private String        groupId;
+
+    private List<String>  existAssociateIds;
+
+    public List<String> getExistAssociateIds() {
+        return existAssociateIds;
+    }
+
+    public void setExistAssociateIds(List<String> existAssociateIds) {
+        this.existAssociateIds = existAssociateIds;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public Boolean getAssociateGroup() {
+        return associateGroup;
+    }
+
+    public void setAssociateGroup(Boolean associateGroup) {
+        this.associateGroup = associateGroup;
+    }
+
     public Boolean getQueryVulCount() {
         return queryVulCount;
     }

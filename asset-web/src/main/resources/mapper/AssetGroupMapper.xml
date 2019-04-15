@@ -362,7 +362,7 @@
     <delete id="batchDeleteById" parameterType="com.antiy.asset.vo.request.RemoveAssociateAssetRequest">
         delete from
         <include refid="Table_Name"></include>
-        where id = #{groupId} and
+        where asset_group_id = #{groupId} and
         asset_id in
         <foreach item="assetId" collection="removeAsset" open="(" separator="," close=")">
             #{assetId}

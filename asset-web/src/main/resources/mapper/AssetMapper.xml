@@ -611,8 +611,6 @@
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
-
-
         <if test=" areaIds != null and ids == null">
             and area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
@@ -762,6 +760,12 @@
         </if>
         <if test=" timeType != null and timeType == 3  and endTime != null">
             and service_life &lt;= #{endTime }
+        </if>
+        <if test="associateGroup and existAssociateIds != null ">
+            and id is not in
+            <foreach index="index" item="item" collection="existAssociateIds" separator=",">
+                #{item}
+            </foreach>
         </if>
     </sql>
 
