@@ -360,7 +360,7 @@
     </delete>
 
     <delete id="updateConfigStatusByAssetId" parameterType="com.antiy.asset.entity.AssetSoftwareRelation">
-        update from
+        update
         <include refid="Table_Name"></include>
         set configure_status = #{configureStatus}
         where asset_id = #{assetId}
