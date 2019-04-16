@@ -1193,7 +1193,7 @@
                 <include refid="Multiple_Query"></include>
             </trim>
             ORDER BY
-            <if test=" ids != null">
+            <if test=" ids != null and ids.length > 0">
                 FIELD(`id`,
                 <foreach index="index" item="item" collection="ids" separator=",">
                     #{item}
@@ -1290,6 +1290,8 @@
         count(1) count
         FROM
         asset_vul_rel t1
+        inner join vul t3
+        on t1.vul_id = t3.id
         inner join asset t2
         on t1.asset_id =t2.id
         <where>
@@ -1297,6 +1299,8 @@
             and t1.status = 1
             and t2.status = 1
             and t2.asset_status in(7,8)
+            AND t3.STATUS = 1
+            AND t3.vul_status = 4
             <if test="areaIds != null and areaIds.size() > 0">
                 and t2.area_id IN
                 <foreach collection="areaIds" open="(" close=")" separator="," item="item">
@@ -1317,6 +1321,7 @@
         count(1) as count
         FROM
         asset_patch_rel t1
+        inner JOIN patch p ON t1.patch_id = p.id
         inner join asset t2
         on t1.asset_id =t2.id
         WHERE
@@ -1331,6 +1336,8 @@
         and t1.status = 1
         and t2.status =1
         and t2.asset_status in(7,8)
+        AND p.STATUS = 1
+        AND p.patch_status = 3
         GROUP BY
         t1.asset_id
         <if test="pageSize !=-1">
@@ -1339,7 +1346,9 @@
     </select>
 
     <select id="queryAllAssetPatchCount" resultType="java.lang.Integer">
-        select count(distinct (t1.asset_id)) from asset_patch_rel t1 inner join asset t2
+        select count(distinct (t1.asset_id)) from asset_patch_rel t1
+        inner JOIN patch p ON t1.patch_id = p.id
+        inner join asset t2
          on t1.asset_id = t2.id where  t1.patch_status != 5
         <if test="areaIds != null and areaIds.size() > 0">
             and t2.area_id IN
@@ -1349,11 +1358,16 @@
         </if>
         and t1.status = 1
         and t2.status = 1
+        AND p.STATUS = 1
+        AND p.patch_status = 3
         and t2.asset_status in(7,8)
     </select>
 
     <select id="queryAllAssetVulCount" resultType="java.lang.Integer">
-         select count(distinct (t1.asset_id)) from  asset_vul_rel t1 inner join asset t2 on t1.asset_id = t2.id where t1.vul_status != 5
+         select count(distinct (t1.asset_id)) from  asset_vul_rel t1
+        inner join vul t3
+        on t1.vul_id = t3.id
+        inner join asset t2 on t1.asset_id = t2.id where t1.vul_status != 5
         <if test="areaIds != null and areaIds.size() > 0">
             and t2.area_id IN
             <foreach collection="areaIds" open="(" close=")" separator="," item="item">
@@ -1363,5 +1377,7 @@
             and t1.status = 1
         and t2.status = 1
         and t2.asset_status in(7,8)
+        AND t3.STATUS = 1
+        AND t3.vul_status = 4
     </select>
 </mapper>

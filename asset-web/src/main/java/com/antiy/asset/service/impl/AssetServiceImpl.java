@@ -746,6 +746,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
             List<IdCount> vulCountList = assetDao.queryAssetVulCount(
                 LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(), query.getPageOffset());
+            if (CollectionUtils.isEmpty(vulCountList)) {
+                return new ArrayList<AssetResponse>();
+            }
             vulCountMaps = vulCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
             String[] ids = new String[vulCountMaps.size()];
             query.setIds(vulCountMaps.keySet().toArray(ids));
@@ -760,6 +763,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
             List<IdCount> patchCountList = assetDao.queryAssetPatchCount(
                 LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(), query.getPageOffset());
+            if (CollectionUtils.isEmpty(patchCountList)) {
+                return new ArrayList<AssetResponse>();
+            }
             patchCountMaps = patchCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
             String[] ids = new String[patchCountMaps.size()];
             query.setIds(patchCountMaps.keySet().toArray(ids));
@@ -779,6 +785,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())
                 && actionResponse.getBody() != null) {
                 List<IdCount> alarmCountList = actionResponse.getBody().getItems();
+                if (CollectionUtils.isEmpty(alarmCountList)) {
+                    return new ArrayList<AssetResponse>();
+                }
                 alarmCountMaps = alarmCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
                 String[] ids = new String[alarmCountMaps.size()];
                 query.setIds(alarmCountMaps.keySet().toArray(ids));
