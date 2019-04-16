@@ -50,7 +50,6 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             return actionResponse;
         }
-
         // 检查资产主表的首次入网时间，为空时写入入网时间
 
         Asset currentAsset = assetDao.getById(assetStatusReqeust.getAssetId());
@@ -79,7 +78,14 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         ParamterExceptionUtils.isNull(assetStatusReqeust.getAssetStatus(), "硬件当前状态不能为空");
         if (!assetStatusReqeust.getAgree()
             && AssetStatusEnum.WAIT_NET.getCode().equals(assetStatusReqeust.getAssetStatus().getCode())) {
-            baseLineClient.updateAssetVerify(asset.getStringId());
+            ActionResponse actionResponseVerify = baseLineClient.updateAssetVerify(asset.getStringId());
+            if (null == actionResponseVerify
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseVerify.getHead().getCode())) {
+                logger.warn("调用基准待验证接口失败,回滚资产状态,{}", assetStatusReqeust);
+                asset.setStatus(assetStatusReqeust.getAssetStatus().getCode());
+                assetDao.update(asset);
+                return actionResponseVerify;
+            }
         }
 
         // 更新资产状态
