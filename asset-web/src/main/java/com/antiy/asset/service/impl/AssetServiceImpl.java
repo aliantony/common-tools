@@ -3179,6 +3179,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             ParamterExceptionUtils.isNull(assetStatusJumpRequst.getAgree(), "agree不能为空");
             if (assetStatusJumpRequst.getAgree()) {
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_NET.getCode());
+                // 配置完成，更新关系表的配置状态
+                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                assetSoftwareRelation.setAssetId(assetId);
+                assetSoftwareRelation.setConfigureStatus(ConfigureStatusEnum.CONFIGURED.getCode());
+                assetGroupRelationDao.updateConfigStatusByAssetId(assetSoftwareRelation);
             } else {
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_SETTING.getCode());
             }

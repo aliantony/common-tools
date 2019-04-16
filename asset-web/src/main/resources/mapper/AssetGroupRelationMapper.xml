@@ -359,10 +359,10 @@
         </foreach>
     </delete>
 
-    <delete id="updateStatusByAssetId" parameterType="com.antiy.asset.vo.request.RemoveAssociateAssetRequest">
+    <delete id="updateConfigStatusByAssetId" parameterType="com.antiy.asset.entity.AssetSoftwareRelation">
         update from
         <include refid="Table_Name"></include>
-        set config_status = #{configStatus}
+        set configure_status = #{configureStatus}
         where asset_id = #{assetId}
     </delete>
 </mapper>

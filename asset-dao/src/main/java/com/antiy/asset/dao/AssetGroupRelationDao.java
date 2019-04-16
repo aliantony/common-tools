@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetGroupRelation;
+import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.vo.query.AssetGroupRelationQuery;
 import com.antiy.asset.vo.request.RemoveAssociateAssetRequest;
 import com.antiy.common.base.IBaseDao;
@@ -78,4 +79,9 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @return
      */
     Integer batchDeleteById(RemoveAssociateAssetRequest request);
+
+    /**
+     * 更新关系表配置状态
+     */
+    Integer updateConfigStatusByAssetId(AssetSoftwareRelation assetSoftwareRelation) throws Exception;
 }
