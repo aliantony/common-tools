@@ -358,16 +358,16 @@
         a.asset_source,
         a.gmt_create,
         case
-        when group_concat(b.ip_address) is not null then
-        group_concat(b.ip_address)
-        when (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is
+        when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
+        replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
+        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment where asset_id = a.id and status = 1) is
         not
         null then
-        (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
+        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment where asset_id = a.id and status = 1)
         else '' end as ip,
         case
-        when group_concat( b.mac_address ) is not null then
-        group_concat( b.mac_address )
+        when replace(rtrim(replace(group_concat( b.mac_address ),',',' ')),' ',',') is not null then
+        replace(rtrim(replace(group_concat( b.mac_address ),',',' ')),' ',',')
         when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
         (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
         else '' end as mac
