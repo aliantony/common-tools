@@ -771,8 +771,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
         for (Map<String, String> map : rows) {
             columnList.add(map.get("classifyName"));
         }
-        columnList.add("总数");
-        columnList.add("新增数量");
+        // columnList.add("总数");
+        // columnList.add("新增数量");
         // 数据
         String[][] data = new String[columnList.size()][headerList.size()];
 
@@ -806,8 +806,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 }
             }
         }
-        data[columnList.size() - 2] = ArrayTypeUtil.integerArrayToStringArray(total);
-        data[columnList.size() - 1] = ArrayTypeUtil.integerArrayToStringArray(add);
+        // data[columnList.size() - 2] = ArrayTypeUtil.integerArrayToStringArray(total);
+        // data[columnList.size() - 1] = ArrayTypeUtil.integerArrayToStringArray(add);
         reportForm.setTitle("资产组" + titleStr + "统计");
         reportForm.setHeaderList(headerList);
         reportForm.setColumnList(columnList);
