@@ -821,9 +821,20 @@ public class AssetReportServiceImpl implements IAssetReportService {
         ReportQueryRequest initReportQueryRequest = new ReportQueryRequest();
         initReportQueryRequest.setEndTime(reportQueryRequest.getStartTime());
         List<AssetGroupEntity> initAssetGroupEntities = assetReportDao.getAssetConutWithGroup(initReportQueryRequest);
+        List<AssetGroupEntity> assetGroupEntities = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
         List<String> initNameList = new ArrayList<>();
         for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {
             initNameList.add(assetGroupEntity.getName());
+        }
+        // 新增的资产组的名字们
+        for (AssetGroupEntity assetGroupEntity : assetGroupEntities) {
+            if (!initNameList.contains(assetGroupEntity.getName())) {
+                initNameList.add(assetGroupEntity.getName());
+                AssetGroupEntity assetGroupEntity1 = new AssetGroupEntity();
+                assetGroupEntity1.setName(assetGroupEntity.getName());
+                assetGroupEntity1.setGroupCount(0);
+                initAssetGroupEntities.add(assetGroupEntity1);
+            }
         }
         // 组装数据
         AssetReportTableResponse assetReportTableResponse = new AssetReportTableResponse();
@@ -855,7 +866,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // --------------------------------初始化数据完毕--------------------------------
         // --------------------------------开始增加新数据--------------------------------
         // 获取时间段新增数据
-        List<AssetGroupEntity> assetGroupEntities = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
+
 
         // 初始化新增的数据
         List<Map<String, String>> addRowsResult = new ArrayList<>();
@@ -910,5 +921,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
         assetReportTableResponse.setRows(rows);
         return assetReportTableResponse;
     }
+
 
 }
