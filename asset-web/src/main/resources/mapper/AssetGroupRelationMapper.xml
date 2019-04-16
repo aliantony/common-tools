@@ -358,4 +358,11 @@
             #{assetId}
         </foreach>
     </delete>
+    <select id="findAssetIdByAssetGroupId" resultType="string" parameterType="string">
+        select agrelation.asset_id
+        from
+        <include refid="Table_Name"></include>
+        agrelation
+        where agrelation.asset_group_id = #{assetGroupId}
+    </select>
 </mapper>
