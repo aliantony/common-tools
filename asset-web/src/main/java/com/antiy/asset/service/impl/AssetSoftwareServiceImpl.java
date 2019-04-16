@@ -722,7 +722,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         schemeDao.insert(scheme);
 
         // 1.保存操作流程
-        assetOperationRecordDao.insert(convertRecord(request, scheme, gmtCreateTime));
+        if (request.getHard() == null) {
+            assetOperationRecordDao.insert(convertRecord(request, scheme, gmtCreateTime));
+        }
 
         // 3.调用配置接口
         List<ConfigRegisterRequest> configRegisterList = new ArrayList<>();
@@ -831,7 +833,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             assetOperationRecord.setTargetObjectId(request.getSoftwareId());
         } else {
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
-            assetOperationRecord.setContent(request.getHard() ? null : HARDWARE_CONFIG_BASELINE.getMsg());
+            assetOperationRecord.setContent(HARDWARE_CONFIG_BASELINE.getMsg());
             assetOperationRecord.setSchemeId(scheme.getId());
             assetOperationRecord.setTargetObjectId(request.getAssetId());
         }
