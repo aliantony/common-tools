@@ -687,7 +687,7 @@
         <if test="assetName != null">
             and name =#{assetName}
         </if>
-        <if test="assetStatus != null">
+        <if test="assetStatus != null and assetStatus != ''">
             and asset_status = #{assetStatus}
         </if>
         <if test=" categoryModels != null and categoryModels.length > 0">
@@ -696,28 +696,28 @@
                 #{item}
             </foreach>
         </if>
-        <if test=" categoryModel != null">
+        <if test=" categoryModel != null and categoryModel != ''">
             and category_model = #{categoryModel}
         </if>
-        <if test=" parentId != null">
+        <if test=" parentId != null and parentId != ''">
             and parent_id = #{parentId}
         </if>
-        <if test=" admittanceStatus != null">
+        <if test=" admittanceStatus != null and admittanceStatus != ''">
             and admittance_status = #{admittanceStatus}
         </if>
-        <if test=" number != null">
+        <if test=" number != null and number != ''">
             and number = #{number}
         </if>
-        <if test=" uuid != null">
+        <if test=" uuid != null and uuid != ''">
             and uuid like CONCAT('%', replace(replace(#{uuid},'%','\%'),'_','\_'), '%')
         </if>
         <if test=" serial != null">
             and serial like CONCAT('%', replace(replace(#{uuid},'%','\%'),'_','\_')#{serial}, '%')
         </if>
-        <if test=" manufacturer != null">
+        <if test=" manufacturer != null and  manufacturer != ''">
             and manufacturer like CONCAT('%',replace(replace(#{manufacturer},'%','\%'),'_','\_'), '%')
         </if>
-        <if test=" manufacturers != null">
+        <if test=" manufacturers != null and manufacturers.size() > 0">
             and manufacturer in
             <foreach collection="manufacturers" separator="," open="(" close=")" item="item">
                 #{item}
@@ -731,16 +731,16 @@
             </foreach>
         </if>
 
-        <if test=" operationSystem != null">
+        <if test=" operationSystem != null and operationSystem != ''">
             and operation_system = #{operationSystem}
         </if>
-        <if test=" responsibleUserId != null">
+        <if test=" responsibleUserId != null and responsibleUserId != ''">
             and responsible_user_id = #{responsibleUserId }
         </if>
-        <if test=" assetSource != null">
+        <if test=" assetSource != null and assetSource != ''">
             and asset_source = #{assetSource }
         </if>
-        <if test=" importanceDegree != null">
+        <if test=" importanceDegree != null and importanceDegree != ''">
             and importance_degree = #{importanceDegree }
         </if>
         <if test=" timeType != null and timeType == 2  and beginTime != null">
