@@ -6,6 +6,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -59,12 +60,13 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
      * 线程数
      */
     @ApiModelProperty("线程数")
+    @Max(value = 9999, message = "线程数最大不超过9999")
     private Integer threadSize;
     /**
      * 核心数
      */
     @ApiModelProperty("核心数")
-    @Size(message = "核心数长度不能超过4位", max = 4)
+    @Max(value = 9999, message = "核心数最大不超过9999")
     private Integer coreSize;
 
     public String getId() {

@@ -6,6 +6,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -53,14 +54,14 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("内存容量")
     @NotNull(message = "内存容量不能为空")
-    @Size(message = "内存容量长度不能超过11位", max = 11)
+    @Max(value = 99999999, message = "内存容量不超过99999999")
     private Integer capacity;
     /**
      * 内存主频(MHz)
      */
     @ApiModelProperty("内存主频(MHz)")
 //    @NotNull(message = "内存主频不能为空")
-    @Size(message = "内存主频长度不能超过11位", max = 11)
+    @Max(value = 99999999, message = "内存主频不超过99999999")
     private Double  frequency;
     /**
      * 插槽类型:1-SDRAM,2-SIMM,3-DIMM,4-RIMM
@@ -76,7 +77,7 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      * 针脚数
      */
     @ApiModelProperty("针脚数")
-    @Size(message = "针脚数长度不能超过11位", max = 11)
+    @Max(value = 99999999, message = "针脚数不超过99999999")
     private Integer stitch;
     /**
      * 购买日期
