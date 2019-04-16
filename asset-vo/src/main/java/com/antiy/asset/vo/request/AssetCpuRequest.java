@@ -64,6 +64,7 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
      * 核心数
      */
     @ApiModelProperty("核心数")
+    @Size(message = "核心数长度不能超过4位", max = 4)
     private Integer coreSize;
 
     public String getId() {
