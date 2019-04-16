@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
@@ -23,6 +24,7 @@ import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
  *
@@ -32,9 +34,12 @@ import com.antiy.common.utils.LoginUserUtil;
  */
 @Service
 public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeProcessImpl {
-    private Logger   logger = LogUtils.get(this.getClass());
+    private Logger         logger = LogUtils.get(this.getClass());
     @Resource
-    private AssetDao assetDao;
+    private AssetDao       assetDao;
+
+    @Resource
+    private BaseLineClient baseLineClient;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
@@ -69,6 +74,14 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
                 asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
             }
         }
+
+        // 如果是带入网并且选择拒绝，则会调用流程引擎的待验证接口
+        ParamterExceptionUtils.isNull(assetStatusReqeust.getAssetStatus(), "硬件当前状态不能为空");
+        if (!assetStatusReqeust.getAgree()
+            && AssetStatusEnum.WAIT_NET.getCode().equals(assetStatusReqeust.getAssetStatus().getCode())) {
+            baseLineClient.updateAssetVerify(asset.getStringId());
+        }
+
         // 更新资产状态
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName(), asset.getId(),
