@@ -19,5 +19,11 @@ public interface BaseLineClient {
      */
     ActionResponse configRegister(List<ConfigRegisterRequest> request);
 
+    /**
+     * 硬件带入网到待验证，调用验证接口
+     * @param assetId
+     * @return
+     */
+    ActionResponse updateAssetVerify(String assetId);
 
 }

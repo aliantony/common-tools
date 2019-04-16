@@ -26,6 +26,9 @@ public class BaseLineClientImpl implements BaseLineClient {
     @Value("${configRegisterUrl}")
     private String     configRegisterUrl;
 
+    @Value("${updateAssetVerifyUrl}")
+    private String     updateAssetVerifyUrl;
+
     @Resource
     private BaseClient baseClient;
 
@@ -34,5 +37,12 @@ public class BaseLineClientImpl implements BaseLineClient {
     public ActionResponse configRegister(List<ConfigRegisterRequest> request) {
         return (ActionResponse) baseClient.post(request, new ParameterizedTypeReference<ActionResponse>() {
         }, configRegisterUrl);
+    }
+
+    @Override
+    @AssetLog(description = "修改资产到待验证")
+    public ActionResponse updateAssetVerify(String assetId) {
+        return (ActionResponse) baseClient.post(assetId, new ParameterizedTypeReference<ActionResponse>() {
+        }, updateAssetVerifyUrl);
     }
 }
