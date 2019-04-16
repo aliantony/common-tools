@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.request.UpdateAssetVerifyRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -42,7 +43,9 @@ public class BaseLineClientImpl implements BaseLineClient {
     @Override
     @AssetLog(description = "修改资产到待验证")
     public ActionResponse updateAssetVerify(String assetId) {
-        return (ActionResponse) baseClient.post(assetId, new ParameterizedTypeReference<ActionResponse>() {
+        UpdateAssetVerifyRequest updateAssetVerifyRequest = new UpdateAssetVerifyRequest();
+        updateAssetVerifyRequest.setAssetId(assetId);
+        return (ActionResponse) baseClient.post(updateAssetVerifyRequest, new ParameterizedTypeReference<ActionResponse>() {
         }, updateAssetVerifyUrl);
     }
 }
