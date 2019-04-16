@@ -358,4 +358,11 @@
             #{assetId}
         </foreach>
     </delete>
+
+    <delete id="updateStatusByAssetId" parameterType="com.antiy.asset.vo.request.RemoveAssociateAssetRequest">
+        update from
+        <include refid="Table_Name"></include>
+        set config_status = #{configStatus}
+        where asset_id = #{assetId}
+    </delete>
 </mapper>
