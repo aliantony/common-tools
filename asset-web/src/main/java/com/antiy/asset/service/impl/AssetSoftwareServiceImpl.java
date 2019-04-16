@@ -722,7 +722,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         schemeDao.insert(scheme);
 
         // 1.保存操作流程
-        if (!request.getHard()) {
+        if (request.getHard() == null) {
             assetOperationRecordDao.insert(convertRecord(request, scheme, gmtCreateTime));
         }
 
