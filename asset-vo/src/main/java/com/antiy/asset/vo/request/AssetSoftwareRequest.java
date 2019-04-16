@@ -81,7 +81,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 上传的软件名称
      */
     @ApiModelProperty(value = "上传的软件名称")
-    @NotBlank(message = "上次的软件名称不能为空")
+    @NotBlank(message = "上传的软件名称不能为空")
     private String                      uploadSoftwareName;
     /**
      * 安装包路径
@@ -142,11 +142,13 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 端口
      */
     @ApiModelProperty(value = "协议")
+    @Size(message = "协议长度不能超过32位", max = 64)
     private String                      protocol;
     /**
      * 语言
      */
     @ApiModelProperty(value = "语言")
+    @Size(message = "协议长度不能超过64位", max = 64)
     private String                      language;
     /**
      * 发布时间

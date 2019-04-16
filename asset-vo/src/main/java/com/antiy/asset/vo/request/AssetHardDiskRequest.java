@@ -58,6 +58,7 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty("容量 (MB)")
     @NotNull(message = "硬盘容量不能为空")
+    @Size(message = "硬盘容量长度不能超过11位", max = 11)
     private Integer capacity;
     /**
      * 磁盘类型,1 HDD,2,SSD

@@ -1,18 +1,5 @@
 package com.antiy.asset.controller;
 
-import javax.annotation.Resource;
-
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.utils.LoginUserUtil;
-import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.util.ExcelUtils;
@@ -21,10 +8,16 @@ import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.common.base.ActionResponse;
-
+import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
+import javax.annotation.Resource;
 
 /**
  * @author zhangyajun
@@ -53,7 +46,6 @@ public class AssetReportController {
     public ActionResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
         return ActionResponse.success(iAssetReportService.queryCategoryCountByTime(query));
     }
-
 
     /**
      * 根据时间条件查询分类统计资产数量,返回表格数据
@@ -107,7 +99,7 @@ public class AssetReportController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/exportAreaTable", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:report:exportAreaTable')")
-    public void exportAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
+    public void exportAreaTable(@ApiParam(value = "查询条件")@RequestBody ReportQueryRequest reportQueryRequest) {
         ParamterExceptionUtils.isEmpty(reportQueryRequest.getAssetAreaIds(), "请指定要统计的区域");
         reportQueryRequest.setTopFive(false);
         ExcelUtils.exportFormToClient(iAssetAreaReportService.exportAreaTable(reportQueryRequest), "资产区域报表数据.xlsx");
@@ -164,9 +156,9 @@ public class AssetReportController {
      */
     @ApiOperation(value = "导出资产组表格", notes = "导出资产组表格")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/exportAssetGroupTable", method = RequestMethod.POST)
-    public void exportAssetGroupTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
+    @RequestMapping(value = "/query/exportAssetGroupTable", method = RequestMethod.GET)
+    public void exportAssetGroupTable(@ApiParam(value = "查询条件") ReportQueryRequest reportQueryRequest) throws Exception {
         reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
-        ExcelUtils.exportFormToClient(iAssetReportService.exportAssetGroupTable(reportQueryRequest), "导出报表.xlsx");
+        ExcelUtils.exportFormToClient(iAssetReportService.exportAssetGroupTable(reportQueryRequest), "导出资产组报表.xlsx");
     }
 }
