@@ -532,8 +532,14 @@ public class AssetReportServiceImpl implements IAssetReportService {
                         && groupName.equals(assetGroupEntity.getName())) {
                         addNum = assetGroupEntity.getGroupCount();
                     }
+
                     // 总数,第一个数据从截止日期前的总数量获取,第二个起加上新增的数据
-                    totalNum = (i == 0 ? assetGroupEntities.get(0).getGroupCount() + addNum
+                    Optional<AssetGroupEntity> assetGroupOptional = assetGroupEntities.stream()
+                        .filter(e -> e.getName().equals(assetGroupEntity.getName())
+                                     && e.getDate().equals(assetGroupEntity.getDate()))
+                        .findFirst();
+                    totalNum = (i == 0
+                        ? (assetGroupOptional.isPresent() ? 0 : assetGroupOptional.get().getGroupCount()) + addNum
                         : totalNumList.get(i - 1) + addNum);
                 }
                 totalNumList.add(totalNum);
@@ -867,7 +873,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // --------------------------------开始增加新数据--------------------------------
         // 获取时间段新增数据
 
-
         // 初始化新增的数据
         List<Map<String, String>> addRowsResult = new ArrayList<>();
         for (AssetGroupEntity assetGroupEntity : initAssetGroupEntities) {
@@ -950,6 +955,5 @@ public class AssetReportServiceImpl implements IAssetReportService {
         assetReportTableResponse.setRows(rows);
         return assetReportTableResponse;
     }
-
 
 }
