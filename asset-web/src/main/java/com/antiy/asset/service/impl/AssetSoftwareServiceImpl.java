@@ -831,7 +831,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             assetOperationRecord.setTargetObjectId(request.getSoftwareId());
         } else {
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
-            assetOperationRecord.setContent(HARDWARE_CONFIG_BASELINE.getMsg());
+            assetOperationRecord.setContent(request.getHard() ? null : HARDWARE_CONFIG_BASELINE.getMsg());
             assetOperationRecord.setSchemeId(scheme.getId());
             assetOperationRecord.setTargetObjectId(request.getAssetId());
         }

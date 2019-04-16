@@ -570,6 +570,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             // 对接配置模块
             ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
+            configRegisterRequest.setHard(true);
             configRegisterRequest.setAssetId(String.valueOf(id));
             configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
             configRegisterRequest
