@@ -54,7 +54,6 @@ public class AssetReportController {
         return ActionResponse.success(iAssetReportService.queryCategoryCountByTime(query));
     }
 
-
     /**
      * 根据时间条件查询分类统计资产数量,返回表格数据
      *
@@ -164,8 +163,8 @@ public class AssetReportController {
      */
     @ApiOperation(value = "导出资产组表格", notes = "导出资产组表格")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/exportAssetGroupTable", method = RequestMethod.POST)
-    public void exportAssetGroupTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
+    @RequestMapping(value = "/query/exportAssetGroupTable", method = RequestMethod.GET)
+    public void exportAssetGroupTable(@ApiParam(value = "查询条件") ReportQueryRequest reportQueryRequest) throws Exception {
         reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         ExcelUtils.exportFormToClient(iAssetReportService.exportAssetGroupTable(reportQueryRequest), "导出报表.xlsx");
     }
