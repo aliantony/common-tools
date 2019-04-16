@@ -1,18 +1,5 @@
 package com.antiy.asset.controller;
 
-import javax.annotation.Resource;
-
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.utils.LoginUserUtil;
-import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.util.ExcelUtils;
@@ -21,10 +8,16 @@ import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.common.base.ActionResponse;
-
+import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
+import javax.annotation.Resource;
 
 /**
  * @author zhangyajun
@@ -166,6 +159,6 @@ public class AssetReportController {
     @RequestMapping(value = "/query/exportAssetGroupTable", method = RequestMethod.GET)
     public void exportAssetGroupTable(@ApiParam(value = "查询条件") ReportQueryRequest reportQueryRequest) throws Exception {
         reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
-        ExcelUtils.exportFormToClient(iAssetReportService.exportAssetGroupTable(reportQueryRequest), "导出报表.xlsx");
+        ExcelUtils.exportFormToClient(iAssetReportService.exportAssetGroupTable(reportQueryRequest), "导出资产组报表.xlsx");
     }
 }
