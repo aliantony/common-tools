@@ -1,13 +1,13 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.constraints.NotBlank;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * <p> AssetStorageMediumRequest 请求对象 </p>
@@ -31,46 +31,55 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      */
     @ApiModelProperty("最大存储量")
     @NotBlank(message = "最大存储容量不能为空")
+    @Size(message = "最大存储量长度不能超过11位", max = 11)
     private String  maximumStorage;
     /**
      * 单机磁盘数
      */
     @ApiModelProperty("单机磁盘数")
+    @Size(message = "单机磁盘数长度不能超过11位", max = 11)
     private Integer diskNumber;
     /**
      * 高速缓存
      */
     @ApiModelProperty("高速缓存")
+    @Size(message = "高速缓存长度不能超过11位", max = 11)
     private String  highCache;
     /**
      * 内置接口
      */
     @ApiModelProperty("内置接口")
+    @Size(message = "内置接口长度不能超过32位", max = 32)
     private String  innerInterface;
     /**
      * RAID支持
      */
     @ApiModelProperty("RAID支持")
+    @Size(message = "RAID支持长度不能超过32位", max = 32)
     private String  raidSupport;
     /**
      * 平均传输率
      */
     @ApiModelProperty("平均传输率")
+    @Size(message = "平均传输率不能超过11位", max = 11)
     private String  averageTransferRate;
     /**
      * 驱动器数量
      */
     @ApiModelProperty("驱动器数量")
+    @Size(message = "驱动器数量不能超过11位", max = 11)
     private Integer driverNumber;
     /**
      * 固件
      */
     @ApiModelProperty("固件")
+    @Size(message = "固件长度不能超过32位", max = 32)
     private String  firmware;
     /**
      * OS版本
      */
     @ApiModelProperty("OS版本")
+    @Size(message = "OS版本长度不能超过32位", max = 32)
     private String  osVersion;
 
     public String getId() {
