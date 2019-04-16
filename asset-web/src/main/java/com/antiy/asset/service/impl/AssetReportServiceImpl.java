@@ -51,7 +51,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     private Logger              logger = LogUtils.get(this.getClass());
 
     private final static String DAY    = "%w";
-    private final static String WEEK   = "%u";
+    private final static String WEEK   = "%U";
     private final static String MONTH  = "%Y-%m";
 
     @Resource
@@ -350,7 +350,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 assetReportCategoryCountQuery.setFormat("%w");
                 break;
             case THIS_MONTH:
-                assetReportCategoryCountQuery.setFormat("%u");
+                assetReportCategoryCountQuery.setFormat("%U");
                 break;
 
             case THIS_QUARTER:
@@ -446,7 +446,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getDayOfWeek());
 
             case "2":
-                reportQueryRequest.setSqlTime("%u");
+                reportQueryRequest.setSqlTime("%U");
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getWeekOfMonth());
 
             case "3":
@@ -568,7 +568,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 reportQueryRequest.setSqlTime("%w");
                 return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getDayOfWeek());
             case "2":
-                reportQueryRequest.setSqlTime("%u");
+                reportQueryRequest.setSqlTime("%U");
                 return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getWeekOfMonth());
             case "3":
                 reportQueryRequest.setSqlTime("%Y-%m");
@@ -719,7 +719,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 reportQueryRequest.setSqlTime("%w");
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getDayOfWeek(), "本周");
             case "2":
-                reportQueryRequest.setSqlTime("%u");
+                reportQueryRequest.setSqlTime("%U");
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getWeekOfMonth(), "本月");
             case "3":
                 reportQueryRequest.setSqlTime("%Y-%m");
