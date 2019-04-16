@@ -1065,18 +1065,18 @@
         a.warranty,
         a.gmt_create,
         case
-        when group_concat(b.ip_address) is not null then
-        group_concat(b.ip_address)
-        when (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is
+        when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
+        replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
+        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment where asset_id = a.id and status = 1) is
         not
         null then
-        (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
+        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment where asset_id = a.id and status = 1)
         when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
         else '' end as ip,
         case
-        when group_concat( b.mac_address ) is not null then
-        group_concat( b.mac_address )
+        when replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',') is not null then
+        replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',')
         when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
         (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
         when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
@@ -1114,7 +1114,7 @@
                 )
             </trim>
             ORDER BY first_enter_nett desc,
-            <if test=" ids != null">
+            <if test=" ids != null and ids.length > 0">
                 FIELD(`id`,
                 <foreach index="index" item="item" collection="ids" separator=",">
                     #{item}
@@ -1165,18 +1165,18 @@
         a.warranty,
         a.gmt_create,
         case
-        when group_concat(b.ip_address) is not null then
-        group_concat(b.ip_address)
-        when (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is
+        when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
+        replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
+        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment where asset_id = a.id and status = 1) is
         not
         null then
-        (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
+        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment where asset_id = a.id and status = 1)
         when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
         else '' end as ip,
         case
-        when group_concat( b.mac_address ) is not null then
-        group_concat( b.mac_address )
+        when replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',') is not null then
+        replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',')
         when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
         (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
         when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
@@ -1192,17 +1192,16 @@
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
-            ORDER BY
-            <if test=" ids != null">
-                FIELD(`id`,
-                <foreach index="index" item="item" collection="ids" separator=",">
-                    #{item}
-                </foreach>
-                ) DESC,
-            </if>
-            id desc
         </where>
-
+        ORDER BY
+        <if test=" ids != null and ids.length > 0">
+            FIELD(`id`,
+            <foreach index="index" item="item" collection="ids" separator=",">
+                #{item}
+            </foreach>
+            ) DESC,
+        </if>
+        id desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
