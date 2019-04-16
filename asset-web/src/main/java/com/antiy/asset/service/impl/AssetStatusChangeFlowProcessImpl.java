@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
@@ -23,6 +24,7 @@ import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
  *
@@ -32,9 +34,12 @@ import com.antiy.common.utils.LoginUserUtil;
  */
 @Service
 public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeProcessImpl {
-    private Logger   logger = LogUtils.get(this.getClass());
+    private Logger         logger = LogUtils.get(this.getClass());
     @Resource
-    private AssetDao assetDao;
+    private AssetDao       assetDao;
+
+    @Resource
+    private BaseLineClient baseLineClient;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
@@ -45,7 +50,6 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             return actionResponse;
         }
-
         // 检查资产主表的首次入网时间，为空时写入入网时间
 
         Asset currentAsset = assetDao.getById(assetStatusReqeust.getAssetId());
@@ -69,6 +73,21 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
                 asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
             }
         }
+
+        // 如果是带入网并且选择拒绝，则会调用流程引擎的待验证接口
+        ParamterExceptionUtils.isNull(assetStatusReqeust.getAssetStatus(), "硬件当前状态不能为空");
+        if (!assetStatusReqeust.getAgree()
+            && AssetStatusEnum.WAIT_NET.getCode().equals(assetStatusReqeust.getAssetStatus().getCode())) {
+            ActionResponse actionResponseVerify = baseLineClient.updateAssetVerify(asset.getStringId());
+            if (null == actionResponseVerify
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseVerify.getHead().getCode())) {
+                logger.warn("调用基准待验证接口失败,回滚资产状态,{}", assetStatusReqeust);
+                asset.setStatus(assetStatusReqeust.getAssetStatus().getCode());
+                assetDao.update(asset);
+                return actionResponseVerify;
+            }
+        }
+
         // 更新资产状态
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName(), asset.getId(),

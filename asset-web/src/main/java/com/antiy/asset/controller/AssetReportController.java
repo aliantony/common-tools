@@ -97,9 +97,9 @@ public class AssetReportController {
      */
     @ApiOperation(value = "根据时间条件、区域资产表格数据", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/exportAreaTable", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/exportAreaTable", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:report:exportAreaTable')")
-    public void exportAreaTable(@ApiParam(value = "查询条件") ReportQueryRequest reportQueryRequest) {
+    public void exportAreaTable(@ApiParam(value = "查询条件")@RequestBody ReportQueryRequest reportQueryRequest) {
         ParamterExceptionUtils.isEmpty(reportQueryRequest.getAssetAreaIds(), "请指定要统计的区域");
         reportQueryRequest.setTopFive(false);
         ExcelUtils.exportFormToClient(iAssetAreaReportService.exportAreaTable(reportQueryRequest), "资产区域报表数据.xlsx");

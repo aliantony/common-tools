@@ -78,4 +78,6 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @return
      */
     Integer batchDeleteById(RemoveAssociateAssetRequest request);
+
+    List<String> findAssetIdByAssetGroupId(String groupId);
 }

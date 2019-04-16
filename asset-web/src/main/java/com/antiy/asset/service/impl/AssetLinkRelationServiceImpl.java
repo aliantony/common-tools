@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -218,11 +219,11 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         Map<String, String> category = assetCategoryModelService.getSecondCategoryMap();
         category.forEach((k, v) -> {
             try {
-                if (v.equals("计算设备")) {
+                if (v.equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
                     // 计算设备下所有品类型号
                     assetLinkRelationQuery.setPcCategoryModels(
                         assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
-                } else if (v.equals("网络设备")) {
+                } else if (v.equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
                     // 网络设备下所有品类型号
                     assetLinkRelationQuery.setNetCategoryModels(
                         assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));

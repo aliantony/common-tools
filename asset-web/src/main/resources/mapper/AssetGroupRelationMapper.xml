@@ -341,7 +341,7 @@
         where agrelation.asset_group_id = #{assetGroupId}
     </select>
     <select id="findAssetGroupNameByAssetId" resultType="java.lang.String" parameterType="string">
-        select agroup.id, agroup.name
+        select agroup.name
         from
         <include refid="Table_Name"></include> agrelation
         LEFT JOIN asset_group agroup
@@ -358,4 +358,11 @@
             #{assetId}
         </foreach>
     </delete>
+    <select id="findAssetIdByAssetGroupId" resultType="string" parameterType="string">
+        select agrelation.asset_id
+        from
+        <include refid="Table_Name"></include>
+        agrelation
+        where agrelation.asset_group_id = #{assetGroupId}
+    </select>
 </mapper>
