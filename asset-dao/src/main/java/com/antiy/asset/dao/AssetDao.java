@@ -167,11 +167,11 @@ public interface AssetDao extends IBaseDao<Asset> {
      * 查询补丁的资产总数
      * @return
      */
-    Integer queryAllAssetPatchCount();
+    Integer queryAllAssetPatchCount(@Param(value = "areaIds") List<Integer> areaIds);
 
     /**
      * 查询漏洞的资产总数
      * @return
      */
-    Integer queryAllAssetVulCount();
+    Integer queryAllAssetVulCount(@Param(value = "areaIds") List<Integer> areaIds);
 }

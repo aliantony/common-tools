@@ -17,6 +17,7 @@ import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
@@ -743,41 +744,47 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 1.查询补丁个数
         Map<String, String> vulCountMaps = new HashMap<>();
         if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
-            List<IdCount> vulCountList = assetDao.queryAssetVulCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(),
-                query.getPageOffset());
+            List<IdCount> vulCountList = assetDao.queryAssetVulCount(
+                LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(), query.getPageOffset());
             vulCountMaps = vulCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
             String[] ids = new String[vulCountMaps.size()];
             query.setIds(vulCountMaps.keySet().toArray(ids));
 
             // 由于计算Id列表添加了区域，此处不用添加
             query.setAreaIds(null);
+            query.setCurrentPage(1);
         }
 
         // 2.查询漏洞个数
         Map<String, String> patchCountMaps = null;
         if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
-            List<IdCount> patchCountList = assetDao.queryAssetPatchCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(),
-                query.getPageOffset());
+            List<IdCount> patchCountList = assetDao.queryAssetPatchCount(
+                LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(), query.getPageOffset());
             patchCountMaps = patchCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
             String[] ids = new String[patchCountMaps.size()];
             query.setIds(patchCountMaps.keySet().toArray(ids));
             // 由于计算Id列表添加了区域，此处不用添加
             query.setAreaIds(null);
+            query.setCurrentPage(1);
         }
 
         // 3.查询告警个数
 
         Map<String, String> alarmCountMaps = null;
         if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
-            ActionResponse<List<IdCount>> actionResponse = emergencyClient.queryEmergencyCount(query);
+            ObjectQuery objectQuery = new ObjectQuery();
+            BeanUtils.copyProperties(query, objectQuery);
+            ActionResponse<PageResult<IdCount>> actionResponse = emergencyClient.queryEmergencyCount(objectQuery);
             if (actionResponse != null
-                && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                List<IdCount> alarmCountList = actionResponse.getBody();
+                && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())
+                && actionResponse.getBody() != null) {
+                List<IdCount> alarmCountList = actionResponse.getBody().getItems();
                 alarmCountMaps = alarmCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
                 String[] ids = new String[alarmCountMaps.size()];
                 query.setIds(alarmCountMaps.keySet().toArray(ids));
                 // 由于计算Id列表添加了区域，此处不用添加
                 query.setAreaIds(null);
+                query.setCurrentPage(1);
             }
         }
 
@@ -895,7 +902,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int count = 0;
         // 如果会查询漏洞数量
         if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
-            count = assetDao.queryAllAssetVulCount();
+            count = assetDao.queryAllAssetVulCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
             if (count <= 0) {
                 return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
             }
@@ -903,7 +910,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 如果会查询补丁数据
         if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
-            count = assetDao.queryAllAssetPatchCount();
+            count = assetDao.queryAllAssetPatchCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
             if (count <= 0) {
                 return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
             }
@@ -932,8 +939,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
         }
 
-        List<AssetResponse> assetResponse = this.findListAsset(query);
-        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponse);
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.findListAsset(query));
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.validation.constraints.NotBlank;
 
@@ -113,7 +114,9 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
 
     @Override
     public void validate() throws RequestParamValidateException {
-        ParamterExceptionUtils.isTrue(endTime > startTime, "开始时间必须小于结束时间");
+        if (!Objects.isNull(endTime) && !Objects.isNull(startTime)) {
+            ParamterExceptionUtils.isTrue(endTime > startTime, "开始时间必须小于结束时间");
+        }
     }
 
     public Boolean getTopFive() {

@@ -81,7 +81,7 @@ public class Asset extends BaseEntity {
     @ApiModelProperty("安装方式")
     private Integer           installType;
     @ApiModelProperty("安装方式")
-    private String           installTypeName;
+    private String            installTypeName;
     /**
      * 序列号
      */
@@ -117,6 +117,11 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("操作系统")
     private String            operationSystem;
+    /**
+     * 操作系统名
+     */
+    @ApiModelProperty("操作系统名")
+    private String            operationSystemName;
     /**
      * 系统位数
      */
@@ -187,7 +192,7 @@ public class Asset extends BaseEntity {
      * 资产重要程度：1核心2重要3一般
      */
     @ApiModelProperty("重要程度")
-    private String           importanceDegreeName;
+    private String            importanceDegreeName;
     /**
      * 描述
      */
@@ -243,27 +248,69 @@ public class Asset extends BaseEntity {
      */
     private Integer           status;
 
+    public String getOperationSystemName() {
+        return operationSystemName;
+    }
+
+    public void setOperationSystemName(String operationSystemName) {
+        this.operationSystemName = operationSystemName;
+    }
+
     @Override
     public String toString() {
-        return "Asset{" + "categoryModelName='" + categoryModelName + '\'' + ", hardDisk='" + hardDisk + '\''
-               + ", memory='" + memory + '\'' + ", cpu='" + cpu + '\'' + ", networkCard='" + networkCard + '\''
-               + ", parentId='" + parentId + '\'' + ", ip='" + ip + '\'' + ", mac='" + mac + '\'' + ", assetGroup='"
-               + assetGroup + '\'' + ", number='" + number + '\'' + ", name='" + name + '\'' + ", ethernetPort="
-               + ethernetPort + ", serialPort=" + serialPort + ", installType=" + installType + ", installTypeName='"
-               + installTypeName + '\'' + ", serial='" + serial + '\'' + ", areaId='" + areaId + '\'' + ", areaName='"
-               + areaName + '\'' + ", categoryModel='" + categoryModel + '\'' + ", manufacturer='" + manufacturer + '\''
-               + ", assetStatus=" + assetStatus + ", admittanceStatus=" + admittanceStatus + ", operationSystem='"
-               + operationSystem + '\'' + ", systemBit=" + systemBit + ", responsibleUserId='" + responsibleUserId
-               + '\'' + ", responsibleUserName='" + responsibleUserName + '\'' + ", location='" + location + '\''
-               + ", latitude='" + latitude + '\'' + ", longitude='" + longitude + '\'' + ", houseLocation='"
-               + houseLocation + '\'' + ", firmwareVersion='" + firmwareVersion + '\'' + ", softwareVersion='"
-               + softwareVersion + '\'' + ", uuid='" + uuid + '\'' + ", contactTel='" + contactTel + '\'' + ", email='"
-               + email + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
-               + ", importanceDegreeName='" + importanceDegreeName + '\'' + ", describle='" + describle + '\''
-               + ", tags='" + tags + '\'' + ", firstEnterNett=" + firstEnterNett + ", serviceLife=" + serviceLife
-               + ", buyDate=" + buyDate + ", warranty=" + warranty + ", gmtCreate=" + gmtCreate + ", gmtModified="
-               + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser + ", modifyUser=" + modifyUser
-               + ", status=" + status + '}';
+        return "Asset{" +
+                "categoryModelName='" + categoryModelName + '\'' +
+                ", hardDisk='" + hardDisk + '\'' +
+                ", memory='" + memory + '\'' +
+                ", cpu='" + cpu + '\'' +
+                ", networkCard='" + networkCard + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", ip='" + ip + '\'' +
+                ", mac='" + mac + '\'' +
+                ", assetGroup='" + assetGroup + '\'' +
+                ", number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", ethernetPort=" + ethernetPort +
+                ", serialPort=" + serialPort +
+                ", installType=" + installType +
+                ", installTypeName='" + installTypeName + '\'' +
+                ", serial='" + serial + '\'' +
+                ", areaId='" + areaId + '\'' +
+                ", areaName='" + areaName + '\'' +
+                ", categoryModel='" + categoryModel + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", assetStatus=" + assetStatus +
+                ", admittanceStatus=" + admittanceStatus +
+                ", operationSystem='" + operationSystem + '\'' +
+                ", operationSystemName='" + operationSystemName + '\'' +
+                ", systemBit=" + systemBit +
+                ", responsibleUserId='" + responsibleUserId + '\'' +
+                ", responsibleUserName='" + responsibleUserName + '\'' +
+                ", location='" + location + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", houseLocation='" + houseLocation + '\'' +
+                ", firmwareVersion='" + firmwareVersion + '\'' +
+                ", softwareVersion='" + softwareVersion + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", contactTel='" + contactTel + '\'' +
+                ", email='" + email + '\'' +
+                ", assetSource=" + assetSource +
+                ", importanceDegree=" + importanceDegree +
+                ", importanceDegreeName='" + importanceDegreeName + '\'' +
+                ", describle='" + describle + '\'' +
+                ", tags='" + tags + '\'' +
+                ", firstEnterNett=" + firstEnterNett +
+                ", serviceLife=" + serviceLife +
+                ", buyDate=" + buyDate +
+                ", warranty=" + warranty +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                '}';
     }
 
     public String getAreaName() {

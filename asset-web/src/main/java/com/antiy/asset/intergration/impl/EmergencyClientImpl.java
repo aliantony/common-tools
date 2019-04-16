@@ -1,7 +1,5 @@
 package com.antiy.asset.intergration.impl;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +13,7 @@ import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.response.AlarmAssetIdResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.base.PageResult;
 
 /**
  * 资产告警数量获取
@@ -33,15 +32,17 @@ public class EmergencyClientImpl implements EmergencyClient {
 
     @Override
     @AssetLog(description = "远程调用获取资产告警数量")
-    public ActionResponse<List<IdCount>> queryEmergencyCount(ObjectQuery objectQuery) {
-        return (ActionResponse) baseClient.post(objectQuery, new ParameterizedTypeReference<ActionResponse>() {
-        }, emergencyClientUrl);
+    public ActionResponse<PageResult<IdCount>> queryEmergencyCount(ObjectQuery objectQuery) {
+        return (ActionResponse) baseClient.post(objectQuery,
+            new ParameterizedTypeReference<ActionResponse<PageResult<IdCount>>>() {
+            }, emergencyClientUrl);
     }
 
     @Override
     @AssetLog(description = "查询告警资产的总个数")
     public ActionResponse<AlarmAssetIdResponse> queryEmergecyAllCount() {
-        return (ActionResponse) baseClient.post(null, new ParameterizedTypeReference<ActionResponse>() {
-        }, emergencyClientUrl);
+        return (ActionResponse) baseClient.get(null,
+            new ParameterizedTypeReference<ActionResponse<AlarmAssetIdResponse>>() {
+            }, emergencyCountClientUrl);
     }
 }
