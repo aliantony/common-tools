@@ -6,6 +6,7 @@ import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.vo.response.AlarmAssetIdResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.base.PageResult;
 
 /**
  * 资产告警远程调用
@@ -18,7 +19,7 @@ public interface EmergencyClient {
      * @param objectQuery
      * @return
      */
-    ActionResponse<List<IdCount>> queryEmergencyCount(ObjectQuery objectQuery);
+    ActionResponse<PageResult<IdCount>> queryEmergencyCount(ObjectQuery objectQuery);
 
     /**
      * 查询告警的资产个数
