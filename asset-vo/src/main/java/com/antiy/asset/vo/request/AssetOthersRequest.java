@@ -147,6 +147,12 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
     @ApiModelProperty("描述")
     @Size(message = "描述不能超过128位", max = 128)
     private String            describle;
+    /**
+     * 描述
+     */
+    @ApiModelProperty("备注")
+    @Size(message = "描述不能超过128位", max = 128)
+    private String                  memo;
 
     @Override
     public String toString() {
@@ -335,5 +341,13 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
 
     public void setImportanceDegree(Integer importanceDegree) {
         this.importanceDegree = importanceDegree;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 }
