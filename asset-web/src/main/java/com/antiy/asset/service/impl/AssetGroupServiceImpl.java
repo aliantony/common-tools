@@ -6,7 +6,6 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -140,70 +139,60 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
 
-        // Integer delResult = assetGroupRelationDao.deleteByAssetGroupId(assetGroup.getId());
-        //
-        // if (!Objects.equals(0, delResult)) {
-        // // 写入业务日志
-        // LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(),
-        // AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-        // // 记录操作日志和运行日志
-        // LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(),
-        // assetGroup.getId (), assetGroup.getName (),
-        // assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-        // LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}", assetGroup.toString());
-        // }
         int result = 0;
-        for (String assetId : assetIdArr) {
-            AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-            assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
-            assetGroupRelation.setAssetId(assetId);
-            assetGroupRelation.setGmtCreate(System.currentTimeMillis());
-            assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            assetGroupRelationList.add(assetGroupRelation);
-        }
-
-        if (CollectionUtils.isNotEmpty(assetGroupRelationList)) {
-            result = assetGroupRelationDao.insertBatch(assetGroupRelationList);
-        }
-
-        if (!Objects.equals(0, result)) {
-            // 写入业务日志
-            LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
-                AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(), assetGroup.getId (), assetGroup.getName (),
-                    assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}", assetGroup.toString());
-        }
-        assetGroupDao.update(assetGroup);
-
-        // -----------------------------更新资产主表的资产组字段内容start-----------------------------
         Map<String, Object> map = new HashMap<>();
         StringBuilder assetNameBuilder = new StringBuilder();
-        for (String assetId : assetIdArr) {
-            List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
-            // 资产关联的资产组不能超过10个
-            ParamterExceptionUtils.isTrue(assetGroupNameList.size() <= Constants.MAX_ASSET_RELATION_GROUP_COUNT,
-                "资产关联的资产组不能超过10个");
-            String assetGroupName = assetGroupNameList.toString();
-            updateAssetGroupName(map, assetNameBuilder, assetId.toString(), assetGroupNameList, assetGroupName);
-        }
 
+        if (ArrayUtils.isNotEmpty(assetIdArr)) {
+            for (String assetId : assetIdArr) {
+                AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
+                assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
+                assetGroupRelation.setAssetId(assetId);
+                assetGroupRelation.setGmtCreate(System.currentTimeMillis());
+                assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                assetGroupRelationList.add(assetGroupRelation);
+            }
+
+            result = assetGroupRelationDao.insertBatch(assetGroupRelationList);
+
+            if (!Objects.equals(0, result)) {
+                // 写入业务日志
+                LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
+                    AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                LogUtils.recordOperLog(
+                    new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(), assetGroup.getId(),
+                        assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}",
+                    assetGroup.toString());
+            }
+            assetGroupDao.update(assetGroup);
+
+            // -----------------------------更新资产主表的资产组字段内容start-----------------------------
+            for (String assetId : assetIdArr) {
+                List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
+                // 资产关联的资产组不能超过10个
+                ParamterExceptionUtils.isTrue(assetGroupNameList.size() <= Constants.MAX_ASSET_RELATION_GROUP_COUNT,
+                    "资产关联的资产组不能超过10个");
+                String assetGroupName = assetGroupNameList.toString();
+                updateAssetGroupName(map, assetNameBuilder, assetId.toString(), assetGroupNameList, assetGroupName);
+            }
+        }
         // -----------------------------更新资产主表的资产组字段内容end-----------------------------
 
         // 移除资产后，更新资产主表中对应资产组字段
         assetNameBuilder.setLength(0);
         if (ArrayUtils.isNotEmpty(request.getDeleteAssetIds())) {
-            for (String assetId : request.getDeleteAssetIds()) {
-                List<String> assetGroupNameList = assetGroupRelationDao
-                    .findAssetGroupNameByAssetId(assetId);
-                String assetGroupName = assetGroupNameList.toString();
-                updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
-            }
+
             RemoveAssociateAssetRequest removeAssociateAssetRequest = new RemoveAssociateAssetRequest();
             removeAssociateAssetRequest.setGroupId(request.getId());
             removeAssociateAssetRequest.setRemoveAsset(request.getDeleteAssetIds());
             assetGroupRelationDao.batchDeleteById(removeAssociateAssetRequest);
 
+            for (String assetId : request.getDeleteAssetIds()) {
+                List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
+                String assetGroupName = assetGroupNameList.toString();
+                updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
+            }
         }
 
 
