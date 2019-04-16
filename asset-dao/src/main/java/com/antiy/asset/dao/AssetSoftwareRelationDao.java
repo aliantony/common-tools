@@ -3,16 +3,13 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.antiy.asset.entity.AssetSoftwareInstall;
-import com.antiy.asset.entity.AssetSoftwareRelationMapper;
-import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
-import com.antiy.asset.vo.query.InstallQuery;
-import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
+import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.common.base.IBaseDao;
 
 /**
@@ -138,4 +135,9 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
     Integer queryInstallCount(InstallQuery query);
 
     Integer updateByAssetId(AssetSoftwareRelation assetSoftwareRelation);
+
+    /**
+     * 更新关系表配置状态
+     */
+    Integer updateConfigStatusByAssetId(AssetSoftwareRelation assetSoftwareRelation) throws Exception;
 }

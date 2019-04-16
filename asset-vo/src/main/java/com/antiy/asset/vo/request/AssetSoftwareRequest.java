@@ -1,18 +1,17 @@
 package com.antiy.asset.vo.request;
 
-import java.util.Arrays;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.Arrays;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -95,6 +94,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty(value = "软件版本")
     @NotBlank(message = "软件版本不能为空")
+    @Pattern(regexp = "^[+]?\\d*\\.\\d*\\.\\d*$", message = "软件版本格式不正确")
     private String                      version;
     /**
      * 厂商
