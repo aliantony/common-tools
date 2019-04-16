@@ -879,7 +879,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (null != query.getAssociateGroup()) {
             ParamterExceptionUtils.isBlank(query.getGroupId(), "资产组ID不能为空");
             List<String> associateAssetIdList = assetGroupRelationDao
-                .findAssetNameByAssetGroupId(DataTypeUtils.stringToInteger(query.getGroupId()));
+                .findAssetIdByAssetGroupId(query.getGroupId());
             if (CollectionUtils.isNotEmpty(associateAssetIdList)) {
                 query.setExistAssociateIds(associateAssetIdList);
             }
