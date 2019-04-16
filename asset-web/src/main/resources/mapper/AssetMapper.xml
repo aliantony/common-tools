@@ -645,7 +645,7 @@
             </foreach>
         </if>
 
-        <if test=" assetGroup != null">
+        <if test=" assetGroup != null and assetGroup != ''">
             and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id =
             #{assetGroup} and b.status = 1)
         </if>
@@ -687,7 +687,7 @@
         <if test="assetName != null">
             and name =#{assetName}
         </if>
-        <if test="assetStatus != null and assetStatus != ''">
+        <if test="assetStatus != null">
             and asset_status = #{assetStatus}
         </if>
         <if test=" categoryModels != null and categoryModels.length > 0">
@@ -702,7 +702,7 @@
         <if test=" parentId != null and parentId != ''">
             and parent_id = #{parentId}
         </if>
-        <if test=" admittanceStatus != null and admittanceStatus != ''">
+        <if test=" admittanceStatus != null">
             and admittance_status = #{admittanceStatus}
         </if>
         <if test=" number != null and number != ''">
@@ -740,7 +740,7 @@
         <if test=" assetSource != null and assetSource != ''">
             and asset_source = #{assetSource }
         </if>
-        <if test=" importanceDegree != null and importanceDegree != ''">
+        <if test=" importanceDegree != null">
             and importance_degree = #{importanceDegree }
         </if>
         <if test=" timeType != null and timeType == 2  and beginTime != null">
