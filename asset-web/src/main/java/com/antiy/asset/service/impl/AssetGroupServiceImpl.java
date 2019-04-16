@@ -182,16 +182,17 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         // 移除资产后，更新资产主表中对应资产组字段
         assetNameBuilder.setLength(0);
         if (ArrayUtils.isNotEmpty(request.getDeleteAssetIds())) {
-            for (String assetId : request.getDeleteAssetIds()) {
-                List<String> assetGroupNameList = assetGroupRelationDao
-                    .findAssetGroupNameByAssetId(assetId);
-                String assetGroupName = assetGroupNameList.toString();
-                updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
-            }
+
             RemoveAssociateAssetRequest removeAssociateAssetRequest = new RemoveAssociateAssetRequest();
             removeAssociateAssetRequest.setGroupId(request.getId());
             removeAssociateAssetRequest.setRemoveAsset(request.getDeleteAssetIds());
             assetGroupRelationDao.batchDeleteById(removeAssociateAssetRequest);
+
+            for (String assetId : request.getDeleteAssetIds()) {
+                List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
+                String assetGroupName = assetGroupNameList.toString();
+                updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
+            }
         }
 
 
