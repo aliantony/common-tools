@@ -1829,7 +1829,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (safetyEquipment != null && StringUtils.isNotBlank(safetyEquipment.getId())) {
                         // ip 变更，不重复
                         AssetSafetyEquipment byId = assetSafetyEquipmentDao.getById(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
-                        if (!byId.getIp().equals(safetyEquipment.getIp())) {
+                        if (byId != null && !byId.getIp().equals(safetyEquipment.getIp())) {
                             assetQuery.setIp(safetyEquipment.getIp());
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
                             BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "安全设备IP不能重复");
