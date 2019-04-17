@@ -1067,10 +1067,12 @@
         case
         when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
         replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
-        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment where asset_id = a.id and status = 1) is
+        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        where asset_id = a.id and status = 1) is
         not
         null then
-        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment where asset_id = a.id and status = 1)
+        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        where asset_id = a.id and status = 1)
         when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
         else '' end as ip,
@@ -1167,10 +1169,12 @@
         case
         when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
         replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
-        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment where asset_id = a.id and status = 1) is
+        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        where asset_id = a.id and status = 1) is
         not
         null then
-        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment where asset_id = a.id and status = 1)
+        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        where asset_id = a.id and status = 1)
         when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
         else '' end as ip,
@@ -1212,15 +1216,13 @@
         select manufacturer, count(manufacturer) num from
         <include refid="Table_Name"></include>
         where status=1
-        and
-        asset_status!=9 and manufacturer is not null or manufacturer &lt;&gt; ''
         <if test="areaIds != null and areaIds.size() > 0">
             and area_id in
             <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
                 #{areaId}
             </foreach>
         </if>
-        <if test=" assetStatusList != null">
+        <if test=" assetStatusList != null and assetStatusList.size() > 0">
             and asset_status in
             <foreach collection="assetStatusList" open="(" close=")" separator="," index="index" item="item">
                 #{item}
@@ -1347,7 +1349,7 @@
         select count(distinct (t1.asset_id)) from asset_patch_rel t1
         inner join patch p ON t1.patch_id = p.id
         inner join asset t2
-         on t1.asset_id = t2.id where  t1.patch_status != 5
+        on t1.asset_id = t2.id where t1.patch_status != 5
         <if test="areaIds != null and areaIds.size() > 0">
             and t2.area_id IN
             <foreach collection="areaIds" open="(" close=")" separator="," item="item">
@@ -1362,7 +1364,7 @@
     </select>
 
     <select id="queryAllAssetVulCount" resultType="java.lang.Integer">
-         select count(distinct (t1.asset_id)) from  asset_vul_rel t1
+        select count(distinct (t1.asset_id)) from asset_vul_rel t1
         inner JOIN vul v ON t1.vul_id = v.id
         inner join asset t2 on t1.asset_id = t2.id where t1.vul_status != 5
         <if test="areaIds != null and areaIds.size() > 0">
@@ -1371,7 +1373,7 @@
                 #{item}
             </foreach>
         </if>
-            and t1.status = 1
+        and t1.status = 1
         and t2.status = 1
         AND v.STATUS = 1
         AND v.vul_status = 4
