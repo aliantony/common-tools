@@ -1566,7 +1566,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                                 AssetNetworkCard byId = assetNetworkCardDao.getById(assetNetworkCard.getStringId());
                                 if (!byId.getIpAddress().equals(assetNetworkCard.getIpAddress())) {
-                                    ParamterExceptionUtils
+                                    BusinessExceptionUtils
                                         .isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null, null), "IP不能重复！");
                                     List<Integer> integers = new ArrayList<>();
                                     integers.add(Integer.parseInt(asset.getStringId()));
@@ -1790,7 +1790,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         if (!byId.getInnerIp().equals(networkEquipment.getInnerIp())) {
                             assetQuery.setIp(networkEquipment.getInnerIp());
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(networkEquipment.getId()));
-                            ParamterExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "网络设备IP重复");
+                            BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "网络设备IP不能重复");
                             List<Integer> integers = new ArrayList<>();
                             integers.add(Integer.parseInt(asset.getStringId()));
                             assetLinkRelationDao.deleteRelationByAssetId(integers);
@@ -1815,7 +1815,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (safetyEquipment != null && StringUtils.isNotBlank(safetyEquipment.getId())) {
                         assetQuery.setIp(safetyEquipment.getIp());
                         assetQuery.setExceptId(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
-                        ParamterExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "安全设备IP重复");
+                        BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "安全设备IP不能重复");
                         AssetSafetyEquipment assetSafetyEquipment = BeanConvert.convertBean(safetyEquipment,
                             AssetSafetyEquipment.class);
                         assetSafetyEquipment.setAssetId(asset.getStringId());
@@ -1907,8 +1907,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     logger.info("资产变更失败:", e);
                     transactionStatus.setRollbackOnly();
-                    ParamterExceptionUtils.isTrue(!StringUtils.equals("IP不能重复！", e.getMessage()), "IP不能重复！");
-                    ParamterExceptionUtils.isTrue(!StringUtils.equals("内网IP不能重复！", e.getMessage()), "内网IP不能重复！");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals("IP不能重复", e.getMessage()), "IP不能重复");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals("网络设备IP不能重复", e.getMessage()), "网络设备IP不能重复");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals("安全设备IP不能重复", e.getMessage()), "安全设备IP不能重复");
                     throw new BusinessException("资产变更失败");
                 }
             }
