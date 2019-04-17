@@ -176,6 +176,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
         AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
         AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest();
+        Long currentTimeMillis = System.currentTimeMillis();
         Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -529,7 +530,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setContent("登记硬件资产");
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-                    assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+                    assetOperationRecord.setGmtCreate(currentTimeMillis);
                     assetOperationRecord.setAreaId(assetOuterRequestToChangeRecord.getAsset().getAreaId());
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return Integer.parseInt(aid);
@@ -579,7 +580,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .setSuggest(assetOthersRequest == null ? request.getAsset().getMemo() : assetOthersRequest.getMemo());
             configRegisterRequest.setConfigUserIds(request.getManualStartActivityRequest().getConfigUserIds());
             configRegisterRequest.setRelId(String.valueOf(id));
-            ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest);
+            ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest,
+                currentTimeMillis);
             if (null == actionResponseAsset
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), id, null,
@@ -1456,6 +1458,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
         Asset currentAsset = assetDao.getById(assetOuterRequest.getAsset().getId());
         AssetQuery assetQuery = new AssetQuery();
+        Long currentTimeMillis = System.currentTimeMillis();
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -1917,7 +1920,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
                     assetOperationRecord.setOperateUserName(
                         LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getName() : "");
-                    assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+                    assetOperationRecord.setGmtCreate(currentTimeMillis);
                     assetOperationRecord.setProcessResult(1);
                     assetOperationRecord.setAreaId(asset.getAreaId());
                     assetOperationRecordDao.insert(assetOperationRecord);
@@ -1961,7 +1964,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     configRegisterRequest.setRelId(String.valueOf(assetId));
                     // 不重复记录操作记录
                     configRegisterRequest.setHard(true);
-                    ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest);
+                    ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest,
+                        currentTimeMillis);
 
                     if (null == actionResponseAsset
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {

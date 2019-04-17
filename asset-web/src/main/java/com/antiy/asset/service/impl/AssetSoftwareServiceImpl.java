@@ -714,16 +714,18 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     @Override
-    public ActionResponse configRegister(ConfigRegisterRequest request) throws Exception {
-        Long gmtCreateTime = System.currentTimeMillis();
-        Scheme scheme = convertScheme(request, gmtCreateTime);
+    public ActionResponse configRegister(ConfigRegisterRequest request, Long currentTimeMillis) throws Exception {
+        if (currentTimeMillis == null) {
+            currentTimeMillis = System.currentTimeMillis();
+        }
+        Scheme scheme = convertScheme(request, currentTimeMillis);
 
         // 2.保存配置建议信息
         schemeDao.insert(scheme);
 
         // 1.保存操作流程
         if (request.getHard() == null) {
-            assetOperationRecordDao.insert(convertRecord(request, scheme, gmtCreateTime));
+            assetOperationRecordDao.insert(convertRecord(request, scheme, currentTimeMillis));
         }
 
         // 3.调用配置接口
@@ -737,7 +739,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         if (LoginUserUtil.getLoginUser() != null) {
             // 软件安装
             request.setSource("2");
-            ActionResponse actionResponse = this.configRegister(request);
+            ActionResponse actionResponse = this.configRegister(request, null);
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
