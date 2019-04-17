@@ -1,15 +1,12 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -204,6 +201,7 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator {
 
     @Override
     public void validate() throws RequestParamValidateException {
-            ParamterExceptionUtils.isTrue(!(manualStartActivityRequest == null && activityHandleRequest == null), "流程数据不能为空");
+        // ParamterExceptionUtils.isTrue(!(manualStartActivityRequest == null && activityHandleRequest == null),
+        // "流程数据不能为空");
     }
 }
