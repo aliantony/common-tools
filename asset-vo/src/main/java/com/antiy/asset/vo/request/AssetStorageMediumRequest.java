@@ -6,6 +6,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -37,7 +38,7 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      * 单机磁盘数
      */
     @ApiModelProperty("单机磁盘数")
-    @Size(message = "单机磁盘数长度不能超过11位", max = 11)
+    @Max(value = 9999, message = "单机磁盘数大小不超过9999")
     private Integer diskNumber;
     /**
      * 高速缓存
@@ -67,7 +68,7 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      * 驱动器数量
      */
     @ApiModelProperty("驱动器数量")
-    @Size(message = "驱动器数量不能超过11位", max = 11)
+    @Max(value = 9999, message = "驱动器数量不超过9999")
     private Integer driverNumber;
     /**
      * 固件

@@ -6,6 +6,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -36,14 +37,14 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * 接口数目
      */
     @ApiModelProperty("接口数目")
-    @Size(message = "接口数目长度不能超过4位", max = 4)
+    @Max(value = 9999, message = "网口数目大小不超过9999")
     private Integer interfaceSize;
     /**
      * 端口数目
      */
     @ApiModelProperty("端口数目")
     @NotNull(message = "网口数目不为空")
-    @Size(message = "网口数目长度不能超过11位", max = 11)
+    @Max(value = 99999999, message = "网口数目大小不超过99999999")
     private Integer portSize;
     /**
      * 是否无线:0-否,1-是
@@ -76,13 +77,13 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * 预计带宽(M)
      */
     @ApiModelProperty("预计带宽(M)")
-    @Size(message = "预计带宽长度不能超过11位", max = 11)
+    @Max(value = 99999999, message = "预计带宽大小不超过99999999")
     private Integer expectBandwidth;
     /**
      * 配置寄存器(GB)
      */
     @ApiModelProperty("配置寄存器(GB)")
-    @Size(message = "配置寄存器产长度不能超过11位", max = 11)
+    @Max(value = 99999999, message = "配置寄存器大小不超过99999999")
     private Integer register;
     /**
      * DRAM大小
@@ -121,7 +122,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * cpu大小
      */
     @ApiModelProperty("cpu大小")
-    @Size(message = "cpu大小长度不能超过11位", max = 11)
+    @Max(value = 99999999, message = "cpu大小不超过99999999")
     private Integer cpuSize;
 
     public String getCpuVersion() {

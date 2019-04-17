@@ -1,12 +1,10 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @auther: zhangbing
@@ -32,7 +30,7 @@ public class ManualStartActivityRequest {
      * 表单数据
      */
     @ApiModelProperty(value = "流程表单数据,JSON串")
-    @NotBlank(message = "流程处理数据不能为空")
+    // @NotBlank(message = "流程处理数据不能为空")
     private String formData;
 
     @ApiModelProperty(value = "配置人员")
