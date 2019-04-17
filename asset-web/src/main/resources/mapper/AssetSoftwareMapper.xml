@@ -499,7 +499,7 @@
         <if test=" softwareStatus != null">
             and software_status = #{softwareStatus}
         </if>
-        <if test=" manufacturer != null">
+        <if test=" manufacturer != null and manufacturer !='' ">
             and manufacturer = #{manufacturer}
         </if>
 
@@ -640,7 +640,7 @@
                     and b.status = 1
                 </if>
                 <include refid="Multiple_Query"></include>
-                <if test=" multipleQuery != null">
+                <if test=" multipleQuery != null and multipleQuery != ''">
                     and (
                     asset_software.name LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_') ,'%')
                     or asset_software.serial LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_') ,'%')
@@ -853,13 +853,13 @@
         asset_software a
         left join asset_software_relation b on a.id = b.software_id
         where 1 = 1
-        <if test=" multipleQuery != null">
+        <if test=" multipleQuery != null and multipleQuery != '' ">
             and a.name LIKE CONCAT('%',#{multipleQuery},'%')
         </if>
         <if test=" categoryModel != null">
             and category_model = #{categoryModel }
         </if>
-        <if test=" softwareStatus != null">
+        <if test=" softwareStatus != null ">
             and software_status in
             <foreach collection="softwareStatusList" item="item" separator="," open="(" close=")">
                 #{item}
