@@ -224,6 +224,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                         asset.setGmtCreate(System.currentTimeMillis());
                         asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                        asset.setFirstEnterNett(System.currentTimeMillis());
                         assetDao.insert(asset);
                         AssetRequest assetRequest = assetToRequestConverter.convert(asset, AssetRequest.class);
                         assetRequest.setId(DataTypeUtils.integerToString(asset.getId()));
@@ -1366,6 +1367,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 com.antiy.asset.util.DataTypeUtils.stringToInteger(asset.getResponsibleUserId()));
             SysUser sysUser = redisUtil.getObject(key, SysUser.class);
             assetResponse.setResponsibleUserName(sysUser != null ? sysUser.getName() : null);
+        }
+        // 设置区域
+        if (StringUtils.isNotEmpty(asset.getAreaId())) {
+            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                DataTypeUtils.stringToInteger(asset.getAreaId()));
+            SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+            assetResponse.setAreaName(sysArea != null ? sysArea.getFullName() : null);
         }
 
         // 设置操作系统名
