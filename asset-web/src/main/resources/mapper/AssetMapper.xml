@@ -874,20 +874,6 @@
     </select>
 
     <select id="findCountIp" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
-        /*SELECT
-        count(1) count
-        FROM
-        asset a
-        INNER JOIN asset_network_equipment b
-        INNER JOIN asset_safety_equipment d
-        INNER JOIN asset_network_card c
-        WHERE
-        b.inner_ip = #{ip}
-        OR c.ip_address = #{ip} OR d.ip = #{ip}
-        AND a.`status` = 1 AND a.status !=9
-        AND c.`status` = 1
-        AND d.`status` = 1
-        AND b.`status` = 1*/
         SELECT
         count(1)
         FROM
