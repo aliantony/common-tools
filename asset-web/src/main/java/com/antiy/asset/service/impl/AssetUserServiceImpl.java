@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.utils.DataTypeUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -15,7 +16,7 @@ import com.antiy.asset.convert.UserSelectResponseConverter;
 import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.IAssetUserService;
-import com.antiy.asset.util.DataTypeUtils;
+
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
@@ -88,7 +89,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
             assetUser.stream().forEach(a -> {
                 try {
                     String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                        com.antiy.common.utils.DataTypeUtils.stringToInteger(a.getAddress()));
+                        DataTypeUtils.stringToInteger(a.getAddress()));
                     SysArea sysArea = redisUtil.getObject(key, SysArea.class);
                     a.setAddress(sysArea.getFullName());
                 } catch (Exception e) {
