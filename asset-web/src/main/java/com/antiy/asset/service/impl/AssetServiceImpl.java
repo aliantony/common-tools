@@ -2035,7 +2035,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         otherDeviceEntity.setName("触摸查询一体机");
         otherDeviceEntity.setMemo("宣传展览导视查询畅销触控一体机，采用FULL HD全视角高清IPS硬屏");
         otherDeviceEntity.setManufacturer("捷显");
-        otherDeviceEntity.setWarranty(System.currentTimeMillis());
+        otherDeviceEntity.setWarranty("2年");
         otherDeviceEntity.setNumber("000001");
         otherDeviceEntity.setImportanceDegree("1");
         dataList.add(otherDeviceEntity);
@@ -2057,7 +2057,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         safetyEquipmentEntiy.setDueDate(System.currentTimeMillis());
         safetyEquipmentEntiy.setEmail("32535694@163.com");
         safetyEquipmentEntiy.setFirmwareVersion("2.0");
-        safetyEquipmentEntiy.setWarranty(System.currentTimeMillis());
+        safetyEquipmentEntiy.setWarranty("2年");
         safetyEquipmentEntiy.setManufacturer("安天");
         safetyEquipmentEntiy.setName("安天镇关威胁阻断系统   ");
         safetyEquipmentEntiy
@@ -2104,7 +2104,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         storageDeviceEntity.setNumber("000001");
         storageDeviceEntity.setSlotType("1");
         storageDeviceEntity.setTelephone("13541771234");
-        storageDeviceEntity.setWarranty(System.currentTimeMillis());
+        storageDeviceEntity.setWarranty("2年");
         storageDeviceEntity.setRaidSupport("0，1，5，6，10 ");
         storageDeviceEntity.setUser("留小查");
         storageDeviceEntity.setSerial("ANFRWGDFETYRYF");
@@ -2125,7 +2125,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private List<NetworkDeviceEntity> initNetworkData() {
         List<NetworkDeviceEntity> dataList = new ArrayList<>();
         NetworkDeviceEntity networkDeviceEntity = new NetworkDeviceEntity();
-        networkDeviceEntity.setWarranty(System.currentTimeMillis());
+        networkDeviceEntity.setWarranty("2年");
         networkDeviceEntity.setButDate(System.currentTimeMillis());
         networkDeviceEntity.setCpuSize(4);
         networkDeviceEntity.setArea("成都市");
@@ -2176,13 +2176,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         computeDeviceEntity.setArea("成都市");
         computeDeviceEntity.setName("ThinkPad X1 隐士");
         computeDeviceEntity.setLocation("成都市锦江区");
-        computeDeviceEntity.setWarranty(System.currentTimeMillis());
+        computeDeviceEntity.setWarranty("2");
         computeDeviceEntity.setDescription("搭载第八代英特尔®酷睿TM i7处理器，配备双内存插槽，最高支持64GB内存扩展");
         computeDeviceEntity.setDueTime(System.currentTimeMillis());
         computeDeviceEntity.setImportanceDegree("1");
         computeDeviceEntity.setSerial("ADES-WRGD-EREW-TERF");
         computeDeviceEntity.setHouseLocation("501机房004号");
-        computeDeviceEntity.setWarranty(System.currentTimeMillis());
         computeDeviceEntity.setTelephone("13541771234");
         computeDeviceEntity.setNumber("000001");
         computeDeviceEntity.setUser("留小查");

@@ -159,7 +159,7 @@ public class AssetResponse extends BaseResponse {
      * 保修期
      */
     @ApiModelProperty("保修期")
-    private Long                     warranty;
+    private String                   warranty;
     /**
      * 资产准入状态
      */
@@ -206,7 +206,7 @@ public class AssetResponse extends BaseResponse {
      * 安装方式1人工2自动
      */
     @ApiModelProperty("安装方式1人工2自动")
-    private String                  installTypeName;
+    private String                   installTypeName;
     /**
      * 资产流程信息
      */
@@ -227,7 +227,9 @@ public class AssetResponse extends BaseResponse {
     }
 
     public void setInstallTypeName(String installTypeName) {
-        this.installTypeName = InstallType.getInstallTypeByCode(installType) != null ? InstallType.getInstallTypeByCode(installType).getStatus() : "";
+        this.installTypeName = InstallType.getInstallTypeByCode(installType) != null
+            ? InstallType.getInstallTypeByCode(installType).getStatus()
+            : "";
     }
 
     public String getVulCount() {
@@ -494,11 +496,11 @@ public class AssetResponse extends BaseResponse {
         this.buyDate = buyDate;
     }
 
-    public Long getWarranty() {
+    public String getWarranty() {
         return warranty;
     }
 
-    public void setWarranty(Long warranty) {
+    public void setWarranty(String warranty) {
         this.warranty = warranty;
     }
 

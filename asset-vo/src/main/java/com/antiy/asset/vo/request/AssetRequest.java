@@ -188,7 +188,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 保修期
      */
     @ApiModelProperty("保修期")
-    private Long                    warranty;
+    private String                    warranty;
     /**
      * 资产准入状态
      */
@@ -388,11 +388,11 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
         this.buyDate = buyDate;
     }
 
-    public Long getWarranty() {
+    public String getWarranty() {
         return warranty;
     }
 
-    public void setWarranty(Long warranty) {
+    public void setWarranty(String warranty) {
         this.warranty = warranty;
     }
 

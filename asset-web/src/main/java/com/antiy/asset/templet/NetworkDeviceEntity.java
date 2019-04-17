@@ -173,7 +173,7 @@ public class NetworkDeviceEntity {
      * 保修期
      */
     @ExcelField(value = "warranty", align = 1, title = "保修期", isDate = true)
-    private Long    warranty;
+    private String    warranty;
     /**
      * 描述
      */
@@ -388,11 +388,11 @@ public class NetworkDeviceEntity {
         this.dueDate = dueDate;
     }
 
-    public Long getWarranty() {
+    public String getWarranty() {
         return warranty;
     }
 
-    public void setWarranty(Long warranty) {
+    public void setWarranty(String warranty) {
         this.warranty = warranty;
     }
 
