@@ -1824,9 +1824,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 8. 更新安全设备信息
                     AssetSafetyEquipmentRequest safetyEquipment = assetOuterRequest.getSafetyEquipment();
                     if (safetyEquipment != null && StringUtils.isNotBlank(safetyEquipment.getId())) {
-                        assetQuery.setIp(safetyEquipment.getIp());
-                        assetQuery.setExceptId(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
-                        BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "安全设备IP不能重复");
+                        // ip 变更，不重复
+                        AssetSafetyEquipment byId = assetSafetyEquipmentDao.getById(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
+                        if (!byId.getIp().equals(safetyEquipment.getIp())) {
+                            assetQuery.setIp(safetyEquipment.getIp());
+                            assetQuery.setExceptId(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
+                            BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "安全设备IP不能重复");
+                        }
                         AssetSafetyEquipment assetSafetyEquipment = BeanConvert.convertBean(safetyEquipment,
                             AssetSafetyEquipment.class);
                         assetSafetyEquipment.setAssetId(asset.getStringId());

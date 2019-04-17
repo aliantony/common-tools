@@ -875,21 +875,12 @@
 
     <select id="findCountIp" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
-        count(1)
+        count(1) count
         FROM
         asset a
         left JOIN asset_network_equipment b on a.id = b.asset_id and b.`status` = 1
-        <if test="exceptId != null">
-            and b.id != #{exceptId}
-        </if>
         left JOIN asset_safety_equipment d on a.id = d.asset_id AND d.`status` = 1
-        <if test="exceptId != null">
-            and d.id != #{exceptId}
-        </if>
         left JOIN asset_network_card c on a.id = c.asset_id and c.`status` = 1
-        <if test="exceptId != null">
-            and c.id != #{exceptId}
-        </if>
         WHERE
         (b.inner_ip = #{ip}
         OR c.ip_address = #{ip} OR d.ip = #{ip})
