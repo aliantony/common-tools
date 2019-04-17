@@ -205,6 +205,18 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty(value = "资产组ID")
     @Encode(message = "资产组ID解密失败")
     private String        groupId;
+    /**
+     * 需要排除的id
+     */
+    private Integer exceptId;
+
+    public Integer getExceptId() {
+        return exceptId;
+    }
+
+    public void setExceptId(Integer exceptId) {
+        this.exceptId = exceptId;
+    }
 
     private List<String>  existAssociateIds;
 

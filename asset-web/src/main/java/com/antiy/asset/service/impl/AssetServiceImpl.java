@@ -1444,6 +1444,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息不能为空");
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
+        AssetQuery assetQuery = new AssetQuery();
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -1477,8 +1478,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (!assetGroupRelations.isEmpty()) {
                         assetGroupRelationDao.insertBatch(assetGroupRelations);
                     }
-                    // asset.setAssetGroup(stringBuffer.toString());
-                    asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
                     // 1. 更新资产主表
@@ -1557,6 +1556,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetNetworkCard> insertNetworkList = Lists.newArrayList();
                         List<AssetNetworkCard> updateNetworkList = Lists.newArrayList();
                         for (AssetNetworkCard assetNetworkCard : assetNetworkCardList) {
+                            assetQuery.setIp(assetNetworkCard.getIpAddress());
+                            assetQuery.setExceptId(assetNetworkCard.getId());
+                            ParamterExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "网卡IP重复");
                             assetNetworkCard.setStatus(1);
                             assetNetworkCard.setAssetId(asset.getStringId());
                             // 修改的
@@ -1786,8 +1788,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // ip 变更，不重复 ，且删除关联关系
                         AssetNetworkEquipment byId = assetNetworkEquipmentDao.getById(networkEquipment.getId());
                         if (!byId.getInnerIp().equals(networkEquipment.getInnerIp())) {
-                            ParamterExceptionUtils.isTrue(!CheckRepeatIp(assetNetworkEquipment.getInnerIp(), 1, null),
-                                "内网IP不能重复！");
+                            assetQuery.setIp(networkEquipment.getInnerIp());
+                            assetQuery.setExceptId(DataTypeUtils.stringToInteger(networkEquipment.getId()));
+                            ParamterExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "网络设备IP重复");
                             List<Integer> integers = new ArrayList<>();
                             integers.add(Integer.parseInt(asset.getStringId()));
                             assetLinkRelationDao.deleteRelationByAssetId(integers);
@@ -1810,6 +1813,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 8. 更新安全设备信息
                     AssetSafetyEquipmentRequest safetyEquipment = assetOuterRequest.getSafetyEquipment();
                     if (safetyEquipment != null && StringUtils.isNotBlank(safetyEquipment.getId())) {
+                        assetQuery.setIp(safetyEquipment.getIp());
+                        assetQuery.setExceptId(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
+                        ParamterExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "安全设备IP重复");
                         AssetSafetyEquipment assetSafetyEquipment = BeanConvert.convertBean(safetyEquipment,
                             AssetSafetyEquipment.class);
                         assetSafetyEquipment.setAssetId(asset.getStringId());
