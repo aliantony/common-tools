@@ -1801,7 +1801,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             AssetNetworkEquipment.class);
                         // ip 变更，不重复 ，且删除关联关系
                         AssetNetworkEquipment byId = assetNetworkEquipmentDao.getById(networkEquipment.getId());
-                        if (!byId.getInnerIp().equals(networkEquipment.getInnerIp())) {
+                        if (byId != null && !byId.getInnerIp().equals(networkEquipment.getInnerIp())) {
                             assetQuery.setIp(networkEquipment.getInnerIp());
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(networkEquipment.getId()));
                             BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "网络设备IP不能重复");
