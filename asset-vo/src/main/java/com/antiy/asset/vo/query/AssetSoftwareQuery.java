@@ -440,9 +440,9 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     @Override
     public void validate() throws RequestParamValidateException {
         if (queryTime != null) {
-            ParamterExceptionUtils.isNull(beginTime, "开始时间为空");
-            ParamterExceptionUtils.isNull(endTime, "结束时间为空");
-            ParamterExceptionUtils.isTrue(endTime > beginTime, "结束时间必须大于开始时间");
+            if (beginTime != null && endTime != null) {
+                ParamterExceptionUtils.isTrue(endTime > beginTime, "结束时间必须大于开始时间");
+            }
         }
     }
 
