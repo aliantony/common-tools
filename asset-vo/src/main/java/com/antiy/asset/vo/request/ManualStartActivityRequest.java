@@ -1,9 +1,9 @@
 package com.antiy.asset.vo.request;
 
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.util.List;
 
 /**
  * @auther: zhangbing
@@ -34,6 +34,20 @@ public class ManualStartActivityRequest {
 
     @ApiModelProperty(value = "配置人员")
     private List<String> configUserIds;
+
+    /**
+     * 配置建议(退役再登记时使用)
+     */
+    @ApiModelProperty(value = "置建议(退役再登记时使用)")
+    private String       suggest;
+
+    public String getSuggest() {
+        return suggest;
+    }
+
+    public void setSuggest(String suggest) {
+        this.suggest = suggest;
+    }
 
     public List<String> getConfigUserIds() {
         return configUserIds;
