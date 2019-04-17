@@ -103,7 +103,7 @@ public class ComputeDeviceEntity {
      * 保修
      */
     @ExcelField(value = "warranty", align = 1, title = "保修期", isDate = true)
-    private Long    warranty;
+    private String    warranty;
 
     /**
      * memo
@@ -410,11 +410,11 @@ public class ComputeDeviceEntity {
         this.dueTime = dueTime;
     }
 
-    public Long getWarranty() {
+    public String getWarranty() {
         return warranty;
     }
 
-    public void setWarranty(Long warranty) {
+    public void setWarranty(String warranty) {
         this.warranty = warranty;
     }
 

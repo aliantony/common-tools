@@ -221,7 +221,7 @@ public class Asset extends BaseEntity {
      * 保修期
      */
     @ApiModelProperty("保修期")
-    private Long              warranty;
+    private String            warranty;
     /**
      * 创建时间
      */
@@ -258,59 +258,25 @@ public class Asset extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Asset{" +
-                "categoryModelName='" + categoryModelName + '\'' +
-                ", hardDisk='" + hardDisk + '\'' +
-                ", memory='" + memory + '\'' +
-                ", cpu='" + cpu + '\'' +
-                ", networkCard='" + networkCard + '\'' +
-                ", parentId='" + parentId + '\'' +
-                ", ip='" + ip + '\'' +
-                ", mac='" + mac + '\'' +
-                ", assetGroup='" + assetGroup + '\'' +
-                ", number='" + number + '\'' +
-                ", name='" + name + '\'' +
-                ", ethernetPort=" + ethernetPort +
-                ", serialPort=" + serialPort +
-                ", installType=" + installType +
-                ", installTypeName='" + installTypeName + '\'' +
-                ", serial='" + serial + '\'' +
-                ", areaId='" + areaId + '\'' +
-                ", areaName='" + areaName + '\'' +
-                ", categoryModel='" + categoryModel + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", assetStatus=" + assetStatus +
-                ", admittanceStatus=" + admittanceStatus +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", operationSystemName='" + operationSystemName + '\'' +
-                ", systemBit=" + systemBit +
-                ", responsibleUserId='" + responsibleUserId + '\'' +
-                ", responsibleUserName='" + responsibleUserName + '\'' +
-                ", location='" + location + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", houseLocation='" + houseLocation + '\'' +
-                ", firmwareVersion='" + firmwareVersion + '\'' +
-                ", softwareVersion='" + softwareVersion + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", contactTel='" + contactTel + '\'' +
-                ", email='" + email + '\'' +
-                ", assetSource=" + assetSource +
-                ", importanceDegree=" + importanceDegree +
-                ", importanceDegreeName='" + importanceDegreeName + '\'' +
-                ", describle='" + describle + '\'' +
-                ", tags='" + tags + '\'' +
-                ", firstEnterNett=" + firstEnterNett +
-                ", serviceLife=" + serviceLife +
-                ", buyDate=" + buyDate +
-                ", warranty=" + warranty +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", memo='" + memo + '\'' +
-                ", createUser=" + createUser +
-                ", modifyUser=" + modifyUser +
-                ", status=" + status +
-                '}';
+        return "Asset{" + "categoryModelName='" + categoryModelName + '\'' + ", hardDisk='" + hardDisk + '\''
+               + ", memory='" + memory + '\'' + ", cpu='" + cpu + '\'' + ", networkCard='" + networkCard + '\''
+               + ", parentId='" + parentId + '\'' + ", ip='" + ip + '\'' + ", mac='" + mac + '\'' + ", assetGroup='"
+               + assetGroup + '\'' + ", number='" + number + '\'' + ", name='" + name + '\'' + ", ethernetPort="
+               + ethernetPort + ", serialPort=" + serialPort + ", installType=" + installType + ", installTypeName='"
+               + installTypeName + '\'' + ", serial='" + serial + '\'' + ", areaId='" + areaId + '\'' + ", areaName='"
+               + areaName + '\'' + ", categoryModel='" + categoryModel + '\'' + ", manufacturer='" + manufacturer + '\''
+               + ", assetStatus=" + assetStatus + ", admittanceStatus=" + admittanceStatus + ", operationSystem='"
+               + operationSystem + '\'' + ", operationSystemName='" + operationSystemName + '\'' + ", systemBit="
+               + systemBit + ", responsibleUserId='" + responsibleUserId + '\'' + ", responsibleUserName='"
+               + responsibleUserName + '\'' + ", location='" + location + '\'' + ", latitude='" + latitude + '\''
+               + ", longitude='" + longitude + '\'' + ", houseLocation='" + houseLocation + '\'' + ", firmwareVersion='"
+               + firmwareVersion + '\'' + ", softwareVersion='" + softwareVersion + '\'' + ", uuid='" + uuid + '\''
+               + ", contactTel='" + contactTel + '\'' + ", email='" + email + '\'' + ", assetSource=" + assetSource
+               + ", importanceDegree=" + importanceDegree + ", importanceDegreeName='" + importanceDegreeName + '\''
+               + ", describle='" + describle + '\'' + ", tags='" + tags + '\'' + ", firstEnterNett=" + firstEnterNett
+               + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty=" + warranty + ", gmtCreate="
+               + gmtCreate + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
+               + ", modifyUser=" + modifyUser + ", status=" + status + '}';
     }
 
     public String getAreaName() {
@@ -629,11 +595,11 @@ public class Asset extends BaseEntity {
         this.buyDate = buyDate;
     }
 
-    public Long getWarranty() {
+    public String getWarranty() {
         return warranty;
     }
 
-    public void setWarranty(Long warranty) {
+    public void setWarranty(String warranty) {
         this.warranty = warranty;
     }
 
