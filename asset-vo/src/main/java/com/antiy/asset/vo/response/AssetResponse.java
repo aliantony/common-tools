@@ -2,6 +2,7 @@ package com.antiy.asset.vo.response;
 
 import java.util.List;
 
+import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.common.encoder.Encode;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -202,6 +203,11 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("安装方式1人工2自动")
     private Integer                  installType;
     /**
+     * 安装方式1人工2自动
+     */
+    @ApiModelProperty("安装方式1人工2自动")
+    private String                  installTypeName;
+    /**
      * 资产流程信息
      */
     @ApiModelProperty("资产流程信息")
@@ -215,6 +221,14 @@ public class AssetResponse extends BaseResponse {
 
     @ApiModelProperty(value = "告警个数")
     private String                   alarmCount;
+
+    public String getInstallTypeName() {
+        return installTypeName;
+    }
+
+    public void setInstallTypeName(String installTypeName) {
+        this.installTypeName = InstallType.getInstallTypeByCode(installType) != null ? InstallType.getInstallTypeByCode(installType).getStatus() : "";
+    }
 
     public String getVulCount() {
         return vulCount;
