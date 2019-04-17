@@ -1213,7 +1213,7 @@
         <include refid="Table_Name"></include>
         where status=1
         and
-        asset_status!=9 and manufacturer is not null
+        asset_status!=9 and manufacturer is not null or manufacturer &lt;&gt; ''
         <if test="areaIds != null and areaIds.size() > 0">
             and area_id in
             <foreach item="areaId" collection="areaIds" open="(" separator="," close=")">
