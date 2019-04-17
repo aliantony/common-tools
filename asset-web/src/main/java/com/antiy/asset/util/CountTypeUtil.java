@@ -1,15 +1,16 @@
 package com.antiy.asset.util;
 
-import com.antiy.asset.vo.response.AssetCountColumnarResponse;
-import com.antiy.asset.vo.response.AssetCountResponse;
-import com.antiy.asset.vo.response.EnumCountResponse;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+
+import com.antiy.asset.vo.response.AssetCountColumnarResponse;
+import com.antiy.asset.vo.response.AssetCountResponse;
+import com.antiy.asset.vo.response.EnumCountResponse;
 
 /**
  * 统计部分的数据格式转换类
@@ -97,6 +98,8 @@ public class CountTypeUtil {
                     sum = sum + (Long) map.get("value");
                     other.add((String) map.get("key"));
                 }
+            } else {
+                sum += (Long) map.get("value");
             }
         }
         if (sum != 0) {

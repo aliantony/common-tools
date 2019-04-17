@@ -3,7 +3,6 @@ package com.antiy.asset.vo.request;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -45,7 +44,7 @@ public class ManualStartActivityRequest {
     }
 
     @ApiModelProperty(value = "流程定义Id")
-    @NotNull(message = "流程定义Id不能为空")
+    // @NotNull(message = "流程定义Id不能为空")
     private String processDefinitionKey;
 
     public String getAssignee() {
