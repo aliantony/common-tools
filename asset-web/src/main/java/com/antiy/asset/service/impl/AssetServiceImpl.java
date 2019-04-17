@@ -885,8 +885,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 是否资产组关联资产查询
         if (null != query.getAssociateGroup()) {
             ParamterExceptionUtils.isBlank(query.getGroupId(), "资产组ID不能为空");
-            List<String> associateAssetIdList = assetGroupRelationDao
-                .findAssetIdByAssetGroupId(query.getGroupId());
+            List<String> associateAssetIdList = assetGroupRelationDao.findAssetIdByAssetGroupId(query.getGroupId());
             if (CollectionUtils.isNotEmpty(associateAssetIdList)) {
                 query.setExistAssociateIds(associateAssetIdList);
             }
@@ -1331,8 +1330,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setCategoryModels(ArrayTypeUtil.objectArrayToStringArray(list.toArray()));
         assetQuery.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
-        List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
-        assetQuery.setAssetStatusList(status);
+        // TODO 品类型号统计是否需要排除已退役资产
+        /* List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus(); assetQuery.setAssetStatusList(status); */
         return assetQuery;
     }
 
