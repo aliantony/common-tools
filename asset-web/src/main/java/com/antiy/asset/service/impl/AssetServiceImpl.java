@@ -1269,7 +1269,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<EnumCountResponse> countManufacturer() throws Exception {
         int maxNum = 5;
         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-       // List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
+        // List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
         // update by zhangbing 对于空的厂商和产品确认需要统计，统计的到其他
         List<Map<String, Object>> list = assetDao.countManufacturer(areaIds, null);
         return CountTypeUtil.getEnumCountResponse(maxNum, list);
@@ -1573,14 +1573,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetNetworkCard> insertNetworkList = Lists.newArrayList();
                         List<AssetNetworkCard> updateNetworkList = Lists.newArrayList();
                         for (AssetNetworkCard assetNetworkCard : assetNetworkCardList) {
-                            assetQuery.setIp(assetNetworkCard.getIpAddress());
-                            assetQuery.setExceptId(assetNetworkCard.getId());
-                            ParamterExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "网卡IP重复");
                             assetNetworkCard.setStatus(1);
                             assetNetworkCard.setAssetId(asset.getStringId());
                             // 修改的
                             if (StringUtils.isNotBlank(assetNetworkCard.getStringId())) {
-
+                                // 查询数据库中网卡信息
+                                AssetNetworkCard ank = assetNetworkCardDao.getById(DataTypeUtils.stringToInteger(assetNetworkCard.getStringId()));
+                                if (ank != null && !ank.getIpAddress().equals(assetNetworkCard.getIpAddress())) {
+                                    assetQuery.setIp(assetNetworkCard.getIpAddress());
+                                    ParamterExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "网卡IP重复");
+                                }
                                 AssetNetworkCard byId = assetNetworkCardDao.getById(assetNetworkCard.getStringId());
                                 if (!byId.getIpAddress().equals(assetNetworkCard.getIpAddress())) {
                                     BusinessExceptionUtils
@@ -1595,6 +1597,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetNetworkCard.setGmtModified(System.currentTimeMillis());
                                 updateNetworkList.add(assetNetworkCard);
                             } else {// 新增的
+                                assetQuery.setIp(assetNetworkCard.getIpAddress());
+                                ParamterExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "网卡IP重复");
                                 ParamterExceptionUtils
                                     .isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null, null), "IP不能重复！");
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
@@ -1831,7 +1835,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     AssetSafetyEquipmentRequest safetyEquipment = assetOuterRequest.getSafetyEquipment();
                     if (safetyEquipment != null && StringUtils.isNotBlank(safetyEquipment.getId())) {
                         // ip 变更，不重复
-                        AssetSafetyEquipment byId = assetSafetyEquipmentDao.getById(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
+                        AssetSafetyEquipment byId = assetSafetyEquipmentDao
+                            .getById(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
                         if (byId != null && !byId.getIp().equals(safetyEquipment.getIp())) {
                             assetQuery.setIp(safetyEquipment.getIp());
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
@@ -1951,8 +1956,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 manualStartActivityRequest.setBusinessId(assetId);
                 manualStartActivityRequest.setAssignee(String.valueOf(LoginUserUtil.getLoginUser().getId()));
                 manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
-                ActionResponse actionResponse = activityClient
-                    .manualStartProcess(manualStartActivityRequest);
+                ActionResponse actionResponse = activityClient.manualStartProcess(manualStartActivityRequest);
                 if (null != actionResponse
                     && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
 
