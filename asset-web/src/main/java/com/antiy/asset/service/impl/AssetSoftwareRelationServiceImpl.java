@@ -292,9 +292,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<Integer> areaIdsList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         query.setAreaIds(DataTypeUtils.integerArrayToStringArray(areaIdsList));
         List<Integer> statusList = new ArrayList<>();
-        // 已入网和待退役
+        // 已入网
         statusList.add(AssetStatusEnum.NET_IN.getCode());
-        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
         Integer count = assetSoftwareRelationDao.queryInstallCount(query);
         if (count != 0) {
