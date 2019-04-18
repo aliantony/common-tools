@@ -1,5 +1,8 @@
 package com.antiy.asset.entity;
 
+import com.antiy.asset.vo.enums.ConfigureStatusEnum;
+import com.antiy.asset.vo.enums.InstallStatus;
+import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -64,8 +67,19 @@ public class AssetSoftwareInstall {
     /**
      * 安装状态
      */
+    @ApiModelProperty("安装状态名 1失败、2成功，3安装中 4未安装")
+    private String  installTypeStr;
+
+    /**
+     * 安装状态
+     */
     @ApiModelProperty("安装状态")
     private Integer installStatus;
+    /**
+     * 安装状态
+     */
+    @ApiModelProperty("安装状态名 1失败、2成功，3安装中 4未安装")
+    private String  installStatusStr;
     /**
      * 配置方式
      */
@@ -93,6 +107,35 @@ public class AssetSoftwareInstall {
      */
     @ApiModelProperty("操作系统")
     private String  operationSystem;
+    /**
+     * 配置方式
+     */
+    @ApiModelProperty("配置方式名 1未配置，2配置中，3已配置")
+    private String  configureStatusStr;
+
+    public String getInstallTypeStr() {
+        return installTypeStr;
+    }
+
+    public void setInstallTypeStr(String installTypeStr) {
+        this.installTypeStr = installTypeStr;
+    }
+
+    public String getInstallStatusStr() {
+        return installStatusStr;
+    }
+
+    public void setInstallStatusStr(String installStatusStr) {
+        this.installStatusStr = installStatusStr;
+    }
+
+    public String getConfigureStatusStr() {
+        return configureStatusStr;
+    }
+
+    public void setConfigureStatusStr(String configureStatusStr) {
+        this.configureStatusStr = configureStatusStr;
+    }
 
     public String getUserId() {
         return userId;

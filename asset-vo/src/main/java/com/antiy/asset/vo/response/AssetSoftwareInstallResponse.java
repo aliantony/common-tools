@@ -5,7 +5,10 @@ import com.antiy.asset.vo.enums.InstallStatus;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.common.encoder.Encode;
 
+import com.antiy.common.utils.DataTypeUtils;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.Objects;
 
 public class AssetSoftwareInstallResponse {
     /**
@@ -256,9 +259,11 @@ public class AssetSoftwareInstallResponse {
     }
 
     public void setConfigureStatusStr(String configureStatusStr) {
-        this.configureStatusStr = ConfigureStatusEnum.getConfigureStatusByCode(Integer.valueOf(configureStatus)) != null
-            ? ConfigureStatusEnum.getConfigureStatusByCode(Integer.valueOf(configureStatus)).getName()
-            : null;
+        if (!Objects.isNull(configureStatus)){
+            this.configureStatusStr = ConfigureStatusEnum.getConfigureStatusByCode(DataTypeUtils.stringToInteger(configureStatus)) != null
+                    ? ConfigureStatusEnum.getConfigureStatusByCode(DataTypeUtils.stringToInteger(configureStatus)).getName()
+                    : null;
+        }
     }
 
     public String getInstallTypeStr() {
