@@ -176,6 +176,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
         AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
         AssetOthersRequest assetOthersRequest = request.getAssetOthersRequest();
+        Long currentTimeMillis = System.currentTimeMillis();
         Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -529,7 +530,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setContent("登记硬件资产");
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-                    assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+                    assetOperationRecord.setGmtCreate(currentTimeMillis);
                     assetOperationRecord.setAreaId(assetOuterRequestToChangeRecord.getAsset().getAreaId());
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return Integer.parseInt(aid);
@@ -579,7 +580,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .setSuggest(assetOthersRequest == null ? request.getAsset().getMemo() : assetOthersRequest.getMemo());
             configRegisterRequest.setConfigUserIds(request.getManualStartActivityRequest().getConfigUserIds());
             configRegisterRequest.setRelId(String.valueOf(id));
-            ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest);
+            ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest,
+                currentTimeMillis);
             if (null == actionResponseAsset
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), id, null,
@@ -1451,10 +1453,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
+        if (LoginUserUtil.getLoginUser() == null) {
+            throw new BusinessException("获取用户失败");
+        }
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息不能为空");
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
+        Asset currentAsset = assetDao.getById(assetOuterRequest.getAsset().getId());
         AssetQuery assetQuery = new AssetQuery();
+        Long currentTimeMillis = System.currentTimeMillis();
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -1797,7 +1804,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             AssetNetworkEquipment.class);
                         // ip 变更，不重复 ，且删除关联关系
                         AssetNetworkEquipment byId = assetNetworkEquipmentDao.getById(networkEquipment.getId());
-                        if (!byId.getInnerIp().equals(networkEquipment.getInnerIp())) {
+                        if (byId != null && !byId.getInnerIp().equals(networkEquipment.getInnerIp())) {
                             assetQuery.setIp(networkEquipment.getInnerIp());
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(networkEquipment.getId()));
                             BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "网络设备IP不能重复");
@@ -1825,7 +1832,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (safetyEquipment != null && StringUtils.isNotBlank(safetyEquipment.getId())) {
                         // ip 变更，不重复
                         AssetSafetyEquipment byId = assetSafetyEquipmentDao.getById(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
-                        if (!byId.getIp().equals(safetyEquipment.getIp())) {
+                        if (byId != null && !byId.getIp().equals(safetyEquipment.getIp())) {
                             assetQuery.setIp(safetyEquipment.getIp());
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
                             BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "安全设备IP不能重复");
@@ -1907,12 +1914,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asset.getStatus() == null ? AssetStatusEnum.WATI_REGSIST.getCode() : asset.getStatus());
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
-                    assetOperationRecord.setContent(AssetEventEnum.ASSET_MODIFY.getName());
+                    if (currentAsset.getAssetStatus().equals(AssetStatusEnum.RETIRE.getCode())) {
+                        assetOperationRecord.setContent(AssetEventEnum.RETIRE_REGISTER.getName());
+                    } else {
+                        assetOperationRecord.setContent(AssetEventEnum.ASSET_MODIFY.getName());
+                    }
                     assetOperationRecord
                         .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
                     assetOperationRecord.setOperateUserName(
                         LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getName() : "");
-                    assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+                    assetOperationRecord.setGmtCreate(currentTimeMillis);
                     assetOperationRecord.setProcessResult(1);
                     assetOperationRecord.setAreaId(asset.getAreaId());
                     assetOperationRecordDao.insert(assetOperationRecord);
@@ -1932,34 +1943,49 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 退役再登记，需启动新流程
         if (assetCount != null && assetCount > 0) {
             String assetId = assetOuterRequest.getAsset().getId();
-            Asset currentAsset = assetDao.getById(assetOuterRequest.getAsset().getId());
             if (AssetStatusEnum.RETIRE.getCode().equals(currentAsset.getAssetStatus())) {
-                ParamterExceptionUtils.isNull(assetOuterRequest.getManualStartActivityRequest(), "配置信息不能为空");
+                ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest
+                    .getManualStartActivityRequest();
+                ParamterExceptionUtils.isNull(manualStartActivityRequest, "配置信息不能为空");
                 // ------------------启动工作流------------------start
+                manualStartActivityRequest.setBusinessId(assetId);
+                manualStartActivityRequest.setAssignee(String.valueOf(LoginUserUtil.getLoginUser().getId()));
+                manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
                 ActionResponse actionResponse = activityClient
-                    .manualStartProcess(assetOuterRequest.getManualStartActivityRequest());
+                    .manualStartProcess(manualStartActivityRequest);
                 if (null != actionResponse
                     && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
 
                     // ------------------对接配置模块------------------start
                     ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
                     configRegisterRequest.setHard(true);
-                    configRegisterRequest.setAssetId(String.valueOf(assetOuterRequest.getAsset().getId()));
+                    configRegisterRequest.setAssetId(assetId);
                     configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
                     configRegisterRequest.setSuggest(assetOuterRequest.getManualStartActivityRequest().getSuggest());
                     configRegisterRequest
                         .setConfigUserIds(assetOuterRequest.getManualStartActivityRequest().getConfigUserIds());
                     configRegisterRequest.setRelId(String.valueOf(assetId));
-                    ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest);
+                    // 不重复记录操作记录
+                    configRegisterRequest.setHard(true);
+                    ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest,
+                        currentTimeMillis);
 
                     if (null == actionResponseAsset
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {
                         LogUtils.recordOperLog(
-                            new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), Integer.valueOf(assetId), null,
+                            new BusinessData(AssetEventEnum.RETIRE_REGISTER.getName(), Integer.valueOf(assetId), null,
                                 configRegisterRequest, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
                         // 记录操作日志和运行日志
-                        LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", configRegisterRequest);
+                        LogUtils.info(logger, AssetEventEnum.RETIRE_REGISTER.getName() + " {}", configRegisterRequest);
                     }
+
+                    // 更新资产状态为待配置
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("targetStatus", AssetStatusEnum.WAIT_SETTING.getCode());
+                    map.put("gmt_modified", currentTimeMillis);
+                    map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
+                    map.put("id", assetId);
+                    assetDao.changeStatus(map);
                     // ------------------对接配置模块------------------start
                 }
                 // ------------------启动工作流------------------end

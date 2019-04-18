@@ -376,7 +376,7 @@ class SoftwareInstallResponseConvert extends BaseConverter<AssetSoftwareInstall,
                            AssetSoftwareInstallResponse assetSoftwareInstallResponse) {
         if (assetSoftwareInstall.getConfigureStatus() != null) {
             assetSoftwareInstallResponse.setConfigureStatusStr(ConfigureStatusEnum
-                .getConfigureStatusByCode(Integer.parseInt(assetSoftwareInstall.getConfigureStatus())).getName());
+                .getConfigureStatusByCode(Integer.valueOf(assetSoftwareInstall.getConfigureStatus())).getName());
         }
         if (assetSoftwareInstall.getInstallType() != null) {
             assetSoftwareInstallResponse

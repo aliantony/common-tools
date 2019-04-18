@@ -150,7 +150,7 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * 硬件登记、软件安装配置接口
      * @param request
      */
-    ActionResponse configRegister(ConfigRegisterRequest request) throws Exception;
+    ActionResponse configRegister(ConfigRegisterRequest request, Long currentTimeMillis) throws Exception;
 
 
     /**

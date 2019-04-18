@@ -66,7 +66,7 @@ public class ConfigRegisterRequest {
     @ApiModelProperty(value = "文件JSON传")
     private String       files;
 
-    @ApiModelProperty(value = "是否硬件登记", hidden = true)
+    @ApiModelProperty(value = "是否硬件登记或退役在登记", hidden = true)
     private Boolean      hard;
 
     public Boolean getHard() {
