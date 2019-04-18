@@ -5,7 +5,6 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.service.IAssetCategoryModelService;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,7 @@ import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.entity.AssetCategoryEntity;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroupEntity;
+import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.util.ArrayTypeUtil;
@@ -350,20 +350,22 @@ public class AssetReportServiceImpl implements IAssetReportService {
      */
     private AssetCategoryModel getParentCategory(AssetCategoryModel categoryModel, List<AssetCategoryModel> allCategory)
                                                                                                                         throws Exception {
+        if (null != categoryModel) {
+            if (categoryModel.getParentId().equals(getHardwareCategoryId())) {
+                return categoryModel;
+            }
 
-        if (categoryModel.getParentId().equals(getHardwareCategoryId())) {
-            return categoryModel;
+            Optional<AssetCategoryModel> categoryModelOptional = allCategory.stream()
+                .filter(x -> Objects.equals(x.getId(), DataTypeUtils.stringToInteger(categoryModel.getParentId())))
+                .findFirst();
+            if (categoryModelOptional.isPresent()) {
+                AssetCategoryModel tblCategory = categoryModelOptional.get();
+                return getParentCategory(tblCategory, allCategory);
+            } else {
+                throw new BusinessException("获取二级品类型号失败");
+            }
         }
-
-        Optional<AssetCategoryModel> categoryModelOptional = allCategory.stream()
-            .filter(x -> Objects.equals(x.getId(), DataTypeUtils.stringToInteger(categoryModel.getParentId())))
-            .findFirst();
-        if (categoryModelOptional.isPresent()) {
-            AssetCategoryModel tblCategory = categoryModelOptional.get();
-            return getParentCategory(tblCategory, allCategory);
-        } else {
-            throw new BusinessException("获取二级品类型号失败");
-        }
+        throw new BusinessException("二级品类型号不存在");
     }
 
     private void setFormat(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
