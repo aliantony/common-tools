@@ -1034,7 +1034,7 @@
         end as installType
         from
         asset_software_relation a
-        left join asset_network_card b on a.asset_id = b.asset_id and b.status = 1
+        left join asset_network_card b on a.asset_id = b.asset_id and b.status = 1 and a.install_status=2
         left join asset c on c.id = a.asset_id and c.status = 1 and c.id is not null
         left join asset_user d on c.responsible_user_id = d.id
         where 1 = 1
