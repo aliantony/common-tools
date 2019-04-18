@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
 import com.alibaba.fastjson.JSONObject;
@@ -170,6 +171,9 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      */
     private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust, Long gmtCreateTime) throws Exception {
         Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
+        if (StringUtils.isNotEmpty(scheme.getContent()) && scheme.getMemo() == null) {
+            scheme.setMemo(scheme.getContent());
+        }
         if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
             JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
         }
@@ -196,6 +200,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             scheme.setAssetNextStatus(this.getNextSoftwareStatus(assetStatusReqeust).getCode());
         } else {
             scheme.setSchemeSource(AssetTypeEnum.HARDWARE.getCode());
+            // 记录方案内容
             scheme.setAssetNextStatus(this.getNextAssetStatus(assetStatusReqeust).getCode());
         }
 
