@@ -796,8 +796,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
         for (Map<String, String> map : rows) {
             columnList.add(map.get("classifyName"));
         }
-        // columnList.add("总数");
-        // columnList.add("新增数量");
         // 数据
         String[][] data = new String[columnList.size()][headerList.size()];
 
@@ -812,27 +810,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             }
             i++;
         }
-        int[] total = new int[headerList.size()];
-        int[] add = new int[headerList.size()];
-        AssetReportResponse addResponse = this.getNewAssetWithGroup(reportQueryRequest);
-        List<ReportData> addList = addResponse.getList();
-        List<Integer> dataList = new ArrayList<>();
-        int initAdd = 0;
-        for (ReportData reportData : addList) {
-            initAdd += reportData.getData().get(0);
-        }
-        for (int n = 0; n < headerList.size(); n++) {
-            total[n] = 0;
-            add[n] = initAdd;
-            for (int m = 0; m < i; m++) {
-                total[n] += DataTypeUtils.stringToInteger(data[m][n]);
-                if (n != 0) {
-                    add[n] = total[n] - total[n - 1];
-                }
-            }
-        }
-        // data[columnList.size() - 2] = ArrayTypeUtil.integerArrayToStringArray(total);
-        // data[columnList.size() - 1] = ArrayTypeUtil.integerArrayToStringArray(add);
+
         reportForm.setTitle("资产组" + titleStr + "统计");
         reportForm.setHeaderList(headerList);
         reportForm.setColumnList(columnList);
@@ -944,7 +922,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             }
         }
 
-        Map<String, String> countMap = new HashMap<>(timeMap.size() + 1);
+        Map<String, String> countMap = new LinkedHashMap<>(timeMap.size() + 1);
         countMap.put("classifyName", "总数");
         // 根据时间节点遍历设置数据
         for (Map.Entry<String, String> entry : timeMap.entrySet()) {
@@ -956,7 +934,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
         rows.add(countMap);
         // 最后一行新增的数据
-        Map<String, String> addMap = new HashMap<>(timeMap.size() + 1);
+        Map<String, String> addMap = new LinkedHashMap<>(timeMap.size() + 1);
         addMap.put("classifyName", "新增数量");
         // 根据时间节点遍历设置数据
         for (Map.Entry<String, String> entry : timeMap.entrySet()) {
