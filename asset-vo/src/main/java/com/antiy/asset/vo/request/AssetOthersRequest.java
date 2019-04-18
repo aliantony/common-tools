@@ -48,7 +48,7 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      * 资产编号
      */
     @ApiModelProperty("资产编号")
-    @NotBlank (message = "资产编号不能为空")
+    @NotBlank(message = "资产编号不能为空")
     @Size(message = "资产编号不能超过32位", max = 32)
     private String                  number;
 
@@ -56,7 +56,7 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      * 资产名称
      */
     @ApiModelProperty("资产名称")
-    @NotBlank (message = "资产名称不能为空")
+    @NotBlank(message = "资产名称不能为空")
     @Size(message = "资产名字不能超过32位", max = 32)
     private String                  name;
     /**
@@ -100,8 +100,6 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
     @Size(message = "资产厂商不能超过32位", max = 32)
     private String                  manufacturer;
 
-
-
     /**
      * 责任人主键
      */
@@ -130,7 +128,7 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      * 保修期
      */
     @ApiModelProperty("保修期")
-    private Long                    warranty;
+    private String                  warranty;
     /**
      * 资产准入状态
      */
@@ -146,7 +144,7 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("描述")
     @Size(message = "描述不能超过128位", max = 128)
-    private String            describle;
+    private String                  describle;
     /**
      * 描述
      */
@@ -156,26 +154,13 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
 
     @Override
     public String toString() {
-        return "AssetOthersRequest{" +
-                "id='" + id + '\'' +
-                ", assetGroups=" + assetGroups +
-                ", contactTel='" + contactTel + '\'' +
-                ", email='" + email + '\'' +
-                ", number='" + number + '\'' +
-                ", name='" + name + '\'' +
-                ", serial='" + serial + '\'' +
-                ", categoryModel='" + categoryModel + '\'' +
-                ", areaId='" + areaId + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", responsibleUserId='" + responsibleUserId + '\'' +
-                ", parentId='" + parentId + '\'' +
-                ", serviceLife=" + serviceLife +
-                ", buyDate=" + buyDate +
-                ", warranty=" + warranty +
-                ", admittanceStatus=" + admittanceStatus +
-                ", firstEnterNett=" + firstEnterNett +
-                ", describle='" + describle + '\'' +
-                '}';
+        return "AssetOthersRequest{" + "id='" + id + '\'' + ", assetGroups=" + assetGroups + ", contactTel='"
+               + contactTel + '\'' + ", email='" + email + '\'' + ", number='" + number + '\'' + ", name='" + name
+               + '\'' + ", serial='" + serial + '\'' + ", categoryModel='" + categoryModel + '\'' + ", areaId='"
+               + areaId + '\'' + ", manufacturer='" + manufacturer + '\'' + ", responsibleUserId='" + responsibleUserId
+               + '\'' + ", parentId='" + parentId + '\'' + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate
+               + ", warranty=" + warranty + ", admittanceStatus=" + admittanceStatus + ", firstEnterNett="
+               + firstEnterNett + ", describle='" + describle + '\'' + '}';
     }
 
     public String getId() {
@@ -290,11 +275,11 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
         this.buyDate = buyDate;
     }
 
-    public Long getWarranty() {
+    public String getWarranty() {
         return warranty;
     }
 
-    public void setWarranty(Long warranty) {
+    public void setWarranty(String warranty) {
         this.warranty = warranty;
     }
 
