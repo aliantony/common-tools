@@ -168,7 +168,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
             int otherAmount = 0;
 
             for (AssetCategoryEntity categoryEntity : amountCategoryEntityList) {
-                if (key.equals(categoryEntity.getDate())) {
+                if (key.equals(categoryEntity.getDate())
+                    && !categoryEntity.getCategoryModel().equals(Integer.valueOf(Objects.requireNonNull(getHardwareCategoryId())))) {
                     assetCategoryModel.setId(categoryEntity.getCategoryModel());
                     assetCategoryModel.setParentId(categoryEntity.getParentId());
                     assetCategoryModel.setName(categoryEntity.getCategoryName());
