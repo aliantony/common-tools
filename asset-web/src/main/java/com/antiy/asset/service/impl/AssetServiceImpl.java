@@ -1986,29 +1986,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
                     map.put("id", assetId);
                     assetDao.changeStatus(map);
-                    // ------------------对接配置模块------------------start
+                    // ------------------对接配置模块------------------end
                 }
                 // ------------------启动工作流------------------end
             }
         }
-
-        // // 工作流
-        // ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest.getManualStartActivityRequest();
-        // if (!Objects.isNull(manualStartActivityRequest)) {
-        // // 其他设备
-        // if (assetOuterRequest.getAssetOthersRequest() != null) {
-        // manualStartActivityRequest.setBusinessId(assetOuterRequest.getAssetOthersRequest().getId());
-        // } else {
-        // manualStartActivityRequest.setBusinessId(assetOuterRequest.getAsset().getId());
-        // }
-        // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
-        // manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_CHANGE.getCode());
-        // // 启动流程
-        // activityClient.manualStartProcess(manualStartActivityRequest);
-        // } else {
-        // // 处理流程
-        // activityClient.completeTask(assetOuterRequest.getActivityHandleRequest());
-        // }
         // TODO 下发智甲
         return assetCount;
     }
