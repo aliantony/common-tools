@@ -1,5 +1,16 @@
 package com.antiy.asset.service.impl;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetChangeRecord;
@@ -18,15 +29,6 @@ import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * <p> 变更记录表 服务实现类 </p>
@@ -194,19 +196,22 @@ public class AssetChangeRecordServiceImpl extends BaseServiceImpl<AssetChangeRec
      */
     private AssetCategoryModel getParentCategory(AssetCategoryModel categoryModel) {
 
-        List<AssetCategoryModel> allCategory = categoryModelDao.findAllCategory();
-        if (DataTypeUtils.stringToInteger(categoryModel.getParentId()) == 2) {
-            return categoryModel;
-        }
+        if (categoryModel != null) {
+            List<AssetCategoryModel> allCategory = categoryModelDao.findAllCategory();
+            if (DataTypeUtils.stringToInteger(categoryModel.getParentId()) == 2) {
+                return categoryModel;
+            }
 
-        Optional<AssetCategoryModel> categoryModelOptional = allCategory.stream()
-            .filter(x -> Objects.equals(x.getId(), DataTypeUtils.stringToInteger(categoryModel.getParentId())))
-            .findFirst();
-        if (categoryModelOptional.isPresent()) {
-            AssetCategoryModel tblCategory = categoryModelOptional.get();
-            return getParentCategory(tblCategory);
-        } else {
-            throw new BusinessException("获取二级品类型号失败");
+            Optional<AssetCategoryModel> categoryModelOptional = allCategory.stream()
+                .filter(x -> Objects.equals(x.getId(), DataTypeUtils.stringToInteger(categoryModel.getParentId())))
+                .findFirst();
+            if (categoryModelOptional.isPresent()) {
+                AssetCategoryModel tblCategory = categoryModelOptional.get();
+                return getParentCategory(tblCategory);
+            } else {
+                throw new BusinessException("获取二级品类型号失败");
+            }
         }
+        throw new BusinessException("二级品类型号不存在");
     }
 }
