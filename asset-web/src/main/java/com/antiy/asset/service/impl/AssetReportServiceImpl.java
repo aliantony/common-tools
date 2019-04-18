@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.service.IAssetCategoryModelService;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,8 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 @Service
 public class AssetReportServiceImpl implements IAssetReportService {
     private Logger              logger = LogUtils.get(this.getClass());
+    @Resource
+    IAssetCategoryModelService  iAssetCategoryModelService;
 
     private final static String DAY    = "%w";
     private final static String WEEK   = "%U";
@@ -100,7 +103,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @return
      */
     private Map<String, Object> buildCategoryCountByTime(AssetReportCategoryCountQuery query,
-                                                         Map<String, String> weekMap) {
+                                                         Map<String, String> weekMap) throws Exception {
         Map<String, Object> map = new HashMap<>();
         List<AssetCategoryModel> categoryModels = categoryModelDao.findAllCategory();
         // 构造柱状图所需的source
@@ -221,8 +224,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
             otherTimeValueMap.put(key, String.valueOf(otherAmountSum));
             newAddTimeValueMap.put(key,
                 String.valueOf(computeNewAdd + networkNewAdd + storageNewAdd + safetyNewAdd + otherNewAdd));
-            amountTimeValueMap.put(key, String
-                .valueOf(computerAmountSum + networkAmountSum + storageAmountSum + safetyAmountSum + otherAmountSum));
+            amountTimeValueMap.put(
+                key,
+                String.valueOf(computerAmountSum + networkAmountSum + storageAmountSum + safetyAmountSum
+                               + otherAmountSum));
 
             computerDataList.add(computerAmountSum);
             networkDataList.add(networkAmountSum);
@@ -320,16 +325,32 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
     }
 
+    private static String hardwareId = null;
+
+    private String getHardwareCategoryId() throws Exception {
+        if (hardwareId == null) {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("name", "硬件");
+            List<AssetCategoryModel> categoryModelList = categoryModelDao.getByWhere(map);
+            if (categoryModelList.get(0) != null) {
+                hardwareId = categoryModelList.get(0).getStringId();
+                return hardwareId;
+            }
+            return null;
+        }
+        return hardwareId;
+    }
+
     /**
      * 获取二级品类型号信息
      *
      * @param categoryModel
      * @return
      */
-    private AssetCategoryModel getParentCategory(AssetCategoryModel categoryModel,
-                                                 List<AssetCategoryModel> allCategory) {
+    private AssetCategoryModel getParentCategory(AssetCategoryModel categoryModel, List<AssetCategoryModel> allCategory)
+                                                                                                                        throws Exception {
 
-        if (DataTypeUtils.stringToInteger(categoryModel.getParentId()) == 2) {
+        if (categoryModel.getParentId().equals(getHardwareCategoryId())) {
             return categoryModel;
         }
 
@@ -459,8 +480,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
             case "5":
                 reportQueryRequest.setSqlTime("%Y-%m");
-                return buildGroupCountByTime(reportQueryRequest, ReportDateUtils
-                    .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
+                return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getMonthWithDate(
+                    reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
             default:
                 reportQueryRequest.setSqlTime("%Y-%m");
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear());
@@ -468,8 +489,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     }
 
-    private AssetReportResponse buildGroupCountByTime(ReportQueryRequest reportQueryRequest,
-                                                      Map<String, String> timeMap) {
+    private AssetReportResponse buildGroupCountByTime(ReportQueryRequest reportQueryRequest, Map<String, String> timeMap) {
 
         if (MapUtils.isEmpty(timeMap)) {
             // 如果没有时间参数，则返回即可。
@@ -528,27 +548,26 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 Integer addNum = 0;
                 for (AssetGroupEntity assetGroupEntity : addAssetGroupEntityList) {
                     // 从新增列表获取名字和日期均匹配的新增数量
-                    if (dateKeyList.get(i).equals(assetGroupEntity.getDate())
-                        && groupName.equals(assetGroupEntity.getName())) {
-                        addNum = assetGroupEntity.getGroupCount();
-                    }
-
-                    // 总数,第一个数据从截止日期前的总数量获取,第二个起加上新增的数据
-                    Optional<AssetGroupEntity> assetGroupOptional = assetGroupEntities.stream()
-                        .filter(e -> e.getName().equals(assetGroupEntity.getName())
-                                     && e.getDate().equals(assetGroupEntity.getDate()))
-                        .findFirst();
-                    totalNum = (i == 0
-                        ? (assetGroupOptional.isPresent() ? 0 : assetGroupOptional.get().getGroupCount()) + addNum
-                        : totalNumList.get(i - 1) + addNum);
-                }
-                totalNumList.add(totalNum);
-                addNumList.add(addNum);
+            if (dateKeyList.get(i).equals(assetGroupEntity.getDate()) && groupName.equals(assetGroupEntity.getName())) {
+                addNum = assetGroupEntity.getGroupCount();
             }
-            reportData.setData(totalNumList);
-            reportData.setAdd(addNumList);
-            dataList.add(reportData);
-        });
+
+            // 总数,第一个数据从截止日期前的总数量获取,第二个起加上新增的数据
+            Optional<AssetGroupEntity> assetGroupOptional = assetGroupEntities
+                .stream()
+                .filter(
+                    e -> e.getName().equals(assetGroupEntity.getName())
+                         && e.getDate().equals(assetGroupEntity.getDate())).findFirst();
+            totalNum = (i == 0 ? (assetGroupOptional.isPresent() ? 0 : assetGroupOptional.get().getGroupCount())
+                                 + addNum : totalNumList.get(i - 1) + addNum);
+        }
+        totalNumList.add(totalNum);
+        addNumList.add(addNum);
+    }
+    reportData.setData(totalNumList);
+    reportData.setAdd(addNumList);
+    dataList.add(reportData);
+})      ;
         assetReportResponse.setDate(dateValueList);
         assetReportResponse.setList(dataList);
         return assetReportResponse;
@@ -578,8 +597,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear());
             case "5":
                 reportQueryRequest.setSqlTime("%Y-%m");
-                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils
-                    .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getMonthWithDate(
+                    reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
             default:
                 throw new RequestParamValidateException("查询时间类型不正确");
         }
@@ -592,7 +611,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @throws Exception
      */
     @Override
-    public AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception {
+    public AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query)
+                                                                                                        throws Exception {
         ShowCycleType showCycleType = query.getShowCycleType();
         query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         checkParameter(query, showCycleType);
@@ -624,7 +644,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @return
      */
     private AssetReportTableResponse getAssetReportTableResponse(AssetReportCategoryCountQuery query,
-                                                                 Map<String, String> dateMap) {
+                                                                 Map<String, String> dateMap) throws Exception {
         AssetReportTableResponse reportTableResponse = new AssetReportTableResponse();
         List<Map<String, String>> rows = new ArrayList<>();
         List<ReportTableHead> children = new ArrayList<>();
@@ -661,8 +681,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @param reportQueryRequest
      * @return
      */
-    public AssetReportResponse queryNewAssetWithGroup(ReportQueryRequest reportQueryRequest,
-                                                      Map<String, String> timeMap) {
+    public AssetReportResponse queryNewAssetWithGroup(ReportQueryRequest reportQueryRequest, Map<String, String> timeMap) {
         if (MapUtils.isEmpty(timeMap)) {
             return null;
         }
@@ -697,12 +716,12 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 Integer num = 0;
                 for (AssetGroupEntity groupReportEntity : groupReportEntityList) {
                     // 资产组别且对应周数匹配
-                    if (groupReportEntity.getName().equals(groupName) && groupReportEntity.getDate().equals(date)) {
-                        num = groupReportEntity.getGroupCount();
-                    }
+                if (groupReportEntity.getName().equals(groupName) && groupReportEntity.getDate().equals(date)) {
+                    num = groupReportEntity.getGroupCount();
                 }
-                addNumList.add(num);
-            });
+            }
+            addNumList.add(num);
+        })  ;
             reportData.setData(addNumList);
             reportDataList.add(reportData);
         });
@@ -729,9 +748,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear(), "本年");
             case "5":
                 reportQueryRequest.setSqlTime("%Y-%m");
-                return buildAssetReportTable(reportQueryRequest,
-                    ReportDateUtils.getMonthWithDate(reportQueryRequest.getStartTime(),
-                        reportQueryRequest.getEndTime()),
+                return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getMonthWithDate(
+                    reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()),
                     reportQueryRequest.getStartTime() + "~" + reportQueryRequest.getEndTime());
             default:
                 reportQueryRequest.setSqlTime("%Y-%m");
@@ -898,8 +916,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // 将新增数据与初始化的新增数据进行比较配对。将有变化的数据进行修改
         for (int i = 0; i < addRows.size(); i++) {
             for (int j = 0; j < addRowsResult.size(); j++) {
-                if (addRows.get(i).get("classifyName").equals(addRowsResult.get(j).get("classifyName")) && addRows
-                    .get(i).keySet().iterator().next().equals(addRowsResult.get(j).keySet().iterator().next())) {
+                if (addRows.get(i).get("classifyName").equals(addRowsResult.get(j).get("classifyName"))
+                    && addRows.get(i).keySet().iterator().next()
+                        .equals(addRowsResult.get(j).keySet().iterator().next())) {
                     addRowsResult.get(j).put(addRows.get(i).keySet().iterator().next(),
                         addRows.get(i).get(addRows.get(i).keySet().iterator().next()));
                 }
