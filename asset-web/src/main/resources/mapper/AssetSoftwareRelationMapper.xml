@@ -269,7 +269,7 @@
         </if>
         <choose>
             <when test="configureStatus == 1">
-                and configure_status =#{configureStatus} or configure_status is null
+                and (configure_status =#{configureStatus} or configure_status is null)
             </when>
             <when test="configureStatus != null and configureStatus != 1">
                 and configure_status =#{configureStatus}
@@ -277,7 +277,7 @@
         </choose>
         <choose>
             <when test="installStatus == 4">
-                and install_status =#{installStatus} or install_status is null
+                and (install_status =#{installStatus} or install_status is null)
             </when>
             <when test="installStatus != null and installStatus != 4">
                 and install_status =#{installStatus}
