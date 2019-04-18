@@ -1,5 +1,18 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.io.Serializable;
+import java.util.*;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.antiy.asset.convert.CategoryRequestConvert;
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
@@ -25,17 +38,6 @@ import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.io.Serializable;
-import java.util.*;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 品类型号表 服务实现类 </p>
@@ -253,7 +255,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         assetCategoryModels.add(getRootCategory());
         AssetCategoryModelNodeResponse assetCategoryModelNodeResponse = getAssetCategoryModelNodeResponse(
             assetCategoryModels);
-        return assetCategoryModelNodeResponse == null ? null : assetCategoryModelNodeResponse.getChildrenNode().get(0);
+        return assetCategoryModelNodeResponse == null || assetCategoryModelNodeResponse.getChildrenNode() != null ? null
+            : assetCategoryModelNodeResponse.getChildrenNode().get(0);
     }
 
     /**
@@ -261,6 +264,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @param types 4-计算设备 5-网络设备 6-存储设备 7-安全设备 8-其他设备
      * @return
      */
+    @Override
     public AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types,
                                                                   Map<String, String> initMap) throws Exception {
         checkParameterTypes(types);
