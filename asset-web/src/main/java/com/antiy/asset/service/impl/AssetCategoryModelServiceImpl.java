@@ -255,7 +255,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         assetCategoryModels.add(getRootCategory());
         AssetCategoryModelNodeResponse assetCategoryModelNodeResponse = getAssetCategoryModelNodeResponse(
             assetCategoryModels);
-        return assetCategoryModelNodeResponse == null || assetCategoryModelNodeResponse.getChildrenNode() != null ? null
+        return assetCategoryModelNodeResponse == null || assetCategoryModelNodeResponse.getChildrenNode() == null ? null
             : assetCategoryModelNodeResponse.getChildrenNode().get(0);
     }
 
