@@ -2082,7 +2082,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             case "安全设备":
                 exportSafetyTemplate(dictionary);
                 break;
-            case "其他设备":
+            case "其它设备":
                 exportOtherTemplate(dictionary);
                 break;
         }
@@ -2093,7 +2093,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private void exportOtherTemplate(String dictionary) {
         // 初始化其它设备示例数据
         List<OtherDeviceEntity> dataList = initOtherData();
-        ExcelUtils.exportTemplateToFile(OtherDeviceEntity.class, "其他设备信息模板.xlsx", "其他设备",
+        ExcelUtils.exportTemplateToFile(OtherDeviceEntity.class, "其它设备信息模板.xlsx", "其它设备",
             "备注：时间填写规范统一为XXXX/XX/XX(不用补0)，必填项必须填写，否则会插入失败", dictionary + "/", dataList);
     }
 
