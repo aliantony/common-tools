@@ -1557,15 +1557,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         insertCpuList.addAll(updateCpuList);
                         assetOuterRequest.setCpu(BeanConvert.convert(insertCpuList, AssetCpuRequest.class));
                     }
-                    // 3. 更新网卡信息
-                    // 先删除再新增
-                    LogHandle.log(asset.getId(), AssetEventEnum.ASSET_NETWORK_DELETE.getName(),
-                        AssetEventEnum.ASSET_NETWORK_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                    LogUtils
-                        .recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_DELETE.getName(), asset.getId(),
-                            asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
-                    LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DELETE.getName() + " {}", asset.getStringId());
-                    assetNetworkCardDao.deleteByAssetId(asset.getId());
+
                     List<AssetNetworkCardRequest> assetNetworkCardRequestList = assetOuterRequest.getNetworkCard();
                     if (CollectionUtils.isNotEmpty(assetNetworkCardRequestList)) {
                         List<AssetNetworkCard> assetNetworkCardList = BeanConvert.convert(assetNetworkCardRequestList,
@@ -1577,10 +1569,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetNetworkCard.setAssetId(asset.getStringId());
                             // 修改的
                             if (StringUtils.isNotBlank(assetNetworkCard.getStringId())) {
-                                AssetNetworkCard byId = assetNetworkCardDao.getById(assetNetworkCard.getStringId());
-                                if (!byId.getIpAddress().equals(assetNetworkCard.getIpAddress())) {
-                                    BusinessExceptionUtils
-                                        .isTrue(!CheckRepeatIp(assetNetworkCard.getIpAddress(), null, null), "IP不能重复！");
+                                AssetNetworkCard byId = assetNetworkCardDao.getById(DataTypeUtils.stringToInteger(assetNetworkCard.getStringId()));
+                                if (byId != null && !byId.getIpAddress().equals(assetNetworkCard.getIpAddress())) {
+                                    assetQuery.setIp(assetNetworkCard.getIpAddress());
+                                    BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "IP不能重复");
                                     List<Integer> integers = new ArrayList<>();
                                     integers.add(Integer.parseInt(asset.getStringId()));
                                     assetLinkRelationDao.deleteRelationByAssetId(integers);
@@ -1591,13 +1583,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 updateNetworkList.add(assetNetworkCard);
                             } else {// 新增的
                                 assetQuery.setIp(assetNetworkCard.getIpAddress());
-                                ParamterExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "IP不能重复");
+                                int a = assetDao.findCountIp(assetQuery);
+                                BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "IP不能重复");
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(
                                     LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
                                 insertNetworkList.add(assetNetworkCard);
                             }
                         }
+                        // 3. 更新网卡信息
+                        // 先删除再新增
+                        LogHandle.log(asset.getId(), AssetEventEnum.ASSET_NETWORK_DELETE.getName(),
+                                AssetEventEnum.ASSET_NETWORK_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils
+                                .recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_DELETE.getName(), asset.getId(),
+                                        asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
+                        LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DELETE.getName() + " {}", asset.getStringId());
+                        assetNetworkCardDao.deleteByAssetId(asset.getId());
                         if (CollectionUtils.isNotEmpty(insertNetworkList)) {
                             LogHandle.log(insertNetworkList, AssetEventEnum.ASSET_NETWORK_INSERT.getName(),
                                 AssetEventEnum.ASSET_NETWORK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
@@ -1798,7 +1800,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         AssetNetworkEquipment assetNetworkEquipment = BeanConvert.convertBean(networkEquipment,
                             AssetNetworkEquipment.class);
                         // ip 变更，不重复 ，且删除关联关系
-                        AssetNetworkEquipment byId = assetNetworkEquipmentDao.getById(networkEquipment.getId());
+                        AssetNetworkEquipment byId = assetNetworkEquipmentDao.getById(DataTypeUtils.stringToInteger(networkEquipment.getId()));
                         if (byId != null && !byId.getInnerIp().equals(networkEquipment.getInnerIp())) {
                             assetQuery.setIp(networkEquipment.getInnerIp());
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(networkEquipment.getId()));
