@@ -1453,6 +1453,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
+        if (LoginUserUtil.getLoginUser() == null) {
+            throw new BusinessException("获取用户失败");
+        }
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息不能为空");
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
@@ -1975,6 +1978,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // 记录操作日志和运行日志
                         LogUtils.info(logger, AssetEventEnum.RETIRE_REGISTER.getName() + " {}", configRegisterRequest);
                     }
+
+                    // 更新资产状态为待配置
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("targetStatus", AssetStatusEnum.WAIT_SETTING.getCode());
+                    map.put("gmt_modified", currentTimeMillis);
+                    map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
+                    map.put("id", assetId);
+                    assetDao.changeStatus(map);
                     // ------------------对接配置模块------------------start
                 }
                 // ------------------启动工作流------------------end

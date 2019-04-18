@@ -1,11 +1,12 @@
 package com.antiy.asset.vo.response;
 
-import com.antiy.asset.vo.enums.SoftwareStatusEnum;
-import com.antiy.common.base.BaseConverter;
+import com.antiy.asset.vo.enums.ConfigureStatusEnum;
+import com.antiy.asset.vo.enums.InstallStatus;
+import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.common.encoder.Encode;
 
+import com.antiy.common.utils.DataTypeUtils;
 import io.swagger.annotations.ApiModelProperty;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -248,7 +249,9 @@ public class AssetSoftwareInstallResponse {
     }
 
     public void setInstallStatusStr(String installStatusStr) {
-        this.installStatusStr = installStatusStr;
+        this.installStatusStr = InstallStatus.getInstallStatusByCode(installStatus) != null
+            ? InstallStatus.getInstallStatusByCode(installStatus).getStatus()
+            : null;
     }
 
     public String getConfigureStatusStr() {
@@ -256,7 +259,11 @@ public class AssetSoftwareInstallResponse {
     }
 
     public void setConfigureStatusStr(String configureStatusStr) {
-        this.configureStatusStr = configureStatusStr;
+        if (!Objects.isNull(configureStatus)){
+            this.configureStatusStr = ConfigureStatusEnum.getConfigureStatusByCode(DataTypeUtils.stringToInteger(configureStatus)) != null
+                    ? ConfigureStatusEnum.getConfigureStatusByCode(DataTypeUtils.stringToInteger(configureStatus)).getName()
+                    : null;
+        }
     }
 
     public String getInstallTypeStr() {
@@ -264,7 +271,9 @@ public class AssetSoftwareInstallResponse {
     }
 
     public void setInstallTypeStr(String installTypeStr) {
-        this.installTypeStr = installTypeStr;
+        this.installTypeStr = InstallType.getInstallTypeByCode(installType) != null
+            ? InstallType.getInstallTypeByCode(installType).getStatus()
+            : null;
     }
 
     @Override
