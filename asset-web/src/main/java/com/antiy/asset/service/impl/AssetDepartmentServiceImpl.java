@@ -1,7 +1,9 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetDepartmentDao;
+import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.AssetDepartment;
+import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.IAssetDepartmentService;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.DataTypeUtils;
@@ -9,6 +11,7 @@ import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.util.NodeUtilsConverter;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
+import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
 import com.antiy.asset.vo.response.AssetDepartmentNodeResponse;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
@@ -52,6 +55,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     private BaseConverter<AssetDepartment, AssetDepartmentResponse> responseConverter;
     @Resource
     private AesEncoder                                              aesEncoder;
+    @Resource
+    private AssetUserDao                                            assetUserDao;
 
     @Override
     @Transactional
@@ -66,8 +71,9 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             LogHandle.log(assetDepartment.toString(), AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName(),
                 AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName(), assetDepartment.getId (), assetDepartment.getName (),
-                    assetDepartment, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName(), assetDepartment
+                .getId(), assetDepartment.getName(), assetDepartment, BusinessModuleEnum.ASSET_USER,
+                BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName() + " {}", assetDepartment.toString());
         }
         return ActionResponse.success(aesEncoder.encode(assetDepartment.getStringId(), LoginUserUtil.getLoginUser()
@@ -78,7 +84,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         if (StringUtils.isNotEmpty(request.getName())) {
             AssetDepartmentQuery assetDepartmentQuery = new AssetDepartmentQuery();
             assetDepartmentQuery.setName(request.getName());
-            //根据id是否为null进行不同的查询重名操作
+            // 根据id是否为null进行不同的查询重名操作
             return assetDepartmentDao.findRepeatName(
                 request.getId() == null ? null : DataTypeUtils.stringToInteger(request.getId()), request.getName()) >= 1;
         }
@@ -97,8 +103,9 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             // 写入业务日志
             LogHandle.log(assetDepartment.toString(), AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName(),
                 AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName(), assetDepartment.getId (), assetDepartment.getName (),
-                    assetDepartment, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName(), assetDepartment
+                .getId(), assetDepartment.getName(), assetDepartment, BusinessModuleEnum.ASSET_USER,
+                BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName() + " {}", assetDepartment.toString());
         }
         return ActionResponse.success(result);
@@ -195,14 +202,27 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     public ActionResponse deleteAllById(Serializable id) throws Exception {
         List<AssetDepartment> list = recursionSearch((Integer) id);
         BusinessExceptionUtils.isEmpty(list, "该部门不存在");
+        String[] departmentIds = getDepartmentIdArray(list);
+        AssetUserQuery assetUserQuery = new AssetUserQuery();
+        assetUserQuery.setDepartmentIds(departmentIds);
+        List<AssetUser> resultUser = assetUserDao.findListAssetUser(assetUserQuery);
+        BusinessExceptionUtils.isTrue(resultUser.size() <= 0, "部门下存在关联用户，不能删除");
         int result = assetDepartmentDao.delete(list);
         // 写入业务日志
         LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
             AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), 0, "",
-                null, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), 0, "", null,
+            BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
         return ActionResponse.success(result >= 1 ? 1 : 0);
+    }
+
+    private String[] getDepartmentIdArray(List<AssetDepartment> list) {
+        String[] array = new String[list.size()];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = list.get(i).getStringId();
+        }
+        return array;
     }
 
     @Override
@@ -228,8 +248,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             // 写入业务日志
             LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
                 AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), 0, "",
-                    null, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), 0, "", null,
+                BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
         }
         return ActionResponse.success(result);

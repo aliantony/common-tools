@@ -79,7 +79,7 @@ public class CountTypeUtil {
             }
         }
         if (sum != 0) {
-            result.put("其他", sum);
+            result.put("其它", sum);
         }
     }
 
