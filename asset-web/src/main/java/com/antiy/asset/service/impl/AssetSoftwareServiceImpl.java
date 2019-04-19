@@ -61,7 +61,7 @@ import com.antiy.common.utils.*;
 @Transactional(rollbackFor = Exception.class)
 public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> implements IAssetSoftwareService {
     private Logger                                                           logger = LogUtils
-        .get(AssetSoftwareServiceImpl.class);
+                                                                                        .get(AssetSoftwareServiceImpl.class);
 
     @Resource
     private AssetSoftwareDao                                                 assetSoftwareDao;
@@ -139,9 +139,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     BusinessExceptionUtils.isTrue(checkOperatingSystemById(assetSoftware.getOperationSystem()),
                         "兼容系统不存在，或已经注销！");
                     BusinessExceptionUtils.isTrue(
-                        !Objects.isNull(assetCategoryModelDao.getById(
-                            com.antiy.common.utils.DataTypeUtils.stringToInteger(assetSoftware.getCategoryModel()))),
-                        "品类型号不存在，或已经注销");
+                        !Objects.isNull(assetCategoryModelDao.getById(com.antiy.common.utils.DataTypeUtils
+                            .stringToInteger(assetSoftware.getCategoryModel()))), "品类型号不存在，或已经注销");
 
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
@@ -184,8 +183,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetOperationRecord.setProcessResult(1);
                     assetOperationRecordDao.insert(assetOperationRecord);
                     // 记录操作日志和运行日志
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(), assetSoftware.getId(),
-                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(),
+                        assetSoftware.getId(), null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET,
+                        BusinessPhaseEnum.NONE));
                     LogUtils.info(logger, AssetEventEnum.SOFT_INSERT.getName() + " {}", assetSoftware);
                     return DataTypeUtils.stringToInteger(sid);
                 } catch (RequestParamValidateException e) {
@@ -195,10 +195,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("品类型号不存在，或已经注销", e.getMessage()),
-                        "品类型号不存在，或已经注销");
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("兼容系统存在，或已经注销！", e.getMessage()),
-                        "兼容系统存在，或已经注销！");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals("品类型号不存在，或已经注销", e.getMessage()), "品类型号不存在，或已经注销");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals("兼容系统存在，或已经注销！", e.getMessage()), "兼容系统存在，或已经注销！");
                     logger.error("录入失败", e);
                 }
                 return 0;
@@ -360,8 +358,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // 记录更新操作
                     assetOperationRecordDao.insert(convertAssetOperationRecord(request, softwareStatus));
                     // 记录操作日志和运行日志
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(), assetSoftware.getId(),
-                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(),
+                        assetSoftware.getId(), null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET,
+                        BusinessPhaseEnum.NONE));
                     LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetSoftware);
                     return assetSoftwareCount;
                 } catch (Exception e) {
@@ -400,8 +399,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param request
      */
     private void updateLicense(AssetSoftwareRequest request) throws Exception {
-        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter
-            .convert(request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
+        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter.convert(
+            request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
         assetSoftwareLicense.setSoftwareId(request.getId());
         // 写入业务日志
         LogHandle.log(assetSoftwareLicense.toString(), AssetEventEnum.SOFT_INSERT.getName(),
@@ -439,9 +438,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 super.convert(assetSoftware, assetSoftwareResponse);
                 assetSoftwareResponse.setAssetCount(0);
                 if (MapUtils.isNotEmpty(finalSoftAssetCount)) {
-                    assetSoftwareResponse.setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null
-                        ? finalSoftAssetCount.get(assetSoftware.getId()).intValue()
-                        : 0);
+                    assetSoftwareResponse
+                        .setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null ? finalSoftAssetCount
+                            .get(assetSoftware.getId()).intValue() : 0);
                 }
             }
         };
@@ -460,8 +459,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         if (!Objects.isNull(query.getCategoryModels()) && query.getCategoryModels().length > 0) {
             List<Integer> categoryModels = Lists.newArrayList();
             for (int i = 0; i < query.getCategoryModels().length; i++) {
-                categoryModels.addAll(iAssetCategoryModelService.findAssetCategoryModelIdsById(
-                    com.antiy.common.utils.DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
+                categoryModels.addAll(iAssetCategoryModelService
+                    .findAssetCategoryModelIdsById(com.antiy.common.utils.DataTypeUtils.stringToInteger(query
+                        .getCategoryModels()[i])));
             }
             query.setCategoryModels(com.antiy.common.utils.DataTypeUtils.integerArrayToStringArray(categoryModels));
         }
@@ -518,16 +518,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         for (Map map : list) {
             SoftwareStatusEnum softwareStatusEnum = SoftwareStatusEnum.getAssetByCode((Integer) map.get("key"));
             if (softwareStatusEnum != null) {
-                // 待退役和待退役分析视为同一状态
-                if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE)
-                    || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE)) {
-                    processList(resultList, resultMap, map, SoftwareStatusEnum.WAIT_RETIRE);
-                }
-                // 待分析和待卸载分析视为同一状态
-                else if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE)
-                         || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL)) {
-                    processList(resultList, resultMap, map, SoftwareStatusEnum.WAIT_ANALYZE);
-                } else if (!softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL)) {
+                if (!softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL)
+                    && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE)
+                    && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE)
+                    && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE)
+                    && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL)) {
                     EnumCountResponse e = resultMap.get(softwareStatusEnum);
                     e.setNumber((Long) map.get("value"));
                 }
@@ -538,27 +533,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private void initResultMap(Map<SoftwareStatusEnum, EnumCountResponse> resultMap) {
         for (SoftwareStatusEnum softwareStatusEnum : SoftwareStatusEnum.values()) {
             EnumCountResponse enumCountResponse;
-            if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE)
-                || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE)) {
-                String waitRetire = SoftwareStatusEnum.WAIT_RETIRE.getMsg();
-                List<String> codeList = new ArrayList<>();
-                codeList.add(SoftwareStatusEnum.WAIT_RETIRE.getCode() + "");
-                codeList.add(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE.getCode() + "");
-                enumCountResponse = new EnumCountResponse(SoftwareStatusEnum.WAIT_RETIRE.getMsg(), codeList, 0);
-                resultMap.put(SoftwareStatusEnum.WAIT_RETIRE, enumCountResponse);
-            }
-            // 待分析和待卸载分析视为同一状态
-            else if (softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE)
-                     || softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL)) {
-                String waitAnalyze = SoftwareStatusEnum.WAIT_ANALYZE.getMsg();
-                List<String> codeList = new ArrayList<>();
-                codeList.add(SoftwareStatusEnum.WAIT_ANALYZE.getCode() + "");
-                codeList.add(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL.getCode() + "");
-                enumCountResponse = new EnumCountResponse(SoftwareStatusEnum.WAIT_ANALYZE.getMsg(), codeList, 0);
-                resultMap.put(SoftwareStatusEnum.WAIT_ANALYZE, enumCountResponse);
-            } else if (!softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL)) {
-                enumCountResponse = new EnumCountResponse(softwareStatusEnum.getMsg(),
-                    softwareStatusEnum.getCode() + "", 0);
+            if (!softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL)
+                && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE)
+                && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE)
+                && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE)
+                && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL)) {
+                enumCountResponse = new EnumCountResponse(softwareStatusEnum.getMsg(), softwareStatusEnum.getCode()
+                                                                                       + "", 0);
                 resultMap.put(softwareStatusEnum, enumCountResponse);
             }
         }
@@ -641,8 +622,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return assetSoftwareDetailResponse;
     }
 
-    private void setOperationName(AssetSoftware assetSoftware,
-                                  AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+    private void setOperationName(AssetSoftware assetSoftware, AssetSoftwareDetailResponse assetSoftwareDetailResponse)
+                                                                                                                       throws Exception {
 
         if (assetSoftware == null) {
             return;
@@ -700,7 +681,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery) throws Exception {
+    public PageResult<AssetSoftwareInstallResponse> findPageAssetInstall(AssetSoftwareQuery softwareQuery)
+                                                                                                          throws Exception {
         List<AssetSoftwareInstallResponse> assetSoftwareInstallResponseList = this.findAssetInstallList(softwareQuery);
         if (CollectionUtils.isEmpty(assetSoftwareInstallResponseList)) {
             return new PageResult<>(softwareQuery.getPageSize(), 0, softwareQuery.getCurrentPage(),
@@ -784,8 +766,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 assetSoftwareRelation.setInstallStatus(InstallStatus.SUCCESS.getCode());
                 assetSoftwareRelation.setInstallTime(softwareReportRequest.getInstallTime());
                 assetSoftwareRelation.setInstallType(InstallType.MANUAL.getCode());
-                assetSoftwareRelation
-                    .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
+                assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser()
+                    .getId() : 0);
                 assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                 assetSoftwareRelationList.add(assetSoftwareRelation);
             });
@@ -821,8 +803,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return scheme;
     }
 
-    private AssetOperationRecord convertRecord(ConfigRegisterRequest request, Scheme scheme,
-                                               Long gmtCreateTime) throws Exception {
+    private AssetOperationRecord convertRecord(ConfigRegisterRequest request, Scheme scheme, Long gmtCreateTime)
+                                                                                                                throws Exception {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         if (AssetTypeEnum.SOFTWARE.getCode().equals(DataTypeUtils.stringToInteger(request.getSource()))) {
@@ -877,8 +859,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         List<AssetSoftware> assetList = new ArrayList<>();
         for (AssetSoftwareEntity entity : resultDataList) {
 
-            AssetCategoryModel categoryModel = assetCategoryModelDao
-                .getById(com.antiy.common.utils.DataTypeUtils.stringToInteger(entity.getCategory()));
+            AssetCategoryModel categoryModel = assetCategoryModelDao.getById(com.antiy.common.utils.DataTypeUtils
+                .stringToInteger(entity.getCategory()));
 
             if (Objects.isNull(categoryModel)) {
                 error++;
@@ -951,8 +933,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 manualStartActivityRequest.setBusinessId(assetSoftware.getStringId());
                 manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
                 manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-                manualStartActivityRequest
-                    .setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE_ATUO.getCode());
+                manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE_ATUO
+                    .getCode());
                 manualStartActivityRequests.add(manualStartActivityRequest);
                 success++;
             }
@@ -971,10 +953,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return stringBuilder.append(builder).append(sb).toString();
     }
 
-    private void exportData(String s, AssetSoftwareQuery assetSoftwareQuery,
-                            HttpServletResponse response) throws Exception {
-        assetSoftwareQuery.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+    private void exportData(String s, AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response)
+                                                                                                          throws Exception {
+        assetSoftwareQuery.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser()
+            .getAreaIdsOfCurrentUser()));
         assetSoftwareQuery.setQueryAssetCount(true);
         assetSoftwareQuery.setPageSize(com.antiy.asset.util.Constants.ALL_PAGE);
         List<AssetSoftwareResponse> list = this.findPageAssetSoftware(assetSoftwareQuery).getItems();
@@ -1052,8 +1034,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @throws Exception
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void querySoftwarePort(SoftwareQuery softwareQuery,
-                                   AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+    public void querySoftwarePort(SoftwareQuery softwareQuery, AssetSoftwareDetailResponse assetSoftwareDetailResponse)
+                                                                                                                       throws Exception {
         AssetPortProtocolQuery assetPortProtocolQuery = new AssetPortProtocolQuery();
         assetPortProtocolQuery.setAssetSoftId(softwareQuery.getPrimaryKey());
         assetPortProtocolQuery.setPageSize(Constants.MAX_PAGESIZE);
@@ -1070,7 +1052,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void querySoftwareLicense(SoftwareQuery softwareQuery,
-                                      AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
+                                     AssetSoftwareDetailResponse assetSoftwareDetailResponse) throws Exception {
         AssetSoftwareLicenseQuery assetSoftwareLicenseQuery = new AssetSoftwareLicenseQuery();
         assetSoftwareLicenseQuery.setSoftwareId(DataTypeUtils.stringToInteger(softwareQuery.getPrimaryKey()));
         assetSoftwareLicenseQuery.setPageSize(Constants.MAX_PAGESIZE);
