@@ -188,9 +188,9 @@ public class AssetUserController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/cancel", method = RequestMethod.POST)
     public ActionResponse cancelUser(@RequestBody @ApiParam(value = "baseRequest") BaseRequest baseRequest) throws Exception {
-        ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "ID不能为空");
+        ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "用户ID不能为空");
         return ActionResponse
-            .success(iAssetUserService.deleteById(DataTypeUtils.stringToInteger(baseRequest.getStringId())));
+            .success(iAssetUserService.deleteUserById(DataTypeUtils.stringToInteger(baseRequest.getStringId())));
     }
 
     /**

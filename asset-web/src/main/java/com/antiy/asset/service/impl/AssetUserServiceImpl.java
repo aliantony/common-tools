@@ -2,10 +2,15 @@ package com.antiy.asset.service.impl;
 
 import static com.antiy.biz.file.FileHelper.logger;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.entity.Asset;
+import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.DataTypeUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -54,6 +59,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     private AesEncoder                                  aesEncoder;
     @Resource
     private RedisUtil                                   redisUtil;
+    @Resource
+    private AssetDao                                    assetDao;
 
     @Override
     public String saveAssetUser(AssetUserRequest request) throws Exception {
@@ -131,5 +138,19 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Override
     public List<AssetUser> findExportListAssetUser(AssetUserQuery assetUser) {
         return assetUserDao.findExportListAssetUser(assetUser);
+    }
+
+    @Override
+    public ActionResponse deleteUserById(Integer id) throws Exception {
+        HashMap<String, Object> param = new HashMap<>(1);
+        param.put("responsibleUserId", id);
+        List<Asset> assets = assetDao.getByWhere(param);
+        BusinessExceptionUtils.isTrue(CollectionUtils.isEmpty(assets), "该人员已经是资产使用者,不能注销");
+        assetUserDao.deleteById(id);
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_USER_DELETE.getName(), id, null,
+                id, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+        LogUtils.info(logger, AssetEventEnum.ASSET_USER_DELETE.getName() + " {}", id);
+        return ActionResponse.success();
     }
 }

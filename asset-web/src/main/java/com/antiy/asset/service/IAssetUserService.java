@@ -8,6 +8,7 @@ import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
 import com.antiy.asset.vo.response.AssetUserResponse;
 import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -65,4 +66,11 @@ public interface IAssetUserService extends IBaseService<AssetUser> {
     void importUser(List<AssetUser> assetUserList);
 
     List<AssetUser> findExportListAssetUser(AssetUserQuery assetUser);
+
+    /**
+     * 注销人员
+     * @param id
+     * @return
+     */
+    ActionResponse deleteUserById(Integer id) throws Exception;
 }
