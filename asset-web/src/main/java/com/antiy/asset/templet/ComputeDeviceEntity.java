@@ -102,7 +102,7 @@ public class ComputeDeviceEntity {
     /**
      * 保修
      */
-    @ExcelField(value = "warranty", align = 1, title = "保修期", isDate = true)
+    @ExcelField(value = "warranty", align = 1, title = "保修期")
     private String    warranty;
 
     /**

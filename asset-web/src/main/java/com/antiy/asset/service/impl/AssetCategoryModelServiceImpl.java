@@ -295,9 +295,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * 获取计算设备和网络设备树
      * @return
      */
-    public AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode(Boolean searchNetworkDevice) throws Exception {
+    public AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode(String secondCategoryName) throws Exception {
         Map<String, String> secondCategoryMap = this.getSecondCategoryMap();
-        if (searchNetworkDevice == null || !searchNetworkDevice) {
+        if ((secondCategoryName == null) || ("".equals(secondCategoryName)) || "网络设备".equals(secondCategoryName)) {
             String[] category = new String[2];
             int i = 0;
             for (Map.Entry<String, String> entry : secondCategoryMap.entrySet()) {

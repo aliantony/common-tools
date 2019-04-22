@@ -78,7 +78,7 @@ public interface IAssetGroupService extends IBaseService<AssetGroup> {
      * @return
      * @throws Exception
      */
-    List<SelectResponse> queryUnconnectedGroupInfo(Boolean searchNetworkDevice) throws Exception;
+    List<SelectResponse> queryUnconnectedGroupInfo(String secondCategoryName) throws Exception;
 
     /**
      * 移除关联资产

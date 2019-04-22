@@ -102,8 +102,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_INSERT.getName(),
                 AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_GROUP_INSERT.getName(), assetGroup.getId (), assetGroup.getName (),
-                    assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_INSERT.getName(), assetGroup.getId(),
+                assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}", assetGroup.toString());
         }
 
@@ -111,8 +111,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         StringBuilder assetNameBuilder = new StringBuilder();
         if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
             for (String assetId : request.getAssetIds()) {
-                List<String> assetGroupNameList = assetGroupRelationDao
-                    .findAssetGroupNameByAssetId(assetId);
+                List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
                 String assetGroupName = assetGroupNameList.toString();
                 updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
             }
@@ -159,9 +158,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 // 写入业务日志
                 LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
                     AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                LogUtils.recordOperLog(
-                    new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(), assetGroup.getId(),
-                        assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
+                    assetGroup.getId(), assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET,
+                    BusinessPhaseEnum.NONE));
                 LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}",
                     assetGroup.toString());
             }
@@ -195,13 +194,12 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             }
         }
 
-
         if (!Objects.equals(0, result)) {
             // 写入业务日志
             LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
                 AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(), assetGroup.getId (), assetGroup.getName (),
-                    assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(), assetGroup
+                .getId(), assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}", assetGroup.toString());
         }
 
@@ -216,8 +214,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             AssetGroupResponse.class);
 
         for (AssetGroupResponse assetGroupResponse : assetResponseList) {
-            List<String> assetList = assetGroupRelationDao
-                .findAssetNameByAssetGroupId(Integer.valueOf(assetGroupResponse.getStringId()));
+            List<String> assetList = assetGroupRelationDao.findAssetNameByAssetGroupId(Integer
+                .valueOf(assetGroupResponse.getStringId()));
             StringBuilder assetDetail = new StringBuilder();
             for (String assetName : assetList) {
                 if (assetList.size() == 1 || assetList.size() == assetList.size() - 1) {
@@ -254,26 +252,26 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
      * @throws Exception
      */
     @Override
-    public List<SelectResponse> queryUnconnectedGroupInfo(Boolean searchNetworkDevice) throws Exception {
+    public List<SelectResponse> queryUnconnectedGroupInfo(String secondCategoryName) throws Exception {
         AssetQuery query = new AssetQuery();
         List<Integer> categoryCondition = new ArrayList<>();
         Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
         List<AssetCategoryModel> all = assetCategoryModelService.getAll();
         for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
-            if (searchNetworkDevice == null || !searchNetworkDevice) {
+            if ((secondCategoryName == null) || ("".equals(secondCategoryName)) || "网络设备".equals(secondCategoryName)) {
                 if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-                    categoryCondition.addAll(
-                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
+                    categoryCondition.addAll(assetCategoryModelService.findAssetCategoryModelIdsById(
+                        Integer.parseInt(entry.getKey()), all));
                 }
             }
             if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-                categoryCondition.addAll(
-                    assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
+                categoryCondition.addAll(assetCategoryModelService.findAssetCategoryModelIdsById(
+                    Integer.parseInt(entry.getKey()), all));
             }
         }
         query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
-        query.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        query.setAreaIds(DataTypeUtils
+            .integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
