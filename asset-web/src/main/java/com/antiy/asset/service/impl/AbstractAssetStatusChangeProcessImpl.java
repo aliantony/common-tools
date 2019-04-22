@@ -175,7 +175,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             scheme.setMemo(scheme.getContent());
         }
         if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
-            int max = 0;
+            int max = 5;
             Object o = JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
             if (((JSONObject) o).size() > max) {
                 throw new BusinessException("最多上传5个附件");

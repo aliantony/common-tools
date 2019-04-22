@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
@@ -785,6 +786,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     private Scheme convertScheme(ConfigRegisterRequest registerRequest, Long gmtCreateTime) {
+
         Scheme scheme = new Scheme();
         scheme.setContent(registerRequest.getSuggest());
         scheme.setMemo(registerRequest.getSuggest());
@@ -799,6 +801,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         scheme.setGmtCreate(gmtCreateTime);
         scheme.setFileInfo(registerRequest.getFiles());
+
+        int max = 5;
+        Object o = JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+        if (((JSONObject) o).size() > max) {
+            throw new BusinessException("最多上传5个附件");
+        }
 
         return scheme;
     }
