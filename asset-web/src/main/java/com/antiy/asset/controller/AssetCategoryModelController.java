@@ -174,7 +174,7 @@ public class AssetCategoryModelController {
      *
      * @return actionResponse
      */
-    @ApiOperation(value = "通过计算设备和安全设备树", notes = "主键封装对象")
+    @ApiOperation(value = "通过计算设备和网络设备树", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/computeNetNode", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:querySecondCategoryNode')")

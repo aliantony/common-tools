@@ -1000,6 +1000,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         } else {
             List<AssetResponse> assetResponseList = responseConverter.convert(assetDao.findListUnconnectedAsset(query),
                 AssetResponse.class);
+            processCategoryToSecondCategory(assetResponseList, categoryMap);
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
         }
     }
@@ -1014,13 +1015,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String categoryModel = assetResponse.getCategoryModel();
             String cacheId = cache.get(categoryModel);
             if (Objects.nonNull(cacheId)) {
-                assetResponse.setCategoryModel(categoryModel);
-                assetResponse.setCategoryModelName(categoryMap.get(cacheId));
+                assetResponse.setSecondCategoryModelName(categoryMap.get(cacheId));
             } else {
                 String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
                     categoryMap.keySet());
                 if (Objects.nonNull(second)) {
-                    assetResponse.setCategoryModelName(categoryMap.get(second));
+                    assetResponse.setSecondCategoryModelName(categoryMap.get(second));
                     cache.put(categoryModel, second);
                 }
             }
@@ -1366,13 +1366,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         param.put("assetId", asset.getId());
         AssetResponse assetResponse = BeanConvert.convertBean(asset, AssetResponse.class);
 
-        // 设置使用者
-        if (StringUtils.isNotEmpty(asset.getResponsibleUserId())) {
-            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
-                com.antiy.asset.util.DataTypeUtils.stringToInteger(asset.getResponsibleUserId()));
-            SysUser sysUser = redisUtil.getObject(key, SysUser.class);
-            assetResponse.setResponsibleUserName(sysUser != null ? sysUser.getName() : null);
-        }
         // 设置区域
         if (StringUtils.isNotEmpty(asset.getAreaId())) {
             String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
@@ -1390,6 +1383,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         }
+        // 设置2级品类型号名
+        assetResponse.setSecondCategoryModelName(assetCategoryModelService.getSecondCategoryMap()
+            .get(assetCategoryModelService.recursionSearchParentCategory(asset.getCategoryModel(),
+                assetCategoryModelService.getAll(), assetCategoryModelService.getSecondCategoryMap().keySet())));
 
         assetResponse.setAssetGroups(
             BeanConvert.convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class));
@@ -1570,7 +1567,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetNetworkCard.setAssetId(asset.getStringId());
                             // 修改的
                             if (StringUtils.isNotBlank(assetNetworkCard.getStringId())) {
-                                AssetNetworkCard byId = assetNetworkCardDao.getById(DataTypeUtils.stringToInteger(assetNetworkCard.getStringId()));
+                                AssetNetworkCard byId = assetNetworkCardDao
+                                    .getById(DataTypeUtils.stringToInteger(assetNetworkCard.getStringId()));
                                 if (byId != null && !byId.getIpAddress().equals(assetNetworkCard.getIpAddress())) {
                                     assetQuery.setIp(assetNetworkCard.getIpAddress());
                                     BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "IP不能重复");
@@ -1595,11 +1593,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // 3. 更新网卡信息
                         // 先删除再新增
                         LogHandle.log(asset.getId(), AssetEventEnum.ASSET_NETWORK_DELETE.getName(),
-                                AssetEventEnum.ASSET_NETWORK_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                        LogUtils
-                                .recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_DELETE.getName(), asset.getId(),
-                                        asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
-                        LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DELETE.getName() + " {}", asset.getStringId());
+                            AssetEventEnum.ASSET_NETWORK_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_DELETE.getName(),
+                            asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                            BusinessPhaseEnum.WAIT_SETTING));
+                        LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DELETE.getName() + " {}",
+                            asset.getStringId());
                         assetNetworkCardDao.deleteByAssetId(asset.getId());
                         if (CollectionUtils.isNotEmpty(insertNetworkList)) {
                             LogHandle.log(insertNetworkList, AssetEventEnum.ASSET_NETWORK_INSERT.getName(),
@@ -1801,7 +1800,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         AssetNetworkEquipment assetNetworkEquipment = BeanConvert.convertBean(networkEquipment,
                             AssetNetworkEquipment.class);
                         // ip 变更，不重复 ，且删除关联关系
-                        AssetNetworkEquipment byId = assetNetworkEquipmentDao.getById(DataTypeUtils.stringToInteger(networkEquipment.getId()));
+                        AssetNetworkEquipment byId = assetNetworkEquipmentDao
+                            .getById(DataTypeUtils.stringToInteger(networkEquipment.getId()));
                         if (byId != null && !byId.getInnerIp().equals(networkEquipment.getInnerIp())) {
                             assetQuery.setIp(networkEquipment.getInnerIp());
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(networkEquipment.getId()));
