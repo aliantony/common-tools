@@ -56,10 +56,10 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("品类")
     private String                   categoryModel;
     /**
-     * 品类
+     * 是否网络设备
      */
-    @ApiModelProperty("二级品类型号名")
-    private String                   secondCategoryModelName;
+    @ApiModelProperty("是否网络设备")
+    private Boolean                   secondCategoryModel;
 
     /**
      * 品类名称
@@ -557,12 +557,12 @@ public class AssetResponse extends BaseResponse {
         this.operationSystemName = operationSystemName;
     }
 
-    public String getSecondCategoryModelName() {
-        return secondCategoryModelName;
+    public Boolean getSecondCategoryModel() {
+        return secondCategoryModel;
     }
 
-    public void setSecondCategoryModelName(String secondCategoryModelName) {
-        this.secondCategoryModelName = secondCategoryModelName;
+    public void setSecondCategoryModel(Boolean secondCategoryModel) {
+        this.secondCategoryModel = secondCategoryModel;
     }
 
     @Override

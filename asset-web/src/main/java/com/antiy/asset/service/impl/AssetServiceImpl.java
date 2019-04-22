@@ -942,8 +942,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 如果count为0 直接返回结果即可
         if (count <= 0) {
-            query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+            if (query.getAreaIds() != null && query.getAreaIds().length <= 0) {
+                query.setAreaIds(
+                    DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+            }
             count = this.findCountAsset(query);
         }
 
@@ -1011,16 +1013,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 作为缓存使用，提高效率
         Map<String, String> cache = new HashMap<>();
         List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
+        Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
         for (AssetResponse assetResponse : assetResponseList) {
             String categoryModel = assetResponse.getCategoryModel();
             String cacheId = cache.get(categoryModel);
             if (Objects.nonNull(cacheId)) {
-                assetResponse.setSecondCategoryModelName(categoryMap.get(cacheId));
+                assetResponse.setSecondCategoryModel(
+                    AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryMap.get(cacheId)));
             } else {
                 String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
                     categoryMap.keySet());
                 if (Objects.nonNull(second)) {
-                    assetResponse.setSecondCategoryModelName(categoryMap.get(second));
+                    assetResponse.setSecondCategoryModel(
+                        AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryMap.get(second)));
                     cache.put(categoryModel, second);
                 }
             }
@@ -1383,11 +1388,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         }
-        // 设置2级品类型号名
-        assetResponse.setSecondCategoryModelName(assetCategoryModelService.getSecondCategoryMap()
-            .get(assetCategoryModelService.recursionSearchParentCategory(asset.getCategoryModel(),
-                assetCategoryModelService.getAll(), assetCategoryModelService.getSecondCategoryMap().keySet())));
-
         assetResponse.setAssetGroups(
             BeanConvert.convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class));
         assetOuterResponse.setAsset(assetResponse);
