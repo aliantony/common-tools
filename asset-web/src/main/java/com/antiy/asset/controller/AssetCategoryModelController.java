@@ -178,7 +178,7 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/computeNetNode", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:querySecondCategoryNode')")
-    public ActionResponse queryComputeAndNetCategoryNode(@ApiParam("是否只查网络设备 若为是则只查网络设备，若为否则两者都查 默认为两者都查") Boolean searchNetworkDevice) throws Exception {
-        return ActionResponse.success(iAssetCategoryModelService.queryComputeAndNetCategoryNode(searchNetworkDevice));
+    public ActionResponse queryComputeAndNetCategoryNode(@ApiParam("二级品类名") String secondCategoryName) throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.queryComputeAndNetCategoryNode(secondCategoryName));
     }
 }

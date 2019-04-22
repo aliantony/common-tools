@@ -187,8 +187,8 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     private Long          beginTime;
     @ApiModelProperty("结束时间")
     private Long          endTime;
-    @ApiModelProperty("是否只查网络设备 若为是则只查网络设备，若为否则两者都查 默认为两者都查")
-    private Boolean       searchNetworkDevice;
+    @ApiModelProperty("二级品类名")
+    private String        secondCategoryName;
 
     @ApiModelProperty(value = "是否查询漏洞个数,true 表示查询，false表示不查询", allowableValues = "true,false")
     private Boolean       queryVulCount;
@@ -208,7 +208,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 需要排除的id
      */
-    private Integer exceptId;
+    private Integer       exceptId;
 
     public Integer getExceptId() {
         return exceptId;
@@ -218,7 +218,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
         this.exceptId = exceptId;
     }
 
-    private List<String>  existAssociateIds;
+    private List<String> existAssociateIds;
 
     public List<String> getExistAssociateIds() {
         return existAssociateIds;
@@ -491,12 +491,12 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
         this.number = number;
     }
 
-    public Boolean getSearchNetworkDevice() {
-        return searchNetworkDevice;
+    public String getSecondCategoryName() {
+        return secondCategoryName;
     }
 
-    public void setSearchNetworkDevice(Boolean searchNetworkDevice) {
-        this.searchNetworkDevice = searchNetworkDevice;
+    public void setSecondCategoryName(String secondCategoryName) {
+        this.secondCategoryName = secondCategoryName;
     }
 
     @Override

@@ -147,6 +147,6 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
     /**
      * 获取安全设备和网络设备树
      */
-    AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode(Boolean searchNetworkDevice) throws Exception;
+    AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode(String categoryName) throws Exception;
 
 }
