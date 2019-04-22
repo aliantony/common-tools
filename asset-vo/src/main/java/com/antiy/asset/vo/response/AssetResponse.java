@@ -56,6 +56,12 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("品类")
     private String                   categoryModel;
     /**
+     * 品类
+     */
+    @ApiModelProperty("二级品类型号名")
+    private String                   secondCategoryModelName;
+
+    /**
      * 品类名称
      */
     @ApiModelProperty("品类名称")
@@ -227,9 +233,8 @@ public class AssetResponse extends BaseResponse {
     }
 
     public void setInstallTypeName(String installTypeName) {
-        this.installTypeName = InstallType.getInstallTypeByCode(installType) != null
-            ? InstallType.getInstallTypeByCode(installType).getStatus()
-            : "";
+        this.installTypeName = InstallType.getInstallTypeByCode(installType) != null ? InstallType
+            .getInstallTypeByCode(installType).getStatus() : "";
     }
 
     public String getVulCount() {
@@ -550,6 +555,14 @@ public class AssetResponse extends BaseResponse {
 
     public void setOperationSystemName(String operationSystemName) {
         this.operationSystemName = operationSystemName;
+    }
+
+    public String getSecondCategoryModelName() {
+        return secondCategoryModelName;
+    }
+
+    public void setSecondCategoryModelName(String secondCategoryModelName) {
+        this.secondCategoryModelName = secondCategoryModelName;
     }
 
     @Override
