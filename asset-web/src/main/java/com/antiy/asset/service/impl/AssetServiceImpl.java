@@ -1379,10 +1379,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         }
-        // 设置2级品类型号名
-        assetResponse.setSecondCategoryModelName(assetCategoryModelService.getSecondCategoryMap().get(
-                assetCategoryModelService.recursionSearchParentCategory(asset.getCategoryModel(),
-                        assetCategoryModelService.getAll(), assetCategoryModelService.getSecondCategoryMap().keySet())));
 
         assetResponse.setAssetGroups(BeanConvert.convert(assetGroupRelationDao.queryByAssetId(asset.getId()),
                 AssetGroupResponse.class));
