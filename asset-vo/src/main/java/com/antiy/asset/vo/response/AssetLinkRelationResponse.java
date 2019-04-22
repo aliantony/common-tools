@@ -27,9 +27,9 @@ public class AssetLinkRelationResponse extends BaseResponse {
     @ApiModelProperty("资产IP")
     private String  assetIp;
     /**
-     * 资产端口
+     * 资产网口
      */
-    @ApiModelProperty("资产端口")
+    @ApiModelProperty("资产网口")
     private String  assetPort;
     /**
      * 资产品类型号
@@ -57,9 +57,9 @@ public class AssetLinkRelationResponse extends BaseResponse {
     @ApiModelProperty("父级设备IP")
     private String  parentAssetIp;
     /**
-     * 父级设备端口
+     * 父级设备网口
      */
-    @ApiModelProperty("父级设备端口")
+    @ApiModelProperty("父级设备网口")
     private String  parentAssetPort;
     /**
      * 关联资产品类型号
