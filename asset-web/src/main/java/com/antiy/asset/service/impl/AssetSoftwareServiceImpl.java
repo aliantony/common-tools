@@ -785,6 +785,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     }
 
     private Scheme convertScheme(ConfigRegisterRequest registerRequest, Long gmtCreateTime) {
+
         Scheme scheme = new Scheme();
         scheme.setContent(registerRequest.getSuggest());
         scheme.setMemo(registerRequest.getSuggest());
@@ -799,7 +800,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         scheme.setGmtCreate(gmtCreateTime);
         scheme.setFileInfo(registerRequest.getFiles());
-
         return scheme;
     }
 
