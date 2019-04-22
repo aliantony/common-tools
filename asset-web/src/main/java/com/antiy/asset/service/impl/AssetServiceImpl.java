@@ -2234,7 +2234,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         computeDeviceEntity.setArea("成都市");
         computeDeviceEntity.setName("ThinkPad X1 隐士");
         computeDeviceEntity.setLocation("成都市锦江区");
-        computeDeviceEntity.setWarranty("2");
+        computeDeviceEntity.setWarranty("2年");
         computeDeviceEntity.setDescription("搭载第八代英特尔®酷睿TM i7处理器，配备双内存插槽，最高支持64GB内存扩展");
         computeDeviceEntity.setDueTime(System.currentTimeMillis());
         computeDeviceEntity.setImportanceDegree("1");
