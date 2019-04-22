@@ -3278,11 +3278,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 写入方案
         if (scheme != null && scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
-            int max = 5;
-            Object o = JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
-            if (((JSONObject) o).size() > max) {
-                throw new BusinessException("最多上传5个附件");
-            }
+            JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
             scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             scheme.setAssetId(assetId);
             scheme.setSchemeSource(1);
