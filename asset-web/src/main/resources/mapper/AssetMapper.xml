@@ -1140,6 +1140,7 @@
         a.admittance_status,
         a.number,
         a.name,
+        d.name as responsible_user_name,
         a.install_type,
         a.serial,
         c.name as category_model_name,
@@ -1189,6 +1190,7 @@
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1
         left join asset_category_model c on a.category_model = c.id
+        left join asset_user d on a.responsible_user_id = d.id
         where a.status = 1
         group by a.id
         order by a.gmt_create desc) asset
