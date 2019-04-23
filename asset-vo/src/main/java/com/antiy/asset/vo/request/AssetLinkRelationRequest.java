@@ -53,7 +53,6 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
      * 父级设备端口
      */
     @ApiModelProperty(value = "父级设备端口",required = true)
-    @NotBlank(message = "父级设备端口不能为空")
     private String  parentAssetPort;
     /**
      * 创建时间
