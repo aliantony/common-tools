@@ -2,16 +2,15 @@ package com.antiy.asset.dao;
 
 import java.util.List;
 
-import com.antiy.asset.entity.AssetLinkedCount;
-import com.antiy.asset.vo.response.AssetLinkRelationResponse;
-import com.antiy.asset.vo.response.AssetNodeInfoResponse;
-import com.antiy.common.base.PageResult;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetLinkRelation;
+import com.antiy.asset.entity.AssetLinkedCount;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.query.AssetTopologyQuery;
+import com.antiy.asset.vo.response.AssetNodeInfoResponse;
 import com.antiy.common.base.IBaseDao;
 
 /**
@@ -80,6 +79,7 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @return
      */
     List<AssetLinkRelation> queryLinkedAssetListByAssetId(AssetLinkRelationQuery assetLinkRelationQuery);
+
     /**
      * 与当前资产通联的资产数量查询
      * @param assetLinkRelationQuery
@@ -122,4 +122,12 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @return
      */
     AssetNodeInfoResponse queryAssetNodeInfo(String assetId);
+
+    /**
+     * 统计已建立关联关系的资产数量 资产状态为已入网7和待退役8
+     * @param assetTopologyQuery 封装查询条件
+     * @return
+     */
+    Integer countAssetTopology(AssetTopologyQuery assetTopologyQuery);
+
 }

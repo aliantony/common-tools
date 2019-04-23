@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.query;
 
+import java.util.List;
+
 import com.antiy.common.base.ObjectQuery;
 
 /**
@@ -11,4 +13,16 @@ import com.antiy.common.base.ObjectQuery;
 
 public class AssetTopologyQuery extends ObjectQuery {
 
+    /**
+     * 登录用户所属区域ids
+     */
+    private List<Integer> userAreaIds;
+
+    public List<Integer> getUserAreaIds() {
+        return userAreaIds;
+    }
+
+    public void setUserAreaIds(List<Integer> userAreaIds) {
+        this.userAreaIds = userAreaIds;
+    }
 }

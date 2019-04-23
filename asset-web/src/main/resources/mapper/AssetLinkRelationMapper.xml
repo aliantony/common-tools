@@ -977,4 +977,23 @@
         WHERE
 	    name IN ( '计算设备', '网络设备' );
     </select>
+
+    <select id="countAssetTopology" parameterType="com.antiy.asset.vo.query.AssetTopologyQuery"
+            resultType="java.lang.Integer">
+        SELECT
+        COUNT( DISTINCT arl.asset_id )
+        FROM
+        asset_link_relation arl
+        LEFT JOIN asset ON arl.asset_id = asset.id
+        WHERE
+        asset.asset_status BETWEEN 7 AND 8
+        <if test="userAreaIds != null and userAreaIds.size() > 0">
+            AND asset.area_id in
+            <foreach collection="userAreaIds" separator="," open="(" close=")" item="areaId">
+                #{areaId}
+            </foreach>
+        </if>
+        AND arl.status = 1
+        AND asset.status = 1
+    </select>
 </mapper>

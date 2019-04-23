@@ -4,24 +4,25 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.antiy.asset.dao.AssetPortProtocolDao;
 import com.antiy.asset.entity.AssetPortProtocol;
 import com.antiy.asset.service.IAssetPortProtocolService;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 import com.antiy.asset.vo.request.AssetPortProtocolRequest;
 import com.antiy.asset.vo.response.AssetPortProtocolResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p> 端口协议 服务实现类 </p>
@@ -48,7 +49,7 @@ public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProto
         assetPortProtocol.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetPortProtocol.setGmtCreate(System.currentTimeMillis());
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_PORT_INSERT.getName(), assetPortProtocol.getId(), null,
-                assetPortProtocol, BusinessModuleEnum.HARD_ASSET, null));
+                assetPortProtocol, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_PORT_INSERT.getName() + " {}", assetPortProtocol);
 
         return assetPortProtocolDao.insert(assetPortProtocol);
@@ -61,7 +62,7 @@ public class AssetPortProtocolServiceImpl extends BaseServiceImpl<AssetPortProto
         assetPortProtocol.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetPortProtocol.setGmtCreate(System.currentTimeMillis());
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_PORT_UPDATE.getName(), assetPortProtocol.getId(), null,
-                assetPortProtocol, BusinessModuleEnum.HARD_ASSET, null));
+                assetPortProtocol, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_PORT_UPDATE.getName() + " {}", assetPortProtocol);
         return assetPortProtocolDao.update(assetPortProtocol);
     }
