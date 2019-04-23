@@ -124,6 +124,16 @@
             <artifactId>velocity</artifactId>
             <version>1.7</version>
         </dependency>
+        <!--powemock单元测试工具-->
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
+        </dependency>
+
     </dependencies>
 
     <repositories>
