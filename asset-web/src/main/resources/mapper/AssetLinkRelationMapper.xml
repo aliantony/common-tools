@@ -284,6 +284,35 @@
             <include refid="IF_Value_Column_List"></include>
         </trim>
     </insert>
+    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetLinkRelation">
+        insert into
+        <include refid="Table_Name"></include>
+            (
+            asset_id,
+            asset_ip,
+            asset_port,
+            parent_asset_id,
+            parent_asset_ip,
+            parent_asset_port,
+            gmt_create,
+            memo,
+            create_user
+            )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (
+                #{item.assetId},
+                #{item.assetIp},
+                #{item.assetPort},
+                #{item.parentAssetId},
+                #{item.parentAssetIp},
+                #{item.parentAssetPort},
+                #{item.gmtCreate},
+                #{item.memo},
+                #{item.createUser}
+            )
+        </foreach>
+    </insert>
 
     <update id="update" parameterType="com.antiy.asset.entity.AssetLinkRelation">
         update

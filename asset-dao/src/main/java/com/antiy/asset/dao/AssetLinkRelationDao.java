@@ -101,4 +101,11 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @return
      */
     Integer queryAssetLinkedCount(AssetLinkRelationQuery assetLinkRelationQuery);
+
+    /**
+     * 批量保存
+     * @param assetLinkRelationList
+     * @return
+     */
+    Integer insertBatch(@Param("list") List<AssetLinkRelation> assetLinkRelationList);
 }

@@ -59,7 +59,7 @@ public class AssetResponse extends BaseResponse {
      * 设备类型
      */
     @ApiModelProperty("设备类型")
-    private CategoryType                   categoryType;
+    private CategoryType             categoryType;
 
     /**
      * 品类名称
@@ -227,6 +227,16 @@ public class AssetResponse extends BaseResponse {
 
     @ApiModelProperty(value = "告警个数")
     private String                   alarmCount;
+    @ApiModelProperty(value = "二级品类名")
+    private String                   secondCategoryModelName;
+
+    public String getSecondCategoryModelName() {
+        return secondCategoryModelName;
+    }
+
+    public void setSecondCategoryModelName(String secondCategoryModelName) {
+        this.secondCategoryModelName = secondCategoryModelName;
+    }
 
     public String getInstallTypeName() {
         return installTypeName;
