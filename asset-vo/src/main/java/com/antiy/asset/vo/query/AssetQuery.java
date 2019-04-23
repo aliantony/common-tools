@@ -79,6 +79,8 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("品类型号列表")
     @Encode
     private String[]     categoryModels;
+
+    @ApiModelProperty("二级品类")
     /**
      * 行政区划主键列表
      */
