@@ -116,5 +116,10 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      */
     List<String> queryCategoryModes();
 
+    /**
+     * 查询拓扑通联节点信息
+     * @param assetId
+     * @return
+     */
     AssetNodeInfoResponse queryAssetNodeInfo(String assetId);
 }
