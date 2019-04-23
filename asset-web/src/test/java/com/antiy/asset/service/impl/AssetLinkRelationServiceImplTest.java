@@ -3,6 +3,7 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetNetworkEquipmentDao;
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetLinkRelation;
 import com.antiy.asset.entity.AssetLinkedCount;
 import com.antiy.asset.service.IAssetCategoryModelService;
@@ -27,7 +28,8 @@ import org.springframework.security.oauth2.provider.OAuth2Request;
 
 import java.util.*;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class AssetLinkRelationServiceImplTest {
@@ -51,6 +53,8 @@ public class AssetLinkRelationServiceImplTest {
     private AssetNetworkEquipmentDao assetNetworkEquipmentDao;
     @Mock
     private IAssetCategoryModelService assetCategoryModelService;
+    @Mock
+    private IAssetCategoryModelService iAssetCategoryModelService;
     /**
      * 执行具体逻辑对象，不可删除
      */
@@ -448,12 +452,21 @@ public class AssetLinkRelationServiceImplTest {
         List<Integer> integers = new ArrayList<>();
         integers.add(233);
         integers.add(456);
+        List<AssetCategoryModel> list = new ArrayList<>();
+        AssetCategoryModel model = new AssetCategoryModel();
+        list.add(model);
+        Map<String, String> category = new HashMap<>();
+        category.put("1", "计算设备");
+        category.put("2", "网络设备");
         List<AssetLinkedCount> counts = new ArrayList<>();
         AssetLinkedCount count = new AssetLinkedCount();
         count.setName("1");
         counts.add(count);
         Mockito.when(assetCategoryModelService.findAssetCategoryModelIdsById(Mockito.anyInt())).thenReturn(integers);
+        Mockito.when(assetCategoryModelService.getSecondCategoryMap()).thenReturn(category);
         Mockito.when(assetLinkRelationDao.queryAssetLinkedCountList(Mockito.any())).thenReturn(counts);
+        Mockito.when(iAssetCategoryModelService.getSecondCategoryMap()).thenReturn(category);
+        Mockito.when(iAssetCategoryModelService.getAll()).thenReturn(list);
 
         PageResult<AssetLinkedCountResponse> result = service.queryAssetLinkedCountPage(new AssetLinkRelationQuery());
         assertThat(result, notNullValue());
@@ -461,16 +474,17 @@ public class AssetLinkRelationServiceImplTest {
 
     /**
      * 分页查询资产联系测试
-     * 情景1：传入查询参数，数据库不存在关联数据，返回空
+     * 情景2：传入查询参数，数据库不存在关联数据，返回空
      * 断言返回结果为空
      * @throws Exception except
      */
     @Test
     public void queryAssetLinkedCountPageEmpty() throws Exception {
-        List<Integer> integers = new ArrayList<>();
-        integers.add(233);
-        integers.add(456);
-        Mockito.when(assetCategoryModelService.findAssetCategoryModelIdsById(Mockito.anyInt())).thenReturn(integers);
+        Map<String, String> category = new HashMap<>();
+        category.put("1", "计算设备");
+        category.put("2", "网络设备");
+        Mockito.doThrow(new NullPointerException()).when(assetCategoryModelService).findAssetCategoryModelIdsById(Mockito.anyInt());
+        Mockito.when(assetCategoryModelService.getSecondCategoryMap()).thenReturn(category);
         Mockito.when(assetLinkRelationDao.queryAssetLinkedCountList(Mockito.any())).thenReturn(null);
 
         PageResult<AssetLinkedCountResponse> result = service.queryAssetLinkedCountPage(new AssetLinkRelationQuery());
@@ -479,7 +493,7 @@ public class AssetLinkRelationServiceImplTest {
 
     /**
      * 查找资产联系列表测试
-     * 传入查询参数，上下文中不存在用户信息，数据库中不存在对应信息，返回空列表
+     * 情景1：传入查询参数，上下文中不存在用户信息，数据库中不存在对应信息，返回空列表
      * 断言返回列表为空
      * @throws Exception except
      */
@@ -497,19 +511,70 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
+     * 查找资产联系列表测试
+     * 情景2：传入查询参数，上下文中存在用户信息，数据库中存在对应信息，返回列表
+     * 断言返回列表大小
+     * @throws Exception except
+     */
+    @Test
+    public void queryAssetLinkedCountListIf() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(null);
+        List<Integer> integers = new ArrayList<>();
+        integers.add(233);
+        integers.add(456);
+        List<AssetLinkedCount> list = new ArrayList<>();
+        AssetLinkedCount count = new AssetLinkedCount();
+        AssetLinkedCount count1 = new AssetLinkedCount();
+        count1.setCategoryModel("123");
+        list.add(count1);
+        list.add(count);
+        list.add(count1);
+        Mockito.when(assetCategoryModelService.findAssetCategoryModelIdsById(Mockito.anyInt())).thenReturn(integers);
+        Mockito.when(assetLinkRelationDao.queryAssetLinkedCountList(Mockito.any())).thenReturn(list);
+        Mockito.when(iAssetCategoryModelService.recursionSearchParentCategory(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn("");
+
+        List<AssetLinkedCountResponse> result = service.queryAssetLinkedCountList(new AssetLinkRelationQuery());
+        assertThat(result.size(), equalTo(3));
+    }
+
+    /**
      * 通过资产id查询资产关联数据列表测试
      * 情景1：传入查询参数，数据库存在关联数据，返回关联数据列表
      * 断言列表大小
      */
     @Test
-    public void queryLinkedAssetListByAssetId() {
+    public void queryLinkedAssetListByAssetId() throws Exception {
+        List<AssetLinkRelation> assetResponseList = new ArrayList<>();
+        AssetLinkRelation assetLinkRelation = new AssetLinkRelation();
+        AssetLinkRelation assetLinkRelation1 = new AssetLinkRelation();
+        assetLinkRelation1.setCategoryModel("123");
+        assetResponseList.add(assetLinkRelation1);
+        assetResponseList.add(assetLinkRelation);
+        assetResponseList.add(assetLinkRelation1);
+        AssetLinkRelationQuery query = new AssetLinkRelationQuery();
+        query.setPrimaryKey("110");
+        Mockito.when(assetLinkRelationDao.queryPortSize(Mockito.any())).thenReturn(233);
+        Mockito.when(assetLinkRelationDao.queryLinkedAssetListByAssetId(Mockito.any())).thenReturn(assetResponseList);
+        Mockito.when(iAssetCategoryModelService.recursionSearchParentCategory(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn("123");
+
+        List<AssetLinkRelationResponse> list = service.queryLinkedAssetListByAssetId(query);
+        assertThat(list.size(), equalTo(3));
+    }
+
+    /**
+     * 通过资产id查询资产关联数据列表测试
+     * 情景2：传入查询参数，数据库存在关联数据，返回关联数据列表
+     * 断言列表大小
+     */
+    @Test
+    public void queryLinkedAssetListByAssetIdIf() throws Exception {
         List<AssetLinkRelation> assetResponseList = new ArrayList<>();
         AssetLinkRelation assetLinkRelation = new AssetLinkRelation();
         assetResponseList.add(assetLinkRelation);
         AssetLinkRelationQuery query = new AssetLinkRelationQuery();
         query.setPrimaryKey("110");
         Mockito.when(assetLinkRelationDao.queryPortSize(Mockito.any())).thenReturn(233);
-        Mockito.when(assetLinkRelationDao.queryLinkedAssetListByAssetId(Mockito.anyInt(), Mockito.anyList())).thenReturn(assetResponseList);
+        Mockito.when(assetLinkRelationDao.queryLinkedAssetListByAssetId(Mockito.any())).thenReturn(assetResponseList);
 
         List<AssetLinkRelationResponse> list = service.queryLinkedAssetListByAssetId(query);
         assertThat(list.size(), equalTo(1));
@@ -521,11 +586,11 @@ public class AssetLinkRelationServiceImplTest {
      * 断言列表大小为空
      */
     @Test
-    public void queryLinkedAssetListByAssetIdEmpty() {
+    public void queryLinkedAssetListByAssetIdEmpty() throws Exception {
         AssetLinkRelationQuery query = new AssetLinkRelationQuery();
         query.setPrimaryKey("110");
         Mockito.when(assetLinkRelationDao.queryPortSize(Mockito.any())).thenReturn(233);
-        Mockito.when(assetLinkRelationDao.queryLinkedAssetListByAssetId(Mockito.anyInt(), Mockito.anyList())).thenReturn(null);
+        Mockito.when(assetLinkRelationDao.queryLinkedAssetListByAssetId(Mockito.any())).thenReturn(null);
 
         List<AssetLinkRelationResponse> list = service.queryLinkedAssetListByAssetId(query);
         assertThat(list.size(), equalTo(0));
@@ -537,17 +602,17 @@ public class AssetLinkRelationServiceImplTest {
      * 断言返回结果大小
      */
     @Test
-    public void queryLinkedAssetPageByAssetId() {
+    public void queryLinkedAssetPageByAssetId() throws Exception {
         List<AssetLinkRelation> assetResponseList = new ArrayList<>();
         AssetLinkRelation assetLinkRelation = new AssetLinkRelation();
         assetResponseList.add(assetLinkRelation);
         AssetLinkRelationQuery query = new AssetLinkRelationQuery();
         query.setPrimaryKey("110");
         Mockito.when(assetLinkRelationDao.queryPortSize(Mockito.any())).thenReturn(233);
-        Mockito.when(assetLinkRelationDao.queryLinkedAssetListByAssetId(Mockito.anyInt(), Mockito.anyList())).thenReturn(assetResponseList);
+        Mockito.when(assetLinkRelationDao.queryLinkedAssetListByAssetId(Mockito.any())).thenReturn(assetResponseList);
 
         PageResult<AssetLinkRelationResponse>result = service.queryLinkedAssetPageByAssetId(query);
-        assertThat(result.getTotalRecords(), equalTo(1));
+        assertThat(result.getTotalRecords(), equalTo(0));
     }
 
     /**
@@ -556,11 +621,11 @@ public class AssetLinkRelationServiceImplTest {
      * 断言返回结果大小为空
      */
     @Test
-    public void queryLinkedAssetPageByAssetIdEmpty() {
+    public void queryLinkedAssetPageByAssetIdEmpty() throws Exception {
         AssetLinkRelationQuery query = new AssetLinkRelationQuery();
         query.setPrimaryKey("110");
         Mockito.when(assetLinkRelationDao.queryPortSize(Mockito.any())).thenReturn(233);
-        Mockito.when(assetLinkRelationDao.queryLinkedAssetListByAssetId(Mockito.anyInt(), Mockito.anyList())).thenReturn(null);
+        Mockito.when(assetLinkRelationDao.queryLinkedAssetListByAssetId(Mockito.any())).thenReturn(null);
 
         PageResult<AssetLinkRelationResponse>result = service.queryLinkedAssetPageByAssetId(query);
         assertThat(result.getTotalRecords(), equalTo(0));
