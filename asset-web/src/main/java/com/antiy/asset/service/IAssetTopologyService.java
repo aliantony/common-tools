@@ -1,5 +1,10 @@
 package com.antiy.asset.service;
 
+import com.antiy.common.base.ActionResponse;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * 资产拓扑管理
  * @author zhangxin
@@ -7,4 +12,5 @@ package com.antiy.asset.service;
  */
 public interface IAssetTopologyService {
 
+    List<String> queryCategoryModels();
 }

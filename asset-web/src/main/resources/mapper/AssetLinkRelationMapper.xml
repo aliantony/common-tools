@@ -940,4 +940,12 @@
         a.parent_asset_id = #{primaryKey}
         and a.status = 1) t
     </select>
+
+    <select id="queryCategoryModes" resultType="java.lang.String">
+        SELECT name as categoryModelName
+        FROM
+	      asset_category_model
+        WHERE
+	    name IN ( '计算设备', '网络设备' );
+    </select>
 </mapper>

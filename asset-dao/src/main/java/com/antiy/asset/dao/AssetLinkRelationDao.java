@@ -108,4 +108,10 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @return
      */
     Integer insertBatch(@Param("list") List<AssetLinkRelation> assetLinkRelationList);
+
+    /**
+     * 查询品类型号
+     * @return
+     */
+    List<String> queryCategoryModes();
 }
