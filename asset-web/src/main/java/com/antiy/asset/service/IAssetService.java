@@ -246,7 +246,7 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * 通联设置的厂商下拉查询
      */
-    List<String> pulldownUnconnectedManufacturer(Boolean searchNetworkDevice) throws Exception;
+    List<String> pulldownUnconnectedManufacturer(Integer isNet) throws Exception;
 
     /**
      * 代配置状态变更
@@ -264,6 +264,5 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     ActionResponse saveAssetList(List<AssetOuterRequest> assetList);
-
 
 }

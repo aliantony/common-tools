@@ -32,18 +32,18 @@ public class LogHandle {
             return;
         }
         // 判断操作对象是否为集合，是集合则表明是批量操作
-        if (targetObj instanceof List) {
+       /* if (targetObj instanceof List) {
             List list = (List) targetObj;
             list.forEach(obj -> {
-                BusinessData logData = new BusinessData(eventDesc, getObjId(targetObj), targetObj.toString(), module,
-                    businessPhase);
+               *//* BusinessData logData = new BusinessData(eventDesc, getObjId(targetObj), targetObj.toString(), module,
+                    businessPhase);*//*
                 LogUtils.recordOperLog(logData);
             });
         } else {
             BusinessData logData = new BusinessData(eventDesc, getObjId(targetObj), targetObj.toString(), module,
                 businessPhase);
             LogUtils.recordOperLog(logData);
-        }
+        }*/
     }
 
     /**
