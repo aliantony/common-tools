@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
+import com.antiy.asset.vo.request.UseableIpRequest;
 import com.antiy.asset.vo.response.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -226,6 +227,17 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             assetLinkRelationDao.insertBatch(assetLinkRelationList);
         }
         return ActionResponse.success();
+    }
+
+    @Override
+    public List<String> queryUseableIp(UseableIpRequest useableIpRequest) {
+        //网络设备
+        if (useableIpRequest.getCategoryType().isNet()) {
+            return assetLinkRelationDao.queryUseableIp(useableIpRequest.getAssetId(),"isNet");
+        } else if (useableIpRequest.getCategoryType().isPc()) {
+            return assetLinkRelationDao.queryUseableIp(useableIpRequest.getAssetId(),"isPc");
+        }
+        return Lists.newArrayList();
     }
 
     @Override

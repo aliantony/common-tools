@@ -996,4 +996,21 @@
         AND arl.status = 1
         AND asset.status = 1
     </select>
+    <!--查询可用ip-->
+    <select id="queryUseableIp" resultType="java.lang.String">
+        <choose>
+            <when test="type == 'isNet'">
+                select inner_ip as ip_address from asset_network_equipment WHERE asset_id=#{assetId} and status=1
+            </when>
+            <when test="type == 'isPc'">
+                select ip_address from asset_network_card where asset_id = #{assetId} and status = 1 and ip_address not in
+                (select asset_ip from asset_link_relation where asset_id = #{assetId} and status = 1 union all
+                select parent_asset_ip from asset_link_relation where parent_asset_id = #{assetId} and status = 1)
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+
+    </select>
 </mapper>
