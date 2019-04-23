@@ -1021,14 +1021,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String categoryModel = assetResponse.getCategoryModel();
             String cacheId = cache.get(categoryModel);
             if (Objects.nonNull(cacheId)) {
-                assetResponse.setSecondCategoryModel(
-                    AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryMap.get(cacheId)));
+                assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId)));
             } else {
                 String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
                     categoryMap.keySet());
                 if (Objects.nonNull(second)) {
-                    assetResponse.setSecondCategoryModel(
-                        AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryMap.get(second)));
+                    assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(second)));
                     cache.put(categoryModel, second);
                 }
             }

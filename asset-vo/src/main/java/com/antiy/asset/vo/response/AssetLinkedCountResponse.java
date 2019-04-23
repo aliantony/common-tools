@@ -14,37 +14,50 @@ public class AssetLinkedCountResponse extends BaseResponse {
      * 资产id
      */
     @ApiModelProperty("资产id")
-    private String  assetId;
+    private String       assetId;
     /**
      * 资产名称
      */
     @ApiModelProperty("资产名称")
-    private String  name;
+    private String       name;
     /**
      * 资产编号
      */
     @ApiModelProperty("资产编号")
-    private String  number;
+    private String       number;
     /**
      * 资产品类型号
      */
     @ApiModelProperty("资产品类型号")
-    private String  categoryModel;
+    private String       categoryModel;
     /**
      * 资产品类型号名称
      */
     @ApiModelProperty("资产品类型号名称")
-    private String  categoryModelName;
+    private String       categoryModelName;
     /**
      * 可绑定数量
      */
     @ApiModelProperty("可绑定数量")
-    private Integer canBind;
+    private Integer      canBind;
     /**
      * 未绑定数量
      */
     @ApiModelProperty("未绑定数量")
-    private Integer noBind;
+    private Integer      noBind;
+    /**
+     * 设备类型
+     */
+    @ApiModelProperty("设备类型")
+    private CategoryType categoryType;
+
+    public CategoryType getCategoryType() {
+        return categoryType;
+    }
+
+    public void setCategoryType(CategoryType categoryType) {
+        this.categoryType = categoryType;
+    }
 
     public String getNumber() {
         return number;
@@ -106,6 +119,7 @@ public class AssetLinkedCountResponse extends BaseResponse {
     public String toString() {
         return "AssetLinkedCountResponse{" + "assetId='" + assetId + '\'' + ", name='" + name + '\'' + ", number='"
                + number + '\'' + ", categoryModel='" + categoryModel + '\'' + ", categoryModelName='"
-               + categoryModelName + '\'' + ", canBind=" + canBind + ", noBind=" + noBind + '}';
+               + categoryModelName + '\'' + ", canBind=" + canBind + ", noBind=" + noBind + ", categoryType="
+               + categoryType + '}';
     }
 }

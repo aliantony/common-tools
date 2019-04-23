@@ -1,6 +1,8 @@
 package com.antiy.asset.entity;
 
+import com.antiy.asset.vo.response.CategoryType;
 import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p>通联关系表</p>
@@ -85,6 +87,19 @@ public class AssetLinkRelation extends BaseEntity {
      * 状态,1未删除,0已删除
      */
     private Integer           status;
+    /**
+     * 设备类型
+     */
+    @ApiModelProperty("设备类型")
+    private CategoryType      categoryType;
+
+    public CategoryType getCategoryType() {
+        return categoryType;
+    }
+
+    public void setCategoryType(CategoryType categoryType) {
+        this.categoryType = categoryType;
+    }
 
     public Integer getAssetId() {
         return assetId;
@@ -235,10 +250,10 @@ public class AssetLinkRelation extends BaseEntity {
         return "AssetLinkRelation{" + "assetId=" + assetId + ", assetName='" + assetName + '\'' + ", assetIp='"
                + assetIp + '\'' + ", assetPort='" + assetPort + '\'' + ", categoryModel='" + categoryModel + '\''
                + ", categoryModelName='" + categoryModelName + '\'' + ", parentAssetId=" + parentAssetId
-               + ", parentAssetName=" + parentAssetName + ", parentAssetIp='" + parentAssetIp + '\''
+               + ", parentAssetName='" + parentAssetName + '\'' + ", parentAssetIp='" + parentAssetIp + '\''
                + ", parentAssetPort='" + parentAssetPort + '\'' + ", parentCategoryModel='" + parentCategoryModel + '\''
                + ", parentCategoryModelName='" + parentCategoryModelName + '\'' + ", gmtCreate=" + gmtCreate
                + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
-               + ", modifyUser=" + modifyUser + ", status=" + status + '}';
+               + ", modifyUser=" + modifyUser + ", status=" + status + ", categoryType=" + categoryType + '}';
     }
 }
