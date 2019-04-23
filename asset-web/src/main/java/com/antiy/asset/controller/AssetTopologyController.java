@@ -1,13 +1,19 @@
 package com.antiy.asset.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetTopologyService;
+import com.antiy.asset.vo.response.AssetNodeInfoResponse;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.encoder.Encode;
 
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 
 /**
  * 资产拓扑管理
@@ -22,4 +28,35 @@ public class AssetTopologyController {
     @Resource
     private IAssetTopologyService iAssetTopologyService;
 
+    /**
+     * 查询品类型号
+     *
+     * @param
+     * @return actionResponse
+     */
+    @ApiOperation(value = "查询品类型号", notes = "查询拓扑管理的品类型号")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class), })
+    @RequestMapping(value = "/query/categoryModels", method = RequestMethod.GET)
+    public ActionResponse queryCategoryModels() throws Exception {
+        return ActionResponse.success(iAssetTopologyService.queryCategoryModels());
+    }
+
+    @ApiOperation(value = "查询节点信息", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetNodeInfoResponse.class), })
+    @RequestMapping(value = "/query/assetNodeInfo", method = RequestMethod.GET)
+    public ActionResponse queryAssetNodeInfo(@Encode @ApiParam(value = "资产Id", required = true) String assetId) throws Exception {
+        return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(assetId));
+    }
+
+    /**
+     * 统计总资产/已管控拓扑管理的资产数量
+     * @return
+     */
+    @ApiOperation("查询总资产/已管控拓扑管理的资产数量")
+    @RequestMapping(value = "/countAsset", method = RequestMethod.GET)
+    @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse")
+    // @PreAuthorize(value = "hasAuthority('asset:topology:countAsset')")
+    public ActionResponse countAssetTopology() throws Exception {
+        return ActionResponse.success(iAssetTopologyService.countAssetTopology());
+    }
 }

@@ -200,12 +200,13 @@ public class AssetGroupServiceImplTest {
         assetGroup.setCreateUser(1);
         List<AssetGroup> assetGroupList = new ArrayList<>();
         assetGroupList.add(assetGroup);
+        String secondCategoryName="second";
         Mockito.when(assetCategoryModelService.getAll()).thenReturn(all);
         Mockito.when(assetCategoryModelService.getSecondCategoryMap()).thenReturn(categoryMap);
         Mockito.when(assetCategoryModelService.findAssetCategoryModelIdsById(1)).thenReturn(list);
         Mockito.when(assetCategoryModelService.findAssetCategoryModelIdsById(2)).thenReturn(list2);
         Mockito.when(assetGroupDao.findPulldownUnconnectedGroup(Mockito.any())).thenReturn(assetGroupList);
-        List<SelectResponse> actual = assetGroupService.queryUnconnectedGroupInfo();
+        List<SelectResponse> actual = assetGroupService.queryUnconnectedGroupInfo(secondCategoryName);
     }
     @Test
     public void findGroupByIdTest()throws Exception{

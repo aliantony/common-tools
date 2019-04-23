@@ -6,6 +6,7 @@ import com.antiy.asset.service.IAssetPortProtocolService;
 import com.antiy.asset.vo.query.AssetPortProtocolQuery;
 import com.antiy.asset.vo.request.AssetPortProtocolRequest;
 import com.antiy.asset.vo.response.AssetPortProtocolResponse;
+import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.LoginUser;
 import com.antiy.common.base.PageResult;
 import org.hamcrest.Matchers;
@@ -70,6 +71,8 @@ public class AssetPortProtocolServiceImplTest {
         assetPortProtocolRequest.setProtocol("http");
         assetPortProtocolRequest.setDescription("ss");
         mockLoginUser(loginUser);
+        AssetPortProtocol assetPortProtocol = new AssetPortProtocol();
+        assetPortProtocol.setId(1);
         Mockito.when(assetPortProtocolDao.insert(Mockito.any())).thenReturn(1);
         Integer result = iAssetPortProtocolService.saveAssetPortProtocol(assetPortProtocolRequest);
         Assert.assertThat(result, Matchers.greaterThan(0));

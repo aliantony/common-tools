@@ -3,6 +3,8 @@ package com.antiy.asset.controller;
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.templet.ReportForm;
+import com.antiy.asset.vo.enums.ShowCycleType;
+import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.AssetAreaReportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.common.base.LoginUser;
@@ -168,14 +170,10 @@ public class AssetReportControllerTest {
     @Test
     public void getNewAssetWithGroup() throws Exception {
         mockLoginUser(loginUser);
-        ReportQueryRequest reportQueryRequest = new ReportQueryRequest();
-        reportQueryRequest.setAssetStatus(1);
-        reportQueryRequest.setStartTime(1551422114000L);
-        reportQueryRequest.setEndTime(1551423114000L);
-        reportQueryRequest.setTimeType("1");
-        String result = getAction("/api/v1/asset/report/query/groupNewAsset",reportQueryRequest)
+        AssetReportCategoryCountQuery assetReportCategoryCountQuery = new AssetReportCategoryCountQuery();
+        assetReportCategoryCountQuery.setShowCycleType(ShowCycleType.THIS_WEEK);
+        getAction("/api/v1/asset/report/export/category/newAsset",assetReportCategoryCountQuery)
                 .andReturn().getResponse().getContentAsString();
-        Assert.assertThat(result,containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
     }
 
     /**
@@ -218,12 +216,15 @@ public class AssetReportControllerTest {
      */
     @Test
     public void exportAssetGroupTable() throws Exception {
-        String json = gson.toJson(reportQueryRequestInit());
+        mockLoginUser(loginUser);
+        ReportQueryRequest reportQueryRequest = new ReportQueryRequest();
+        reportQueryRequest.setAssetStatus(1);
+        reportQueryRequest.setStartTime(1551422114000L);
+        reportQueryRequest.setEndTime(1551423114000L);
+        reportQueryRequest.setTimeType("1");
         Mockito.when(iAssetReportService.exportAssetGroupTable(Mockito.any())).thenReturn(reportFormInit());
-        mockMvc.perform(get("/api/v1/asset/report/query/exportAssetGroupTable")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isOk());
+        getAction("/api/v1/asset/report/query/exportAssetGroupTable",reportQueryRequest)
+                .andReturn().getResponse().getContentAsString();
         Mockito.verify(iAssetReportService).exportAssetGroupTable(Mockito.any());
     }
 

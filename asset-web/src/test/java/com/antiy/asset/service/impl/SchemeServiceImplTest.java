@@ -93,14 +93,14 @@ public class SchemeServiceImplTest {
 
     @Test
     public void queryMemoById() {
-
+        Scheme scheme=new Scheme();
         SchemeQuery query=new SchemeQuery();
         query.setAssetId("11");
         query.setAssetStatus(1);
         query.setAssetTypeEnum(AssetTypeEnum.HARDWARE);
-        when(schemeDao.findMemoById(query)).thenReturn("success");
-        String success = iSchemeService.queryMemoById(query);
-        Assert.assertEquals("success",success);
+        when(schemeDao.findMemoById(query)).thenReturn(scheme);
+        SchemeResponse schemeResponse = iSchemeService.queryMemoById(query);
+        Assert.assertNotNull(schemeResponse);
 
 
     }
