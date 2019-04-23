@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,7 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
         assetMainborad.setGmtCreate(System.currentTimeMillis());
         assetMainboradDao.insert(assetMainborad);
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(), assetMainborad.getId(),
-            null, assetMainborad, BusinessModuleEnum.HARD_ASSET, null));
+            null, assetMainborad, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName() + " {}", assetMainborad);
         return assetMainborad.getId();
     }
@@ -62,7 +63,7 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
         assetMainborad.setModifyUser(LoginUserUtil.getLoginUser().getId());
         assetMainborad.setGmtModified(System.currentTimeMillis());
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName(), assetMainborad.getId(),
-            null, assetMainborad, BusinessModuleEnum.HARD_ASSET, null));
+            null, assetMainborad, BusinessModuleEnum.HARD_ASSET,  BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName() + " {}", assetMainborad);
         return assetMainboradDao.update(assetMainborad);
     }
@@ -89,7 +90,7 @@ public class AssetMainboradServiceImpl extends BaseServiceImpl<AssetMainborad> i
     @Override
     public Integer deleteById(Serializable id) throws Exception {
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MAINBORAD_DELETE.getName(), (Integer) id, null, id,
-            BusinessModuleEnum.HARD_ASSET, null));
+            BusinessModuleEnum.HARD_ASSET,  BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_DELETE.getName() + " {}", id);
         return super.deleteById(id);
     }
