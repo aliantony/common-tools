@@ -48,7 +48,7 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<String> pulldownManufacturer() throws Exception;
 
     /**
-     * 通过品类型号查询资产数量
+     * 通过品类型号和资产状态查询资产数量
      *
      * @param query
      * @return
@@ -143,8 +143,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<IdCount> queryAssetVulCount(@Param(value = "areaIds") List<Integer> areaIds,
-                                     @Param("pageSize") Integer pageSize,
-                                     @Param("pageOffset") Integer pageOffset);
+                                     @Param("pageSize") Integer pageSize, @Param("pageOffset") Integer pageOffset);
 
     /**
      * 查询资产补丁数
@@ -152,8 +151,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<IdCount> queryAssetPatchCount(@Param(value = "areaIds") List<Integer> areaIds,
-                                       @Param("pageSize") Integer pageSize,
-                                       @Param("pageOffset") Integer pageOffset);
+                                       @Param("pageSize") Integer pageSize, @Param("pageOffset") Integer pageOffset);
 
     /**
      * 查询补丁的资产总数
