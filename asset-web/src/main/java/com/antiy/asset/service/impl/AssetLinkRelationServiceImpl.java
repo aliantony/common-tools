@@ -215,6 +215,20 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     }
 
     @Override
+    public ActionResponse saveAssetLinkRelationList(List<AssetLinkRelationRequest> assetLinkRelationRequestList) {
+        List<AssetLinkRelation> assetLinkRelationList = BeanConvert.convert(assetLinkRelationRequestList, AssetLinkRelation.class);
+        if (CollectionUtils.isNotEmpty(assetLinkRelationList)) {
+            Integer createUser = LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0;
+            assetLinkRelationList.stream().forEach(assetLinkRelation -> {
+                assetLinkRelation.setCreateUser(createUser);
+                assetLinkRelation.setGmtCreate(System.currentTimeMillis());
+            });
+            assetLinkRelationDao.insertBatch(assetLinkRelationList);
+        }
+        return ActionResponse.success();
+    }
+
+    @Override
     public PageResult<AssetLinkedCountResponse> queryAssetLinkedCountPage(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         Map<String, String> category = assetCategoryModelService.getSecondCategoryMap();
         category.forEach((k, v) -> {
