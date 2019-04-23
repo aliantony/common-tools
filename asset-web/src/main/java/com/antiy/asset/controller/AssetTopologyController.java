@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.response.AssetNodeInfoResponse;
 import com.antiy.common.base.ActionResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetTopologyService;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.encoder.Encode;
 
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 
 import java.util.List;
 
@@ -40,5 +43,12 @@ public class AssetTopologyController {
     @RequestMapping(value = "/query/categoryModels", method = RequestMethod.GET)
     public ActionResponse queryCategoryModels() throws Exception {
         return ActionResponse.success(iAssetTopologyService.queryCategoryModels());
+    }
+
+    @ApiOperation(value = "查询节点信息", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetNodeInfoResponse.class), })
+    @RequestMapping(value = "/query/assetNodeInfo", method = RequestMethod.GET)
+    public ActionResponse queryAssetNodeInfo(@Encode @ApiParam(value = "资产Id", required = true) String assetId) throws Exception {
+        return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(assetId));
     }
 }

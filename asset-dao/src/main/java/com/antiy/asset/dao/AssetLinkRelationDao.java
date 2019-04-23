@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.antiy.asset.entity.AssetLinkedCount;
 import com.antiy.asset.vo.response.AssetLinkRelationResponse;
+import com.antiy.asset.vo.response.AssetNodeInfoResponse;
 import com.antiy.common.base.PageResult;
 import org.apache.ibatis.annotations.Param;
 
@@ -114,4 +115,6 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @return
      */
     List<String> queryCategoryModes();
+
+    AssetNodeInfoResponse queryAssetNodeInfo(String assetId);
 }
