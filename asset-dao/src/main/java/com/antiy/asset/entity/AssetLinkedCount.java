@@ -1,7 +1,9 @@
 package com.antiy.asset.entity;
 
+import com.antiy.asset.vo.response.CategoryType;
 import com.antiy.common.base.BaseEntity;
 import com.antiy.common.base.BaseResponse;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetLinkRelationResponse 响应对象 </p>
@@ -13,31 +15,43 @@ public class AssetLinkedCount extends BaseEntity {
     /**
      * 资产id
      */
-    private String  assetId;
+    private String       assetId;
     /**
      * 资产名称
      */
-    private String  name;
+    private String       name;
     /**
      * 资产编号
      */
-    private String number;
+    private String       number;
     /**
      * 资产品类型号
      */
-    private String  categoryModel;
+    private String       categoryModel;
     /**
      * 资产品类型号名称
      */
-    private String  categoryModelName;
+    private String       categoryModelName;
     /**
      * 可绑定数量
      */
-    private Integer canBind;
+    private Integer      canBind;
     /**
      * 未绑定数量
      */
-    private Integer noBind;
+    private Integer      noBind;
+    /**
+     * 设备类型
+     */
+    private CategoryType categoryType;
+
+    public CategoryType getCategoryType() {
+        return categoryType;
+    }
+
+    public void setCategoryType(CategoryType categoryType) {
+        this.categoryType = categoryType;
+    }
 
     public String getNumber() {
         return number;
@@ -97,8 +111,15 @@ public class AssetLinkedCount extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetLinkedCount{" + "assetId='" + assetId + '\'' + ", name='" + name + '\'' + ", categoryModel='"
-               + categoryModel + '\'' + ", categoryModelName='" + categoryModelName + '\'' + ", canBind=" + canBind
-               + ", noBind=" + noBind + '}';
+        return "AssetLinkedCount{" +
+                "assetId='" + assetId + '\'' +
+                ", name='" + name + '\'' +
+                ", number='" + number + '\'' +
+                ", categoryModel='" + categoryModel + '\'' +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", canBind=" + canBind +
+                ", noBind=" + noBind +
+                ", categoryType=" + categoryType +
+                '}';
     }
 }

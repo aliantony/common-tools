@@ -122,12 +122,12 @@ public interface IAssetLinkRelationService extends IBaseService<AssetLinkRelatio
      * @param assetLinkRelationQuery
      * @return
      */
-    List<AssetLinkRelationResponse> queryLinkedAssetListByAssetId(AssetLinkRelationQuery assetLinkRelationQuery);
+    List<AssetLinkRelationResponse> queryLinkedAssetListByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception;
     /**
      * 与当前资产通联的资产列表查询
      * @param assetLinkRelationQuery
      * @return
      */
-    PageResult<AssetLinkRelationResponse> queryLinkedAssetPageByAssetId(AssetLinkRelationQuery assetLinkRelationQuery);
+    PageResult<AssetLinkRelationResponse> queryLinkedAssetPageByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception;
     List<SelectResponse> queryPortById(QueryCondition queryCondition);
 }
