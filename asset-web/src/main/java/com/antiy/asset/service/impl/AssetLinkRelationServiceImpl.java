@@ -233,10 +233,11 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     public List<String> queryUseableIp(UseableIpRequest useableIpRequest) {
         //网络设备
         if (useableIpRequest.getCategoryType().isNet()) {
-            return assetLinkRelationDao.queryUseableIp(useableIpRequest.getAssetId(),true);
-        } else {
-            return assetLinkRelationDao.queryUseableIp(useableIpRequest.getAssetId(),false);
+            return assetLinkRelationDao.queryUseableIp(useableIpRequest.getAssetId(),"isNet");
+        } else if (useableIpRequest.getCategoryType().isPc()) {
+            return assetLinkRelationDao.queryUseableIp(useableIpRequest.getAssetId(),"isPc");
         }
+        return Lists.newArrayList();
     }
 
     @Override
