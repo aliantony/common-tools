@@ -40,7 +40,8 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:saveSingle')")
-    public ActionResponse saveSingle(@RequestBody(required = true) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
+    public ActionResponse saveSingle(@RequestBody(required = true) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel)
+                                                                                                                                                        throws Exception {
         return iAssetCategoryModelService.saveAssetCategoryModel(assetCategoryModel);
     }
 
@@ -54,7 +55,8 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:updateSingle')")
-    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel) throws Exception {
+    public ActionResponse updateSingle(@RequestBody(required = false) @ApiParam(value = "assetCategoryModel") AssetCategoryModelRequest assetCategoryModel)
+                                                                                                                                                           throws Exception {
         return iAssetCategoryModelService.updateAssetCategoryModel(assetCategoryModel);
     }
 
@@ -68,7 +70,8 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetCategoryModel") AssetCategoryModelQuery assetCategoryModel) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetCategoryModel") AssetCategoryModelQuery assetCategoryModel)
+                                                                                                                       throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.findPageAssetCategoryModel(assetCategoryModel));
     }
 
@@ -97,7 +100,8 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:deleteById')")
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "QueryCondition") QueryCondition condition) throws Exception {
+    public ActionResponse deleteById(@RequestBody @ApiParam(value = "QueryCondition") QueryCondition condition)
+                                                                                                               throws Exception {
         ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "id不能为空");
         return iAssetCategoryModelService.delete(Integer.parseInt(condition.getPrimaryKey()));
     }
@@ -113,8 +117,8 @@ public class AssetCategoryModelController {
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:getById')")
     public ActionResponse getById(@ApiParam(value = "QueryCondition") QueryCondition condition) throws Exception {
         ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "id不能为空");
-        return ActionResponse.success(
-            iAssetCategoryModelService.findAssetCategoryModelById(Integer.parseInt(condition.getPrimaryKey())));
+        return ActionResponse.success(iAssetCategoryModelService.findAssetCategoryModelById(Integer.parseInt(condition
+            .getPrimaryKey())));
     }
 
     /**
@@ -178,7 +182,7 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/computeNetNode", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:querySecondCategoryNode')")
-    public ActionResponse queryComputeAndNetCategoryNode(@ApiParam("二级品类名") String secondCategoryName) throws Exception {
-        return ActionResponse.success(iAssetCategoryModelService.queryComputeAndNetCategoryNode(secondCategoryName));
+    public ActionResponse queryComputeAndNetCategoryNode(@ApiParam("是否是网络设备") Integer isNet) throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.queryComputeAndNetCategoryNode(isNet));
     }
 }

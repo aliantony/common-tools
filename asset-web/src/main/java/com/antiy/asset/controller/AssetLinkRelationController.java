@@ -22,6 +22,8 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
 
+import java.util.List;
+
 /**
  *
  * @author zhangyajun
@@ -46,6 +48,18 @@ public class AssetLinkRelationController {
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetLinkRelation") @RequestBody AssetLinkRelationRequest assetLinkRelationRequest) throws Exception {
         return ActionResponse.success(iAssetLinkRelationService.saveAssetLinkRelation(assetLinkRelationRequest));
+    }
+    /**
+     * 批量保存
+     *
+     * @param assetLinkRelationRequestList
+     * @return actionResponse
+     */
+    @ApiOperation(value = "批量保存", notes = "传入实体对象信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class), })
+    @RequestMapping(value = "/save/list", method = RequestMethod.POST)
+    public ActionResponse saveList(@ApiParam(value = "assetLinkRelation") @RequestBody List<AssetLinkRelationRequest> assetLinkRelationRequestList) throws Exception {
+        return ActionResponse.success(iAssetLinkRelationService.saveAssetLinkRelationList(assetLinkRelationRequestList));
     }
 
     /**
