@@ -39,9 +39,9 @@ public class AssetReportServiceManager {
      * @param name 名称
      * @return ModelList
      */
-    public List<AssetCategoryModel> initCategoryModeList(String name){
+    public List<AssetCategoryModel> initCategoryModeList(String name,Integer id){
         AssetCategoryModel assetCategoryModel = new AssetCategoryModel();
-        assetCategoryModel.setId(1);
+        assetCategoryModel.setId(id);
         assetCategoryModel.setName(name);
         assetCategoryModel.setType(1);
         assetCategoryModel.setAssetType(1);

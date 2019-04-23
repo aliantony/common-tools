@@ -71,7 +71,7 @@ public class AssetOperationRecordServiceImplTest {
         assetOperationRecordBarPOList.add(assetOperationRecordBarPO);
         Mockito.when(assetOperationRecordDao.findAssetOperationRecordBarByAssetId(Mockito.any()))
                 .thenReturn(assetOperationRecordBarPOList);
-        Mockito.when(schemeDao.findSchemeByAssetIdAndStatus(Mockito.anyMap())).thenReturn(schemeList);
+        Mockito.when(schemeDao.findSchemeByAssetIdAndGmtCreateTime(Mockito.anyMap())).thenReturn(schemeList);
         List<NameValueVo> result = iAssetOperationRecordService.queryStatusBar(assetOperationRecordQuery);
         Assert.assertThat(result, Matchers.notNullValue());
     }
@@ -106,7 +106,7 @@ public class AssetOperationRecordServiceImplTest {
         assetOperationRecordBarPOList.add(assetOperationRecordBarPO);
         Mockito.when(assetOperationRecordDao.findAssetOperationRecordBarByAssetId(Mockito.any()))
                 .thenReturn(assetOperationRecordBarPOList);
-        Mockito.when(schemeDao.findSchemeByAssetIdAndStatus(Mockito.anyMap())).thenReturn(schemeList);
+        Mockito.when(schemeDao.findSchemeByAssetIdAndGmtCreateTime(Mockito.anyMap())).thenReturn(schemeList);
         List<NameValueVo> result = iAssetOperationRecordService.queryStatusBar(assetOperationRecordQuery);
         Assert.assertThat(result, Matchers.notNullValue());
     }
