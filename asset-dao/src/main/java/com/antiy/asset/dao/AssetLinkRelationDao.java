@@ -133,8 +133,8 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
     /**
      * 查询可用ip
      * @param assetId
-     * @param isNet
+     * @param type
      * @return
      */
-    List<String> queryUseableIp(@Param("assetId") String assetId, @Param("isNet") boolean isNet);
+    List<String> queryUseableIp(@Param("assetId") String assetId, @Param("type") String type);
 }
