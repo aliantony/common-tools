@@ -130,4 +130,11 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      */
     Integer countAssetTopology(AssetTopologyQuery assetTopologyQuery);
 
+    /**
+     * 查询可用ip
+     * @param assetId
+     * @param isNet
+     * @return
+     */
+    List<String> queryUseableIp(@Param("assetId") String assetId, @Param("isNet") boolean isNet);
 }
