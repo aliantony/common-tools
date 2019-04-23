@@ -1,7 +1,9 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetDepartmentDao;
+import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.AssetDepartment;
+import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.util.NodeUtilsConverter;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
@@ -28,6 +30,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +49,8 @@ public class AssetDepartmentServiceImplTest {
     private NodeUtilsConverter<AssetDepartment,AssetDepartmentNodeResponse> nodeConverter;
     @Mock
     private AesEncoder aesEncoder;
+    @Mock
+    private AssetUserDao assetUserDao;
 
     @Before
     public void setUp(){
@@ -190,10 +195,14 @@ public class AssetDepartmentServiceImplTest {
         assetDepartment.setStatus(1);
         assetDepartment.setId(1);
         assetDepartmentList.add(assetDepartment);
-
+        AssetUser assetUser = new AssetUser();
+        assetUser.setId(1);
+        List<AssetUser> resultUser = new ArrayList<>();
         Mockito.when(assetDepartmentDao.getAll()).thenReturn(assetDepartmentList);
         Mockito.when(assetDepartmentDao.delete(Mockito.any())).thenReturn(1);
-        Assert.assertEquals("200",assetDepartmentService.deleteAllById(1).getHead().getCode());
+        Mockito.when(assetUserDao.findListAssetUser(Mockito.any())).thenReturn(resultUser);
+        Assert.assertEquals("200",assetDepartmentService.deleteAllById
+                ((Serializable)1).getHead().getCode());
     }
 
     @Test
