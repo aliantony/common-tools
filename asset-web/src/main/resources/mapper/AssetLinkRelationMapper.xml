@@ -46,6 +46,17 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
     </resultMap>
+    <resultMap id="AssetNodeInfoResultMap" type="com.antiy.asset.vo.response.AssetNodeInfoResponse">
+        <id column="id" property="stringId"/>
+        <result column="asset_group" property="assetGroup"/>
+        <result column="number" property="number"/>
+        <result column="name" property="operationSystemName"/>
+        <result column="asset_ip" property="ip"/>
+        <result column="location" property="location"/>
+        <result column="house_location" property="houseLocation"/>
+        <result column="contact_tel" property="contactTel"/>
+        <result column="install_type" property="installType"/>
+    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, asset_id, asset_ip, asset_port, parent_asset_id, parent_asset_ip, parent_asset_port, gmt_create, gmt_modified, memo, create_user, modify_user, status
@@ -939,6 +950,32 @@
         WHERE
         a.parent_asset_id = #{primaryKey}
         and a.status = 1) t
+    </select>
+
+    <select id="queryAssetNodeInfo" parameterType="java.lang.String" resultMap="AssetNodeInfoResultMap">
+        select
+        #{assetId} as id,
+        a.number,
+        alr.asset_ip,
+        bcm.name,
+        a.location,
+        a.house_location,
+        a.contact_tel,
+        a.install_type,
+        a.asset_group
+        from asset_link_relation alr
+        left join asset a on a.id = alr.asset_id
+        left join baseline_category_model bcm on bcm.id = a.operation_system
+        where
+        alr.asset_id = #{assetId}
+    </select>
+
+    <select id="queryCategoryModes" resultType="java.lang.String">
+        SELECT name as categoryModelName
+        FROM
+	      asset_category_model
+        WHERE
+	    name IN ( '计算设备', '网络设备' );
     </select>
 
     <select id="countAssetTopology" parameterType="com.antiy.asset.vo.query.AssetTopologyQuery"

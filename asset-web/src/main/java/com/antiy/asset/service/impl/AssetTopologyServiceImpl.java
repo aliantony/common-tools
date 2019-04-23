@@ -15,13 +15,16 @@ import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetTopologyService;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetTopologyQuery;
+import com.antiy.asset.vo.response.AssetNodeInfoResponse;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * 资产拓扑管理
+ *
  * @author zhangxin
  * @date 2019/4/23 11:21
  */
@@ -31,6 +34,18 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     @Resource
     private AssetLinkRelationDao       assetLinkRelationDao;
 
+    @Override
+    public List<String> queryCategoryModels() {
+        return assetLinkRelationDao.queryCategoryModes();
+    }
+
+    @Override
+    public AssetNodeInfoResponse queryAssetNodeInfo(String assetId) {
+        AssetNodeInfoResponse assetNodeInfoResponse = assetLinkRelationDao.queryAssetNodeInfo(assetId);
+        assetNodeInfoResponse
+            .setInstallTypeName(InstallType.getInstallTypeByCode(assetNodeInfoResponse.getInstallType()).getStatus());
+        return assetNodeInfoResponse;
+    }
     @Resource
     private AssetDao                   assetDao;
 
