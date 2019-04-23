@@ -46,8 +46,8 @@ import com.antiy.common.utils.ParamterExceptionUtils;
  * @since 2019-01-02
  */
 @Service
-public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel>
-                                           implements IAssetCategoryModelService {
+public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel> implements
+                                                                                      IAssetCategoryModelService {
 
     @Resource
     private AssetCategoryModelDao   assetCategoryModelDao;
@@ -87,14 +87,15 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_INSERT.getName(),
                 AssetEventEnum.ASSET_CATEGORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(
-                new BusinessData(AssetEventEnum.ASSET_CATEGORY_INSERT.getName(), result, assetCategoryModel.getName(),
-                    assetCategoryModel, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-            LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}",
-                assetCategoryModel.toString());
+            LogUtils
+                .recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_INSERT.getName(), result,
+                    assetCategoryModel.getName(), assetCategoryModel, BusinessModuleEnum.HARD_ASSET,
+                    BusinessPhaseEnum.NONE));
+            LogUtils
+                .info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}", assetCategoryModel.toString());
         }
-        return ActionResponse
-            .success(aesEncoder.encode(assetCategoryModel.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+        return ActionResponse.success(aesEncoder.encode(assetCategoryModel.getStringId(), LoginUserUtil.getLoginUser()
+            .getUsername()));
 
     }
 
@@ -151,8 +152,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     /**
      * 判断父品类的资产类型和子品类的资产类型是否一致
      */
-    private boolean checkParentType(AssetCategoryModel updateCategory,
-                                    AssetCategoryModel assetCategoryModelById) throws Exception {
+    private boolean checkParentType(AssetCategoryModel updateCategory, AssetCategoryModel assetCategoryModelById)
+                                                                                                                 throws Exception {
         AssetCategoryModel parent = getParentCategory(updateCategory);
         checkParentCategory(parent);
         if (!parent.getAssetType().equals(assetCategoryModelById.getAssetType())) {
@@ -186,7 +187,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query) throws Exception {
+    public PageResult<AssetCategoryModelResponse> findPageAssetCategoryModel(AssetCategoryModelQuery query)
+                                                                                                           throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetCategoryModel(query), query.getCurrentPage(),
             this.findListAssetCategoryModel(query));
     }
@@ -222,8 +224,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
             AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(),
-            assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel, BusinessModuleEnum.HARD_ASSET,
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(), assetCategoryModel
+            .getId(), assetCategoryModel.getName(), assetCategoryModel, BusinessModuleEnum.HARD_ASSET,
             BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", assetCategoryModel.toString());
         return deleteAllById(id);
@@ -253,8 +255,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         query.setPageSize(Constants.ALL_PAGE);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
         assetCategoryModels.add(getRootCategory());
-        AssetCategoryModelNodeResponse assetCategoryModelNodeResponse = getAssetCategoryModelNodeResponse(
-            assetCategoryModels);
+        AssetCategoryModelNodeResponse assetCategoryModelNodeResponse = getAssetCategoryModelNodeResponse(assetCategoryModels);
         return assetCategoryModelNodeResponse == null || assetCategoryModelNodeResponse.getChildrenNode() == null ? null
             : assetCategoryModelNodeResponse.getChildrenNode().get(0);
     }
@@ -265,14 +266,13 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @return
      */
     @Override
-    public AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types,
-                                                                  Map<String, String> initMap) throws Exception {
+    public AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types, Map<String, String> initMap)
+                                                                                                              throws Exception {
         checkParameterTypes(types);
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
         query.setPageSize(Constants.ALL_PAGE);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
-        AssetCategoryModelNodeResponse assetCategoryModelNodeResponse = getAssetCategoryModelNodeResponse(
-            assetCategoryModels);
+        AssetCategoryModelNodeResponse assetCategoryModelNodeResponse = getAssetCategoryModelNodeResponse(assetCategoryModels);
         if (assetCategoryModelNodeResponse != null) {
             List<AssetCategoryModelNodeResponse> nodeResponseList = new ArrayList<>();
             for (String type : types) {
@@ -295,9 +295,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * 获取计算设备和网络设备树
      * @return
      */
-    public AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode(String secondCategoryName) throws Exception {
+    public AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode(Integer isNet) throws Exception {
         Map<String, String> secondCategoryMap = this.getSecondCategoryMap();
-        if ((secondCategoryName == null) || ("".equals(secondCategoryName)) || "网络设备".equals(secondCategoryName)) {
+        if ((isNet == null) || isNet == 1) {
             String[] category = new String[2];
             int i = 0;
             for (Map.Entry<String, String> entry : secondCategoryMap.entrySet()) {
@@ -336,8 +336,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @throws Exception
      */
     public Map<String, String> getSecondCategoryMap() throws Exception {
-        List<AssetCategoryModelResponse> secondList = getNextLevelCategoryByName(
-            Constants.FIRST_LEVEL_ASSET_CATEGORY_NAME);
+        List<AssetCategoryModelResponse> secondList = getNextLevelCategoryByName(Constants.FIRST_LEVEL_ASSET_CATEGORY_NAME);
         Map<String, String> secondMap = new HashMap<>();
         for (AssetCategoryModelResponse secondResponse : secondList) {
             secondMap.put(secondResponse.getStringId(), secondResponse.getName());
@@ -352,12 +351,11 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @return
      */
     private AssetCategoryModelNodeResponse getSecondCategoryModelNodeResponse(AssetCategoryModelNodeResponse assetCategoryModelNodeResponse,
-                                                                              String type,
-                                                                              Map<String, String> initMap) {
+                                                                              String type, Map<String, String> initMap) {
         List<AssetCategoryModelNodeResponse> secondNodeList = assetCategoryModelNodeResponse.getChildrenNode();
         AssetCategoryModelNodeResponse hardwareCategory = getCategoryByNameFromList(secondNodeList, "硬件");
-        return hardwareCategory == null ? null
-            : getCategoryByNameFromList(hardwareCategory.getChildrenNode(), initMap.get(type));
+        return hardwareCategory == null ? null : getCategoryByNameFromList(hardwareCategory.getChildrenNode(),
+            initMap.get(type));
     }
 
     /**
@@ -382,8 +380,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 
     private AssetCategoryModelNodeResponse getAssetCategoryModelNodeResponse(List<AssetCategoryModel> assetCategoryModels) {
         NodeUtilsConverter<AssetCategoryModel, AssetCategoryModelNodeResponse> nodeConverter = new NodeUtilsConverter<>();
-        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter
-            .columnToNode(assetCategoryModels, AssetCategoryModelNodeResponse.class);
+        List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(
+            assetCategoryModels, AssetCategoryModelNodeResponse.class);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
 
@@ -439,16 +437,16 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 
     @Override
     public List<Integer> findAssetCategoryModelIdsById(Integer id) throws Exception {
-        List<AssetCategoryModelResponse> categoryModelResponses = responseConverter
-            .convert(recursionSearch(assetCategoryModelDao.getAll(), id), AssetCategoryModelResponse.class);
+        List<AssetCategoryModelResponse> categoryModelResponses = responseConverter.convert(
+            recursionSearch(assetCategoryModelDao.getAll(), id), AssetCategoryModelResponse.class);
         return getSonCategory(categoryModelResponses);
     }
 
     @Override
-    public List<Integer> findAssetCategoryModelIdsById(Integer id,
-                                                       List<AssetCategoryModel> assetCategoryModels) throws Exception {
-        List<AssetCategoryModelResponse> categoryModelResponses = responseConverter
-            .convert(recursionSearch(assetCategoryModels, id), AssetCategoryModelResponse.class);
+    public List<Integer> findAssetCategoryModelIdsById(Integer id, List<AssetCategoryModel> assetCategoryModels)
+                                                                                                                throws Exception {
+        List<AssetCategoryModelResponse> categoryModelResponses = responseConverter.convert(
+            recursionSearch(assetCategoryModels, id), AssetCategoryModelResponse.class);
         return getSonCategory(categoryModelResponses);
     }
 
@@ -553,8 +551,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 @Component
 class CategoryResponseConvert extends BaseConverter<AssetCategoryModel, AssetCategoryModelResponse> {
     @Override
-    protected void convert(AssetCategoryModel assetCategoryModel,
-                           AssetCategoryModelResponse assetCategoryModelResponse) {
+    protected void convert(AssetCategoryModel assetCategoryModel, AssetCategoryModelResponse assetCategoryModelResponse) {
         assetCategoryModelResponse.setParentId(Objects.toString(assetCategoryModel.getParentId()));
         super.convert(assetCategoryModel, assetCategoryModelResponse);
     }

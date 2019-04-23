@@ -243,9 +243,9 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/pulldown/unconnectedManufacturer", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
-    public ActionResponse<List<String>> pulldownUnconnectedManufacturer(@ApiParam("二级品类名") String secondCategoryName)
+    public ActionResponse<List<String>> pulldownUnconnectedManufacturer(@ApiParam("是否是网络设备")Integer isNet)
                                                                                                                                                     throws Exception {
-        return ActionResponse.success(iAssetService.pulldownUnconnectedManufacturer(secondCategoryName));
+        return ActionResponse.success(iAssetService.pulldownUnconnectedManufacturer(isNet));
     }
 
     /**

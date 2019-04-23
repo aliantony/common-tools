@@ -187,8 +187,6 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     private Long          beginTime;
     @ApiModelProperty("结束时间")
     private Long          endTime;
-    @ApiModelProperty("二级品类名")
-    private String        secondCategoryName;
 
     @ApiModelProperty(value = "是否查询漏洞个数,true 表示查询，false表示不查询", allowableValues = "true,false")
     private Boolean       queryVulCount;
@@ -489,14 +487,6 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     public void setNumber(String number) {
         this.number = number;
-    }
-
-    public String getSecondCategoryName() {
-        return secondCategoryName;
-    }
-
-    public void setSecondCategoryName(String secondCategoryName) {
-        this.secondCategoryName = secondCategoryName;
     }
 
     @Override

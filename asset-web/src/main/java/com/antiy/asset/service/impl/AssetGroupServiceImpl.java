@@ -252,13 +252,13 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
      * @throws Exception
      */
     @Override
-    public List<SelectResponse> queryUnconnectedGroupInfo(String secondCategoryName) throws Exception {
+    public List<SelectResponse> queryUnconnectedGroupInfo(Integer isNet) throws Exception {
         AssetQuery query = new AssetQuery();
         List<Integer> categoryCondition = new ArrayList<>();
         Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
         List<AssetCategoryModel> all = assetCategoryModelService.getAll();
         for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
-            if ((secondCategoryName == null) || ("".equals(secondCategoryName)) || "网络设备".equals(secondCategoryName)) {
+            if ((isNet == null) || isNet == 1) {
                 if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
                     categoryCondition.addAll(assetCategoryModelService.findAssetCategoryModelIdsById(
                         Integer.parseInt(entry.getKey()), all));
