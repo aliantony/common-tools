@@ -84,12 +84,16 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         // 1.校验子资产IP是否可用
         List<String> assetAddress = assetLinkRelationDao.queryIpAddressByAssetId(request.getAssetId(), true,
             request.getAssetPort());
-        ParamterExceptionUtils.isTrue(assetAddress.contains(request.getAssetIp()), "子资产IP已经存在绑定关系,无法再次绑定");
+        if (CollectionUtils.isNotEmpty(assetAddress)) {
+            ParamterExceptionUtils.isTrue(assetAddress.contains(request.getAssetIp()), "子资产IP已经存在绑定关系,无法再次绑定");
+        }
 
         // 2.校验父资产IP是否可用
         List<String> parentAssetAddress = assetLinkRelationDao.queryIpAddressByAssetId(request.getParentAssetId(), true,
             request.getParentAssetPort());
-        ParamterExceptionUtils.isTrue(parentAssetAddress.contains(request.getParentAssetIp()), "父资产IP已经存在绑定关系,无法再次绑定");
+        if (CollectionUtils.isNotEmpty(parentAssetAddress)) {
+            ParamterExceptionUtils.isTrue(parentAssetAddress.contains(request.getParentAssetIp()), "父资产IP已经存在绑定关系,无法再次绑定");
+        }
 
         // 3.组装通联关系
         assetLinkRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
