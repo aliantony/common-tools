@@ -1,4 +1,3 @@
-package com.antiy.asset.service.impl;/*
 package com.antiy.asset.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
@@ -39,6 +38,7 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetCpuRequest;
@@ -85,6 +85,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -246,7 +247,7 @@ public class AssetServiceImplTest {
         assetRequest.setTags("");
         assetRequest.setServiceLife(0L);
         assetRequest.setBuyDate(0L);
-        assetRequest.setWarranty(0L);
+        assetRequest.setWarranty("0");
         assetRequest.setId("1");
         assetRequest.setEmail("");
         assetRequest.setContactTel("1");
@@ -309,7 +310,7 @@ public class AssetServiceImplTest {
         asset.setFirstEnterNett(0L);
         asset.setServiceLife(0L);
         asset.setBuyDate(0L);
-        asset.setWarranty(0L);
+        asset.setWarranty("0");
         asset.setGmtCreate(0L);
         asset.setGmtModified(0L);
         asset.setMemo("");
@@ -633,7 +634,7 @@ public class AssetServiceImplTest {
         assetRequest.setTags("");
         assetRequest.setServiceLife(0L);
         assetRequest.setBuyDate(0L);
-        assetRequest.setWarranty(0L);
+        assetRequest.setWarranty("0");
         assetRequest.setId("");
         assetRequest.setEmail("");
         assetRequest.setContactTel("");
@@ -801,81 +802,6 @@ public class AssetServiceImplTest {
 
     @Test
     public void testExportData() throws Exception {
-        Asset asset = new Asset();
-        asset.setAreaName("");
-        asset.setResponsibleUserName("");
-        asset.setCategoryModelName("");
-        asset.setHardDisk("");
-        asset.setMemory("");
-        asset.setCpu("");
-        asset.setNetworkCard("");
-        asset.setParentId("");
-        asset.setIp("");
-        asset.setMac("");
-        asset.setAssetGroup("");
-        asset.setNumber("");
-        asset.setName("");
-        asset.setEthernetPort(0);
-        asset.setSerialPort(0);
-        asset.setInstallType(0);
-        asset.setSerial("");
-        asset.setAreaId("");
-        asset.setCategoryModel("");
-        asset.setManufacturer("");
-        asset.setAssetStatus(0);
-        asset.setAdmittanceStatus(0);
-        asset.setOperationSystem("");
-        asset.setSystemBit(0);
-        asset.setLocation("");
-        asset.setLatitude("");
-        asset.setLongitude("");
-        asset.setHouseLocation("");
-        asset.setFirmwareVersion("");
-        asset.setUuid("");
-        asset.setContactTel("");
-        asset.setEmail("");
-        asset.setAssetSource(0);
-        asset.setImportanceDegree(0);
-        asset.setDescrible("");
-        asset.setTags("");
-        asset.setFirstEnterNett(0L);
-        asset.setServiceLife(0L);
-        asset.setBuyDate(0L);
-        asset.setWarranty(0L);
-        asset.setGmtCreate(0L);
-        asset.setGmtModified(0L);
-        asset.setMemo("");
-        asset.setCreateUser(0);
-        asset.setModifyUser(0);
-        asset.setStatus(0);
-        asset.setResponsibleUserId("");
-        asset.setSoftwareVersion("");
-        asset.setImportanceDegreeName("");
-        asset.setInstallTypeName("");
-        asset.setId(0);
-
-        when(assetDao.findListAsset(any())).thenReturn(Arrays.asList(asset));
-
-        ActionResponse<List<WaitingTaskReponse>> actionResponse = ActionResponse.success();
-
-        List<WaitingTaskReponse> list = new ArrayList<>();
-        WaitingTaskReponse waitingTaskReponse = new WaitingTaskReponse();
-        waitingTaskReponse.setAssignee("");
-        waitingTaskReponse.setName("");
-        waitingTaskReponse.setPriority(0);
-        waitingTaskReponse.setCreateTime(new Date());
-        waitingTaskReponse.setExecutionId("");
-        waitingTaskReponse.setProcessInstanceId("");
-        waitingTaskReponse.setProcessDefinitionId("");
-        waitingTaskReponse.setTaskDefinitionKey("");
-        waitingTaskReponse.setFormKey("");
-        waitingTaskReponse.setTaskId("");
-        waitingTaskReponse.setBusinessId("");
-        list.add(waitingTaskReponse);
-
-        actionResponse.setBody(list);
-
-        when(activityClient.queryAllWaitingTask(any())).thenReturn(actionResponse);
         AssetResponse assetResponse = new AssetResponse();
         assetResponse.setAreaName("");
         assetResponse.setInstallType(0);
@@ -907,7 +833,7 @@ public class AssetServiceImplTest {
         assetResponse.setTags("");
         assetResponse.setServiceLife(0L);
         assetResponse.setBuyDate(0L);
-        assetResponse.setWarranty(0L);
+        assetResponse.setWarranty("0");
         assetResponse.setAssetGroups(Lists.newArrayList());
         assetResponse.setGmtCreate(0L);
         assetResponse.setFirstEnterNett(0L);
@@ -915,7 +841,9 @@ public class AssetServiceImplTest {
         assetResponse.setHouseLocation("");
         assetResponse.setStringId("");
 
-        doReturn(Arrays.asList(assetResponse)).when(assetServiceImpl).findListAsset(any());
+        PageResult<AssetResponse> pageResult = new PageResult<>();
+        pageResult.setItems(Arrays.asList(assetResponse));
+        doReturn(Arrays.asList(assetResponse)).when(assetServiceImpl).findPageAsset(any());
 
         assetServiceImpl.exportData(new AssetQuery(), new Response());
     }
@@ -932,8 +860,7 @@ public class AssetServiceImplTest {
             put("String", "String");
         }});
 
-        List<String> result = assetServiceImpl.pulldownUnconnectedManufacturer();
+        List<String> result = assetServiceImpl.pulldownUnconnectedManufacturer(1);
         Assert.assertEquals(Arrays.asList("String"), result);
     }
 }
-*/
