@@ -655,7 +655,7 @@
     <!--与当前资产通联的资产列表查询-->
     <select id="queryLinkedAssetListByAssetId" resultType="com.antiy.asset.entity.AssetLinkRelation"
             parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
-        select * from (SELECT
+        select distinct * from (SELECT
         c.id,
         a.id as assetId,
         a.NAME as assetName,
@@ -763,8 +763,8 @@
         ( SELECT NAME FROM asset_category_model WHERE id = b.category_model ) AS categoryModelName,
         a.asset_ip AS assetIp,
         a.parent_asset_id AS parentAssetId,
-        ( SELECT NAME FROM asset WHERE id = a.asset_id ) AS parentAssetName,
-        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = asset_id ) ) AS parentCategoryModelName,
+        ( SELECT NAME FROM asset WHERE id = a.parent_asset_id ) AS parentAssetName,
+        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id ) ) AS parentCategoryModelName,
         a.parent_asset_ip AS parentAssetIp,
         a.parent_asset_port AS parentAssetPort,
         a.gmt_create
@@ -879,7 +879,7 @@
         GROUP BY a.id) t
     </select>
     <select id="queryLinkedCountAssetByAssetId" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
-        select count(1) count from (SELECT
+        select count(1) count from(select distinct t.* from (SELECT
         c.id,
         a.id as assetId,
         a.NAME as assetName,
@@ -984,8 +984,8 @@
         ( SELECT NAME FROM asset_category_model WHERE id = b.category_model ) AS categoryModelName,
         a.asset_ip AS assetIp,
         a.parent_asset_id AS parentAssetId,
-        ( SELECT NAME FROM asset WHERE id = a.asset_id ) AS parentAssetName,
-        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = asset_id ) ) AS parentCategoryModelName,
+        ( SELECT NAME FROM asset WHERE id = a.parent_asset_id ) AS parentAssetName,
+        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id ) ) AS parentCategoryModelName,
         a.parent_asset_ip AS parentAssetIp,
         a.parent_asset_port AS parentAssetPort
         FROM
@@ -993,7 +993,7 @@
         LEFT JOIN asset b ON a.asset_id = b.id
         WHERE
         a.asset_id = #{primaryKey}
-        AND a.STATUS = 1) t
+        AND a.STATUS = 1) t) p
 
     </select>
 
