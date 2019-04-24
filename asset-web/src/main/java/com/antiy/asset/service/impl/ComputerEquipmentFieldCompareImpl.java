@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareLicenseDao;
+import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.util.CompareUtils;
 import com.antiy.asset.util.DataTypeUtils;
@@ -24,7 +25,6 @@ import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.SysUser;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.JsonUtil;
 
@@ -41,6 +41,8 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
     private AssetSoftwareLicenseDao            softwareLicenseDao;
     @Resource
     private AssetSoftwareDao                   softwareDao;
+    @Resource
+    AssetUserDao                               userDao;
     @Resource
     private RedisUtil                          redisUtil;
     @Resource
@@ -84,11 +86,8 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                 DataTypeUtils.stringToInteger(newAsset.getAreaId()));
             SysArea oldSysArea = redisUtil.getObject(oldAreaKey, SysArea.class);
             oldAssetBusinessInfo.setAreaName(oldSysArea != null ? oldSysArea.getFullName() : null);
-            // redis调用（通过用户ID查询姓名）
-            String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
-                DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
-            SysUser oldSysUser = redisUtil.getObject(oldKey, SysUser.class);
-            oldAssetBusinessInfo.setResponsibleUserName(oldSysUser == null ? null : oldSysUser.getName());
+            oldAssetBusinessInfo
+                .setResponsibleUserName(userDao.findUserName(userDao.findUserName(newAsset.getResponsibleUserId())));
             oldAssetBusinessInfo.setContactTel(oldAsset.getContactTel());
             oldAssetBusinessInfo.setEmail(oldAsset.getEmail());
             oldAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());
@@ -111,11 +110,8 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                 DataTypeUtils.stringToInteger(newAsset.getAreaId()));
             SysArea newSysArea = redisUtil.getObject(newAreaKey, SysArea.class);
             newAssetBusinessInfo.setAreaName(newSysArea.getFullName());
-            // redis调用（通过用户ID查询姓名）
-            String newKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
-                DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
-            SysUser newSysUser = redisUtil.getObject(newKey, SysUser.class);
-            newAssetBusinessInfo.setResponsibleUserName(newSysUser == null ? null : newSysUser.getName());
+            newAssetBusinessInfo
+                .setResponsibleUserName(userDao.findUserName(userDao.findUserName(newAsset.getResponsibleUserId())));
             newAssetBusinessInfo.setContactTel(newAsset.getContactTel());
             newAssetBusinessInfo.setEmail(newAsset.getEmail());
             newAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());

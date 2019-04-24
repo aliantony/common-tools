@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.util.CompareUtils;
 import com.antiy.asset.util.DataTypeUtils;
@@ -21,7 +22,6 @@ import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.SysArea;
-import com.antiy.common.base.SysUser;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.JsonUtil;
 
@@ -34,6 +34,8 @@ import com.antiy.common.utils.JsonUtil;
 public class OtherEquipmentFieldCompareImpl extends AbstractChangeRecordCompareImpl {
     @Resource
     private RedisUtil                          redisUtil;
+    @Resource
+    AssetUserDao                               userDao;
     @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
 
@@ -73,10 +75,8 @@ public class OtherEquipmentFieldCompareImpl extends AbstractChangeRecordCompareI
                 DataTypeUtils.stringToInteger(newAsset.getAreaId()));
             SysArea oldSysArea = redisUtil.getObject(oldAreaKey, SysArea.class);
             oldAssetBusinessInfo.setAreaName(oldSysArea.getFullName());
-            String oldKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
-                DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
-            SysUser oldSysUser = redisUtil.getObject(oldKey, SysUser.class);
-            oldAssetBusinessInfo.setResponsibleUserName(oldSysUser == null ? "" : oldSysUser.getName());
+            oldAssetBusinessInfo
+                .setResponsibleUserName(userDao.findUserName(userDao.findUserName(newAsset.getResponsibleUserId())));
             oldAssetBusinessInfo.setContactTel(oldAsset.getContactTel());
             oldAssetBusinessInfo.setEmail(oldAsset.getEmail());
             oldAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());
@@ -91,10 +91,8 @@ public class OtherEquipmentFieldCompareImpl extends AbstractChangeRecordCompareI
                 DataTypeUtils.stringToInteger(newAsset.getAreaId()));
             SysArea newSysArea = redisUtil.getObject(newAreaKey, SysArea.class);
             oldAssetBusinessInfo.setAreaName(newSysArea.getFullName());
-            String newKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
-                DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
-            SysUser newSysUser = redisUtil.getObject(newKey, SysUser.class);
-            newAssetBusinessInfo.setResponsibleUserName(newSysUser == null ? "" : newSysUser.getName());
+            newAssetBusinessInfo
+                .setResponsibleUserName(userDao.findUserName(userDao.findUserName(newAsset.getResponsibleUserId())));
             newAssetBusinessInfo.setContactTel(newAsset.getContactTel());
             newAssetBusinessInfo.setEmail(newAsset.getEmail());
             newAssetBusinessInfo.setAssetGroup(newAsset.getAssetGroup());
