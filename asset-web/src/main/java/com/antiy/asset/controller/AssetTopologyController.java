@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetTopologyService;
 import com.antiy.asset.vo.response.AssetNodeInfoResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.encoder.Encode;
 
@@ -59,4 +60,17 @@ public class AssetTopologyController {
     public ActionResponse countAssetTopology() throws Exception {
         return ActionResponse.success(iAssetTopologyService.countAssetTopology());
     }
+
+    /**
+     * 已管控拓扑管理的资产的资产组信息(下拉)
+     * @return
+     */
+    @ApiOperation("查询已管控拓扑管理的资产组下拉")
+    @RequestMapping(value = "/queryGroupList", method = RequestMethod.GET)
+    @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse")
+    // @PreAuthorize(value = "hasAuthority('asset:topology:queryGroupList')")
+    public ActionResponse queryGroupList() throws Exception {
+        return ActionResponse.success(iAssetTopologyService.queryGroupList());
+    }
+
 }

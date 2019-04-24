@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetLinkRelation;
 import com.antiy.asset.entity.AssetLinkedCount;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
@@ -137,4 +138,11 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @return
      */
     List<String> queryUseableIp(@Param("assetId") String assetId, @Param("type") String type);
+    /**
+     * 已管控拓扑管理的资产的资产组信息(下拉) queryGroupList
+     * @param query
+     * @return
+     */
+    List<AssetGroup> queryGroupList(AssetTopologyQuery query);
+
 }

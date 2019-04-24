@@ -1,13 +1,10 @@
 package com.antiy.asset.service;
 
-import com.antiy.asset.vo.response.AssetNodeInfoResponse;
-
-import com.antiy.common.base.ActionResponse;
-
 import java.util.List;
 import java.util.Map;
 
-import java.util.Map;
+import com.antiy.asset.vo.response.AssetNodeInfoResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 
 /**
  * 资产拓扑管理
@@ -24,10 +21,18 @@ public interface IAssetTopologyService {
      * @return
      */
     AssetNodeInfoResponse queryAssetNodeInfo(String assetId);
+
     /**
      * 统计总资产/已管控拓扑管理的资产数量 (totalNum,2),(inControlNum,3)
      * @return
      * @throws Exception 查询异常
      */
     Map<String, Integer> countAssetTopology() throws Exception;
+
+    /**
+     * 已管控拓扑管理的资产的资产组信息(下拉)
+     * @return
+     */
+    List<SelectResponse> queryGroupList();
+
 }

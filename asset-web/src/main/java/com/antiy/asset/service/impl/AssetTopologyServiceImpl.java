@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetTopologyService;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
@@ -19,6 +20,7 @@ import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetTopologyQuery;
 import com.antiy.asset.vo.response.AssetNodeInfoResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
@@ -33,6 +35,10 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
     @Resource
     private AssetLinkRelationDao       assetLinkRelationDao;
+    @Resource
+    private AssetDao                   assetDao;
+    @Resource
+    private IAssetCategoryModelService iAssetCategoryModelService;
 
     @Override
     public List<String> queryCategoryModels() {
@@ -46,11 +52,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             .setInstallTypeName(InstallType.getInstallTypeByCode(assetNodeInfoResponse.getInstallType()).getStatus());
         return assetNodeInfoResponse;
     }
-    @Resource
-    private AssetDao                   assetDao;
-
-    @Resource
-    private IAssetCategoryModelService iAssetCategoryModelService;
 
     @Override
     public Map<String, Integer> countAssetTopology() throws Exception {
@@ -75,5 +76,20 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         assetTopologyQuery.setUserAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         resultMap.put("inControlNum", assetLinkRelationDao.countAssetTopology(assetTopologyQuery));
         return resultMap;
+    }
+
+    @Override
+    public List<SelectResponse> queryGroupList() {
+        AssetTopologyQuery assetTopologyQuery = new AssetTopologyQuery();
+        assetTopologyQuery.setUserAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        List<AssetGroup> assetGroupList = assetLinkRelationDao.queryGroupList(assetTopologyQuery);
+        List<SelectResponse> selectResponseList = new ArrayList<>(assetGroupList.size());
+        assetGroupList.stream().forEach(e -> {
+            SelectResponse selectResponse = new SelectResponse();
+            selectResponse.setValue(e.getName());
+            selectResponse.setId(e.getStringId());
+            selectResponseList.add(selectResponse);
+        });
+        return selectResponseList;
     }
 }

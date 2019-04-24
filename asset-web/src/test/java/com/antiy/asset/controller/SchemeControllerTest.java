@@ -1,3 +1,4 @@
+package com.antiy.asset.controller;/*
 package com.antiy.asset.controller;
 
 import com.antiy.asset.service.ISchemeService;
@@ -113,3 +114,4 @@ public class SchemeControllerTest {
                 .getContentAsString();
     }
 }
+*/

@@ -1012,4 +1012,29 @@
         </choose>
 
     </select>
+
+    <select id="queryGroupList" parameterType="com.antiy.asset.vo.query.AssetTopologyQuery"
+            resultType="com.antiy.asset.entity.AssetGroup">
+        SELECT id,`NAME`
+        FROM asset_group
+        WHERE id IN (
+        SELECT asset_group_id
+        FROM asset_group_relation
+        WHERE asset_id IN (
+        SELECT DISTINCT arl.asset_id
+        FROM asset_link_relation arl
+        LEFT JOIN asset ON arl.asset_id = asset.id
+        WHERE asset.asset_status BETWEEN 7 AND 8
+        <if test="userAreaIds != null and userAreaIds.size() > 0">
+            AND asset.area_id in
+            <foreach collection="userAreaIds" separator="," open="(" close=")" item="areaId">
+                #{areaId}
+            </foreach>
+        </if>
+        AND arl.status = 1
+        AND asset.status = 1
+        )
+        )
+        AND status = 1
+    </select>
 </mapper>

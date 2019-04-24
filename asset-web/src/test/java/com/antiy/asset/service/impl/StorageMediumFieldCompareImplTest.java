@@ -61,7 +61,7 @@ public class StorageMediumFieldCompareImplTest {
         SysArea sysArea = new SysArea();
         sysArea.setFullName("Leo");
         Mockito.when(assetChangeRecordDao.findChangeValByBusinessId(Mockito.any())).thenReturn(strings);
-        Mockito.when(redisUtil.getObject(Mockito.anyString(), Mockito.eq(com.antiy.common.base.SysArea.class))).thenReturn(sysArea);
+        Mockito.when(redisUtil.getObject(Mockito.anyString(), Mockito.eq(SysArea.class))).thenReturn(sysArea);
         Mockito.when(redisUtil.getObject(Mockito.anyString(), Mockito.eq(SysUser.class))).thenReturn(null);
 
         List<Map<String, Object>> list = compare.compareCommonBusinessInfo(2333);
@@ -81,7 +81,7 @@ public class StorageMediumFieldCompareImplTest {
         sysArea.setFullName("Leo");
         SysUser sysUser = new SysUser();
         Mockito.when(assetChangeRecordDao.findChangeValByBusinessId(Mockito.any())).thenReturn(strings);
-        Mockito.when(redisUtil.getObject(Mockito.anyString(), Mockito.eq(com.antiy.common.base.SysArea.class))).thenReturn(sysArea);
+        Mockito.when(redisUtil.getObject(Mockito.anyString(), Mockito.eq(SysArea.class))).thenReturn(sysArea);
         Mockito.when(redisUtil.getObject(Mockito.anyString(), Mockito.eq(SysUser.class))).thenReturn(sysUser);
 
         List<Map<String, Object>> list = compare.compareCommonBusinessInfo(2333);
@@ -102,7 +102,7 @@ public class StorageMediumFieldCompareImplTest {
         sysArea.setFullName("Leo");
         SysUser sysUser = new SysUser();
         Mockito.when(assetChangeRecordDao.findChangeValByBusinessId(Mockito.any())).thenReturn(strings);
-        Mockito.when(redisUtil.getObject(Mockito.anyString(), Mockito.eq(com.antiy.common.base.SysArea.class))).thenReturn(sysArea);
+        Mockito.when(redisUtil.getObject(Mockito.anyString(), Mockito.eq(SysArea.class))).thenReturn(sysArea);
         Mockito.when(redisUtil.getObject(Mockito.anyString(), Mockito.eq(SysUser.class))).thenReturn(sysUser);
 
         List<Map<String, Object>> list = compare.compareCommonBusinessInfo(2333);
@@ -125,7 +125,7 @@ public class StorageMediumFieldCompareImplTest {
         SysUser sysUser = new SysUser();
         sysUser.setName("Leo");
         Mockito.when(assetChangeRecordDao.findChangeValByBusinessId(Mockito.any())).thenReturn(strings);
-        Mockito.when(redisUtil.getObject(Mockito.anyString(), Mockito.eq(com.antiy.common.base.SysArea.class))).thenReturn(sysArea);
+        Mockito.when(redisUtil.getObject(Mockito.anyString(), Mockito.eq(SysArea.class))).thenReturn(sysArea);
         Mockito.when(redisUtil.getObject(Mockito.anyString(), Mockito.eq(SysUser.class))).thenReturn(sysUser);
 
         List<Map<String, Object>> list = compare.compareCommonBusinessInfo(2333);
