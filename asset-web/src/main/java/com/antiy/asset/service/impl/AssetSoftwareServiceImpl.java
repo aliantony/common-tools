@@ -518,11 +518,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         for (Map map : list) {
             SoftwareStatusEnum softwareStatusEnum = SoftwareStatusEnum.getAssetByCode((Integer) map.get("key"));
             if (softwareStatusEnum != null) {
-                if (!softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL)
-                    && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE)
-                    && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE)
-                    && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE)
-                    && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL)) {
+                if (isUnuseStatus(softwareStatusEnum)) {
                     EnumCountResponse e = resultMap.get(softwareStatusEnum);
                     e.setNumber((Long) map.get("value"));
                 }
@@ -530,14 +526,19 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
     }
 
-    private void initResultMap(Map<SoftwareStatusEnum, EnumCountResponse> resultMap) {
-        for (SoftwareStatusEnum softwareStatusEnum : SoftwareStatusEnum.values()) {
-            EnumCountResponse enumCountResponse;
-            if (!softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL)
+    private boolean isUnuseStatus(SoftwareStatusEnum softwareStatusEnum) {
+        return !softwareStatusEnum.equals(SoftwareStatusEnum.UNINSTALL)
                 && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_RETIRE)
                 && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE)
                 && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE)
-                && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL)) {
+                && !softwareStatusEnum.equals(SoftwareStatusEnum.WAIT_ANALYZE_UNINSTALL)
+                && !softwareStatusEnum.equals(SoftwareStatusEnum.RETIRE);
+    }
+
+    private void initResultMap(Map<SoftwareStatusEnum, EnumCountResponse> resultMap) {
+        for (SoftwareStatusEnum softwareStatusEnum : SoftwareStatusEnum.values()) {
+            EnumCountResponse enumCountResponse;
+            if (isUnuseStatus(softwareStatusEnum)) {
                 enumCountResponse = new EnumCountResponse(softwareStatusEnum.getMsg(), softwareStatusEnum.getCode()
                                                                                        + "", 0);
                 resultMap.put(softwareStatusEnum, enumCountResponse);
