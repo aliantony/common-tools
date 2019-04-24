@@ -63,14 +63,14 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Resource
     private IAssetCategoryModelService                                         iAssetCategoryModelService;
     @Override
-    public String saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
+    public Boolean saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
         checkAssetIp(request, assetLinkRelation);
         assetLinkRelationDao.insert(assetLinkRelation);
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LABEL_INSERT.getName(), assetLinkRelation.getId(),
             null, assetLinkRelation, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_LINK_RELATION_INSERT.getName() + "{}", assetLinkRelation);
-        return assetLinkRelation.getStringId();
+        return StringUtils.isNotBlank(assetLinkRelation.getStringId()) ? true : false;
     }
 
     /**

@@ -24,7 +24,7 @@ public interface IAssetLinkRelationService extends IBaseService<AssetLinkRelatio
      * @param request
      * @return
      */
-    String saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception;
+    Boolean saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception;
 
     /**
      * 修改
