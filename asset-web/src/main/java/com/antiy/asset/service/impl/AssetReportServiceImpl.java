@@ -828,6 +828,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // 获取初始化数据
         ReportQueryRequest initReportQueryRequest = new ReportQueryRequest();
         initReportQueryRequest.setEndTime(reportQueryRequest.getStartTime());
+        initReportQueryRequest.setAreaIds(reportQueryRequest.getAreaIds());
         List<AssetGroupEntity> initAssetGroupEntities = assetReportDao.getAssetConutWithGroup(initReportQueryRequest);
         List<AssetGroupEntity> assetGroupEntities = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
         List<String> initNameList = new ArrayList<>();
