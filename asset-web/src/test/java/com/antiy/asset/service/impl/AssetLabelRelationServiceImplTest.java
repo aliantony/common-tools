@@ -26,6 +26,7 @@ import java.util.List;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({LoginUserUtil.class, AssetLabelRelationServiceImpl.class})
+//该测试的类被无效的controller调用，暂不写测试
 public class AssetLabelRelationServiceImplTest {
     @Mock
     private BaseConverter<AssetLabelRelationRequest, AssetLabelRelation> requestConverter;
@@ -45,6 +46,7 @@ public class AssetLabelRelationServiceImplTest {
     }
 
     @Test
+    @Ignore //该测试的方法被无效的controller调用，暂不测试
     public void saveAssetLabelRelationTest() throws Exception {
         AssetLabelRelationRequest request = new AssetLabelRelationRequest();
         AssetLabelRelation assetLabelRelation = new AssetLabelRelation();
@@ -56,6 +58,7 @@ public class AssetLabelRelationServiceImplTest {
     }
 
     @Test
+    @Ignore //该测试的方法被无效的controller调用，暂不测试
     public void updateAssetLabelRelationTest() throws Exception {
         AssetLabelRelationRequest request = new AssetLabelRelationRequest();
         AssetLabelRelation assetLabelRelation = new AssetLabelRelation();
@@ -67,7 +70,7 @@ public class AssetLabelRelationServiceImplTest {
     }
 
     @Test
-    @Ignore
+    @Ignore//该测试的方法被无效的controller调用，暂不测试
     public void findListAssetLabelRelationTest() throws Exception {
         AssetLabelRelationQuery query = new AssetLabelRelationQuery();
         List<AssetLabelRelation> list = new ArrayList<>();
