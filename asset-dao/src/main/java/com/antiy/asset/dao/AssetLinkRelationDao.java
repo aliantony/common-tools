@@ -132,6 +132,13 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
     Integer countAssetTopology(AssetTopologyQuery assetTopologyQuery);
 
     /**
+     * 查询可用ip
+     * @param assetId
+     * @param type
+     * @return
+     */
+    List<String> queryUseableIp(@Param("assetId") String assetId, @Param("type") String type);
+    /**
      * 已管控拓扑管理的资产的资产组信息(下拉) queryGroupList
      * @param query
      * @return

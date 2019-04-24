@@ -6,10 +6,8 @@ import com.antiy.asset.entity.AssetLinkRelation;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
-import com.antiy.asset.vo.response.AssetLinkRelationResponse;
-import com.antiy.asset.vo.response.AssetLinkedCountResponse;
-import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.request.UseableIpRequest;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -135,4 +133,11 @@ public interface IAssetLinkRelationService extends IBaseService<AssetLinkRelatio
      * @return
      */
     ActionResponse saveAssetLinkRelationList(List<AssetLinkRelationRequest> assetLinkRelationRequestList);
+
+    /**
+     * 查询生于ip
+     * @param useableIpRequest
+     * @return
+     */
+    List<String> queryUseableIp(UseableIpRequest useableIpRequest);
 }

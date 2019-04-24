@@ -2,11 +2,10 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.request.UseableIpRequest;
+import com.antiy.asset.vo.response.CategoryType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.IAssetLinkRelationService;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
@@ -198,5 +197,19 @@ public class AssetLinkRelationController {
     @PreAuthorize(value = "hasAuthority('asset:linkrelation:portById')")
     public ActionResponse queryLinkedAssetListByAssetId(@ApiParam(value = "assetLinkRelationQuery") AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         return ActionResponse.success(iAssetLinkRelationService.queryLinkedAssetPageByAssetId(assetLinkRelationQuery));
+    }
+
+    /**
+     * 查询剩余的ip
+     * @param useableIpRequest
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "查询剩余的ip", notes = "传入查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/useableip", method = RequestMethod.POST)
+    @PreAuthorize(value = "hasAuthority('asset:query:useableip')")
+    public ActionResponse queryUseableIp(@ApiParam(value = "useableIpRequest")@RequestBody UseableIpRequest useableIpRequest) throws Exception {
+        return ActionResponse.success(iAssetLinkRelationService.queryUseableIp(useableIpRequest));
     }
 }

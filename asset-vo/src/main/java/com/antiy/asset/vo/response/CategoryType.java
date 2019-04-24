@@ -102,6 +102,9 @@ public class CategoryType {
         }
     }
 
+    public CategoryType() {
+    }
+
     public void setStatus() {
         this.isNet = false;
         this.isPc = false;
