@@ -1,6 +1,7 @@
 package com.antiy.asset.controller;
 
 import com.antiy.asset.service.IAssetLinkRelationService;
+import com.antiy.common.base.ActionResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -52,9 +53,22 @@ public class AssetLinkRelationControllerTest {
      */
     @Test
     public void saveSingle() throws Exception {
-        Mockito.when(iAssetLinkRelationService.saveAssetLinkRelation(Mockito.any())).thenReturn("数据");
+        Mockito.when(iAssetLinkRelationService.saveAssetLinkRelation(Mockito.any())).thenReturn(true);
 
-        content("{\"assetId\":\"998\"}", "/save/single", "{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":\"数据\"}");
+        content("{\"assetId\":\"998\"}", "/save/single", "{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":true}");
+    }
+
+    /**
+     * 批量保存接口测试
+     * 构造post请求，controller调用service从数据库获取数据，返回读取结果
+     * 断言响应内容
+     * @throws Exception except
+     */
+    @Test
+    public void saveList() throws Exception {
+        Mockito.when(iAssetLinkRelationService.saveAssetLinkRelationList(Mockito.any())).thenReturn(null);
+
+        content("[{\"assetId\":\"998\"}]", "/save/list", "{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}");
     }
 
     /**
@@ -107,7 +121,8 @@ public class AssetLinkRelationControllerTest {
         Mockito.when(iAssetLinkRelationService.deleteAssetLinkRelationById(Mockito.any())).thenReturn("数据");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/linkrelation/delete/id")
-                .param("stringId", "998"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content("{\"stringId\":\"998\"}".getBytes(StandardCharsets.UTF_8)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":\"数据\"}"))
                 .andDo(MockMvcResultHandlers.print());
@@ -210,6 +225,19 @@ public class AssetLinkRelationControllerTest {
         Mockito.when(iAssetLinkRelationService.queryLinkedAssetPageByAssetId(Mockito.any())).thenReturn(null);
 
         param("primaryKey", "998", "/query/linkedAssetListByAssetId", NULL_RESULT);
+    }
+
+    /**
+     * 查询剩余的ip接口测试
+     * 构造post请求，controller调用service从数据库获取数据，返回读取结果
+     * 断言响应内容
+     * @throws Exception except
+     */
+    @Test
+    public void queryUseableIp() throws Exception {
+        Mockito.when(iAssetLinkRelationService.queryUseableIp(Mockito.any())).thenReturn(null);
+
+        content("{\"assetId\":\"23333\"}", "/query/useableip", "{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}");
     }
 
     /**
