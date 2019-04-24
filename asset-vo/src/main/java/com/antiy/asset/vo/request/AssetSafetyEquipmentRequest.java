@@ -8,6 +8,7 @@ import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 /**
  * <p> AssetSafetyEquipmentRequest 请求对象 </p>
@@ -43,7 +44,13 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
      * 特征库版本
      */
     @ApiModelProperty("特征库版本")
+    @Pattern(regexp = "^[+]?\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$", message = "特征库版本格式不正确")
     private String featureLibrary;
+
+    @ApiModelProperty("软件版本")
+    @Pattern(regexp = "^[+]?\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$", message = "软件版本格式不正确")
+    private String newVersion;
+
     /**
      * 策略配置
      */
@@ -121,5 +128,13 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
 
     public void setMac(String mac) {
         this.mac = mac;
+    }
+
+    public String getNewVersion() {
+        return newVersion;
+    }
+
+    public void setNewVersion(String newVersion) {
+        this.newVersion = newVersion;
     }
 }

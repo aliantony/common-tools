@@ -1,3 +1,4 @@
+package com.antiy.asset.service.impl;/*
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetCategoryModelDao;
@@ -243,3 +244,4 @@ public class AssetGroupServiceImplTest {
         Assert.assertTrue(selectResponseList.size() == actual.size());
     }
 }
+*/

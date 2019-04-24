@@ -655,7 +655,7 @@
     <!--与当前资产通联的资产列表查询-->
     <select id="queryLinkedAssetListByAssetId" resultType="com.antiy.asset.entity.AssetLinkRelation"
             parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
-        SELECT
+        select distinct * from (SELECT
         c.id,
         a.id as assetId,
         a.NAME as assetName,
@@ -668,7 +668,8 @@
         ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id
         ) ) AS parentCategoryModelName,
         c.parent_asset_ip as parentAssetIp,
-        c.parent_asset_port as parentAssetPort
+        c.parent_asset_port as parentAssetPort,
+        c.gmt_create
         FROM
         asset a
         LEFT JOIN asset_network_card b ON a.id = b.asset_id and b.status = 1
@@ -691,7 +692,8 @@
             ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id =
             alr.parent_asset_id ) ) AS parentCategoryModelName,
             alr.parent_asset_ip as parentAssetIp,
-            alr.parent_asset_port as parentAssetPort
+            alr.parent_asset_port as parentAssetPort,
+            alr.gmt_create
             FROM
             (
             SELECT
@@ -744,12 +746,35 @@
         (SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = asset_id ) ) AS
         parentCategoryModelName,
         a.asset_ip as parentAssetIp,
-        a.asset_port as parentAssetPort
+        a.asset_port as parentAssetPort,
+        a.gmt_create
         FROM
         asset_link_relation a left join asset b on a.parent_asset_id = b.id
         WHERE
         a.parent_asset_id = #{primaryKey}
         and a.status = 1
+        union all
+        SELECT
+        a.id,
+        a.asset_id AS assetId,
+        b.NAME AS assetName,
+        a.asset_port AS assetPort,
+        b.category_model AS categoryModel,
+        ( SELECT NAME FROM asset_category_model WHERE id = b.category_model ) AS categoryModelName,
+        a.asset_ip AS assetIp,
+        a.parent_asset_id AS parentAssetId,
+        ( SELECT NAME FROM asset WHERE id = a.parent_asset_id ) AS parentAssetName,
+        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id ) ) AS parentCategoryModelName,
+        a.parent_asset_ip AS parentAssetIp,
+        a.parent_asset_port AS parentAssetPort,
+        a.gmt_create
+        FROM
+        asset_link_relation a
+        LEFT JOIN asset b ON a.asset_id = b.id
+        WHERE
+        a.asset_id = #{primaryKey}
+        AND a.STATUS = 1) t
+        order by t.gmt_create desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -854,7 +879,7 @@
         GROUP BY a.id) t
     </select>
     <select id="queryLinkedCountAssetByAssetId" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
-        select count(1) count from (SELECT
+        select count(1) count from(select distinct t.* from (SELECT
         c.id,
         a.id as assetId,
         a.NAME as assetName,
@@ -948,7 +973,28 @@
         asset_link_relation a left join asset b on a.parent_asset_id = b.id
         WHERE
         a.parent_asset_id = #{primaryKey}
-        and a.status = 1) t
+        and a.status = 1
+        union all
+        SELECT
+        a.id,
+        a.asset_id AS assetId,
+        b.NAME AS assetName,
+        a.asset_port AS assetPort,
+        b.category_model AS categoryModel,
+        ( SELECT NAME FROM asset_category_model WHERE id = b.category_model ) AS categoryModelName,
+        a.asset_ip AS assetIp,
+        a.parent_asset_id AS parentAssetId,
+        ( SELECT NAME FROM asset WHERE id = a.parent_asset_id ) AS parentAssetName,
+        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id ) ) AS parentCategoryModelName,
+        a.parent_asset_ip AS parentAssetIp,
+        a.parent_asset_port AS parentAssetPort
+        FROM
+        asset_link_relation a
+        LEFT JOIN asset b ON a.asset_id = b.id
+        WHERE
+        a.asset_id = #{primaryKey}
+        AND a.STATUS = 1) t) p
+
     </select>
 
     <select id="queryAssetNodeInfo" parameterType="java.lang.String" resultMap="AssetNodeInfoResultMap">

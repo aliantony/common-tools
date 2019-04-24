@@ -162,12 +162,12 @@ public class AssetNetworkEquipmentResponse extends BaseResponse {
         this.interfaceSize = interfaceSize;
     }
 
-    public Integer getWireless() {
+    public Integer getIsWireless() {
         return isWireless;
     }
 
-    public void setWireless(Integer wireless) {
-        isWireless = wireless;
+    public void setIsWireless(Integer isWireless) {
+        this.isWireless = isWireless;
     }
 
     public String getInnerIp() {

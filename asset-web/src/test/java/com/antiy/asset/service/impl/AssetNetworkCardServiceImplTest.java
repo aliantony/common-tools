@@ -12,6 +12,7 @@ import com.antiy.common.base.LoginUser;
 import com.antiy.common.utils.LoginUserUtil;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -48,6 +49,7 @@ public class AssetNetworkCardServiceImplTest {
     }
 
     @Test
+    @Ignore
     public void saveAssetNetworkCardTest() throws Exception {
         AssetNetworkCardRequest request = new AssetNetworkCardRequest();
         AssetNetworkCard assetNetworkCard = new AssetNetworkCard();
@@ -61,6 +63,7 @@ public class AssetNetworkCardServiceImplTest {
     }
 
     @Test
+    @Ignore
     public void updateAssetNetworkCardTest() throws Exception {
         AssetNetworkCardRequest request = new AssetNetworkCardRequest();
         AssetNetworkCard assetNetworkCard = new AssetNetworkCard();

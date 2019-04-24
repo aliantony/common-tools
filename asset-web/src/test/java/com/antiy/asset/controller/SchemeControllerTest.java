@@ -92,7 +92,7 @@ public class SchemeControllerTest {
 
     @Test
     public void testQueryMemoByAssetId() throws Exception {
-        when(iSchemeService.queryMemoById(any())).thenReturn("queryMemoByIdResponse");
+        when(iSchemeService.queryMemoById(any())).thenReturn(new SchemeResponse());
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("type", "1");

@@ -11,6 +11,7 @@ import com.antiy.common.base.LoginUser;
 import com.antiy.common.utils.LoginUserUtil;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -49,6 +50,7 @@ public class AssetNetworkEquipmentServiceImplTest {
     }
 
     @Test
+    @Ignore
     public void saveAssetNetworkEquipmentTest() throws Exception {
         AssetNetworkEquipmentRequest request = new AssetNetworkEquipmentRequest();
         AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
@@ -60,6 +62,7 @@ public class AssetNetworkEquipmentServiceImplTest {
     }
 
     @Test
+    @Ignore
     public void updateAssetNetworkEquipmentTest() throws Exception {
         AssetNetworkEquipmentRequest request = new AssetNetworkEquipmentRequest();
         AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
