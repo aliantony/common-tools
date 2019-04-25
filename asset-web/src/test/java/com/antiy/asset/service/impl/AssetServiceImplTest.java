@@ -38,7 +38,6 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
-import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetCpuRequest;
@@ -57,11 +56,7 @@ import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.EnumCountResponse;
 import com.antiy.asset.vo.response.WaitingTaskReponse;
 import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.IBaseDao;
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.base.PageResult;
+import com.antiy.common.base.*;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
 import com.google.common.collect.Lists;
@@ -85,7 +80,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -223,6 +217,7 @@ public class AssetServiceImplTest {
         when(assetGroupRelationDao.insertBatch(any())).thenReturn(0);
         when(activityClient.manualStartProcess(any())).thenReturn(null);
         when(assetCategoryModelDao.getById(any())).thenReturn(new AssetCategoryModel());
+        when(redisUtil.getObject(any(), any(Class.class))).thenReturn(new SysArea());
 
         AssetOuterRequest assetOuterRequest = new AssetOuterRequest();
         AssetRequest assetRequest = new AssetRequest();
@@ -509,9 +504,10 @@ public class AssetServiceImplTest {
 
     @Test
     public void testCountManufacturer() throws Exception {
-        when(assetDao.countManufacturer(any(), any())).thenReturn(Arrays.asList(new HashMap<String, Object>() {{
-            put("String", "Map");
-        }}));
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("value", 1L);
+
+        when(assetDao.countManufacturer(any(), any())).thenReturn(Arrays.asList(map, map));
 
         List<EnumCountResponse> result = assetServiceImpl.countManufacturer();
         Assert.assertNotNull(result);
@@ -609,6 +605,62 @@ public class AssetServiceImplTest {
         when(activityClient.manualStartProcess(any())).thenReturn(null);
         when(activityClient.completeTask(any())).thenReturn(null);
         when(assetLinkRelationDao.deleteRelationByAssetId(any())).thenReturn(0);
+
+        Asset asset = new Asset();
+        asset.setOperationSystemName("");
+        asset.setAreaName("");
+        asset.setResponsibleUserName("");
+        asset.setCategoryModelName("");
+        asset.setHardDisk("");
+        asset.setMemory("");
+        asset.setCpu("");
+        asset.setNetworkCard("");
+        asset.setParentId("");
+        asset.setIp("");
+        asset.setMac("");
+        asset.setAssetGroup("");
+        asset.setNumber("");
+        asset.setName("");
+        asset.setEthernetPort(0);
+        asset.setSerialPort(0);
+        asset.setInstallType(0);
+        asset.setSerial("");
+        asset.setAreaId("");
+        asset.setCategoryModel("");
+        asset.setManufacturer("");
+        asset.setAssetStatus(8);
+        asset.setAdmittanceStatus(0);
+        asset.setOperationSystem("");
+        asset.setSystemBit(0);
+        asset.setLocation("");
+        asset.setLatitude("");
+        asset.setLongitude("");
+        asset.setHouseLocation("");
+        asset.setFirmwareVersion("");
+        asset.setUuid("");
+        asset.setContactTel("");
+        asset.setEmail("");
+        asset.setAssetSource(0);
+        asset.setImportanceDegree(0);
+        asset.setDescrible("");
+        asset.setTags("");
+        asset.setFirstEnterNett(0L);
+        asset.setServiceLife(0L);
+        asset.setBuyDate(0L);
+        asset.setWarranty("");
+        asset.setGmtCreate(0L);
+        asset.setGmtModified(0L);
+        asset.setMemo("");
+        asset.setCreateUser(0);
+        asset.setModifyUser(0);
+        asset.setStatus(0);
+        asset.setResponsibleUserId("");
+        asset.setSoftwareVersion("");
+        asset.setImportanceDegreeName("");
+        asset.setInstallTypeName("");
+        asset.setId(0);
+
+        when(assetDao.getById(any())).thenReturn(asset);
 
         AssetOuterRequest assetOuterRequest = new AssetOuterRequest();
         AssetRequest assetRequest = new AssetRequest();
@@ -841,9 +893,10 @@ public class AssetServiceImplTest {
         assetResponse.setHouseLocation("");
         assetResponse.setStringId("");
 
-        PageResult<AssetResponse> pageResult = new PageResult<>();
-        pageResult.setItems(Arrays.asList(assetResponse));
-        doReturn(Arrays.asList(assetResponse)).when(assetServiceImpl).findPageAsset(any());
+        PageResult<AssetResponse> result = new PageResult<>();
+        result.setItems(Arrays.asList(assetResponse));
+
+        doReturn(result).when(assetServiceImpl).findPageAsset(any());
 
         assetServiceImpl.exportData(new AssetQuery(), new Response());
     }
