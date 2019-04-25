@@ -240,7 +240,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             relation.setId(assetInstallRequest.getId());
             relation.setGmtModified(System.currentTimeMillis());
             relation.setModifyUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
-            if (assetSoftwareRelationList.getInstallType().equals(InstallType.MANUAL.getCode())) {
+            if (InstallType.MANUAL.getCode().equals(assetSoftwareRelationList.getInstallType())) {
                 // 人工安装
                 relation.setAssetId(assetInstallRequest.getAssetId());
                 relation.setInstallType(InstallType.MANUAL.getCode());
