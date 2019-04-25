@@ -176,6 +176,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty("准入状态，1待设置，2已允许，3已禁止")
     private Integer       admittanceStatus;
+
+    /**
+     * 资产准入状态
+     */
+    @ApiModelProperty("责任人")
+    private String       responsibleUserName;
+
     /**
      * 创建时间
      */
@@ -491,17 +498,58 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
         this.number = number;
     }
 
+    public String getResponsibleUserName() {
+        return responsibleUserName;
+    }
+
+    public void setResponsibleUserName(String responsibleUserName) {
+        this.responsibleUserName = responsibleUserName;
+    }
+
     @Override
     public String toString() {
-        return "AssetQuery{" + "ids=" + Arrays.toString(ids) + ", multipleQuery='" + multipleQuery + '\'' + ", name='"
-               + name + '\'' + ", number='" + number + '\'' + ", serial='" + serial + '\'' + ", categoryModel='"
-               + categoryModel + '\'' + ", categoryModels=" + Arrays.toString(categoryModels) + ", areaIds="
-               + Arrays.toString(areaIds) + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
-               + ", operationSystem='" + operationSystem + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='"
-               + responsibleUserId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
-               + ", parentId='" + parentId + '\'' + ", assetStatusList=" + assetStatusList + ", assetGroup="
-               + assetGroup + ", timeType=" + timeType + ", softwareId='" + softwareId + '\'' + ", admittanceStatus="
-               + admittanceStatus + ", gmtCreate=" + gmtCreate + '}';
+        return "AssetQuery{" +
+                "ids=" + Arrays.toString(ids) +
+                ", multipleQuery='" + multipleQuery + '\'' +
+                ", name='" + name + '\'' +
+                ", assetName='" + assetName + '\'' +
+                ", ip='" + ip + '\'' +
+                ", isNet=" + isNet +
+                ", isSafety=" + isSafety +
+                ", number='" + number + '\'' +
+                ", serial='" + serial + '\'' +
+                ", categoryModel='" + categoryModel + '\'' +
+                ", categoryModels=" + Arrays.toString(categoryModels) +
+                ", areaIds=" + Arrays.toString(areaIds) +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", manufacturers=" + manufacturers +
+                ", removeManufacturers=" + removeManufacturers +
+                ", assetStatus=" + assetStatus +
+                ", operationSystem='" + operationSystem + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", responsibleUserId='" + responsibleUserId + '\'' +
+                ", assetSource=" + assetSource +
+                ", importanceDegree=" + importanceDegree +
+                ", parentId='" + parentId + '\'' +
+                ", assetStatusList=" + assetStatusList +
+                ", assetGroup='" + assetGroup + '\'' +
+                ", timeType=" + timeType +
+                ", softwareId='" + softwareId + '\'' +
+                ", admittanceStatus=" + admittanceStatus +
+                ", responsibleUserName='" + responsibleUserName + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", firstEnterNett=" + firstEnterNett +
+                ", beginTime=" + beginTime +
+                ", endTime=" + endTime +
+                ", queryVulCount=" + queryVulCount +
+                ", queryPatchCount=" + queryPatchCount +
+                ", queryAlarmCount=" + queryAlarmCount +
+                ", associateGroup=" + associateGroup +
+                ", groupId='" + groupId + '\'' +
+                ", exceptId=" + exceptId +
+                ", existAssociateIds=" + existAssociateIds +
+                ", enterControl=" + enterControl +
+                '}';
     }
 
     @Override

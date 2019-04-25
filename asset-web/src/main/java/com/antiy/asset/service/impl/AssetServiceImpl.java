@@ -1265,9 +1265,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<EnumCountResponse> countManufacturer() throws Exception {
         int maxNum = 5;
         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        // List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
+        // 不统计已退役资产
+        List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
         // update by zhangbing 对于空的厂商和产品确认需要统计，统计的到其他
-        List<Map<String, Object>> list = assetDao.countManufacturer(areaIds, null);
+        List<Map<String, Object>> list = assetDao.countManufacturer(areaIds, status);
         return CountTypeUtil.getEnumCountResponse(maxNum, list);
     }
 
@@ -1332,8 +1333,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setCategoryModels(ArrayTypeUtil.objectArrayToStringArray(list.toArray()));
         assetQuery.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
-        // TODO 品类型号统计是否需要排除已退役资产
-        /* List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus(); assetQuery.setAssetStatusList(status); */
+        // 品类型号统计不需要统计已退役资产
+        List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
+        assetQuery.setAssetStatusList(status);
         return assetQuery;
     }
 

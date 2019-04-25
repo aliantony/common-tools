@@ -3,8 +3,11 @@ package com.antiy.asset.service;
 import java.util.List;
 import java.util.Map;
 
+import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.response.AssetNodeInfoResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.common.base.PageResult;
 
 /**
  * 资产拓扑管理
@@ -34,5 +37,13 @@ public interface IAssetTopologyService {
      * @return
      */
     List<SelectResponse> queryGroupList();
+
+    /**
+     * 获取拓扑资产列表
+     * @param query
+     * @return
+     * @throws Exception
+     */
+    PageResult<AssetResponse> getTopologyList(AssetQuery query) throws Exception;
 
 }

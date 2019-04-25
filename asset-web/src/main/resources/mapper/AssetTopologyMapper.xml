@@ -10,6 +10,27 @@
         <result column="create_user" property="createUser"/>
         <result column="gmt_create" property="gmtCreate"/>
     </resultMap>
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="assetResultMap" type="com.antiy.asset.entity.Asset">
+        <id column="id" property="id"/>
+        <result column="asset_group" property="assetGroup"/>
+        <result column="number" property="number"/>
+        <result column="name" property="name"/>
+        <result column="category_model_name" property="categoryModelName"/>
+        <result column="area_id" property="areaId"/>
+        <result column="category_model" property="categoryModel"/>
+        <result column="manufacturer" property="manufacturer"/>
+        <result column="asset_status" property="assetStatus"/>
+        <result column="operation_system" property="operationSystem"/>
+        <result column="responsible_user_id" property="responsibleUserId"/>
+        <result column="responsible_user_name" property="responsibleUserName"/>
+        <result column="house_location" property="houseLocation"/>
+        <result column="vul_count" property="vulCount"/>
+        <result column="patch_count" property="patchCount"/>
+
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, topology_type AS topologyType, relation, create_user AS createUser, gmt_create AS gmtCreate
@@ -73,7 +94,7 @@
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
-        <if test=" areaIds != null and areaIds.length >">
+        <if test=" areaIds != null and areaIds.length >0">
             and area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
                 #{item}
@@ -121,6 +142,10 @@
         <if test=" categoryModel != null and categoryModel != ''">
             and category_model = #{categoryModel}
         </if>
+        <if test=" responsibleUserName != null and responsibleUserName != ''">
+            and responsible_user_name = #{responsibleUserName}
+        </if>
+
     </sql>
 
 
@@ -205,7 +230,7 @@
         </if>
     </select>
 
-    <select id="findListAsset" resultMap="BaseResultMap"
+    <select id="findTopologyListAsset" resultMap="assetResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
         select * from (select
         a.id,
@@ -219,10 +244,8 @@
         a.manufacturer, asset_status,
         a.responsible_user_id,
         a.first_enter_nett,
-        (select count(id) from asset_vul_rel vul where vul.asset_id =a.id and vul.status=1 and vul.vul_status=3) as
-        vul_count,
-        (select count(id) from asset_vul_rel vul where vul.asset_id =a.id and vul.status=1 and vul.vul_status=3) as
-        vul_count,
+        IFNULL(asset_patch_rel_1.patch_count,0) as patch_count,
+        IFNULL(asset_vul_rel_1.vul_count,0) as vul_count,
         case
         when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
         replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
@@ -250,34 +273,106 @@
         left join asset_user d on a.responsible_user_id = d.id
         left join (
         select
-        asset_id,
-        count(id) un_install_count,
-        any_value ( gmt_create ) AS gmt_create
+        apr.asset_id,
+        count(apr.patch_status != 5 or null) patch_count
         from
-        asset_patch_rel
+        asset_patch_rel apr inner join patch p on p.id = apr.patch_id where p.status = 1 and p.patch_status = 3
         group by
         asset_id
         ) asset_patch_rel_1 on asset_patch_rel_1.asset_id = a.id
-        where a.status = 1
+        left join (
+        select
+        avr.asset_id,
+        count(avr.vul_status != 5 or null) vul_count
+        from
+        asset_vul_rel avr inner join vul v on v.id = avr.vul_id where v.vul_status = 4 and v. status = 1
+        group by
+        asset_id
+        ) asset_vul_rel_1 on asset_vul_rel_1.asset_id = a.id
+        where a.status = 1 and exists (
+        select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or parent_asset_id=a.id)
+        )
         group by a.id
-        order by a.gmt_create desc) asset
+        ) asset
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
-        ORDER BY
-        <if test=" ids != null and ids.length > 0">
-            FIELD(`id`,
-            <foreach index="index" item="item" collection="ids" separator=",">
-                #{item}
-            </foreach>
-            ) DESC,
-        </if>
-        id desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+    </select>
+
+    <select id="findTopologyListAssetCount" resultType="int"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select count(id) from (select
+        a.id,
+        a.area_id,
+        a.asset_group,
+        a.category_model,
+        a.number,
+        a.name,
+        d.name as responsible_user_name,
+        c.name as category_model_name,
+        a.manufacturer, asset_status,
+        a.responsible_user_id,
+        a.first_enter_nett,
+        IFNULL(asset_patch_rel_1.patch_count,0) as patch_count,
+        IFNULL(asset_vul_rel_1.vul_count,0) as vul_count,
+        case
+        when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
+        replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
+        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        where asset_id = a.id and status = 1) is
+        not
+        null then
+        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        where asset_id = a.id and status = 1)
+        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as ip,
+        case
+        when replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',') is not null then
+        replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',')
+        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
+        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as mac
+        from
+        asset a
+        left join asset_network_card b on a.id = b.asset_id and b.status = 1
+        left join asset_category_model c on a.category_model = c.id
+        left join asset_user d on a.responsible_user_id = d.id
+        left join (
+        select
+        apr.asset_id,
+        count(apr.patch_status != 5 or null) patch_count
+        from
+        asset_patch_rel apr inner join patch p on p.id = apr.patch_id where p.status = 1 and p.patch_status = 3
+        group by
+        asset_id
+        ) asset_patch_rel_1 on asset_patch_rel_1.asset_id = a.id
+        left join (
+        select
+        avr.asset_id,
+        count(avr.vul_status != 5 or null) vul_count
+        from
+        asset_vul_rel avr inner join vul v on v.id = avr.vul_id where v.vul_status = 4 and v. status = 1
+        group by
+        asset_id
+        ) asset_vul_rel_1 on asset_vul_rel_1.asset_id = a.id
+        where a.status = 1 and exists (
+        select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or parent_asset_id=a.id)
+        )
+        group by a.id
+        ) asset
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Multiple_Query"></include>
+            </trim>
+        </where>
     </select>
 
 
