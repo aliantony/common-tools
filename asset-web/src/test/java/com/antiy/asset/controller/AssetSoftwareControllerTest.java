@@ -175,8 +175,8 @@ public class AssetSoftwareControllerTest extends MockContext {
 
     @Test
     public void assetSetting() throws Exception {
-        MockHttpServletRequestBuilder requestBuilder = commonManager.postAction(URL_PREFIX + "/deal/asset/setting", controllerManager.initRegisterRequest());
+        MockHttpServletRequestBuilder requestBuilder = commonManager.postAction(URL_PREFIX + "/asset/setting", controllerManager.initRegisterRequest());
         commonManager.getResult(mockMvc, requestBuilder);
-        verify(softwareService).configRegister(any(), any());
+        verify(softwareService).softwareInstallConfig(any());
     }
 }
