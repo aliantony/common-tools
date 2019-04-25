@@ -1,4 +1,3 @@
-package com.antiy.asset.controller;/*
 package com.antiy.asset.controller;
 
 import com.antiy.asset.service.ISchemeService;
@@ -93,7 +92,7 @@ public class SchemeControllerTest {
 
     @Test
     public void testQueryMemoByAssetId() throws Exception {
-        when(iSchemeService.queryMemoById(any())).thenReturn("queryMemoByIdResponse");
+        when(iSchemeService.queryMemoById(any())).thenReturn(new SchemeResponse());
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("type", "1");
@@ -114,4 +113,3 @@ public class SchemeControllerTest {
                 .getContentAsString();
     }
 }
-*/

@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetStorageMedium;
 import com.antiy.asset.util.CompareUtils;
@@ -22,7 +23,6 @@ import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.SysArea;
-import com.antiy.common.base.SysUser;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.JsonUtil;
 
@@ -35,6 +35,8 @@ import com.antiy.common.utils.JsonUtil;
 public class StorageMediumFieldCompareImpl extends AbstractChangeRecordCompareImpl {
     @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
+    @Resource
+    AssetUserDao                               userDao;
     @Resource
     private RedisUtil                          redisUtil;
 
@@ -77,10 +79,8 @@ public class StorageMediumFieldCompareImpl extends AbstractChangeRecordCompareIm
             com.antiy.common.base.SysArea oldSysArea = redisUtil.getObject(oldAreaKey,
                 com.antiy.common.base.SysArea.class);
             oldAssetBusinessInfo.setAreaName(oldSysArea.getFullName());
-            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
-                DataTypeUtils.stringToInteger(newAsset.getResponsibleUserId()));
-            SysUser sysUser = redisUtil.getObject(key, SysUser.class);
-            oldAssetBusinessInfo.setResponsibleUserName(sysUser == null ? "" : sysUser.getName());
+            oldAssetBusinessInfo
+                .setResponsibleUserName(userDao.findUserName(userDao.findUserName(newAsset.getResponsibleUserId())));
             oldAssetBusinessInfo.setContactTel(oldAsset.getContactTel());
             oldAssetBusinessInfo.setEmail(oldAsset.getEmail());
             oldAssetBusinessInfo.setAssetGroup(oldAsset.getAssetGroup());

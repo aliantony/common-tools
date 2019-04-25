@@ -1,4 +1,3 @@
-package com.antiy.asset.service.impl;/*
 package com.antiy.asset.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
@@ -57,11 +56,7 @@ import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.EnumCountResponse;
 import com.antiy.asset.vo.response.WaitingTaskReponse;
 import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.IBaseDao;
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.base.PageResult;
+import com.antiy.common.base.*;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
 import com.google.common.collect.Lists;
@@ -222,6 +217,7 @@ public class AssetServiceImplTest {
         when(assetGroupRelationDao.insertBatch(any())).thenReturn(0);
         when(activityClient.manualStartProcess(any())).thenReturn(null);
         when(assetCategoryModelDao.getById(any())).thenReturn(new AssetCategoryModel());
+        when(redisUtil.getObject(any(), any(Class.class))).thenReturn(new SysArea());
 
         AssetOuterRequest assetOuterRequest = new AssetOuterRequest();
         AssetRequest assetRequest = new AssetRequest();
@@ -246,7 +242,7 @@ public class AssetServiceImplTest {
         assetRequest.setTags("");
         assetRequest.setServiceLife(0L);
         assetRequest.setBuyDate(0L);
-        assetRequest.setWarranty(0L);
+        assetRequest.setWarranty("0");
         assetRequest.setId("1");
         assetRequest.setEmail("");
         assetRequest.setContactTel("1");
@@ -309,7 +305,7 @@ public class AssetServiceImplTest {
         asset.setFirstEnterNett(0L);
         asset.setServiceLife(0L);
         asset.setBuyDate(0L);
-        asset.setWarranty(0L);
+        asset.setWarranty("0");
         asset.setGmtCreate(0L);
         asset.setGmtModified(0L);
         asset.setMemo("");
@@ -508,9 +504,10 @@ public class AssetServiceImplTest {
 
     @Test
     public void testCountManufacturer() throws Exception {
-        when(assetDao.countManufacturer(any(), any())).thenReturn(Arrays.asList(new HashMap<String, Object>() {{
-            put("String", "Map");
-        }}));
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("value", 1L);
+
+        when(assetDao.countManufacturer(any(), any())).thenReturn(Arrays.asList(map, map));
 
         List<EnumCountResponse> result = assetServiceImpl.countManufacturer();
         Assert.assertNotNull(result);
@@ -609,6 +606,62 @@ public class AssetServiceImplTest {
         when(activityClient.completeTask(any())).thenReturn(null);
         when(assetLinkRelationDao.deleteRelationByAssetId(any())).thenReturn(0);
 
+        Asset asset = new Asset();
+        asset.setOperationSystemName("");
+        asset.setAreaName("");
+        asset.setResponsibleUserName("");
+        asset.setCategoryModelName("");
+        asset.setHardDisk("");
+        asset.setMemory("");
+        asset.setCpu("");
+        asset.setNetworkCard("");
+        asset.setParentId("");
+        asset.setIp("");
+        asset.setMac("");
+        asset.setAssetGroup("");
+        asset.setNumber("");
+        asset.setName("");
+        asset.setEthernetPort(0);
+        asset.setSerialPort(0);
+        asset.setInstallType(0);
+        asset.setSerial("");
+        asset.setAreaId("");
+        asset.setCategoryModel("");
+        asset.setManufacturer("");
+        asset.setAssetStatus(8);
+        asset.setAdmittanceStatus(0);
+        asset.setOperationSystem("");
+        asset.setSystemBit(0);
+        asset.setLocation("");
+        asset.setLatitude("");
+        asset.setLongitude("");
+        asset.setHouseLocation("");
+        asset.setFirmwareVersion("");
+        asset.setUuid("");
+        asset.setContactTel("");
+        asset.setEmail("");
+        asset.setAssetSource(0);
+        asset.setImportanceDegree(0);
+        asset.setDescrible("");
+        asset.setTags("");
+        asset.setFirstEnterNett(0L);
+        asset.setServiceLife(0L);
+        asset.setBuyDate(0L);
+        asset.setWarranty("");
+        asset.setGmtCreate(0L);
+        asset.setGmtModified(0L);
+        asset.setMemo("");
+        asset.setCreateUser(0);
+        asset.setModifyUser(0);
+        asset.setStatus(0);
+        asset.setResponsibleUserId("");
+        asset.setSoftwareVersion("");
+        asset.setImportanceDegreeName("");
+        asset.setInstallTypeName("");
+        asset.setId(0);
+
+        when(assetDao.getById(any())).thenReturn(asset);
+
         AssetOuterRequest assetOuterRequest = new AssetOuterRequest();
         AssetRequest assetRequest = new AssetRequest();
         assetOuterRequest.setAsset(assetRequest);
@@ -633,7 +686,7 @@ public class AssetServiceImplTest {
         assetRequest.setTags("");
         assetRequest.setServiceLife(0L);
         assetRequest.setBuyDate(0L);
-        assetRequest.setWarranty(0L);
+        assetRequest.setWarranty("0");
         assetRequest.setId("");
         assetRequest.setEmail("");
         assetRequest.setContactTel("");
@@ -801,81 +854,6 @@ public class AssetServiceImplTest {
 
     @Test
     public void testExportData() throws Exception {
-        Asset asset = new Asset();
-        asset.setAreaName("");
-        asset.setResponsibleUserName("");
-        asset.setCategoryModelName("");
-        asset.setHardDisk("");
-        asset.setMemory("");
-        asset.setCpu("");
-        asset.setNetworkCard("");
-        asset.setParentId("");
-        asset.setIp("");
-        asset.setMac("");
-        asset.setAssetGroup("");
-        asset.setNumber("");
-        asset.setName("");
-        asset.setEthernetPort(0);
-        asset.setSerialPort(0);
-        asset.setInstallType(0);
-        asset.setSerial("");
-        asset.setAreaId("");
-        asset.setCategoryModel("");
-        asset.setManufacturer("");
-        asset.setAssetStatus(0);
-        asset.setAdmittanceStatus(0);
-        asset.setOperationSystem("");
-        asset.setSystemBit(0);
-        asset.setLocation("");
-        asset.setLatitude("");
-        asset.setLongitude("");
-        asset.setHouseLocation("");
-        asset.setFirmwareVersion("");
-        asset.setUuid("");
-        asset.setContactTel("");
-        asset.setEmail("");
-        asset.setAssetSource(0);
-        asset.setImportanceDegree(0);
-        asset.setDescrible("");
-        asset.setTags("");
-        asset.setFirstEnterNett(0L);
-        asset.setServiceLife(0L);
-        asset.setBuyDate(0L);
-        asset.setWarranty(0L);
-        asset.setGmtCreate(0L);
-        asset.setGmtModified(0L);
-        asset.setMemo("");
-        asset.setCreateUser(0);
-        asset.setModifyUser(0);
-        asset.setStatus(0);
-        asset.setResponsibleUserId("");
-        asset.setSoftwareVersion("");
-        asset.setImportanceDegreeName("");
-        asset.setInstallTypeName("");
-        asset.setId(0);
-
-        when(assetDao.findListAsset(any())).thenReturn(Arrays.asList(asset));
-
-        ActionResponse<List<WaitingTaskReponse>> actionResponse = ActionResponse.success();
-
-        List<WaitingTaskReponse> list = new ArrayList<>();
-        WaitingTaskReponse waitingTaskReponse = new WaitingTaskReponse();
-        waitingTaskReponse.setAssignee("");
-        waitingTaskReponse.setName("");
-        waitingTaskReponse.setPriority(0);
-        waitingTaskReponse.setCreateTime(new Date());
-        waitingTaskReponse.setExecutionId("");
-        waitingTaskReponse.setProcessInstanceId("");
-        waitingTaskReponse.setProcessDefinitionId("");
-        waitingTaskReponse.setTaskDefinitionKey("");
-        waitingTaskReponse.setFormKey("");
-        waitingTaskReponse.setTaskId("");
-        waitingTaskReponse.setBusinessId("");
-        list.add(waitingTaskReponse);
-
-        actionResponse.setBody(list);
-
-        when(activityClient.queryAllWaitingTask(any())).thenReturn(actionResponse);
         AssetResponse assetResponse = new AssetResponse();
         assetResponse.setAreaName("");
         assetResponse.setInstallType(0);
@@ -907,7 +885,7 @@ public class AssetServiceImplTest {
         assetResponse.setTags("");
         assetResponse.setServiceLife(0L);
         assetResponse.setBuyDate(0L);
-        assetResponse.setWarranty(0L);
+        assetResponse.setWarranty("0");
         assetResponse.setAssetGroups(Lists.newArrayList());
         assetResponse.setGmtCreate(0L);
         assetResponse.setFirstEnterNett(0L);
@@ -915,7 +893,10 @@ public class AssetServiceImplTest {
         assetResponse.setHouseLocation("");
         assetResponse.setStringId("");
 
-        doReturn(Arrays.asList(assetResponse)).when(assetServiceImpl).findListAsset(any());
+        PageResult<AssetResponse> result = new PageResult<>();
+        result.setItems(Arrays.asList(assetResponse));
+
+        doReturn(result).when(assetServiceImpl).findPageAsset(any());
 
         assetServiceImpl.exportData(new AssetQuery(), new Response());
     }
@@ -932,8 +913,7 @@ public class AssetServiceImplTest {
             put("String", "String");
         }});
 
-        List<String> result = assetServiceImpl.pulldownUnconnectedManufacturer();
+        List<String> result = assetServiceImpl.pulldownUnconnectedManufacturer(1);
         Assert.assertEquals(Arrays.asList("String"), result);
     }
 }
-*/

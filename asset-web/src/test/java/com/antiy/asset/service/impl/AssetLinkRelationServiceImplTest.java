@@ -10,10 +10,8 @@ import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
-import com.antiy.asset.vo.response.AssetLinkRelationResponse;
-import com.antiy.asset.vo.response.AssetLinkedCountResponse;
-import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.request.UseableIpRequest;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.sun.istack.NotNull;
 import org.apache.poi.ss.formula.functions.T;
@@ -103,8 +101,8 @@ public class AssetLinkRelationServiceImplTest {
         Mockito.when(assetLinkRelationDao.queryIpAddressByAssetId(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(strings);
         Mockito.when(assetLinkRelationDao.insert(Mockito.any())).thenReturn(110);
 
-        String s = service.saveAssetLinkRelation(request);
-        assertThat(s, equalTo(null));
+        boolean s = service.saveAssetLinkRelation(request);
+        assertThat(s, equalTo(false));
     }
 
     /**
@@ -629,6 +627,82 @@ public class AssetLinkRelationServiceImplTest {
 
         PageResult<AssetLinkRelationResponse>result = service.queryLinkedAssetPageByAssetId(query);
         assertThat(result.getTotalRecords(), equalTo(0));
+    }
+
+    /**
+     * 保存资产关联数据列表测试
+     * 情景1：传入查询参数，传入资产列表不为空，储存并返回结果
+     * 断言返回成功
+     */
+    @Test
+    public void saveAssetLinkRelationList() {
+        List<AssetLinkRelationRequest> relationRequests = new ArrayList<>();
+        AssetLinkRelationRequest request = new AssetLinkRelationRequest();
+        request.setParentAssetPort("1234");
+        request.setParentAssetIp("1332");
+        relationRequests.add(request);
+        Mockito.when(assetLinkRelationDao.insertBatch(Mockito.any())).thenReturn(123);
+
+        ActionResponse response = service.saveAssetLinkRelationList(relationRequests);
+        assertThat(response.getBody(), equalTo(null));
+    }
+
+    /**
+     * 保存资产关联数据列表测试
+     * 情景2：传入查询参数，传入资产列表为空，返回结果
+     * 断言返回成功
+     */
+    @Test
+    public void saveAssetLinkRelationListCase1() {
+        Mockito.when(assetLinkRelationDao.insertBatch(Mockito.any())).thenReturn(123);
+
+        ActionResponse response = service.saveAssetLinkRelationList(null);
+        assertThat(response.getBody(), equalTo(null));
+    }
+
+    /**
+     * 查询被使用ip测试
+     * 情景1：传入查询参数，不是规定设备，返回结果
+     * 断言返回结果大小为空
+     */
+    @Test
+    public void queryUseableIpCase1() {
+        CategoryType type = new CategoryType("其它设备");
+        UseableIpRequest useableIpRequest = new UseableIpRequest();
+        useableIpRequest.setCategoryType(type);
+
+        List<String> list = service.queryUseableIp(useableIpRequest);
+        assertThat(list.size(), equalTo(0));
+    }
+
+    /**
+     * 查询被使用ip测试
+     * 情景2：传入查询参数，数据库存在关联数据，返回结果
+     * 断言返回结果大小为空
+     */
+    @Test
+    public void queryUseableIpCase2() {
+        CategoryType type = new CategoryType("计算设备");
+        UseableIpRequest useableIpRequest = new UseableIpRequest();
+        useableIpRequest.setCategoryType(type);
+        Mockito.when(assetLinkRelationDao.queryUseableIp(Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+        List<String> list = service.queryUseableIp(useableIpRequest);
+        assertThat(list.size(), equalTo(0));
+    }
+
+    /**
+     * 查询被使用ip测试
+     * 情景3：传入查询参数，数据库存在关联数据，返回结果
+     * 断言返回结果大小为空
+     */
+    @Test
+    public void queryUseableIpCase3() {
+        CategoryType type = new CategoryType("网络设备");
+        UseableIpRequest useableIpRequest = new UseableIpRequest();
+        useableIpRequest.setCategoryType(type);
+        Mockito.when(assetLinkRelationDao.queryUseableIp(Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+        List<String> list = service.queryUseableIp(useableIpRequest);
+        assertThat(list.size(), equalTo(0));
     }
 
     /**
