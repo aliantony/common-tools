@@ -142,6 +142,16 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
             .setOriginStatus(map.get("originStatus") != null ? map.get("originStatus").toString() : null);
         List<AssetOperationRecordBarPO> assetOperationRecordBarPOList = assetOperationRecordDao
             .findAssetOperationRecordBarByAssetId(assetOperationRecordQuery);
+
+        List<AssetOperationRecordBarResponse> assetOperationRecordBarResponseList = new ArrayList<>();
+        buidOperationRecordBarResponse(map, assetOperationRecordBarPOList, assetOperationRecordBarResponseList);
+
+        return assetOperationRecordBarResponseList;
+    }
+
+    private void buidOperationRecordBarResponse(HashMap<String, Object> map,
+                                                List<AssetOperationRecordBarPO> assetOperationRecordBarPOList,
+                                                List<AssetOperationRecordBarResponse> assetOperationRecordBarResponseList) {
         // 获取操作人员角色信息
         assetOperationRecordBarPOList.forEach(operationRecordBarPo -> {
             String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
@@ -153,15 +163,6 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
             }
         });
 
-        List<AssetOperationRecordBarResponse> assetOperationRecordBarResponseList = new ArrayList<>();
-        buidOperationRecordBarResponse(map, assetOperationRecordBarPOList, assetOperationRecordBarResponseList);
-
-        return assetOperationRecordBarResponseList;
-    }
-
-    private void buidOperationRecordBarResponse(HashMap<String, Object> map,
-                                                List<AssetOperationRecordBarPO> assetOperationRecordBarPOList,
-                                                List<AssetOperationRecordBarResponse> assetOperationRecordBarResponseList) {
         for (AssetOperationRecordBarPO assetOperationRecordBarPO : assetOperationRecordBarPOList) {
             if (assetOperationRecordBarPO != null) {
                 map.put("assetId", assetOperationRecordBarPO.getId());
