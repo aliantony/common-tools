@@ -3,6 +3,7 @@ package com.antiy.asset.intergration;
 import java.util.List;
 
 import com.antiy.asset.entity.IdCount;
+import com.antiy.asset.vo.query.AlarmAssetIdQuery;
 import com.antiy.asset.vo.response.AlarmAssetIdResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.ObjectQuery;
@@ -20,6 +21,8 @@ public interface EmergencyClient {
      * @return
      */
     ActionResponse<PageResult<IdCount>> queryEmergencyCount(ObjectQuery objectQuery);
+
+    PageResult<IdCount> queryInvokeEmergencyCount(ObjectQuery objectQuery);
 
     /**
      * 查询告警的资产个数

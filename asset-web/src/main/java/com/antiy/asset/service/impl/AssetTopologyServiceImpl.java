@@ -1,12 +1,20 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.dao.AssetTopologyDao;
+import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.IdCount;
+import com.antiy.asset.intergration.EmergencyClient;
+import com.antiy.asset.util.ArrayTypeUtil;
+import com.antiy.asset.vo.query.AlarmAssetIdQuery;
+import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.enums.ModuleEnum;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetDao;
@@ -34,11 +42,19 @@ import com.antiy.common.utils.LoginUserUtil;
 public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
     @Resource
-    private AssetLinkRelationDao       assetLinkRelationDao;
+    private AssetLinkRelationDao                assetLinkRelationDao;
     @Resource
-    private AssetDao                   assetDao;
+    private AssetDao                            assetDao;
     @Resource
-    private IAssetCategoryModelService iAssetCategoryModelService;
+    private IAssetCategoryModelService          iAssetCategoryModelService;
+    @Resource
+    private AssetTopologyDao                    assetTopologyDao;
+    @Resource
+    private EmergencyClient                     emergencyClient;
+    @Resource
+    private BaseConverter<Asset, AssetResponse> converter;
+    @Resource
+    private RedisUtil                           redisUtil;
 
     @Override
     public List<String> queryCategoryModels() {
@@ -48,8 +64,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     @Override
     public AssetNodeInfoResponse queryAssetNodeInfo(String assetId) {
         AssetNodeInfoResponse assetNodeInfoResponse = assetLinkRelationDao.queryAssetNodeInfo(assetId);
-        assetNodeInfoResponse
-            .setInstallTypeName(InstallType.getInstallTypeByCode(assetNodeInfoResponse.getInstallType()).getStatus());
+        assetNodeInfoResponse.setInstallTypeName(InstallType.getInstallTypeByCode(
+            assetNodeInfoResponse.getInstallType()).getStatus());
         return assetNodeInfoResponse;
     }
 
@@ -58,8 +74,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         Map<String, Integer> resultMap = new HashMap<>(2);
         // 1.查询资产总数
         AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        assetQuery.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser()
+            .getAreaIdsOfCurrentUser()));
         // 1.1资产状态为已入网和待退役
         List<Integer> assetStatusList = new ArrayList<>(2);
         assetStatusList.add(AssetStatusEnum.NET_IN.getCode());
@@ -92,4 +108,51 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         });
         return selectResponseList;
     }
+
+    @Override
+    public PageResult<AssetResponse> getTopologyList(AssetQuery query) throws Exception {
+        if (query.getAreaIds() == null) {
+            query.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser()
+                .getAreaIdsOfCurrentUser()));
+        }
+        Integer count = assetTopologyDao.findTopologyListAssetCount(query);
+        if (count != null && count > 0) {
+            List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
+            List<AssetResponse> assetResponseList = converter.convert(assetList, AssetResponse.class);
+            ObjectQuery objectQuery = new ObjectQuery();
+            objectQuery.setPageSize(-1);
+            PageResult<IdCount> idCountPageResult = emergencyClient.queryInvokeEmergencyCount(objectQuery);
+            List<IdCount> idCounts = idCountPageResult.getItems();
+            setListAreaName(assetResponseList);
+            setAlarmCount(assetResponseList, idCounts);
+            assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
+        }
+        return null;
+    }
+
+    private void setListAreaName(List<AssetResponse> assetResponseList) throws Exception {
+        for (AssetResponse assetResponse : assetResponseList) {
+            setAreaName(assetResponse);
+        }
+    }
+
+    private void setAlarmCount(List<AssetResponse> assetResponseList, List<IdCount> idCounts) {
+        for (AssetResponse assetResponse : assetResponseList) {
+            assetResponse.setAlarmCount("0");
+            for (IdCount idCount : idCounts) {
+                if (idCount.getId().equals(assetResponse.getStringId())) {
+                    assetResponse.setAlarmCount(idCount.getCount());
+                }
+            }
+        }
+    }
+
+    private void setAreaName(AssetResponse response) throws Exception {
+        String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+            Integer.parseInt(response.getAreaId()));
+        SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+        response.setAreaName(sysArea != null ? sysArea.getFullName() : null);
+    }
+
 }

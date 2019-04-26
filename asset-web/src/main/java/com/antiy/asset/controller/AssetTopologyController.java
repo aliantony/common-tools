@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.query.AssetQuery;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,6 +72,18 @@ public class AssetTopologyController {
     // @PreAuthorize(value = "hasAuthority('asset:topology:queryGroupList')")
     public ActionResponse queryGroupList() throws Exception {
         return ActionResponse.success(iAssetTopologyService.queryGroupList());
+    }
+
+    /**
+     * 查询拓扑管理资产(下拉)
+     * @return
+     */
+    @ApiOperation("查询已管控拓扑管理的资产组下拉")
+    @RequestMapping(value = "/get/topologyList", method = RequestMethod.GET)
+    @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse")
+    // @PreAuthorize(value = "hasAuthority('asset:topology:queryGroupList')")
+    public ActionResponse getTopologyList(AssetQuery query) throws Exception {
+        return ActionResponse.success(iAssetTopologyService.getTopologyList(query));
     }
 
 }
