@@ -16,6 +16,7 @@ import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.AssetOperationRecordBarPO;
 import com.antiy.asset.entity.Scheme;
+import com.antiy.asset.intergration.impl.SysRoleClientImpl;
 import com.antiy.asset.service.IAssetOperationRecordService;
 import com.antiy.asset.vo.enums.AssetOperationTableEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
@@ -24,13 +25,10 @@ import com.antiy.asset.vo.query.AssetOperationRecordQuery;
 import com.antiy.asset.vo.response.AssetOperationRecordBarResponse;
 import com.antiy.asset.vo.response.AssetStatusBarResponse;
 import com.antiy.asset.vo.response.NameValueVo;
-import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.base.SysUser;
-import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 
@@ -53,6 +51,8 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
     private BaseConverter<AssetOperationRecordBarPO, AssetOperationRecordBarResponse> operationRecordBarPOToResponseConverter;
     @Resource
     private RedisUtil                                                                 redisUtil;
+    @Resource
+    SysRoleClientImpl                                                                 roleClient;
 
     @Override
     public List<NameValueVo> queryStatusBar(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
@@ -152,15 +152,15 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
     private void buidOperationRecordBarResponse(HashMap<String, Object> map,
                                                 List<AssetOperationRecordBarPO> assetOperationRecordBarPOList,
                                                 List<AssetOperationRecordBarResponse> assetOperationRecordBarResponseList) {
-        // 获取操作人员角色信息
+
         assetOperationRecordBarPOList.forEach(operationRecordBarPo -> {
-            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
-                operationRecordBarPo.getOperateUserId());
-            try {
-                operationRecordBarPo.setRoleName(redisUtil.getObject(key, SysUser.class).getName());
-            } catch (Exception e) {
-                LogUtils.info(logger, " {} 获取用户信息失败", key);
-            }
+            // 获取操作人员角色信息
+            // List<LinkedHashMap> linkedHashMapList =
+            // (List<LinkedHashMap>)roleClient.getInvokeResult(operationRecordBarPo.getOperateUserId().toString());
+            // if (linkedHashMapList != null && linkedHashMapList.size() > 0){
+            // operationRecordBarPo.setRoleName(linkedHashMapList.get(0).get("name").toString());
+            // }
+
         });
 
         for (AssetOperationRecordBarPO assetOperationRecordBarPO : assetOperationRecordBarPOList) {
