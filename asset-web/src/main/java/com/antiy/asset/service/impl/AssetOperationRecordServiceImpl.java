@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
@@ -23,10 +24,15 @@ import com.antiy.asset.vo.query.AssetOperationRecordQuery;
 import com.antiy.asset.vo.response.AssetOperationRecordBarResponse;
 import com.antiy.asset.vo.response.AssetStatusBarResponse;
 import com.antiy.asset.vo.response.NameValueVo;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.base.SysUser;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LogUtils;
 
 /**
  * <p> 资产操作记录表 服务实现类 </p>
@@ -37,13 +43,16 @@ import com.antiy.common.exception.BusinessException;
 @Service
 public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperationRecord>
                                              implements IAssetOperationRecordService {
-
+    private Logger                                                                    logger = LogUtils
+        .get(this.getClass());
     @Resource
     private AssetOperationRecordDao                                                   assetOperationRecordDao;
     @Resource
     private SchemeDao                                                                 schemeDao;
     @Resource
     private BaseConverter<AssetOperationRecordBarPO, AssetOperationRecordBarResponse> operationRecordBarPOToResponseConverter;
+    @Resource
+    private RedisUtil                                                                 redisUtil;
 
     @Override
     public List<NameValueVo> queryStatusBar(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
@@ -128,11 +137,21 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
      * @return
      */
     private List<AssetOperationRecordBarResponse> getAssetOperationRecordBarResponses(HashMap<String, Object> map,
-                                                                                      AssetOperationRecordQuery assetOperationRecordQuery) {
+                                                                                      AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
         assetOperationRecordQuery
             .setOriginStatus(map.get("originStatus") != null ? map.get("originStatus").toString() : null);
         List<AssetOperationRecordBarPO> assetOperationRecordBarPOList = assetOperationRecordDao
             .findAssetOperationRecordBarByAssetId(assetOperationRecordQuery);
+        // 获取操作人员角色信息
+        assetOperationRecordBarPOList.forEach(operationRecordBarPo -> {
+            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
+                operationRecordBarPo.getOperateUserId());
+            try {
+                operationRecordBarPo.setRoleName(redisUtil.getObject(key, SysUser.class).getName());
+            } catch (Exception e) {
+                LogUtils.info(logger, " {} 获取用户信息失败", key);
+            }
+        });
 
         List<AssetOperationRecordBarResponse> assetOperationRecordBarResponseList = new ArrayList<>();
         buidOperationRecordBarResponse(map, assetOperationRecordBarPOList, assetOperationRecordBarResponseList);
