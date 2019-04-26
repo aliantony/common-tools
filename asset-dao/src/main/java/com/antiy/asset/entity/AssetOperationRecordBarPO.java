@@ -26,6 +26,12 @@ public class AssetOperationRecordBarPO extends BaseEntity {
      */
     @ApiModelProperty("操作人角色名称")
     private String  roleName;
+
+    /**
+     * 操作人角色名称
+     */
+    @ApiModelProperty("操作人角色名称")
+    private Integer operateUserId;
     /**
      * 操作人姓名
      */
@@ -45,6 +51,14 @@ public class AssetOperationRecordBarPO extends BaseEntity {
 
     @ApiModelProperty("操作描述")
     private String  content;
+
+    public Integer getOperateUserId() {
+        return operateUserId;
+    }
+
+    public void setOperateUserId(Integer operateUserId) {
+        this.operateUserId = operateUserId;
+    }
 
     public String getContent() {
         return content;
