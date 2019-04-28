@@ -327,6 +327,7 @@
             <include refid="Where_Column_List"></include>
             and status = 1
         </trim>
+        order by gmt_create
         <include refid="Page_List"></include>
     </select>
     <select id="findExportListAssetUser" resultType="com.antiy.asset.entity.AssetUser"
@@ -429,6 +430,7 @@
             AND address like concat('%',  replace(replace(#{address },'%','\%'),'_','\_'),'%')
         </if>
         and a.status = 1
+        order by a.gmt_create desc
         <include refid="Page_List"></include>
     </select>
 

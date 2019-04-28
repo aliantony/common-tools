@@ -240,8 +240,8 @@
             </foreach>
         </if>
         <if test=" multipleQuery != null">
-            and (name LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or number LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            and (name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or exists (select 1 from asset_network_card b where asset.asset_id = b.asset_id and ip_address like
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_equipment b where asset.asset_id = b.asset_id and inner_ip like
@@ -601,7 +601,7 @@
     </select>
 
     <select id="queryInstallList" resultMap="InstallResultMap" parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select distinct * from (select
+        select * from (select distinct
         d.id,
         a.id as asset_id,
         a.area_id,
@@ -657,19 +657,21 @@
 
     <select id="queryInstallCount" resultType="java.lang.Integer"
             parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select count(distinct(id)) from (select
+        select count(*) from (select
+        distinct
         d.id,
         a.id as asset_id,
         a.area_id,
         a.asset_group,
         a.category_model,
+        a.first_enter_nett,
         a.number,
         a.name,
+        a.operation_system,
         c.name as category_model_name,
         a.manufacturer,
         asset_status,
         a.gmt_modified,
-        a.operation_system,
         d.configure_status,
         d.install_status,
         d.install_time,
@@ -701,6 +703,7 @@
         left join asset_category_model c on a.category_model = c.id
         left join asset_software_relation d on a.id=d.asset_id and d.software_id=#{softwareId} and d.status=1
         group by a.id
+        order by a.first_enter_nett desc
         ) asset
         <where>
             <trim prefixOverrides="and">
