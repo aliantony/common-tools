@@ -3272,6 +3272,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             .equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
             ParamterExceptionUtils.isNull(assetStatusJumpRequst.getAgree(), "agree不能为空");
             assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_BASELINE_VALIDATE.getMsg());
+            assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             if (assetStatusJumpRequst.getAgree()) {
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_NET.getCode());
             } else {
