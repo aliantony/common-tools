@@ -11,7 +11,7 @@ import java.util.List;
 public enum FileUseEnum {
                          INSTALL_PACKAGE("INSTALL_PACKAGE", Arrays.asList("zip", "rar", "jpg"),
                                          4294967296L), INSTALL_INTRODUCE_MANUAL("INSTALL_INTRODUCE_MANUAL", Arrays
-                                             .asList("rar", "zip", "pdf", "doc", "docx", "txt"), 209715200L);
+                                             .asList("rar", "zip", "pdf", "doc", "docx", "txt", "jpg"), 209715200L);
     private String       code;
     private List<String> format;
     private Long         size;
