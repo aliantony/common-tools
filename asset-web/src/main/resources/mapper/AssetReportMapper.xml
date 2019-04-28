@@ -165,7 +165,8 @@
             </foreach>
         </if>
         AND asset.gmt_create > #{beginTime}
-        AND asset.`status` &lt;&gt; 9
+        AND asset.asset_status &lt;&gt; 9
+        AND asset.status =1
         AND asset.category_model IS NOT NULL
         GROUP BY
         asset.category_model,
@@ -190,7 +191,8 @@
                 #{areaId}
             </foreach>
         </if>
-        AND asset.`status` &lt;&gt; 9
+        AND asset.asset_status &lt;&gt; 9
+        AND asset.status =1
         AND asset.category_model IS NOT NULL
         GROUP BY
         asset.category_model
@@ -204,7 +206,8 @@
         asset
         WHERE
         asset.gmt_create &lt;= #{beginTime}
-        AND asset.`status` &lt;&gt; 9
+        AND asset.asset_status &lt;&gt; 9
+        AND asset.status =1
         AND asset.category_model IS NOT NULL
         and asset.category_model = #{categoryModel}
         <if test="areaIds!=null and areaIds.size()>0">
