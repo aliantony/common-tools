@@ -54,7 +54,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     IAssetCategoryModelService  iAssetCategoryModelService;
 
     private final static String DAY    = "%w";
-    private final static String WEEK   = "%U";
+    private final static String WEEK   = "%u";
     private final static String MONTH  = "%Y-%m";
 
     @Resource

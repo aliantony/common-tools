@@ -137,7 +137,7 @@
                 '%w'
             </when>
             <when test="timeType==2">
-                '%U'
+                '%u'
             </when>
             <otherwise>
                 '%Y-%m'
