@@ -2,6 +2,7 @@ package com.antiy.asset.vo.response;
 
 import java.util.List;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
+@ApiModel
 public class AssetOperationRecordBarResponse extends BaseResponse {
     /**
      * 创建时间
@@ -24,7 +26,7 @@ public class AssetOperationRecordBarResponse extends BaseResponse {
     /**
      * 操作人角色名称
      */
-    @ApiModelProperty("操作人角色名称")
+    @ApiModelProperty(value = "操作人角色名称", hidden = true)
     private String  roleName;
     /**
      * 操作人姓名

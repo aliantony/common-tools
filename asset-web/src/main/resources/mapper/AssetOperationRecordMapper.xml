@@ -258,6 +258,7 @@
             aor.origin_status AS originStatus,
         aor.operate_user_id as operateUserId,
         aor.content,
+        aor.process_result as processResult,
             c.file_info as fileInfo,
             c.memo
         FROM
