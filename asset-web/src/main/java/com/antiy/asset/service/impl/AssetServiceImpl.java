@@ -736,9 +736,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
-        if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
-            query.setIds(processMap.keySet().toArray(new String[] {}));
+        List<Map.Entry<String, WaitingTaskReponse>> processList = Lists.newArrayList();
+        //待办任务通过任务id排序
+        if (!Objects.isNull(processMap)) {
+            List<String> assetIds = Lists.newArrayList();
+            processList.addAll(processMap.entrySet());
+            Collections.sort(processList, (o1, o2) -> DataTypeUtils.stringToInteger(o1.getValue().getTaskId())
+                                                      -  DataTypeUtils.stringToInteger(o2.getValue().getTaskId()));
+            processList.forEach(entry -> {
+                assetIds.add(entry.getKey());
+            });
+            query.setIds(assetIds.toArray(new String[] {}));
         }
+
+        /*if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
+            query.setIds(processMap.keySet().toArray(new String[] {}));
+        }*/
 
         // 如果是控制台进入，并且待办任务返回为空，则直接返回
         if (query.getEnterControl() && MapUtils.isEmpty(processMap)) {
