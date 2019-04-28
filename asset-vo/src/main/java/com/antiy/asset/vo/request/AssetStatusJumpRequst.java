@@ -46,7 +46,7 @@ public class AssetStatusJumpRequst extends BasicRequest {
     /**
      * 资产状态
      */
-    @NotNull(message = "资产状态")
+    @NotNull(message = "资产状态不能为空")
     @ApiModelProperty(value = "资产状态")
     private AssetStatusEnum assetStatusEnum;
 
