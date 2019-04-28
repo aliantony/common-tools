@@ -173,7 +173,7 @@ public class AssetSoftwareRelationController {
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @ApiOperation(value = "软件安装列表", notes = "返回的id即为资产id 需要传的参数为multipleQuery,softwareId,configureStatus,installType,installStatus 其中softwareId必传")
-    @PreAuthorize("hasAuthority('asset:softwarerelation:installList')")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:queryInstallList')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/installList", method = RequestMethod.GET)
     public ActionResponse<PageResult<AssetSoftwareInstallResponse>> queryInstallList(InstallQuery query) throws Exception {

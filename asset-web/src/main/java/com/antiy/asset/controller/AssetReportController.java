@@ -129,7 +129,8 @@ public class AssetReportController {
     @ApiOperation(value = "导出资产品类型号报表", notes = "导出资产品类型号报表")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/category/newAsset", method = RequestMethod.GET)
-    public void getNewAssetWithGroup(@ApiParam("报表查询对象") AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception {
+    // @PreAuthorize("hasAuthority('asset:report:exportCategoryCount')")
+    public void exportCategoryCount(@ApiParam("报表查询对象") AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception {
         assetReportCategoryCountQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         iAssetReportService.exportCategoryCount(assetReportCategoryCountQuery);
     }
