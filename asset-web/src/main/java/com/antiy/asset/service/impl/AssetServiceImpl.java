@@ -206,11 +206,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
 
-                        BusinessExceptionUtils.isTrue(!Objects.isNull(assetUserDao.getById(DataTypeUtils
-                            .stringToInteger(requestAsset.getResponsibleUserId()))), "使用者不存在，或已经注销");
+                        BusinessExceptionUtils.isTrue(
+                            !Objects.isNull(assetUserDao
+                                .getById(DataTypeUtils.stringToInteger(requestAsset.getResponsibleUserId()))),
+                            "使用者不存在，或已经注销");
 
-                        BusinessExceptionUtils.isTrue(!Objects.isNull(assetCategoryModelDao.getById(DataTypeUtils
-                            .stringToInteger(requestAsset.getCategoryModel()))), "品类型号不存在，或已经注销");
+                        BusinessExceptionUtils.isTrue(
+                            !Objects.isNull(assetCategoryModelDao
+                                .getById(DataTypeUtils.stringToInteger(requestAsset.getCategoryModel()))),
+                            "品类型号不存在，或已经注销");
 
                         BusinessExceptionUtils.isTrue(!Objects.isNull(sysArea), "当前区域不存在，或已经注销");
 
@@ -3250,31 +3254,40 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RespBasicCode changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception {
+        System.out.println(assetStatusJumpRequst);
+        if (LoginUserUtil.getLoginUser() == null) {
+            LogUtils.info(logger, "{}  获取用户失败", RespBasicCode.BUSSINESS_EXCETION);
+            return RespBasicCode.BUSSINESS_EXCETION;
+        }
         Long gmtCreateTime = System.currentTimeMillis();
         SchemeRequest schemeRequest = assetStatusJumpRequst.getSchemeRequest();
         String assetId = assetStatusJumpRequst.getAssetId();
+        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         // 修改资产状态
         if (AssetStatusEnum.WAIT_SETTING.getCode().equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
             this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
+            assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_CONFIG_BASELINE.getMsg());
+            assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+            assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
         } else if (AssetStatusEnum.WAIT_VALIDATE.getCode()
             .equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
             ParamterExceptionUtils.isNull(assetStatusJumpRequst.getAgree(), "agree不能为空");
+            assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_BASELINE_VALIDATE.getMsg());
+            assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             if (assetStatusJumpRequst.getAgree()) {
+                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_NET.getCode());
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_NET.getCode());
             } else {
-                this.changeStatusById(assetId, AssetStatusEnum.WAIT_SETTING.getCode());
+                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
+                this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
             }
         }
         Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
         // 2.保存流程
-        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        assetOperationRecord.setTargetObjectId(assetId);
 
+        assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
-        assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
-        assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_CONFIG_BASELINE.getMsg());
         assetOperationRecord.setProcessResult(1);
-        assetOperationRecord.setOriginStatus(AssetStatusEnum.WATI_REGSIST.getCode());
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         assetOperationRecord.setGmtCreate(gmtCreateTime);
@@ -3303,6 +3316,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
         }
+
         // 写入业务日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName(),
             assetOperationRecord.getId(), "", scheme, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
