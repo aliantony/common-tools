@@ -177,7 +177,7 @@ public class FileController {
         if (RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
             FileRespVO fileRep = (FileRespVO) fileResponse.getData();
             if (!(StringUtils.isNotEmpty(md5) && fileRep.getMd5().equals(md5.toLowerCase()))) {
-                fileUtils.delete(fileRep.getFileUrl());
+                fileUtils.delete(defaultHDFSUrl + fileRep.getFileUrl());
                 throw new BusinessException("MD5校验失败");
             }
             fileRespVOS.add(fileRep);
@@ -208,7 +208,7 @@ public class FileController {
         FileResponse fileResponse;
         if (ArrayUtils.isNotEmpty(delUrls)) {
             for (String delUrl : delUrls) {
-                fileResponse = fileUtils.delete(delUrl);
+                fileResponse = fileUtils.delete(defaultHDFSUrl + delUrl);
                 if (!fileResponse.getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
                     LogUtils.info(logger, "{} 删除文件失败", RespBasicCode.BUSSINESS_EXCETION.getResultDes(), "删除文件失败");
                 }
