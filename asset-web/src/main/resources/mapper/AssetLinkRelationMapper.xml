@@ -561,7 +561,8 @@
         a.category_model as categoryModel,
         t.NAME as categoryModelName,
         count( b.id ) AS canBind,
-        count( b.id ) - count( c.id ) AS noBind
+        count( b.id ) - count( c.id ) AS noBind,
+        a.gmt_create
         FROM
         asset a
         LEFT JOIN asset_category_model t ON a.category_model = t.id
@@ -608,7 +609,8 @@
         a.category_model as categoryModel,
         t.NAME as categoryModelName,
         b.port_size AS canBind,
-        b.port_size - count( c.id ) AS noBind
+        b.port_size - count( c.id ) AS noBind,
+        a.gmt_create
         FROM
         asset a
         LEFT JOIN asset_category_model t ON a.category_model = t.id
@@ -647,6 +649,7 @@
             and a.number like binary CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
         </if>
         GROUP BY a.id
+        order by noBind desc,gmt_create desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -774,7 +777,7 @@
         WHERE
         a.asset_id = #{primaryKey}
         AND a.STATUS = 1) t
-        order by t.gmt_create desc
+        order by CAST(assetPort AS SIGNED) asc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
