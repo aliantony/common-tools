@@ -3274,9 +3274,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_BASELINE_VALIDATE.getMsg());
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             if (assetStatusJumpRequst.getAgree()) {
+                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_NET.getCode());
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_NET.getCode());
             } else {
-                this.changeStatusById(assetId, AssetStatusEnum.WAIT_SETTING.getCode());
+                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
+                this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
             }
         }
         Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
