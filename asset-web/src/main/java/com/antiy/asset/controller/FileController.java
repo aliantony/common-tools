@@ -66,8 +66,8 @@ public class FileController {
     @RequestMapping(value = "/file/upload", method = RequestMethod.POST, consumes = "multipart/*", headers = "content-type=multipart/form-data")
     public ActionResponse upload(@ApiParam(value = "fileList") List<MultipartFile> fileList,
                                  @ApiParam("MD5值") String md5,
-                                 @ApiParam("文件用途") FileUseEnum fileUseEnum) throws Exception {
-        ParamterExceptionUtils.isNull(fileUseEnum, "文件用途不能为空");
+                                 @ApiParam("文件用途") FileUseEnum fileUse) throws Exception {
+        ParamterExceptionUtils.isNull(fileUse, "文件用途不能为空");
         // 判断文件集合，调用方法处理，进行上传
         if (!Objects.isNull(fileList) && !fileList.isEmpty()) {
             // 定义文件返回对象
@@ -78,7 +78,7 @@ public class FileController {
                     // 记录操作日志
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.FILE_UPLOAD.getName(), null, null,
                         fileRespVOS, BusinessModuleEnum.COMMON, BusinessPhaseEnum.NONE));
-                    uploadToHdfs(tmpFile, fileRespVOS, md5, fileUseEnum);
+                    uploadToHdfs(tmpFile, fileRespVOS, md5, fileUse);
                 } catch (Exception e) {
                     // 记录运行日志
                     LogUtils.info(logger, AssetEventEnum.FILE_UPLOAD.getName() + " {}", fileRespVOS);
