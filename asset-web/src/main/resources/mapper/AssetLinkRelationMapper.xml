@@ -241,9 +241,9 @@
             #{assetGroup} and b.status = 1)
         </if>
         <if test=" multipleQuery != null">
-            and (name LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or number LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or serial LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            and (name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or serial LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and inner_ip like
@@ -266,7 +266,7 @@
             and category_model = #{categoryModel}
         </if>
         <if test=" manufacturer != null">
-            and manufacturer like CONCAT('%',replace(replace(#{manufacturer},'%','\%'),'_','\_'), '%')
+            and manufacturer like binary CONCAT('%',replace(replace(#{manufacturer},'%','\%'),'_','\_'), '%')
         </if>
         <if test=" operationSystem != null">
             and operation_system = #{operationSystem}
@@ -472,15 +472,15 @@
             and b.category_model = #{categoryModel}
         </if>
         <if test=" multipleQuery != null">
-            and (b.name like CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or b.number like CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or a.asset_ip like CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            and (b.name like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or b.number like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or a.asset_ip like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             )
         </if>
         <if test=" parentMultipleQuery != null">
-            and (c.name like CONCAT('%',replace(replace(#{parentMultipleQuery},'%','\%'),'_','\_'),'%')
-            or c.number like CONCAT('%',replace(replace(#{parentMultipleQuery},'%','\%'),'_','\_'),'%')
-            or a.parent_asset_ip like CONCAT('%',replace(replace(#{parentMultipleQuery},'%','\%'),'_','\_'),'%')
+            and (c.name like binary CONCAT('%',replace(replace(#{parentMultipleQuery},'%','\%'),'_','\_'),'%')
+            or c.number like binary CONCAT('%',replace(replace(#{parentMultipleQuery},'%','\%'),'_','\_'),'%')
+            or a.parent_asset_ip like binary CONCAT('%',replace(replace(#{parentMultipleQuery},'%','\%'),'_','\_'),'%')
             )
         </if>
     </select>
@@ -594,10 +594,10 @@
             </foreach>
         </if>
         <if test="assetName != null and assetName != ''">
-            and a.name like CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
+            and a.name like binary CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
         </if>
         <if test="assetNumber != null and assetNumber != ''">
-            and a.number like CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
+            and a.number like binary CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
         </if>
         GROUP BY a.id
         UNION ALL
@@ -641,10 +641,10 @@
             </foreach>
         </if>
         <if test="assetName != null and assetName != ''">
-            and a.name like CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
+            and a.name like binary CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
         </if>
         <if test="assetNumber != null and assetNumber != ''">
-            and a.number like CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
+            and a.number like binary CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
         </if>
         GROUP BY a.id
         <if test="pageSize !=-1">
@@ -824,10 +824,10 @@
             </foreach>
         </if>
         <if test="assetName != null and assetName != ''">
-            and a.name like CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
+            and a.name like binary CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
         </if>
         <if test="assetNumber != null and assetNumber != ''">
-            and a.number like CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
+            and a.number like binary CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
         </if>
         GROUP BY a.id
         UNION ALL
@@ -871,10 +871,10 @@
             </foreach>
         </if>
         <if test="assetName != null and assetName != ''">
-            and a.name like CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
+            and a.name like binary CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
         </if>
         <if test="assetNumber != null and assetNumber != ''">
-            and a.number like CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
+            and a.number like binary CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
         </if>
         GROUP BY a.id) t
     </select>
