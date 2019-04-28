@@ -157,7 +157,6 @@ public class FileController {
         long fileSize = file.length();
 
         // 文件大小校验
-        // TODO
         if (FileUseEnum.INSTALL_PACKAGE.getCode().equals(fileUseEnum.getCode())) {
             if (fileSize > FileUseEnum.INSTALL_PACKAGE.getSize()) {
                 throw new BusinessException("文件过大");
