@@ -8,6 +8,7 @@ import java.util.Objects;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.antiy.asset.util.FileUtil;
 import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.FileUseEnum;
 import com.antiy.biz.file.FileRespVO;
 import com.antiy.biz.file.FileResponse;
 import com.antiy.biz.file.FileUtils;
@@ -25,6 +28,7 @@ import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
@@ -59,7 +63,10 @@ public class FileController {
     @PreAuthorize("hasAuthority('asset:file:upload')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/file/upload", method = RequestMethod.POST, consumes = "multipart/*", headers = "content-type=multipart/form-data")
-    public ActionResponse upload(@ApiParam(value = "fileList") List<MultipartFile> fileList) throws Exception {
+    public ActionResponse upload(@ApiParam(value = "fileList") List<MultipartFile> fileList,
+                                 @ApiParam("MD5值") String md5,
+                                 @ApiParam("文件用途") FileUseEnum fileUseEnum) throws Exception {
+        ParamterExceptionUtils.isNull(fileUseEnum, "文件用途不能为空");
         // 判断文件集合，调用方法处理，进行上传
         if (!Objects.isNull(fileList) && !fileList.isEmpty()) {
             // 定义文件返回对象
@@ -70,10 +77,11 @@ public class FileController {
                     // 记录操作日志
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.FILE_UPLOAD.getName(), null, null,
                         fileRespVOS, BusinessModuleEnum.COMMON, BusinessPhaseEnum.NONE));
-                    uploadToHdfs(tmpFile, fileRespVOS);
+                    uploadToHdfs(tmpFile, fileRespVOS, md5, fileUseEnum);
                 } catch (Exception e) {
                     // 记录运行日志
                     LogUtils.info(logger, AssetEventEnum.FILE_UPLOAD.getName() + " {}", fileRespVOS);
+                    throw new BusinessException(e.getMessage());
                 }
             });
             return ActionResponse.success(fileRespVOS);
@@ -141,15 +149,44 @@ public class FileController {
      * @param fileRespVOS
      * @return void
      */
-    private void uploadToHdfs(MultipartFile tmpFile, List<FileRespVO> fileRespVOS) throws Exception {
-        logger.info("单个文件上传开始");
+    private void uploadToHdfs(MultipartFile tmpFile, List<FileRespVO> fileRespVOS, String md5,
+                              FileUseEnum fileUseEnum) throws Exception {
 
         File file = fileUtils.tranferToFile(tmpFile);
 
+        long fileSize = file.length();
+
+        // 文件大小校验
+        // TODO
+        if (FileUseEnum.INSTALL_PACKAGE.getCode().equals(fileUseEnum.getCode())) {
+            if (fileSize > FileUseEnum.INSTALL_PACKAGE.getSize()) {
+                throw new BusinessException("文件过大");
+            }
+
+            if (!FileUseEnum.INSTALL_PACKAGE.getFormat().contains(FileUtil.getExtensionName(file.getName()))) {
+                throw new BusinessException("文件格式错误");
+            }
+        } else if (FileUseEnum.INSTALL_INTRODUCE_MANUAL.getCode().equals(fileUseEnum.getCode())) {
+            if (fileSize > FileUseEnum.INSTALL_INTRODUCE_MANUAL.getSize()) {
+                throw new BusinessException("文件过大");
+            }
+
+            if (!FileUseEnum.INSTALL_INTRODUCE_MANUAL.getFormat().contains(FileUtil.getExtensionName(file.getName()))) {
+                throw new BusinessException("文件格式错误");
+            }
+        }
+
+        logger.info("单个文件上传开始");
+
         // 调用上传接口
         FileResponse fileResponse = fileUtils.upload(modelName, file);
+
         if (RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
             FileRespVO fileRep = (FileRespVO) fileResponse.getData();
+            if (!(StringUtils.isNotEmpty(md5) && fileRep.getMd5().equals(md5))) {
+                fileUtils.delete(fileRep.getFileUrl());
+                throw new BusinessException("MD5校验失败");
+            }
             fileRespVOS.add(fileRep);
         } else {
             // 记录运行日志
