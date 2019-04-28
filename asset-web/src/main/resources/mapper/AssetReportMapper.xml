@@ -72,7 +72,11 @@
     <!--统计区域每个区间的增量-->
     <select id="queryAddAssetWithArea" resultType="java.util.Map">
         SELECT
-        replace(ltrim(replace(FROM_UNIXTIME(gmt_create/1000,#{timeType}),'0',' ')),' ','0') AS date,
+        case
+        when length(replace(ltrim(replace(FROM_UNIXTIME(gmt_create/1000,#{timeType}),'0',' ')),' ','0')) &lt; 1
+        then 7
+        else replace(ltrim(replace(FROM_UNIXTIME(gmt_create/1000,#{timeType}),'0',' ')),' ','0')
+        end AS date,
         <trim suffixOverrides=",">
             <foreach collection="list" item="item">
                 sum(CASE WHEN area_id IN (#{item.parentAreaId}
