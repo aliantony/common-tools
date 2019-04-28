@@ -657,19 +657,20 @@
 
     <select id="queryInstallCount" resultType="java.lang.Integer"
             parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select count(distinct(id)) from (select
+        select count(DISTINCT(*)) from (select
         d.id,
         a.id as asset_id,
         a.area_id,
         a.asset_group,
         a.category_model,
+        a.first_enter_nett,
         a.number,
         a.name,
+        a.operation_system,
         c.name as category_model_name,
         a.manufacturer,
         asset_status,
         a.gmt_modified,
-        a.operation_system,
         d.configure_status,
         d.install_status,
         d.install_time,
@@ -701,6 +702,7 @@
         left join asset_category_model c on a.category_model = c.id
         left join asset_software_relation d on a.id=d.asset_id and d.software_id=#{softwareId} and d.status=1
         group by a.id
+        order by a.first_enter_nett desc
         ) asset
         <where>
             <trim prefixOverrides="and">
