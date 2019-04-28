@@ -8,6 +8,7 @@ import java.util.Objects;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -197,6 +198,31 @@ public class FileController {
         fileUtils.deleteFile(file.toURI());
 
         logger.info("单个文件上传结束");
+    }
+
+    /**
+     * 删除远程服务器上的文件
+     * @param delUrls
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "文件删除", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:file:delete')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse") })
+    @RequestMapping(value = "/file/delete", method = RequestMethod.POST)
+    public ActionResponse deleteFileByUrl(@ApiParam(value = "url地址数组") String[] delUrls) throws Exception {
+        ParamterExceptionUtils.isNull(delUrls, "delUrl不能为空");
+        FileResponse fileResponse;
+        if (ArrayUtils.isNotEmpty(delUrls)) {
+            for (String delUrl : delUrls) {
+                fileResponse = fileUtils.delete(delUrl);
+                if (!fileResponse.getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+                    LogUtils.info(logger, "{} 删除文件失败", RespBasicCode.BUSSINESS_EXCETION.getResultDes(), "删除文件失败");
+                }
+            }
+        }
+
+        return ActionResponse.success();
     }
 
 }
