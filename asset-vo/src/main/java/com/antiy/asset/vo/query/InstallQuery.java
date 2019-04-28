@@ -44,6 +44,9 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("资产状态[列表] 不传")
     private List<Integer> assetStatusList;
 
+    @ApiModelProperty("品类型号")
+    private List<Integer>  categoryModels;
+
     public String getMultipleQuery() {
         return multipleQuery;
     }
@@ -98,6 +101,14 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
 
     public void setSoftwareId(String softwareId) {
         this.softwareId = softwareId;
+    }
+
+    public List<Integer> getCategoryModels() {
+        return categoryModels;
+    }
+
+    public void setCategoryModels(List<Integer> categoryModels) {
+        this.categoryModels = categoryModels;
     }
 
     @Override

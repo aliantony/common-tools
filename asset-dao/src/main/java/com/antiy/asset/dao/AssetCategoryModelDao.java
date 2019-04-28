@@ -32,4 +32,6 @@ public interface AssetCategoryModelDao extends IBaseDao<AssetCategoryModel> {
      * @return
      */
     List<AssetCategoryModel> findAllCategory();
+
+    AssetCategoryModel getByName(@Param("name") String name);
 }
