@@ -601,7 +601,7 @@
     </select>
 
     <select id="queryInstallList" resultMap="InstallResultMap" parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select distinct * from (select
+        select * from (select distinct
         d.id,
         a.id as asset_id,
         a.area_id,
@@ -657,7 +657,8 @@
 
     <select id="queryInstallCount" resultType="java.lang.Integer"
             parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select count(DISTINCT(*)) from (select
+        select count(*) from (select
+        distinct
         d.id,
         a.id as asset_id,
         a.area_id,
