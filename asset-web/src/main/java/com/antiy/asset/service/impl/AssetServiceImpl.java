@@ -1921,7 +1921,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (currentAsset.getAssetStatus().equals(AssetStatusEnum.RETIRE.getCode())) {
                         assetOperationRecord.setContent(AssetEventEnum.RETIRE_REGISTER.getName());
                     } else {
-                        assetOperationRecord.setContent(AssetEventEnum.ASSET_MODIFY.getName());
+                        assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_CHANGE.getMsg());
                     }
                     assetOperationRecord
                         .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
