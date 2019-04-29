@@ -355,6 +355,9 @@
                 and asset.status=1
                 and grou.status=1
                 and relation.status=1
+                <if test="primaryKey !=null">
+                    and asset.id != #{primaryKey}
+                </if>
             </trim>
         </where>
     </select>

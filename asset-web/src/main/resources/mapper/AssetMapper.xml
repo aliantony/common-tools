@@ -848,6 +848,9 @@
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
                 and status=1
+                <if test="primaryKey !=null">
+                    and asset.id != #{primaryKey}
+                </if>
                 and id not in (
                 select distinct asset_id from
                 (
@@ -957,6 +960,9 @@
         where
         <trim prefixOverrides="and">
             <include refid="Multiple_Query"></include>
+            <if test="primaryKey !=null">
+                and asset.id != #{primaryKey}
+            </if>
             and id not in (
             select distinct asset_id from
             (
@@ -1087,6 +1093,9 @@
         left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
         left join asset_category_model c on a.category_model = c.id
         where a.status = 1
+        <if test="primaryKey !=null">
+            and a.id != #{primaryKey}
+        </if>
         group by a.id
         ) asset
         <where>
@@ -1200,7 +1209,6 @@
             </trim>
         </where>
         ORDER BY
-        FIELD(`asset_status`,3) asc,
         <if test=" ids != null and ids.length > 0">
             FIELD(`id`,
             <foreach index="index" item="item" collection="ids" separator=",">

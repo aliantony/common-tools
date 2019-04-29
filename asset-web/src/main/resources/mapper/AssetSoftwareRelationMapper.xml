@@ -239,6 +239,12 @@
                 #{item}
             </foreach>
         </if>
+        <if test="categoryModels!=null and categoryModels.size()>0">
+            and category_model in
+            <foreach index="index" item="item" collection="categoryModels" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test=" multipleQuery != null">
             and (name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')

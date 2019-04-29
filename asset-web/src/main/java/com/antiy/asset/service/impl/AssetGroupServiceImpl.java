@@ -268,7 +268,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
      * @throws Exception
      */
     @Override
-    public List<SelectResponse> queryUnconnectedGroupInfo(Integer isNet) throws Exception {
+    public List<SelectResponse> queryUnconnectedGroupInfo(Integer isNet, String primaryKey) throws Exception {
         AssetQuery query = new AssetQuery();
         List<Integer> categoryCondition = new ArrayList<>();
         Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
@@ -292,6 +292,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
+        query.setPrimaryKey(primaryKey);
         return selectConvert.convert(assetGroupDao.findPulldownUnconnectedGroup(query), SelectResponse.class);
     }
 
