@@ -220,7 +220,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}", assetGroup.toString());
         }
 
-        assetGroupDao.update(assetGroup);
         return result;
     }
 
