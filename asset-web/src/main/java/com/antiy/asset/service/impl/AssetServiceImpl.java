@@ -736,9 +736,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
-        if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
-            query.setIds(processMap.keySet().toArray(new String[] {}));
+        if (MapUtils.isNotEmpty(processMap)) {
+            List<Map.Entry<String, WaitingTaskReponse>> processList = Lists.newArrayList();
+            List<String> ids = Lists.newArrayList();
+            processList.addAll(processMap.entrySet());
+            Collections.sort(processList, (o1, o2) -> DataTypeUtils.stringToInteger(o1.getValue().getTaskId())
+                                                      - DataTypeUtils.stringToInteger(o2.getValue().getTaskId()));
+            Collections.sort(processList, (o1, o2) -> "基准配置".equals(o1.getValue().getName()) && !"基准配置".equals(o2.getValue().getName()) ? -1 : 1);
+            processList.stream().forEach(v -> {
+                ids.add(v.getKey());
+            });
+            query.setIds(ids.toArray(new String[] {}));
         }
+        /*if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
+            query.setIds(processMap.keySet().toArray(new String[] {}));
+        }*/
 
         // 如果是控制台进入，并且待办任务返回为空，则直接返回
         if (query.getEnterControl() && MapUtils.isEmpty(processMap)) {
@@ -803,7 +815,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 查询资产信息
         List<Asset> assetList = assetDao.findListAsset(query);
-
         if (CollectionUtils.isNotEmpty(assetList)) {
             assetList.stream().forEach(a -> {
                 try {
