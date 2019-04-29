@@ -9,9 +9,11 @@ import java.util.List;
  * @create 2019-04-28 15:07
  **/
 public enum FileUseEnum {
-                         INSTALL_PACKAGE("INSTALL_PACKAGE", Arrays.asList("zip", "rar", "jpg"),
-                                         4294967296L), INSTALL_INTRODUCE_MANUAL("INSTALL_INTRODUCE_MANUAL", Arrays
-                                             .asList("rar", "zip", "pdf", "doc", "docx", "txt", "jpg"), 209715200L);
+                         INSTALL_PACKAGE("INSTALL_PACKAGE", Arrays.asList("zip", "rar", "7z"),
+                                         5368709120L), INSTALL_INTRODUCE_MANUAL("INSTALL_INTRODUCE_MANUAL",
+                                                                                Arrays.asList("rar", "zip", "pdf",
+                                                                                    "doc", "docx", "txt", "7z"),
+                                                                                209715200L);
     private String       code;
     private List<String> format;
     private Long         size;

@@ -179,7 +179,7 @@ public class ReportDateUtils {
         TreeMap<String, String> resultMaps = new TreeMap<>();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
         if (month <= 3) {
-            for (int i = 1; i <= 3; i++) {
+            for (int i = 1; i <= month; i++) {
                 LocalDate localDateTemp = localDate.withMonth(i);
                 resultMaps.put(localDateTemp.format(dateTimeFormatter), monthsMap.get(i));
 
@@ -187,7 +187,7 @@ public class ReportDateUtils {
                 localDateTemp = null;
             }
         } else if (month > 3 && month <= 6) {
-            for (int i = 4; i <= 6; i++) {
+            for (int i = 4; i <= month; i++) {
                 LocalDate localDateTemp = localDate.withMonth(i);
                 resultMaps.put(localDateTemp.format(dateTimeFormatter), monthsMap.get(i));
 
@@ -195,7 +195,7 @@ public class ReportDateUtils {
                 localDateTemp = null;
             }
         } else if (month > 6 && month <= 9) {
-            for (int i = 7; i <= 9; i++) {
+            for (int i = 7; i <= month; i++) {
                 LocalDate localDateTemp = localDate.withMonth(i);
                 resultMaps.put(localDateTemp.format(dateTimeFormatter), monthsMap.get(i));
 
@@ -203,7 +203,7 @@ public class ReportDateUtils {
                 localDateTemp = null;
             }
         } else if (month > 9 && month <= 12) {
-            for (int i = 10; i <= 12; i++) {
+            for (int i = 10; i <= month; i++) {
                 LocalDate localDateTemp = localDate.withMonth(i);
                 resultMaps.put(localDateTemp.format(dateTimeFormatter), monthsMap.get(i));
 
@@ -263,7 +263,7 @@ public class ReportDateUtils {
         // for (Map.Entry<String, String> entry : getDayOfWeek().entrySet()) {
         // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
         // }
-        System.out.println(getWeekOfMonth());
+        System.out.println(getSeason());
         // for (Map.Entry<String, String> entry : getWeekOfMonth().entrySet()) {
         // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
         // }

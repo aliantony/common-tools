@@ -175,6 +175,28 @@ public class AssetSoftwareResponse extends BaseResponse {
     @ApiModelProperty(value = "代办任务信息")
     private WaitingTaskReponse waitingTaskReponse;
 
+    @ApiModelProperty(value = "安装说明书地址")
+    private String             manualDocUrl;
+
+    @ApiModelProperty(value = "安装说明书名字")
+    private String             manualDocName;
+
+    public String getManualDocUrl() {
+        return manualDocUrl;
+    }
+
+    public void setManualDocUrl(String manualDocUrl) {
+        this.manualDocUrl = manualDocUrl;
+    }
+
+    public String getManualDocName() {
+        return manualDocName;
+    }
+
+    public void setManualDocName(String manualDocName) {
+        this.manualDocName = manualDocName;
+    }
+
     public WaitingTaskReponse getWaitingTaskReponse() {
         return waitingTaskReponse;
     }
