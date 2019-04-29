@@ -567,7 +567,7 @@
         asset a
         LEFT JOIN asset_category_model t ON a.category_model = t.id
         LEFT JOIN asset_network_card b ON ( a.id = b.asset_id AND b.STATUS = 1 )
-        LEFT JOIN asset_link_relation c ON ( a.id = c.asset_id AND b.ip_address = c.asset_ip AND c.STATUS = 1 )
+        LEFT JOIN asset_link_relation c ON ( (a.id = c.asset_id AND b.ip_address = c.asset_ip) or (a.id = c.parent_asset_id AND b.ip_address = c.parent_asset_ip) AND c.STATUS = 1 )
         WHERE 1 = 1
         and b.asset_id IS NOT NULL
         <if test="areaIds != null and areaIds.size() > 0">
@@ -615,7 +615,7 @@
         asset a
         LEFT JOIN asset_category_model t ON a.category_model = t.id
         LEFT JOIN asset_network_equipment b ON a.id = b.asset_id
-        LEFT JOIN asset_link_relation c ON ( a.id = c.asset_id AND c.STATUS = 1 )
+        LEFT JOIN asset_link_relation c ON ( a.id = c.asset_id or a.id = c.parent_asset_id  AND c.STATUS = 1 )
         WHERE 1 = 1
         and b.asset_id IS NOT NULL
         <if test="areaIds != null and areaIds.size() > 0">
