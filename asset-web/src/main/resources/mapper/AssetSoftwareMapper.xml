@@ -44,12 +44,13 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="md5_code" property="md5Code"/>
         <result column="status" property="status"/>
+        <result column="manual_doc_url" property="manualDocUrl"/>
+        <result column="manual_doc_name" property="manualDocName"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, size, operation_system, category_model, name, upload_software_name, path, version, manufacturer, description, asset_group, software_label, software_status, authorization, report_source, protocol, service_life, buy_date, language, release_time, serial, md5_code, publisher, gmt_create, memo, gmt_modified, create_user, modify_user, status
+    id, size, operation_system, category_model, name, upload_software_name, path, version, manufacturer, description, asset_group, software_label, software_status, authorization, report_source, protocol, service_life, buy_date, language, release_time, serial, md5_code, publisher, gmt_create, memo, gmt_modified, create_user, modify_user, status,manual_doc_url,manual_doc_name
     </sql>
-
     <sql id="Table_Name">
         asset_software
     </sql>
@@ -140,6 +141,13 @@
         <if test=" status != null">
             status,
         </if>
+        <if test="manualDocUrl != null and manualDocUrl != ''">
+            manual_doc_url,
+        </if>
+
+        <if test="manualDocName != null and manualDocName != ''">
+            manual_doc_name ,
+        </if>
     </sql>
 
     <sql id="IF_Value_Column_List">
@@ -226,6 +234,12 @@
         </if>
         <if test=" status != null">
             #{status },
+        </if>
+        <if test="manualDocUrl != null and manualDocUrl !=''">
+            #{manualDocUrl},
+        </if>
+        <if test="manualDocName != null and manualDocName !=''">
+            #{manualDocName},
         </if>
     </sql>
     <sql id="ValueBatch">
@@ -399,6 +413,13 @@
         <if test=" status != null">
             status = #{status },
         </if>
+        <if test="manualDocUrl != null and manualDocUrl != ''">
+            manual_doc_url = #{manualDocUrl},
+        </if>
+
+        <if test="manualDocName != null and manualDocName != ''">
+            manual_doc_name = #{manualDocName},
+        </if>
     </sql>
 
     <sql id="Where_Column_List">
@@ -569,7 +590,7 @@
         report_source, protocol, language, a.release_time,
         publisher, a.gmt_create, a.memo, a.gmt_modified,
         a.create_user,a.modify_user, a.status, a.buy_date,
-        b.name as category_model_name,md5_code,serial
+        b.name as category_model_name,md5_code,serial,manual_doc_url,manual_doc_name
         from
         <include refid="Table_Name"></include>
         a
@@ -695,7 +716,9 @@
         asset_software.language,
         asset_software.path,
         asset_software.serial,
-        asset_software.protocol
+        asset_software.protocol,
+        asset_software.manual_doc_url,
+        asset_software.manual_doc_name
         <if test="(categoryModel != null and categoryModel != '') or (categoryModels != null and categoryModels.length > 0)">
             ,
             b.name as category_model_name

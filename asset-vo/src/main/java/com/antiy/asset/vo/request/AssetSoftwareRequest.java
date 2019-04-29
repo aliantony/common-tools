@@ -1,17 +1,19 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.Arrays;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Arrays;
+
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -173,6 +175,28 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     @ApiModelProperty(value = "购买日期")
     private Long                        buyDate;
+
+    @ApiModelProperty(value = "安装说明书地址")
+    private String                      manualDocUrl;
+
+    @ApiModelProperty(value = "安装说明书名字")
+    private String                      manualDocName;
+
+    public String getManualDocUrl() {
+        return manualDocUrl;
+    }
+
+    public void setManualDocUrl(String manualDocUrl) {
+        this.manualDocUrl = manualDocUrl;
+    }
+
+    public String getManualDocName() {
+        return manualDocName;
+    }
+
+    public void setManualDocName(String manualDocName) {
+        this.manualDocName = manualDocName;
+    }
 
     public Long getBuyDate() {
         return buyDate;
