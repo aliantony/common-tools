@@ -183,7 +183,7 @@ public class FileController {
 
         if (RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
             FileRespVO fileRep = (FileRespVO) fileResponse.getData();
-            if (!(StringUtils.isNotEmpty(md5) && fileRep.getMd5().equals(md5))) {
+            if (!(StringUtils.isNotEmpty(md5) && fileRep.getMd5().equals(md5.toLowerCase()))) {
                 fileUtils.delete(fileRep.getFileUrl());
                 throw new BusinessException("MD5校验失败");
             }
