@@ -731,7 +731,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             processList.addAll(processMap.entrySet());
             Collections.sort(processList, (o1, o2) -> DataTypeUtils.stringToInteger(o1.getValue().getTaskId())
                                                       - DataTypeUtils.stringToInteger(o2.getValue().getTaskId()));
-            Collections.sort(processList, (o1, o2) -> "基准配置".equals(o1.getValue().getName()) && !"基准配置".equals(o2.getValue().getName()) ? -1 : 1);
+            Collections.sort(processList, (o1, o2) -> ("基准配置".equals(o1.getValue().getName()) && !"基准配置".equals(o2.getValue().getName())) || ("准入实施".equals(o1.getValue().getName()) && !"准入实施".equals(o2.getValue().getName())) ? -1 : 1);
             processList.stream().forEach(v -> {
                 ids.add(v.getKey());
             });
