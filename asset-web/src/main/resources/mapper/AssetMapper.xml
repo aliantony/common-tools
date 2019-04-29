@@ -1307,6 +1307,7 @@
         on t1.asset_id =t2.id
         <where>
             and t1.status = 1
+            and t1.vul_status!=5
             and t2.status = 1
             AND v.STATUS = 1
             and t2.asset_status in(7,8)
