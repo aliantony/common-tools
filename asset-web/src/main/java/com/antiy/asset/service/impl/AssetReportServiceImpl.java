@@ -85,7 +85,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
             query.setFormat(MONTH);
             map = buildCategoryCountByTime(query,
-                ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
+                    ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
         } else {
             throw new BusinessException("非法参数");
         }
@@ -123,8 +123,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
         otherTimeValueMap.put("classifyName", AssetSecondCategoryEnum.OTHER_DEVICE.getMsg());
         amountTimeValueMap.put("classifyName", AssetSecondCategoryEnum.AMOUNT.getMsg());
         newAddTimeValueMap.put("classifyName", AssetSecondCategoryEnum.NEW_ADD.getMsg());
-
-        List<AssetCategoryEntity> categoryCountPrevious = assetReportDao.findCategoryCountPrevious(query);
 
         List<String> dateList = new ArrayList<>();
         List<Integer> computerDataList = new ArrayList<>();
@@ -170,35 +168,34 @@ public class AssetReportServiceImpl implements IAssetReportService {
             int otherAmount = 0;
 
             for (AssetCategoryEntity categoryEntity : amountCategoryEntityList) {
-                if (key.equals(categoryEntity.getDate())
-                    && !categoryEntity.getCategoryModel().equals(
-                        Integer.valueOf(Objects.requireNonNull(getHardwareCategoryId())))) {
+                if (key.equals(categoryEntity.getDate()) && !categoryEntity.getCategoryModel()
+                        .equals(Integer.valueOf(Objects.requireNonNull(getHardwareCategoryId())))) {
                     assetCategoryModel.setId(categoryEntity.getCategoryModel());
                     assetCategoryModel.setParentId(categoryEntity.getParentId());
                     assetCategoryModel.setName(categoryEntity.getCategoryName());
                     String secondCategoryName = this.getParentCategory(assetCategoryModel, categoryModels).getName();
                     if (AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg().equals(secondCategoryName)
-                        && key.equals(categoryEntity.getDate())) {
+                            && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         computeNewAdd = computeNewAdd + categoryEntity.getCategoryCount();
                         computeAmount = computeAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryName)
-                               && key.equals(categoryEntity.getDate())) {
+                            && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         networkNewAdd = networkNewAdd + categoryEntity.getCategoryCount();
                         networkAmount = networkAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(secondCategoryName)
-                               && key.equals(categoryEntity.getDate())) {
+                            && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         storageNewAdd = storageNewAdd + categoryEntity.getCategoryCount();
                         storageAmount = storageAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(secondCategoryName)
-                               && key.equals(categoryEntity.getDate())) {
+                            && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         safetyNewAdd = safetyNewAdd + categoryEntity.getCategoryCount();
                         safetyAmount = safetyAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)
-                               && key.equals(categoryEntity.getDate())) {
+                            && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         otherNewAdd = otherNewAdd + categoryEntity.getCategoryCount();
                         otherAmount = otherAmount + assetReportDao.findCategoryCountAmount(filterMap);
@@ -206,33 +203,12 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 }
             }
 
-
             if (first) {
-                int computerPreviousCount = 0;
-                int networkPreviousCount = 0;
-                int storagePreviousCount = 0;
-                int safetyPreviousCount = 0;
-                int otherPreviousCount = 0;
-
-                for (AssetCategoryEntity entity : categoryCountPrevious) {
-                    if (AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg().equals(entity.getCategoryName())) {
-                        computerPreviousCount = entity.getCategoryCount();
-                    } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(entity.getCategoryName())) {
-                        networkPreviousCount = entity.getCategoryCount();
-                    } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(entity.getCategoryName())) {
-                        storagePreviousCount = entity.getCategoryCount();
-                    } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(entity.getCategoryName())) {
-                        safetyPreviousCount = entity.getCategoryCount();
-                    } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(entity.getCategoryName())) {
-                        otherPreviousCount = entity.getCategoryCount();
-                    }
-                }
-
-                computerAmountSum = computerAmountSum + computeAmount + computeNewAdd + computerPreviousCount;
-                networkAmountSum = networkAmountSum + networkAmount + networkNewAdd + networkPreviousCount;
-                storageAmountSum = storageAmountSum + storageAmount + storageNewAdd + storagePreviousCount;
-                safetyAmountSum = safetyAmountSum + safetyAmount + +safetyNewAdd + safetyPreviousCount;
-                otherAmountSum = otherAmountSum + otherAmount + otherNewAdd + otherPreviousCount;
+                computerAmountSum = computerAmountSum + computeAmount + computeNewAdd;
+                networkAmountSum = networkAmountSum + networkAmount + networkNewAdd;
+                storageAmountSum = storageAmountSum + storageAmount + storageNewAdd;
+                safetyAmountSum = safetyAmountSum + safetyAmount + +safetyNewAdd;
+                otherAmountSum = otherAmountSum + otherAmount + otherNewAdd;
                 first = false;
             } else {
                 computerAmountSum = computerAmountSum + computeNewAdd;
@@ -248,11 +224,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
             safetyTimeValueMap.put(key, String.valueOf(safetyAmountSum));
             otherTimeValueMap.put(key, String.valueOf(otherAmountSum));
             newAddTimeValueMap.put(key,
-                String.valueOf(computeNewAdd + networkNewAdd + storageNewAdd + safetyNewAdd + otherNewAdd));
-            amountTimeValueMap.put(
-                key,
-                String.valueOf(computerAmountSum + networkAmountSum + storageAmountSum + safetyAmountSum
-                               + otherAmountSum));
+                    String.valueOf(computeNewAdd + networkNewAdd + storageNewAdd + safetyNewAdd + otherNewAdd));
+            amountTimeValueMap.put(key, String
+                    .valueOf(computerAmountSum + networkAmountSum + storageAmountSum + safetyAmountSum + otherAmountSum));
 
             computerDataList.add(computerAmountSum);
             networkDataList.add(networkAmountSum);
@@ -340,9 +314,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
      */
     private void checkParameter(AssetReportCategoryCountQuery query, ShowCycleType showCycleType) {
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())
-            || ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())
-            || ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())
-            || ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
+                || ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())
+                || ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())
+                || ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
             ParamterExceptionUtils.isNull(query.getBeginTime(), "开始时间不能为空");
             ParamterExceptionUtils.isNull(query.getEndTime(), "开始时间不能为空");
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
@@ -372,16 +346,16 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @param categoryModel
      * @return
      */
-    private AssetCategoryModel getParentCategory(AssetCategoryModel categoryModel, List<AssetCategoryModel> allCategory)
-                                                                                                                        throws Exception {
+    private AssetCategoryModel getParentCategory(AssetCategoryModel categoryModel,
+                                                 List<AssetCategoryModel> allCategory) throws Exception {
         if (null != categoryModel) {
             if (categoryModel.getParentId().equals(getHardwareCategoryId())) {
                 return categoryModel;
             }
 
             Optional<AssetCategoryModel> categoryModelOptional = allCategory.stream()
-                .filter(x -> Objects.equals(x.getId(), DataTypeUtils.stringToInteger(categoryModel.getParentId())))
-                .findFirst();
+                    .filter(x -> Objects.equals(x.getId(), DataTypeUtils.stringToInteger(categoryModel.getParentId())))
+                    .findFirst();
             if (categoryModelOptional.isPresent()) {
                 AssetCategoryModel tblCategory = categoryModelOptional.get();
                 return getParentCategory(tblCategory, allCategory);
@@ -473,7 +447,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setColumnList(columnList);
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_REPORT_EXPORT.getName(), null, null, reportForm,
-            BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
+                BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}", reportForm);
         ExcelUtils.exportFormToClient(reportForm, "报表导出.xlsx");
     }
@@ -507,8 +481,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
             case "5":
                 reportQueryRequest.setSqlTime("%Y-%m");
-                return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getMonthWithDate(
-                    reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
+                return buildGroupCountByTime(reportQueryRequest, ReportDateUtils
+                        .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
             default:
                 reportQueryRequest.setSqlTime("%Y-%m");
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear());
@@ -516,7 +490,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     }
 
-    private AssetReportResponse buildGroupCountByTime(ReportQueryRequest reportQueryRequest, Map<String, String> timeMap) {
+    private AssetReportResponse buildGroupCountByTime(ReportQueryRequest reportQueryRequest,
+                                                      Map<String, String> timeMap) {
 
         if (MapUtils.isEmpty(timeMap)) {
             // 如果没有时间参数，则返回即可。
@@ -575,26 +550,27 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
                 for (AssetGroupEntity addAssetGroupEntity : addAssetGroupEntityList) {
                     // 从新增列表获取名字和日期均匹配的新增数量
-            if (dateKeyList.get(i).equals(addAssetGroupEntity.getDate())
-                && groupName.equals(addAssetGroupEntity.getName())) {
-                addNum = addAssetGroupEntity.getGroupCount();
+                    if (dateKeyList.get(i).equals(addAssetGroupEntity.getDate())
+                            && groupName.equals(addAssetGroupEntity.getName())) {
+                        addNum = addAssetGroupEntity.getGroupCount();
+                    }
+                }
+                // 总数:第一个数据从截止日期前的总数量获取,第二个起直接取上一个数据+新增数
+                if (i == 0) {
+                    Optional<AssetGroupEntity> assetGroupOptional = oldAssetGroupEntities.stream()
+                            .filter(e -> e.getName().equals(groupName) && groupName.equals(e.getName())).findFirst();
+                    totalNum = assetGroupOptional.isPresent() ? assetGroupOptional.get().getGroupCount() + addNum
+                            : addNum;
+                } else {
+                    totalNum = totalNumList.get(i - 1) + addNum;
+                }
+                totalNumList.add(totalNum);
+                addNumList.add(addNum);
             }
-        }
-        // 总数:第一个数据从截止日期前的总数量获取,第二个起直接取上一个数据+新增数
-        if (i == 0) {
-            Optional<AssetGroupEntity> assetGroupOptional = oldAssetGroupEntities.stream()
-                .filter(e -> e.getName().equals(groupName) && groupName.equals(e.getName())).findFirst();
-            totalNum = assetGroupOptional.isPresent() ? assetGroupOptional.get().getGroupCount() + addNum : addNum;
-        } else {
-            totalNum = totalNumList.get(i - 1) + addNum;
-        }
-        totalNumList.add(totalNum);
-        addNumList.add(addNum);
-    }
-    reportData.setData(totalNumList);
-    reportData.setAdd(addNumList);
-    dataList.add(reportData);
-})      ;
+            reportData.setData(totalNumList);
+            reportData.setAdd(addNumList);
+            dataList.add(reportData);
+        });
         assetReportResponse.setDate(dateValueList);
         assetReportResponse.setList(dataList);
         return assetReportResponse;
@@ -624,8 +600,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear());
             case "5":
                 reportQueryRequest.setSqlTime("%Y-%m");
-                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getMonthWithDate(
-                    reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
+                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils
+                        .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
             default:
                 throw new RequestParamValidateException("查询时间类型不正确");
         }
@@ -638,8 +614,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @throws Exception
      */
     @Override
-    public AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query)
-                                                                                                        throws Exception {
+    public AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception {
         ShowCycleType showCycleType = query.getShowCycleType();
         query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         checkParameter(query, showCycleType);
@@ -658,7 +633,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
             query.setFormat(MONTH);
             return getAssetReportTableResponse(query,
-                ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
+                    ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
         } else {
             throw new BusinessException("非法参数");
         }
@@ -708,7 +683,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
      * @param reportQueryRequest
      * @return
      */
-    public AssetReportResponse queryNewAssetWithGroup(ReportQueryRequest reportQueryRequest, Map<String, String> timeMap) {
+    public AssetReportResponse queryNewAssetWithGroup(ReportQueryRequest reportQueryRequest,
+                                                      Map<String, String> timeMap) {
         if (MapUtils.isEmpty(timeMap)) {
             return null;
         }
@@ -743,12 +719,12 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 Integer num = 0;
                 for (AssetGroupEntity groupReportEntity : groupReportEntityList) {
                     // 资产组别且对应周数匹配
-                if (groupReportEntity.getName().equals(groupName) && groupReportEntity.getDate().equals(date)) {
-                    num = groupReportEntity.getGroupCount();
+                    if (groupReportEntity.getName().equals(groupName) && groupReportEntity.getDate().equals(date)) {
+                        num = groupReportEntity.getGroupCount();
+                    }
                 }
-            }
-            addNumList.add(num);
-        })  ;
+                addNumList.add(num);
+            });
             reportData.setData(addNumList);
             reportDataList.add(reportData);
         });
@@ -775,9 +751,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear(), "本年");
             case "5":
                 reportQueryRequest.setSqlTime("%Y-%m");
-                return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getMonthWithDate(
-                    reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()),
-                    reportQueryRequest.getStartTime() + "~" + reportQueryRequest.getEndTime());
+                return buildAssetReportTable(reportQueryRequest,
+                        ReportDateUtils.getMonthWithDate(reportQueryRequest.getStartTime(),
+                                reportQueryRequest.getEndTime()),
+                        reportQueryRequest.getStartTime() + "~" + reportQueryRequest.getEndTime());
             default:
                 reportQueryRequest.setSqlTime("%Y-%m");
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear(), "本年");
@@ -927,11 +904,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // 将新增数据与初始化的新增数据进行比较配对。将有变化的数据进行修改
         for (int i = 0; i < addRows.size(); i++) {
             for (int j = 0; j < addRowsResult.size(); j++) {
-                if (addRows.get(i).get("classifyName").equals(addRowsResult.get(j).get("classifyName"))
-                    && addRows.get(i).keySet().iterator().next()
-                        .equals(addRowsResult.get(j).keySet().iterator().next())) {
+                if (addRows.get(i).get("classifyName").equals(addRowsResult.get(j).get("classifyName")) && addRows
+                        .get(i).keySet().iterator().next().equals(addRowsResult.get(j).keySet().iterator().next())) {
                     addRowsResult.get(j).put(addRows.get(i).keySet().iterator().next(),
-                        addRows.get(i).get(addRows.get(i).keySet().iterator().next()));
+                            addRows.get(i).get(addRows.get(i).keySet().iterator().next()));
                 }
             }
         }

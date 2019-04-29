@@ -177,6 +177,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             }
             // -----------------------------更新资产主表的资产组字段内容end-----------------------------
         } else {
+            assetGroupDao.update(assetGroup);
             List<String> assetIdList = assetGroupRelationDao.findAssetIdByAssetGroupId(request.getId());
             assetIdList.forEach(assetId -> {
                 List<String> assetGroupNameList = null;
@@ -219,7 +220,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}", assetGroup.toString());
         }
 
-        assetGroupDao.update(assetGroup);
         return result;
     }
 
