@@ -383,6 +383,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         } else if (softwareStatus.equals(SoftwareFlowEnum.SOFTWARE_NOT_REGSIST_REGISTER.getCode())) {
             assetOperationRecord.setOriginStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
             assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_NOT_REGSIST_REGISTER.getMsg());
+        } else {
+            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
+            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_CHANGE.getMsg());
         }
         assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
         assetOperationRecord.setTargetObjectId(request.getId());
