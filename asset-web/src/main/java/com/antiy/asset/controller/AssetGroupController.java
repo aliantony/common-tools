@@ -143,8 +143,8 @@ public class AssetGroupController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/unconnectedGroupInfo", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:group:queryGroupInfo')")
-    public ActionResponse<List<SelectResponse>> queryUnconnectedGroupInfo(@ApiParam("是否是网络设备") Integer isNet) throws Exception {
-        return ActionResponse.success(iAssetGroupService.queryUnconnectedGroupInfo(isNet));
+    public ActionResponse<List<SelectResponse>> queryUnconnectedGroupInfo(@ApiParam("是否是网络设备") Integer isNet,@ApiParam("主键")String primaryKey) throws Exception {
+        return ActionResponse.success(iAssetGroupService.queryUnconnectedGroupInfo(isNet,primaryKey));
     }
 
     // /**

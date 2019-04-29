@@ -381,4 +381,8 @@
         <include refid="Table_Name"></include>
         where status=1
     </select>
+
+    <select id="getByName" resultMap="BaseResultMap">
+        select * from asset_category_model where name=#{name} and status=1
+    </select>
 </mapper>

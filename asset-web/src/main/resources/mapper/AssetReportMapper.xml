@@ -154,7 +154,11 @@
         SELECT
         count(1) AS categoryCount,
         asset.category_model AS categoryModel,
-        replace(ltrim(replace(FROM_UNIXTIME(asset.gmt_create/1000,#{format}),'0',' ')),' ','0') AS date,
+        case
+        when length(replace(ltrim(replace(FROM_UNIXTIME(asset.gmt_create/1000,#{format}),'0',' ')),' ','0')) &lt; 1
+        then 7
+        else replace(ltrim(replace(FROM_UNIXTIME(asset.gmt_create/1000,#{format}),'0',' ')),' ','0')
+        end AS date,
         acm.parent_id as parentId,
         acm.name as categoryName
         FROM
