@@ -366,7 +366,7 @@
         where agrelation.asset_group_id = #{assetGroupId}
     </select>
 
-    <select id="existRelateAssetInGroup" resultMap="BaseResultMap">
+    <select id="existRelateAssetInGroup" resultType="java.lang.Integer">
         select count (1) from
         <include refid="Table_Name"></include>
         agr
