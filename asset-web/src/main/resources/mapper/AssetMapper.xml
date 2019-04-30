@@ -768,6 +768,9 @@
             </foreach>
             )
         </if>
+        <if test="installType != null and installType != ''">
+            and install_type = #{installType}
+        </if>
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.Asset" useGeneratedKeys="true" keyProperty="id">
