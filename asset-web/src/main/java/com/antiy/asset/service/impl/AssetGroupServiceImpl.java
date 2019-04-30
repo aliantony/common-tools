@@ -359,9 +359,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         // 存在关联资产不能删除资产组
         Integer amount = assetGroupRelationDao.existRelateAssetInGroup(id);
         if (amount > 0) {
-            return assetGroupDao.deleteById(id);
-        } else {
             throw new BusinessException("不允许删除有关联资产的资产组");
+        } else {
+            return assetGroupDao.deleteById(Integer.valueOf((String) id));
         }
     }
 }
