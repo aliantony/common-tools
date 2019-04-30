@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import static com.antiy.biz.file.FileHelper.logger;
 
+import java.io.Serializable;
 import java.util.*;
 
 import javax.annotation.Resource;
@@ -350,6 +351,17 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             map.put("assetGroupName", null);
             map.put("assetId", assetId);
             assetDao.updateAssetGroupNameWithAssetId(map);
+        }
+    }
+
+    @Override
+    public Integer deleteById(Serializable id) throws Exception {
+        // 存在关联资产不能删除资产组
+        Integer amount = assetGroupRelationDao.existRelateAssetInGroup(id);
+        if (amount > 0) {
+            return assetGroupDao.deleteById(id);
+        } else {
+            throw new BusinessException("不允许删除有关联资产的资产组");
         }
     }
 }
