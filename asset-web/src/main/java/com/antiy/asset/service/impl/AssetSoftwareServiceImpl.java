@@ -4,6 +4,8 @@ import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
 import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -139,8 +141,15 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetPortProtocol.class);
 
                     ParamterExceptionUtils.isTrue(!checkRepeatName(assetSoftware.getName()), "资产名称重复");
-                    BusinessExceptionUtils.isTrue(checkOperatingSystemById(assetSoftware.getOperationSystem()),
-                        "兼容系统不存在，或已经注销！");
+
+                    Stream<String> stream = Arrays.stream(request.getOperationSystems());
+                    StringBuffer stringBuffer = new StringBuffer();
+                    stream.forEach(s -> {
+                        BusinessExceptionUtils.isTrue(checkOperatingSystemById(s), "兼容系统不存在，或已经注销！");
+                        stringBuffer.append(s).append(",");
+                    }
+
+                    );
                     BusinessExceptionUtils.isTrue(
                         !Objects.isNull(assetCategoryModelDao.getById(
                             com.antiy.common.utils.DataTypeUtils.stringToInteger(assetSoftware.getCategoryModel()))),
@@ -148,6 +157,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
+                    assetSoftware.setOperationSystem(stringBuffer.substring(0, stringBuffer.length() - 1));
                     assetSoftware.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
                     assetSoftwareDao.insert(assetSoftware);
                     String sid = String.valueOf(assetSoftware.getId());
@@ -323,6 +333,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // 1.更新软件信息
                     AssetSoftware assetSoftware = requestConverter.convert(request, AssetSoftware.class);
                     assetSoftware.setId(DataTypeUtils.stringToInteger(request.getId()));
+                    Stream<String> stream = Arrays.stream(request.getOperationSystems());
+                    StringBuffer stringBuffer = new StringBuffer();
+                    stream.forEach(s -> {
+                        stringBuffer.append(s).append(",");
+                    }
+
+                    );
+                    assetSoftware.setOperationSystem(stringBuffer.substring(0, stringBuffer.length() - 1));
                     int assetSoftwareCount = assetSoftwareDao.update(assetSoftware);
 
                     /**
@@ -451,7 +469,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             protected void convert(AssetSoftware assetSoftware, AssetSoftwareResponse assetSoftwareResponse) {
                 super.convert(assetSoftware, assetSoftwareResponse);
                 assetSoftwareResponse.setAssetCount(0);
-                assetSoftwareResponse.setOperationSystemName(convertOsSystemName(assetSoftwareResponse.getOperationSystem()));
+                if (StringUtils.isNotEmpty(assetSoftware.getOperationSystem())) {
+                    assetSoftwareResponse.setOperationSystems(
+                        Stream.of(assetSoftware.getOperationSystem().split(",")).collect(Collectors.toList()));
+                    assetSoftwareResponse
+                        .setOperationSystemName(convertOsSystemName(assetSoftware.getOperationSystem()));
+                }
                 if (MapUtils.isNotEmpty(finalSoftAssetCount)) {
                     assetSoftwareResponse.setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null
                         ? finalSoftAssetCount.get(assetSoftware.getId()).intValue()
@@ -468,7 +491,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param operationSystem
      * @return
      */
-    private String convertOsSystemName(String operationSystem) {
+    private List<String> convertOsSystemName(String operationSystem) {
         String[] osSystemIds = null;
         if (StringUtils.isNotEmpty(operationSystem)) {
             osSystemIds = operationSystem.split(",");
@@ -479,21 +502,21 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             try {
                 List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
                 if (!CollectionUtils.isEmpty(categoryOsResponseList)) {
-                    StringBuffer sb = new StringBuffer();
+                    List<String> osSystemNameList = new ArrayList<>();
                     for (String osSystemId : osSystemIds) {
                         Optional<LinkedHashMap> optional = categoryOsResponseList.stream()
                             .filter(categoryOsResponse -> osSystemId
                                 .equals(Optional.ofNullable(categoryOsResponse.get("stringId")).get().toString()))
                             .findFirst();
                         if (optional.isPresent() && optional.get() != null) {
-                            sb.append(optional.get().get("name"));
-                            sb.append(",");
+                            osSystemNameList
+                                .add(optional.get().get("name") != null ? optional.get().get("name").toString() : "");
                         }
                     }
-                    return sb.delete(sb.lastIndexOf(","),sb.length()).toString();
+                    return osSystemNameList;
                 }
             } catch (Exception e) {
-                logger.warn("获取操作系统失败");
+                logger.warn("获取操作系统失败", e);
             }
         }
         return null;
@@ -668,8 +691,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
 
         // 获取软件的操作系统名
-        assetSoftwareDetailResponse
-            .setOperationSystemName(convertOsSystemName(assetSoftwareDetailResponse.getOperationSystem()));
+        if (StringUtils.isNotEmpty(assetSoftware.getOperationSystem())) {
+            assetSoftwareDetailResponse.setOperationSystems(
+                Stream.of(assetSoftware.getOperationSystem().split(",")).collect(Collectors.toList()));
+            assetSoftwareDetailResponse.setOperationSystemName(convertOsSystemName(assetSoftware.getOperationSystem()));
+        }
+
         return assetSoftwareDetailResponse;
     }
 
