@@ -679,6 +679,7 @@
         LEFT JOIN asset_link_relation c ON ( b.asset_id = c.asset_id AND b.ip_address = c.asset_ip and c.status = 1)
         WHERE
         a.id = #{primaryKey}
+        and not EXISTS (select 1 from asset_link_relation d where d.parent_asset_ip = b.ip_address and d.parent_asset_id = b.asset_id)
         and b.ip_address is not null
         <if test="portCount != null and portCount.size() > 0">
             UNION ALL

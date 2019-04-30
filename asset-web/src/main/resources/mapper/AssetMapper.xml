@@ -1309,6 +1309,7 @@
             and t1.status = 1
             and t2.status = 1
             AND v.STATUS = 1
+            AND t1.vul_status != 5
             and t2.asset_status in(7,8)
             <if test="areaIds != null and areaIds.size() > 0">
                 and t2.area_id IN
@@ -1341,12 +1342,12 @@
                 #{item}
             </foreach>
         </if>
-        and t1.patch_status != 5
+        and t1.patch_status not in (5,6,7)
         and t1.status = 1
         and t2.status =1
         and t2.asset_status in(7,8)
         AND p.STATUS = 1
-        AND p.patch_status = 3
+        AND p.patch_status != 5
         GROUP BY
         t1.asset_id
         <if test="pageSize !=-1">
@@ -1368,7 +1369,7 @@
         and t1.status = 1
         and t2.status = 1
         AND p.STATUS = 1
-        AND p.patch_status = 3
+        AND p.patch_status not in (5,6,7)
         and t2.asset_status in(7,8)
     </select>
 
@@ -1385,7 +1386,7 @@
         and t1.status = 1
         and t2.status = 1
         AND v.STATUS = 1
-        AND v.vul_status = 4
+        AND v.vul_status != 5
         and t2.asset_status in(7,8)
     </select>
 </mapper>

@@ -142,6 +142,32 @@ public class AssetSoftware extends BaseEntity {
      */
     private String  licenseSecretKey;
 
+    /**
+     * 安装说明书url地址
+     */
+    private String  manualDocUrl;
+
+    /**
+     * 安装说明书名字
+     */
+    private String  manualDocName;
+
+    public String getManualDocUrl() {
+        return manualDocUrl;
+    }
+
+    public void setManualDocUrl(String manualDocUrl) {
+        this.manualDocUrl = manualDocUrl;
+    }
+
+    public String getManualDocName() {
+        return manualDocName;
+    }
+
+    public void setManualDocName(String manualDocName) {
+        this.manualDocName = manualDocName;
+    }
+
     public String getLicenseSecretKey() {
         return licenseSecretKey;
     }
@@ -373,6 +399,7 @@ public class AssetSoftware extends BaseEntity {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
     public String getSerial() {
         return serial;
     }
