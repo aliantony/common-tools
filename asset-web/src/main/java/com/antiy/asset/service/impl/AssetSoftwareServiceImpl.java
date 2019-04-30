@@ -470,7 +470,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 super.convert(assetSoftware, assetSoftwareResponse);
                 assetSoftwareResponse.setAssetCount(0);
                 if (StringUtils.isNotEmpty(assetSoftware.getOperationSystem())) {
-                    assetSoftwareResponse.setOperationSystem(
+                    assetSoftwareResponse.setOperationSystems(
                         Stream.of(assetSoftware.getOperationSystem().split(",")).collect(Collectors.toList()));
                     assetSoftwareResponse
                         .setOperationSystemName(convertOsSystemName(assetSoftware.getOperationSystem()));
@@ -692,7 +692,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
         // 获取软件的操作系统名
         if (StringUtils.isNotEmpty(assetSoftware.getOperationSystem())) {
-            assetSoftwareDetailResponse.setOperationSystem(
+            assetSoftwareDetailResponse.setOperationSystems(
                 Stream.of(assetSoftware.getOperationSystem().split(",")).collect(Collectors.toList()));
             assetSoftwareDetailResponse.setOperationSystemName(convertOsSystemName(assetSoftware.getOperationSystem()));
         }

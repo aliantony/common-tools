@@ -24,7 +24,7 @@ public class AssetSoftwareResponse extends BaseResponse {
      * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
      */
     @ApiModelProperty("操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)")
-    private List<String>       operationSystem;
+    private List<String>       operationSystems;
 
     /**
      * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
@@ -207,12 +207,12 @@ public class AssetSoftwareResponse extends BaseResponse {
         this.waitingTaskReponse = waitingTaskReponse;
     }
 
-    public List<String> getOperationSystem() {
-        return operationSystem;
+    public List<String> getOperationSystems() {
+        return operationSystems;
     }
 
-    public void setOperationSystem(List<String> operationSystem) {
-        this.operationSystem = operationSystem;
+    public void setOperationSystems(List<String> operationSystems) {
+        this.operationSystems = operationSystems;
     }
 
     public List<String> getOperationSystemName() {
