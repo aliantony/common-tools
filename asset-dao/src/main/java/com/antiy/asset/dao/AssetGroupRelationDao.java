@@ -1,5 +1,6 @@
 package com.antiy.asset.dao;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.antiy.asset.entity.AssetGroup;
@@ -80,4 +81,12 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
     Integer batchDeleteById(RemoveAssociateAssetRequest request);
 
     List<String> findAssetIdByAssetGroupId(String groupId);
+
+    /**
+     * 通过资产组主键查询关联资产数量
+     * @param groupId
+     * @return
+     * @throws Exception
+     */
+    Integer existRelateAssetInGroup(Serializable groupId) throws Exception;
 }
