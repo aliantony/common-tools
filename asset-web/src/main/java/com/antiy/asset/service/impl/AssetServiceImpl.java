@@ -744,7 +744,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<String> lowIds = Lists.newArrayList();
             List<String> highIds = Lists.newArrayList();
             processList.stream().forEach(v -> {
-                if ("基准配置".equals(v.getValue().getName()) || "基准验证".equals(v.getValue().getName())) {
+                if ( Objects.isNull(v.getValue()) || "基准配置".equals(v.getValue().getName()) || "基准验证".equals(v.getValue().getName())) {
                     lowIds.add(v.getKey());
                 } else {
                     highIds.add(v.getKey());
