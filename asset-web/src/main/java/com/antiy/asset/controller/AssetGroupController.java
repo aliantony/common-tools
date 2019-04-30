@@ -116,7 +116,7 @@ public class AssetGroupController {
     @PreAuthorize(value = "hasAuthority('asset:group:deleteById')")
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "queryCondition") BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "stringId不能为空");
-        return ActionResponse.success(iAssetGroupService.deleteById(Integer.valueOf(baseRequest.getStringId())));
+        return ActionResponse.success(iAssetGroupService.deleteById(baseRequest.getStringId()));
     }
 
     /**
