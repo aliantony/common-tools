@@ -122,6 +122,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private AssetDao                                                         assetDao;
     @Resource
     private IRedisService                                                    redisService;
+    @Resource
+    FileServiceImpl                                                          fileService;
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -364,6 +366,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(), assetSoftware.getId(),
                         null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
                     LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetSoftware);
+
                     return assetSoftwareCount;
                 } catch (Exception e) {
                     logger.error("修改软件信息失败", e);
@@ -371,6 +374,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 return 0;
             }
         });
+
+        //// 如果为空，删除手册
+        String manualDocUrl = request.getManualDocUrl();
+        if (StringUtils.isBlank(manualDocUrl)) {
+            fileService.deleteRemoteFile(request, software.getManualDocUrl(), logger);
+        }
 
         // TODO 调用工作流，给配置管理员
         // activityClient.completeTask(request.getRequest());
