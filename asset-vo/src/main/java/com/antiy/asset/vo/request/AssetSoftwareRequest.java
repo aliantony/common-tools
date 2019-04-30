@@ -1,19 +1,17 @@
 package com.antiy.asset.vo.request;
 
-import java.util.Arrays;
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
-import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.Arrays;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -62,9 +60,12 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 操作系统(WINDOWS7-32-64,WINDOWS8-64)
      */
     @ApiModelProperty(value = "操作系统")
-    @Size(message = "操作系统不能超过32位", max = 32)
-    @NotBlank(message = "操作系统不能为空")
     private String                      operationSystem;
+    /**
+     * 操作系统(WINDOWS7-32-64,WINDOWS8-64)
+     */
+    @ApiModelProperty(value = "操作系统数组")
+    private String[]                    operationSystems;
     /**
      * 软件品类
      */
@@ -439,5 +440,13 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     public void setServiceLife(Long serviceLife) {
         this.serviceLife = serviceLife;
+    }
+
+    public String[] getOperationSystems() {
+        return operationSystems;
+    }
+
+    public void setOperationSystems(String[] operationSystems) {
+        this.operationSystems = operationSystems;
     }
 }
