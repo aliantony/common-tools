@@ -56,11 +56,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty(value = "软件大小")
     private Integer                     size;
-    /**
-     * 操作系统(WINDOWS7-32-64,WINDOWS8-64)
-     */
-    @ApiModelProperty(value = "操作系统")
-    private String                      operationSystem;
+
     /**
      * 操作系统(WINDOWS7-32-64,WINDOWS8-64)
      */
@@ -247,13 +243,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.size = size;
     }
 
-    public String getOperationSystem() {
-        return operationSystem;
-    }
-
-    public void setOperationSystem(String operationSystem) {
-        this.operationSystem = operationSystem;
-    }
 
     public String getName() {
         return name;
@@ -421,17 +410,19 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     @Override
     public String toString() {
-        return "AssetSoftwareRequest{" + "activityRequest=" + activityRequest + ", softwareLicenseRequest="
-               + softwareLicenseRequest + ", assetPortProtocolRequest=" + assetPortProtocolRequest + ", assetIds="
-               + Arrays.toString(assetIds) + ", md5Code='" + md5Code + '\'' + ", id='" + id + '\'' + ", size=" + size
-               + ", operationSystem='" + operationSystem + '\'' + ", categoryModel='" + categoryModel + '\''
-               + ", name='" + name + '\'' + ", uploadSoftwareName='" + uploadSoftwareName + '\'' + ", path='" + path
-               + '\'' + ", version='" + version + '\'' + ", manufacturer='" + manufacturer + '\'' + ", description='"
-               + description + '\'' + ", serial='" + serial + '\'' + ", softwareStatus=" + softwareStatus
+        return "AssetSoftwareRequest{" + "activityRequest=" + activityRequest + ", request=" + request
+               + ", softwareLicenseRequest=" + softwareLicenseRequest + ", assetPortProtocolRequest="
+               + assetPortProtocolRequest + ", assetIds=" + Arrays.toString(assetIds) + ", md5Code='" + md5Code + '\''
+               + ", id='" + id + '\'' + ", size=" + size + ", operationSystems=" + Arrays.toString(operationSystems)
+               + ", categoryModel='" + categoryModel + '\'' + ", name='" + name + '\'' + ", uploadSoftwareName='"
+               + uploadSoftwareName + '\'' + ", path='" + path + '\'' + ", version='" + version + '\''
+               + ", manufacturer='" + manufacturer + '\'' + ", description='" + description + '\'' + ", serial='"
+               + serial + '\'' + ", serviceLife=" + serviceLife + ", softwareStatus=" + softwareStatus
                + ", authorization=" + authorization + ", reportSource=" + reportSource + ", protocol='" + protocol
                + '\'' + ", language='" + language + '\'' + ", releaseTime=" + releaseTime + ", publisher='" + publisher
                + '\'' + ", memo='" + memo + '\'' + ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\''
-               + ", request=" + request + '}';
+               + ", buyDate=" + buyDate + ", manualDocUrl='" + manualDocUrl + '\'' + ", manualDocName='" + manualDocName
+               + '\'' + '}';
     }
 
     public Long getServiceLife() {
