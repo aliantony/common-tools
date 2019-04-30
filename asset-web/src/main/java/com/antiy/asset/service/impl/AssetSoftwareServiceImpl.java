@@ -143,7 +143,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     StringBuffer stringBuffer = new StringBuffer();
                     stream.forEach(s -> {
                         BusinessExceptionUtils.isTrue(checkOperatingSystemById(s), "兼容系统不存在，或已经注销！");
-                        stringBuffer.append(s).append(",").substring(0, stringBuffer.length() - 1);
+                        stringBuffer.append(s).append(",");
                     }
 
                     );
@@ -154,7 +154,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                     assetSoftware.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftware.setGmtCreate(System.currentTimeMillis());
-                    assetSoftware.setOperationSystem(stringBuffer.toString());
+                    assetSoftware.setOperationSystem(stringBuffer.substring(0, stringBuffer.length() - 1));
                     assetSoftware.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
                     assetSoftwareDao.insert(assetSoftware);
                     String sid = String.valueOf(assetSoftware.getId());
@@ -333,11 +333,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     Stream<String> stream = Arrays.stream(request.getOperationSystems());
                     StringBuffer stringBuffer = new StringBuffer();
                     stream.forEach(s -> {
-                        stringBuffer.append(s).append(",").substring(0, stringBuffer.length() - 1);
+                        stringBuffer.append(s).append(",");
                     }
 
                     );
-                    assetSoftware.setOperationSystem(stringBuffer.toString());
+                    assetSoftware.setOperationSystem(stringBuffer.substring(0, stringBuffer.length() - 1));
                     int assetSoftwareCount = assetSoftwareDao.update(assetSoftware);
 
                     /**
