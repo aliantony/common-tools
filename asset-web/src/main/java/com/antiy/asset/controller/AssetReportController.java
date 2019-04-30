@@ -145,6 +145,7 @@ public class AssetReportController {
     @ApiOperation(value = "资产组表格", notes = "根据时间查询资产组表格")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/queryAssetGroupTable", method = RequestMethod.GET)
+    // @PreAuthorize("hasAuthority('asset:report:queryAssetGroupTable')")
     public ActionResponse queryAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception {
         reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         return ActionResponse.success(iAssetReportService.getAssetGroupReportTable(reportQueryRequest));
@@ -158,6 +159,7 @@ public class AssetReportController {
     @ApiOperation(value = "导出资产组表格", notes = "导出资产组表格")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/exportAssetGroupTable", method = RequestMethod.GET)
+    // @PreAuthorize("hasAuthority('asset:report:exportAssetGroupTable')")
     public void exportAssetGroupTable(@ApiParam(value = "查询条件") ReportQueryRequest reportQueryRequest) throws Exception {
         reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         ExcelUtils.exportFormToClient(iAssetReportService.exportAssetGroupTable(reportQueryRequest), "导出资产组报表.xlsx");
