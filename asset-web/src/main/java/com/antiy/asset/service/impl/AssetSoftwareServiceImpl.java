@@ -1,5 +1,30 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
+import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -28,28 +53,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.stream.Stream;
-
-import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
-import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -466,7 +469,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             protected void convert(AssetSoftware assetSoftware, AssetSoftwareResponse assetSoftwareResponse) {
                 super.convert(assetSoftware, assetSoftwareResponse);
                 assetSoftwareResponse.setAssetCount(0);
-                assetSoftwareResponse.setOperationSystemName(convertOsSystemName(assetSoftwareResponse.getOperationSystem()));
+                if (StringUtils.isNotEmpty(assetSoftware.getOperationSystem())) {
+                    assetSoftwareResponse.setOperationSystem(
+                        Stream.of(assetSoftware.getOperationSystem().split(",")).collect(Collectors.toList()));
+                    assetSoftwareResponse
+                        .setOperationSystemName(convertOsSystemName(assetSoftware.getOperationSystem()));
+                }
                 if (MapUtils.isNotEmpty(finalSoftAssetCount)) {
                     assetSoftwareResponse.setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null
                         ? finalSoftAssetCount.get(assetSoftware.getId()).intValue()
@@ -483,7 +491,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
      * @param operationSystem
      * @return
      */
-    private String convertOsSystemName(String operationSystem) {
+    private List<String> convertOsSystemName(String operationSystem) {
         String[] osSystemIds = null;
         if (StringUtils.isNotEmpty(operationSystem)) {
             osSystemIds = operationSystem.split(",");
@@ -494,21 +502,21 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             try {
                 List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
                 if (!CollectionUtils.isEmpty(categoryOsResponseList)) {
-                    StringBuffer sb = new StringBuffer();
+                    List<String> osSystemNameList = new ArrayList<>();
                     for (String osSystemId : osSystemIds) {
                         Optional<LinkedHashMap> optional = categoryOsResponseList.stream()
                             .filter(categoryOsResponse -> osSystemId
                                 .equals(Optional.ofNullable(categoryOsResponse.get("stringId")).get().toString()))
                             .findFirst();
                         if (optional.isPresent() && optional.get() != null) {
-                            sb.append(optional.get().get("name"));
-                            sb.append(",");
+                            osSystemNameList
+                                .add(optional.get().get("name") != null ? optional.get().get("name").toString() : "");
                         }
                     }
-                    return sb.delete(sb.lastIndexOf(","),sb.length()).toString();
+                    return osSystemNameList;
                 }
             } catch (Exception e) {
-                logger.warn("获取操作系统失败");
+                logger.warn("获取操作系统失败", e);
             }
         }
         return null;
@@ -683,8 +691,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
 
         // 获取软件的操作系统名
-        assetSoftwareDetailResponse
-            .setOperationSystemName(convertOsSystemName(assetSoftwareDetailResponse.getOperationSystem()));
+        if (StringUtils.isNotEmpty(assetSoftware.getOperationSystem())) {
+            assetSoftwareDetailResponse.setOperationSystem(
+                Stream.of(assetSoftware.getOperationSystem().split(",")).collect(Collectors.toList()));
+            assetSoftwareDetailResponse.setOperationSystemName(convertOsSystemName(assetSoftware.getOperationSystem()));
+        }
+
         return assetSoftwareDetailResponse;
     }
 

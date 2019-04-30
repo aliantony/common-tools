@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import java.util.List;
+
 import com.antiy.common.encoder.Encode;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -22,13 +24,13 @@ public class AssetSoftwareResponse extends BaseResponse {
      * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
      */
     @ApiModelProperty("操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)")
-    private String             operationSystem;
+    private List<String>       operationSystem;
 
     /**
      * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
      */
     @ApiModelProperty("操作系统名")
-    private String             operationSystemName;
+    private List<String>       operationSystemName;
     /**
      * 软件品类
      */
@@ -205,6 +207,22 @@ public class AssetSoftwareResponse extends BaseResponse {
         this.waitingTaskReponse = waitingTaskReponse;
     }
 
+    public List<String> getOperationSystem() {
+        return operationSystem;
+    }
+
+    public void setOperationSystem(List<String> operationSystem) {
+        this.operationSystem = operationSystem;
+    }
+
+    public List<String> getOperationSystemName() {
+        return operationSystemName;
+    }
+
+    public void setOperationSystemName(List<String> operationSystemName) {
+        this.operationSystemName = operationSystemName;
+    }
+
     public String getProtocol() {
         return protocol;
     }
@@ -259,14 +277,6 @@ public class AssetSoftwareResponse extends BaseResponse {
 
     public void setSize(Integer size) {
         this.size = size;
-    }
-
-    public String getOperationSystem() {
-        return operationSystem;
-    }
-
-    public void setOperationSystem(String operationSystem) {
-        this.operationSystem = operationSystem;
     }
 
     public String getCategoryModel() {
@@ -445,11 +455,4 @@ public class AssetSoftwareResponse extends BaseResponse {
         this.buyDate = buyDate;
     }
 
-    public String getOperationSystemName() {
-        return operationSystemName;
-    }
-
-    public void setOperationSystemName(String operationSystemName) {
-        this.operationSystemName = operationSystemName;
-    }
 }
