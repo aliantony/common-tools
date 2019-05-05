@@ -1,11 +1,11 @@
 package com.antiy.asset.annotation;
 
-import com.antiy.asset.vo.enums.DataTypeEnum;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import com.antiy.asset.vo.enums.DataTypeEnum;
 
 @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
@@ -16,6 +16,7 @@ public @interface ExcelField {
      * @return
      */
     String value() default "";
+
     /**
      * 是否必填：true必填，false不必填
      *
@@ -71,20 +72,35 @@ public @interface ExcelField {
      * @return
      */
     boolean isParent() default false;
+
     /**
      * 字段长度
      * @return
      */
     int length() default 2147483647;
+
     /**
      * 字段校验类型
      * @return
      */
     DataTypeEnum dataType() default DataTypeEnum.NONE;
+
     /**
      * 反射类型
      *
      * @return
      */
     Class<?> fieldType() default Class.class;
+
+    /**
+     * 导出表格为下拉框，下拉框值来自于数据库，此处填写调用获取数据库的方法名，并且返回的值为list<string>,和dictType码表类型不能同时存在，如果存在优先以defaultDataMethod为准
+     * @return
+     */
+    String defaultDataMethod() default "";
+
+    /**
+     * 导出表格默认的javaBean的名字，需要是实现类的名字才可以。
+     * @return
+     */
+    String defaultDataBeanName() default "";
 }

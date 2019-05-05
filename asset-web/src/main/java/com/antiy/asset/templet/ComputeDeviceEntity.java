@@ -14,7 +14,7 @@ public class ComputeDeviceEntity {
     /**
      * 资产编号
      */
-    @ExcelField(value = "number", align = 1, title = "资产编号(必填)",required = true)
+    @ExcelField(value = "number", align = 1, title = "资产编号(必填)", required = true)
     private String  number;
 
     /**
@@ -38,24 +38,24 @@ public class ComputeDeviceEntity {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者(必填)", required = true)
+    @ExcelField(value = "user", align = 1, title = "使用者(必填)", required = true, defaultDataMethod = "getAllUser", defaultDataBeanName = "assetTemplateServiceImpl")
     private String  user;
 
     /**
      * area
      */
-    @ExcelField(value = "area", align = 1, title = "所属区域(必填)", required = true)
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)", required = true, defaultDataMethod = "queryAllArea", defaultDataBeanName = "assetTemplateServiceImpl")
     private String  area;
     /**
      * 联系电话
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0,dataType = DataTypeEnum.TEL)
+    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0, dataType = DataTypeEnum.TEL)
     private String  telephone;
 
     /**
      * 邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0,dataType = DataTypeEnum.EMAIL)
+    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0, dataType = DataTypeEnum.EMAIL)
     private String  email;
 
     /**
@@ -79,7 +79,7 @@ public class ComputeDeviceEntity {
     /**
      * 操作系统
      */
-    @ExcelField(value = "operationSystem", align = 1, title = "操作系统(必填)",required = true)
+    @ExcelField(value = "operationSystem", align = 1, title = "操作系统(必填)", required = true)
     private String  operationSystem;
 
     /**
@@ -103,7 +103,7 @@ public class ComputeDeviceEntity {
      * 保修
      */
     @ExcelField(value = "warranty", align = 1, title = "保修期")
-    private String    warranty;
+    private String  warranty;
 
     /**
      * memo
@@ -129,22 +129,22 @@ public class ComputeDeviceEntity {
     /**
      * 网卡ip地址
      */
-    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip(必填)",dataType = DataTypeEnum.IP,required = true)
+    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip(必填)", dataType = DataTypeEnum.IP, required = true)
     private String  networkIpAddress;
     /**
      * 网卡mac地址
      */
-    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac(必填)",dataType = DataTypeEnum.MAC,required = true)
+    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac(必填)", dataType = DataTypeEnum.MAC, required = true)
     private String  networkMacAddress;
     /**
      * 网卡子网掩码
      */
-    @ExcelField(value = "networkSubnetMask", align = 1, title = "网卡子网掩码",dataType = DataTypeEnum.IP)
+    @ExcelField(value = "networkSubnetMask", align = 1, title = "网卡子网掩码", dataType = DataTypeEnum.IP)
     private String  networkSubnetMask;
     /**
      * 网卡默认网关
      */
-    @ExcelField(value = "networkDefaultGateway", align = 1, title = "网卡默认网关",dataType = DataTypeEnum.IP)
+    @ExcelField(value = "networkDefaultGateway", align = 1, title = "网卡默认网关", dataType = DataTypeEnum.IP)
     private String  networkDefaultGateway;
 
     /**
@@ -303,8 +303,6 @@ public class ComputeDeviceEntity {
      */
     @ExcelField(value = "cpuCoreSize", align = 1, title = "cpu核心数")
     private Integer cpuCoreSize;
-
-
 
     public String getName() {
         return name;
