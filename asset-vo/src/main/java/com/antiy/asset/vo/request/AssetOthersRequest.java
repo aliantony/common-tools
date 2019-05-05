@@ -65,7 +65,7 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
     @ApiModelProperty("上报来源,1-自动上报，2-人工上报")
     @NotNull(message = "上报来源不能为空")
     @Max(value = 2, message = "上报来源不能大于2")
-    @Max(value = 1, message = "上报来源不能小于1")
+    @Min(value = 1, message = "上报来源不能小于1")
     private Integer                 assetSource;
     /**
      * 1核心2重要3一般
@@ -73,7 +73,7 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
     @ApiModelProperty("1核心2重要3一般")
     @NotNull(message = "重要程度不能为空")
     @Max(value = 3, message = "重要程度不能大于3")
-    @Max(value = 1, message = "重要程度不能小于1")
+    @Min(value = 1, message = "重要程度不能小于1")
     private Integer                 importanceDegree;
 
     /**
@@ -141,7 +141,7 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("资产准入状态:待设置，2已允许，3已禁止")
     @Max(value = 3, message = "上报来源不能大于3")
-    @Max(value = 1, message = "上报来源不能小于1")
+    @Min(value = 1, message = "上报来源不能小于1")
     private Integer                 admittanceStatus;
     /**
      * 首次入网时间
