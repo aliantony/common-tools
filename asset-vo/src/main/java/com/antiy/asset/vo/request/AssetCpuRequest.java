@@ -55,7 +55,7 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
      * CPU主频
      */
     @ApiModelProperty("CPU主频")
-    @Max(value = 9999, message = "线程数最大不超过9999")
+    @Max(value = 9999, message = "CPU主频最大不超过9999")
     @NotNull(message = "CPU主频不能为空")
     private Float   mainFrequency;
     /**
