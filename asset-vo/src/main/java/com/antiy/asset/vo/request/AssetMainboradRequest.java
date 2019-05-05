@@ -6,6 +6,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Size;
 
 /**
@@ -57,6 +58,7 @@ public class AssetMainboradRequest extends BasicRequest implements ObjectValidat
      * BIOS日期
      */
     @ApiModelProperty("BIOS日期")
+    @Max(value = 9999999999999L, message = "时间超出范围")
     private Long   biosDate;
 
     /**

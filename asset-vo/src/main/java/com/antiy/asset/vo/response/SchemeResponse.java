@@ -4,6 +4,8 @@ import com.antiy.common.encoder.Encode;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Size;
+
 /**
  * <p> SchemeResponse 响应对象 </p>
  *
@@ -70,6 +72,7 @@ public class SchemeResponse extends BaseResponse {
      * 备注
      */
     @ApiModelProperty("备注")
+    @Size(message = "备注不能超过300位", max = 300)
     private String  memo;
 
     /**

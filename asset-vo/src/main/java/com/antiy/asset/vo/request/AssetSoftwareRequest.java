@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -43,7 +44,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * MD5/SHA
      */
     @ApiModelProperty("MD5/SHA")
-    @Size(message = "MD5/SHA不超过64位", max = 64)
+    @Size(message = "MD5/SHA不超过30位", max = 30, min = 1)
     private String                      md5Code;
     /**
      * 主键
@@ -73,7 +74,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 软件名称
      */
     @NotBlank(message = "软件名称不能为空")
-    @Size(message = "软件名称字段长度不能超过20位", max = 20)
+    @Size(message = "软件名称字段长度不能超过30位", max = 30, min = 1)
     @ApiModelProperty(value = "软件名称")
     private String                      name;
     /**
@@ -93,32 +94,34 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty(value = "软件版本")
     @NotBlank(message = "软件版本不能为空")
+    @Size(message = "软件版本不能超过30位",max = 30, min = 1)
     @Pattern(regexp = "^[+]?\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$", message = "软件版本格式不正确")
     private String                      version;
     /**
      * 厂商
      */
     @ApiModelProperty(value = "厂商")
-    @Size(message = "资产厂商不能超过32位", max = 32)
+    @Size(message = "资产厂商不能超过30位", max = 30)
     private String                      manufacturer;
     /**
      * 软件描述
      */
     @ApiModelProperty(value = "软件描述")
-    @Size(message = "描述不能超过128位", max = 128)
+    @Size(message = "描述不能超过300位", max = 300)
     private String                      description;
 
     /**
      * 序列号
      */
     @ApiModelProperty(value = "序列号")
-    @Size(message = "资产序列号不能超过32位", max = 32)
+    @Size(message = "资产序列号不能超过30位", max = 30)
     private String                      serial;
 
     /**
      * 到期时间
      */
     @ApiModelProperty(value = "到期时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     private Long                        serviceLife;
 
     /**
@@ -141,7 +144,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 端口
      */
     @ApiModelProperty(value = "协议")
-    @Size(message = "协议长度不能超过32位", max = 64)
+    @Size(message = "协议长度不能超过30位", max = 30)
     private String                      protocol;
     /**
      * 语言
@@ -153,6 +156,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 发布时间
      */
     @ApiModelProperty(value = "发布时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     private Long                        releaseTime;
 
     /**
@@ -164,6 +168,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 备注
      */
     @ApiModelProperty(value = "配置建议")
+    @Size(message = "配置建议不能超过300位", max = 300)
     private String                      memo;
 
     @ApiModelProperty(value = "硬件资产和软件资产关联表Id")

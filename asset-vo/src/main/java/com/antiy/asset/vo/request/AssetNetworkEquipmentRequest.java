@@ -6,10 +6,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 /**
  * <p> AssetNetworkEquipmentRequest 请求对象 </p>
@@ -51,33 +48,33 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      */
     @ApiModelProperty("是否无线:0-否,1-是")
     @Max(value = 1, message = "是否无线不能大于1")
-    @Max(value = 0, message = "是否无线不能小于")
+    @Min(value = 0, message = "是否无线不能小于0")
     private Integer isWireless;
     /**
      * 内网IP
      */
     @ApiModelProperty("内网IP")
     @NotBlank(message = "内网IP不能为空")
-    @Size(message = "内网ip不能大于30个字符", min = 1, max = 30)
+    @Size(message = "内网ip不能大于30个字符",  max = 30)
     private String  innerIp;
     /**
      * 外网IP
      */
     @ApiModelProperty("外网IP")
-    @Size(message = "外网IP不能大于30个字符", min = 1, max = 30)
+    @Size(message = "外网IP不能大于30个字符",  max = 30)
     // @NotBlank(message = "外网IP不能为空")
     private String  outerIp;
     /**
      * MAC地址
      */
     @ApiModelProperty("MAC地址")
-    @Size(message = "MAC地址不能大于30个字符", min = 1, max = 30)
+    @Size(message = "MAC地址不能大于30个字符",  max = 30)
     private String  macAddress;
     /**
      * 子网掩码
      */
     @ApiModelProperty("子网掩码")
-    @Size(message = "子网掩码不能大于30个字符", min = 1, max = 30)
+    @Size(message = "子网掩码不能大于30个字符",  max = 30)
     private String  subnetMask;
     /**
      * 预计带宽(M)
@@ -113,19 +110,19 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * ios
      */
     @ApiModelProperty("ios")
-    @Size(message = "ios长度不能超过30位",min = 1, max = 30)
+    @Size(message = "ios长度不能超过30位", max = 30)
     private String  ios;
     /**
      * 固件版本
      */
     @ApiModelProperty("固件版本")
-    @Size(message = "固件版本长度不能超过30位",min = 1, max = 30)
+    @Size(message = "固件版本长度不能超过30位", max = 30)
     private String  firmwareVersion;
     /**
      * cpu版本
      */
     @ApiModelProperty("cpu版本")
-    @Size(message = "cpu版本版本长度不能超过30位",min = 1, max = 30)
+    @Size(message = "cpu版本版本长度不能超过30位", max = 30)
     private String  cpuVersion;
     /**
      * cpu大小

@@ -36,13 +36,13 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("内存品牌")
 //    @NotBlank(message = "内存品牌不能为空")
-    @Size(message = "内存品牌长度不能超过30位", max = 30,min = 1)
+    @Size(message = "内存品牌长度不能超过30位", max = 30)
     private String  brand;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    @Size(message = "序列号长度不能超过30位",max = 30,min = 1)
+    @Size(message = "序列号长度不能超过30位",max = 30)
     private String serial;
     /**
      * 内存类型：1未知，2-ddr2,3-ddr3,4-ddr4
@@ -90,11 +90,13 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      * 购买日期
      */
     @ApiModelProperty("购买日期")
+    @Max(value = 9999999999999L, message = "时间超出范围")
     private Long    buyDate;
     /**
      * 保修期
      */
     @ApiModelProperty("保修期")
+    @Max(value = 9999999999999L, message = "时间超出范围")
     private Long    warrantyDate;
     /**
      * 联系电话

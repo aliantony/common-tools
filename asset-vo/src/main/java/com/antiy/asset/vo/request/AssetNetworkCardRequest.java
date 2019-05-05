@@ -34,7 +34,7 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
      * 品牌
      */
     @ApiModelProperty("品牌")
-    @NotBlank(message = "网卡品牌不能为空")
+    // @NotBlank(message = "网卡品牌不能为空")
     @Size(message = "网卡品牌长度不能超过30位",max = 30)
     private String brand;
     /**

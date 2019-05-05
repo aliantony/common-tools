@@ -3,6 +3,7 @@ package com.antiy.asset.vo.query;
 import java.util.Arrays;
 import java.util.List;
 
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -10,6 +11,13 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.collections.CollectionUtils;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
+import javax.validation.constraints.Max;
 
 /**
  * <p> Asset 查询条件 </p>
@@ -29,12 +37,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 综合查询条件
      */
     @ApiModelProperty("综合查询条件")
+    @Size(max = 30, message = "综合查询条件不能超过30")
     private String       multipleQuery;
 
     /**
      * 资产名称
      */
-    @ApiModelProperty("资产名称")
+    @ApiModelProperty(value = "资产名称")
     private String       name;
     /**
      * 资产名称,重复判读使用
@@ -112,6 +121,8 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
     @ApiModelProperty("资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役")
+    @Max(value = 9,message = "资产状态最大为9")
+    @Min(value = 1,message = "资产状态最小为1")
     private Integer       assetStatus;
 
     /**
@@ -136,11 +147,15 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 上报来源,1-自动上报，2-人工上报
      */
     @ApiModelProperty("上报来源,1-自动上报，2-人工上报")
+    @Max(message = "上报来源最大为2", value = 2)
+    @Min(message = "上报来源最小为1", value = 1)
     private Integer       assetSource;
     /**
      * 0-不重要(not_major),1- 一般(general),3-重要(major),
      */
     @ApiModelProperty("0-不重要(not_major),1- 一般(general),3-重要(major),")
+    @Max(message = "重要程度最大为3", value = 3)
+    @Min(message = "重要程度最小为1", value = 1)
     private Integer       importanceDegree;
 
     /**
@@ -166,6 +181,8 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 时间类型（1：发现。2：入网，3：到期）
      */
     @ApiModelProperty("时间类型（1：发现。2：入网。3：到期）")
+    @Max(message = "时间类型最大为3", value = 3)
+    @Min(message = "时间类型最小为1", value = 1)
     private Integer       timeType;
 
     @Encode
@@ -175,6 +192,8 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 资产准入状态
      */
     @ApiModelProperty("准入状态，1待设置，2已允许，3已禁止")
+    @Max(message = "准入状态最大为3", value = 3)
+    @Min(message = "准入状态最小为1", value = 1)
     private Integer       admittanceStatus;
 
     /**
@@ -191,10 +210,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 首次入网时间
      */
     @ApiModelProperty("首次入网时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     private Long          firstEnterNett;
     @ApiModelProperty("开始时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     private Long          beginTime;
     @ApiModelProperty("结束时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     private Long          endTime;
 
     @ApiModelProperty(value = "是否查询漏洞个数,true 表示查询，false表示不查询", allowableValues = "true,false")
@@ -220,6 +242,8 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 维护方式（安装方式）
      */
     @ApiModelProperty("维护方式（安装方式）1:人工,2:自动")
+    @Max(message = "维护方式最大为2", value = 2)
+    @Min(message = "维护方式最小为1", value = 1)
     private String        installType;
 
     public Integer getExceptId() {
@@ -517,18 +541,18 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
                + name + '\'' + ", assetName='" + assetName + '\'' + ", ip='" + ip + '\'' + ", isNet=" + isNet
                + ", isSafety=" + isSafety + ", number='" + number + '\'' + ", serial='" + serial + '\''
                + ", categoryModel='" + categoryModel + '\'' + ", categoryModels=" + Arrays.toString(categoryModels)
-               + ", areaIds=" + Arrays.toString(areaIds) + ", manufacturer='" + manufacturer + '\'' + ", manufacturers="
-               + manufacturers + ", removeManufacturers=" + removeManufacturers + ", assetStatus=" + assetStatus
-               + ", operationSystem='" + operationSystem + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='"
-               + responsibleUserId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
-               + ", parentId='" + parentId + '\'' + ", assetStatusList=" + assetStatusList + ", assetGroup='"
-               + assetGroup + '\'' + ", timeType=" + timeType + ", softwareId='" + softwareId + '\''
-               + ", admittanceStatus=" + admittanceStatus + ", responsibleUserName='" + responsibleUserName + '\''
-               + ", gmtCreate=" + gmtCreate + ", firstEnterNett=" + firstEnterNett + ", beginTime=" + beginTime
-               + ", endTime=" + endTime + ", queryVulCount=" + queryVulCount + ", queryPatchCount=" + queryPatchCount
-               + ", queryAlarmCount=" + queryAlarmCount + ", associateGroup=" + associateGroup + ", groupId='" + groupId
-               + '\'' + ", exceptId=" + exceptId + ", existAssociateIds=" + existAssociateIds + ", enterControl="
-               + enterControl + '}';
+               + ", areaIds=" + Arrays.toString(areaIds) + ", manufacturer='" + manufacturer + '\''
+               + ", manufacturers=" + manufacturers + ", removeManufacturers=" + removeManufacturers + ", assetStatus="
+               + assetStatus + ", operationSystem='" + operationSystem + '\'' + ", uuid='" + uuid + '\''
+               + ", responsibleUserId='" + responsibleUserId + '\'' + ", assetSource=" + assetSource
+               + ", importanceDegree=" + importanceDegree + ", parentId='" + parentId + '\'' + ", assetStatusList="
+               + assetStatusList + ", assetGroup='" + assetGroup + '\'' + ", timeType=" + timeType + ", softwareId='"
+               + softwareId + '\'' + ", admittanceStatus=" + admittanceStatus + ", responsibleUserName='"
+               + responsibleUserName + '\'' + ", gmtCreate=" + gmtCreate + ", firstEnterNett=" + firstEnterNett
+               + ", beginTime=" + beginTime + ", endTime=" + endTime + ", queryVulCount=" + queryVulCount
+               + ", queryPatchCount=" + queryPatchCount + ", queryAlarmCount=" + queryAlarmCount + ", associateGroup="
+               + associateGroup + ", groupId='" + groupId + '\'' + ", exceptId=" + exceptId + ", existAssociateIds="
+               + existAssociateIds + ", enterControl=" + enterControl + '}';
     }
 
     @Override
@@ -539,6 +563,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
             ParamterExceptionUtils.isTrue(endTime > beginTime, "结束时间必须大于开始时间");
         }
     }
+
 
     public String getAssetName() {
         return assetName;

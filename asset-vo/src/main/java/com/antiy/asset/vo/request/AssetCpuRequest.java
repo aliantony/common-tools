@@ -42,7 +42,7 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
      * 品牌
      */
     @ApiModelProperty("品牌")
-    @NotBlank(message = "CPU品牌不能为空")
+    // @NotBlank(message = "CPU品牌不能为空")
     @Size(message = "CPU品牌长度不能超过30位", max = 30)
     private String  brand;
     /**
@@ -55,7 +55,7 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
      * CPU主频
      */
     @ApiModelProperty("CPU主频")
-    @Max(value = 9999, message = "线程数最大不超过9999")
+    @Max(value = 9999, message = "CPU主频最大不超过9999")
     @NotNull(message = "CPU主频不能为空")
     private Float   mainFrequency;
     /**
