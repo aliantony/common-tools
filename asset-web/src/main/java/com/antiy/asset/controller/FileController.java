@@ -171,6 +171,14 @@ public class FileController {
             if (!FileUseEnum.INSTALL_INTRODUCE_MANUAL.getFormat().contains(FileUtil.getExtensionName(file.getName()))) {
                 throw new BusinessException("文件格式错误");
             }
+        } else if (FileUseEnum.SCHEME_FILE.getCode().equals(fileUseEnum.getCode())) {
+            if (fileSize > FileUseEnum.SCHEME_FILE.getSize()) {
+                throw new BusinessException("文件过大");
+            }
+
+            if (!FileUseEnum.SCHEME_FILE.getFormat().contains(FileUtil.getExtensionName(file.getName()))) {
+                throw new BusinessException("文件格式错误");
+            }
         }
 
         logger.info("单个文件上传开始");
