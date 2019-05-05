@@ -6,6 +6,9 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Size;
 
 /**
  * <p> AssetUser 查询条件 </p>
@@ -19,6 +22,7 @@ public class AssetUserQuery extends ObjectQuery implements ObjectValidator {
      * 姓名
      */
     @ApiModelProperty("姓名")
+    @Size(message = "姓名应在1~30字符", min = 1, max = 30)
     private String  name;
     /**
      * 姓名
@@ -57,6 +61,7 @@ public class AssetUserQuery extends ObjectQuery implements ObjectValidator {
      * 手机号
      */
     @ApiModelProperty("手机号")
+    @Length(message = "手机号长度应为11位", min = 11, max = 11)
     private String  mobile;
     /**
      * 住址
