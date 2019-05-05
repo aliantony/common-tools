@@ -33,25 +33,25 @@ public class AssetMainboradRequest extends BasicRequest implements ObjectValidat
      */
     @ApiModelProperty("品牌")
 //    @NotBlank(message = "主板品牌不能为空")
-    @Size(message = "主板品牌长度不能超过32位",max = 32)
+    @Size(message = "主板品牌长度不能超过30位",max = 30)
     private String brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
-    @Size(message = "主板型号长度不能超过32位",max = 32)
+    @Size(message = "主板型号长度不能超过30位",max = 30)
     private String model;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    @Size(message = "主板序列号长度不能超过32位",max = 32)
+    @Size(message = "主板序列号长度不能超过30位",max = 30)
     private String serial;
     /**
      * BIOS版本
      */
     @ApiModelProperty("BIOS版本")
-    @Size(message = "主板BIOS版本长度不能超过20位",max = 20)
+    @Size(message = "主板BIOS版本长度不能超过30位",max = 30)
     private String biosVersion;
     /**
      * BIOS日期
