@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.exception.RequestParamValidateException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,6 +74,11 @@ public class AssetGroupController {
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:group:queryList')")
     public ActionResponse queryList(@ApiParam(value = "assetGroup") AssetGroupQuery assetGroup) throws Exception {
+        List<SelectResponse> selectResponseList = iAssetGroupService.queryCreateUser();
+        if (!selectResponseList.contains(assetGroup.getCreateUser())) {
+            throw new RequestParamValidateException("必须选定下拉菜单栏里内容");
+        }
+
         return ActionResponse.success(iAssetGroupService.findPageAssetGroup(assetGroup));
     }
 

@@ -37,7 +37,7 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
      */
     @NotBlank(message = "用户姓名不能为空")
     @ApiModelProperty("姓名")
-    @Size(message = "姓名应在1~30字符", min = 1, max = 30)
+    @Size(message = "姓名应在1~30字符", max = 30)
     private String name;
     /**
      * 备注
@@ -55,25 +55,25 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
      * 部门名
      */
     @ApiModelProperty("部门名")
-    @Size(message = "姓名名在1~30字符", min = 1, max = 30)
+    @Size(message = "姓名名在1~30字符", max = 30)
     private String departmentName;
     /**
      * 电子邮箱
      */
     @ApiModelProperty("电子邮箱")
-    @Size(message = "电子邮箱应在1~30字符", min = 1, max = 30)
+    @Size(message = "电子邮箱应在1~30字符", max = 30)
     private String email;
     /**
      * qq号
      */
     @ApiModelProperty("qq号")
-    @Size(message = "qq号应在1~30字符", min = 1, max = 30)
+    @Size(message = "qq号应在1~30字符", max = 30)
     private String qq;
     /**
      * 微信
      */
     @ApiModelProperty("微信")
-    @Size(message = "微信应在1~30字符", min = 1, max = 30)
+    @Size(message = "微信应在1~30字符", max = 30)
     private String weixin;
     /**
      * 手机号
@@ -85,19 +85,19 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
      * 住址
      */
     @ApiModelProperty("住址")
-    @Size(message = "住址应在1~50字符", min = 1, max = 50)
+    @Size(message = "住址应在1~50字符", max = 50)
     private String address;
     /**
      * 详细地址
      */
     @ApiModelProperty("详细地址")
-    @Size(message = "详细地址应在1~50字符", min = 1, max = 50)
+    @Size(message = "详细地址应在1~50字符", max = 50)
     private String detailAddress;
     /**
      * 职位
      */
     @ApiModelProperty("职位")
-    @Size(message = "职位应在1~30字符", min = 1, max = 30)
+    @Size(message = "职位应在1~30字符", max = 30)
     private String position;
 
     public String getDetailAddress() {

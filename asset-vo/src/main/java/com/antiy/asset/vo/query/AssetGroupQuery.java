@@ -21,7 +21,7 @@ public class AssetGroupQuery extends ObjectQuery implements ObjectValidator {
      * 资产组名称
      */
     @ApiModelProperty("资产组名称")
-    @Size(message = "资产组名称在1~30字符间", min = 1, max = 30)
+    @Size(message = "资产组名称在1~30字符间", max = 30)
     private String name;
     /**
      * 备注

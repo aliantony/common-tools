@@ -22,7 +22,7 @@ public class AssetUserQuery extends ObjectQuery implements ObjectValidator {
      * 姓名
      */
     @ApiModelProperty("姓名")
-    @Size(message = "姓名应在1~30字符", min = 1, max = 30)
+    @Size(message = "姓名应在1~30字符", max = 30)
     private String  name;
     /**
      * 姓名
