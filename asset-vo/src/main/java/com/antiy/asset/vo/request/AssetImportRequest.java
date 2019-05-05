@@ -6,6 +6,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Size;
 import java.util.Arrays;
 
 /**
@@ -34,6 +35,7 @@ public class AssetImportRequest extends BasicRequest implements ObjectValidator 
      * 序列号
      */
     @ApiModelProperty("备注")
+    @Size(message = "备注不能超过300个字符",max = 300, min = 5)
     private String  memo;
 
     @Override

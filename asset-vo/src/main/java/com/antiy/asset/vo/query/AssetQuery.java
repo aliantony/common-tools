@@ -17,6 +17,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
+import javax.validation.constraints.Max;
+
 /**
  * <p> Asset 查询条件 </p>
  *
@@ -41,7 +43,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 资产名称
      */
-    @ApiModelProperty("资产名称")
+    @ApiModelProperty(value = "资产名称")
     private String       name;
     /**
      * 资产名称,重复判读使用
@@ -208,10 +210,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 首次入网时间
      */
     @ApiModelProperty("首次入网时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     private Long          firstEnterNett;
     @ApiModelProperty("开始时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     private Long          beginTime;
     @ApiModelProperty("结束时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     private Long          endTime;
 
     @ApiModelProperty(value = "是否查询漏洞个数,true 表示查询，false表示不查询", allowableValues = "true,false")

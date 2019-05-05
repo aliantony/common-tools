@@ -91,7 +91,7 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
     @Max(value = 999999999, message = "累计小时不超过999999999")
     private Integer cumulativeHour;
     /**
-     * 备注
+     * Request
      */
     private String  memo;
 

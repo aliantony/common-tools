@@ -10,6 +10,9 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
+
 /**
  * WorkOrderVO 请求对象
  *
@@ -28,6 +31,7 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
      * 工单名称
      */
     @ApiModelProperty("工单名称")
+    @Size(message = "工单名称不能超过30个字符",max = 30, min = 1)
     private String        name;
 
     /**
@@ -51,7 +55,8 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
     /**
      * 工单内容
      */
-    @ApiModelProperty("工单内容")
+    @ApiModelProperty(value = "工单内容", required = true)
+    @Size(message = "工单内容不能超过300个字符",max = 300, min = 5)
     private String        content;
 
     /**
@@ -64,6 +69,7 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
      * 工单开始时间
      */
     @ApiModelProperty("工单开始时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     /** 正则表达式范围2001-09-09 09:46:40 12:00:00 ----> 2128-06-11 16:53:19 1000000000000-4999999999999 */
     private String        startTime;
 
@@ -71,6 +77,7 @@ public class WorkOrderVO extends BasicRequest implements ObjectValidator {
      * 工单结束时间
      */
     @ApiModelProperty("工单结束时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     /** 正则表达式范围2001-09-09 09:46:40 12:00:00 ----> 2128-06-11 16:53:19 1000000000000-4999999999999 */
     private String        endTime;
 
