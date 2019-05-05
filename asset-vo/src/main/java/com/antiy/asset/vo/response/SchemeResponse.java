@@ -72,7 +72,7 @@ public class SchemeResponse extends BaseResponse {
      * 备注
      */
     @ApiModelProperty("备注")
-    @Size(message = "备注不能超过300位", max = 300, min = 5)
+    @Size(message = "备注不能超过300位", max = 300)
     private String  memo;
 
     /**
