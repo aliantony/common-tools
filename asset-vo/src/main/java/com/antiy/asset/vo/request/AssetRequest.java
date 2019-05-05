@@ -37,13 +37,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 机房位置
      */
     @ApiModelProperty("机房位置")
-    @Size(message = "机房位置不能超过30位", max = 30, min = 1)
+    @Size(message = "机房位置不能超过30位", max = 30)
     private String                  houseLocation;
     /**
      * 联系电话
      */
     @ApiModelProperty("联系电话")
-    @Size(message = "联系电话必须为11位", max = 11, min = 11)
+    @Size(message = "联系电话必须为11位", max = 111)
     @Pattern(regexp = "^1(3|4|5|7|8|9)\\d{9}$", message = "联系电话错误")
     private String                  contactTel;
     /**
@@ -51,14 +51,14 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("邮箱")
     @Email(message = "邮箱不正确")
-    @Size(message = "邮箱必须小于30位", max = 30, min = 1)
+    @Size(message = "邮箱必须小于30位", max = 30)
     private String                  email;
     /**
      * 资产编号
      */
     @ApiModelProperty("资产编号")
     @NotBlank(message = "资产编号不能为空")
-    @Size(message = "资产编号不能超过30位", max = 30, min = 1)
+    @Size(message = "资产编号不能超过30位", max = 30)
     private String                  number;
 
     /**
@@ -66,13 +66,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("资产名称")
     @NotBlank(message = "资产名称不能为空")
-    @Size(message = "资产名字不能超过30位", max = 30, min = 1)
+    @Size(message = "资产名字不能超过30位", max = 30)
     private String                  name;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    @Size(message = "资产序列号不能超过30位", max = 30, min = 1)
+    @Size(message = "资产序列号不能超过30位", max = 30)
     private String                  serial;
     /**
      * 品类型号
@@ -93,7 +93,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 厂商
      */
     @ApiModelProperty("厂商")
-    @Size(message = "资产厂商不能超过30位", max = 30, min = 1)
+    @Size(message = "资产厂商不能超过30位", max = 30)
     private String                  manufacturer;
     /**
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
@@ -104,7 +104,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统。基准获取")
-    @Size(message = "资产操作系统不能超过30位", max = 30, min = 1)
+    @Size(message = "资产操作系统不能超过30位", max = 30)
     private String                  operationSystem;
     /**
      * 系统位数
@@ -116,7 +116,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 物理位置
      */
     @ApiModelProperty("物理位置")
-    @Size(message = "物理位置不能超过30位", max = 30, min = 1)
+    @Size(message = "物理位置不能超过30位", max = 30)
     private String                  location;
     /**
      * 安装方式
@@ -130,7 +130,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 固件版本
      */
     @ApiModelProperty("固件版本")
-    @Size(message = "固件版本不能超过30位", max = 30, min = 1)
+    @Size(message = "固件版本不能超过30位", max = 30)
     private String                  firmwareVersion;
     /**
      * 软件版本
@@ -157,6 +157,8 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("上报来源,1-自动上报，2-人工上报")
     // @NotNull(message = "上报来源不能为空")
+    @Max(message = "上报来源不能大于2", value = 2)
+    @Min(message = "上报来源不能小于1", value = 1)
     private Integer                 assetSource;
     /**
      * 1核心2重要3一般
@@ -193,7 +195,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 保修期
      */
     @ApiModelProperty("保修期")
-    @Size(message = "保修期大于1位不能超过30位", max = 30, min = 1)
+    @Size(message = "保修期大于1位不能超过30位", max = 30)
     private String                  warranty;
     /**
      * 资产准入状态
@@ -211,7 +213,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 描述
      */
     @ApiModelProperty("描述")
-    @Size(message = "描述大于5个字符不能超过300个字符", max = 300, min = 5)
+    @Size(message = "描述不能超过300个字符", max = 300)
     private String                  describle;
     /**
      * 备注
@@ -445,7 +447,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
 
     @Override
     public void validate() throws RequestParamValidateException {
-
     }
 
     public Integer getInstallType() {

@@ -35,25 +35,25 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
      */
     @ApiModelProperty("IP")
     @NotBlank(message = "不能为空")
-    @Size(message = "ip不能大于30个字符", min = 1, max = 30)
+    @Size(message = "ip不能大于30个字符",  max = 30)
     private String ip;
     /**
      * mac
      */
     @ApiModelProperty("mac")
     @NotBlank(message = "mac不能为空")
-    @Size(message = "mac不能大于30个字符", min = 1, max = 30)
+    @Size(message = "mac不能大于30个字符",  max = 30)
     private String mac;
     /**
      * 特征库版本
      */
     @ApiModelProperty("特征库版本")
     @Pattern(regexp = "^[+]?\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$", message = "特征库版本格式不正确")
-    @Size(message = "特征库版本不能大于30个字符", min = 1, max = 30)
+    @Size(message = "特征库版本不能大于30个字符",  max = 30)
     private String featureLibrary;
 
     @ApiModelProperty("软件版本")
-    @Size(message = "软件版本不能大于30个字符", min = 1, max = 30)
+    @Size(message = "软件版本不能大于30个字符",  max = 30)
     @Pattern(regexp = "^[+]?\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$", message = "软件版本格式不正确")
     private String newVersion;
 
