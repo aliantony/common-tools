@@ -31,7 +31,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 资产zu
      */
     @ApiModelProperty("资产组")
-    @Valid
     private List<AssetGroupRequest> assetGroups;
     /**
      * 机房位置
