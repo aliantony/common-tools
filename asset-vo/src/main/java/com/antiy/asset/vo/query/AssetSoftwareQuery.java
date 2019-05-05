@@ -37,7 +37,7 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     private String        categoryModel;
 
     @ApiModelProperty("综合查询")
-    @Size(message = "综合查询不能超过30位", max = 30, min = 1)
+    @Size(message = "综合查询不能超过30位", max = 30)
     private String        multipleQuery;
 
     @ApiModelProperty("软件品类型号列表")
