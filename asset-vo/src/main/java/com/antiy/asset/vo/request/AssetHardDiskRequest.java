@@ -7,6 +7,7 @@ import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -35,24 +36,26 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty("硬盘品牌")
 //    @NotBlank(message = "硬盘品牌不能为空")
-    @Size(message = "硬盘品牌长度不能超过32位", max = 32)
+    @Size(message = "硬盘品牌长度不能超过30位", max = 30)
     private String  brand;
     /**
      * 硬盘型号
      */
     @ApiModelProperty("硬盘型号")
-    @Size(message = "硬盘品牌长度不能超过32位", max = 32)
+    @Size(message = "硬盘品牌长度不能超过30位", max = 30)
     private String  model;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    @Size(message = "硬盘序列号长度不能超过32位", max = 32)
+    @Size(message = "硬盘序列号长度不能超过30位", max = 30)
     private String  serial;
     /**
      * 接口类型:1SATA、2IDE、3ATA、4SCSI、5光纤通道
      */
     @ApiModelProperty("接口类型:1SATA、2IDE、3ATA、4SCSI、5光纤通道")
+    @Max(value = 5,message = "接口类型不能大于5")
+    @Min(value = 1,message = "接口类型不能小于1")
     private Integer interfaceType;
     /**
      * 容量 (MB)
@@ -66,6 +69,8 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty("磁盘类型,1 HDD,2,SSD")
     @NotNull(message = "磁盘类型不能为空")
+    @Max(value = 2,message = "磁盘类型不能大于2")
+    @Min(value = 1,message = "磁盘类型不能小于1")
     private Integer diskType;
     /**
      * 购买日期

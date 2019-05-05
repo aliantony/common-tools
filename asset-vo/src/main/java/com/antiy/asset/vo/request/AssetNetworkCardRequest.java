@@ -34,37 +34,40 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
      * 品牌
      */
     @ApiModelProperty("品牌")
-//    @NotBlank(message = "网卡品牌不能为空")
-    @Size(message = "网卡品牌长度不能超过32位",max = 32)
+    @NotBlank(message = "网卡品牌不能为空")
+    @Size(message = "网卡品牌长度不能超过30位",max = 30)
     private String brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
-    @Size(message = "网卡型号长度不能超过32位",max = 32)
+    @Size(message = "网卡型号长度不能超过30位",max = 30)
     private String model;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    @Size(message = "网卡序列号长度不能超过32位",max = 32)
+    @Size(message = "网卡序列号长度不能超过30位",max = 30)
     private String serial;
     /**
      * IP地址
      */
     @ApiModelProperty("IP地址")
     @NotBlank(message = "IP地址不能为空")
+    @Size(message = "IP地址长度不能超过30位",max = 30)
     private String ipAddress;
     /**
      * MAC地址
      */
     @ApiModelProperty("MAC地址")
     @NotBlank(message = "MAC地址不能为空")
+    @Size(message = "MAC地址长度不能超过30位",max = 30)
     private String macAddress;
     /**
      * 默认网关
      */
     @ApiModelProperty("默认网关")
+    @Size(message = "默认网关长度不能超过30位",max = 30)
     private String defaultGateway;
     /**
      * 网络地址
@@ -75,6 +78,7 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
      * 子网掩码
      */
     @ApiModelProperty("子网掩码")
+    @Size(message = "子网掩码长度不能超过30位",max = 30)
     private String subnetMask;
 
     public String getId() {

@@ -2,6 +2,7 @@ package com.antiy.asset.vo.request;
 
 import java.util.Arrays;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.antiy.common.base.BasicRequest;
@@ -32,13 +33,14 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
      * 备注
      */
     @ApiModelProperty("备注")
+    @Size(message = "备注范围5~300字符", min = 5, max = 300)
     private String   memo;
     /**
      * 资产组名称
      */
     @ApiModelProperty("资产组名称")
-//    @NotBlank(message = "资产组名称不能为空")
-    @Size(message = "资产组名称长度不能超过32位", max = 32)
+    @NotBlank(message = "资产组名称不能为空")
+    @Size(message = "名称范围1~30字符", min = 1, max = 30)
     private String   name;
     /**
      * 资产组ID数组

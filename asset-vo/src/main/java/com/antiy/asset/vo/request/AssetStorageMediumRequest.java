@@ -32,7 +32,7 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      */
     @ApiModelProperty("最大存储量")
     @NotBlank(message = "最大存储容量不能为空")
-    @Size(message = "最大存储量长度不能超过11位", max = 11)
+    @Size(message = "最大存储量长度不能超过30位", max = 30)
     private String  maximumStorage;
     /**
      * 单机磁盘数
@@ -44,25 +44,25 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      * 高速缓存
      */
     @ApiModelProperty("高速缓存")
-    @Size(message = "高速缓存长度不能超过11位", max = 11)
+    @Size(message = "高速缓存长度不能超过30位", max = 30)
     private String  highCache;
     /**
      * 内置接口
      */
     @ApiModelProperty("内置接口")
-    @Size(message = "内置接口长度不能超过32位", max = 32)
+    @Size(message = "内置接口长度不能超过30位", max = 30)
     private String  innerInterface;
     /**
      * RAID支持
      */
     @ApiModelProperty("RAID支持")
-    @Size(message = "RAID支持长度不能超过32位", max = 32)
+    @Size(message = "RAID支持长度不能超过30位", max = 30)
     private String  raidSupport;
     /**
      * 平均传输率
      */
     @ApiModelProperty("平均传输率")
-    @Size(message = "平均传输率不能超过11位", max = 11)
+    @Size(message = "平均传输率不能超过30位", max = 30)
     private String  averageTransferRate;
     /**
      * 驱动器数量
@@ -74,13 +74,13 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      * 固件
      */
     @ApiModelProperty("固件")
-    @Size(message = "固件长度不能超过32位", max = 32)
+    @Size(message = "固件长度不能超过30位", max = 30)
     private String  firmware;
     /**
      * OS版本
      */
     @ApiModelProperty("OS版本")
-    @Size(message = "OS版本长度不能超过32位", max = 32)
+    @Size(message = "OS版本长度不能超过30位", max = 30)
     private String  osVersion;
 
     public String getId() {

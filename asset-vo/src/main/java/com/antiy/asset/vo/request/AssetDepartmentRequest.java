@@ -8,6 +8,7 @@ import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * <p> AssetDepartmentRequest 请求对象 </p>
@@ -29,6 +30,7 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
      * 部门名
      */
     @ApiModelProperty("部门名")
+    @Size(message = "部门名在1~30字符", min = 1, max = 30)
     private String name;
     /**
      * 上级部门
@@ -41,6 +43,7 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
      * 上级部门
      */
     @ApiModelProperty("备注")
+    @Size(message = "备注名在5~300字符", min = 5, max = 300)
     private String memo;
 
     public String getId() {

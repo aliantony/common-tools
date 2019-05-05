@@ -2,6 +2,8 @@ package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -26,6 +28,7 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      * 资产编号
      */
     @ApiModelProperty("资产编号")
+    @Size(message = "资产编号1~30字符", min = 1, max = 30)
     private String        assetNumber;
     /**
      * 关联资产id
@@ -51,11 +54,13 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      * 资产综合查询
      */
     @ApiModelProperty("资产综合查询")
+    @Size(message = "综合查询1~30字符", min = 1, max = 30)
     private String        multipleQuery;
     /**
      * 关联资产综合查询
      */
     @ApiModelProperty("关联资产综合查询")
+    @Size(message = "关联资产综合查询1~30字符", min = 1, max = 30)
     private String        parentMultipleQuery;
     /**
      * 资产区域
