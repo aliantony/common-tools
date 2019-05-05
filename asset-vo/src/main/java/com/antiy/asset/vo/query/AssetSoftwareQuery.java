@@ -10,6 +10,10 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
 /**
  * <p> AssetSoftware 查询条件 </p>
  *
@@ -33,6 +37,7 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     private String        categoryModel;
 
     @ApiModelProperty("综合查询")
+    @Size(message = "综合查询不能超过30位", max = 30, min = 1)
     private String        multipleQuery;
 
     @ApiModelProperty("软件品类型号列表")
@@ -78,6 +83,8 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      * 1待登记2待分析3可安装4已退役5不予登记
      */
     @ApiModelProperty("1待登记2待分析3可安装4已退役5不予登记")
+    @Max(message = "软件状态不能大于5",value = 5)
+    @Min(message = "软件状态不能小于1",value = 1)
     private Integer       softwareStatus;
 
     @ApiModelProperty("1待登记2待分析3可安装4已退役5不予登记")
@@ -107,10 +114,13 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      * 发布时间
      */
     @ApiModelProperty("发布时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     private Long          releaseTime;
     @ApiModelProperty("开始时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     private Long          beginTime;
     @ApiModelProperty("结束时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     private Long          endTime;
     /**
      * 发布者

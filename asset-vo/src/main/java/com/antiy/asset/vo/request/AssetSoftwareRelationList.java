@@ -5,8 +5,7 @@ import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.util.List;
 
 /**
@@ -26,6 +25,8 @@ public class AssetSoftwareRelationList extends BaseRequest {
      */
     @ApiModelProperty("安装方式：1人工，2自动")
     @NotNull(message = "安装方式不能为空")
+    @Max(value = 2, message = "安装方式不能大于2")
+    @Min(value = 1, message = "安装方式不能小于1")
     private Integer                   installType;
     /**
      * 安装结果
@@ -42,6 +43,7 @@ public class AssetSoftwareRelationList extends BaseRequest {
      * 安装时间
      */
     @ApiModelProperty("安装时间")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     private Long                      installTime;
 
     public String getSoftwareId() {

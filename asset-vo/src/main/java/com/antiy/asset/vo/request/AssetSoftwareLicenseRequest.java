@@ -7,6 +7,9 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
+
 /**
  * <p> AssetSoftwareLicenseRequest 请求对象 </p>
  *
@@ -29,6 +32,7 @@ public class AssetSoftwareLicenseRequest extends BasicRequest implements ObjectV
      * 购买日期
      */
     @ApiModelProperty("购买日期")
+    @Max(message = "时间超出范围",value = 9999999999999L)
     private Long   buyDate;
     /**
      * 有效期限
@@ -44,6 +48,7 @@ public class AssetSoftwareLicenseRequest extends BasicRequest implements ObjectV
      * 备注
      */
     @ApiModelProperty("备注")
+    @Size(message = "备注不能大于300位", max = 300)
     private String memo;
 
     public String getId() {
