@@ -30,7 +30,7 @@ public class SoftwareControllerManager {
         activityRequest.setBusinessId("1");
         activityRequest.setProcessDefinitionKey("2");
         request.setName(name);
-        request.setOperationSystem("WINDOWS7-32-64");
+        // request.setOperationSystem("WINDOWS7-32-64");
         request.setCategoryModel("1");
         request.setUploadSoftwareName("file1");
         request.setPath("url");

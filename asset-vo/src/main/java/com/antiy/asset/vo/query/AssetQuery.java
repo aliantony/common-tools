@@ -181,7 +181,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 资产准入状态
      */
     @ApiModelProperty("责任人")
-    private String       responsibleUserName;
+    private String        responsibleUserName;
 
     /**
      * 创建时间
@@ -216,6 +216,11 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 需要排除的id
      */
     private Integer       exceptId;
+    /**
+     * 维护方式（安装方式）
+     */
+    @ApiModelProperty("维护方式（安装方式）1:人工,2:自动")
+    private String        installType;
 
     public Integer getExceptId() {
         return exceptId;
@@ -508,48 +513,22 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     @Override
     public String toString() {
-        return "AssetQuery{" +
-                "ids=" + Arrays.toString(ids) +
-                ", multipleQuery='" + multipleQuery + '\'' +
-                ", name='" + name + '\'' +
-                ", assetName='" + assetName + '\'' +
-                ", ip='" + ip + '\'' +
-                ", isNet=" + isNet +
-                ", isSafety=" + isSafety +
-                ", number='" + number + '\'' +
-                ", serial='" + serial + '\'' +
-                ", categoryModel='" + categoryModel + '\'' +
-                ", categoryModels=" + Arrays.toString(categoryModels) +
-                ", areaIds=" + Arrays.toString(areaIds) +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", manufacturers=" + manufacturers +
-                ", removeManufacturers=" + removeManufacturers +
-                ", assetStatus=" + assetStatus +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", responsibleUserId='" + responsibleUserId + '\'' +
-                ", assetSource=" + assetSource +
-                ", importanceDegree=" + importanceDegree +
-                ", parentId='" + parentId + '\'' +
-                ", assetStatusList=" + assetStatusList +
-                ", assetGroup='" + assetGroup + '\'' +
-                ", timeType=" + timeType +
-                ", softwareId='" + softwareId + '\'' +
-                ", admittanceStatus=" + admittanceStatus +
-                ", responsibleUserName='" + responsibleUserName + '\'' +
-                ", gmtCreate=" + gmtCreate +
-                ", firstEnterNett=" + firstEnterNett +
-                ", beginTime=" + beginTime +
-                ", endTime=" + endTime +
-                ", queryVulCount=" + queryVulCount +
-                ", queryPatchCount=" + queryPatchCount +
-                ", queryAlarmCount=" + queryAlarmCount +
-                ", associateGroup=" + associateGroup +
-                ", groupId='" + groupId + '\'' +
-                ", exceptId=" + exceptId +
-                ", existAssociateIds=" + existAssociateIds +
-                ", enterControl=" + enterControl +
-                '}';
+        return "AssetQuery{" + "ids=" + Arrays.toString(ids) + ", multipleQuery='" + multipleQuery + '\'' + ", name='"
+               + name + '\'' + ", assetName='" + assetName + '\'' + ", ip='" + ip + '\'' + ", isNet=" + isNet
+               + ", isSafety=" + isSafety + ", number='" + number + '\'' + ", serial='" + serial + '\''
+               + ", categoryModel='" + categoryModel + '\'' + ", categoryModels=" + Arrays.toString(categoryModels)
+               + ", areaIds=" + Arrays.toString(areaIds) + ", manufacturer='" + manufacturer + '\'' + ", manufacturers="
+               + manufacturers + ", removeManufacturers=" + removeManufacturers + ", assetStatus=" + assetStatus
+               + ", operationSystem='" + operationSystem + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='"
+               + responsibleUserId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
+               + ", parentId='" + parentId + '\'' + ", assetStatusList=" + assetStatusList + ", assetGroup='"
+               + assetGroup + '\'' + ", timeType=" + timeType + ", softwareId='" + softwareId + '\''
+               + ", admittanceStatus=" + admittanceStatus + ", responsibleUserName='" + responsibleUserName + '\''
+               + ", gmtCreate=" + gmtCreate + ", firstEnterNett=" + firstEnterNett + ", beginTime=" + beginTime
+               + ", endTime=" + endTime + ", queryVulCount=" + queryVulCount + ", queryPatchCount=" + queryPatchCount
+               + ", queryAlarmCount=" + queryAlarmCount + ", associateGroup=" + associateGroup + ", groupId='" + groupId
+               + '\'' + ", exceptId=" + exceptId + ", existAssociateIds=" + existAssociateIds + ", enterControl="
+               + enterControl + '}';
     }
 
     @Override
@@ -591,5 +570,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     public void setIsSafety(Integer isSafety) {
         this.isSafety = isSafety;
+    }
+
+    public String getInstallType() {
+        return installType;
+    }
+
+    public void setInstallType(String installType) {
+        this.installType = installType;
     }
 }

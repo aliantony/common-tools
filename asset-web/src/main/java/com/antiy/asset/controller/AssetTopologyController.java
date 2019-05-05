@@ -39,6 +39,7 @@ public class AssetTopologyController {
     @ApiOperation(value = "查询品类型号", notes = "查询拓扑管理的品类型号")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class), })
     @RequestMapping(value = "/query/categoryModels", method = RequestMethod.GET)
+    // @PreAuthorize(value = "hasAuthority('asset:topology:queryCategoryModels')")
     public ActionResponse queryCategoryModels() throws Exception {
         return ActionResponse.success(iAssetTopologyService.queryCategoryModels());
     }
@@ -46,6 +47,7 @@ public class AssetTopologyController {
     @ApiOperation(value = "查询节点信息", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetNodeInfoResponse.class), })
     @RequestMapping(value = "/query/assetNodeInfo", method = RequestMethod.GET)
+    // @PreAuthorize(value = "hasAuthority('asset:topology:queryAssetNodeInfo')")
     public ActionResponse queryAssetNodeInfo(@Encode @ApiParam(value = "资产Id", required = true) String assetId) throws Exception {
         return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(assetId));
     }

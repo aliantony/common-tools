@@ -655,7 +655,7 @@
             b.software_id=#{softwareId} and b.software_status !=8 and b.status=1)
         </if>
 
-        <if test=" multipleQuery != null">
+        <if test=" multipleQuery != null and multipleQuery != ''">
             and (name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or serial LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
@@ -767,6 +767,9 @@
                 #{item}
             </foreach>
             )
+        </if>
+        <if test="installType != null and installType != ''">
+            and install_type = #{installType}
         </if>
     </sql>
 
