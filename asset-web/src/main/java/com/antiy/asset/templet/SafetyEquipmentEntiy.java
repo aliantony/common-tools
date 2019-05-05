@@ -26,7 +26,6 @@ public class SafetyEquipmentEntiy {
     @ExcelField(value = "serial", align = 1, title = "序列号", type = 0)
     private String serial;
 
-
     /**
      * 使用者
      */
@@ -38,7 +37,17 @@ public class SafetyEquipmentEntiy {
      */
     @ExcelField(value = "area", align = 1, title = "所属区域(必填)",required = true)
     private String                  area;
+    /**
+     * 操作系统
+     */
+    @ExcelField(value = "operationSystem", align = 1, title = "操作系统(必填)", required = true)
+    private String operationSystem;
 
+    /**
+     * 重要程度
+     */
+    @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
+    private String importanceDegree;
     /**
      * 联系电话
      */
@@ -59,13 +68,6 @@ public class SafetyEquipmentEntiy {
      */
     @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
     private String houseLocation;
-
-
-    /**
-     * 重要程度
-     */
-    @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
-    private String  importanceDegree;
 
 
     /**
@@ -250,5 +252,13 @@ public class SafetyEquipmentEntiy {
 
     public void setImportanceDegree(String importanceDegree) {
         this.importanceDegree = importanceDegree;
+    }
+
+    public String getOperationSystem() {
+        return operationSystem;
+    }
+
+    public void setOperationSystem(String operationSystem) {
+        this.operationSystem = operationSystem;
     }
 }
