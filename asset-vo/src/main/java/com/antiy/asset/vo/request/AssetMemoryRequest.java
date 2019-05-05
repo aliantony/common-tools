@@ -90,11 +90,13 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      * 购买日期
      */
     @ApiModelProperty("购买日期")
+    @Max(value = 9999999999999L, message = "时间超出范围")
     private Long    buyDate;
     /**
      * 保修期
      */
     @ApiModelProperty("保修期")
+    @Max(value = 9999999999999L, message = "时间超出范围")
     private Long    warrantyDate;
     /**
      * 联系电话

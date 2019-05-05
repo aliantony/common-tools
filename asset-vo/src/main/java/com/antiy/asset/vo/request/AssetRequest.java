@@ -185,11 +185,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("使用到期时间")
     @NotNull(message = "使用到期时间不能为空")
+    @Max(value = 9999999999999L, message = "时间超出范围")
     private Long                    serviceLife;
     /**
      * 制造日期
      */
     @ApiModelProperty("制造日期")
+    @Max(value = 9999999999999L, message = "时间超出范围")
     private Long                    buyDate;
     /**
      * 保修期
@@ -208,6 +210,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 首次入网时间
      */
     @ApiModelProperty("首次入网时间")
+    @Max(value = 9999999999999L, message = "时间超出范围")
     private Long                    firstEnterNett;
     /**
      * 描述

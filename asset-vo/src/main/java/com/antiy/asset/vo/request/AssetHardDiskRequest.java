@@ -76,6 +76,7 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      * 购买日期
      */
     @ApiModelProperty("购买日期")
+    @Max(value = 9999999999999L, message = "时间超出范围")
     private Long    buyDate;
     /**
      * 使用次数
