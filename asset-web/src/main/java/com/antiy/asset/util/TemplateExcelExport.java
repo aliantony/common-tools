@@ -1,8 +1,14 @@
 package com.antiy.asset.util;
 
-import com.antiy.asset.annotation.ExcelField;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.ParamterExceptionUtils;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -12,13 +18,10 @@ import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
 import org.slf4j.Logger;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.antiy.asset.annotation.ExcelField;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import com.antiy.common.utils.SpringUtil;
 
 public class TemplateExcelExport {
     private static Logger          logger         = LogUtils.get();
@@ -51,7 +54,7 @@ public class TemplateExcelExport {
     private int                    rownum         = 0;
 
     /**
-     * 注解列表（Object[]{ ExcelField, Field/Method }）
+     * 注解列表（Object[]{ ExcelField, Field/Method/defaultValue }）
      */
     private List<Object[]>         annotationList = Lists.newArrayList();
 
@@ -259,16 +262,45 @@ public class TemplateExcelExport {
         this.styles = createStyles(wb);
 
         ParamterExceptionUtils.isEmpty(headerList, "The table title can not be null");
+        int hiddenSheetIndex = 0;
         for (int i = 0; i < headerList.size(); i++) {
             sheet.autoSizeColumn(i);
             // sheet.trackAllColumnsForAutoSizing();
             // 为码表类型，设置下拉框
-            if (annotationList.size() > 0
-                && StringUtils.isNotBlank(((ExcelField) annotationList.get(i)[0]).dictType())) {
+            if (annotationList.size() > 0 && StringUtils.isNotBlank(((ExcelField) annotationList.get(i)[0]).dictType())
+                || StringUtils.isNotBlank(((ExcelField) annotationList.get(i)[0]).defaultDataMethod())) {
+
                 XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper(sheet);
-                XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint) dvHelper
-                    .createExplicitListConstraint(
+                XSSFDataValidationConstraint dvConstraint = null;
+                if (StringUtils.isNotBlank(((ExcelField) annotationList.get(i)[0]).dictType())) {
+                    dvConstraint = (XSSFDataValidationConstraint) dvHelper.createExplicitListConstraint(
                         CodeUtils.getCodeArray(((ExcelField) annotationList.get(i)[0]).dictType()));
+                } else {
+                    String clazzName = ((ExcelField) annotationList.get(i)[0]).defaultDataBeanName();
+                    ParamterExceptionUtils.isBlank(clazzName, "下载导出模板失败");
+                    // 采用Spring的方式调用方法并且返回值
+                    Object springBean = SpringUtil.getBean(clazzName);
+                    if (springBean != null) {
+                        try {
+                            Object data = ReflectionUtils.invokeMethod(springBean,
+                                ((ExcelField) annotationList.get(i)[0]).defaultDataMethod(), null, null);
+                            if (data instanceof List) {
+                                List<String> listData = (List<String>) data;
+                                String[] strings = new String[listData.size()];
+                                listData.toArray(strings);
+                                dvConstraint = (XSSFDataValidationConstraint) dvHelper
+                                    .createExplicitListConstraint(strings);
+                            }
+                        } catch (Exception e) {
+                            logger.warn("Excel获取bean失败", e);
+                        }
+                    }
+                }
+
+                if (dvConstraint == null) {
+                    continue;
+                }
+
                 // 设置区域边界
                 CellRangeAddressList addressList = new CellRangeAddressList(6, 100000, i, i);
                 XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(dvConstraint,

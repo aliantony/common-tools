@@ -50,4 +50,22 @@ public class Constants {
      */
     public static final String  SYSTEM_OS_REDIS_KEY                = "system:Baseline:os";
 
+    /**
+     * EXCEL 导入最大多少条记录
+     */
+    public static final int     EXCEL_MAX_ROWS                     = 100;
+
+    /**
+     * EXCEL 模板下拉导出开始行数
+     */
+    public static final int     EXCEL_SELECT_START_ROWS            = 1;
+
+    public static final String  XLS                                = ".xls";
+    public static final String  XLSX                               = ".xlsx";
+
+    /**
+     * 隐藏列
+     */
+    public static final String HIDDEN_SHEET_HEAD                  = "hidden";
+
 }
