@@ -26,7 +26,7 @@ public enum FileUseEnum {
                                                                                                              "png",
                                                                                                              "xlsx",
                                                                                                              "xls"),
-                                                                                                         10240L);
+                                                                                                         10485760L);
     private String       code;
     private List<String> format;
     private Long         size;
