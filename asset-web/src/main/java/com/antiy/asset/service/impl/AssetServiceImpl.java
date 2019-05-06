@@ -768,6 +768,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
         if (MapUtils.isNotEmpty(processMap)) {
+            Set<String> activitiIds = processMap.keySet();
+            List<String> sortedIds = assetDao.sortAssetIds(activitiIds);
+            Collections.reverse(sortedIds);
+            query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
+        }
+        /*if (MapUtils.isNotEmpty(processMap)) {
             List<Map.Entry<String, WaitingTaskReponse>> processList = Lists.newArrayList();
             processList.addAll(processMap.entrySet());
             Collections.sort(processList, (o1, o2) -> DataTypeUtils.stringToInteger(o1.getValue().getTaskId())
@@ -784,7 +790,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             });
             lowIds.addAll(highIds);
             query.setIds(lowIds.toArray(new String[] {}));
-        }
+        }*/
         /* if (!Objects.isNull(processMap) && !processMap.isEmpty()) { query.setIds(processMap.keySet().toArray(new
          * String[] {})); } */
 

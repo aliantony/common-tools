@@ -1401,4 +1401,18 @@
         AND v.vul_status = 4
         and t2.asset_status in(7,8)
     </select>
+    <select id="sortAssetIds" resultType="java.lang.Integer">
+        SELECT
+            id
+        FROM
+            asset
+        WHERE
+            id IN
+            <foreach collection="ids" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        ORDER BY
+        FIELD( asset_status, 3 ) ,
+        gmt_create DESC
+    </select>
 </mapper>
