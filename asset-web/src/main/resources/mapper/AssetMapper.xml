@@ -1412,7 +1412,7 @@
                 #{item}
             </foreach>
         ORDER BY
-        FIELD( asset_status, 3 ) ,
+        FIELD( asset_status, 3 ,4) ,
         gmt_create DESC
     </select>
 </mapper>
