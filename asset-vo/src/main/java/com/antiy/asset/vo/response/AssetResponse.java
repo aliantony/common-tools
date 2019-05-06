@@ -174,7 +174,7 @@ public class AssetResponse extends BaseResponse {
     /**
      * 创建时间
      */
-    @ApiModelProperty("首次发现时间")
+    @ApiModelProperty("创建时间")
     private Long                     gmtCreate;
 
     /**
@@ -182,6 +182,11 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("首次入网时间")
     private Long                     firstEnterNett;
+    /**
+     * 首次入网时间
+     */
+    @ApiModelProperty("首次发现时间")
+    private Long                     firstDiscoverTime;
     /**
      * 行政区划主键
      */
@@ -229,6 +234,14 @@ public class AssetResponse extends BaseResponse {
     private String                   alarmCount;
     @ApiModelProperty(value = "二级品类名")
     private String                   secondCategoryModelName;
+
+    public Long getFirstDiscoverTime() {
+        return firstDiscoverTime;
+    }
+
+    public void setFirstDiscoverTime(Long firstDiscoverTime) {
+        this.firstDiscoverTime = firstDiscoverTime;
+    }
 
     public String getSecondCategoryModelName() {
         return secondCategoryModelName;

@@ -1,37 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -64,6 +32,36 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -2409,11 +2407,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+            if (!checkOperatingSystem(entity.getOperationSystem())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("操作系统不存在，或已被注销，");
+                continue;
+            }
+
+            String areaId = null;
             List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
             List<String> areasStrings = new ArrayList<>();
             for (SysArea area : areas) {
                 areasStrings.add(area.getFullName());
+                if (area.getFullName().equals(entity.getArea())) {
+                    areaId = area.getStringId();
+                }
             }
+
             if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
@@ -2421,14 +2431,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+
             if (repeat + error == 0) {
+
                 ComputerVo computerVo = new ComputerVo();
                 Asset asset = new Asset();
+                List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
+                for (LinkedHashMap linkedHashMap : linkedHashMapList) {
+                    if (linkedHashMap.get("name").equals(entity.getOperationSystem())) {
+                        asset.setOperationSystem((String) linkedHashMap.get("stringId"));
+                    }
+                }
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
-                asset.setAreaId(importRequest.getAreaId());
+                asset.setAreaId(areaId);
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                asset.setResponsibleUserId(Objects.toString(LoginUserUtil.getLoginUser().getId()));
                 asset.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
                 asset.setAssetSource(ReportType.AUTOMATIC.getCode());
                 asset.setNumber(entity.getNumber());
@@ -2444,15 +2461,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setServiceLife(entity.getDueTime());
                 asset.setWarranty(entity.getWarranty());
                 asset.setDescrible(entity.getDescription());
-                asset.setMemo(importRequest.getMemo());
-                asset.setOperationSystem(entity.getOperationSystem());
                 asset.setContactTel(entity.getTelephone());
                 asset.setEmail(entity.getEmail());
                 asset.setCategoryModel("4");
+                asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
                 computerVo.setAsset(asset);
 
-                if (StringUtils.isNotBlank(entity.getMemoryBrand()) && !Objects.isNull(entity.getMemoryCapacity())
-                    && !Objects.isNull(entity.getMemoryFrequency()) && !Objects.isNull(entity.getMemoryNum())
+                if (!Objects.isNull(entity.getMemoryCapacity()) && !Objects.isNull(entity.getMemoryNum())
                     && entity.getMemoryNum() > 0) {
                     AssetMemory assetMemory = new AssetMemory();
                     // assetMemory.setAssetId(id);
@@ -2479,7 +2494,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // builder.append("序号").append(a).append("行").append ("没有添加内存：内存品牌，内存容量，内存主频，内存数量>0")
                 // }
 
-                if (StringUtils.isNotBlank(entity.getHardDiskBrand()) && !Objects.isNull(entity.getHardDisCapacityl())
+                if (!Objects.isNull(entity.getHardDisCapacityl())
                     && !Objects.isNull(entity.getHardDiskType()) && !Objects.isNull(entity.getHardDiskNum())
                     && entity.getHardDiskNum() > 0) {
                     AssetHardDisk assetHardDisk = new AssetHardDisk();
@@ -2503,8 +2518,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                 }
 
-                if (StringUtils.isNotBlank(entity.getMainboradBrand()) && !Objects.isNull(entity.getMainboradNum())
-                    && entity.getMainboradNum() > 0) {
+                if (!Objects.isNull(entity.getMainboradNum()) && entity.getMainboradNum() > 0
+                    && StringUtils.isNotBlank(entity.getMainboradBrand())) {
 
                     AssetMainborad assetMainborad = new AssetMainborad();
                     // assetMainborad.setAssetId(id);
@@ -2522,7 +2537,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     computerVo.setAssetMainborads(assetMainborads);
                     // assetMainboradDao.insertBatch(assetMainborads);
                 }
-                if (StringUtils.isNotBlank(entity.getCpuBrand()) && !Objects.isNull(entity.getCpuNum())
+                if (!Objects.isNull(entity.getCpuNum())
                     && entity.getCpuNum() > 0 && !Objects.isNull(entity.getCpuMainFrequency())) {
                     AssetCpu assetCpu = new AssetCpu();
                     // assetCpu.setAssetId(id);
@@ -2664,11 +2679,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("没有此使用者，");
                 continue;
             }
+
+            String areaId = null;
             List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
             List<String> areasStrings = new ArrayList<>();
             for (SysArea area : areas) {
                 areasStrings.add(area.getFullName());
+                if (area.getFullName().equals(networkDeviceEntity.getArea())) {
+                    areaId = area.getStringId();
+                }
             }
+
             if (!areasStrings.contains(networkDeviceEntity.getArea())) {
                 error++;
                 a++;
@@ -2676,13 +2697,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+
             if (repeat + error == 0) {
 
                 Asset asset = new Asset();
-                asset.setResponsibleUserId(checkUser(networkDeviceEntity.getUser()));
                 AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
+                asset.setResponsibleUserId(checkUser(networkDeviceEntity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
-                asset.setAreaId(importRequest.getAreaId());
+                asset.setAreaId(areaId);
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 asset.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
                 asset.setAssetSource(ReportType.AUTOMATIC.getCode());
@@ -2702,6 +2724,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setContactTel(networkDeviceEntity.getTelephone());
                 asset.setEmail(networkDeviceEntity.getEmail());
                 asset.setCategoryModel("5");
+                asset.setImportanceDegree(DataTypeUtils.stringToInteger(networkDeviceEntity.getImportanceDegree()));
                 assets.add(asset);
                 assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
                 assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -2806,11 +2829,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("没有此使用者，");
                 continue;
             }
+            if (!checkOperatingSystem(entity.getOperationSystem())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("操作系统不存在，或已被注销，");
+                continue;
+            }
+
+            String areaId = null;
             List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
             List<String> areasStrings = new ArrayList<>();
             for (SysArea area : areas) {
                 areasStrings.add(area.getFullName());
+                if (area.getFullName().equals(entity.getArea())) {
+                    areaId = area.getStringId();
+                }
             }
+
             if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
@@ -2820,10 +2855,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             if (repeat + error == 0) {
                 Asset asset = new Asset();
-                asset.setResponsibleUserId(checkUser(entity.getUser()));
                 AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
+                List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
+                for (LinkedHashMap linkedHashMap : linkedHashMapList) {
+                    if (linkedHashMap.get("name").equals(entity.getOperationSystem())) {
+                        asset.setOperationSystem((String) linkedHashMap.get("stringId"));
+                    }
+                }
+                asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
-                asset.setAreaId(importRequest.getAreaId());
+                asset.setAreaId(areaId);
+                asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 asset.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
                 asset.setAssetSource(ReportType.AUTOMATIC.getCode());
@@ -2839,7 +2881,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setBuyDate(entity.getBuyDate());
                 asset.setServiceLife(entity.getDueDate());
                 asset.setWarranty(entity.getWarranty());
-                asset.setMemo(entity.getMemo());
+                asset.setDescrible(entity.getMemo());
                 asset.setContactTel(entity.getTelephone());
                 asset.setEmail(entity.getEmail());
                 asset.setCategoryModel("7");
@@ -2932,11 +2974,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+            String areaId = null;
             List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
             List<String> areasStrings = new ArrayList<>();
             for (SysArea area : areas) {
                 areasStrings.add(area.getFullName());
+                if (area.getFullName().equals(entity.getArea())) {
+                    areaId = area.getStringId();
+                }
             }
+
             if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
@@ -2950,7 +2997,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 AssetStorageMedium assetStorageMedium = new AssetStorageMedium();
                 asset.setGmtCreate(System.currentTimeMillis());
-                asset.setAreaId(importRequest.getAreaId());
+                asset.setAreaId(areaId);
+                asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 asset.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
                 asset.setAssetSource(ReportType.AUTOMATIC.getCode());
@@ -3063,10 +3111,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+            String areaId = null;
             List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
             List<String> areasStrings = new ArrayList<>();
             for (SysArea area : areas) {
                 areasStrings.add(area.getFullName());
+                if (area.getFullName().equals(entity.getArea())) {
+                    areaId = area.getStringId();
+                }
             }
             if (!areasStrings.contains(entity.getArea())) {
                 error++;
@@ -3078,7 +3130,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 Asset asset = new Asset();
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
-                asset.setAreaId(importRequest.getAreaId());
+                asset.setAreaId(areaId);
+                asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 asset.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
                 asset.setAssetSource(ReportType.AUTOMATIC.getCode());

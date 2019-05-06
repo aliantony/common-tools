@@ -86,6 +86,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             request.getAssetPort());
         if (CollectionUtils.isNotEmpty(assetAddress)) {
             ParamterExceptionUtils.isTrue(assetAddress.contains(request.getAssetIp()), "子资产IP已经存在绑定关系,无法再次绑定");
+        } else {
+            ParamterExceptionUtils.isTrue(false, "子资产IP已经存在绑定关系,无法再次绑定");
         }
 
         // 2.校验父资产IP是否可用
@@ -93,6 +95,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             request.getParentAssetPort());
         if (CollectionUtils.isNotEmpty(parentAssetAddress)) {
             ParamterExceptionUtils.isTrue(parentAssetAddress.contains(request.getParentAssetIp()), "父资产IP已经存在绑定关系,无法再次绑定");
+        } else {
+            ParamterExceptionUtils.isTrue(false, "父资产IP已经存在绑定关系,无法再次绑定");
         }
 
         // 3.组装通联关系

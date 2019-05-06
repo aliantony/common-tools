@@ -208,6 +208,10 @@ public class Asset extends BaseEntity {
      */
     private Long              firstEnterNett;
     /**
+     * 首次发现时间
+     */
+    private Long              firstDiscoverTime;
+    /**
      * 使用到期时间
      */
     @ApiModelProperty("到期时间")
@@ -251,6 +255,14 @@ public class Asset extends BaseEntity {
     private String           vulCount;
     @ApiModelProperty("未安装补丁数量")
     private String           patchCount;
+
+    public Long getFirstDiscoverTime() {
+        return firstDiscoverTime;
+    }
+
+    public void setFirstDiscoverTime(Long firstDiscoverTime) {
+        this.firstDiscoverTime = firstDiscoverTime;
+    }
 
     public String getOperationSystemName() {
         return operationSystemName;
@@ -321,6 +333,7 @@ public class Asset extends BaseEntity {
                 ", describle='" + describle + '\'' +
                 ", tags='" + tags + '\'' +
                 ", firstEnterNett=" + firstEnterNett +
+               ", firstDiscoverTime=" + firstDiscoverTime +
                 ", serviceLife=" + serviceLife +
                 ", buyDate=" + buyDate +
                 ", warranty='" + warranty + '\'' +
