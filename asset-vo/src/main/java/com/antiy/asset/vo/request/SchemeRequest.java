@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
@@ -60,6 +61,7 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      * 备注
      */
     @ApiModelProperty(value = "备注")
+    @Size(message = "备注不能超过300个字符",max = 300)
     private String  memo;
 
     @ApiModelProperty(value = "方案文件,JSON串,{\n" + "\t\"name\": \"zhangsan\",\n" + "\t\"url\": \"http://www.baidu.com\"\n"

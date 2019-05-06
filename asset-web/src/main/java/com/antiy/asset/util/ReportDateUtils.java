@@ -94,7 +94,7 @@ public class ReportDateUtils {
 
         WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 4);
         int firstWeek = firstday.get(weekFields.weekOfYear());
-        int lastWeek = lastDay.get(weekFields.weekOfYear());
+        int currentWeek = today.get(weekFields.weekOfYear());
         TreeMap<String, String> resultMap = new TreeMap<String, String>(new Comparator<String>() {
             @Override
             public int compare(String a, String b) {
@@ -109,7 +109,8 @@ public class ReportDateUtils {
         weeksMap.put(4, "第四周");
         weeksMap.put(5, "第五周");
         weeksMap.put(6, "第六周");
-        int weekCount = lastWeek - firstWeek + 1;
+        // 过滤掉未到的周数
+        int weekCount = currentWeek - firstWeek + 1;
         for (int i = 1; i <= weekCount; i++) {
             // 由于java周是1到53，mysql是1到52，所以此处-1
             resultMap.put((firstWeek + i - 1) + "", weeksMap.get(i));
@@ -257,13 +258,14 @@ public class ReportDateUtils {
     }
 
     public static void main(String[] args) {
+        System.out.println(ReportDateUtils.getWeekOfMonth());
         // System.out.println(getMonthWithDate(1542468106000L,1558468106000L));
 
         // System.out.println(getDayOfWeek());
         // for (Map.Entry<String, String> entry : getDayOfWeek().entrySet()) {
         // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
         // }
-        System.out.println(getSeason());
+        // System.out.println(getSeason());
         // for (Map.Entry<String, String> entry : getWeekOfMonth().entrySet()) {
         // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
         // }

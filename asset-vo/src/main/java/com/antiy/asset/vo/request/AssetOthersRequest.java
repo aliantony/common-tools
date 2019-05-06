@@ -49,7 +49,7 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("资产编号")
     @NotBlank(message = "资产编号不能为空")
-    @Size(message = "资产编号不能超过32位", max = 32)
+    @Size(message = "资产编号不能超过30位", max = 30)
     private String                  number;
 
     /**
@@ -57,26 +57,30 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("资产名称")
     @NotBlank(message = "资产名称不能为空")
-    @Size(message = "资产名字不能超过32位", max = 32)
+    @Size(message = "资产名字不能超过30位", max = 30)
     private String                  name;
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
     @ApiModelProperty("上报来源,1-自动上报，2-人工上报")
     @NotNull(message = "上报来源不能为空")
+    @Max(value = 2, message = "上报来源不能大于2")
+    @Min(value = 1, message = "上报来源不能小于1")
     private Integer                 assetSource;
     /**
      * 1核心2重要3一般
      */
     @ApiModelProperty("1核心2重要3一般")
     @NotNull(message = "重要程度不能为空")
+    @Max(value = 3, message = "重要程度不能大于3")
+    @Min(value = 1, message = "重要程度不能小于1")
     private Integer                 importanceDegree;
 
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    @Size(message = "资产序列号不能超过32位", max = 32)
+    @Size(message = "资产序列号不能超过30位", max = 30)
     private String                  serial;
     /**
      * 品类型号
@@ -97,7 +101,7 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      * 厂商
      */
     @ApiModelProperty("厂商")
-    @Size(message = "资产厂商不能超过32位", max = 32)
+    @Size(message = "资产厂商不能超过30位", max = 30)
     private String                  manufacturer;
 
     /**
@@ -118,38 +122,44 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      * 使用到期时间
      */
     @ApiModelProperty("使用到期时间")
+    @Max(value = 9999999999999L, message = "时间超出范围")
     private Long                    serviceLife;
     /**
      * 制造日期
      */
     @ApiModelProperty("制造日期")
+    @Max(value = 9999999999999L, message = "时间超出范围")
     private Long                    buyDate;
     /**
      * 保修期
      */
     @ApiModelProperty("保修期")
+    @Size(message = "资产厂商不能超过30位", max = 30)
     private String                  warranty;
     /**
      * 资产准入状态
      */
     @ApiModelProperty("资产准入状态:待设置，2已允许，3已禁止")
+    @Max(value = 3, message = "上报来源不能大于3")
+    @Min(value = 1, message = "上报来源不能小于1")
     private Integer                 admittanceStatus;
     /**
      * 首次入网时间
      */
     @ApiModelProperty("首次入网时间")
+    @Max(value = 9999999999999L, message = "时间超出范围")
     private Long                    firstEnterNett;
     /**
      * 描述
      */
     @ApiModelProperty("描述")
-    @Size(message = "描述不能超过128位", max = 128)
+    @Size(message = "描述必须大于5位小于300位", min = 5,max = 300)
     private String                  describle;
     /**
      * 描述
      */
     @ApiModelProperty("备注")
-    @Size(message = "描述不能超过128位", max = 128)
+    @Size(message = "描述必须大于5位小于300位", min = 5,max = 300)
     private String                  memo;
 
     @Override

@@ -7,6 +7,7 @@ import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -35,38 +36,39 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
      * 序列号
      */
     @ApiModelProperty("序列号")
-    @Size(message = "CPU序列号长度不能超过32位", max = 32)
+    @Size(message = "CPU序列号长度不能超过30位", max = 30)
     private String  serial;
     /**
      * 品牌
      */
     @ApiModelProperty("品牌")
-//    @NotBlank(message = "CPU品牌不能为空")
-    @Size(message = "CPU品牌长度不能超过32位", max = 32)
+    // @NotBlank(message = "CPU品牌不能为空")
+    @Size(message = "CPU品牌长度不能超过30位", max = 30)
     private String  brand;
     /**
      * 型号
      */
     @ApiModelProperty("型号")
-    @Size(message = "CPU型号长度不能超过32位", max = 32)
+    @Size(message = "CPU型号长度不能超过30位", max = 30)
     private String  model;
     /**
      * CPU主频
      */
     @ApiModelProperty("CPU主频")
+    @Max(value = 9999, message = "CPU主频最大不超过9999")
     @NotNull(message = "CPU主频不能为空")
     private Float   mainFrequency;
     /**
      * 线程数
      */
     @ApiModelProperty("线程数")
-    @Max(value = 9999, message = "线程数最大不超过9999")
+    @Max(value = 9999999, message = "线程数最大不超过9999999")
     private Integer threadSize;
     /**
      * 核心数
      */
     @ApiModelProperty("核心数")
-    @Max(value = 9999, message = "核心数最大不超过9999")
+    @Max(value = 9999999, message = "核心数最大不超过9999999")
     private Integer coreSize;
 
     public String getId() {

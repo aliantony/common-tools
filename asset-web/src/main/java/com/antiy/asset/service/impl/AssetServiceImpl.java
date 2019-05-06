@@ -526,7 +526,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
                     assetOperationRecord.setProcessResult(1);
-                    assetOperationRecord.setContent("登记硬件资产");
+                    assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_REGISTER.getMsg());
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
                     assetOperationRecord.setGmtCreate(currentTimeMillis);
@@ -744,7 +744,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<String> lowIds = Lists.newArrayList();
             List<String> highIds = Lists.newArrayList();
             processList.stream().forEach(v -> {
-                if ( Objects.isNull(v.getValue()) || "基准配置".equals(v.getValue().getName()) || "基准验证".equals(v.getValue().getName())) {
+                if (Objects.isNull(v.getValue()) || "基准配置".equals(v.getValue().getName())
+                    || "基准验证".equals(v.getValue().getName())) {
                     lowIds.add(v.getKey());
                 } else {
                     highIds.add(v.getKey());
@@ -3247,12 +3248,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      *
      * @return
      */
-    private Boolean checkOperatingSystemById(String id) {
+    private boolean checkOperatingSystemById(String id) {
         List<BaselineCategoryModelNodeResponse> baselineCategoryModelNodeResponse = operatingSystemClient
             .getInvokeOperatingSystemTree();
         Set<String> result = new HashSet<>();
         if (CollectionUtils.isNotEmpty(baselineCategoryModelNodeResponse)) {
-            operatingSystemRecursion(result, baselineCategoryModelNodeResponse.get(0));
+            for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse1 : baselineCategoryModelNodeResponse) {
+                operatingSystemRecursion(result, baselineCategoryModelNodeResponse1);
+            }
         }
         return result.contains(id);
     }
