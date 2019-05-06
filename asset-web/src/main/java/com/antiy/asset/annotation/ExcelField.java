@@ -1,11 +1,11 @@
 package com.antiy.asset.annotation;
 
+import com.antiy.asset.vo.enums.DataTypeEnum;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import com.antiy.asset.vo.enums.DataTypeEnum;
 
 @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
@@ -77,7 +77,7 @@ public @interface ExcelField {
      * 字段长度
      * @return
      */
-    int length() default 2147483647;
+    int length() default 30;
 
     /**
      * 字段校验类型

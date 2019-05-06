@@ -66,6 +66,10 @@ public class Constants {
     /**
      * 隐藏列
      */
-    public static final String HIDDEN_SHEET_HEAD                  = "hidden";
+    public static final String  HIDDEN_SHEET_HEAD                  = "hidden";
 
+    /**
+     * EXCEL 下拉框导出最大长度
+     */
+    public static final Integer MAX_EXCEL_SELECT_LENGTH            = 300;
 }
