@@ -1141,6 +1141,7 @@
                 </foreach>
                 ) DESC,
             </if>
+            gmt_create desc,
             id desc
         </where>
 
