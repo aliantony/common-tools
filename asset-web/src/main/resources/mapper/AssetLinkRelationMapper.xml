@@ -489,22 +489,30 @@
         <choose>
             <when test="enable">
                 select ip_address from asset_network_card t1 WHERE not exists
-                (select 1 from asset_link_relation t2 where (t2.asset_id=#{assetId} and t1.ip_address= t2.asset_ip)
-                or(t2.parent_asset_id=#{assetId} and t1.ip_address= t2.parent_asset_ip) and status='1'
+                (select 1 from asset_link_relation t2 where (t2.asset_id=#{assetId} and t1.ip_address= t2.asset_ip
                 <if test="assetPort!=null and assetPort!=''">
-                    and asset_port=#{assetPort}
+                    and t2.asset_port=#{assetPort}
                 </if>
+                )
+                or (t2.parent_asset_id=#{assetId} and t1.ip_address= t2.parent_asset_ip
+                <if test="assetPort!=null and assetPort!=''">
+                    and t2.parent_asset_port=#{assetPort}
+                </if>
+                ) and status='1'
                 ) and
                 asset_id=#{assetId} and
                 status='1'
                 union all select inner_ip as ip_address from asset_network_equipment t1 WHERE not exists
-                (select 1 from asset_link_relation t2 where (t2.asset_id=#{assetId} and t1.inner_ip= t2.asset_ip)
-                or(t2.parent_asset_id=#{assetId} and t1.inner_ip= t2.parent_asset_ip) and status='1'
-
+                (select 1 from asset_link_relation t2 where (t2.asset_id=#{assetId} and t1.inner_ip= t2.asset_ip
                 <if test="assetPort!=null and assetPort!=''">
-                    and parent_asset_port=#{assetPort}
+                    and t2.asset_port=#{assetPort}
                 </if>
-
+                )
+                or(t2.parent_asset_id=#{assetId} and t1.inner_ip= t2.parent_asset_ip
+                <if test="assetPort!=null and assetPort!=''">
+                    and t2.parent_asset_port=#{assetPort}
+                </if>
+                ) and status='1'
                 )
                 and
                 asset_id=#{assetId}

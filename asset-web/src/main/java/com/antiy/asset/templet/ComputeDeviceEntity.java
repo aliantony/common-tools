@@ -129,12 +129,12 @@ public class ComputeDeviceEntity {
     /**
      * 网卡ip地址
      */
-    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip(必填)", dataType = DataTypeEnum.IP, required = true)
+    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip(必填)", dataType = DataTypeEnum.IP, required = false)
     private String  networkIpAddress;
     /**
      * 网卡mac地址
      */
-    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac(必填)", dataType = DataTypeEnum.MAC, required = true)
+    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac(必填)", dataType = DataTypeEnum.MAC, required = false)
     private String  networkMacAddress;
     /**
      * 网卡子网掩码
@@ -246,7 +246,7 @@ public class ComputeDeviceEntity {
     /**
      * 主板品牌
      */
-    @ExcelField(value = "mainboradBrand", align = 1, title = "主板品牌")
+    @ExcelField(value = "mainboradBrand", align = 1, title = "主板品牌(必填)")
     private String  mainboradBrand;
     /**
      * 主板型号

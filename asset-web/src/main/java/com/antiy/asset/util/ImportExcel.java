@@ -299,6 +299,12 @@ public class ImportExcel {
             sb.append("模板不匹配,请重新选择对应模板！");
             return null;
         }
+
+        if (lastRowNum > 2000) {
+            sb.append("一次最多只能导入2000行！");
+            return null;
+        }
+
         for (int i = getDataRownum(); i < lastRowNum; i++) {
             // 数据行
             Row dataRow = this.getRow(i);

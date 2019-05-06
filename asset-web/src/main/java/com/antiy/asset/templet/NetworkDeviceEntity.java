@@ -101,7 +101,7 @@ public class NetworkDeviceEntity {
     /**
      * 内网IP
      */
-    @ExcelField(value = "innerIp", align = 1, title = "内网IP",required = true)
+    @ExcelField(value = "innerIp", align = 1, title = "内网IP", required = true, dataType = DataTypeEnum.IP)
     private String  innerIp;
     /**
      * 外网IP
