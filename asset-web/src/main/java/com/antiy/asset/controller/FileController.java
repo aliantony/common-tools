@@ -146,7 +146,11 @@ public class FileController {
     private void uploadToHdfs(MultipartFile tmpFile, List<FileRespVO> fileRespVOS, String md5,
                               FileUseEnum fileUseEnum) throws Exception {
 
-        File file = fileUtils.tranferToFile(tmpFile);
+        String filePath = fileUtils.saveFile2Local(tmpFile, modelName);
+        File file = new File(filePath);
+        if (!file.exists()) {
+            throw new BusinessException("文件不存在");
+        }
 
         long fileSize = file.length();
 
@@ -167,12 +171,20 @@ public class FileController {
             if (!FileUseEnum.INSTALL_INTRODUCE_MANUAL.getFormat().contains(FileUtil.getExtensionName(file.getName()))) {
                 throw new BusinessException("文件格式错误");
             }
+        } else if (FileUseEnum.SCHEME_FILE.getCode().equals(fileUseEnum.getCode())) {
+            if (fileSize > FileUseEnum.SCHEME_FILE.getSize()) {
+                throw new BusinessException("文件过大");
+            }
+
+            if (!FileUseEnum.SCHEME_FILE.getFormat().contains(FileUtil.getExtensionName(file.getName()))) {
+                throw new BusinessException("文件格式错误");
+            }
         }
 
         logger.info("单个文件上传开始");
 
         // 调用上传接口
-        FileResponse fileResponse = fileUtils.upload(modelName, file);
+        FileResponse fileResponse = fileUtils.uploadFromLocal(modelName, file);
 
         if (RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
             FileRespVO fileRep = (FileRespVO) fileResponse.getData();

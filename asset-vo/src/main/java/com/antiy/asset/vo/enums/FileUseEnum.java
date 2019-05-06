@@ -13,7 +13,20 @@ public enum FileUseEnum {
                                          5368709120L), INSTALL_INTRODUCE_MANUAL("INSTALL_INTRODUCE_MANUAL",
                                                                                 Arrays.asList("rar", "zip", "pdf",
                                                                                     "doc", "docx", "txt", "7z"),
-                                                                                209715200L);
+                                                                                209715200L), SCHEME_FILE("SCHEME_FILE",
+                                                                                                         Arrays.asList(
+                                                                                                             "rar",
+                                                                                                             "zip",
+                                                                                                             "pdf",
+                                                                                                             "doc",
+                                                                                                             "docx",
+                                                                                                             "txt",
+                                                                                                             "7z",
+                                                                                                             "jpg",
+                                                                                                             "png",
+                                                                                                             "xlsx",
+                                                                                                             "xls"),
+                                                                                                         10240L);
     private String       code;
     private List<String> format;
     private Long         size;
