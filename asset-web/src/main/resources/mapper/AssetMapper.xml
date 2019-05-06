@@ -51,6 +51,7 @@
         <result column="parent_id" property="parentId"/>
         <result column="tags" property="tags"/>
         <result column="first_enter_nett" property="firstEnterNett"/>
+        <result column="first_discover_time" property="firstDiscoverTime"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
         <result column="warranty" property="warranty"/>
@@ -63,7 +64,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_group, number, name, ethernet_port, serial_port, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, system_bit, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, contact_tel, email, asset_source, importance_degree, describle, parent_id, tags, first_enter_nett, is_innet, service_life, buy_date, warranty, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_group, number, name, ethernet_port, serial_port, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, system_bit, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, contact_tel, email, asset_source, importance_degree, describle, parent_id, tags, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, warranty, gmt_create, gmt_modified, memo, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -158,6 +159,9 @@
         </if>
         <if test=" firstEnterNett != null">
             first_enter_nett,
+        </if>
+        <if test=" firstDiscoverTime != null">
+            first_discover_time,
         </if>
         <if test=" serviceLife != null">
             service_life,
@@ -276,6 +280,9 @@
         <if test=" firstEnterNett != null">
             #{firstEnterNett },
         </if>
+        <if test=" firstDiscoverTime != null">
+            #{firstDiscoverTime },
+        </if>
         <if test=" serviceLife != null">
             #{serviceLife },
         </if>
@@ -393,8 +400,8 @@
         <if test=" firstEnterNett != null">
             first_enter_nett = #{firstEnterNett },
         </if>
-        <if test=" serviceLife != null">
-            service_life = #{serviceLife },
+        <if test=" firstDiscoverTime != null">
+            first_discover_time = #{firstDiscoverTime },
         </if>
         <if test=" buyDate != null">
             buy_date = #{buyDate },
