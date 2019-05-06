@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -1580,6 +1581,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
 
                     List<AssetNetworkCardRequest> assetNetworkCardRequestList = assetOuterRequest.getNetworkCard();
+                    // 如果网卡被删除，则同时删除通联关系表
+                    AssetNetworkCardQuery assetNetworkCardQuery = new AssetNetworkCardQuery();
+                    assetNetworkCardQuery.setAssetId(asset.getStringId());
+                    // 当前数据库存在的网卡
+                    List<AssetNetworkCard> assetNetworkCards = assetNetworkCardDao
+                        .findListAssetNetworkCard(assetNetworkCardQuery);
+                    if (CollectionUtils.isNotEmpty(assetNetworkCards)) {
+                        Map<String, String> nowIp = assetNetworkCards.stream()
+                            .collect(Collectors.toMap(AssetNetworkCard::getStringId, AssetNetworkCard::getIpAddress));
+                        // 页面传过来的网卡
+                        Map<String, String> existIp = assetNetworkCardRequestList.stream().collect(
+                            Collectors.toMap(AssetNetworkCardRequest::getId, AssetNetworkCardRequest::getIpAddress));
+                        //需要删除通联关系的网卡信息
+                        Map<String,String> deleteRelation = nowIp.entrySet().stream().filter(e -> !existIp.containsKey(e.getKey()))
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                        assetLinkRelationDao.deleteRelationByAssetId(deleteRelation);
+                    }
+
                     if (CollectionUtils.isNotEmpty(assetNetworkCardRequestList)) {
                         List<AssetNetworkCard> assetNetworkCardList = BeanConvert.convert(assetNetworkCardRequestList,
                             AssetNetworkCard.class);
@@ -1595,8 +1614,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 if (byId != null && !byId.getIpAddress().equals(assetNetworkCard.getIpAddress())) {
                                     assetQuery.setIp(assetNetworkCard.getIpAddress());
                                     BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "IP不能重复");
-                                    List<Integer> integers = new ArrayList<>();
-                                    integers.add(Integer.parseInt(asset.getStringId()));
+                                    Map<String, String> integers = new HashMap<>();
+                                    integers.put(asset.getStringId(),byId.getIpAddress());
                                     assetLinkRelationDao.deleteRelationByAssetId(integers);
                                 }
                                 assetNetworkCard.setModifyUser(
@@ -1605,7 +1624,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 updateNetworkList.add(assetNetworkCard);
                             } else {// 新增的
                                 assetQuery.setIp(assetNetworkCard.getIpAddress());
-                                int a = assetDao.findCountIp(assetQuery);
                                 BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "IP不能重复");
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(
@@ -1829,8 +1847,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetQuery.setIp(networkEquipment.getInnerIp());
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(networkEquipment.getId()));
                             BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "网络设备IP不能重复");
-                            List<Integer> integers = new ArrayList<>();
-                            integers.add(Integer.parseInt(asset.getStringId()));
+                            Map<String,String> integers = new HashMap<>();
+                            integers.put(asset.getStringId(),byId.getInnerIp());
                             assetLinkRelationDao.deleteRelationByAssetId(integers);
                         }
 

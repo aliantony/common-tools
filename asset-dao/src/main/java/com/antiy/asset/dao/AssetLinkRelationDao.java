@@ -1,6 +1,7 @@
 package com.antiy.asset.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -63,7 +64,7 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @param assetIds 资产列表Id,注意资产列表一定不能为空,否则全部删除
      * @return
      */
-    Integer deleteRelationByAssetId(@Param(value = "assetIds") List<Integer> assetIds);
+    Integer deleteRelationByAssetId(@Param(value = "assetIds") Map<String, String> assetIds);
 
     List<Integer> findUsePort(AssetLinkRelationQuery query);
 
