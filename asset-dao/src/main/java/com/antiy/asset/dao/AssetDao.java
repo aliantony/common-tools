@@ -2,6 +2,7 @@ package com.antiy.asset.dao;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -164,4 +165,11 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer queryAllAssetVulCount(@Param(value = "areaIds") List<Integer> areaIds);
+
+    /**
+     * 流程引擎返回的的id排序
+     * @param activitiIds
+     * @return
+     */
+    List<String> sortAssetIds(@Param("ids") Set<String> activitiIds);
 }
