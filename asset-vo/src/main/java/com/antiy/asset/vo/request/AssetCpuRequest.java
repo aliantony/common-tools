@@ -62,13 +62,13 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
      * 线程数
      */
     @ApiModelProperty("线程数")
-    @Max(value = 9999, message = "线程数最大不超过9999")
+    @Max(value = 9999999, message = "线程数最大不超过9999999")
     private Integer threadSize;
     /**
      * 核心数
      */
     @ApiModelProperty("核心数")
-    @Max(value = 9999, message = "核心数最大不超过9999")
+    @Max(value = 9999999, message = "核心数最大不超过9999999")
     private Integer coreSize;
 
     public String getId() {

@@ -34,14 +34,14 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * 接口数目
      */
     @ApiModelProperty("接口数目")
-    @Max(value = 9999, message = "网口数目大小不超过9999")
+    @Max(value = 9999999, message = "网口数目大小不超过9999999")
     private Integer interfaceSize;
     /**
      * 端口数目
      */
     @ApiModelProperty("端口数目")
     @NotNull(message = "网口数目不为空")
-    @Max(value = 99999999, message = "网口数目大小不超过99999999")
+    @Max(value = 9999999, message = "网口数目大小不超过9999999")
     private Integer portSize;
     /**
      * 是否无线:0-否,1-是
@@ -80,31 +80,31 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * 预计带宽(M)
      */
     @ApiModelProperty("预计带宽(M)")
-    @Max(value = 99999999, message = "预计带宽大小不超过99999999")
+    @Max(value = 9999999, message = "预计带宽大小不超过9999999")
     private Integer expectBandwidth;
     /**
      * 配置寄存器(GB)
      */
     @ApiModelProperty("配置寄存器(GB)")
-    @Max(value = 99999999, message = "配置寄存器大小不超过99999999")
+    @Max(value = 9999999, message = "配置寄存器大小不超过9999999")
     private Integer register;
     /**
      * DRAM大小
      */
     @ApiModelProperty("DRAM大小")
-    @Max(value = 99999999, message = "DRAM大小不超过99999999")
+    @Max(value = 9999999, message = "DRAM大小不超过9999999")
     private Float   dramSize;
     /**
      * FLASH大小
      */
     @ApiModelProperty("FLASH大小")
-    @Max(value = 99999999, message = "FLASH大小不超过99999999")
+    @Max(value = 9999999, message = "FLASH大小不超过9999999")
     private Float   flashSize;
     /**
      * NCRM大小
      */
     @ApiModelProperty("NCRM大小")
-    @Max(value = 99999999, message = "NCRM大小不超过99999999")
+    @Max(value = 9999999, message = "NCRM大小不超过9999999")
     private Float   ncrmSize;
     /**
      * ios
@@ -128,7 +128,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * cpu大小
      */
     @ApiModelProperty("cpu大小")
-    @Max(value = 99999999, message = "cpu大小不超过99999999")
+    @Max(value = 9999999, message = "cpu大小不超过9999999")
     private Integer cpuSize;
 
     public String getCpuVersion() {

@@ -62,7 +62,7 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty("容量 (MB)")
     @NotNull(message = "硬盘容量不能为空")
-    @Max(value = 99999999, message = "硬盘容量不超过99999999")
+    @Max(value = 9999999, message = "硬盘容量不超过9999999")
     private Integer capacity;
     /**
      * 磁盘类型,1 HDD,2,SSD
@@ -82,13 +82,13 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      * 使用次数
      */
     @ApiModelProperty("使用次数")
-    @Max(value = 99999999, message = "使用次数不超过99999999")
+    @Max(value = 9999999, message = "使用次数不超过9999999")
     private Integer useTimes;
     /**
      * 累计小时
      */
     @ApiModelProperty("累计小时")
-    @Max(value = 999999999, message = "累计小时不超过999999999")
+    @Max(value = 9999999, message = "累计小时不超过9999999")
     private Integer cumulativeHour;
     /**
      * Request
