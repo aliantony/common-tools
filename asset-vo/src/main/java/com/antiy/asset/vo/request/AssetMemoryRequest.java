@@ -57,7 +57,7 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("内存容量")
     @NotNull(message = "内存容量不能为空")
-    @Max(value = 99999999, message = "内存容量不超过99999999")
+    @Max(value = 9999999, message = "内存容量不超过9999999")
     private Integer capacity;
     /**
      * 内存主频(MHz)
@@ -84,7 +84,7 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      * 针脚数
      */
     @ApiModelProperty("针脚数")
-    @Max(value = 99999999, message = "针脚数不超过99999999")
+    @Max(value = 9999999, message = "针脚数不超过9999999")
     private Integer stitch;
     /**
      * 购买日期

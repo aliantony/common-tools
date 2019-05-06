@@ -38,7 +38,7 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      * 单机磁盘数
      */
     @ApiModelProperty("单机磁盘数")
-    @Max(value = 9999, message = "单机磁盘数大小不超过9999")
+    @Max(value = 9999999, message = "单机磁盘数大小不超过9999999")
     private Integer diskNumber;
     /**
      * 高速缓存
@@ -68,7 +68,7 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      * 驱动器数量
      */
     @ApiModelProperty("驱动器数量")
-    @Max(value = 9999, message = "驱动器数量不超过9999")
+    @Max(value = 9999999, message = "驱动器数量不超过9999999")
     private Integer driverNumber;
     /**
      * 固件
