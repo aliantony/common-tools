@@ -79,12 +79,12 @@ public class SafetyEquipmentEntiy {
     /**
      * ip地址
      */
-    @ExcelField(value = "ip", align = 1, title = "ip地址(必填)",required = true,dataType = DataTypeEnum.MAC)
+    @ExcelField(value = "ip", align = 1, title = "ip地址(必填)", required = true, dataType = DataTypeEnum.IP)
     private String ip;
     /**
      * ip地址
      */
-    @ExcelField(value = "mac", align = 1, title = "mac地址(必填)",required = true,dataType = DataTypeEnum.IP)
+    @ExcelField(value = "mac", align = 1, title = "mac地址(必填)", required = true, dataType = DataTypeEnum.MAC)
     private String mac;
 
     /**
