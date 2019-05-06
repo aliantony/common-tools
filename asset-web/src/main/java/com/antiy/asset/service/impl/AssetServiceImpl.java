@@ -751,8 +751,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     highIds.add(v.getKey());
                 }
             });
-            highIds.addAll(lowIds);
-            query.setIds(highIds.toArray(new String[] {}));
+            lowIds.addAll(highIds);
+            query.setIds(lowIds.toArray(new String[] {}));
         }
         /* if (!Objects.isNull(processMap) && !processMap.isEmpty()) { query.setIds(processMap.keySet().toArray(new
          * String[] {})); } */
