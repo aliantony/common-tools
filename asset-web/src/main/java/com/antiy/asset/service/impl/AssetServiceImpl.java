@@ -2444,11 +2444,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
-            if (CheckRepeatIp(entity.getNetworkIpAddress(), null, null)) {
-                repeat++;
-                a++;
-                builder.append("第").append(a).append("行").append("资产网卡IP地址重复，");
-                continue;
+
+            if (StringUtils.isNotBlank(entity.getNetworkIpAddress())) {
+                if (CheckRepeatIp(entity.getNetworkIpAddress(), null, null)) {
+                    repeat++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("资产网卡IP地址重复，");
+                    continue;
+                }
             }
 
             if ("".equals(checkUser(entity.getUser()))) {
@@ -2716,6 +2719,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
+
 
             if (CheckRepeatIp(networkDeviceEntity.getInnerIp(), 1, null)) {
                 repeat++;
