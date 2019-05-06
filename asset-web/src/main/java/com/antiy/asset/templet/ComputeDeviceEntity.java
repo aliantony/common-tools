@@ -73,13 +73,13 @@ public class ComputeDeviceEntity {
     /**
      * 固件版本
      */
-    @ExcelField(value = "firmwareVersion", align = 1, title = "固件版本")
+    @ExcelField(value = "firmwareVersion", align = 1, title = "固件版本"    )
     private String  firmwareVersion;
 
     /**
      * 操作系统
      */
-    @ExcelField(value = "operationSystem", align = 1, title = "操作系统(必填)", required = true)
+    @ExcelField(value = "operationSystem", align = 1, title = "操作系统(必填)", required = true, defaultDataMethod = "getAllSystemOs", defaultDataBeanName = "assetTemplateServiceImpl")
     private String  operationSystem;
 
     /**

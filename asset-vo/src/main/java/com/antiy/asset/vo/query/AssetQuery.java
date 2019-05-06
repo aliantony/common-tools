@@ -3,7 +3,10 @@ package com.antiy.asset.vo.query;
 import java.util.Arrays;
 import java.util.List;
 
-import com.antiy.asset.vo.enums.AssetStatusEnum;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -11,13 +14,6 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.commons.collections.CollectionUtils;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
-
-import javax.validation.constraints.Max;
 
 /**
  * <p> Asset 查询条件 </p>
@@ -121,8 +117,8 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
     @ApiModelProperty("资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役")
-    @Max(value = 9,message = "资产状态最大为9")
-    @Min(value = 1,message = "资产状态最小为1")
+    @Max(value = 9, message = "资产状态最大为9")
+    @Min(value = 1, message = "资产状态最小为1")
     private Integer       assetStatus;
 
     /**
@@ -210,13 +206,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 首次入网时间
      */
     @ApiModelProperty("首次入网时间")
-    @Max(message = "时间超出范围",value = 9999999999999L)
+    @Max(message = "时间超出范围", value = 9999999999999L)
     private Long          firstEnterNett;
     @ApiModelProperty("开始时间")
-    @Max(message = "时间超出范围",value = 9999999999999L)
+    @Max(message = "时间超出范围", value = 9999999999999L)
     private Long          beginTime;
     @ApiModelProperty("结束时间")
-    @Max(message = "时间超出范围",value = 9999999999999L)
+    @Max(message = "时间超出范围", value = 9999999999999L)
     private Long          endTime;
 
     @ApiModelProperty(value = "是否查询漏洞个数,true 表示查询，false表示不查询", allowableValues = "true,false")
@@ -541,29 +537,26 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
                + name + '\'' + ", assetName='" + assetName + '\'' + ", ip='" + ip + '\'' + ", isNet=" + isNet
                + ", isSafety=" + isSafety + ", number='" + number + '\'' + ", serial='" + serial + '\''
                + ", categoryModel='" + categoryModel + '\'' + ", categoryModels=" + Arrays.toString(categoryModels)
-               + ", areaIds=" + Arrays.toString(areaIds) + ", manufacturer='" + manufacturer + '\''
-               + ", manufacturers=" + manufacturers + ", removeManufacturers=" + removeManufacturers + ", assetStatus="
-               + assetStatus + ", operationSystem='" + operationSystem + '\'' + ", uuid='" + uuid + '\''
-               + ", responsibleUserId='" + responsibleUserId + '\'' + ", assetSource=" + assetSource
-               + ", importanceDegree=" + importanceDegree + ", parentId='" + parentId + '\'' + ", assetStatusList="
-               + assetStatusList + ", assetGroup='" + assetGroup + '\'' + ", timeType=" + timeType + ", softwareId='"
-               + softwareId + '\'' + ", admittanceStatus=" + admittanceStatus + ", responsibleUserName='"
-               + responsibleUserName + '\'' + ", gmtCreate=" + gmtCreate + ", firstEnterNett=" + firstEnterNett
-               + ", beginTime=" + beginTime + ", endTime=" + endTime + ", queryVulCount=" + queryVulCount
-               + ", queryPatchCount=" + queryPatchCount + ", queryAlarmCount=" + queryAlarmCount + ", associateGroup="
-               + associateGroup + ", groupId='" + groupId + '\'' + ", exceptId=" + exceptId + ", existAssociateIds="
-               + existAssociateIds + ", enterControl=" + enterControl + '}';
+               + ", areaIds=" + Arrays.toString(areaIds) + ", manufacturer='" + manufacturer + '\'' + ", manufacturers="
+               + manufacturers + ", removeManufacturers=" + removeManufacturers + ", assetStatus=" + assetStatus
+               + ", operationSystem='" + operationSystem + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='"
+               + responsibleUserId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
+               + ", parentId='" + parentId + '\'' + ", assetStatusList=" + assetStatusList + ", assetGroup='"
+               + assetGroup + '\'' + ", timeType=" + timeType + ", softwareId='" + softwareId + '\''
+               + ", admittanceStatus=" + admittanceStatus + ", responsibleUserName='" + responsibleUserName + '\''
+               + ", gmtCreate=" + gmtCreate + ", firstEnterNett=" + firstEnterNett + ", beginTime=" + beginTime
+               + ", endTime=" + endTime + ", queryVulCount=" + queryVulCount + ", queryPatchCount=" + queryPatchCount
+               + ", queryAlarmCount=" + queryAlarmCount + ", associateGroup=" + associateGroup + ", groupId='" + groupId
+               + '\'' + ", exceptId=" + exceptId + ", existAssociateIds=" + existAssociateIds + ", enterControl="
+               + enterControl + '}';
     }
 
     @Override
     public void validate() throws RequestParamValidateException {
-        if (timeType != null) {
-            ParamterExceptionUtils.isNull(beginTime, "开始时间为空");
-            ParamterExceptionUtils.isNull(endTime, "结束时间为空");
+        if (timeType != null && beginTime != null && endTime != null) {
             ParamterExceptionUtils.isTrue(endTime > beginTime, "结束时间必须大于开始时间");
         }
     }
-
 
     public String getAssetName() {
         return assetName;

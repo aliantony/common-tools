@@ -1,14 +1,20 @@
 package com.antiy.asset.util;
 
+import static com.antiy.asset.util.Constants.HIDDEN_SHEET_HEAD;
+import static com.antiy.asset.util.Constants.MAX_EXCEL_SELECT_LENGTH;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -19,6 +25,7 @@ import org.apache.poi.xssf.usermodel.*;
 import org.slf4j.Logger;
 
 import com.antiy.asset.annotation.ExcelField;
+import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.utils.SpringUtil;
@@ -262,19 +269,17 @@ public class TemplateExcelExport {
         this.styles = createStyles(wb);
 
         ParamterExceptionUtils.isEmpty(headerList, "The table title can not be null");
-        int hiddenSheetIndex = 0;
+        int hiddenSheetIndex = 1;
         for (int i = 0; i < headerList.size(); i++) {
             sheet.autoSizeColumn(i);
-            // sheet.trackAllColumnsForAutoSizing();
             // 为码表类型，设置下拉框
             if (annotationList.size() > 0 && StringUtils.isNotBlank(((ExcelField) annotationList.get(i)[0]).dictType())
                 || StringUtils.isNotBlank(((ExcelField) annotationList.get(i)[0]).defaultDataMethod())) {
 
-                XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper(sheet);
-                XSSFDataValidationConstraint dvConstraint = null;
+                List<String> datas = null;
                 if (StringUtils.isNotBlank(((ExcelField) annotationList.get(i)[0]).dictType())) {
-                    dvConstraint = (XSSFDataValidationConstraint) dvHelper.createExplicitListConstraint(
-                        CodeUtils.getCodeArray(((ExcelField) annotationList.get(i)[0]).dictType()));
+                    datas = Stream.of(CodeUtils.getCodeArray(((ExcelField) annotationList.get(i)[0]).dictType()))
+                        .collect(Collectors.toList());
                 } else {
                     String clazzName = ((ExcelField) annotationList.get(i)[0]).defaultDataBeanName();
                     ParamterExceptionUtils.isBlank(clazzName, "下载导出模板失败");
@@ -285,11 +290,7 @@ public class TemplateExcelExport {
                             Object data = ReflectionUtils.invokeMethod(springBean,
                                 ((ExcelField) annotationList.get(i)[0]).defaultDataMethod(), null, null);
                             if (data instanceof List) {
-                                List<String> listData = (List<String>) data;
-                                String[] strings = new String[listData.size()];
-                                listData.toArray(strings);
-                                dvConstraint = (XSSFDataValidationConstraint) dvHelper
-                                    .createExplicitListConstraint(strings);
+                                datas = (List<String>) data;
                             }
                         } catch (Exception e) {
                             logger.warn("Excel获取bean失败", e);
@@ -297,18 +298,54 @@ public class TemplateExcelExport {
                     }
                 }
 
-                if (dvConstraint == null) {
+                if (CollectionUtils.isEmpty(datas)) {
                     continue;
                 }
 
-                // 设置区域边界
-                CellRangeAddressList addressList = new CellRangeAddressList(6, 100000, i, i);
-                XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(dvConstraint,
-                    addressList);
-                // 输入非法数据时，弹窗警告框
-                validation.setShowErrorBox(true);
-                validation.setShowPromptBox(true);
-                sheet.addValidationData(validation);
+                XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper(sheet);
+                String jsonData = JsonUtil.object2Json(datas);
+                XSSFDataValidationConstraint constraint = null;
+                if (jsonData.length() < MAX_EXCEL_SELECT_LENGTH) {
+                    // 设置区域边界
+                    CellRangeAddressList addressList = new CellRangeAddressList(6, 100000, i, i);
+                    String[] data = new String[datas.size()];
+                    constraint = (XSSFDataValidationConstraint) dvHelper
+                        .createExplicitListConstraint(datas.toArray(data));
+                    XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(constraint,
+                        addressList);
+                    // 输入非法数据时，弹窗警告框
+                    validation.setShowErrorBox(true);
+                    validation.setShowPromptBox(true);
+                    sheet.addValidationData(validation);
+                } else {
+
+                    // 由于数据量超过300个字符，导出模板会失败的情况,就会创建隐藏sheet
+                    XSSFSheet hidden = wb.createSheet(HIDDEN_SHEET_HEAD + hiddenSheetIndex);
+                    wb.setSheetHidden(hiddenSheetIndex, true);
+                    // 将下拉列表的数据放在数据源sheet上
+                    XSSFRow row = null;
+                    XSSFCell cell = null;
+                    for (int j = 0, length = datas.size(); j < length; j++) {
+                        row = hidden.createRow(j);
+                        cell = row.createCell(0);
+                        cell.setCellValue(datas.get(j));
+                    }
+
+                    // 指定隐藏的sheet到下拉框中
+                    constraint = (XSSFDataValidationConstraint) dvHelper
+                        .createFormulaListConstraint(HIDDEN_SHEET_HEAD + hiddenSheetIndex + "!$A$1:$A" + datas.size());
+                    CellRangeAddressList addressList = null;
+                    // 循环指定单元格下拉数据
+                    for (int n = 6; n <= 100; n++) {
+                        row = (XSSFRow) sheet.createRow(n);
+                        cell = row.createCell(i);
+                        addressList = new CellRangeAddressList(n, n, i, i);
+                        XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(constraint,
+                            addressList);
+                        this.sheet.addValidationData(validation);
+                    }
+                    hiddenSheetIndex++;
+                }
             }
             sheet.autoSizeColumn(i);
         }

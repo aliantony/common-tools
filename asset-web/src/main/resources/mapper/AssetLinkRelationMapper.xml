@@ -526,18 +526,20 @@
         </choose>
     </select>
 
-    <update id="deleteRelationByAssetId">
-        update asset_link_relation set status='0'
+    <update id="deleteRelationByAssetId" parameterType="java.util.Map">
+        delete from asset_link_relation
         <where>
             <if test="assetIds!= null and assetIds.size() > 0">
-                asset_id in
-                <foreach item="assetId" collection="assetIds" open="(" separator="," close=")">
-                    #{assetId}
+                (asset_id, asset_ip) in (
+                <foreach item="k" collection="assetIds.keys" separator=","  index="index">
+                    (${k},#{assetIds[${k}]})
                 </foreach>
-                or parent_asset_id in
-                <foreach item="assetId" collection="assetIds" open="(" separator="," close=")">
-                    #{assetId}
+                )
+                or (parent_asset_id, parent_asset_ip) in (
+                <foreach item="k" collection="assetIds.keys" separator=","  index="index">
+                    (${k},#{assetIds[${k}]})
                 </foreach>
+                )
             </if>
         </where>
     </update>

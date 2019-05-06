@@ -33,13 +33,13 @@ public class NetworkDeviceEntity {
     /**
      * 使用者
      */
-    @ExcelField(value = "user", align = 1, title = "使用者(必填)", required = true)
+    @ExcelField(value = "user", align = 1, title = "使用者(必填)", required = true, defaultDataMethod = "getAllUser", defaultDataBeanName = "assetTemplateServiceImpl")
     private String  user;
 
     /**
      * area
      */
-    @ExcelField(value = "area", align = 1, title = "所属区域(必填)", required = true)
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)", required = true, defaultDataMethod = "queryAllArea", defaultDataBeanName = "assetTemplateServiceImpl")
     private String  area;
 
     /**
@@ -75,7 +75,7 @@ public class NetworkDeviceEntity {
     /**
      * 端口数目
      */
-    @ExcelField(value = "portSize", align = 1, title = "网口数目(必填)")
+    @ExcelField(value = "portSize", align = 1, title = "网口数目(必填)", required = true)
     private Integer portSize;
     /**
      * 接口数目
