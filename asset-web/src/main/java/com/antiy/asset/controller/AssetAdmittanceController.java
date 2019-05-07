@@ -1,5 +1,15 @@
 package com.antiy.asset.controller;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.AccessExport;
@@ -15,17 +25,11 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
+
 import io.swagger.annotations.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.List;
-
 
 /**
  * @author 吕梁
@@ -73,9 +77,10 @@ public class AssetAdmittanceController {
         asset.setAdmittanceStatus(admittance.getAdmittanceStatus());
 
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName(), asset.getId(), "",
-                asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-        LogUtils.info(LogUtils.get (AssetAdmittanceController.class), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName() + " {}", asset.toString());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName(), asset.getId(), "",
+            asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
+            AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName() + " {}", asset.toString());
         return ActionResponse.success(assetService.update(asset));
     }
 
@@ -100,11 +105,13 @@ public class AssetAdmittanceController {
         accessExportList.stream().forEach(asset -> {
             asset.setAdmittanceStatusString(AdmittanceStatusEnum.getAdmittanceStatusEnum(asset.getAdmittanceStatus()));
         });
-        ExcelUtils.exportToClient(AccessExport.class, "资产准入管理.xlsx", "", accessExportList);
+        ExcelUtils.exportToClient(AccessExport.class,
+            "准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + ".xlsx", "", accessExportList);
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(), 0, "",
-                assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-        LogUtils.info(LogUtils.get (AssetAdmittanceController.class), AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName() + " {}", assetQuery.toString());
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(), 0, "", assetQuery,
+            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
+            AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName() + " {}", assetQuery.toString());
         return ActionResponse.success();
     }
 }

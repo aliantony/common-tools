@@ -715,7 +715,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
-        exportData("软件信息表", assetSoftwareQuery, response);
+        exportData("软件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), assetSoftwareQuery,
+            response);
     }
 
     @Override
