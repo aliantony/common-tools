@@ -2,7 +2,6 @@ package com.antiy.asset.vo.request;
 
 import java.util.List;
 
-import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 import com.antiy.common.base.BasicRequest;
@@ -42,7 +41,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 联系电话
      */
     @ApiModelProperty("联系电话")
-    @Size(message = "联系电话必须为11位", max = 11)
+    @Size(message = "联系电话必须为11位", max = 11, min = 11)
     @Pattern(regexp = "^1(3|4|5|7|8|9)\\d{9}$", message = "联系电话错误")
     private String                  contactTel;
     /**
@@ -57,7 +56,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("资产编号")
     @NotBlank(message = "资产编号不能为空")
-    @Size(message = "资产编号不能超过30位", max = 30)
+    @Size(message = "资产编号应在1-30之间", max = 30, min = 1)
     private String                  number;
 
     /**
@@ -65,7 +64,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      */
     @ApiModelProperty("资产名称")
     @NotBlank(message = "资产名称不能为空")
-    @Size(message = "资产名字不能超过30位", max = 30)
+    @Size(message = "资产名字应该在1-30之间", max = 30, min = 1)
     private String                  name;
     /**
      * 序列号
@@ -222,7 +221,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 备注
      */
     @ApiModelProperty("备注")
-    @Size(message = "备注不能超过300个字符",max = 300)
+    @Size(message = "备注不能超过300个字符", max = 300)
     private String                  memo;
 
     public String getMemo() {
@@ -464,15 +463,15 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     @Override
     public String toString() {
         return "AssetRequest{" + "id='" + id + '\'' + ", assetGroups=" + assetGroups + ", houseLocation='"
-               + houseLocation + '\'' + ", contactTel='" + contactTel + '\'' + ", email='" + email + '\''
-               + ", number='" + number + '\'' + ", name='" + name + '\'' + ", serial='" + serial + '\''
-               + ", categoryModel='" + categoryModel + '\'' + ", areaId='" + areaId + '\'' + ", manufacturer='"
-               + manufacturer + '\'' + ", assetStatus=" + assetStatus + ", operationSystem='" + operationSystem + '\''
-               + ", systemBit=" + systemBit + ", location='" + location + '\'' + ", installType=" + installType
-               + ", firmwareVersion='" + firmwareVersion + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='"
-               + responsibleUserId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
-               + ", parentId='" + parentId + '\'' + ", tags='" + tags + '\'' + ", serviceLife=" + serviceLife
-               + ", buyDate=" + buyDate + ", warranty=" + warranty + ", admittanceStatus=" + admittanceStatus + '}';
+               + houseLocation + '\'' + ", contactTel='" + contactTel + '\'' + ", email='" + email + '\'' + ", number='"
+               + number + '\'' + ", name='" + name + '\'' + ", serial='" + serial + '\'' + ", categoryModel='"
+               + categoryModel + '\'' + ", areaId='" + areaId + '\'' + ", manufacturer='" + manufacturer + '\''
+               + ", assetStatus=" + assetStatus + ", operationSystem='" + operationSystem + '\'' + ", systemBit="
+               + systemBit + ", location='" + location + '\'' + ", installType=" + installType + ", firmwareVersion='"
+               + firmwareVersion + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='" + responsibleUserId + '\''
+               + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree + ", parentId='" + parentId
+               + '\'' + ", tags='" + tags + '\'' + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate
+               + ", warranty=" + warranty + ", admittanceStatus=" + admittanceStatus + '}';
     }
 
     public String getDescrible() {

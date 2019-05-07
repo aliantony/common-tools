@@ -3,15 +3,13 @@ package com.antiy.asset.vo.request;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.Arrays;
 
 /**
@@ -44,7 +42,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * MD5/SHA
      */
     @ApiModelProperty("MD5/SHA")
-    @Size(message = "MD5/SHA不超过30位", max = 30, min = 1)
+    @Size(message = "MD5/SHA不为32位", max = 32, min = 32)
     private String                      md5Code;
     /**
      * 主键
@@ -133,6 +131,8 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 0-免费软件，1-商业软件
      */
     @ApiModelProperty(value = "软件是否免费")
+    @Max(value = 1, message = "授权类型出错")
+    @Min(value = 0, message = "授权类型出错")
     private Integer                     authorization;
     /**
      * 上报来源:1-自动上报，2-人工上报

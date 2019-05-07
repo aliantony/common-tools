@@ -55,7 +55,8 @@ public enum DataTypeEnum {
                 reg = "((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))$";
                 return val.matches(reg);
             case MAC:
-                reg = "/(([a-f0-9]{2}:)|([a-f0-9]{2}-)){5}[a-f0-9]{2}/gi";
+                reg = "^([a-fA-F0-9]{2}-){5}([a-fA-F0-9]{2})$";
+                // reg = "/(([a-f0-9]{2}:)|([a-f0-9]{2}-)){5}[a-f0-9]{2}/gi";
                 return val.matches(reg);
             default:
                 return true;

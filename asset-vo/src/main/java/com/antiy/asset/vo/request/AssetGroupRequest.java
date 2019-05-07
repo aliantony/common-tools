@@ -33,7 +33,7 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
      * 备注
      */
     @ApiModelProperty("备注")
-    @Size(message = "备注范围5~300字符", max = 300)
+    @Size(message = "备注范围0~300字符", max = 300)
     private String   memo;
     /**
      * 资产组名称

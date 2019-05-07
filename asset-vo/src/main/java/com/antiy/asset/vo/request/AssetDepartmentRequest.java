@@ -43,7 +43,7 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
      * 备注
      */
     @ApiModelProperty("备注")
-    @Size(message = "备注名在5~300字符", max = 300)
+    @Size(message = "备注名在0~300字符", max = 300)
     private String memo;
 
     public String getId() {

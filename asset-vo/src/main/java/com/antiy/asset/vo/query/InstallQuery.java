@@ -6,12 +6,15 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 public class InstallQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty("综合查询")
+    @Size(max = 30,message = "综合查询长度不能超过30个字符")
     private String        multipleQuery;
 
     @ApiModelProperty(value = "软件id", required = true)
@@ -113,6 +116,5 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
 
     @Override
     public void validate() throws RequestParamValidateException {
-
     }
 }

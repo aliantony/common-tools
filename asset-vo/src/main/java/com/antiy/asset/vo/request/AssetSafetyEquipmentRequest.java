@@ -34,14 +34,14 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
      */
     @ApiModelProperty("IP")
     @NotBlank(message = "不能为空")
-    @Size(message = "ip不能大于30个字符",  max = 30)
+    @Size(message = "IP地址长度应该在8-15位", min = 8, max = 15)
     private String ip;
     /**
      * mac
      */
     @ApiModelProperty("mac")
     @NotBlank(message = "mac不能为空")
-    @Size(message = "mac不能大于30个字符",  max = 30)
+    @Size(message = "MAC地址长度应该为17位", max = 17, min = 17)
     private String mac;
     /**
      * 特征库版本

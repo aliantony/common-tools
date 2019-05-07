@@ -462,6 +462,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             softAssetCount = handleSoftCount(assetSoftwareRelationDao.countSoftwareRelAsset(allSoftwareIds));
         }
 
+        List<AssetCategoryModel> categoryModels = assetCategoryModelDao.findAllCategory();
+
         Map<Integer, Long> finalSoftAssetCount = softAssetCount;
         BaseConverter baseConverter = new BaseConverter<AssetSoftware, AssetSoftwareResponse>() {
 
@@ -479,6 +481,16 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetSoftwareResponse.setAssetCount(finalSoftAssetCount.get(assetSoftware.getId()) != null
                         ? finalSoftAssetCount.get(assetSoftware.getId()).intValue()
                         : 0);
+                }
+
+                if (CollectionUtils.isNotEmpty(categoryModels)) {
+                    Optional<AssetCategoryModel> categoryModelOptional = categoryModels.stream()
+                        .filter(assetCategoryModel -> assetCategoryModel.getId() != null && assetCategoryModel.getId()
+                            .toString().equals(assetSoftware.getCategoryModel()))
+                        .findFirst();
+                    if (categoryModelOptional.isPresent() && categoryModelOptional.get() != null) {
+                        assetSoftwareResponse.setCategoryModelName(categoryModelOptional.get().getName());
+                    }
                 }
             }
         };
@@ -1126,6 +1138,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
 @Component
 class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportSoftwareEntity> {
+
     @Override
     protected void convert(AssetSoftwareResponse assetSoftware, ExportSoftwareEntity exportSoftwareEntity) {
         if (Objects.nonNull(assetSoftware.getSoftwareStatus())) {
@@ -1133,6 +1146,11 @@ class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportS
             exportSoftwareEntity.setStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
         }
         exportSoftwareEntity.setGmtCreate(LongToDateString(assetSoftware.getGmtCreate()));
+        exportSoftwareEntity.setReleaseTime(LongToDateString(assetSoftware.getReleaseTime()));
+        if (assetSoftware.getAuthorization() != null) {
+            exportSoftwareEntity.setAuthorization(assetSoftware.getAuthorization().compareTo(1) == 0 ? "免费软件" : "商业软件");
+        }
+        exportSoftwareEntity.setCategoryModelName(assetSoftware.getCategoryModelName());
         super.convert(assetSoftware, exportSoftwareEntity);
     }
 

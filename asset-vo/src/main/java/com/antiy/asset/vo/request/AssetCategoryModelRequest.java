@@ -24,7 +24,7 @@ public class AssetCategoryModelRequest extends BaseRequest implements ObjectVali
      */
     @ApiModelProperty("名称")
     @NotBlank(message = "名称不能为空")
-    @Size(message = "名称范围应在1~30字符", max = 30)
+    @Size(message = "名称范围应在1~30字符", max = 30, min = 1)
     private String name;
 
     /**
