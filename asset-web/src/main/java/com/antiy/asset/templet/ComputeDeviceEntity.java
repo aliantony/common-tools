@@ -108,7 +108,7 @@ public class ComputeDeviceEntity {
     /**
      * memo
      */
-    @ExcelField(value = "description", align = 1, title = "描述")
+    @ExcelField(value = "description", align = 1, title = "描述", length = 300)
     private String  description;
 
     /**
@@ -166,7 +166,7 @@ public class ComputeDeviceEntity {
     /**
      * 内存容量
      */
-    @ExcelField(value = "memoryCapacity", align = 1, title = "内存容量(必填)")
+    @ExcelField(value = "memoryCapacity", align = 1, title = "内存容量(必填)", length = 7)
     private Integer memoryCapacity;
 
     /**
@@ -177,7 +177,7 @@ public class ComputeDeviceEntity {
     /**
      * 内存主频
      */
-    @ExcelField(value = "memoryFrequency", align = 1, title = "内存主频")
+    @ExcelField(value = "memoryFrequency", align = 1, title = "内存主频", length = 7)
     private Double  memoryFrequency;
 
     /**
@@ -194,7 +194,7 @@ public class ComputeDeviceEntity {
     /**
      * 针脚数
      */
-    @ExcelField(value = "stitch", align = 1, title = "内存针脚数")
+    @ExcelField(value = "stitch", align = 1, title = "内存针脚数", length = 7)
     private Integer stitch;
     /**
      * 硬盘数量
@@ -221,7 +221,7 @@ public class ComputeDeviceEntity {
     /**
      * 硬盘容量
      */
-    @ExcelField(value = "hardDisCapacityl", align = 1, title = "硬盘容量(必填)")
+    @ExcelField(value = "hardDisCapacityl", align = 1, title = "硬盘容量(必填)", length = 7)
     private Integer hardDisCapacityl;
     /**
      * 硬盘接口类型
@@ -291,17 +291,17 @@ public class ComputeDeviceEntity {
     /**
      * cpu主频
      */
-    @ExcelField(value = "cpuMainFrequency", align = 1, title = "cpu主频(必填)")
+    @ExcelField(value = "cpuMainFrequency", align = 1, title = "cpu主频(必填)", length = 7)
     private Float   cpuMainFrequency;
     /**
      * cpu线程数
      */
-    @ExcelField(value = "cpuThreadSize", align = 1, title = "cpu线程数")
+    @ExcelField(value = "cpuThreadSize", align = 1, title = "cpu线程数", length = 7)
     private Integer cpuThreadSize;
     /**
      * cpu核心数
      */
-    @ExcelField(value = "cpuCoreSize", align = 1, title = "cpu核心数")
+    @ExcelField(value = "cpuCoreSize", align = 1, title = "cpu核心数", length = 7)
     private Integer cpuCoreSize;
 
     public String getName() {

@@ -75,12 +75,12 @@ public class NetworkDeviceEntity {
     /**
      * 端口数目
      */
-    @ExcelField(value = "portSize", align = 1, title = "网口数目(必填)", required = true)
+    @ExcelField(value = "portSize", align = 1, title = "网口数目(必填)", required = true, length = 2)
     private Integer portSize;
     /**
      * 接口数目
      */
-    @ExcelField(value = "interfaceSize", align = 1, title = "接口数目")
+    @ExcelField(value = "interfaceSize", align = 1, title = "接口数目", length = 7)
     private Integer interfaceSize;
     /**
      * IOS
@@ -121,19 +121,19 @@ public class NetworkDeviceEntity {
     /**
      * 预计带宽
      */
-    @ExcelField(value = "expectBandwidth", align = 1, title = "预计带宽")
+    @ExcelField(value = "expectBandwidth", align = 1, title = "预计带宽", length = 7)
     private Integer expectBandwidth;
 
     /**
      * 配置寄存器
      */
-    @ExcelField(value = "register", align = 1, title = "配置寄存器")
+    @ExcelField(value = "register", align = 1, title = "配置寄存器", length = 7)
     private Integer register;
 
     /**
      * cpu大小
      */
-    @ExcelField(value = "cpuSize", align = 1, title = "cpu大小")
+    @ExcelField(value = "cpuSize", align = 1, title = "cpu大小", length = 7)
     private Integer cpuSize;
 
     /**
@@ -145,19 +145,19 @@ public class NetworkDeviceEntity {
     /**
      * dram大小
      */
-    @ExcelField(value = "dramSize", align = 1, title = "dram大小")
+    @ExcelField(value = "dramSize", align = 1, title = "dram大小", length = 7)
     private Float   dramSize;
 
     /**
      * flash大小
      */
-    @ExcelField(value = "flashSize", align = 1, title = "flash大小")
+    @ExcelField(value = "flashSize", align = 1, title = "flash大小", length = 7)
     private Float   flashSize;
 
     /**
      * NCRM大小
      */
-    @ExcelField(value = "ncrmSize", align = 1, title = "NCRM大小")
+    @ExcelField(value = "ncrmSize", align = 1, title = "NCRM大小", length = 7)
     private Float   ncrmSize;
     /**
      * 购买日期
@@ -177,7 +177,7 @@ public class NetworkDeviceEntity {
     /**
      * 描述
      */
-    @ExcelField(value = "memo", align = 1, title = "描述")
+    @ExcelField(value = "memo", align = 1, title = "描述", length = 300)
     private String  memo;
 
     public String getName() {

@@ -73,12 +73,12 @@ public class StorageDeviceEntity {
     /**
      * 最大存储量
      */
-    @ExcelField(value = "capacity", align = 1, title = "最大存储量(必填)",required = true)
+    @ExcelField(value = "capacity", align = 1, title = "最大存储量(必填)", required = true, length = 7)
     private String  capacity;
     /**
      * 单机磁盘数
      */
-    @ExcelField(value = "hardDiskNum", align = 1, title = "单机磁盘数")
+    @ExcelField(value = "hardDiskNum", align = 1, title = "单机磁盘数", length = 7)
     private Integer hardDiskNum;
     /**
      * 内部接口
@@ -88,7 +88,7 @@ public class StorageDeviceEntity {
     /**
      * RAID支持
      */
-    @ExcelField(value = "raidSupport", align = 1, title = "RAID支持")
+    @ExcelField(value = "raidSupport", align = 1, title = "RAID支持", dictType = "yesorno")
     private String  raidSupport;
     /**
      * high_cache
@@ -113,7 +113,7 @@ public class StorageDeviceEntity {
     /**
      * 驱动器数量
      */
-    @ExcelField(value = "driveNum", align = 1, title = "驱动器数量")
+    @ExcelField(value = "driveNum", align = 1, title = "驱动器数量", length = 7)
     private Integer driveNum;
     /**
      * 购买时间
@@ -135,7 +135,7 @@ public class StorageDeviceEntity {
     /**
      * 描述
      */
-    @ExcelField(value = "memo", align = 1, title = "描述")
+    @ExcelField(value = "memo", align = 1, title = "描述", length = 300)
     private String  memo;
 
     public String getName() {

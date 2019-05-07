@@ -1,37 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -64,6 +32,36 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -2211,7 +2209,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         storageDeviceEntity.setSlotType("1");
         storageDeviceEntity.setTelephone("13541771234");
         storageDeviceEntity.setWarranty("2年");
-        storageDeviceEntity.setRaidSupport("0，1，5，6，10 ");
+        storageDeviceEntity.setRaidSupport("0");
         storageDeviceEntity.setUser("留小查");
         storageDeviceEntity.setSerial("ANFRWGDFETYRYF");
         storageDeviceEntity.setLocation("成都市青羊区");
@@ -2422,11 +2420,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
-            if (assetIps.contains(entity.getNetworkIpAddress())) {
-                repeat++;
-                a++;
-                builder.append("第").append(a).append("行").append("资产网卡IP地址重复 ，");
-                continue;
+            if (StringUtils.isNotBlank(entity.getNetworkIpAddress())) {
+
+                if (assetIps.contains(entity.getNetworkIpAddress())) {
+                    repeat++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("资产网卡IP地址重复 ，");
+                    continue;
+                }
+
             }
 
             if (checkRepeatName(entity.getName())) {
@@ -3151,7 +3153,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetStorageMedium.setMaximumStorage(entity.getCapacity());
                 assetStorageMedium.setMemo(entity.getMemo());
                 assetStorageMedium.setHighCache(entity.getHighCache());
-                assetStorageMedium.setRaidSupport(entity.getRaidSupport());
+                assetStorageMedium.setRaidSupport(entity.getRaidSupport().equals("0") ? "否" : "是");
                 assetStorageMedium.setInnerInterface(entity.getInnerInterface());
                 assetStorageMedium.setOsVersion(entity.getSlotType());
                 assetStorageMedium.setAverageTransferRate(entity.getAverageTransmissionRate());
@@ -3599,7 +3601,7 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
             ? AssetImportanceDegreeEnum.getByCode(asset.getImportanceDegree()).toString()
             : null);
         assetEntity.setResponsibleUserName(asset.getResponsibleUserName());
-        if(null != asset.getAssetSource()) {
+        if (null != asset.getAssetSource()) {
             assetEntity.setAssetSource(asset.getAssetSource().compareTo(1) == 0 ? "自动上报" : "人工登记");
         }
         assetEntity.setFirstEnterNett(longToDateString(asset.getFirstEnterNett()));
