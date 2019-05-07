@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseResponse;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -15,7 +16,8 @@ public class AssetLinkRelationResponse extends BaseResponse {
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    private Integer      assetId;
+    @Encode
+    private String      assetId;
     /**
      * 资产名称
      */
@@ -45,7 +47,8 @@ public class AssetLinkRelationResponse extends BaseResponse {
      * 父级设备主键
      */
     @ApiModelProperty("父级设备主键")
-    private Integer      parentAssetId;
+    @Encode
+    private String      parentAssetId;
     /**
      * 关联资产名称
      */
@@ -65,6 +68,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
      * 关联资产品类型号
      */
     @ApiModelProperty("关联资产品类型号")
+    @Encode
     private String       parentCategoryModel;
     /**
      * 关联资产品类型号名称
@@ -85,13 +89,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
         this.categoryType = categoryType;
     }
 
-    public Integer getAssetId() {
-        return assetId;
-    }
 
-    public void setAssetId(Integer assetId) {
-        this.assetId = assetId;
-    }
 
     public String getAssetIp() {
         return assetIp;
@@ -125,11 +123,19 @@ public class AssetLinkRelationResponse extends BaseResponse {
         this.categoryModelName = categoryModelName;
     }
 
-    public Integer getParentAssetId() {
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
+
+    public String getParentAssetId() {
         return parentAssetId;
     }
 
-    public void setParentAssetId(Integer parentAssetId) {
+    public void setParentAssetId(String parentAssetId) {
         this.parentAssetId = parentAssetId;
     }
 

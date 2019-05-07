@@ -31,7 +31,7 @@ public class AssetStatusJumpRequst extends BasicRequest {
     @NotBlank(message = "资产主键不能为空")
     private String          assetId;
     /**
-     * 资产主键
+     * 软件主键
      */
     @Encode
     @ApiModelProperty("软件主键")

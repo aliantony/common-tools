@@ -133,8 +133,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
      * @param assetLinkRelation
      */
     private void checkAssetIp(AssetLinkRelationRequest request, AssetLinkRelation assetLinkRelation) {
-        assetLinkRelation.setAssetId(DataTypeUtils.stringToInteger(request.getAssetId()));
-        assetLinkRelation.setParentAssetId(DataTypeUtils.stringToInteger(request.getParentAssetId()));
+        assetLinkRelation.setAssetId(request.getAssetId());
+        assetLinkRelation.setParentAssetId(request.getParentAssetId());
         // 1.校验子资产IP是否可用
         List<String> assetAddress = assetLinkRelationDao.queryIpAddressByAssetId(request.getAssetId(), true,
             request.getAssetPort());

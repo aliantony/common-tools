@@ -2211,7 +2211,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         storageDeviceEntity.setSlotType("1");
         storageDeviceEntity.setTelephone("13541771234");
         storageDeviceEntity.setWarranty("2年");
-        storageDeviceEntity.setRaidSupport("0，1，5，6，10 ");
+        storageDeviceEntity.setRaidSupport("0");
         storageDeviceEntity.setUser("留小查");
         storageDeviceEntity.setSerial("ANFRWGDFETYRYF");
         storageDeviceEntity.setLocation("成都市青羊区");
@@ -2422,11 +2422,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
-            if (assetIps.contains(entity.getNetworkIpAddress())) {
-                repeat++;
-                a++;
-                builder.append("第").append(a).append("行").append("资产网卡IP地址重复 ，");
-                continue;
+            if (StringUtils.isNotBlank(entity.getNetworkIpAddress())) {
+
+                if (assetIps.contains(entity.getNetworkIpAddress())) {
+                    repeat++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("资产网卡IP地址重复 ，");
+                    continue;
+                }
+
             }
 
             if (checkRepeatName(entity.getName())) {
@@ -3151,7 +3155,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetStorageMedium.setMaximumStorage(entity.getCapacity());
                 assetStorageMedium.setMemo(entity.getMemo());
                 assetStorageMedium.setHighCache(entity.getHighCache());
-                assetStorageMedium.setRaidSupport(entity.getRaidSupport());
+                assetStorageMedium.setRaidSupport(entity.getRaidSupport().equals("0") ? "否" : "是");
                 assetStorageMedium.setInnerInterface(entity.getInnerInterface());
                 assetStorageMedium.setOsVersion(entity.getSlotType());
                 assetStorageMedium.setAverageTransferRate(entity.getAverageTransmissionRate());
@@ -3387,7 +3391,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         downloadVO.setSheetName("资产信息表");
         downloadVO.setDownloadList(assetEntities);
         if (Objects.nonNull(assetEntities) && assetEntities.size() > 0) {
-            excelDownloadUtil.excelDownload(response, "资产信息表", downloadVO);
+            excelDownloadUtil.excelDownload(response,
+                "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
         } else {
             throw new BusinessException("导出数据为空");
         }
@@ -3599,7 +3604,7 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
             ? AssetImportanceDegreeEnum.getByCode(asset.getImportanceDegree()).toString()
             : null);
         assetEntity.setResponsibleUserName(asset.getResponsibleUserName());
-        if(null != asset.getAssetSource()) {
+        if (null != asset.getAssetSource()) {
             assetEntity.setAssetSource(asset.getAssetSource().compareTo(1) == 0 ? "自动上报" : "人工登记");
         }
         assetEntity.setFirstEnterNett(longToDateString(asset.getFirstEnterNett()));
