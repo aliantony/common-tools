@@ -1,12 +1,13 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.*;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.*;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetNetworkEquipmentRequest 请求对象 </p>
@@ -55,26 +56,26 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      */
     @ApiModelProperty("内网IP")
     @NotBlank(message = "内网IP不能为空")
-    @Size(message = "内网ip不能大于30个字符",  max = 30)
+    @Size(message = "内网IP长度应该在8-15位", min = 8, max = 15)
     private String  innerIp;
     /**
      * 外网IP
      */
     @ApiModelProperty("外网IP")
-    @Size(message = "外网IP不能大于30个字符",  max = 30)
+    @Size(message = "外网IP应该在8-15位", min = 8, max = 15)
     // @NotBlank(message = "外网IP不能为空")
     private String  outerIp;
     /**
      * MAC地址
      */
     @ApiModelProperty("MAC地址")
-    @Size(message = "MAC地址不能大于30个字符",  max = 30)
+    @Size(message = "MAC地址长度应该为17位", max = 17, min = 17)
     private String  macAddress;
     /**
      * 子网掩码
      */
     @ApiModelProperty("子网掩码")
-    @Size(message = "子网掩码不能大于30个字符",  max = 30)
+    @Size(message = "子网掩码不能大于30个字符", max = 30)
     private String  subnetMask;
     /**
      * 预计带宽(M)
