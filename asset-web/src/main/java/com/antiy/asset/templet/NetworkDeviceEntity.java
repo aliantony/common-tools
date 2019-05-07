@@ -101,7 +101,7 @@ public class NetworkDeviceEntity {
     /**
      * 内网IP
      */
-    @ExcelField(value = "innerIp", align = 1, title = "内网IP", required = true, dataType = DataTypeEnum.IP)
+    @ExcelField(value = "innerIp", align = 1, title = "内网IP(必填)", required = true, dataType = DataTypeEnum.IP)
     private String  innerIp;
     /**
      * 外网IP
@@ -111,7 +111,7 @@ public class NetworkDeviceEntity {
     /**
      * mac地址
      */
-    @ExcelField(value = "mac", align = 1, title = "mac地址",dataType = DataTypeEnum.MAC,required = true)
+    @ExcelField(value = "mac", align = 1, title = "mac地址", dataType = DataTypeEnum.MAC, required = false)
     private String  mac;
     /**
      * 子网掩码

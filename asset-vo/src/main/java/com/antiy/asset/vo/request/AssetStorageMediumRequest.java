@@ -1,14 +1,16 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import com.antiy.common.validation.ObjectValidator;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetStorageMediumRequest 请求对象 </p>
@@ -32,7 +34,7 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      */
     @ApiModelProperty("最大存储量")
     @NotBlank(message = "最大存储容量不能为空")
-    @Size(message = "最大存储量长度不能超过30位", max = 30)
+    @Size(message = "最大存储量长度不超过9999999", max = 8)
     private String  maximumStorage;
     /**
      * 单机磁盘数
@@ -173,7 +175,9 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
 
     @Override
     public void validate() throws RequestParamValidateException {
-
+        if (raidSupport != null) {
+            ParamterExceptionUtils.isTrue(raidSupport.equals("是") || raidSupport.equals("否"), "raid支持只能为是否");
+        }
     }
 
     @Override

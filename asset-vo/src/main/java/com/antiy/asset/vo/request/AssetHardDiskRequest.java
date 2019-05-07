@@ -1,15 +1,16 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetHardDiskRequest 请求对象 </p>
@@ -35,7 +36,7 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      * 硬盘品牌
      */
     @ApiModelProperty("硬盘品牌")
-//    @NotBlank(message = "硬盘品牌不能为空")
+    // @NotBlank(message = "硬盘品牌不能为空")
     @Size(message = "硬盘品牌长度不能超过30位", max = 30)
     private String  brand;
     /**
@@ -54,8 +55,8 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      * 接口类型:1SATA、2IDE、3ATA、4SCSI、5光纤通道
      */
     @ApiModelProperty("接口类型:1SATA、2IDE、3ATA、4SCSI、5光纤通道")
-    @Max(value = 5,message = "接口类型不能大于5")
-    @Min(value = 1,message = "接口类型不能小于1")
+    @Max(value = 5, message = "接口类型不能大于5")
+    @Min(value = 1, message = "接口类型不能小于1")
     private Integer interfaceType;
     /**
      * 容量 (MB)
@@ -69,8 +70,8 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty("磁盘类型,1 HDD,2,SSD")
     @NotNull(message = "磁盘类型不能为空")
-    @Max(value = 2,message = "磁盘类型不能大于2")
-    @Min(value = 1,message = "磁盘类型不能小于1")
+    @Max(value = 2, message = "磁盘类型不能大于2")
+    @Min(value = 1, message = "磁盘类型不能小于1")
     private Integer diskType;
     /**
      * 购买日期
