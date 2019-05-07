@@ -1,5 +1,38 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.common.collect.Sets;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -735,6 +768,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
         if (MapUtils.isNotEmpty(processMap)) {
+            Set<String> activitiIds = processMap.keySet();
+            List<String> sortedIds = assetDao.sortAssetIds(activitiIds);
+            Collections.reverse(sortedIds);
+            query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
+        }
+        /*if (MapUtils.isNotEmpty(processMap)) {
             List<Map.Entry<String, WaitingTaskReponse>> processList = Lists.newArrayList();
             processList.addAll(processMap.entrySet());
             Collections.sort(processList, (o1, o2) -> DataTypeUtils.stringToInteger(o1.getValue().getTaskId())
@@ -751,7 +790,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             });
             lowIds.addAll(highIds);
             query.setIds(lowIds.toArray(new String[] {}));
-        }
+        }*/
         /* if (!Objects.isNull(processMap) && !processMap.isEmpty()) { query.setIds(processMap.keySet().toArray(new
          * String[] {})); } */
 
@@ -1578,6 +1617,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
 
                     List<AssetNetworkCardRequest> assetNetworkCardRequestList = assetOuterRequest.getNetworkCard();
+                    // 如果网卡被删除，则同时删除通联关系表
+                    AssetNetworkCardQuery assetNetworkCardQuery = new AssetNetworkCardQuery();
+                    assetNetworkCardQuery.setAssetId(asset.getStringId());
+                    // 当前数据库存在的网卡
+                    List<AssetNetworkCard> assetNetworkCards = assetNetworkCardDao
+                        .findListAssetNetworkCard(assetNetworkCardQuery);
+                    if (CollectionUtils.isNotEmpty(assetNetworkCards)) {
+                        Map<String, String> nowIp = assetNetworkCards.stream()
+                            .collect(Collectors.toMap(AssetNetworkCard::getStringId, AssetNetworkCard::getIpAddress));
+                        // 页面传过来的网卡
+                        Map<String, String> existIp = assetNetworkCardRequestList.stream().collect(
+                            Collectors.toMap(AssetNetworkCardRequest::getId, AssetNetworkCardRequest::getIpAddress));
+                        //需要删除通联关系的网卡信息
+                        Map<String,String> deleteRelation = nowIp.entrySet().stream().filter(e -> !existIp.containsKey(e.getKey()))
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                        assetLinkRelationDao.deleteRelationByAssetId(deleteRelation);
+                    }
+
                     if (CollectionUtils.isNotEmpty(assetNetworkCardRequestList)) {
                         List<AssetNetworkCard> assetNetworkCardList = BeanConvert.convert(assetNetworkCardRequestList,
                             AssetNetworkCard.class);
@@ -1593,8 +1650,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 if (byId != null && !byId.getIpAddress().equals(assetNetworkCard.getIpAddress())) {
                                     assetQuery.setIp(assetNetworkCard.getIpAddress());
                                     BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "IP不能重复");
-                                    List<Integer> integers = new ArrayList<>();
-                                    integers.add(Integer.parseInt(asset.getStringId()));
+                                    Map<String, String> integers = new HashMap<>();
+                                    integers.put(asset.getStringId(),byId.getIpAddress());
                                     assetLinkRelationDao.deleteRelationByAssetId(integers);
                                 }
                                 assetNetworkCard.setModifyUser(
@@ -1827,8 +1884,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetQuery.setIp(networkEquipment.getInnerIp());
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(networkEquipment.getId()));
                             BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "网络设备IP不能重复");
-                            List<Integer> integers = new ArrayList<>();
-                            integers.add(Integer.parseInt(asset.getStringId()));
+                            Map<String,String> integers = new HashMap<>();
+                            integers.put(asset.getStringId(),byId.getInnerIp());
                             assetLinkRelationDao.deleteRelationByAssetId(integers);
                         }
 
@@ -2393,11 +2450,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
-            if (CheckRepeatIp(entity.getNetworkIpAddress(), null, null)) {
-                repeat++;
-                a++;
-                builder.append("第").append(a).append("行").append("资产网卡IP地址重复，");
-                continue;
+
+            if (StringUtils.isNotBlank(entity.getNetworkIpAddress())) {
+                if (CheckRepeatIp(entity.getNetworkIpAddress(), null, null)) {
+                    repeat++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("资产网卡IP地址重复，");
+                    continue;
+                }
             }
 
             if ("".equals(checkUser(entity.getUser()))) {
@@ -2665,6 +2725,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
+
 
             if (CheckRepeatIp(networkDeviceEntity.getInnerIp(), 1, null)) {
                 repeat++;

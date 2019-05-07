@@ -75,7 +75,7 @@ public class NetworkDeviceEntity {
     /**
      * 端口数目
      */
-    @ExcelField(value = "portSize", align = 1, title = "网口数目(必填)")
+    @ExcelField(value = "portSize", align = 1, title = "网口数目(必填)", required = true)
     private Integer portSize;
     /**
      * 接口数目
