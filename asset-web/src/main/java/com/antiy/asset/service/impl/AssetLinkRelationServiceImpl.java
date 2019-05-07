@@ -4,11 +4,13 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.dao.AssetCategoryModelDao;
+import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
 import com.antiy.asset.vo.request.UseableIpRequest;
 import com.antiy.asset.vo.response.*;
+import com.antiy.common.exception.RequestParamValidateException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -17,9 +19,6 @@ import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetNetworkEquipmentDao;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetLinkRelation;
-import com.antiy.asset.entity.AssetLinkedCount;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetLinkRelationService;
 import com.antiy.asset.util.BeanConvert;
@@ -61,9 +60,32 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Resource
     private IAssetService                                               assetService;
     @Resource
-    private IAssetCategoryModelService                                         iAssetCategoryModelService;
+    private IAssetCategoryModelService                                  iAssetCategoryModelService;
+    @Resource
+    private AssetCategoryModelDao                                       assetCategoryDao;
+    private CategoryValiEntity                                          categoryVali;
+
+    private CategoryValiEntity func(CategoryValiEntity category) {
+        categoryVali = assetCategoryDao.getNameByCtegoryId(category.getParentId());
+        if (categoryVali.getParentId() != 2) {
+            categoryVali = func(categoryVali);
+        }
+        return categoryVali;
+    }
+
     @Override
     public Boolean saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
+        QueryCondition queryCondition = new QueryCondition();
+        CategoryType categoryType = new CategoryType();
+        CategoryValiEntity category = assetCategoryDao
+            .getNameByAssetId(DataTypeUtils.stringToInteger(request.getParentAssetId()));
+        if (category.getParentId() != 2) {
+            CategoryValiEntity categoryValiEntity = func(category);
+            validate(request, queryCondition, categoryType, categoryValiEntity);
+        } else {
+            validate(request, queryCondition, categoryType, category);
+        }
+
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
         checkAssetIp(request, assetLinkRelation);
         assetLinkRelationDao.insert(assetLinkRelation);
@@ -73,14 +95,46 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         return StringUtils.isNotBlank(assetLinkRelation.getStringId()) ? true : false;
     }
 
+    private void validate(AssetLinkRelationRequest request, QueryCondition queryCondition, CategoryType categoryType,
+                          CategoryValiEntity category) {
+        if (category.getName().equals("计算设备")) {
+            categoryType.setPc(true);
+            UseableIpRequest useableIpRequest = new UseableIpRequest();
+            useableIpRequest.setAssetId(request.getParentAssetId());
+            useableIpRequest.setCategoryType(categoryType);
+            List<String> list = this.queryUseableIp(useableIpRequest);
+            if (!list.contains(request.getParentAssetIp())) {
+                throw new RequestParamValidateException("必须选定下拉框中的IP");
+            }
+        } else {
+            categoryType.setNet(true);
+            UseableIpRequest useableIpRequest = new UseableIpRequest();
+            useableIpRequest.setAssetId(request.getParentAssetId());
+            useableIpRequest.setCategoryType(categoryType);
+            List<String> list = this.queryUseableIp(useableIpRequest);
+            if (!list.contains(request.getParentAssetIp())) {
+                throw new RequestParamValidateException("必须选定下拉框中的IP");
+            }
+            queryCondition.setPrimaryKey(request.getParentAssetId());
+            List<SelectResponse> selectResponses = this.queryPortById(queryCondition);
+            List<String> valueList = new ArrayList<>();
+            for (SelectResponse selectResponse : selectResponses) {
+                valueList.add(selectResponse.getValue());
+            }
+            if (!valueList.contains(request.getParentAssetPort())) {
+                throw new RequestParamValidateException("必须选定下拉框中的网口");
+            }
+        }
+    }
+
     /**
      * 检查IP信息
      * @param request
      * @param assetLinkRelation
      */
     private void checkAssetIp(AssetLinkRelationRequest request, AssetLinkRelation assetLinkRelation) {
-        assetLinkRelation.setAssetId(DataTypeUtils.stringToInteger(request.getAssetId()));
-        assetLinkRelation.setParentAssetId(DataTypeUtils.stringToInteger(request.getParentAssetId()));
+        assetLinkRelation.setAssetId(request.getAssetId());
+        assetLinkRelation.setParentAssetId(request.getParentAssetId());
         // 1.校验子资产IP是否可用
         List<String> assetAddress = assetLinkRelationDao.queryIpAddressByAssetId(request.getAssetId(), true,
             request.getAssetPort());
@@ -94,7 +148,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         List<String> parentAssetAddress = assetLinkRelationDao.queryIpAddressByAssetId(request.getParentAssetId(), true,
             request.getParentAssetPort());
         if (CollectionUtils.isNotEmpty(parentAssetAddress)) {
-            ParamterExceptionUtils.isTrue(parentAssetAddress.contains(request.getParentAssetIp()), "父资产IP已经存在绑定关系,无法再次绑定");
+            ParamterExceptionUtils.isTrue(parentAssetAddress.contains(request.getParentAssetIp()),
+                "父资产IP已经存在绑定关系,无法再次绑定");
         } else {
             ParamterExceptionUtils.isTrue(false, "父资产IP已经存在绑定关系,无法再次绑定");
         }
@@ -225,7 +280,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     @Override
     public ActionResponse saveAssetLinkRelationList(List<AssetLinkRelationRequest> assetLinkRelationRequestList) {
-        List<AssetLinkRelation> assetLinkRelationList = BeanConvert.convert(assetLinkRelationRequestList, AssetLinkRelation.class);
+        List<AssetLinkRelation> assetLinkRelationList = BeanConvert.convert(assetLinkRelationRequestList,
+            AssetLinkRelation.class);
         if (CollectionUtils.isNotEmpty(assetLinkRelationList)) {
             Integer createUser = LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0;
             assetLinkRelationList.stream().forEach(assetLinkRelation -> {
@@ -239,11 +295,11 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     @Override
     public List<String> queryUseableIp(UseableIpRequest useableIpRequest) {
-        //网络设备
+        // 网络设备
         if (useableIpRequest.getCategoryType().isNet()) {
-            return assetLinkRelationDao.queryUseableIp(useableIpRequest.getAssetId(),"isNet");
+            return assetLinkRelationDao.queryUseableIp(useableIpRequest.getAssetId(), "isNet");
         } else if (useableIpRequest.getCategoryType().isPc()) {
-            return assetLinkRelationDao.queryUseableIp(useableIpRequest.getAssetId(),"isPc");
+            return assetLinkRelationDao.queryUseableIp(useableIpRequest.getAssetId(), "isPc");
         }
         return Lists.newArrayList();
     }
@@ -300,9 +356,10 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         processLinkCount(assetResponseList, categoryMap);
         return BeanConvert.convert(assetResponseList, AssetLinkedCountResponse.class);
     }
+
     // 处理品类型号使其均为二级品类型号
     private void processLinkCount(List<AssetLinkedCount> assetResponseList,
-                                                 Map<String, String> categoryMap) throws Exception {
+                                  Map<String, String> categoryMap) throws Exception {
         // 作为缓存使用，提高效率
         Map<String, String> cache = new HashMap<>();
         List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
@@ -314,7 +371,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                 assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId)));
             } else {
                 String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
-                        categoryMap.keySet());
+                    categoryMap.keySet());
                 if (Objects.nonNull(second)) {
                     assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(second)));
                     cache.put(categoryModel, second);
@@ -322,8 +379,9 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             }
         }
     }
+
     private void processLinkRelation(List<AssetLinkRelation> assetResponseList,
-                                                 Map<String, String> categoryMap) throws Exception {
+                                     Map<String, String> categoryMap) throws Exception {
         // 作为缓存使用，提高效率
         Map<String, String> cache = new HashMap<>();
         List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
@@ -335,7 +393,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                 assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId)));
             } else {
                 String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
-                        categoryMap.keySet());
+                    categoryMap.keySet());
                 if (Objects.nonNull(second)) {
                     assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(second)));
                     cache.put(categoryModel, second);
@@ -343,6 +401,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             }
         }
     }
+
     @Override
     public List<AssetLinkRelationResponse> queryLinkedAssetListByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         ParamterExceptionUtils.isBlank(assetLinkRelationQuery.getPrimaryKey(), "请选择资产");
@@ -361,7 +420,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             return Lists.newArrayList();
         }
         Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-        processLinkRelation(assetResponseList,categoryMap);
+        processLinkRelation(assetResponseList, categoryMap);
         return BeanConvert.convert(assetResponseList, AssetLinkRelationResponse.class);
     }
 

@@ -28,7 +28,7 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      * 资产编号
      */
     @ApiModelProperty("资产编号")
-    @Size(message = "资产编号1~30字符", max = 30)
+    @Size(message = "资产编号0~30字符", max = 30)
     private String        assetNumber;
     /**
      * 关联资产id
@@ -43,29 +43,29 @@ public class AssetLinkRelationQuery extends ObjectQuery {
     /**
      * 计算设备资产品类型号列表
      */
-    @ApiModelProperty("计算设备资产品类型号列表")
+    @ApiModelProperty("计算设备资产品类型号列表，不传")
     private List<Integer> pcCategoryModels;
     /**
      * 网络设备资产品类型号列表
      */
-    @ApiModelProperty("网络设备资产品类型号列表")
+    @ApiModelProperty("网络设备资产品类型号列表，不传")
     private List<Integer> netCategoryModels;
     /**
      * 资产综合查询
      */
     @ApiModelProperty("资产综合查询")
-    @Size(message = "综合查询1~30字符", max = 30)
+    @Size(message = "综合查询0~30字符", max = 30)
     private String        multipleQuery;
     /**
      * 关联资产综合查询
      */
     @ApiModelProperty("关联资产综合查询")
-    @Size(message = "关联资产综合查询1~30字符", max = 30)
+    @Size(message = "关联资产综合查询0~30字符", max = 30)
     private String        parentMultipleQuery;
     /**
      * 资产区域
      */
-    @ApiModelProperty("资产区域")
+    @ApiModelProperty("资产区域,不传")
     private List<Integer> areaIds;
     /**
      * 关联资产综合查询

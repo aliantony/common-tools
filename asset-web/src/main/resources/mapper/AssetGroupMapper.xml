@@ -259,7 +259,7 @@
             <if test=" memo != null and memo != '' ">
                 and agroup.memo like #{memo}"%"
             </if>
-            <if test=" createUser != null">
+            <if test=" createUser != null and createUser != ''">
                 and agroup.create_user = #{createUser}
             </if>
             and agroup.status = 1
@@ -279,7 +279,7 @@
             <if test=" memo != null and memo != '' ">
                 and agroup.memo like #{memo}"%"
             </if>
-            <if test=" createUser != null">
+            <if test=" createUser != null and createUser != ''">
                 and agroup.create_user = #{createUser}
             </if>
             and agroup.status = 1

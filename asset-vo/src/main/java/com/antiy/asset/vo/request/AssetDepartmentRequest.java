@@ -40,10 +40,10 @@ public class AssetDepartmentRequest extends BasicRequest implements ObjectValida
     @NotNull(message = "上级部门不能为空")
     private String parentId;
     /**
-     * 上级部门
+     * 备注
      */
     @ApiModelProperty("备注")
-    @Size(message = "备注名在5~300字符", max = 300)
+    @Size(message = "备注名在0~300字符", max = 300)
     private String memo;
 
     public String getId() {

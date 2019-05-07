@@ -385,4 +385,33 @@
     <select id="getByName" resultMap="BaseResultMap">
         select * from asset_category_model where name=#{name} and status=1
     </select>
+
+    <resultMap id="CtegoryValiEntityResultMap" type="com.antiy.asset.entity.CategoryValiEntity">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="parent_id" property="parentId"/>
+    </resultMap>
+
+    <select id="getNameByAssetId" resultMap="CtegoryValiEntityResultMap">
+        SELECT
+        acm.id,
+	    acm.name,
+	    acm.parent_id
+        FROM
+	    asset_category_model acm
+	    LEFT JOIN asset ON asset.category_model = acm.id
+        WHERE
+	    asset.id = #{id}
+    </select>
+
+    <select id="getNameByCtegoryId" resultMap="CtegoryValiEntityResultMap">
+        SELECT
+        acm.id,
+	    acm.name,
+	    acm.parent_id
+        FROM
+	    asset_category_model acm
+        WHERE
+	    acm.id = #{id}
+    </select>
 </mapper>

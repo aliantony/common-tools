@@ -1,6 +1,5 @@
 package com.antiy.asset.templet;
 
-import com.antiy.asset.annotation.ExcelField;
 import io.swagger.annotations.ApiModelProperty;
 
 public class ExportSoftwareEntity {
@@ -29,13 +28,61 @@ public class ExportSoftwareEntity {
     @ApiModelProperty("状态")
     private String  status;
 
+    @ApiModelProperty(value = "序列号")
+    private String  serial;
 
+    /**
+     * 软件品类名字
+     */
+    @ApiModelProperty(value = "品类型号")
+    private String  categoryModelName;
+
+    @ApiModelProperty("授权")
+    private String  authorization;
 
     /**
      * 上传时间
      */
     @ApiModelProperty("登记时间")
     private String  gmtCreate;
+
+    /**
+     * 发布时间
+     */
+    @ApiModelProperty("发布时间")
+    private String  releaseTime;
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public String getCategoryModelName() {
+        return categoryModelName;
+    }
+
+    public void setCategoryModelName(String categoryModelName) {
+        this.categoryModelName = categoryModelName;
+    }
+
+    public String getAuthorization() {
+        return authorization;
+    }
+
+    public void setAuthorization(String authorization) {
+        this.authorization = authorization;
+    }
+
+    public String getReleaseTime() {
+        return releaseTime;
+    }
+
+    public void setReleaseTime(String releaseTime) {
+        this.releaseTime = releaseTime;
+    }
 
     public String getName() {
         return name;
