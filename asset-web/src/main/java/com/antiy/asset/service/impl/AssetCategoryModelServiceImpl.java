@@ -479,7 +479,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         assetQuery.setCategoryModels(ids);
         BusinessExceptionUtils.isTrue(!checkExistAsset(assetQuery), "存在资产，不能删除");
         AssetSoftwareQuery assetSoftwareQuery = new AssetSoftwareQuery();
-        assetQuery.setCategoryModels(ids);
+        assetSoftwareQuery.setCategoryModels(ids);
         BusinessExceptionUtils.isTrue(!checkExistSoftware(assetSoftwareQuery), "存在资产，不能删除");
         BusinessExceptionUtils.isEmpty(list, "品类不存在，删除失败");
         // 删除品类及其子品类
