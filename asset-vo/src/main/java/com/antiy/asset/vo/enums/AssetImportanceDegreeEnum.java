@@ -8,9 +8,7 @@ package com.antiy.asset.vo.enums;
  * @Description:
  */
 public enum AssetImportanceDegreeEnum implements CodeEnum {
-    CORE(1, "核心"),
-    IMPORTANCE(2, "重要"),
-    COMMON(3, "一般");
+                                                           CORE(1, "核心"), IMPORTANCE(2, "重要"), COMMON(3, "一般");
 
     AssetImportanceDegreeEnum(Integer code, String msg) {
         this.code = code;
@@ -21,15 +19,25 @@ public enum AssetImportanceDegreeEnum implements CodeEnum {
     private Integer code;
 
     // msg
-    private String msg;
+    private String  msg;
 
     @Override
     public Integer getCode() {
         return code;
     }
+
     @Override
     public String getMsg() {
         return msg;
+    }
+
+    public static AssetImportanceDegreeEnum getByCode(Integer code) {
+        for (AssetImportanceDegreeEnum assetImportanceDegreeEnum : AssetImportanceDegreeEnum.values()) {
+            if (assetImportanceDegreeEnum.getCode().equals(code)) {
+                return assetImportanceDegreeEnum;
+            }
+        }
+        return null;
     }
 
 }

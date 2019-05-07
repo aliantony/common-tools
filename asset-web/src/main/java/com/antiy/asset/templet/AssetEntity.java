@@ -40,6 +40,25 @@ public class AssetEntity {
      */
     @ApiModelProperty("资产组")
     private String assetGroup;
+
+    @ApiModelProperty(value = "重要程度")
+    private String importanceDegree;
+
+    /**
+     * 使用者名称
+     */
+    @ApiModelProperty("使用者")
+    private String responsibleUserName;
+
+    @ApiModelProperty("上报方式")
+    private String assetSource;
+
+    /**
+     * 操作系统名
+     */
+    @ApiModelProperty("操作系统名")
+    private String operationSystemName;
+
     /**
      * mac
      */
@@ -50,6 +69,66 @@ public class AssetEntity {
      */
     @ApiModelProperty("首次发现时间")
     private String gmtCreate;
+
+    /**
+     * 首次入网时间
+     */
+    @ApiModelProperty(value = "首次入网时间")
+    private String firstEnterNett;
+
+    /**
+     * 使用到期时间
+     */
+    @ApiModelProperty("到期时间")
+    private String serviceLife;
+
+    public String getImportanceDegree() {
+        return importanceDegree;
+    }
+
+    public void setImportanceDegree(String importanceDegree) {
+        this.importanceDegree = importanceDegree;
+    }
+
+    public String getResponsibleUserName() {
+        return responsibleUserName;
+    }
+
+    public void setResponsibleUserName(String responsibleUserName) {
+        this.responsibleUserName = responsibleUserName;
+    }
+
+    public String getAssetSource() {
+        return assetSource;
+    }
+
+    public void setAssetSource(String assetSource) {
+        this.assetSource = assetSource;
+    }
+
+    public String getOperationSystemName() {
+        return operationSystemName;
+    }
+
+    public void setOperationSystemName(String operationSystemName) {
+        this.operationSystemName = operationSystemName;
+    }
+
+    public String getFirstEnterNett() {
+        return firstEnterNett;
+    }
+
+    public void setFirstEnterNett(String firstEnterNett) {
+        this.firstEnterNett = firstEnterNett;
+    }
+
+    public String getServiceLife() {
+        return serviceLife;
+    }
+
+    public void setServiceLife(String serviceLife) {
+        this.serviceLife = serviceLife;
+    }
 
     public String getName() {
         return name;
