@@ -471,13 +471,16 @@
         operation_system
         FROM
         asset
-        WHERE
-        operation_system IS NOT NULL
-        AND STATUS = 1
-        and area_id in
-        <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+        <where>
+            operation_system IS NOT NULL
+            AND STATUS = 1
+            <if test="areaIds != null and areaIds.size() > 0">
+                and area_id in
+                <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
     </select>
 
 
