@@ -70,7 +70,7 @@
         areaId
     </select>
     <!--统计区域每个区间的增量-->
-    <select id="queryAddAssetWithArea" resultType="java.util.Map">
+    <select id="queryAddAssetWithArea" resultType="java.util.HashMap">
         SELECT
         case
         when length(replace(ltrim(replace(FROM_UNIXTIME(gmt_create/1000,#{timeType}),'0',' ')),' ','0')) &lt; 1
@@ -87,7 +87,7 @@
                 THEN 1
                 ELSE 0
                 END
-                ) AS #{item.parentAreaName},
+                ) AS #{item.parentAreaName}
             </foreach>
         </trim>
         FROM

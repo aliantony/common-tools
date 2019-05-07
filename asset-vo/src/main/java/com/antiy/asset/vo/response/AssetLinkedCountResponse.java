@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseResponse;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -13,6 +14,7 @@ public class AssetLinkedCountResponse extends BaseResponse {
     /**
      * 资产id
      */
+    @Encode
     @ApiModelProperty("资产id")
     private String       assetId;
     /**

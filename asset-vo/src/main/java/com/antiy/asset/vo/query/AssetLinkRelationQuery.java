@@ -43,12 +43,12 @@ public class AssetLinkRelationQuery extends ObjectQuery {
     /**
      * 计算设备资产品类型号列表
      */
-    @ApiModelProperty("计算设备资产品类型号列表")
+    @ApiModelProperty("计算设备资产品类型号列表，不传")
     private List<Integer> pcCategoryModels;
     /**
      * 网络设备资产品类型号列表
      */
-    @ApiModelProperty("网络设备资产品类型号列表")
+    @ApiModelProperty("网络设备资产品类型号列表，不传")
     private List<Integer> netCategoryModels;
     /**
      * 资产综合查询
@@ -65,7 +65,7 @@ public class AssetLinkRelationQuery extends ObjectQuery {
     /**
      * 资产区域
      */
-    @ApiModelProperty("资产区域")
+    @ApiModelProperty("资产区域,不传")
     private List<Integer> areaIds;
     /**
      * 关联资产综合查询

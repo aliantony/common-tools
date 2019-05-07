@@ -18,7 +18,7 @@ public class AssetLinkRelation extends BaseEntity {
     /**
      * 资产主键
      */
-    private Integer           assetId;
+    private String            assetId;
     /**
      * 资产名称
      */
@@ -42,7 +42,7 @@ public class AssetLinkRelation extends BaseEntity {
     /**
      * 父级设备主键
      */
-    private Integer           parentAssetId;
+    private String            parentAssetId;
     /**
      * 关联资产名称
      */
@@ -101,12 +101,20 @@ public class AssetLinkRelation extends BaseEntity {
         this.categoryType = categoryType;
     }
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
+    }
+
+    public String getParentAssetId() {
+        return parentAssetId;
+    }
+
+    public void setParentAssetId(String parentAssetId) {
+        this.parentAssetId = parentAssetId;
     }
 
     public String getAssetIp() {
@@ -123,14 +131,6 @@ public class AssetLinkRelation extends BaseEntity {
 
     public void setAssetPort(String assetPort) {
         this.assetPort = assetPort;
-    }
-
-    public Integer getParentAssetId() {
-        return parentAssetId;
-    }
-
-    public void setParentAssetId(Integer parentAssetId) {
-        this.parentAssetId = parentAssetId;
     }
 
     public String getParentAssetIp() {
