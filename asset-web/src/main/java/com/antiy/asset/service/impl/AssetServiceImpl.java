@@ -1,5 +1,37 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -32,36 +64,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -740,24 +742,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             Collections.reverse(sortedIds);
             query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
         }
-        /*if (MapUtils.isNotEmpty(processMap)) {
-            List<Map.Entry<String, WaitingTaskReponse>> processList = Lists.newArrayList();
-            processList.addAll(processMap.entrySet());
-            Collections.sort(processList, (o1, o2) -> DataTypeUtils.stringToInteger(o1.getValue().getTaskId())
-                                                      - DataTypeUtils.stringToInteger(o2.getValue().getTaskId()));
-            List<String> lowIds = Lists.newArrayList();
-            List<String> highIds = Lists.newArrayList();
-            processList.stream().forEach(v -> {
-                if (Objects.isNull(v.getValue()) || "基准配置".equals(v.getValue().getName())
-                    || "基准验证".equals(v.getValue().getName())) {
-                    lowIds.add(v.getKey());
-                } else {
-                    highIds.add(v.getKey());
-                }
-            });
-            lowIds.addAll(highIds);
-            query.setIds(lowIds.toArray(new String[] {}));
-        }*/
+        /* if (MapUtils.isNotEmpty(processMap)) { List<Map.Entry<String, WaitingTaskReponse>> processList =
+         * Lists.newArrayList(); processList.addAll(processMap.entrySet()); Collections.sort(processList, (o1, o2) ->
+         * DataTypeUtils.stringToInteger(o1.getValue().getTaskId()) -
+         * DataTypeUtils.stringToInteger(o2.getValue().getTaskId())); List<String> lowIds = Lists.newArrayList();
+         * List<String> highIds = Lists.newArrayList(); processList.stream().forEach(v -> { if
+         * (Objects.isNull(v.getValue()) || "基准配置".equals(v.getValue().getName()) ||
+         * "基准验证".equals(v.getValue().getName())) { lowIds.add(v.getKey()); } else { highIds.add(v.getKey()); } });
+         * lowIds.addAll(highIds); query.setIds(lowIds.toArray(new String[] {})); } */
         /* if (!Objects.isNull(processMap) && !processMap.isEmpty()) { query.setIds(processMap.keySet().toArray(new
          * String[] {})); } */
 
@@ -856,6 +848,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (MapUtils.isNotEmpty(alarmCountMaps)) {
                 object.setAlarmCount(
                     alarmCountMaps.containsKey(object.getStringId()) ? alarmCountMaps.get(object.getStringId()) : "0");
+            }
+
+            // 设置操作系统名
+            if (StringUtils.isNotEmpty(object.getOperationSystem())) {
+                List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
+                for (LinkedHashMap linkedHashMap : linkedHashMapList) {
+                    if (object.getOperationSystem().equals(linkedHashMap.get("stringId"))) {
+                        object.setOperationSystemName((String) linkedHashMap.get("name"));
+                    }
+                }
             }
         }
 
@@ -1596,8 +1598,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // 页面传过来的网卡
                         Map<String, String> existIp = assetNetworkCardRequestList.stream().collect(
                             Collectors.toMap(AssetNetworkCardRequest::getId, AssetNetworkCardRequest::getIpAddress));
-                        //需要删除通联关系的网卡信息
-                        Map<String,String> deleteRelation = nowIp.entrySet().stream().filter(e -> !existIp.containsKey(e.getKey()))
+                        // 需要删除通联关系的网卡信息
+                        Map<String, String> deleteRelation = nowIp.entrySet().stream()
+                            .filter(e -> !existIp.containsKey(e.getKey()))
                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
                         assetLinkRelationDao.deleteRelationByAssetId(deleteRelation);
                     }
@@ -1618,7 +1621,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                     assetQuery.setIp(assetNetworkCard.getIpAddress());
                                     BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "IP不能重复");
                                     Map<String, String> integers = new HashMap<>();
-                                    integers.put(asset.getStringId(),byId.getIpAddress());
+                                    integers.put(asset.getStringId(), byId.getIpAddress());
                                     assetLinkRelationDao.deleteRelationByAssetId(integers);
                                 }
                                 assetNetworkCard.setModifyUser(
@@ -1851,8 +1854,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetQuery.setIp(networkEquipment.getInnerIp());
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(networkEquipment.getId()));
                             BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "网络设备IP不能重复");
-                            Map<String,String> integers = new HashMap<>();
-                            integers.put(asset.getStringId(),byId.getInnerIp());
+                            Map<String, String> integers = new HashMap<>();
+                            integers.put(asset.getStringId(), byId.getInnerIp());
                             assetLinkRelationDao.deleteRelationByAssetId(integers);
                         }
 
@@ -2480,7 +2483,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-
             if (repeat + error == 0) {
                 assetNames.add(entity.getName());
                 assetNumbers.add(entity.getNumber());
@@ -2545,9 +2547,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // builder.append("序号").append(a).append("行").append ("没有添加内存：内存品牌，内存容量，内存主频，内存数量>0")
                 // }
 
-                if (!Objects.isNull(entity.getHardDisCapacityl())
-                    && !Objects.isNull(entity.getHardDiskType()) && !Objects.isNull(entity.getHardDiskNum())
-                    && entity.getHardDiskNum() > 0) {
+                if (!Objects.isNull(entity.getHardDisCapacityl()) && !Objects.isNull(entity.getHardDiskType())
+                    && !Objects.isNull(entity.getHardDiskNum()) && entity.getHardDiskNum() > 0) {
                     AssetHardDisk assetHardDisk = new AssetHardDisk();
                     // assetHardDisk.setAssetId(id);
                     assetHardDisk.setGmtCreate(System.currentTimeMillis());
@@ -2588,8 +2589,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     computerVo.setAssetMainborads(assetMainborads);
                     // assetMainboradDao.insertBatch(assetMainborads);
                 }
-                if (!Objects.isNull(entity.getCpuNum())
-                    && entity.getCpuNum() > 0 && !Objects.isNull(entity.getCpuMainFrequency())) {
+                if (!Objects.isNull(entity.getCpuNum()) && entity.getCpuNum() > 0
+                    && !Objects.isNull(entity.getCpuMainFrequency())) {
                     AssetCpu assetCpu = new AssetCpu();
                     // assetCpu.setAssetId(id);
                     assetCpu.setGmtCreate(System.currentTimeMillis());
@@ -2740,7 +2741,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-
             if (CheckRepeatIp(networkDeviceEntity.getInnerIp(), 1, null)) {
                 repeat++;
                 a++;
@@ -2771,7 +2771,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("当前用户没有此所属区域，");
                 continue;
             }
-
 
             if (repeat + error == 0) {
                 assetNames.add(networkDeviceEntity.getName());
@@ -2827,7 +2826,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             a++;
 
         }
-
 
         if (repeat + error == 0) {
             List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
@@ -3596,6 +3594,15 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
         }
         assetEntity.setCategoryModelName(asset.getCategoryModelName());
         assetEntity.setGmtCreate(longToDateString(asset.getGmtCreate()));
+        assetEntity.setServiceLife(longToDateString(asset.getServiceLife()));
+        assetEntity.setImportanceDegree(AssetImportanceDegreeEnum.getByCode(asset.getImportanceDegree()) != null
+            ? AssetImportanceDegreeEnum.getByCode(asset.getImportanceDegree()).toString()
+            : null);
+        assetEntity.setResponsibleUserName(asset.getResponsibleUserName());
+        if(null != asset.getAssetSource()) {
+            assetEntity.setAssetSource(asset.getAssetSource().compareTo(1) == 0 ? "自动上报" : "人工登记");
+        }
+        assetEntity.setFirstEnterNett(longToDateString(asset.getFirstEnterNett()));
         super.convert(asset, assetEntity);
     }
 
