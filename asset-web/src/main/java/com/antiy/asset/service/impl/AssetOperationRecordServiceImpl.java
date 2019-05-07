@@ -172,7 +172,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
                     .convert(assetOperationRecordBarPO, AssetOperationRecordBarResponse.class);
                 String processResult = assetOperationRecordBarResponse.getProcessResult().equals(1) ? "通过" : "不通过";
                 assetOperationRecordBarResponse
-                    .setContent(assetOperationRecordBarResponse.getContent() + "验证情况：" + processResult);
+                    .setContent(assetOperationRecordBarResponse.getContent() + "，验证情况：" + processResult);
 
                 List<Scheme> schemeList = schemeDao.findSchemeByAssetIdAndGmtCreateTime(map);
 
