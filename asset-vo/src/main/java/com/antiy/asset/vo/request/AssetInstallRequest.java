@@ -20,20 +20,6 @@ public class AssetInstallRequest extends BaseRequest {
     @NotBlank(message = "资产Id不能为空")
     @ApiModelProperty("资产id")
     private String  assetId;
-    /**
-     * 配置状态
-     */
-    @NotNull(message = "配置状态不能为空")
-    @ApiModelProperty("配置状态")
-    private Integer configureStatus;
-
-    public Integer getConfigureStatus() {
-        return configureStatus;
-    }
-
-    public void setConfigureStatus(Integer configureStatus) {
-        this.configureStatus = configureStatus;
-    }
 
     public String getAssetId() {
         return assetId;
@@ -45,6 +31,8 @@ public class AssetInstallRequest extends BaseRequest {
 
     @Override
     public String toString() {
-        return "AssetInstallRequest{" + "assetId='" + assetId + '\'' + ", configureStatus=" + configureStatus + '}';
+        return "AssetInstallRequest{" +
+                "assetId='" + assetId + '\'' +
+                '}';
     }
 }

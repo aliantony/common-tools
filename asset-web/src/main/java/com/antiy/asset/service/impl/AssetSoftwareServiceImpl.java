@@ -805,7 +805,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
         assetSoftwareRelation.setAssetId(request.getAssetId());
         assetSoftwareRelation.setSoftwareId(request.getSoftwareId());
-        assetSoftwareRelation.setConfigureStatus(ConfigureStatusEnum.CONFIGURING.getCode());
+        assetSoftwareRelation.setInstallStatus(SoftInstallStatus.CONFIGURING.getCode());
         assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
         assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         return ActionResponse.success(assetSoftwareRelationDao.insert(assetSoftwareRelation));

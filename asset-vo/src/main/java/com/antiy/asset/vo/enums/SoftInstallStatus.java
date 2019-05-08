@@ -37,5 +37,4 @@ public enum SoftInstallStatus {
         }
         return null;
     }
-
 }
