@@ -5,10 +5,18 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetReportDao;
@@ -30,10 +38,12 @@ import com.antiy.common.utils.DataTypeUtils;
  */
 @Service
 public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
-
+    private Logger              logger = LogUtils.get(this.getClass());
     @Resource
     private AssetReportDao      assetReportDao;
-    private static final String TRUE = "true";
+    @Resource
+    private RedisUtil           redisUtil;
+    private static final String TRUE   = "true";
 
     @Override
     public AssetReportResponse getAssetWithArea(ReportQueryRequest reportRequest) {
@@ -159,12 +169,28 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             List<AssetAreaReportRequest> assetAreaReportRequestList = reportRequest.getAssetAreaIds();
             if (CollectionUtils.isNotEmpty(assetAreaReportRequestList) && assetAreaReportRequestList.size() > 1
                 && assetAreaReportRequestList.stream()
-                    .filter(a -> reportRequest.getTopAreaId().equals(a.getParentAreaId()))
-                    .collect(Collectors.toList()).size() == 0) {
+                    .filter(a -> reportRequest.getTopAreaId().equals(a.getParentAreaId())).collect(Collectors.toList())
+                    .size() == 0) {
                 AssetAreaReportRequest assetAreaReportRequest = new AssetAreaReportRequest();
                 assetAreaReportRequest.setChildrenAradIds(Lists.newArrayList());
                 assetAreaReportRequest.setParentAreaId(reportRequest.getTopAreaId());
-                assetAreaReportRequest.setParentAreaName(reportRequest.getTopAreaName());
+                if (StringUtils.isBlank(reportRequest.getTopAreaName())) {
+                    String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                        DataTypeUtils.stringToInteger(reportRequest.getTopAreaId()));
+                    try {
+                        SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+                        if (sysArea != null) {
+                            assetAreaReportRequest.setParentAreaName(sysArea.getFullName());
+                        } else {
+                            ParamterExceptionUtils.isTrue(false, "获取顶级区域名称失败");
+                        }
+                    } catch (Exception e) {
+                        logger.error("获取顶级区域名称失败", e);
+                        ParamterExceptionUtils.isTrue(!StringUtils.equals("获取顶级区域名称失败", e.getMessage()), "获取顶级区域名称失败");
+                    }
+                } else {
+                    assetAreaReportRequest.setParentAreaName(reportRequest.getTopAreaName());
+                }
                 assetAreaReportRequestList.add(assetAreaReportRequestList.size(), assetAreaReportRequest);
             }
         }
