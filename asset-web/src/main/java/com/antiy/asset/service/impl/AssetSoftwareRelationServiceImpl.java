@@ -5,15 +5,10 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.service.IAssetCategoryModelService;
-import com.antiy.asset.util.Constants;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
@@ -21,11 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.antiy.asset.dao.AssetCategoryModelDao;
+import com.antiy.asset.dao.AssetSoftwareDao;
+import com.antiy.asset.dao.AssetSoftwareRelationDao;
+import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
+import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
-import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
@@ -40,7 +39,6 @@ import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.BusinessData;
@@ -60,8 +58,8 @@ import com.antiy.common.utils.ParamterExceptionUtils;
  */
 @Transactional(rollbackFor = Exception.class)
 @Service
-public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftwareRelation> implements
-                                                                                            IAssetSoftwareRelationService {
+public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftwareRelation>
+                                              implements IAssetSoftwareRelationService {
     private Logger                                                              logger = LogUtils.get(this.getClass());
 
     @Resource
@@ -73,7 +71,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Resource
     private BaseConverter<AssetSoftware, AssetSoftwareResponse>                 responseSoftConverter;
     @Resource
-    private SoftwareInstallResponseConvert                                      responseInstallConverter;
+    private BaseConverter<AssetSoftwareInstall, AssetSoftwareInstallResponse>   responseInstallConverter;
     @Resource
     private TransactionTemplate                                                 transactionTemplate;
     @Resource
@@ -114,18 +112,16 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<AssetSoftwareRelationResponse> findListAssetSoftwareRelation(AssetSoftwareRelationQuery query)
-                                                                                                              throws Exception {
+    public List<AssetSoftwareRelationResponse> findListAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception {
         List<AssetSoftwareRelation> assetSoftwareRelationList = assetSoftwareRelationDao.findQuery(query);
-        List<AssetSoftwareRelationResponse> assetSoftwareRelationResponse = responseConverter.convert(
-            assetSoftwareRelationList, AssetSoftwareRelationResponse.class);
+        List<AssetSoftwareRelationResponse> assetSoftwareRelationResponse = responseConverter
+            .convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class);
         return assetSoftwareRelationResponse;
     }
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public PageResult<AssetSoftwareRelationResponse> findPageAssetSoftwareRelation(AssetSoftwareRelationQuery query)
-                                                                                                                    throws Exception {
+    public PageResult<AssetSoftwareRelationResponse> findPageAssetSoftwareRelation(AssetSoftwareRelationQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
             this.findListAssetSoftwareRelation(query));
     }
@@ -134,22 +130,21 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     public List<AssetSoftwareResponse> getSoftByAssetId(Integer assetId) {
         List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao.getSoftByAssetId(assetId);
-        List<AssetSoftwareResponse> assetSoftwareRelationResponse = responseSoftConverter.convert(
-            assetSoftwareRelationList, AssetSoftwareResponse.class);
+        List<AssetSoftwareResponse> assetSoftwareRelationResponse = responseSoftConverter
+            .convert(assetSoftwareRelationList, AssetSoftwareResponse.class);
         return assetSoftwareRelationResponse;
     }
 
     @Override
-    public PageResult<AssetSoftwareRelationResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query)
-                                                                                                                     throws Exception {
+    public PageResult<AssetSoftwareRelationResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query) throws Exception {
         int count = countByAssetId(DataTypeUtils.stringToInteger(query.getAssetId()));
         if (count == 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
         }
         List<AssetSoftwareRelation> assetSoftwareRelationList = assetSoftwareRelationDao
             .getSimpleSoftwareByAssetId(query);
-        List<AssetSoftwareRelationResponse> assetSoftwareResponseList = responseConverter.convert(
-            assetSoftwareRelationList, AssetSoftwareRelationResponse.class);
+        List<AssetSoftwareRelationResponse> assetSoftwareResponseList = responseConverter
+            .convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class);
         for (AssetSoftwareRelationResponse assetSoftwareRelationResponse : assetSoftwareResponseList) {
             setOperationName(assetSoftwareRelationResponse);
         }
@@ -223,6 +218,12 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void installSoftware(AssetSoftwareRelationList assetSoftwareRelationList) {
+        // 未配置、配置中资产id列表
+        List<String> assetIds = assetSoftwareRelationList.getAssetInstallRequestList().stream()
+            .filter(a -> (a.getConfigureStatus().equals(ConfigureStatusEnum.NOCONFIGURE.getCode())
+                          || a.getConfigureStatus().equals(ConfigureStatusEnum.CONFIGURING.getCode())))
+            .map(AssetInstallRequest::getAssetId).collect(Collectors.toList());
+        BusinessExceptionUtils.isTrue(assetIds.size() <= 0, "存在未配置或正在配置中的资产，安装失败，请检查！");
         List<AssetSoftwareRelation> relationList = Lists.newArrayList();
         // 自动安装列表，用于下发给智甲
         List<AssetSoftwareRelation> autoInstallList = Lists.newArrayList();
@@ -290,8 +291,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         query.setAssetStatusList(statusList);
         Integer count = assetSoftwareRelationDao.queryInstallCount(query);
-        AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getByName(AssetSecondCategoryEnum.COMPUTE_DEVICE
-            .getMsg());
+        AssetCategoryModel assetCategoryModel = assetCategoryModelDao
+            .getByName(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
         List<Integer> categoryModelIdsById = iAssetCategoryModelService
             .findAssetCategoryModelIdsById(assetCategoryModel.getId());
         query.setCategoryModels(categoryModelIdsById);
@@ -336,8 +337,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         return assetSoftwareInstallList;
     }
 
-    private List<AssetSoftwareInstall> processOperationAdaptation(List<AssetSoftwareInstall> queryInstallList, String id)
-                                                                                                                         throws Exception {
+    private List<AssetSoftwareInstall> processOperationAdaptation(List<AssetSoftwareInstall> queryInstallList,
+                                                                  String id) throws Exception {
         AssetSoftware assetSoftware = assetSoftwareDao.getById(id);
         String operationSystem = assetSoftware.getOperationSystem();
         String[] operationSystemArray = operationSystem.split(",");
@@ -362,22 +363,5 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             }
         }
     }
-}
 
-@Component
-class SoftwareInstallResponseConvert extends BaseConverter<AssetSoftwareInstall, AssetSoftwareInstallResponse> {
-    @Override
-    protected void convert(AssetSoftwareInstall assetSoftwareInstall,
-                           AssetSoftwareInstallResponse assetSoftwareInstallResponse) {
-        if (assetSoftwareInstall.getInstallType() != null) {
-            assetSoftwareInstallResponse.setInstallTypeStr(InstallType.getInstallTypeByCode(
-                assetSoftwareInstall.getInstallType()).getStatus());
-        }
-        if (assetSoftwareInstall.getInstallStatus() != null) {
-            assetSoftwareInstallResponse.setInstallStatusStr(SoftInstallStatus.getInstallStatusByCode(
-                assetSoftwareInstall.getInstallStatus()).getStatus());
-        }
-
-        super.convert(assetSoftwareInstall, assetSoftwareInstallResponse);
-    }
 }

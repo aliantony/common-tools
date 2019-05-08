@@ -61,8 +61,8 @@ public class AssetSoftwareRelationServiceImplTest {
     private IRedisService redisService;
     @Mock
     private AssetSoftwareDao assetSoftwareDao;
-    @Mock
-    private SoftwareInstallResponseConvert responseInstallConverter;
+//    @Mock
+//    private SoftwareInstallResponseConvert responseInstallConverter;
     @Mock
     private Logger logger;
     @Mock
@@ -283,7 +283,7 @@ public class AssetSoftwareRelationServiceImplTest {
         Mockito.when(assetSoftwareRelationDao.queryInstallCount(query)).thenReturn(1);
         Mockito.when(assetSoftwareRelationDao.queryInstallList(Mockito.any())).thenReturn(queryInstallList);
         Mockito.when(assetSoftwareDao.getById(Mockito.anyString())).thenReturn(software);
-        Mockito.when(responseInstallConverter.convert(Mockito.anyList(), Mockito.eq(AssetSoftwareInstallResponse.class))).thenReturn(expect);
+//        Mockito.when(responseInstallConverter.convert(Mockito.anyList(), Mockito.eq(AssetSoftwareInstallResponse.class))).thenReturn(expect);
         Assert.assertEquals(expect, assetSoftwareRelationService.queryInstallList(query).getItems());
     }
 
@@ -304,8 +304,8 @@ public class AssetSoftwareRelationServiceImplTest {
         assetSoftwareInstall.setInstallStatus(4);
         PowerMockito.mockStatic(BeanUtils.class);
         PowerMockito.doNothing().when(BeanUtils.class, "copyProperties", assetSoftwareInstall, assetSoftwareInstallResponse);
-        responseInstallConverter = new SoftwareInstallResponseConvert();
-        responseInstallConverter.convert(assetSoftwareInstall, assetSoftwareInstallResponse);
+//        responseInstallConverter = new SoftwareInstallResponseConvert();
+//        responseInstallConverter.convert(assetSoftwareInstall, assetSoftwareInstallResponse);
 
     }
 

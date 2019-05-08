@@ -106,16 +106,6 @@ public class AssetSoftwareInstallResponse {
      */
     @ApiModelProperty("安装时间")
     private Long    installTime;
-    /**
-     * 配置方式
-     */
-    @ApiModelProperty("配置方式code 1未配置，2配置中，3已配置")
-    private String  configureStatus;
-    /**
-     * 配置方式
-     */
-    @ApiModelProperty("配置方式名 1未配置，2配置中，3已配置")
-    private String  configureStatusStr;
 
     public Integer getUserId() {
         return userId;
@@ -237,14 +227,6 @@ public class AssetSoftwareInstallResponse {
         this.softwareId = softwareId;
     }
 
-    public String getConfigureStatus() {
-        return configureStatus;
-    }
-
-    public void setConfigureStatus(String configureStatus) {
-        this.configureStatus = configureStatus;
-    }
-
     public String getInstallStatusStr() {
         return installStatusStr;
     }
@@ -255,17 +237,6 @@ public class AssetSoftwareInstallResponse {
             : null;
     }
 
-    public String getConfigureStatusStr() {
-        return configureStatusStr;
-    }
-
-    public void setConfigureStatusStr(String configureStatusStr) {
-        if (!Objects.isNull(configureStatus)){
-            this.configureStatusStr = ConfigureStatusEnum.getConfigureStatusByCode(DataTypeUtils.stringToInteger(configureStatus)) != null
-                    ? ConfigureStatusEnum.getConfigureStatusByCode(DataTypeUtils.stringToInteger(configureStatus)).getName()
-                    : null;
-        }
-    }
 
     public String getInstallTypeStr() {
         return installTypeStr;
@@ -279,11 +250,24 @@ public class AssetSoftwareInstallResponse {
 
     @Override
     public String toString() {
-        return "AssetSoftwareInstallResponse{" + "id='" + id + '\'' + ", assetId='" + assetId + '\'' + ", softwareId='"
-               + softwareId + '\'' + ", number='" + number + '\'' + ", name='" + name + '\'' + ", userId=" + userId
-               + ", userName='" + userName + '\'' + ", ip='" + ip + '\'' + ", mac='" + mac + '\'' + ", serial='"
-               + serial + '\'' + ", categoryModelName='" + categoryModelName + '\'' + ", manufacturer='" + manufacturer
-               + '\'' + ", installType=" + installType + ", installStatus=" + installStatus + ", installTime="
-               + installTime + ", configureStatus='" + configureStatus + '\'' + '}';
+        return "AssetSoftwareInstallResponse{" +
+                "id='" + id + '\'' +
+                ", assetId='" + assetId + '\'' +
+                ", softwareId='" + softwareId + '\'' +
+                ", number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", ip='" + ip + '\'' +
+                ", mac='" + mac + '\'' +
+                ", serial='" + serial + '\'' +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", installType=" + installType +
+                ", installTypeStr='" + installTypeStr + '\'' +
+                ", installStatus=" + installStatus +
+                ", installStatusStr='" + installStatusStr + '\'' +
+                ", installTime=" + installTime +
+                '}';
     }
 }
