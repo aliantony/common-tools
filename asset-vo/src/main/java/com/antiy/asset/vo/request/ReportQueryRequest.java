@@ -6,6 +6,7 @@ import java.util.Objects;
 import javax.validation.constraints.NotBlank;
 
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
@@ -47,20 +48,43 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
     @ApiModelProperty(value = "区域查询条件")
     private List<AssetAreaReportRequest> assetAreaIds;
 
-    @ApiModelProperty(value = "顶级区域ID,默认不传")
-    private Integer                      topAreaId;
-
+    @ApiModelProperty(value = "顶级区域ID")
+    @Encode
+    private String                      topAreaId;
+    @ApiModelProperty(value = "顶级区域名称")
+    private String                       topAreaName;
     // 用户登陆的区域查询条件
     @ApiModelProperty(value = "区域列表 不用传")
     private List<Integer>                areaIds;
     @ApiModelProperty(value = "资产组ids 不用传")
     private List<Integer>                groupIds;
+    /**
+     * 导出报表文件名
+     */
+    @ApiModelProperty("导出报表文件名")
+    private String                       exportFileName;
 
-    public Integer getTopAreaId() {
+    public String getExportFileName() {
+        return exportFileName;
+    }
+
+    public void setExportFileName(String exportFileName) {
+        this.exportFileName = exportFileName;
+    }
+
+    public String getTopAreaName() {
+        return topAreaName;
+    }
+
+    public void setTopAreaName(String topAreaName) {
+        this.topAreaName = topAreaName;
+    }
+
+    public String getTopAreaId() {
         return topAreaId;
     }
 
-    public void setTopAreaId(Integer topAreaId) {
+    public void setTopAreaId(String topAreaId) {
         this.topAreaId = topAreaId;
     }
 
