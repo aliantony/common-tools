@@ -420,7 +420,6 @@
         where
             asset_id = #{assetid}
             and asoft.id is not null
-            and asoftrel.install_status = '2'
             and asoftrel.status = 1
     </select>
 
@@ -441,6 +440,7 @@
         and asoft.id is not null
         and asoftrel.status = 1
         and asoft.status = 1
+        and asoftrel.install_status = 2
         <if test="pageSize != -1">
             limit #{pageSize} offset #{pageOffset}
         </if>
@@ -456,6 +456,7 @@
             asset_id = #{assetId}
             and asoftrel.status = 1
             and asoft.status = 1
+            and asoftrel.install_status = 2
     </select>
 
     <select id="countAssetBySoftId" resultType="int" parameterType="int">

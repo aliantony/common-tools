@@ -170,7 +170,6 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
                 AssetOperationRecordBarResponse assetOperationRecordBarResponse = operationRecordBarPOToResponseConverter
                     .convert(assetOperationRecordBarPO, AssetOperationRecordBarResponse.class);
-
                 List<Scheme> schemeList = schemeDao.findSchemeByAssetIdAndGmtCreateTime(map);
 
                 List<AssetStatusBarResponse> fileInfoList = new ArrayList<>();
