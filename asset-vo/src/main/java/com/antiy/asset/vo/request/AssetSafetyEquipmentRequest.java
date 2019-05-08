@@ -42,6 +42,7 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
      */
     @ApiModelProperty("mac")
     @NotBlank(message = "mac不能为空")
+    @Pattern(regexp = "^(([a-f0-9]{2}:)|([a-f0-9]{2}-)){5}[a-f0-9]{2}$", message = "mac地址错误")
     @Size(message = "MAC地址长度应该为17位", max = 17, min = 17)
     private String mac;
     /**
