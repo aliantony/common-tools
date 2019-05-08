@@ -42,7 +42,7 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
      */
     @ApiModelProperty("mac")
     @NotBlank(message = "mac不能为空")
-    // @Pattern(regexp = "^(([a-f0-9]{2}:)|([a-f0-9]{2}-)){5}[a-f0-9]{2}$", message = "mac地址错误")
+    @Pattern(regexp = "^(([a-f0-9A-F]{2}:)|([a-f0-9A-F]{2}-)){5}[a-f0-9A-F]{2}$", message = "mac地址错误")
     @Size(message = "MAC地址长度应该为17位", max = 17, min = 17)
     private String mac;
     /**
@@ -50,11 +50,11 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
      */
     @ApiModelProperty("特征库版本")
     @Pattern(regexp = "^[+]?\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$", message = "特征库版本格式不正确")
-    @Size(message = "特征库版本不能大于30个字符",  max = 30)
+    @Size(message = "特征库版本不能大于30个字符", max = 30)
     private String featureLibrary;
 
     @ApiModelProperty("软件版本")
-    @Size(message = "软件版本不能大于30个字符",  max = 30)
+    @Size(message = "软件版本不能大于30个字符", max = 30)
     @Pattern(regexp = "^[+]?\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$", message = "软件版本格式不正确")
     private String newVersion;
 

@@ -299,12 +299,12 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
             Matcher matcher = pattern.matcher(innerIp);
             ParamterExceptionUtils.isTrue(matcher.matches(), "ip地址错误");
         }
-//        if (StringUtils.isNotBlank(macAddress)) {
-//            java.util.regex.Pattern pattern = java.util.regex.Pattern
-//                .compile("^(([a-f0-9]{2}:)|([a-f0-9]{2}-)){5}[a-f0-9]{2}$");
-//            Matcher matcher = pattern.matcher(macAddress);
-//            ParamterExceptionUtils.isTrue(matcher.matches(), "mac地址错误");
-//        }
+        if (StringUtils.isNotBlank(macAddress)) {
+            java.util.regex.Pattern pattern = java.util.regex.Pattern
+                .compile("(([a-f0-9A-F]{2}:)|([a-f0-9A-F]{2}-)){5}[a-f0-9A-F]{2}");
+            Matcher matcher = pattern.matcher(macAddress);
+            ParamterExceptionUtils.isTrue(matcher.matches(), "mac地址错误");
+        }
         if (StringUtils.isNotBlank(subnetMask)) {
             java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
                 "^(254|252|248|240|224|192|128|0)\\.0\\.0\\.0|255\\.(254|252|248|240|224|192|128|0)\\.0\\.0|255\\.255\\.(254|252|248|240|224|192|128|0)\\.0|255\\.255\\.255\\.(254|252|248|240|224|192|128|0)$");
