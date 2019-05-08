@@ -1,10 +1,11 @@
 package com.antiy.asset.vo.response;
 
+import javax.validation.constraints.Size;
+
 import com.antiy.common.encoder.Encode;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.Size;
 
 /**
  * <p> SchemeResponse 响应对象 </p>
@@ -12,7 +13,7 @@ import javax.validation.constraints.Size;
  * @author zhangyajun
  * @since 2018-12-27
  */
-
+@ApiModel("方案响应对象")
 public class SchemeResponse extends BaseResponse {
     /**
      * 资产id
