@@ -5,10 +5,18 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetReportDao;
@@ -30,28 +38,29 @@ import com.antiy.common.utils.DataTypeUtils;
  */
 @Service
 public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
-
+    private Logger              logger = LogUtils.get(this.getClass());
     @Resource
     private AssetReportDao      assetReportDao;
-    private static final String TRUE = "true";
+    @Resource
+    private RedisUtil           redisUtil;
+    private static final String TRUE   = "true";
 
     @Override
     public AssetReportResponse getAssetWithArea(ReportQueryRequest reportRequest) {
+        dealArea(reportRequest);
         AssetReportResponse assetReportResponse = new AssetReportResponse();
         List<ReportData> reportDataList = Lists.newArrayList();
         // 总数
         List<Integer> allDataList = Lists.newArrayList();
         // 总增量
         List<Integer> allAddList = Lists.newArrayList();
-        List<Integer> topAreaIds;
+        List<String> topAreaIds;
         // 是否需要top5
         if (BooleanUtils.isTrue(reportRequest.getTopFive())) {
             // 1.查询TOP5的区域信息
             topAreaIds = getTopFive(reportRequest);
-            if (CollectionUtils.isNotEmpty(topAreaIds)) {
-                reportRequest.setAssetAreaIds(reportRequest.getAssetAreaIds().stream()
-                        .filter(report -> topAreaIds.contains(report.getParentAreaId())).collect(Collectors.toList()));
-            }
+            reportRequest.setAssetAreaIds(reportRequest.getAssetAreaIds().stream()
+                .filter(report -> topAreaIds.contains(report.getParentAreaId())).collect(Collectors.toList()));
         } else {
             topAreaIds = reportRequest.getAssetAreaIds().stream().map(AssetAreaReportRequest::getParentAreaId)
                 .collect(Collectors.toList());
@@ -86,76 +95,105 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
                     initData.add(m);
                 }
             });
-
-            // 4.获取每个地区在每个时间区间的增量
-            List<Map<String, String>> addData = assetReportDao.queryAddAssetWithArea(reportRequest.getAssetAreaIds(),
-                reportRequest.getStartTime(), reportRequest.getEndTime(),
-                ReportDateUtils.getTimeType(DataTypeUtils.stringToInteger(reportRequest.getTimeType())));
-            topAreaIds.stream().forEach(top -> {
-                ReportData reportData = new ReportData();
-                // 区域在区间总数
-                List<Integer> totalList = Lists.newArrayList();
-                // 区域在区间增量
-                List<Integer> addList = Lists.newArrayList();
-                reportData.setClassify(getAreaNameById(top, reportRequest.getAssetAreaIds()));
-                // 循环横坐标[2019-01,2019-02......]
-                for (String date : dateList.keySet()) {
-                    boolean flag = false;
-                    // 遍历增量数据
-                    for (Map<String, String> data : addData) {
-                        if (date.equals(data.get("date"))) {
-                            addList.add(DataTypeUtils.stringToInteger(
-                                String.valueOf(data.get(getAreaNameById(top, reportRequest.getAssetAreaIds())))));
-                            flag = true;
-                        }
-                    }
-                    if (!flag) {
-                        addList.add(Integer.valueOf(0));
-                    }
-                }
-                // 计算每个区间总数
-                for (int i = 0; i < addList.size(); i++) {
-                    // 第一列，初始值加上本区间增量
-                    if (i == 0) {
-                        for (Map<String, Integer> init : initData) {
-                            if (top.equals(init.get("areaId"))) {
-                                totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.get("assetCount")))
-                                              + Integer.valueOf(addList.get(i) + ""));
-                                break;
-                            }
-                        }
-                    }
-                    // 上个区间加上本区间增量
-                    else {
-                        int t = Integer.valueOf(totalList.get(i - 1) + "");
-                        int a = Integer.valueOf(addList.get(i) + "");
-                        totalList.add(t + a);
-                    }
-                }
-                // 设置增量数据
-                reportData.setAdd(addList);
-                // 设置区域区间总数
-                reportData.setData(totalList);
-                reportDataList.add(reportData);
-            });
-
-            for (int i = 0; i < abscissa.size(); i++) {
-                int allData = 0;
-                int allAdd = 0;
-                for (int j = 0; j < topAreaIds.size(); j++) {
-                    allData += reportDataList.get(j).getData().get(i);
-                    allAdd += reportDataList.get(j).getAdd().get(i);
-                }
-                allDataList.add(allData);
-                allAddList.add(allAdd);
-            }
         }
-
+        // 4.获取每个地区在每个时间区间的增量
+        List<Map<String, String>> addData = assetReportDao.queryAddAssetWithArea(reportRequest.getAssetAreaIds(),
+            reportRequest.getStartTime(), reportRequest.getEndTime(),
+            ReportDateUtils.getTimeType(DataTypeUtils.stringToInteger(reportRequest.getTimeType())));
+        topAreaIds.stream().forEach(top -> {
+            ReportData reportData = new ReportData();
+            // 区域在区间总数
+            List<Integer> totalList = Lists.newArrayList();
+            // 区域在区间增量
+            List<Integer> addList = Lists.newArrayList();
+            reportData.setClassify(getAreaNameById(top, reportRequest.getAssetAreaIds()));
+            // 循环横坐标[2019-01,2019-02......]
+            for (String date : dateList.keySet()) {
+                boolean flag = false;
+                // 遍历增量数据
+                for (Map<String, String> data : addData) {
+                    if (date.equals(data.get("date"))) {
+                        addList.add(DataTypeUtils.stringToInteger(
+                            String.valueOf(data.get(getAreaNameById(top, reportRequest.getAssetAreaIds())))));
+                        flag = true;
+                    }
+                }
+                if (!flag) {
+                    addList.add(Integer.valueOf(0));
+                }
+            }
+            // 计算每个区间总数
+            for (int i = 0; i < addList.size(); i++) {
+                // 第一列，初始值加上本区间增量
+                if (i == 0) {
+                    for (Map<String, Integer> init : initData) {
+                        if (top.equals(init.get("areaId"))) {
+                            totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.get("assetCount")))
+                                          + Integer.valueOf(addList.get(i) + ""));
+                            break;
+                        }
+                    }
+                }
+                // 上个区间加上本区间增量
+                else {
+                    int t = Integer.valueOf(totalList.get(i - 1) + "");
+                    int a = Integer.valueOf(addList.get(i) + "");
+                    totalList.add(t + a);
+                }
+            }
+            // 设置增量数据
+            reportData.setAdd(addList);
+            // 设置区域区间总数
+            reportData.setData(totalList);
+            reportDataList.add(reportData);
+        });
+        for (int i = 0; i < abscissa.size(); i++) {
+            int allData = 0;
+            int allAdd = 0;
+            for (int j = 0; j < topAreaIds.size(); j++) {
+                allData += reportDataList.get(j).getData().get(i);
+                allAdd += reportDataList.get(j).getAdd().get(i);
+            }
+            allDataList.add(allData);
+            allAddList.add(allAdd);
+        }
         // 3.组装基础数据和总数
         assetReportResponse.setList(reportDataList);
         assetReportResponse.setAlldata(allDataList);
         assetReportResponse.setAllAdd(allAddList);
         return assetReportResponse;
+    }
+
+    private void dealArea(ReportQueryRequest reportRequest) {
+        if (!Objects.isNull(reportRequest)) {
+            List<AssetAreaReportRequest> assetAreaReportRequestList = reportRequest.getAssetAreaIds();
+            if (CollectionUtils.isNotEmpty(assetAreaReportRequestList) && assetAreaReportRequestList.size() > 1
+                && assetAreaReportRequestList.stream()
+                    .filter(a -> reportRequest.getTopAreaId().equals(a.getParentAreaId())).collect(Collectors.toList())
+                    .size() == 0) {
+                AssetAreaReportRequest assetAreaReportRequest = new AssetAreaReportRequest();
+                assetAreaReportRequest.setChildrenAradIds(Lists.newArrayList());
+                assetAreaReportRequest.setParentAreaId(reportRequest.getTopAreaId());
+                if (StringUtils.isBlank(reportRequest.getTopAreaName())) {
+                    String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                        DataTypeUtils.stringToInteger(reportRequest.getTopAreaId()));
+                    try {
+                        SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+                        if (sysArea != null) {
+                            assetAreaReportRequest.setParentAreaName(sysArea.getFullName());
+                        } else {
+                            ParamterExceptionUtils.isTrue(false, "获取顶级区域名称失败");
+                        }
+                    } catch (Exception e) {
+                        logger.error("获取顶级区域名称失败", e);
+                        ParamterExceptionUtils.isTrue(!StringUtils.equals("获取顶级区域名称失败", e.getMessage()), "获取顶级区域名称失败");
+                    }
+                } else {
+                    assetAreaReportRequest.setParentAreaName(reportRequest.getTopAreaName());
+                }
+                assetAreaReportRequestList.add(assetAreaReportRequestList.size(), assetAreaReportRequest);
+            }
+        }
     }
 
     @Override
@@ -241,7 +279,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         return reportForm;
     }
 
-    private String getAreaNameById(Integer id, List<AssetAreaReportRequest> assetAreaIds) {
+    private String getAreaNameById(String id, List<AssetAreaReportRequest> assetAreaIds) {
         for (AssetAreaReportRequest assetAreaReportRequest : assetAreaIds) {
             if (id.equals(assetAreaReportRequest.getParentAreaId())) {
                 return assetAreaReportRequest.getParentAreaName();
@@ -261,7 +299,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
 
     }
 
-    private List<Integer> getTopFive(ReportQueryRequest reportRequest) {
+    private List<String> getTopFive(ReportQueryRequest reportRequest) {
 
         // 1.查询当前条件所有的区域信息
         List<Map<String, Integer>> allAssetCount = assetReportDao.getAllAssetWithArea(reportRequest);
@@ -276,7 +314,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         if (areaTop.size() > 5) {
             areaTop = areaTop.subList(0, 5);
         }
-        List<Integer> areaId = new ArrayList<>();
+        List<String> areaId = new ArrayList<>();
         areaTop.stream().forEach(areaName -> {
             reportRequest.getAssetAreaIds().forEach(assetAreaReportRequest -> {
                 if (assetAreaReportRequest.getParentAreaName().equals(areaName)) {

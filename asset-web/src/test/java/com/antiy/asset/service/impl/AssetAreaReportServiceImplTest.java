@@ -48,15 +48,15 @@ public class AssetAreaReportServiceImplTest {
     @Test
     public void getAssetWithAreaTest(){
         AssetAreaReportRequest report = new AssetAreaReportRequest();
-        report.setParentAreaId(1);
+//        report.setParentAreaId(1);
         report.setParentAreaName("parent");
         List<Integer> childrenAradId = new ArrayList<>();
         childrenAradId.add(2);
         childrenAradId.add(3);
-        report.setChildrenAradIds(childrenAradId);
+//        report.setChildrenAradIds(childrenAradId);
         report.setStringId("1");
         AssetAreaReportRequest report2 = new AssetAreaReportRequest();
-        report2.setParentAreaId(1);
+//        report2.setParentAreaId(1);
         report2.setParentAreaName("parent2");
         ReportQueryRequest reportRequest = new ReportQueryRequest();
         List<Integer> id = new ArrayList<>();
@@ -127,7 +127,7 @@ public class AssetAreaReportServiceImplTest {
     @Test
     public void queryAreaTableTest(){
         AssetAreaReportRequest report = new AssetAreaReportRequest();
-        report.setParentAreaId(1);
+//        report.setParentAreaId(1);
         report.setParentAreaName("parent");
 
         ReportQueryRequest reportRequest = new ReportQueryRequest();
@@ -174,7 +174,7 @@ public class AssetAreaReportServiceImplTest {
     @Test
     public void exportAreaTableTest(){
         AssetAreaReportRequest report = new AssetAreaReportRequest();
-        report.setParentAreaId(1);
+//        report.setParentAreaId(1);
         report.setParentAreaName("parent");
         ReportQueryRequest reportRequest = new ReportQueryRequest();
         List<Integer> id = new ArrayList<>();
@@ -208,7 +208,7 @@ public class AssetAreaReportServiceImplTest {
     @Test
     public void getAreaNameByIdTest()throws Exception{
         AssetAreaReportRequest report = new AssetAreaReportRequest();
-        report.setParentAreaId(1);
+//        report.setParentAreaId(1);
         report.setParentAreaName("parent");
         List<AssetAreaReportRequest> assetAreaId = new ArrayList<>();
         assetAreaId.add(report);

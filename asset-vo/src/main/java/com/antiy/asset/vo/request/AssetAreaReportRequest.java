@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.antiy.common.base.BaseRequest;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -14,13 +15,15 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetAreaReportRequest extends BaseRequest {
 
     @ApiModelProperty(value = "父区域id信息")
-    private Integer       parentAreaId;
+    @Encode(message = "父区域id解密失败")
+    private String       parentAreaId;
 
     @ApiModelProperty(value = "父区域名字")
-    private String        parentAreaName;
+    private String       parentAreaName;
 
     @ApiModelProperty(value = "子区域id列表信息")
-    private List<Integer> childrenAradIds;
+    @Encode(message = "子区域id解密失败")
+    private List<String> childrenAradIds;
 
     public String getParentAreaName() {
         return parentAreaName;
@@ -30,19 +33,19 @@ public class AssetAreaReportRequest extends BaseRequest {
         this.parentAreaName = parentAreaName;
     }
 
-    public Integer getParentAreaId() {
+    public String getParentAreaId() {
         return parentAreaId;
     }
 
-    public void setParentAreaId(Integer parentAreaId) {
+    public void setParentAreaId(String parentAreaId) {
         this.parentAreaId = parentAreaId;
     }
 
-    public List<Integer> getChildrenAradIds() {
+    public List<String> getChildrenAradIds() {
         return childrenAradIds;
     }
 
-    public void setChildrenAradIds(List<Integer> childrenAradIds) {
+    public void setChildrenAradIds(List<String> childrenAradIds) {
         this.childrenAradIds = childrenAradIds;
     }
 }

@@ -140,7 +140,7 @@ public class AssetLinkRelationServiceImplTest {
     public void queryListAssetLinkRelation() throws Exception {
         List<AssetLinkRelation> assetLinkRelationList = new ArrayList<>();
         AssetLinkRelation assetLinkRelation = new AssetLinkRelation();
-        assetLinkRelation.setAssetId(2333);
+//        assetLinkRelation.setAssetId(2333);
         assetLinkRelationList.add(assetLinkRelation);
         Mockito.when(assetLinkRelationDao.findQuery(Mockito.any())).thenReturn(assetLinkRelationList);
 
@@ -158,7 +158,7 @@ public class AssetLinkRelationServiceImplTest {
     public void queryPageAssetLinkRelation() throws Exception {
         List<AssetLinkRelation> assetLinkRelationList = new ArrayList<>();
         AssetLinkRelation assetLinkRelation = new AssetLinkRelation();
-        assetLinkRelation.setAssetId(2333);
+//        assetLinkRelation.setAssetId(2333);
         assetLinkRelationList.add(assetLinkRelation);
         Mockito.when(assetLinkRelationDao.findQuery(Mockito.any())).thenReturn(assetLinkRelationList);
         Mockito.when(baseDao.findCount(Mockito.any())).thenReturn(110);
@@ -178,7 +178,7 @@ public class AssetLinkRelationServiceImplTest {
         QueryCondition queryCondition = new QueryCondition();
         queryCondition.setPrimaryKey("2333");
         AssetLinkRelation assetLinkRelation = new AssetLinkRelation();
-        assetLinkRelation.setAssetId(1);
+//        assetLinkRelation.setAssetId(1);
         assetLinkRelation.setId(66666);
         Mockito.when(assetLinkRelationDao.getById(Mockito.any())).thenReturn(assetLinkRelation);
 
@@ -315,7 +315,7 @@ public class AssetLinkRelationServiceImplTest {
     public void queryLinekedRelationPage() {
         List<AssetLinkRelation> assetResponseList = new ArrayList<>();
         AssetLinkRelation relation = new AssetLinkRelation();
-        relation.setAssetId(10010);
+//        relation.setAssetId(10010);
         assetResponseList.add(relation);
         Mockito.when(assetLinkRelationDao.queryLinekedRelationList(Mockito.any())).thenReturn(assetResponseList);
 
@@ -345,7 +345,7 @@ public class AssetLinkRelationServiceImplTest {
     public void queryLinekedRelationList() {
         List<AssetLinkRelation> assetResponseList = new ArrayList<>();
         AssetLinkRelation relation = new AssetLinkRelation();
-        relation.setAssetId(10010);
+//        relation.setAssetId(10010);
         assetResponseList.add(relation);
         Mockito.when(assetLinkRelationDao.queryLinekedRelationList(Mockito.any())).thenReturn(assetResponseList);
 
