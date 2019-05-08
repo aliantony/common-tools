@@ -293,9 +293,9 @@ public class AssetReportControllerTest {
         List<Integer> childrenAreaIds = new ArrayList();
         childrenAreaIds.add(1);
         AssetAreaReportRequest assetAreaReportRequest = new AssetAreaReportRequest();
-        assetAreaReportRequest.setParentAreaId(1);
+//        assetAreaReportRequest.setParentAreaId(1);
         assetAreaReportRequest.setParentAreaName("ss");
-        assetAreaReportRequest.setChildrenAradIds(childrenAreaIds);
+//        assetAreaReportRequest.setChildrenAradIds(childrenAreaIds);
         List<AssetAreaReportRequest> assetAreaReportRequests = new ArrayList<>();
         assetAreaReportRequests.add(assetAreaReportRequest);
         ReportQueryRequest reportQueryRequest = new ReportQueryRequest();
