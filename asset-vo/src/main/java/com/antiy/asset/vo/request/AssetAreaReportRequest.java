@@ -15,14 +15,14 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetAreaReportRequest extends BaseRequest {
 
     @ApiModelProperty(value = "父区域id信息")
-    @Encode
+    @Encode(message = "父区域id解密失败")
     private String       parentAreaId;
 
     @ApiModelProperty(value = "父区域名字")
-    private String        parentAreaName;
+    private String       parentAreaName;
 
     @ApiModelProperty(value = "子区域id列表信息")
-    @Encode
+    @Encode(message = "子区域id解密失败")
     private List<String> childrenAradIds;
 
     public String getParentAreaName() {

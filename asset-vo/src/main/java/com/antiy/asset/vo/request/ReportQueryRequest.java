@@ -49,8 +49,8 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
     private List<AssetAreaReportRequest> assetAreaIds;
 
     @ApiModelProperty(value = "顶级区域ID")
-    @Encode
-    private String                      topAreaId;
+    @Encode(message = "顶级区域id解密失败")
+    private String                       topAreaId;
     @ApiModelProperty(value = "顶级区域名称")
     private String                       topAreaName;
     // 用户登陆的区域查询条件
