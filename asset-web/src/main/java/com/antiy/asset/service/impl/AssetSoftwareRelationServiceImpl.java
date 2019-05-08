@@ -367,10 +367,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     private void processStatusData(List<AssetSoftwareInstall> queryInstallList) {
         for (AssetSoftwareInstall assetSoftwareInstall : queryInstallList) {
             if (assetSoftwareInstall.getInstallStatus() == null) {
-                assetSoftwareInstall.setInstallStatus(4);
-            }
-            if (assetSoftwareInstall.getConfigureStatus() == null) {
-                assetSoftwareInstall.setConfigureStatus("1");
+                assetSoftwareInstall.setInstallStatus(SoftInstallStatus.WAIT_CONFIGURE.getCode());
             }
         }
     }
@@ -381,16 +378,12 @@ class SoftwareInstallResponseConvert extends BaseConverter<AssetSoftwareInstall,
     @Override
     protected void convert(AssetSoftwareInstall assetSoftwareInstall,
                            AssetSoftwareInstallResponse assetSoftwareInstallResponse) {
-        if (assetSoftwareInstall.getConfigureStatus() != null) {
-            assetSoftwareInstallResponse.setConfigureStatusStr(ConfigureStatusEnum.getConfigureStatusByCode(
-                Integer.valueOf(assetSoftwareInstall.getConfigureStatus())).getName());
-        }
         if (assetSoftwareInstall.getInstallType() != null) {
             assetSoftwareInstallResponse.setInstallTypeStr(InstallType.getInstallTypeByCode(
                 assetSoftwareInstall.getInstallType()).getStatus());
         }
         if (assetSoftwareInstall.getInstallStatus() != null) {
-            assetSoftwareInstallResponse.setInstallStatusStr(InstallStatus.getInstallStatusByCode(
+            assetSoftwareInstallResponse.setInstallStatusStr(SoftInstallStatus.getInstallStatusByCode(
                 assetSoftwareInstall.getInstallStatus()).getStatus());
         }
 
