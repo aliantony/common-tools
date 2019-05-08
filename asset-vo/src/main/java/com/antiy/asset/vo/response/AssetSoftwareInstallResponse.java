@@ -3,6 +3,7 @@ package com.antiy.asset.vo.response;
 import com.antiy.asset.vo.enums.ConfigureStatusEnum;
 import com.antiy.asset.vo.enums.InstallStatus;
 import com.antiy.asset.vo.enums.InstallType;
+import com.antiy.asset.vo.enums.SoftInstallStatus;
 import com.antiy.common.encoder.Encode;
 
 import com.antiy.common.utils.DataTypeUtils;
@@ -249,8 +250,8 @@ public class AssetSoftwareInstallResponse {
     }
 
     public void setInstallStatusStr(String installStatusStr) {
-        this.installStatusStr = InstallStatus.getInstallStatusByCode(installStatus) != null
-            ? InstallStatus.getInstallStatusByCode(installStatus).getStatus()
+        this.installStatusStr = SoftInstallStatus.getInstallStatusByCode(installStatus) != null
+            ? SoftInstallStatus.getInstallStatusByCode(installStatus).getStatus()
             : null;
     }
 
