@@ -1,11 +1,17 @@
 package com.antiy.asset.vo.request;
 
+import java.util.regex.Matcher;
+
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -56,6 +62,7 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
     @ApiModelProperty("IP地址")
     @NotBlank(message = "IP地址不能为空")
     @Size(message = "IP地址长度应该在8-15位", min = 8, max = 15)
+    @Pattern(regexp = "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$", message = "ip地址错误")
     private String ipAddress;
     /**
      * MAC地址
@@ -63,6 +70,7 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
     @ApiModelProperty("MAC地址")
     @NotBlank(message = "MAC地址不能为空")
     @Size(message = "MAC地址长度应该为17位", max = 17, min = 17)
+    @Pattern(regexp = "^(([a-f0-9]{2}:)|([a-f0-9]{2}-)){5}[a-f0-9]{2}$", message = "mac地址错误")
     private String macAddress;
     /**
      * 默认网关
@@ -164,6 +172,18 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
 
     @Override
     public void validate() throws RequestParamValidateException {
+        if (StringUtils.isNotBlank(subnetMask)) {
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
+                "^(254|252|248|240|224|192|128|0)\\.0\\.0\\.0|255\\.(254|252|248|240|224|192|128|0)\\.0\\.0|255\\.255\\.(254|252|248|240|224|192|128|0)\\.0|255\\.255\\.255\\.(254|252|248|240|224|192|128|0)$");
+            Matcher matcher = pattern.matcher(subnetMask);
+            ParamterExceptionUtils.isTrue(matcher.matches(), "子网掩码错误");
+        }
+        if (StringUtils.isNotBlank(defaultGateway)) {
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
+                "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$");
+            Matcher matcher = pattern.matcher(defaultGateway);
+            ParamterExceptionUtils.isTrue(matcher.matches(), "默认网关错误");
+        }
 
     }
 

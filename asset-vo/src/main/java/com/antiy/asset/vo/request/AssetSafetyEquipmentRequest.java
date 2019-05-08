@@ -34,6 +34,7 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
      */
     @ApiModelProperty("IP")
     @NotBlank(message = "不能为空")
+    @Pattern(regexp = "^((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))$", message = "ip地址错误")
     @Size(message = "IP地址长度应该在8-15位", min = 8, max = 15)
     private String ip;
     /**

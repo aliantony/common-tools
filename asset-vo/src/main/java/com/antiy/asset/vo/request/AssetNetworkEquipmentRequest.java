@@ -1,10 +1,15 @@
 package com.antiy.asset.vo.request;
 
+import java.util.regex.Matcher;
+
 import javax.validation.constraints.*;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -56,6 +61,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      */
     @ApiModelProperty("内网IP")
     @NotBlank(message = "内网IP不能为空")
+    @Pattern(regexp = "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$", message = "ip地址错误")
     @Size(message = "内网IP长度应该在8-15位", min = 8, max = 15)
     private String  innerIp;
     /**
@@ -287,6 +293,24 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
 
     @Override
     public void validate() throws RequestParamValidateException {
+        if (StringUtils.isNotBlank(innerIp)) {
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
+                "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$");
+            Matcher matcher = pattern.matcher(innerIp);
+            ParamterExceptionUtils.isTrue(matcher.matches(), "ip地址错误");
+        }
+        if (StringUtils.isNotBlank(macAddress)) {
+            java.util.regex.Pattern pattern = java.util.regex.Pattern
+                .compile("^(([a-f0-9]{2}:)|([a-f0-9]{2}-)){5}[a-f0-9]{2}$");
+            Matcher matcher = pattern.matcher(macAddress);
+            ParamterExceptionUtils.isTrue(matcher.matches(), "mac地址错误");
+        }
+        if (StringUtils.isNotBlank(subnetMask)) {
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
+                "^(254|252|248|240|224|192|128|0)\\.0\\.0\\.0|255\\.(254|252|248|240|224|192|128|0)\\.0\\.0|255\\.255\\.(254|252|248|240|224|192|128|0)\\.0|255\\.255\\.255\\.(254|252|248|240|224|192|128|0)$");
+            Matcher matcher = pattern.matcher(subnetMask);
+            ParamterExceptionUtils.isTrue(matcher.matches(), "子网掩码错误");
+        }
 
     }
 
