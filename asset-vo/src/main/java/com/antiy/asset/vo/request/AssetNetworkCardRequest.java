@@ -70,7 +70,7 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
     @ApiModelProperty("MAC地址")
     @NotBlank(message = "MAC地址不能为空")
     @Size(message = "MAC地址长度应该为17位", max = 17, min = 17)
-    @Pattern(regexp = "^(([a-f0-9]{2}:)|([a-f0-9]{2}-)){5}[a-f0-9]{2}$", message = "mac地址错误")
+//    @Pattern(regexp = "^(([a-f0-9]{2}:)|([a-f0-9]{2}-)){5}[a-f0-9]{2}$", message = "mac地址错误")
     private String macAddress;
     /**
      * 默认网关
