@@ -1,15 +1,15 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 /**
  * <p> AssetSafetyEquipmentRequest 请求对象 </p>
@@ -34,6 +34,7 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
      */
     @ApiModelProperty("IP")
     @NotBlank(message = "不能为空")
+    @Pattern(regexp = "^((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))$", message = "ip地址错误")
     @Size(message = "IP地址长度应该在8-15位", min = 8, max = 15)
     private String ip;
     /**
@@ -41,6 +42,7 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
      */
     @ApiModelProperty("mac")
     @NotBlank(message = "mac不能为空")
+    @Pattern(regexp = "^(([a-f0-9A-F]{2}:)|([a-f0-9A-F]{2}-)){5}[a-f0-9A-F]{2}$", message = "mac地址错误")
     @Size(message = "MAC地址长度应该为17位", max = 17, min = 17)
     private String mac;
     /**
@@ -48,11 +50,11 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
      */
     @ApiModelProperty("特征库版本")
     @Pattern(regexp = "^[+]?\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$", message = "特征库版本格式不正确")
-    @Size(message = "特征库版本不能大于30个字符",  max = 30)
+    @Size(message = "特征库版本不能大于30个字符", max = 30)
     private String featureLibrary;
 
     @ApiModelProperty("软件版本")
-    @Size(message = "软件版本不能大于30个字符",  max = 30)
+    @Size(message = "软件版本不能大于30个字符", max = 30)
     @Pattern(regexp = "^[+]?\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$", message = "软件版本格式不正确")
     private String newVersion;
 
