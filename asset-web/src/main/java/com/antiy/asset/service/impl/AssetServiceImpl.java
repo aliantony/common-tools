@@ -3513,8 +3513,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOperationRecord.setGmtCreate(gmtCreateTime);
 
         // 写入方案
-        if (scheme != null && scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
-            JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+        if (scheme != null) {
+            if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
+                JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+            }
             if (StringUtils.isNotBlank(scheme.getContent()) && scheme.getMemo() == null) {
                 scheme.setMemo(scheme.getContent());
             }
