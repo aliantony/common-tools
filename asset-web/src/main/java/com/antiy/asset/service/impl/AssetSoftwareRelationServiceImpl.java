@@ -218,12 +218,6 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void installSoftware(AssetSoftwareRelationList assetSoftwareRelationList) {
-        // 未配置、配置中资产id列表
-        List<String> assetIds = assetSoftwareRelationList.getAssetInstallRequestList().stream()
-            .filter(a -> (a.getConfigureStatus().equals(ConfigureStatusEnum.NOCONFIGURE.getCode())
-                          || a.getConfigureStatus().equals(ConfigureStatusEnum.CONFIGURING.getCode())))
-            .map(AssetInstallRequest::getAssetId).collect(Collectors.toList());
-        BusinessExceptionUtils.isTrue(assetIds.size() <= 0, "存在未配置或正在配置中的资产，安装失败，请检查！");
         List<AssetSoftwareRelation> relationList = Lists.newArrayList();
         // 自动安装列表，用于下发给智甲
         List<AssetSoftwareRelation> autoInstallList = Lists.newArrayList();
