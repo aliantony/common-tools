@@ -240,7 +240,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 relation.setAssetId(assetInstallRequest.getAssetId());
                 relation.setSoftwareId(assetSoftwareRelationList.getSoftwareId());
                 relation.setInstallType(InstallType.AUTOMATIC.getCode());
-                relation.setInstallStatus(InstallStatus.INSTALLING.getCode());
+                relation.setInstallStatus(SoftInstallStatus.INSTALLING.getCode());
                 autoInstallList.add(relation);
             }
             relationList.add(relation);
