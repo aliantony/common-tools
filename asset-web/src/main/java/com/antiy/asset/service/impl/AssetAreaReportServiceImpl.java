@@ -167,7 +167,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
     private void dealArea(ReportQueryRequest reportRequest) {
         if (!Objects.isNull(reportRequest)) {
             List<AssetAreaReportRequest> assetAreaReportRequestList = reportRequest.getAssetAreaIds();
-            if (CollectionUtils.isNotEmpty(assetAreaReportRequestList) && assetAreaReportRequestList.size() > 1
+            if (CollectionUtils.isNotEmpty(assetAreaReportRequestList) && assetAreaReportRequestList.size() >= 1
                 && assetAreaReportRequestList.stream()
                     .filter(a -> reportRequest.getTopAreaId().equals(a.getParentAreaId())).collect(Collectors.toList())
                     .size() == 0) {
