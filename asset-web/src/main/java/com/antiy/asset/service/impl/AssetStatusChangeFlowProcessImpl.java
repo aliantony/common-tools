@@ -53,7 +53,8 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         // 检查资产主表的首次入网时间，为空时写入入网时间
 
         Asset currentAsset = assetDao.getById(assetStatusReqeust.getAssetId());
-        if (currentAsset != null && currentAsset.getFirstEnterNett() == null) {
+        if (currentAsset != null && currentAsset.getFirstEnterNett() == null
+            && assetStatusEnum.getCode().equals(AssetStatusEnum.NET_IN.getCode())) {
             asset.setFirstEnterNett(System.currentTimeMillis());
         }
         asset.setAssetStatus(assetStatusEnum.getCode());
