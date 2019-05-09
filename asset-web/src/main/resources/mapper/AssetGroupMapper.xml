@@ -254,10 +254,10 @@
         agroup
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" name != null and name != '' ">
-                and agroup.name like #{name}"%"
+                and agroup.name like binary CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
             </if>
             <if test=" memo != null and memo != '' ">
-                and agroup.memo like #{memo}"%"
+                and agroup.memo like CONCAT('%',replace(replace(#{memo},'%','\%'),'_','\_'),'%')
             </if>
             <if test=" createUser != null and createUser != ''">
                 and agroup.create_user = #{createUser}
@@ -274,10 +274,10 @@
         agroup
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" name != null and name != '' ">
-                and agroup.name like #{name}"%"
+                and agroup.name like binary CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
             </if>
             <if test=" memo != null and memo != '' ">
-                and agroup.memo like #{memo}"%"
+                and agroup.memo like CONCAT('%',replace(replace(#{memo},'%','\%'),'_','\_'),'%')
             </if>
             <if test=" createUser != null and createUser != ''">
                 and agroup.create_user = #{createUser}
