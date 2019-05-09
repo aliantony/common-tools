@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.antiy.asset.vo.query.SortRule;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.Asset;
@@ -171,5 +172,5 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param activitiIds
      * @return
      */
-    List<String> sortAssetIds(@Param("ids") Set<String> activitiIds);
+    List<String> sortAssetIds(@Param("ids") Set<String> activitiIds, @Param("sortRule") SortRule sortRule);
 }

@@ -659,7 +659,14 @@
             and a.number like binary CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
         </if>
         GROUP BY a.id
-        order by noBind desc,gmt_create desc
+        <choose>
+            <when test="sortRule != null">
+                order by ${sortRule.field} ${sortRule.sort.sort}, gmt_create desc
+            </when>
+            <otherwise>
+                order by noBind desc, gmt_create desc
+            </otherwise>
+        </choose>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>

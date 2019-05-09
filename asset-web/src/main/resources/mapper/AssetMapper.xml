@@ -1227,6 +1227,14 @@
             </foreach>
             ) DESC,
         </if>
+        <choose>
+            <when test="sortRule != null">
+                ${sortRule.field} ${sortRule.sort.sort},
+            </when>
+            <otherwise>
+                gmt_create desc,
+            </otherwise>
+        </choose>
         id desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
@@ -1413,6 +1421,13 @@
             </foreach>
         ORDER BY
         FIELD( asset_status, 3 ,4) ,
-        gmt_create DESC
+        <choose>
+            <when test="sortRule != null">
+                ${sortRule.field} ${sortRule.sort.sort}
+            </when>
+            <otherwise>
+                gmt_create desc
+            </otherwise>
+        </choose>
     </select>
 </mapper>

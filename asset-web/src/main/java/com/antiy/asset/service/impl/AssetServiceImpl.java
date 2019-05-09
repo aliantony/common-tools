@@ -738,7 +738,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
         if (MapUtils.isNotEmpty(processMap)) {
             Set<String> activitiIds = processMap.keySet();
-            List<String> sortedIds = assetDao.sortAssetIds(activitiIds);
+            List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getSortRule());
             Collections.reverse(sortedIds);
             query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
         }
