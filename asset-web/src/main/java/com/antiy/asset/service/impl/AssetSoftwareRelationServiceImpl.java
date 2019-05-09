@@ -309,7 +309,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     public Integer updateAssetReleation(AssetRelationSoftRequest assetRelationSoftRequest) throws Exception {
         AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-        assetSoftwareRelation.setConfigureStatus(ConfigureStatusEnum.CONFIGURED.getCode());
+        assetSoftwareRelation.setInstallStatus(SoftInstallStatus.UNINSTALLED.getCode());
         assetSoftwareRelation.setAssetId(assetRelationSoftRequest.getAssetId());
         assetSoftwareRelation.setSoftwareId(assetRelationSoftRequest.getSoftId());
         return assetSoftwareRelationDao.updateByAssetId(assetSoftwareRelation);
