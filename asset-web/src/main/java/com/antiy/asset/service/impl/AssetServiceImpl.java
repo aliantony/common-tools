@@ -1368,8 +1368,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetQuery.setCategoryModels(ArrayTypeUtil.objectArrayToStringArray(list.toArray()));
         assetQuery.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
         // TODO 品类型号统计是否需要排除已退役资产
-        List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
-        assetQuery.setAssetStatusList(status);
+        //List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
+        //assetQuery.setAssetStatusList(status);
         return assetQuery;
     }
 
