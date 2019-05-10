@@ -195,6 +195,9 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
                 } else if (assetOperationRecordBarResponse.getContent()
                     .equals(AssetFlowEnum.HARDWARE_EFFECT_CHECK.getMsg())) {
                     assetOperationRecordBarResponse.setFlowNode(3);
+                } else if (assetOperationRecordBarResponse.getContent()
+                    .equals(AssetFlowEnum.VALIDATE_RETIRE_RESULT.getMsg())) {
+                    assetOperationRecordBarResponse.setFlowNode(4);
                 }
                 assetOperationRecordBarResponseList.add(assetOperationRecordBarResponse);
             }
