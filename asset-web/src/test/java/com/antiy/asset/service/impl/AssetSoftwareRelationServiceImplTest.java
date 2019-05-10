@@ -22,17 +22,14 @@ import com.antiy.common.base.LoginUser;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.verification.VerificationMode;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -42,9 +39,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.*;
-
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.times;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({LoginUserUtil.class, AssetSoftwareRelationServiceImpl.class, LogUtils.class, BeanConvert.class, BeanUtils.class})
@@ -232,7 +226,7 @@ public class AssetSoftwareRelationServiceImplTest {
     public void installSoftwareTest1() {
         AssetSoftwareRelationList assetSoftwareRelationList = new AssetSoftwareRelationList();
         AssetInstallRequest request = new AssetInstallRequest();
-        request.setConfigureStatus(3);
+        // request.setConfigureStatus(3);
         request.setAssetId("1");
         List<AssetInstallRequest> list = new ArrayList<>();
         list.add(request);
@@ -248,7 +242,7 @@ public class AssetSoftwareRelationServiceImplTest {
     public void installSoftwareTest2() {
         AssetSoftwareRelationList assetSoftwareRelationList = new AssetSoftwareRelationList();
         AssetInstallRequest request = new AssetInstallRequest();
-        request.setConfigureStatus(3);
+        // request.setConfigureStatus(3);
         request.setAssetId("1");
         List<AssetInstallRequest> list = new ArrayList<>();
         list.add(request);

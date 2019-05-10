@@ -52,6 +52,16 @@ public class AssetOperationRecordBarResponse extends BaseResponse {
 
     @ApiModelProperty("操作描述")
     private String                       content;
+    @ApiModelProperty("资产流程：1-验证情况，2-实施情况，3-检查情况，4-退役情况")
+    private Integer                      flowNode;
+
+    public Integer getFlowNode() {
+        return flowNode;
+    }
+
+    public void setFlowNode(Integer flowNode) {
+        this.flowNode = flowNode;
+    }
 
     public String getContent() {
         return content;
