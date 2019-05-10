@@ -6,12 +6,15 @@ package com.antiy.asset.vo.enums;
  * @create 2019-05-09 17:11
  **/
 public enum SortEnum {
-    ASC(0,"ASC"),
-    DESC(1,"DESC");
-    // code
+                      ASC(0, "ASC"), DESC(1, "DESC");
+    /**
+     * code
+     */
     private Integer code;
 
-    // sort
+    /**
+     * 排序
+     */
     private String  sort;
 
     SortEnum(Integer code, String sort) {
