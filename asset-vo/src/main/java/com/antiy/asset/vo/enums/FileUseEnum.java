@@ -12,7 +12,8 @@ public enum FileUseEnum {
                          INSTALL_PACKAGE("INSTALL_PACKAGE", Arrays.asList("zip", "rar", "7z"),
                                          5368709120L), INSTALL_INTRODUCE_MANUAL("INSTALL_INTRODUCE_MANUAL",
                                                                                 Arrays.asList("rar", "zip", "pdf",
-                                                                                    "doc", "docx", "txt", "7z"),
+                                                                                    "doc", "docx", "txt", "7z", "png",
+                                                                                    "jpg", "xlsx", "xls"),
                                                                                 209715200L), SCHEME_FILE("SCHEME_FILE",
                                                                                                          Arrays.asList(
                                                                                                              "rar",
