@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetOperationRecordService;
 import com.antiy.asset.vo.query.AssetOperationRecordQuery;
+import com.antiy.asset.vo.response.AssetOperationRecordBarResponse;
 import com.antiy.common.base.ActionResponse;
 
 import io.swagger.annotations.*;
@@ -32,7 +33,7 @@ public class AssetOperationRecordController {
      * @return actionResponse
      */
     @ApiOperation(value = "查找资产操作历史", notes = "传入查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOperationRecordBarResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:operationrecord:queryList')")
     public ActionResponse queryList(@ApiParam(value = "assetOperationRecordQuery") AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
