@@ -18,6 +18,7 @@ import com.antiy.asset.entity.AssetOperationRecordBarPO;
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.intergration.impl.SysRoleClientImpl;
 import com.antiy.asset.service.IAssetOperationRecordService;
+import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.AssetOperationTableEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
@@ -184,6 +185,17 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
                     fileInfoList.add(assetStatusBarResponse);
                 }
                 assetOperationRecordBarResponse.setFileInfos(fileInfoList);
+                if (assetOperationRecordBarResponse.getContent()
+                    .equals(AssetFlowEnum.HARDWARE_BASELINE_VALIDATE.getMsg())) {
+                    // 验证情况
+                    assetOperationRecordBarResponse.setFlowNode(1);
+                } else if (assetOperationRecordBarResponse.getContent()
+                    .equals(AssetFlowEnum.HARDWARE_ENTER_IMPLEMENTATION.getMsg())) {
+                    assetOperationRecordBarResponse.setFlowNode(2);
+                } else if (assetOperationRecordBarResponse.getContent()
+                    .equals(AssetFlowEnum.HARDWARE_EFFECT_CHECK.getMsg())) {
+                    assetOperationRecordBarResponse.setFlowNode(3);
+                }
                 assetOperationRecordBarResponseList.add(assetOperationRecordBarResponse);
             }
         }
