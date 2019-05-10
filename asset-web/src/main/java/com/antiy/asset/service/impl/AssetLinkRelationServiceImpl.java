@@ -75,17 +75,6 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     @Override
     public Boolean saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
-        QueryCondition queryCondition = new QueryCondition();
-        CategoryType categoryType = new CategoryType();
-        CategoryValiEntity category = assetCategoryDao
-            .getNameByAssetId(DataTypeUtils.stringToInteger(request.getParentAssetId()));
-        if (category.getParentId() != 2) {
-            CategoryValiEntity categoryValiEntity = func(category);
-            validate(request, queryCondition, categoryType, categoryValiEntity);
-        } else {
-            validate(request, queryCondition, categoryType, category);
-        }
-
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
         checkAssetIp(request, assetLinkRelation);
         assetLinkRelationDao.insert(assetLinkRelation);
