@@ -664,7 +664,7 @@
                 order by ${sortRule.field} ${sortRule.sort.sort}, gmt_create desc
             </when>
             <otherwise>
-                order by noBind desc, gmt_create desc
+                order by gmt_create desc
             </otherwise>
         </choose>
         <if test="pageSize !=-1">

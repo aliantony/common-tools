@@ -1,17 +1,14 @@
 package com.antiy.asset.vo.request;
 
-import java.util.Arrays;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Size;
+import java.util.Arrays;
 
 /**
  * <p> AssetGroupRequest 请求对象 </p>
@@ -39,7 +36,6 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
      * 资产组名称
      */
     @ApiModelProperty("资产组名称")
-    @NotBlank(message = "资产组名称不能为空")
     @Size(message = "名称范围1~30字符", max = 30)
     private String   name;
     /**
