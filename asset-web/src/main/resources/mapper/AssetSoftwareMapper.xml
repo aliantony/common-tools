@@ -775,7 +775,7 @@
         </if>
         <choose>
             <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
-                order by ${sortName} ${sortOrder},
+                ${sortName} ${sortOrder},
             </when>
             <otherwise>
                 gmt_create desc,
