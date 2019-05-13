@@ -1239,6 +1239,9 @@
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+        <if test="startNumber!=null and endNumber!=null and pageSize==-1">
+            limit #{startNumber},#{endNumber}
+        </if>
     </select>
 
 
@@ -1411,14 +1414,14 @@
     </select>
     <select id="sortAssetIds" resultType="java.lang.Integer">
         SELECT
-            id
+        id
         FROM
-            asset
+        asset
         WHERE
-            id IN
-            <foreach collection="ids" item="item" open="(" close=")" separator=",">
-                #{item}
-            </foreach>
+        id IN
+        <foreach collection="ids" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
         ORDER BY
         FIELD( asset_status, 3 ,4) ,
         <choose>
