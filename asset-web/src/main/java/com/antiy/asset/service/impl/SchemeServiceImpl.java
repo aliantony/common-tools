@@ -83,6 +83,8 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         ParamterExceptionUtils.isNull(query.getAssetId(), "资产ID不能为空");
         ParamterExceptionUtils.isNull(query.getAssetStatus(), "资产状态不能为空");
         ParamterExceptionUtils.isNull(query.getAssetTypeEnum(), "类型不能为空");
+        // 上一步状态的备注
+        query.setAssetStatus(query.getAssetStatus() - 1);
         return responseBaseConverter.convert(schemeDao.findMemoById(query), SchemeResponse.class);
     }
 }
