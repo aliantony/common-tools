@@ -152,7 +152,7 @@ public class FileController {
             throw new BusinessException("文件不存在");
         }
 
-        long fileSize = file.length();
+        long fileSize = tmpFile.getSize();
 
         // 文件大小校验
         if (FileUseEnum.INSTALL_PACKAGE.getCode().equals(fileUseEnum.getCode())) {
