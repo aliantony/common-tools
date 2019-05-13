@@ -22,7 +22,7 @@ public class NetworkDeviceEntity {
     /**
      * 厂商
      */
-    @ExcelField(value = "manufacturer", align = 1, title = "厂商")
+    @ExcelField(value = "manufacturer", align = 1, title = "厂商", required = true)
     private String  manufacturer;
     /**
      * 序列号
