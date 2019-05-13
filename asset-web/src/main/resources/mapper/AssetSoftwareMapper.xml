@@ -773,9 +773,14 @@
             </foreach>
             ) desc,
         </if>
-        <if test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
-            order by ${sortName} ${sortOrder}, gmt_create desc
-        </if>
+        <choose>
+            <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
+                order by ${sortName} ${sortOrder},
+            </when>
+            <otherwise>
+                gmt_create desc,
+            </otherwise>
+        </choose>
         asset_software.id desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
