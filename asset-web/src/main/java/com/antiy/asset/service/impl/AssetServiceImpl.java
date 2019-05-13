@@ -1858,7 +1858,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             integers.put(asset.getStringId(), byId.getInnerIp());
                             assetLinkRelationDao.deleteRelationByAssetId(integers);
                         }
-
+                        if (byId.getPortSize() > networkEquipment.getPortSize()) {
+                            BusinessExceptionUtils.isTrue(false, "网口数只能增加不能减少");
+                        }
                         assetNetworkEquipment.setAssetId(asset.getStringId());
                         assetNetworkEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
@@ -1982,6 +1984,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("IP不能重复", e.getMessage()), "IP不能重复");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("网络设备IP不能重复", e.getMessage()), "网络设备IP不能重复");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("安全设备IP不能重复", e.getMessage()), "安全设备IP不能重复");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals("网口数只能增加不能减少", e.getMessage()), "网口数只能增加不能减少");
                     throw new BusinessException("资产变更失败");
                 }
             }
