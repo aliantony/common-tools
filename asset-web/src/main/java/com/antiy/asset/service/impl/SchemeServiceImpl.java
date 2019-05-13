@@ -90,6 +90,6 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         if (scheme != null) {
             scheme.setFileInfo(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
         }
-        return responseBaseConverter.convert(schemeDao.findMemoById(query), SchemeResponse.class);
+        return responseBaseConverter.convert(scheme, SchemeResponse.class);
     }
 }
