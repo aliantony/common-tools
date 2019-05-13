@@ -94,7 +94,6 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         SchemeResponse schemeResponse = responseBaseConverter.convert(scheme, SchemeResponse.class);
         List arrayList = new ArrayList<String>();
         arrayList.add(schemeResponse.getFileInfo());
-        arrayList.add(schemeResponse.getFileInfo());
         schemeResponse.setFileInfos(arrayList);
         return schemeResponse;
     }
