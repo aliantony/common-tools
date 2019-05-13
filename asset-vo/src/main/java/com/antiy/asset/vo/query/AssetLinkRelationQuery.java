@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.query;
 
+import com.antiy.asset.vo.enums.SortEnum;
 import com.antiy.common.base.ObjectQuery;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -76,19 +77,6 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      * 端口号列表
      */
     private List<Integer> portCount;
-    /**
-     * 排序规则
-     */
-    @ApiModelProperty("排序规则")
-    private SortRule      sortRule;
-
-    public SortRule getSortRule() {
-        return sortRule;
-    }
-
-    public void setSortRule(SortRule sortRule) {
-        this.sortRule = sortRule;
-    }
 
     public List<Integer> getPortCount() {
         return portCount;

@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import com.antiy.asset.vo.enums.DataTypeEnum;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -149,7 +150,7 @@ public class AssetUserController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetUserResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "assetUser") AssetUserQuery assetUser) throws Exception {
-        if (!Objects.isNull(assetUser.getDepartmentId())) {
+        if (StringUtils.isNotBlank(assetUser.getDepartmentId())) {
             List<AssetDepartmentResponse> responses = iAssetDepartmentService
                 .findAssetDepartmentById(DataTypeUtils.stringToInteger(assetUser.getDepartmentId()));
             String[] ids = new String[responses.size()];

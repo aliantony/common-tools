@@ -1228,8 +1228,8 @@
             ) DESC,
         </if>
         <choose>
-            <when test="sortRule != null">
-                ${sortRule.field} ${sortRule.sort.sort},
+            <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
+                ${sortName} ${sortOrder},
             </when>
             <otherwise>
                 gmt_create desc,
@@ -1425,8 +1425,8 @@
         ORDER BY
         FIELD( asset_status, 3 ,4) ,
         <choose>
-            <when test="sortRule != null">
-                ${sortRule.field} ${sortRule.sort.sort}
+            <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
+                ${sortName} ${sortOrder}
             </when>
             <otherwise>
                 gmt_create desc

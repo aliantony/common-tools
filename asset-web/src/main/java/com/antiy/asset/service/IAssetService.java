@@ -62,14 +62,6 @@ public interface IAssetService extends IBaseService<Asset> {
     PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception;
 
     /**
-     * 保存上报数据
-     *
-     * @param assetOuterRequestList
-     * @throws Exception
-     */
-    void saveReportAsset(List<AssetOuterRequest> assetOuterRequestList) throws Exception;
-
-    /**
      * 判断资产是否重复
      *
      * @param uuid
@@ -257,13 +249,5 @@ public interface IAssetService extends IBaseService<Asset> {
      * @throws Exception
      */
     RespBasicCode changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception;
-
-    /**
-     * 批量保存资产（对外接口）
-     * @param assetList
-     * @return
-     */
-    ActionResponse saveAssetList(List<AssetOuterRequest> assetList);
-
 
 }

@@ -660,8 +660,8 @@
         </if>
         GROUP BY a.id
         <choose>
-            <when test="sortRule != null">
-                order by ${sortRule.field} ${sortRule.sort.sort}, gmt_create desc
+            <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
+                order by ${sortName} ${sortOrder}, gmt_create desc
             </when>
             <otherwise>
                 order by gmt_create desc

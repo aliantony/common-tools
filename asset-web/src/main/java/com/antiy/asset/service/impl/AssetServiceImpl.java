@@ -739,7 +739,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
         if (MapUtils.isNotEmpty(processMap)) {
             Set<String> activitiIds = processMap.keySet();
-            List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getSortRule());
+            List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getSortName(), query.getSortOrder());
             Collections.reverse(sortedIds);
             query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
         }
@@ -1055,11 +1055,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         }
-    }
-
-    @Override
-    public void saveReportAsset(List<AssetOuterRequest> assetOuterRequestList) throws Exception {
-
     }
 
     // /*@Override
@@ -3554,32 +3549,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}", assetOperationRecord);
         assetOperationRecordDao.insert(assetOperationRecord);
         return RespBasicCode.SUCCESS;
-    }
-
-    /**
-     * 资产上报接口
-     *
-     * @param assetList
-     * @return
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public ActionResponse saveAssetList(List<AssetOuterRequest> assetList) {
-        ParamterExceptionUtils.isEmpty(assetList, "资产上报数据为空");
-        assetList.stream().forEach(assetOuterRequest -> {
-            try {
-                // 保存资产信息,并返回资产id
-                ActionResponse<Integer> response = saveAsset(assetOuterRequest);
-                Integer assetId = response.getBody();
-                // 处理软件
-                if (CollectionUtils.isNotEmpty(assetOuterRequest.getSoftwareReportRequestList())) {
-                    softwareService.reportData(assetId, assetOuterRequest.getSoftwareReportRequestList());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        return null;
     }
 
     @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
