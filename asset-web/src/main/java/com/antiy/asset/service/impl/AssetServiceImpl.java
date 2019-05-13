@@ -1858,7 +1858,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             integers.put(asset.getStringId(), byId.getInnerIp());
                             assetLinkRelationDao.deleteRelationByAssetId(integers);
                         }
-
+                        if (byId.getPortSize() > networkEquipment.getPortSize()) {
+                            BusinessExceptionUtils.isTrue(false, "网口数只能增加不能减少");
+                        }
                         assetNetworkEquipment.setAssetId(asset.getStringId());
                         assetNetworkEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
