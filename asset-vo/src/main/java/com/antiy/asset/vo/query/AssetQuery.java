@@ -241,19 +241,6 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @Max(message = "维护方式最大为2", value = 2)
     @Min(message = "维护方式最小为1", value = 1)
     private String        installType;
-    /**
-     * 排序规则
-     */
-    @ApiModelProperty("排序规则")
-    private SortRule      sortRule;
-
-    public SortRule getSortRule() {
-        return sortRule;
-    }
-
-    public void setSortRule(SortRule sortRule) {
-        this.sortRule = sortRule;
-    }
 
     public Integer getExceptId() {
         return exceptId;

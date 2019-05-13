@@ -1229,7 +1229,7 @@
         </if>
         <choose>
             <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
-                order by ${sortName} ${sortOrder}, gmt_create desc
+                ${sortName} ${sortOrder},
             </when>
             <otherwise>
                 gmt_create desc,
@@ -1423,7 +1423,7 @@
         FIELD( asset_status, 3 ,4) ,
         <choose>
             <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
-                order by ${sortName} ${sortOrder}, gmt_create desc
+                ${sortName} ${sortOrder}
             </when>
             <otherwise>
                 gmt_create desc
