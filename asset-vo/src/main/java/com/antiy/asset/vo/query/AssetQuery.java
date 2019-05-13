@@ -241,6 +241,41 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @Max(message = "维护方式最大为2", value = 2)
     @Min(message = "维护方式最小为1", value = 1)
     private String        installType;
+    /**
+     * 排序规则
+     */
+    @ApiModelProperty("排序规则")
+    private SortRule      sortRule;
+
+    @ApiModelProperty("导出开始条数")
+    private Integer       startNumber;
+
+    @ApiModelProperty("导出结束条数")
+    private Integer       endNumber;
+
+    public Integer getStartNumber() {
+        return startNumber;
+    }
+
+    public void setStartNumber(Integer startNumber) {
+        this.startNumber = startNumber;
+    }
+
+    public Integer getEndNumber() {
+        return endNumber;
+    }
+
+    public void setEndNumber(Integer endNumber) {
+        this.endNumber = endNumber;
+    }
+
+    public SortRule getSortRule() {
+        return sortRule;
+    }
+
+    public void setSortRule(SortRule sortRule) {
+        this.sortRule = sortRule;
+    }
 
     public Integer getExceptId() {
         return exceptId;
@@ -555,6 +590,10 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     public void validate() throws RequestParamValidateException {
         if (timeType != null && beginTime != null && endTime != null) {
             ParamterExceptionUtils.isTrue(endTime > beginTime, "结束时间必须大于开始时间");
+        }
+        if (startNumber != null || endNumber != null) {
+            ParamterExceptionUtils.isTrue(startNumber != null && endNumber != null, "导出条数有误");
+            ParamterExceptionUtils.isTrue(startNumber <= endNumber, "导出条数有误");
         }
     }
 

@@ -45,6 +45,7 @@ import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
+import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
@@ -1363,8 +1364,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetQuery.setCategoryModels(ArrayTypeUtil.objectArrayToStringArray(list.toArray()));
         assetQuery.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
         // TODO 品类型号统计是否需要排除已退役资产
-        //List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
-        //assetQuery.setAssetStatusList(status);
+        // List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
+        // assetQuery.setAssetStatusList(status);
         return assetQuery;
     }
 
@@ -3380,9 +3381,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public void exportData(AssetQuery assetQuery, HttpServletResponse response) throws Exception {
+        if ((assetQuery.getStartNumber() != null && assetQuery.getEndNumber() != null)) {
+            assetQuery.setStartNumber(assetQuery.getStartNumber() - 1);
+            assetQuery.setEndNumber(assetQuery.getEndNumber() - assetQuery.getStartNumber());
+        }
+        assetQuery.setPageSize(Constants.ALL_PAGE);
         assetQuery.setAreaIds(
-            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
-        assetQuery.setPageSize(ALL_PAGE);
+                ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
         List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
         DownloadVO downloadVO = new DownloadVO();
@@ -3390,11 +3395,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         downloadVO.setDownloadList(assetEntities);
         if (Objects.nonNull(assetEntities) && assetEntities.size() > 0) {
             excelDownloadUtil.excelDownload(response,
-                "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
+                    "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
         } else {
             throw new BusinessException("导出数据为空");
         }
     }
+
 
     @Override
     public List<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) throws Exception {
