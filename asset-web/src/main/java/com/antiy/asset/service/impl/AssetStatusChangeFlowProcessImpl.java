@@ -92,7 +92,8 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         // 更新资产状态
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName(), asset.getId(),
-            asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            currentAsset != null ? currentAsset.getNumber() : "", asset, BusinessModuleEnum.HARD_ASSET,
+            BusinessPhaseEnum.getByStatus(assetStatusEnum.getCode())));
         LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName() + " {}", asset);
         assetDao.update(asset);
         return ActionResponse.success();
