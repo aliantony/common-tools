@@ -1,17 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.io.Serializable;
-import java.util.*;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.dao.AssetGroupRelationDao;
@@ -44,6 +32,16 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.*;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 资产组表 服务实现类 </p>
@@ -157,13 +155,13 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
             if (!Objects.equals(0, result)) {
                 // 写入业务日志
-                LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
-                    AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
-                    assetGroup.getId(), assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET,
-                    BusinessPhaseEnum.NONE));
-                LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}",
-                    assetGroup.toString());
+                // LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
+                // AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
+                // assetGroup.getId(), assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET,
+                // BusinessPhaseEnum.NONE));
+                // LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}",
+                // assetGroup.toString());
             }
             assetGroupDao.update(assetGroup);
 
@@ -214,11 +212,12 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
         if (!Objects.equals(0, result)) {
             // 写入业务日志
-            LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
-                AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(), assetGroup
-                .getId(), assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}", assetGroup.toString());
+            // LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
+            // AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+            // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(), assetGroup
+            // .getId(), assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            // LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}",
+            // assetGroup.toString());
         }
 
         return result;

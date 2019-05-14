@@ -1,39 +1,38 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-
-import javax.annotation.Resource;
-
 import com.antiy.asset.dao.AssetCategoryModelDao;
+import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.dao.AssetLinkRelationDao;
+import com.antiy.asset.dao.AssetNetworkEquipmentDao;
 import com.antiy.asset.entity.*;
+import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.service.IAssetLinkRelationService;
 import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetLinkRelationQuery;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.request.UseableIpRequest;
 import com.antiy.asset.vo.response.*;
+import com.antiy.common.base.*;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.DataTypeUtils;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.antiy.asset.dao.AssetLinkRelationDao;
-import com.antiy.asset.dao.AssetNetworkEquipmentDao;
-import com.antiy.asset.service.IAssetCategoryModelService;
-import com.antiy.asset.service.IAssetLinkRelationService;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetLinkRelationQuery;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.AssetLinkRelationRequest;
-import com.antiy.common.base.*;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
-import com.antiy.common.utils.DataTypeUtils;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.antiy.common.utils.ParamterExceptionUtils;
+import javax.annotation.Resource;
+import java.util.*;
 
 /**
  * <p> 通联关系表 服务实现类 </p>
@@ -62,6 +61,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Resource
     private IAssetCategoryModelService                                  iAssetCategoryModelService;
     @Resource
+    private AssetDao                                                    assetDao;
+    @Resource
     private AssetCategoryModelDao                                       assetCategoryDao;
     private CategoryValiEntity                                          categoryVali;
 
@@ -78,8 +79,9 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
         checkAssetIp(request, assetLinkRelation);
         assetLinkRelationDao.insert(assetLinkRelation);
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LABEL_INSERT.getName(), assetLinkRelation.getId(),
-            null, assetLinkRelation, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LINK_RELATION_INSERT.getName(),
+            DataTypeUtils.stringToInteger(request.getAssetId()), assetDao.getById(request.getAssetId()).getNumber(),
+            assetLinkRelation, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_LINK_RELATION_INSERT.getName() + "{}", assetLinkRelation);
         return StringUtils.isNotBlank(assetLinkRelation.getStringId()) ? true : false;
     }
@@ -185,8 +187,10 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Override
     public String deleteAssetLinkRelationById(BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
+        String assetId = assetLinkRelationDao.getById(baseRequest.getId()).getAssetId();
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LINK_RELATION_DELETE.getName(),
-            baseRequest.getId(), null, baseRequest, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+            DataTypeUtils.stringToInteger(assetId), assetDao.getById(assetId).getNumber(), baseRequest,
+            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_LINK_RELATION_DELETE.getName() + "{}", baseRequest.getStringId());
 
         return assetLinkRelationDao.deleteById(baseRequest.getStringId()).toString();
@@ -295,23 +299,33 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     @Override
     public PageResult<AssetLinkedCountResponse> queryAssetLinkedCountPage(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
-        Map<String, String> category = assetCategoryModelService.getSecondCategoryMap();
-        category.forEach((k, v) -> {
-            try {
-                if (v.equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-                    // 计算设备下所有品类型号
-                    assetLinkRelationQuery.setPcCategoryModels(
-                        assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
-                } else if (v.equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-                    // 网络设备下所有品类型号
-                    assetLinkRelationQuery.setNetCategoryModels(
-                        assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
+        if (Objects.isNull(assetLinkRelationQuery.getCategoryModels()) || assetLinkRelationQuery.getCategoryModels().size() <= 0) {
+            Map<String, String> category = assetCategoryModelService.getSecondCategoryMap();
+            category.forEach((k, v) -> {
+                try {
+                    if (v.equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+                        // 计算设备下所有品类型号
+                        assetLinkRelationQuery.setPcCategoryModels(
+                                assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
+                    } else if (v.equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
+                        // 网络设备下所有品类型号
+                        assetLinkRelationQuery.setNetCategoryModels(
+                                assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
+                    }
+                } catch (Exception e) {
+                    logger.error("获取{}子品类型号出错", v, e.getStackTrace());
                 }
-            } catch (Exception e) {
-                logger.error("获取{}子品类型号出错", v, e.getStackTrace());
-            }
 
-        });
+            });
+        } else {
+            List<Integer> categoryModels = Lists.newArrayList();
+            for (int i = 0; i < assetLinkRelationQuery.getCategoryModels().size(); i++) {
+                categoryModels.addAll(assetCategoryModelService
+                        .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(assetLinkRelationQuery.getCategoryModels().get(i))));
+            }
+            assetLinkRelationQuery.setCategoryModels(Arrays.asList(DataTypeUtils.integerArrayToStringArray(categoryModels)));
+        }
+
         List<String> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode().toString());
         statusList.add(AssetStatusEnum.NET_IN.getCode().toString());
