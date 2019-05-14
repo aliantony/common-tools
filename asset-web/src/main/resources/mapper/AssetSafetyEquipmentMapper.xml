@@ -248,7 +248,7 @@
         where id = #{id}
     </delete>
 
-    <select id="getByWhere" resultType="com.antiy.asset.entity.AssetSafetyEquipment" parameterType="java.util.Map">
+    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
         select
         <include refid="Base_Column_List"/>
         from
