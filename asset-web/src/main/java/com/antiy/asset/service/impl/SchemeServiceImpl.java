@@ -1,10 +1,12 @@
 package com.antiy.asset.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.Scheme;
@@ -85,6 +87,14 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         ParamterExceptionUtils.isNull(query.getAssetTypeEnum(), "类型不能为空");
         // 上一步状态的备注
         query.setAssetStatus(query.getAssetStatus() - 1);
-        return responseBaseConverter.convert(schemeDao.findMemoById(query), SchemeResponse.class);
+        Scheme scheme = schemeDao.findMemoById(query);
+        if (scheme != null) {
+            scheme.setFileInfo(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+        }
+        SchemeResponse schemeResponse = responseBaseConverter.convert(scheme, SchemeResponse.class);
+        List arrayList = new ArrayList<String>();
+        arrayList.add(schemeResponse.getFileInfo());
+        schemeResponse.setFileInfos(arrayList);
+        return schemeResponse;
     }
 }

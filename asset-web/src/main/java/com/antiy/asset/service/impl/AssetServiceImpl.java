@@ -3485,6 +3485,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         Long gmtCreateTime = System.currentTimeMillis();
         SchemeRequest schemeRequest = assetStatusJumpRequst.getSchemeRequest();
+        if (schemeRequest.getFileInfo() != null && schemeRequest.getFileInfo().length() > 0) {
+            JSONObject.parse(HtmlUtils.htmlUnescape(schemeRequest.getFileInfo()));
+        }
         String assetId = assetStatusJumpRequst.getAssetId();
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         // 修改资产状态
