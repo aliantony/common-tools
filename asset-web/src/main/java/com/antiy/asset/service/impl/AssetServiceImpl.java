@@ -597,10 +597,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 调用失败，逻辑删登记的资产
                 assetDao.deleteById(id);
                 return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
+            } else {
+                return ActionResponse.success(id);
             }
+        } else {
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
         }
 
-        return ActionResponse.success(id);
     }
 
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
@@ -665,7 +668,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setAssetGroup(
                     stringBuffer.append(assetGroupName).append(",").substring(0, stringBuffer.length() - 1));
             } catch (Exception e) {
-                throw new BusinessException("资产组名称获取失败");
+                throw new BusinessException("选择的资产组已失效，请核对后提交");
             }
         });
     }
