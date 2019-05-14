@@ -211,7 +211,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         // 写入业务日志
         LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
             AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), 0, "", null,
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), 0, "删除部门", null,
             BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
         return ActionResponse.success(result >= 1 ? 1 : 0);
@@ -248,7 +248,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             // 写入业务日志
             LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
                 AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), 0, "", null,
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), 0, "删除部门", null,
                 BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
         }

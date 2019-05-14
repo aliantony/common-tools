@@ -68,7 +68,8 @@ public class SoftWareStatusChangeProcessImpl extends AbstractAssetStatusChangePr
 
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName(),
-            assetSoftware.getId(), null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+            assetSoftware.getId(), assetSoftwareDao.getById(assetStatusReqeust.getAssetId()).getName(), assetSoftware,
+            BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.getByStatus(softwareStatusEnum.getCode())));
         LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName() + " {}", assetSoftware);
         assetSoftwareDao.update(assetSoftware);
         return ActionResponse.success(assetSoftwareDao.update(assetSoftware));
