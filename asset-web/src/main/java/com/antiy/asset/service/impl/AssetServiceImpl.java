@@ -547,7 +547,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     logger.error("录入失败", e);
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()),
                         "操作系统不存在，或已经注销");
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("资产组名称获取失败", e.getMessage()), "资产组名称获取失败");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals("已失效", e.getMessage()), "资产组名称获取失败");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("使用者不存在，或已经注销", e.getMessage()), "使用者不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("品类型号不存在，或已经注销", e.getMessage()),
                         "品类型号不存在，或已经注销");
@@ -1495,10 +1495,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetGroup.stream().forEach(assetGroupRequest -> {
                             try {
                                 String assetGroupName = assetGroupDao.getById(assetGroupRequest.getId()).getName();
-                                asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
-                                    stringBuilder.length() - 1));
+                                if (StringUtils.isBlank(assetGroupName)) {
+                                    throw new BusinessException(assetGroupName + "已失效");
+                                } else {
+                                    asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
+                                        stringBuilder.length() - 1));
+                                }
                             } catch (Exception e) {
-                                throw new BusinessException("资产组名称获取失败");
+                                LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", e.getMessage());
+                                throw new BusinessException(e.getMessage());
                             }
                         });
                     }
