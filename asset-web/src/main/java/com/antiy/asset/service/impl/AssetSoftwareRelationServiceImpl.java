@@ -250,6 +250,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                         DataTypeUtils.stringToInteger(assetSoftwareRelationList.getSoftwareId()),
                         assetSoftwareDao.getById(assetSoftwareRelationList.getSoftwareId()).getName(),
                         relationList, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+                    LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", assetSoftwareRelationList.toString());
                     return assetSoftwareRelationDao.installSoftware(relationList);
                 } catch (Exception e) {
                     LogUtils.info(logger, AssetEventEnum.SOFT_INSTALL.getName() + " {}", relationList);
