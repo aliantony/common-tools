@@ -259,7 +259,7 @@ public class AssetSoftwareController {
     @PreAuthorize(value = "hasAuthority('asset:software:queryAssetInstallList')")
     public ActionResponse queryAssetInstallList(@ApiParam(value = "softwareQuery") AssetSoftwareQuery softwareQuery) throws Exception {
         // 只查询安装成功的
-        softwareQuery.setInstallStatus(2);
+        softwareQuery.setInstallStatus(5);
         return ActionResponse.success(iAssetSoftwareService.findPageAssetInstall(softwareQuery));
     }
 
