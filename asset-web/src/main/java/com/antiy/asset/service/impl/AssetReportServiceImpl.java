@@ -454,7 +454,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
         String beginTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getBeginTime()));
         String endTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getEndTime()));
-        return new StringBuffer(beginTime).append(" ").append(endTime).toString();
+        return new StringBuffer(beginTime).append("~").append(endTime).toString();
     }
 
     @Override
