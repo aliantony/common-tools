@@ -58,6 +58,12 @@ public class AssetSafetyEquipmentResponse extends BaseResponse {
      */
     @ApiModelProperty("更新时间")
     private Long    gmtModified;
+    @ApiModelProperty("命令与控制通道检测引擎版本号")
+    private String  commandControlChannel;
+    @ApiModelProperty("是否纳入管理")
+    private String  isManage;
+    @ApiModelProperty("软件版本")
+    private String  newVersion;
 
     public String getAssetId() {
         return assetId;
