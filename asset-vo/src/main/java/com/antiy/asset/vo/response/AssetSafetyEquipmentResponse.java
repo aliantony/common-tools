@@ -136,4 +136,28 @@ public class AssetSafetyEquipmentResponse extends BaseResponse {
     public void setMac(String mac) {
         this.mac = mac;
     }
+
+    public String getCommandControlChannel() {
+        return commandControlChannel;
+    }
+
+    public void setCommandControlChannel(String commandControlChannel) {
+        this.commandControlChannel = commandControlChannel;
+    }
+
+    public String getIsManage() {
+        return isManage;
+    }
+
+    public void setIsManage(String isManage) {
+        this.isManage = isManage;
+    }
+
+    public String getNewVersion() {
+        return newVersion;
+    }
+
+    public void setNewVersion(String newVersion) {
+        this.newVersion = newVersion;
+    }
 }
