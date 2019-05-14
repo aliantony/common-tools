@@ -483,7 +483,7 @@
         <where>
             status = 1
             and software_status !=8
-            and install_status = 2
+            and install_status = 5
             <if test="softwareIds != null and softwareIds.size() > 0">
                 and software_id in
                 <foreach item="softwareId" collection="softwareIds" open="(" separator="," close=")">
