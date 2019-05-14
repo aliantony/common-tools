@@ -277,5 +277,8 @@
             </if>
         </trim>
         ORDER BY aor.id desc
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize}
+        </if>
     </select>
 </mapper>
