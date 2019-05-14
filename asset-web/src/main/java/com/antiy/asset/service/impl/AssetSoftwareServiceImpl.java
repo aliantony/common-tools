@@ -202,7 +202,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetOperationRecordDao.insert(assetOperationRecord);
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(), assetSoftware.getId(),
-                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+                        assetSoftware.getName(), assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET,
+                        BusinessPhaseEnum.NONE));
                     LogUtils.info(logger, AssetEventEnum.SOFT_INSERT.getName() + " {}", assetSoftware);
                     return DataTypeUtils.stringToInteger(sid);
                 } catch (RequestParamValidateException e) {
@@ -386,7 +387,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetOperationRecordDao.insert(convertAssetOperationRecord(request, softwareStatus));
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(), assetSoftware.getId(),
-                        null, assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+                        assetSoftware.getName(), assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET,
+                        BusinessPhaseEnum.NONE));
                     LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetSoftware);
 
                     return assetSoftwareCount;
@@ -1033,10 +1035,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     private void exportData(String s, AssetSoftwareQuery assetSoftwareQuery,
                             HttpServletResponse response) throws Exception {
+        if ((assetSoftwareQuery.getStartNumber() != null && assetSoftwareQuery.getEndNumber() != null)) {
+            assetSoftwareQuery.setStartNumber(assetSoftwareQuery.getStartNumber() - 1);
+            assetSoftwareQuery.setEndNumber(assetSoftwareQuery.getEndNumber() - assetSoftwareQuery.getStartNumber());
+        }
+        assetSoftwareQuery.setPageSize(com.antiy.asset.util.Constants.ALL_PAGE);
         assetSoftwareQuery.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         assetSoftwareQuery.setQueryAssetCount(true);
-        assetSoftwareQuery.setPageSize(com.antiy.asset.util.Constants.ALL_PAGE);
         List<AssetSoftwareResponse> list = this.findPageAssetSoftware(assetSoftwareQuery).getItems();
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setSheetName("资产信息表");
@@ -1044,7 +1050,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         downloadVO.setDownloadList(softwareEntities);
         if (Objects.nonNull(softwareEntities) && softwareEntities.size() > 0) {
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_EXPORT.getName(), null, null, downloadVO,
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_EXPORT.getName(), null, "导出软件", downloadVO,
                 BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", downloadVO);
             excelDownloadUtil.excelDownload(response, s, downloadVO);

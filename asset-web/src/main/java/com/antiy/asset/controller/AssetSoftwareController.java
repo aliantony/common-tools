@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.enums.SoftInstallStatus;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.ConfigRegisterRequest;
 import com.antiy.asset.vo.query.SoftwareQuery;
@@ -259,7 +260,7 @@ public class AssetSoftwareController {
     @PreAuthorize(value = "hasAuthority('asset:software:queryAssetInstallList')")
     public ActionResponse queryAssetInstallList(@ApiParam(value = "softwareQuery") AssetSoftwareQuery softwareQuery) throws Exception {
         // 只查询安装成功的
-        softwareQuery.setInstallStatus(2);
+        softwareQuery.setInstallStatus(SoftInstallStatus.SUCCESS.getCode());
         return ActionResponse.success(iAssetSoftwareService.findPageAssetInstall(softwareQuery));
     }
 

@@ -1,18 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.io.Serializable;
-import java.util.*;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.antiy.asset.convert.CategoryRequestConvert;
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
@@ -40,6 +27,17 @@ import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.*;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 品类型号表 服务实现类 </p>
@@ -92,7 +90,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                 AssetEventEnum.ASSET_CATEGORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
             LogUtils.recordOperLog(
-                new BusinessData(AssetEventEnum.ASSET_CATEGORY_INSERT.getName(), result, assetCategoryModel.getName(),
+                new BusinessData(AssetEventEnum.ASSET_CATEGORY_INSERT.getName(), assetCategoryModel.getId(),
+                    assetCategoryModel.getName(),
                     assetCategoryModel, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}",
                 assetCategoryModel.toString());
@@ -145,7 +144,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             LogHandle.log(updateCategory.toString(), AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(),
                 AssetEventEnum.ASSET_CATEGORY_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(), result,
+            LogUtils
+                .recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(), updateCategory.getId(),
                 updateCategory.getName(), updateCategory, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_UPDATE.getName() + " {}", updateCategory.toString());
         }
@@ -226,7 +226,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
             AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(),
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
             assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel, BusinessModuleEnum.HARD_ASSET,
             BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", assetCategoryModel.toString());
@@ -489,7 +489,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             LogHandle.log(list.toString(), AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
                 AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(), 0, "", assetQuery,
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_DELETE.getName(), null, "批量删除",
+                assetQuery,
                 BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", list.toString());
         }

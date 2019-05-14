@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import java.util.List;
+
 import javax.validation.constraints.Size;
 
 import com.antiy.common.encoder.Encode;
@@ -80,6 +82,19 @@ public class SchemeResponse extends BaseResponse {
      * 方案内容
      */
     private String  content;
+
+    /**
+     * 方案内容
+     */
+    private List<String> fileInfos;
+
+    public List<String> getFileInfos() {
+        return fileInfos;
+    }
+
+    public void setFileInfos(List<String> fileInfos) {
+        this.fileInfos = fileInfos;
+    }
 
     public String getContent() {
         return content;

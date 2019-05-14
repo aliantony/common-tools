@@ -74,7 +74,7 @@ public class FileController {
             for (MultipartFile file : fileList) {
                 // 记录操作日志
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.FILE_UPLOAD.getName(), null, null, fileRespVOS,
-                    BusinessModuleEnum.COMMON, BusinessPhaseEnum.NONE));
+                    BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
                 uploadToHdfs(file, fileRespVOS, md5, fileUse);
             }
 
@@ -104,7 +104,7 @@ public class FileController {
             "attachment; filename=" + new String(fileName.getBytes(UTF8), "ISO8859-1"));
         // 记录操作日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.FILE_DOWNLOAD.getName(), null, null, fileName,
-            BusinessModuleEnum.COMMON, BusinessPhaseEnum.NONE));
+            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         // 记录运行日志
         LogUtils.info(logger, AssetEventEnum.FILE_DOWNLOAD.getName() + " {}", fileName);
         FileResponse fileResponse = fileUtils.download(defaultHDFSUrl.concat(url));

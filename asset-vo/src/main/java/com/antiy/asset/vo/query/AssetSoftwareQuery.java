@@ -166,6 +166,13 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty(value = "是否从控制台进入，默认false 不从控制台进入，true为控制台进入")
     private Boolean       enterControl    = false;
+
+    @ApiModelProperty("导出开始条数")
+    private Integer       startNumber;
+
+    @ApiModelProperty("导出结束条数")
+    private Integer       endNumber;
+
     /**
      * 资产状态
      */
@@ -454,6 +461,10 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
                 ParamterExceptionUtils.isTrue(endTime > beginTime, "结束时间必须大于开始时间");
             }
         }
+        if (startNumber != null || endNumber != null) {
+            ParamterExceptionUtils.isTrue(startNumber != null && endNumber != null, "导出条数有误");
+            ParamterExceptionUtils.isTrue(startNumber <= endNumber, "导出条数有误");
+        }
     }
 
     public String getAssetName() {
@@ -462,5 +473,21 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
 
     public void setAssetName(String assetName) {
         this.assetName = assetName;
+    }
+
+    public Integer getStartNumber() {
+        return startNumber;
+    }
+
+    public void setStartNumber(Integer startNumber) {
+        this.startNumber = startNumber;
+    }
+
+    public Integer getEndNumber() {
+        return endNumber;
+    }
+
+    public void setEndNumber(Integer endNumber) {
+        this.endNumber = endNumber;
     }
 }
