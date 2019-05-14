@@ -550,7 +550,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     logger.error("录入失败", e);
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()),
                         "操作系统不存在，或已经注销");
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("选择的资产组已失效", e.getMessage()), "选择的资产组已失效");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals("选择的资产组已失效，请核对后提交", e.getMessage()),
+                        "选择的资产组已失效，请核对后提交");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("使用者不存在，或已经注销", e.getMessage()), "使用者不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("品类型号不存在，或已经注销", e.getMessage()),
                         "品类型号不存在，或已经注销");
@@ -1501,7 +1502,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             try {
                                 String assetGroupName = assetGroupDao.getById(assetGroupRequest.getId()).getName();
                                 if (StringUtils.isBlank(assetGroupName)) {
-                                    throw new BusinessException("选择的资产组已失效");
+                                    throw new BusinessException("选择的资产组已失效，请核对后提交");
                                 } else {
                                     asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
                                         stringBuilder.length() - 1));
