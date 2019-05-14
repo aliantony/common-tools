@@ -1,5 +1,37 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -33,36 +65,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -548,7 +550,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     logger.error("录入失败", e);
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()),
                         "操作系统不存在，或已经注销");
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("已失效", e.getMessage()), "资产组名称获取失败");
+                    BusinessExceptionUtils.isTrue(!StringUtils.equals("选择的资产组已失效", e.getMessage()), "选择的资产组已失效");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("使用者不存在，或已经注销", e.getMessage()), "使用者不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("品类型号不存在，或已经注销", e.getMessage()),
                         "品类型号不存在，或已经注销");
@@ -1499,7 +1501,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             try {
                                 String assetGroupName = assetGroupDao.getById(assetGroupRequest.getId()).getName();
                                 if (StringUtils.isBlank(assetGroupName)) {
-                                    throw new BusinessException(assetGroupName + "已失效");
+                                    throw new BusinessException("选择的资产组已失效");
                                 } else {
                                     asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
                                         stringBuilder.length() - 1));
