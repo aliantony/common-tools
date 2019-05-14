@@ -1,21 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
@@ -31,7 +15,6 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
-import com.antiy.asset.vo.request.AssetInstallRequest;
 import com.antiy.asset.vo.request.AssetRelationSoftRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
@@ -45,10 +28,22 @@ import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
-import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import javax.annotation.Resource;
+import java.util.*;
 
 /**
  * <p> 资产软件关系信息 服务实现类 </p>
@@ -251,7 +246,9 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
                     // 记录操作日志和运行日志
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSTALL.getName(), null, null,
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSTALL.getName(),
+                        DataTypeUtils.stringToInteger(assetSoftwareRelationList.getSoftwareId()),
+                        assetSoftwareDao.getById(assetSoftwareRelationList.getSoftwareId()).getName(),
                         relationList, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
                     return assetSoftwareRelationDao.installSoftware(relationList);
                 } catch (Exception e) {
