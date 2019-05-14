@@ -5,9 +5,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
+import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.service.ISchemeService;
@@ -20,6 +22,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
@@ -31,6 +34,7 @@ import com.antiy.common.utils.ParamterExceptionUtils;
  **/
 @Service
 public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchemeService {
+    private static final Logger                         logger = LogUtils.get(SchemeServiceImpl.class);
 
     @Resource
     private SchemeDao                                     schemeDao;
@@ -38,6 +42,8 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     private AesEncoder                            aesEncoder;
     @Resource
     private BaseConverter<Scheme, SchemeResponse> responseBaseConverter;
+    @Resource
+    AssetOperationRecordDao                             operationRecordDao;
     @Resource
     private BaseConverter<List<Scheme>, SchemeResponse> schemeListToResponseConverter;
 
@@ -86,7 +92,14 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         ParamterExceptionUtils.isNull(query.getAssetStatus(), "资产状态不能为空");
         ParamterExceptionUtils.isNull(query.getAssetTypeEnum(), "类型不能为空");
         // 上一步状态的备注
-        query.setAssetStatus(query.getAssetStatus() - 1);
+        query.setAssetStatus(query.getAssetStatus());
+
+        // 获取最近一次的记录创建时间，作为查询条件
+        Long newTime = operationRecordDao.getTimeByAssetId(query.getAssetId());
+        if (newTime == null) {
+            LogUtils.info(logger, "未记录操作记录的创建时间");
+        }
+        query.setOperationTime(newTime);
         Scheme scheme = schemeDao.findMemoById(query);
         if (scheme != null) {
             scheme.setFileInfo(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
