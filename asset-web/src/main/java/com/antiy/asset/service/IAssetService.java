@@ -9,10 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.AssetImportRequest;
-import com.antiy.asset.vo.request.AssetOuterRequest;
-import com.antiy.asset.vo.request.AssetRequest;
-import com.antiy.asset.vo.request.AssetStatusJumpRequst;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.AlarmAssetResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.EnumCountResponse;
@@ -249,5 +247,13 @@ public interface IAssetService extends IBaseService<Asset> {
      * @throws Exception
      */
     RespBasicCode changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception;
+
+    /**
+     * 告警管理查询资产信息
+     * @param alarmAssetRequest
+     * @return
+     * @throws Exception
+     */
+    List<AlarmAssetResponse> queryAlarmAssetList(AlarmAssetRequest alarmAssetRequest) throws Exception;
 
 }

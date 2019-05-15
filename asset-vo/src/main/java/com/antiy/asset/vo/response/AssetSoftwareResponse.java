@@ -1,10 +1,9 @@
 package com.antiy.asset.vo.response;
 
-import java.util.List;
-
 import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p> AssetSoftwareResponse 响应对象 </p>
@@ -20,6 +19,11 @@ public class AssetSoftwareResponse extends BaseResponse {
      */
     @ApiModelProperty("软件大小(KB)")
     private Integer            size;
+    /**
+     * 软件大小(KB)
+     */
+    @ApiModelProperty("校验方式")
+    private String             checkType;
     /**
      * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
      */
@@ -455,4 +459,11 @@ public class AssetSoftwareResponse extends BaseResponse {
         this.buyDate = buyDate;
     }
 
+    public String getCheckType() {
+        return checkType;
+    }
+
+    public void setCheckType(String checkType) {
+        this.checkType = checkType;
+    }
 }

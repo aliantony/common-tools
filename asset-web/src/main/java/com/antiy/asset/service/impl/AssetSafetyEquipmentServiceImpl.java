@@ -67,11 +67,11 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
         AssetSafetyEquipment assetSafetyEquipment = requestConverter.convert(request, AssetSafetyEquipment.class);
         assetSafetyEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SAFETY_EQUIPMENT_UPDATE.getName(),
-            DataTypeUtils.stringToInteger(request.getAssetId()), assetDao.getById(request.getAssetId()).getNumber(),
-            assetSafetyEquipment, BusinessModuleEnum.SAFETY,
-            BusinessPhaseEnum.NONE));
-        LogUtils.info(logger, AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getName() + " {}", assetSafetyEquipment);
+        // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SAFETY_EQUIPMENT_UPDATE.getName(),
+        // DataTypeUtils.stringToInteger(request.getAssetId()), assetDao.getById(request.getAssetId()).getNumber(),
+        // assetSafetyEquipment, BusinessModuleEnum.SAFETY,
+        // BusinessPhaseEnum.NONE));
+        // LogUtils.info(logger, AssetEventEnum.ASSET_SAFE_DETAIL_INSERT.getName() + " {}", assetSafetyEquipment);
         return assetSafetyEquipmentDao.update(assetSafetyEquipment);
     }
 

@@ -10,6 +10,7 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.entity.Topology;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.common.base.IBaseDao;
 
 /**
@@ -171,12 +172,13 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param activitiIds
      * @return
      */
-    List<String> sortAssetIds(@Param("ids") Set<String> activitiIds, @Param("sortName") String sorName,@Param("sortOrder") String sorOrder);
+    List<String> sortAssetIds(@Param("ids") Set<String> activitiIds, @Param("sortName") String sorName,
+                              @Param("sortOrder") String sorOrder);
 
     /**
-     * 通过资产ID获取UUID
-     * @param assetId
+     * 
+     * @param alarmAssetRequest
      * @return
      */
-    String getUUIDByAssetId(String assetId);
+    List<Asset> queryAlarmAssetList(AlarmAssetRequest alarmAssetRequest);
 }
