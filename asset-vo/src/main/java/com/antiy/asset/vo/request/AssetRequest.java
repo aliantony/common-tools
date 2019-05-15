@@ -219,8 +219,8 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     /**
      * 备注
      */
-    @ApiModelProperty("备注")
-    @Size(message = "备注不能超过300个字符", max = 300)
+    @ApiModelProperty("配置建议")
+    @Size(message = "配置建议不能超过300个字符", max = 300)
     private String                  memo;
 
     public String getMemo() {
