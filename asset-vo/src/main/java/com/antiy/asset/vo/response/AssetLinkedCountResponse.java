@@ -31,6 +31,7 @@ public class AssetLinkedCountResponse extends BaseResponse {
      * 资产品类型号
      */
     @ApiModelProperty("资产品类型号")
+    @Encode
     private String       categoryModel;
     /**
      * 资产品类型号名称

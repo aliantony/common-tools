@@ -153,12 +153,14 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty(value = "硬件编号")
     private String        number;
     @ApiModelProperty(value = "资产id")
+    @Encode
     private String        assetId;
 
     @ApiModelProperty(value = "1表示查询发布时间，2表示查询到期时间")
     private Integer       queryTime;
 
     @ApiModelProperty(value = "软件资产Id列表")
+    @Encode
     private List<String>  ids;
 
     @ApiModelProperty(value = "流程引擎当前代办任务Id")
