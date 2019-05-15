@@ -248,25 +248,25 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     private SortRule      sortRule;
 
     @ApiModelProperty("导出开始条数")
-    private Integer       startNumber;
+    private Integer       start;
 
     @ApiModelProperty("导出结束条数")
-    private Integer       endNumber;
+    private Integer       end;
 
-    public Integer getStartNumber() {
-        return startNumber;
+    public Integer getStart() {
+        return start;
     }
 
-    public void setStartNumber(Integer startNumber) {
-        this.startNumber = startNumber;
+    public void setStart(Integer start) {
+        this.start = start;
     }
 
-    public Integer getEndNumber() {
-        return endNumber;
+    public Integer getEnd() {
+        return end;
     }
 
-    public void setEndNumber(Integer endNumber) {
-        this.endNumber = endNumber;
+    public void setEnd(Integer end) {
+        this.end = end;
     }
 
     public SortRule getSortRule() {
@@ -591,9 +591,9 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
         if (timeType != null && beginTime != null && endTime != null) {
             ParamterExceptionUtils.isTrue(endTime > beginTime, "结束时间必须大于开始时间");
         }
-        if (startNumber != null || endNumber != null) {
-            ParamterExceptionUtils.isTrue(startNumber != null && endNumber != null, "导出条数有误");
-            ParamterExceptionUtils.isTrue(startNumber <= endNumber, "导出条数有误");
+        if (start != null || end != null) {
+            ParamterExceptionUtils.isTrue(start != null && end != null, "导出条数有误");
+            ParamterExceptionUtils.isTrue(start <= end, "导出条数有误");
         }
     }
 
