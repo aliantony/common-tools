@@ -153,7 +153,7 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      * 描述
      */
     @ApiModelProperty("描述")
-    @Size(message = "描述必须大于5位小于300位", min = 5,max = 300)
+    @Size(message = "描述不能超过300个字符", max = 300)
     private String                  describle;
     /**
      * 描述
