@@ -40,9 +40,20 @@ public class SchemeQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("类型")
     private AssetTypeEnum assetTypeEnum;
 
+    @ApiModelProperty(value = "操作时间", hidden = true)
+    private Long          operationTime;
+
     @Override
     public void validate() throws RequestParamValidateException {
 
+    }
+
+    public Long getOperationTime() {
+        return operationTime;
+    }
+
+    public void setOperationTime(Long operationTime) {
+        this.operationTime = operationTime;
     }
 
     public AssetTypeEnum getAssetTypeEnum() {
