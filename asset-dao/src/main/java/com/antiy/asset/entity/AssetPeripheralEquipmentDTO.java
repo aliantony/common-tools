@@ -1,4 +1,4 @@
-package com.antiy.asset.dto;
+package com.antiy.asset.entity;
 
 import java.util.Date;
 import com.antiy.common.base.BaseEntity;
