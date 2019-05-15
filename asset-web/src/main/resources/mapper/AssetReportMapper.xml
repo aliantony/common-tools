@@ -20,7 +20,7 @@
         SELECT
         <trim suffixOverrides=",">
             <foreach collection="assetAreaIds" item="item">
-                sum(CASE WHEN area_id IN (#{item.parentAreaId}
+                IFNULL(sum(CASE WHEN area_id IN (#{item.parentAreaId}
                 <if test="item.childrenAradIds !=null and item.childrenAradIds.size() > 0">
                     <foreach collection="item.childrenAradIds" open="," separator="," item="area">
                         #{area}
@@ -30,7 +30,7 @@
                 THEN 1
                 ELSE 0
                 END
-                ) AS #{item.parentAreaName},
+                ),0) AS #{item.parentAreaName},
             </foreach>
         </trim>
         FROM
