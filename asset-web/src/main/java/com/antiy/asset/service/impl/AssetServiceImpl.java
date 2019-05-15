@@ -3508,12 +3508,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         String assetId = assetStatusJumpRequst.getAssetId();
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+
+        Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
         // 修改资产状态
         if (AssetStatusEnum.WAIT_SETTING.getCode().equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
             this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
             assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_CONFIG_BASELINE.getMsg());
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
+            scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
         } else if (AssetStatusEnum.WAIT_VALIDATE.getCode()
             .equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
             ParamterExceptionUtils.isNull(assetStatusJumpRequst.getAgree(), "agree不能为空");
@@ -3522,12 +3525,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (assetStatusJumpRequst.getAgree()) {
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_NET.getCode());
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_NET.getCode());
+                scheme.setAssetNextStatus(AssetStatusEnum.WAIT_NET.getCode());
             } else {
-                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
-                this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
+                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                this.changeStatusById(assetId, AssetStatusEnum.WAIT_SETTING.getCode());
+                scheme.setAssetNextStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             }
         }
-        Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
+
         // 2.保存流程
 
         assetOperationRecord.setTargetObjectId(assetId);
@@ -3545,7 +3550,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (StringUtils.isNotBlank(scheme.getContent()) && scheme.getMemo() == null) {
                 scheme.setMemo(scheme.getContent());
             }
-            scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
+
             scheme.setAssetId(assetId);
             scheme.setSchemeSource(1);
             scheme.setGmtCreate(gmtCreateTime);
