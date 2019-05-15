@@ -1997,6 +1997,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     logger.info("资产变更失败:", e);
                     transactionStatus.setRollbackOnly();
+                    BusinessExceptionUtils.isTrue(e.getMessage().contains("失效"), e.getMessage());
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("IP不能重复", e.getMessage()), "IP不能重复");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("网络设备IP不能重复", e.getMessage()), "网络设备IP不能重复");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("安全设备IP不能重复", e.getMessage()), "安全设备IP不能重复");
