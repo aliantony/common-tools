@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
@@ -32,6 +33,7 @@ public class AssetGroupQuery extends ObjectQuery implements ObjectValidator {
      * 创建人ID
      */
     @ApiModelProperty("创建人ID")
+    @Encode
     private String createUser;
 
     public String getName() {

@@ -1,5 +1,37 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -33,36 +65,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -548,7 +550,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     logger.error("录入失败", e);
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()),
                         "操作系统不存在，或已经注销");
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("资产组名称获取失败", e.getMessage()), "资产组名称获取失败");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("使用者不存在，或已经注销", e.getMessage()), "使用者不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("品类型号不存在，或已经注销", e.getMessage()),
                         "品类型号不存在，或已经注销");
@@ -594,10 +595,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 调用失败，逻辑删登记的资产
                 assetDao.deleteById(id);
                 return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
+            } else {
+                return ActionResponse.success(id);
             }
+        } else {
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
         }
 
-        return ActionResponse.success(id);
     }
 
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
@@ -658,11 +662,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuffer stringBuffer = new StringBuffer();
         assetGroup.forEach(assetGroupRequest -> {
             try {
-                String assetGroupName = assetGroupDao.getById(assetGroupRequest.getId()).getName();
+                AssetGroup tempGroup = assetGroupDao.getById(assetGroupRequest.getId());
+                String assetGroupName = tempGroup.getName();
+                if (tempGroup.getStatus() == 0) {
+                    throw new BusinessException(tempGroup.getName() + "已失效，请核对后提交");
+                }
                 asset.setAssetGroup(
                     stringBuffer.append(assetGroupName).append(",").substring(0, stringBuffer.length() - 1));
             } catch (Exception e) {
-                throw new BusinessException("资产组名称获取失败");
+                throw new BusinessException(e.getMessage());
             }
         });
     }
@@ -1497,11 +1505,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         StringBuilder stringBuilder = new StringBuilder();
                         assetGroup.stream().forEach(assetGroupRequest -> {
                             try {
-                                String assetGroupName = assetGroupDao.getById(assetGroupRequest.getId()).getName();
-                                asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
-                                    stringBuilder.length() - 1));
+                                AssetGroup tempGroup = assetGroupDao.getById(assetGroupRequest.getId());
+                                String assetGroupName = tempGroup.getName();
+                                if (tempGroup.getStatus() == 0) {
+                                    throw new BusinessException(assetGroupName + "已失效，请核对后提交");
+                                } else {
+                                    asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
+                                        stringBuilder.length() - 1));
+                                }
                             } catch (Exception e) {
-                                throw new BusinessException("资产组名称获取失败");
+                                LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", e.getMessage());
+                                throw new BusinessException(e.getMessage());
                             }
                         });
                     }
@@ -3388,9 +3402,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public void exportData(AssetQuery assetQuery, HttpServletResponse response) throws Exception {
-        if ((assetQuery.getStartNumber() != null && assetQuery.getEndNumber() != null)) {
-            assetQuery.setStartNumber(assetQuery.getStartNumber() - 1);
-            assetQuery.setEndNumber(assetQuery.getEndNumber() - assetQuery.getStartNumber());
+        if ((assetQuery.getStart() != null && assetQuery.getStart() != null)) {
+            assetQuery.setStart(assetQuery.getStart() - 1);
+            assetQuery.setEnd(assetQuery.getEnd() - assetQuery.getStart());
         }
         assetQuery.setPageSize(Constants.ALL_PAGE);
         assetQuery.setAreaIds(
@@ -3497,12 +3511,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         String assetId = assetStatusJumpRequst.getAssetId();
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+
+        Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
         // 修改资产状态
         if (AssetStatusEnum.WAIT_SETTING.getCode().equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
             this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
             assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_CONFIG_BASELINE.getMsg());
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
+            scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
         } else if (AssetStatusEnum.WAIT_VALIDATE.getCode()
             .equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
             ParamterExceptionUtils.isNull(assetStatusJumpRequst.getAgree(), "agree不能为空");
@@ -3511,12 +3528,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (assetStatusJumpRequst.getAgree()) {
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_NET.getCode());
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_NET.getCode());
+                scheme.setAssetNextStatus(AssetStatusEnum.WAIT_NET.getCode());
             } else {
-                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
-                this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
+                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                this.changeStatusById(assetId, AssetStatusEnum.WAIT_SETTING.getCode());
+                scheme.setAssetNextStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             }
         }
-        Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
+
         // 2.保存流程
 
         assetOperationRecord.setTargetObjectId(assetId);
@@ -3534,7 +3553,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (StringUtils.isNotBlank(scheme.getContent()) && scheme.getMemo() == null) {
                 scheme.setMemo(scheme.getContent());
             }
-            scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
+
             scheme.setAssetId(assetId);
             scheme.setSchemeSource(1);
             scheme.setGmtCreate(gmtCreateTime);

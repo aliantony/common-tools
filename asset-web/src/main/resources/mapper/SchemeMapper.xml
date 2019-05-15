@@ -409,18 +409,12 @@
         memo,file_info
         from
         <include refid="Table_Name"></include>
-        WHERE id = (
-        SELECT
-        max( id )
-        FROM
-        <include refid="Table_Name"></include>
         WHERE
         asset_id = #{assetId}
         AND asset_next_status = #{assetStatus}
         AND scheme_source = #{assetTypeEnum.code}
         AND STATUS = 1
         ORDER BY
-        id DESC
-        )
+        id DESC limit 1
     </select>
 </mapper>

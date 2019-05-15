@@ -281,4 +281,11 @@
             LIMIT #{pageSize}
         </if>
     </select>
+    <select id="getTimeByAssetId" resultType="java.lang.Long" parameterType="java.lang.String">
+        select
+        gmt_create
+        from
+        <include refid="Table_Name"></include>
+        where target_object_id = #{assetId} order by id desc limit 1
+    </select>
 </mapper>
