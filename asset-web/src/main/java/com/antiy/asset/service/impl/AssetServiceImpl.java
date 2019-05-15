@@ -506,9 +506,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         LogHandle.log(assetOthersRequest, AssetEventEnum.ASSET_INSERT.getName(),
                             AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                         LogUtils.recordOperLog(
-                            new BusinessData(AssetEventEnum.ASSET_INSERT.getName(),
-                            asset1.getId(), asset1.getNumber(), asset1, BusinessModuleEnum.HARD_ASSET,
-                            BusinessPhaseEnum.WAIT_REGISTER));
+                            new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), asset1.getId(), asset1.getNumber(),
+                                asset1, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
                         LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                             assetOthersRequest.toString());
                     }
@@ -2037,10 +2036,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                     if (null == actionResponseAsset
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {
-                        LogUtils.recordOperLog(
-                            new BusinessData(AssetEventEnum.RETIRE_REGISTER.getName(), Integer.valueOf(assetId),
-                                assetDao.getById(assetId).getNumber(),
-                                configRegisterRequest, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.RETIRE_REGISTER.getName(),
+                            Integer.valueOf(assetId), assetDao.getById(assetId).getNumber(), configRegisterRequest,
+                            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
                         // 记录操作日志和运行日志
                         LogUtils.info(logger, AssetEventEnum.RETIRE_REGISTER.getName() + " {}", configRegisterRequest);
                     }
@@ -3408,7 +3406,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         assetQuery.setPageSize(Constants.ALL_PAGE);
         assetQuery.setAreaIds(
-                ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
         List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
         DownloadVO downloadVO = new DownloadVO();
@@ -3416,12 +3414,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         downloadVO.setDownloadList(assetEntities);
         if (Objects.nonNull(assetEntities) && assetEntities.size() > 0) {
             excelDownloadUtil.excelDownload(response,
-                    "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
+                "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
         } else {
             throw new BusinessException("导出数据为空");
         }
     }
-
 
     @Override
     public List<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) throws Exception {
@@ -3578,6 +3575,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}", assetOperationRecord);
         assetOperationRecordDao.insert(assetOperationRecord);
         return RespBasicCode.SUCCESS;
+    }
+
+    @Override
+    public List<AlarmAssetResponse> queryAlarmAssetList(AlarmAssetRequest alarmAssetRequest) throws Exception {
+        List<Asset> assetList = assetDao.queryAlarmAssetList(alarmAssetRequest);
+        BaseConverter<Asset, AlarmAssetResponse> converter = new BaseConverter<Asset, AlarmAssetResponse>() {
+            @Override
+            protected void convert(Asset asset, AlarmAssetResponse alarmAssetResponse) {
+                super.convert(asset, alarmAssetResponse);
+                alarmAssetResponse.setAssetNumber(asset.getNumber());
+                alarmAssetResponse.setAssetId(asset.getStringId());
+            }
+        };
+        return converter.convert(assetList, AlarmAssetResponse.class);
     }
 
     @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
