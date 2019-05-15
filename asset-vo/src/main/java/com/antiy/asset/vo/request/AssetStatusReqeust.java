@@ -58,7 +58,7 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
     @NotBlank(message = "资产主键不能为空")
     private String                     assetId;
     /**
-     * 资产主键
+     * 硬件资产当前状态
      */
     @ApiModelProperty("硬件资产当前状态")
     private AssetStatusEnum            assetStatus;

@@ -1,5 +1,16 @@
 package com.antiy.asset.controller;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import com.antiy.asset.util.Constants;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.AccessExport;
@@ -18,15 +29,8 @@ import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import io.swagger.annotations.*;
 
 /**
  * @author 吕梁
@@ -75,8 +79,8 @@ public class AssetAdmittanceController {
 
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName(), asset.getId(),
-            assetService.getById(asset.getId()).getName(),
-            asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            assetService.getById(asset.getId()).getName(), asset, BusinessModuleEnum.HARD_ASSET,
+            BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
             AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName() + " {}", asset.toString());
         return ActionResponse.success(assetService.update(asset));
@@ -91,10 +95,19 @@ public class AssetAdmittanceController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/access/export", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:admittance:export')")
-    public ActionResponse export(@ApiParam(value = "asset") @RequestParam(required = false) Integer status) throws Exception {
+    public ActionResponse export(@ApiParam(value = "asset") @RequestParam(required = false) Integer status,
+                                 Integer start, Integer end) throws Exception {
+        if (start != null || end != null) {
+            ParamterExceptionUtils.isTrue(start != null && end != null, "导出条数有误");
+            ParamterExceptionUtils.isTrue(start <= end, "导出条数有误");
+        }
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setAdmittanceStatus(status);
-        assetQuery.setPageSize(-1);
+        assetQuery.setPageSize(Constants.ALL_PAGE);
+        if (start != null) {
+            assetQuery.setStart(start - 1);
+            assetQuery.setEnd(end - start);
+        }
         assetQuery.setAssetStatusList(Arrays.asList(new Integer[] { 3, 4, 5, 6, 7, 8, 9 }));
         List<AssetResponse> assetList = assetService.findListAsset(assetQuery);
         if (!CollectionUtils.isNotEmpty(assetList)) {
