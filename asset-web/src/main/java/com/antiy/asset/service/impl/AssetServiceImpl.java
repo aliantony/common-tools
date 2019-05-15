@@ -3399,9 +3399,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public void exportData(AssetQuery assetQuery, HttpServletResponse response) throws Exception {
-        if ((assetQuery.getStartNumber() != null && assetQuery.getEndNumber() != null)) {
-            assetQuery.setStartNumber(assetQuery.getStartNumber() - 1);
-            assetQuery.setEndNumber(assetQuery.getEndNumber() - assetQuery.getStartNumber());
+        if ((assetQuery.getStart() != null && assetQuery.getStart() != null)) {
+            assetQuery.setStart(assetQuery.getStart() - 1);
+            assetQuery.setEnd(assetQuery.getEnd() - assetQuery.getStart());
         }
         assetQuery.setPageSize(Constants.ALL_PAGE);
         assetQuery.setAreaIds(
