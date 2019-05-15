@@ -597,6 +597,13 @@
         left join asset_category_model b on a.category_model=b.id
         where a.id = #{id}
     </select>
+    <select id="getPath" resultType="java.lang.String" parameterType="java.lang.String">
+        select
+        path
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
 
 
     <delete id="deleteById" parameterType="java.lang.Integer">

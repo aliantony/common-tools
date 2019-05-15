@@ -3,15 +3,10 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.antiy.asset.entity.AssetSoftwareInstall;
-import com.antiy.asset.entity.AssetSoftwareRelation;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
-import com.antiy.asset.vo.response.AssetSoftwareResponse;
-import javafx.beans.binding.ObjectExpression;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.common.base.IBaseDao;
 
@@ -76,4 +71,11 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
     Integer insertBatch(List<AssetSoftware> assetList);
 
     Integer isExsit(@Param(value = "name") String name, @Param(value = "version") String version);
+
+    /**
+     * 通过软件ID获取文件路径
+     * @param id
+     * @return
+     */
+    String getPath(String id);
 }

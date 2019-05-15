@@ -1,12 +1,30 @@
 package com.antiy.asset.service.impl;
 
+import java.util.*;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+
 import com.antiy.asset.dao.AssetCategoryModelDao;
+import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
+import com.antiy.asset.dto.AssetDTO;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
+import com.antiy.asset.intergration.impl.CommandClientImpl;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IRedisService;
@@ -18,6 +36,7 @@ import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetRelationSoftRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.vo.request.SoftwareInstallRequest;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
@@ -31,19 +50,6 @@ import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-
-import javax.annotation.Resource;
-import java.util.*;
 
 /**
  * <p> 资产软件关系信息 服务实现类 </p>
@@ -78,6 +84,10 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     private IRedisService                                                       redisService;
     @Resource
     private AssetSoftwareDao                                                    assetSoftwareDao;
+    @Resource
+    AssetDao                                                                    assetDao;
+    @Resource
+    CommandClientImpl                                                           commandClient;
 
     @Override
     public Integer saveAssetSoftwareRelation(AssetSoftwareRelationRequest request) throws Exception {
@@ -260,7 +270,22 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             }
         });
         if (CollectionUtils.isNotEmpty(autoInstallList)) {
-            // TODO 下发智甲安装
+            List<AssetDTO> assetDTOList = new ArrayList<>();
+            autoInstallList.forEach(assetSoftwareRelation -> {
+                AssetDTO assetDTO = new AssetDTO();
+                assetDTO.setId(assetSoftwareRelation.getAssetId());
+                assetDTO.setUuid(assetDao.getUUIDByAssetId(assetSoftwareRelation.getAssetId()));
+                assetDTOList.add(assetDTO);
+            });
+            SoftwareInstallRequest softwareInstallRequest = new SoftwareInstallRequest();
+            String softwareId = assetSoftwareRelationList.getSoftwareId();
+            softwareInstallRequest.setId(softwareId);
+            softwareInstallRequest.setAssetDTOList(assetDTOList);
+            // 获取软件安装路径
+            softwareInstallRequest.setPath(assetSoftwareDao.getPath(softwareId));
+            // 远程调用安装指令
+            commandClient.InstallSoftwareAuto(softwareInstallRequest);
+
         }
     }
 
