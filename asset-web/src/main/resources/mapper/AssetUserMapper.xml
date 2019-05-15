@@ -278,27 +278,43 @@
     </select>
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-        select count(1) count
-        from
-        <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
-            </trim>
-            and status = 1
-        </where>
+        select
+        count(1) count
+        from asset_user a left join asset_department b on a.department_id = b.id
+        where 1 = 1
+        <if test=" departmentId != null and departmentId != ''">
+            AND a.department_id in
+            <foreach collection="departmentIds" separator="," open="(" close=")" index="index" item="item">
+                #{item }
+            </foreach>
+        </if>
+        <if test=" name != null and name != ''">
+            AND a.name like binary concat('%',replace(replace(#{name },'%','\%'),'_','\_'),'%')
+        </if>
+        <if test=" mobile != null and mobile != ''">
+            AND a.mobile like concat('%', replace(replace(#{mobile },'%','\%'),'_','\_'),'%')
+        </if>
+        and a.status = 1
     </select>
 
     <select id="findListCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetUserQuery">
-        select count(1) count
-        from
-        <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
-            </trim>
-            and status = 1
-        </where>
+        select
+        count(1) count
+        from asset_user a left join asset_department b on a.department_id = b.id
+        where 1 = 1
+        <if test=" departmentId != null and departmentId != ''">
+            AND a.department_id in
+            <foreach collection="departmentIds" separator="," open="(" close=")" index="index" item="item">
+                #{item }
+            </foreach>
+        </if>
+        <if test=" name != null and name != ''">
+            AND a.name like binary concat('%',replace(replace(#{name },'%','\%'),'_','\_'),'%')
+        </if>
+        <if test=" mobile != null and mobile != ''">
+            AND a.mobile like concat('%', replace(replace(#{mobile },'%','\%'),'_','\_'),'%')
+        </if>
+        and a.status = 1
     </select>
 
     <select id="findQuery" resultType="com.antiy.asset.entity.AssetUser"
@@ -416,21 +432,8 @@
         <if test=" name != null">
             AND a.name like binary concat('%',replace(replace(#{name },'%','\%'),'_','\_'),'%')
         </if>
-
-        <if test=" email != null">
-            AND a.email like concat('%', replace(replace(#{email },'%','\%'),'_','\_'),'%')
-        </if>
-        <if test=" qq != null">
-            AND a.qq like concat('%', replace(replace(#{qq },'%','\%'),'_','\_'),'%')
-        </if>
-        <if test=" weixin != null">
-            AND a.weixin like concat('%', replace(replace(#{weixin },'%','\%'),'_','\_'),'%')
-        </if>
         <if test=" mobile != null">
             AND a.mobile like concat('%', replace(replace(#{mobile },'%','\%'),'_','\_'),'%')
-        </if>
-        <if test=" address != null">
-            AND address like concat('%', replace(replace(#{address },'%','\%'),'_','\_'),'%')
         </if>
         and a.status = 1
         order by a.gmt_create desc
