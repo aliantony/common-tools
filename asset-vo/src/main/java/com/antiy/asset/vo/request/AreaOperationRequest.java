@@ -22,6 +22,7 @@ public class AreaOperationRequest {
 
     @ApiModelProperty("目标区域id")
     @NotBlank(message = "目标区域id不能为空")
+    @Encode
     private String targetAreaId;
 
     public List<String> getSourceAreaIds() {

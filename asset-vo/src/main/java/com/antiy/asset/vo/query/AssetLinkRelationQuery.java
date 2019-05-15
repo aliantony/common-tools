@@ -1,7 +1,7 @@
 package com.antiy.asset.vo.query;
 
-import com.antiy.asset.vo.enums.SortEnum;
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.Size;
@@ -19,6 +19,7 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      * 资产id
      */
     @ApiModelProperty("资产id")
+    @Encode
     private String        assetId;
     /**
      * 资产名称
@@ -35,11 +36,13 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      * 关联资产id
      */
     @ApiModelProperty("关联资产id")
+    @Encode
     private String        parentAssetId;
     /**
      * 资产品类型号
      */
     @ApiModelProperty("资产品类型号")
+    @Encode
     private List<String>  categoryModels;
     /**
      * 计算设备资产品类型号列表

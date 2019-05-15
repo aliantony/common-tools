@@ -19,7 +19,7 @@ public class AssetGroupRelationRequest extends BasicRequest implements ObjectVal
     private static final long serialVersionUID = 1L;
 
     /**
-     * 资产组主键
+     * 主键
      */
     @ApiModelProperty("主键")
     @Encode

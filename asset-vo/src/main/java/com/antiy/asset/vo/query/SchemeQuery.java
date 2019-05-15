@@ -28,7 +28,7 @@ public class SchemeQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("实施人")
     private String  putintoUser;
     /**
-     * 实施人
+     * 资产id
      */
     @Encode
     @ApiModelProperty("资产id")
