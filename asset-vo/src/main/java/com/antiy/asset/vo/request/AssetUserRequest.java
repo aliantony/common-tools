@@ -82,13 +82,13 @@ public class AssetUserRequest extends BasicRequest implements ObjectValidator {
      * 住址
      */
     @ApiModelProperty("住址")
-    @Size(message = "住址应在0~50字符", max = 50)
+    @Size(message = "住址应在1~100字符", max = 100)
     private String address;
     /**
      * 详细地址
      */
     @ApiModelProperty("详细地址")
-    @Size(message = "详细地址应在0~50字符", max = 50)
+    @Size(message = "详细地址应在1~100字符", max = 100)
     private String detailAddress;
     /**
      * 职位

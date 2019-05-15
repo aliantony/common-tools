@@ -1,14 +1,16 @@
 package com.antiy.asset.vo.request;
 
+import java.util.Arrays;
+
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.Size;
-import java.util.Arrays;
 
 /**
  * <p> AssetGroupRequest 请求对象 </p>
@@ -30,13 +32,13 @@ public class AssetGroupRequest extends BasicRequest implements ObjectValidator {
      * 备注
      */
     @ApiModelProperty("备注")
-    @Size(message = "备注范围0~300字符", max = 300)
+    @Size(message = "备注范围应在1~300字符", max = 300)
     private String   memo;
     /**
      * 资产组名称
      */
     @ApiModelProperty("资产组名称")
-    @Size(message = "名称范围1~30字符", max = 30)
+    @Size(message = "名称范围应在1~60字符", max = 60)
     private String   name;
     /**
      * 资产组ID数组
