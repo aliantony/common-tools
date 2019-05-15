@@ -550,8 +550,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     logger.error("录入失败", e);
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()),
                         "操作系统不存在，或已经注销");
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("选择的资产组已失效，请核对后提交", e.getMessage()),
-                        "选择的资产组已失效，请核对后提交");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("使用者不存在，或已经注销", e.getMessage()), "使用者不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("品类型号不存在，或已经注销", e.getMessage()),
                         "品类型号不存在，或已经注销");
@@ -664,11 +662,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuffer stringBuffer = new StringBuffer();
         assetGroup.forEach(assetGroupRequest -> {
             try {
-                String assetGroupName = assetGroupDao.getById(assetGroupRequest.getId()).getName();
+                AssetGroup tempGroup = assetGroupDao.getById(assetGroupRequest.getId());
+                String assetGroupName = tempGroup.getName();
+                if (tempGroup.getStatus() == 0) {
+                    throw new BusinessException(tempGroup.getName() + "已失效，请核对后提交");
+                }
                 asset.setAssetGroup(
                     stringBuffer.append(assetGroupName).append(",").substring(0, stringBuffer.length() - 1));
             } catch (Exception e) {
-                throw new BusinessException("选择的资产组已失效，请核对后提交");
+                throw new BusinessException(e.getMessage());
             }
         });
     }
@@ -1503,9 +1505,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         StringBuilder stringBuilder = new StringBuilder();
                         assetGroup.stream().forEach(assetGroupRequest -> {
                             try {
-                                String assetGroupName = assetGroupDao.getById(assetGroupRequest.getId()).getName();
-                                if (StringUtils.isBlank(assetGroupName)) {
-                                    throw new BusinessException("选择的资产组已失效，请核对后提交");
+                                AssetGroup tempGroup = assetGroupDao.getById(assetGroupRequest.getId());
+                                String assetGroupName = tempGroup.getName();
+                                if (tempGroup.getStatus() == 0) {
+                                    throw new BusinessException(assetGroupName + "已失效，请核对后提交");
                                 } else {
                                     asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
                                         stringBuilder.length() - 1));
