@@ -547,6 +547,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
+                    if (e.getMessage().contains("失效")) {
+                        throw new BusinessException(e.getMessage());
+                    }
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()),
                         "操作系统不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("使用者不存在，或已经注销", e.getMessage()), "使用者不存在，或已经注销");
@@ -1996,7 +1999,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     logger.info("资产变更失败:", e);
                     transactionStatus.setRollbackOnly();
-                    BusinessExceptionUtils.isTrue(e.getMessage().contains("失效"), e.getMessage());
+                    if (e.getMessage().contains("失效")) {
+                        throw new BusinessException(e.getMessage());
+                    }
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("IP不能重复", e.getMessage()), "IP不能重复");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("网络设备IP不能重复", e.getMessage()), "网络设备IP不能重复");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("安全设备IP不能重复", e.getMessage()), "安全设备IP不能重复");
