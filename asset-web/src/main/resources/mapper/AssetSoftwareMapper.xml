@@ -785,8 +785,8 @@
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
-        <if test="startNumber!=null and endNumber!=null and pageSize==-1">
-            limit #{startNumber},#{endNumber}
+        <if test="start!=null and end!=null and pageSize==-1">
+            limit #{start},#{end}
         </if>
     </select>
     <select id="checkRepeatSoftware" resultType="int" parameterType="com.antiy.asset.entity.AssetSoftware">
