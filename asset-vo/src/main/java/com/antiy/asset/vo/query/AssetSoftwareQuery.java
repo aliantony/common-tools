@@ -2,6 +2,10 @@ package com.antiy.asset.vo.query;
 
 import java.util.List;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -9,10 +13,6 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
 
 /**
  * <p> AssetSoftware 查询条件 </p>
@@ -83,8 +83,8 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      * 1待登记2待分析3可安装4已退役5不予登记
      */
     @ApiModelProperty("1待登记2待分析3可安装4已退役5不予登记")
-    @Max(message = "软件状态不能大于5",value = 5)
-    @Min(message = "软件状态不能小于1",value = 1)
+    @Max(message = "软件状态不能大于5", value = 5)
+    @Min(message = "软件状态不能小于1", value = 1)
     private Integer       softwareStatus;
 
     @ApiModelProperty("1待登记2待分析3可安装4已退役5不予登记")
@@ -114,13 +114,13 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      * 发布时间
      */
     @ApiModelProperty("发布时间")
-    @Max(message = "时间超出范围",value = 9999999999999L)
+    @Max(message = "时间超出范围", value = 9999999999999L)
     private Long          releaseTime;
     @ApiModelProperty("开始时间")
-    @Max(message = "时间超出范围",value = 9999999999999L)
+    @Max(message = "时间超出范围", value = 9999999999999L)
     private Long          beginTime;
     @ApiModelProperty("结束时间")
-    @Max(message = "时间超出范围",value = 9999999999999L)
+    @Max(message = "时间超出范围", value = 9999999999999L)
     private Long          endTime;
     /**
      * 发布者
@@ -170,10 +170,10 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     private Boolean       enterControl    = false;
 
     @ApiModelProperty("导出开始条数")
-    private Integer       startNumber;
+    private Integer       start;
 
     @ApiModelProperty("导出结束条数")
-    private Integer       endNumber;
+    private Integer       end;
 
     /**
      * 资产状态
@@ -463,9 +463,9 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
                 ParamterExceptionUtils.isTrue(endTime > beginTime, "结束时间必须大于开始时间");
             }
         }
-        if (startNumber != null || endNumber != null) {
-            ParamterExceptionUtils.isTrue(startNumber != null && endNumber != null, "导出条数有误");
-            ParamterExceptionUtils.isTrue(startNumber <= endNumber, "导出条数有误");
+        if (start != null || end != null) {
+            ParamterExceptionUtils.isTrue(start != null && end != null, "导出条数有误");
+            ParamterExceptionUtils.isTrue(start <= end, "导出条数有误");
         }
     }
 
@@ -477,19 +477,19 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
         this.assetName = assetName;
     }
 
-    public Integer getStartNumber() {
-        return startNumber;
+    public Integer getStart() {
+        return start;
     }
 
-    public void setStartNumber(Integer startNumber) {
-        this.startNumber = startNumber;
+    public void setStart(Integer start) {
+        this.start = start;
     }
 
-    public Integer getEndNumber() {
-        return endNumber;
+    public Integer getEnd() {
+        return end;
     }
 
-    public void setEndNumber(Integer endNumber) {
-        this.endNumber = endNumber;
+    public void setEnd(Integer end) {
+        this.end = end;
     }
 }

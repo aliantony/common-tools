@@ -21,6 +21,8 @@ public class AssetSoftware extends BaseEntity {
      * MD5/SHA
      */
     private String  md5Code;
+
+    private String  checkType;
     /**
      * 软件大小(KB)
      */
@@ -438,5 +440,13 @@ public class AssetSoftware extends BaseEntity {
                + gmtModified + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status
                + ", buyDate=" + buyDate + ", serviceLife=" + serviceLife + ", assetCount=" + assetCount
                + ", licenseSecretKey='" + licenseSecretKey + '\'' + '}';
+    }
+
+    public String getCheckType() {
+        return checkType;
+    }
+
+    public void setCheckType(String checkType) {
+        this.checkType = checkType;
     }
 }

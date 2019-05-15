@@ -61,6 +61,8 @@
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
+        <result column="ip" property="ip"/>
+        <result column="mac" property="mac"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -1239,8 +1241,8 @@
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
-        <if test="startNumber!=null and endNumber!=null and pageSize==-1">
-            limit #{startNumber},#{endNumber}
+        <if test="start!=null and end!=null and pageSize==-1">
+            limit #{start},#{end}
         </if>
     </select>
 
@@ -1432,5 +1434,21 @@
                 gmt_create desc
             </otherwise>
         </choose>
+    </select>
+
+    <select id="queryAlarmAssetList" resultMap="BaseResultMap"
+            parameterType="com.antiy.asset.vo.request.AlarmAssetRequest">
+        select t2.id,t1.ip_address as ip, t2.number as number FROM asset_network_card t1 inner join asset t2
+        on t1.asset_id = t2.id
+        <where>
+            and t1.status=1
+            and t2.status=1
+            <if test="ip != null and ip != ''">
+                and t1.ip_address = #{ip}
+            </if>
+            <if test="mac != null and mac != ''">
+                and t1.mac_address = #{mac}
+            </if>
+        </where>
     </select>
 </mapper>

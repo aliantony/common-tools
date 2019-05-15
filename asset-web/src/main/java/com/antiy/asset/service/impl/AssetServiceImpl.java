@@ -506,9 +506,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         LogHandle.log(assetOthersRequest, AssetEventEnum.ASSET_INSERT.getName(),
                             AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                         LogUtils.recordOperLog(
-                            new BusinessData(AssetEventEnum.ASSET_INSERT.getName(),
-                            asset1.getId(), asset1.getNumber(), asset1, BusinessModuleEnum.HARD_ASSET,
-                            BusinessPhaseEnum.WAIT_REGISTER));
+                            new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), asset1.getId(), asset1.getNumber(),
+                                asset1, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
                         LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                             assetOthersRequest.toString());
                     }
@@ -548,10 +547,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
+                    if (e.getMessage().contains("失效")) {
+                        throw new BusinessException(e.getMessage());
+                    }
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()),
                         "操作系统不存在，或已经注销");
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("选择的资产组已失效，请核对后提交", e.getMessage()),
-                        "选择的资产组已失效，请核对后提交");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("使用者不存在，或已经注销", e.getMessage()), "使用者不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("品类型号不存在，或已经注销", e.getMessage()),
                         "品类型号不存在，或已经注销");
@@ -664,11 +664,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuffer stringBuffer = new StringBuffer();
         assetGroup.forEach(assetGroupRequest -> {
             try {
-                String assetGroupName = assetGroupDao.getById(assetGroupRequest.getId()).getName();
+                AssetGroup tempGroup = assetGroupDao.getById(assetGroupRequest.getId());
+                String assetGroupName = tempGroup.getName();
+                if (tempGroup.getStatus() == 0) {
+                    throw new BusinessException(tempGroup.getName() + "已失效，请核对后提交");
+                }
                 asset.setAssetGroup(
                     stringBuffer.append(assetGroupName).append(",").substring(0, stringBuffer.length() - 1));
             } catch (Exception e) {
-                throw new BusinessException("选择的资产组已失效，请核对后提交");
+                throw new BusinessException(e.getMessage());
             }
         });
     }
@@ -1503,9 +1507,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         StringBuilder stringBuilder = new StringBuilder();
                         assetGroup.stream().forEach(assetGroupRequest -> {
                             try {
-                                String assetGroupName = assetGroupDao.getById(assetGroupRequest.getId()).getName();
-                                if (StringUtils.isBlank(assetGroupName)) {
-                                    throw new BusinessException("选择的资产组已失效，请核对后提交");
+                                AssetGroup tempGroup = assetGroupDao.getById(assetGroupRequest.getId());
+                                String assetGroupName = tempGroup.getName();
+                                if (tempGroup.getStatus() == 0) {
+                                    throw new BusinessException(assetGroupName + "已失效，请核对后提交");
                                 } else {
                                     asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
                                         stringBuilder.length() - 1));
@@ -1994,6 +1999,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     logger.info("资产变更失败:", e);
                     transactionStatus.setRollbackOnly();
+                    if (e.getMessage().contains("失效")) {
+                        throw new BusinessException(e.getMessage());
+                    }
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("IP不能重复", e.getMessage()), "IP不能重复");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("网络设备IP不能重复", e.getMessage()), "网络设备IP不能重复");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("安全设备IP不能重复", e.getMessage()), "安全设备IP不能重复");
@@ -2034,10 +2042,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                     if (null == actionResponseAsset
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {
-                        LogUtils.recordOperLog(
-                            new BusinessData(AssetEventEnum.RETIRE_REGISTER.getName(), Integer.valueOf(assetId),
-                                assetDao.getById(assetId).getNumber(),
-                                configRegisterRequest, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.RETIRE_REGISTER.getName(),
+                            Integer.valueOf(assetId), assetDao.getById(assetId).getNumber(), configRegisterRequest,
+                            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
                         // 记录操作日志和运行日志
                         LogUtils.info(logger, AssetEventEnum.RETIRE_REGISTER.getName() + " {}", configRegisterRequest);
                     }
@@ -3399,13 +3406,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public void exportData(AssetQuery assetQuery, HttpServletResponse response) throws Exception {
-        if ((assetQuery.getStartNumber() != null && assetQuery.getEndNumber() != null)) {
-            assetQuery.setStartNumber(assetQuery.getStartNumber() - 1);
-            assetQuery.setEndNumber(assetQuery.getEndNumber() - assetQuery.getStartNumber());
+        if ((assetQuery.getStart() != null && assetQuery.getStart() != null)) {
+            assetQuery.setStart(assetQuery.getStart() - 1);
+            assetQuery.setEnd(assetQuery.getEnd() - assetQuery.getStart());
         }
         assetQuery.setPageSize(Constants.ALL_PAGE);
         assetQuery.setAreaIds(
-                ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
         List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
         DownloadVO downloadVO = new DownloadVO();
@@ -3413,12 +3420,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         downloadVO.setDownloadList(assetEntities);
         if (Objects.nonNull(assetEntities) && assetEntities.size() > 0) {
             excelDownloadUtil.excelDownload(response,
-                    "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
+                "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
         } else {
             throw new BusinessException("导出数据为空");
         }
     }
-
 
     @Override
     public List<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) throws Exception {
@@ -3575,6 +3581,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}", assetOperationRecord);
         assetOperationRecordDao.insert(assetOperationRecord);
         return RespBasicCode.SUCCESS;
+    }
+
+    @Override
+    public List<AlarmAssetResponse> queryAlarmAssetList(AlarmAssetRequest alarmAssetRequest) throws Exception {
+        List<Asset> assetList = assetDao.queryAlarmAssetList(alarmAssetRequest);
+        BaseConverter<Asset, AlarmAssetResponse> converter = new BaseConverter<Asset, AlarmAssetResponse>() {
+            @Override
+            protected void convert(Asset asset, AlarmAssetResponse alarmAssetResponse) {
+                super.convert(asset, alarmAssetResponse);
+                alarmAssetResponse.setAssetNumber(asset.getNumber());
+                alarmAssetResponse.setAssetId(asset.getStringId());
+            }
+        };
+        return converter.convert(assetList, AlarmAssetResponse.class);
     }
 
     @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")

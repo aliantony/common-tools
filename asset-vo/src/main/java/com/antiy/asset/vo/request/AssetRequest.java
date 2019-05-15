@@ -1,15 +1,13 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
-
-import javax.validation.constraints.*;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.*;
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -115,7 +113,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 物理位置
      */
     @ApiModelProperty("物理位置")
-    @NotBlank(message = "物理位置不能为空")
+    // @NotBlank(message = "物理位置不能为空")
     @Size(message = "物理位置不能超过30位", max = 30)
     private String                  location;
     /**
@@ -221,8 +219,8 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     /**
      * 备注
      */
-    @ApiModelProperty("备注")
-    @Size(message = "备注不能超过300个字符", max = 300)
+    @ApiModelProperty("配置建议")
+    @Size(message = "配置建议不能超过300个字符", max = 300)
     private String                  memo;
 
     public String getMemo() {
