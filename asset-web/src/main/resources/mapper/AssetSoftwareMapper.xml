@@ -782,8 +782,10 @@
                 <if test=" multipleQuery != null">
                     and (
                     asset_software.name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-                    or asset_software.serial LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-                    or asset_software.id LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                    or asset_software.serial LIKE binary
+                    CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                    or asset_software.id LIKE binary
+                    CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
                     )
                 </if>
             </trim>
@@ -1118,7 +1120,11 @@
         </if>
         group by
         a.asset_id
-        order by c.first_enter_nett desc
+        order by
+        <if test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
+            ${sortName} ${sortOrder} ,
+        </if>
+        c.first_enter_nett desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
