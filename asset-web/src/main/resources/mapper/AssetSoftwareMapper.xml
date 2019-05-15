@@ -36,6 +36,7 @@
         <result column="release_time" property="releaseTime"/>
         <result column="serial" property="serial"/>
         <result column="md5_code" property="md5Code"/>
+        <result column="check_type" property="checkType"/>
         <result column="publisher" property="publisher"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="memo" property="memo"/>
@@ -49,7 +50,10 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-    id, size, operation_system, category_model, name, upload_software_name, path, version, manufacturer, description, asset_group, software_label, software_status, authorization, report_source, protocol, service_life, buy_date, language, release_time, serial, md5_code, publisher, gmt_create, memo, gmt_modified, create_user, modify_user, status,manual_doc_url,manual_doc_name
+        id, size, operation_system, category_model, name, upload_software_name, path, version, manufacturer,
+        description, asset_group, software_label, software_status, authorization, report_source, protocol, service_life,
+        buy_date, language, release_time, serial, md5_code,check_type, publisher, gmt_create, memo, gmt_modified,
+        create_user, modify_user, status,manual_doc_url,manual_doc_name
     </sql>
     <sql id="Table_Name">
         asset_software
@@ -119,6 +123,9 @@
         </if>
         <if test=" md5Code != null">
             md5_code,
+        </if>
+        <if test=" checkType != null">
+            check_type,
         </if>
         <if test=" publisher != null">
             publisher,
@@ -210,6 +217,9 @@
         </if>
         <if test=" serial != null">
             #{serial },
+        </if>
+        <if test=" checkType != null">
+            #{check_type },
         </if>
         <if test=" md5Code != null">
             #{md5Code },
@@ -303,6 +313,9 @@
         <if test=" item.serial != null">
             #{item.serial },
         </if>
+        <if test=" item.checkType != null">
+            #{item.checkType },
+        </if>
         <if test=" item.md5Code != null">
             #{item.md5Code },
         </if>
@@ -391,6 +404,9 @@
         </if>
         <if test=" md5Code != null">
             md5_code = #{md5Code },
+        </if>
+        <if test=" checkType != null">
+            check_type = #{checkType },
         </if>
         <if test=" publisher != null">
             publisher = #{publisher },
@@ -590,7 +606,7 @@
         report_source, protocol, language, a.release_time,
         publisher, a.gmt_create, a.memo, a.gmt_modified,
         a.create_user,a.modify_user, a.status, a.buy_date,
-        b.name as category_model_name,md5_code,serial,manual_doc_url,manual_doc_name
+        b.name as category_model_name,md5_code,check_type,serial,manual_doc_url,manual_doc_name
         from
         <include refid="Table_Name"></include>
         a

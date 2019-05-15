@@ -3,7 +3,6 @@ package com.antiy.asset.vo.request;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -37,7 +36,13 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     @ApiModelProperty(value = "资产Id")
     @Encode
     private String[]                    assetIds;
-
+    /**
+     * 文件校验方式
+     */
+    @ApiModelProperty(value = "文件校验方式(必填)", required = true)
+    @NotBlank(message = "文件包校验方式不能为空")
+    @Size(message = "校验方式不能超过30位", max = 30)
+    private String                      checkType;
     /**
      * MD5/SHA
      */
@@ -444,5 +449,13 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     public void setOperationSystems(String[] operationSystems) {
         this.operationSystems = operationSystems;
+    }
+
+    public String getCheckType() {
+        return checkType;
+    }
+
+    public void setCheckType(String checkType) {
+        this.checkType = checkType;
     }
 }
