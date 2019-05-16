@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class SoftwareInstallRequest implements ObjectValidator {
+public class CommandRequest implements ObjectValidator {
 
     /**
      * 资产UUID

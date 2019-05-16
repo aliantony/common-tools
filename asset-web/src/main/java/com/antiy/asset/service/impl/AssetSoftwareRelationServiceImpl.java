@@ -35,7 +35,7 @@ import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetRelationSoftRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
-import com.antiy.asset.vo.request.SoftwareInstallRequest;
+import com.antiy.asset.vo.request.CommandRequest;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
@@ -275,13 +275,13 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
             List<String> noList = new ArrayList<>();
             noList.add(assetSoftwareRelationList.getSoftwareId());
-            SoftwareInstallRequest softwareInstallRequest = new SoftwareInstallRequest();
-            softwareInstallRequest.setCommandType(ApiCommandType.softwareInstall);
-            softwareInstallRequest.setNoList(noList);
+            CommandRequest commandRequest = new CommandRequest();
+            commandRequest.setCommandType(ApiCommandType.softwareInstall);
+            commandRequest.setNoList(noList);
             // 获取软件安装路径
-            softwareInstallRequest.setUuidList(uuidList);
+            commandRequest.setUuidList(uuidList);
             // 远程调用安装指令
-            commandClient.InstallSoftwareAuto(softwareInstallRequest);
+            commandClient.executeCommand(commandRequest);
 
             // 更新安装状态
             AssetSoftwareRelation condition = new AssetSoftwareRelation();
