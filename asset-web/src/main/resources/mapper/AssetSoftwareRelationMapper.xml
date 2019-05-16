@@ -726,6 +726,7 @@
         <include refid="Table_Name"></include>
         set install_status = #{installStatus}
         set gmt_modified = #{gmtModified}
+        set modify_user = #{modifyUser}
         where asset_id = #{assetId}
         where software_id = #{softwareId}
     </update>
