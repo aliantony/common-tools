@@ -2479,11 +2479,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     continue;
                 }
             }
-            if (entity.getBuyDate() > System.currentTimeMillis()) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("购买时间需小于今天，");
-                continue;
+
+            if (entity.getBuyDate() != null) {
+
+                if (entity.getBuyDate() > System.currentTimeMillis()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    continue;
+                }
             }
             if (entity.getDueTime() < System.currentTimeMillis()) {
                 error++;
@@ -2779,12 +2783,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产名称重复，");
                 continue;
             }
-            if (networkDeviceEntity.getButDate() > System.currentTimeMillis()) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("购买时间需小于今天，");
-                continue;
+            if (networkDeviceEntity.getButDate() != null) {
+
+                if (networkDeviceEntity.getButDate() > System.currentTimeMillis()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    continue;
+                }
             }
+
             if (networkDeviceEntity.getDueDate() < System.currentTimeMillis()) {
                 error++;
                 a++;
@@ -2985,12 +2993,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产IP地址重复，");
                 continue;
             }
-            if (entity.getBuyDate() > System.currentTimeMillis()) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("购买时间需小于今天，");
-                continue;
+
+            if (entity.getBuyDate() != null) {
+
+                if (entity.getBuyDate() > System.currentTimeMillis()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    continue;
+                }
             }
+
             if (entity.getDueDate() < System.currentTimeMillis()) {
                 error++;
                 a++;
@@ -3159,11 +3172,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复");
                 continue;
             }
-            if (entity.getBuyDate() > System.currentTimeMillis()) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("购买时间需小于今天，");
-                continue;
+            if (entity.getBuyDate() != null) {
+
+                if (entity.getBuyDate() > System.currentTimeMillis()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    continue;
+                }
             }
             if (entity.getDueDate() < System.currentTimeMillis()) {
                 error++;
@@ -3325,11 +3341,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复，");
                 continue;
             }
-            if (entity.getBuyDate() > System.currentTimeMillis()) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("购买时间需小于今天，");
-                continue;
+            if (entity.getBuyDate() != null) {
+
+                if (entity.getBuyDate() > System.currentTimeMillis()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    continue;
+                }
             }
             if (entity.getDueDate() < System.currentTimeMillis()) {
                 error++;
