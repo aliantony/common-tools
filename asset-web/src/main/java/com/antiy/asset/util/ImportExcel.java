@@ -300,8 +300,8 @@ public class ImportExcel {
             return null;
         }
 
-        if (lastRowNum > 2000) {
-            sb.append("一次最多只能导入2000行！");
+        if (lastRowNum > 100) {
+            sb.append("一次最多只能导入100行！");
             return null;
         }
 
