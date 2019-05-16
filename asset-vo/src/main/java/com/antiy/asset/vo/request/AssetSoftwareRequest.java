@@ -59,7 +59,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 软件大小(KB)
      */
     @ApiModelProperty(value = "软件大小")
-    private Integer                     size;
+    private Long                        size;
 
     /**
      * 操作系统(WINDOWS7-32-64,WINDOWS8-64)
@@ -245,11 +245,11 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.id = id;
     }
 
-    public Integer getSize() {
+    public Long getSize() {
         return size;
     }
 
-    public void setSize(Integer size) {
+    public void setSize(Long size) {
         this.size = size;
     }
 
