@@ -392,16 +392,17 @@
         memo
         from
         <include refid="Table_Name"></include>
-        <trim prefix="WHERE" prefixOverrides="AND|OR">
-            <if test=" assetId != null">
-                and asset_id = #{assetId}
-            </if>
-            <if test=" type != null">
-                and type = #{type}
-            </if>
-            and status = 1
-            order by id desc limit 1
-        </trim>
+        WHERE
+        asset_id = #{assetId}
+        <if test=" assetStatus != null">
+            AND asset_next_status = #{assetStatus}
+        </if>
+        <if test=" assetTypeEnum != null">
+            AND scheme_source = #{assetTypeEnum.code}
+        </if>
+        AND STATUS = 1
+        ORDER BY
+        id DESC limit 1
     </select>
 
     <select id="findMemoById" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">

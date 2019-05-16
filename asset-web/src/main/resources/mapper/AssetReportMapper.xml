@@ -79,7 +79,7 @@
         end AS date,
         <trim suffixOverrides=",">
             <foreach collection="list" item="item">
-                sum(CASE WHEN area_id IN (#{item.parentAreaId}
+                IFNULL(sum(CASE WHEN area_id IN (#{item.parentAreaId}
                 <foreach collection="item.childrenAradIds" open="," separator="," item="area">
                     #{area}
                 </foreach>
@@ -87,7 +87,7 @@
                 THEN 1
                 ELSE 0
                 END
-                ) AS #{item.parentAreaName},
+                ),0) AS #{item.parentAreaName},
             </foreach>
         </trim>
         FROM
