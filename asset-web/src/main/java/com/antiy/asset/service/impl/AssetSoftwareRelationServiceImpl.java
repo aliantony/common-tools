@@ -19,7 +19,6 @@ import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
-import com.antiy.asset.dto.AssetDTO;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
@@ -269,23 +268,35 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 return 0;
             }
         });
+        List<String> uuidList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(autoInstallList)) {
-            List<AssetDTO> assetDTOList = new ArrayList<>();
-            autoInstallList.forEach(assetSoftwareRelation -> {
-                AssetDTO assetDTO = new AssetDTO();
-                assetDTO.setId(assetSoftwareRelation.getAssetId());
-                assetDTO.setUuid(assetDao.getUUIDByAssetId(assetSoftwareRelation.getAssetId()));
-                assetDTOList.add(assetDTO);
-            });
+            autoInstallList.forEach(
+                assetSoftwareRelation -> uuidList.add(assetDao.getUUIDByAssetId(assetSoftwareRelation.getAssetId())));
+
+            List<String> noList = new ArrayList<>();
+            noList.add(assetSoftwareRelationList.getSoftwareId());
             SoftwareInstallRequest softwareInstallRequest = new SoftwareInstallRequest();
-            String softwareId = assetSoftwareRelationList.getSoftwareId();
-            softwareInstallRequest.setId(softwareId);
-            softwareInstallRequest.setAssetDTOList(assetDTOList);
+            softwareInstallRequest.setCommandType(ApiCommandType.softwareInstall);
+            softwareInstallRequest.setNoList(noList);
             // 获取软件安装路径
-            softwareInstallRequest.setPath(assetSoftwareDao.getPath(softwareId));
+            softwareInstallRequest.setUuidList(uuidList);
             // 远程调用安装指令
             commandClient.InstallSoftwareAuto(softwareInstallRequest);
 
+            // 更新安装状态
+            AssetSoftwareRelation condition = new AssetSoftwareRelation();
+            condition.setSoftwareId(assetSoftwareRelationList.getSoftwareId());
+            for (AssetSoftwareRelation softwareRelation : autoInstallList) {
+                condition.setAssetId(softwareRelation.getAssetId());
+                condition.setInstallStatus(InstallStatus.INSTALLING.getCode());
+                condition.setGmtModified(System.currentTimeMillis());
+                if (LoginUserUtil.getLoginUser() != null) {
+                    condition.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                } else {
+                    LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", System.currentTimeMillis());
+                }
+                assetSoftwareRelationDao.updateInstallStatus(condition);
+            }
         }
     }
 

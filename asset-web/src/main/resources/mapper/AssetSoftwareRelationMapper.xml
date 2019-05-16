@@ -720,4 +720,13 @@
         set configure_status = #{configureStatus}
         where asset_id = #{assetId}
     </delete>
+
+    <update id="updateInstallStatus" parameterType="com.antiy.asset.entity.AssetSoftwareRelation">
+        update
+        <include refid="Table_Name"></include>
+        set install_status = #{installStatus}
+        set gmt_modified = #{gmtModified}
+        where asset_id = #{assetId}
+        where software_id = #{softwareId}
+    </update>
 </mapper>
