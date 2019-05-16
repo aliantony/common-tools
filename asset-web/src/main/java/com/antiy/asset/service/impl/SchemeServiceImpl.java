@@ -1,6 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -104,10 +103,6 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
         if (scheme != null) {
             scheme.setFileInfo(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
         }
-        SchemeResponse schemeResponse = responseBaseConverter.convert(scheme, SchemeResponse.class);
-        List arrayList = new ArrayList<String>();
-        arrayList.add(schemeResponse.getFileInfo());
-        schemeResponse.setFileInfos(arrayList);
-        return schemeResponse;
+        return responseBaseConverter.convert(scheme, SchemeResponse.class);
     }
 }
