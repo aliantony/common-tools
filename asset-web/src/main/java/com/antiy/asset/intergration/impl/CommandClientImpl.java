@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.antiy.asset.intergration.CommandClient;
 import com.antiy.asset.util.BaseClient;
-import com.antiy.asset.vo.request.SoftwareInstallRequest;
+import com.antiy.asset.vo.request.CommandRequest;
 import com.antiy.common.base.ActionResponse;
 
 /**
@@ -25,7 +25,7 @@ public class CommandClientImpl implements CommandClient {
     private BaseClient baseClient;
 
     @Override
-    public ActionResponse InstallSoftwareAuto(SoftwareInstallRequest installRequest) {
+    public ActionResponse executeCommand(CommandRequest installRequest) {
         return (ActionResponse) baseClient.post(installRequest, new ParameterizedTypeReference<ActionResponse>() {
         }, commandUrl);
     }

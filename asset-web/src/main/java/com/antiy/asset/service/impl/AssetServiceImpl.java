@@ -1,37 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -65,6 +33,36 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -2482,6 +2480,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
 
+            if (entity.getBuyDate() != null) {
+
+                if (entity.getBuyDate() > System.currentTimeMillis()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    continue;
+                }
+            }
+            if (entity.getDueTime() < System.currentTimeMillis()) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("到期时间需大于今天，");
+                continue;
+            }
+
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
@@ -2763,6 +2777,28 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产名称重复，");
                 continue;
             }
+            if (checkRepeatName(networkDeviceEntity.getName())) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("资产名称重复，");
+                continue;
+            }
+            if (networkDeviceEntity.getButDate() != null) {
+
+                if (networkDeviceEntity.getButDate() > System.currentTimeMillis()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    continue;
+                }
+            }
+
+            if (networkDeviceEntity.getDueDate() < System.currentTimeMillis()) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("到期时间需大于今天，");
+                continue;
+            }
 
             if (CheckRepeat(networkDeviceEntity.getNumber())) {
                 repeat++;
@@ -2958,6 +2994,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+            if (entity.getBuyDate() != null) {
+
+                if (entity.getBuyDate() > System.currentTimeMillis()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    continue;
+                }
+            }
+
+            if (entity.getDueDate() < System.currentTimeMillis()) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("到期时间需大于今天，");
+                continue;
+            }
+
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
@@ -3119,6 +3172,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复");
                 continue;
             }
+            if (entity.getBuyDate() != null) {
+
+                if (entity.getBuyDate() > System.currentTimeMillis()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    continue;
+                }
+            }
+            if (entity.getDueDate() < System.currentTimeMillis()) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("到期时间需大于今天，");
+                continue;
+            }
 
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
@@ -3271,6 +3339,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复，");
+                continue;
+            }
+            if (entity.getBuyDate() != null) {
+
+                if (entity.getBuyDate() > System.currentTimeMillis()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    continue;
+                }
+            }
+            if (entity.getDueDate() < System.currentTimeMillis()) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("到期时间需大于今天，");
                 continue;
             }
             if ("".equals(checkUser(entity.getUser()))) {

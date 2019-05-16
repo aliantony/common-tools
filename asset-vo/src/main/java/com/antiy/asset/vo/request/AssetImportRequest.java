@@ -7,7 +7,6 @@ import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.Size;
-import java.util.Arrays;
 
 /**
  * <p> AssetCpuRequest 请求对象 </p>
@@ -18,12 +17,19 @@ import java.util.Arrays;
 
 public class AssetImportRequest extends BasicRequest implements ObjectValidator {
 
+
     /**
      * 区域
      */
     @ApiModelProperty("区域")
     @Encode
     private String  areaId;
+    /**
+     * 品类型号
+     */
+    @ApiModelProperty("品类型号：1.计算设备2，安全设备3，网络设备，4，存储设备5，其他设备")
+
+    private Integer  category;
     /**
      * 用户
      */
@@ -39,25 +45,16 @@ public class AssetImportRequest extends BasicRequest implements ObjectValidator 
     private String  memo;
 
     @Override
-    public String toString() {
-        return "AssetImportRequest{" +
-                "areaId='" + areaId + '\'' +
-                ", userId=" + Arrays.toString (userId) +
-                ", memo='" + memo + '\'' +
-                '}';
-    }
-
-    @Override
     public void validate() throws RequestParamValidateException {
 
     }
 
-    public String getMemo() {
-        return memo;
+    public String getAreaId() {
+        return areaId;
     }
 
-    public void setMemo(String memo) {
-        this.memo = memo;
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
     }
 
     public String[] getUserId() {
@@ -68,11 +65,19 @@ public class AssetImportRequest extends BasicRequest implements ObjectValidator 
         this.userId = userId;
     }
 
-    public String getAreaId() {
-        return areaId;
+    public String getMemo() {
+        return memo;
     }
 
-    public void setAreaId(String areaId) {
-        this.areaId = areaId;
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public Integer getCategory() {
+        return category;
+    }
+
+    public void setCategory(Integer category) {
+        this.category = category;
     }
 }

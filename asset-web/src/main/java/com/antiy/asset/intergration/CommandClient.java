@@ -1,6 +1,6 @@
 package com.antiy.asset.intergration;
 
-import com.antiy.asset.vo.request.SoftwareInstallRequest;
+import com.antiy.asset.vo.request.CommandRequest;
 import com.antiy.common.base.ActionResponse;
 
 /**
@@ -15,5 +15,5 @@ public interface CommandClient {
      * @param installRequest
      * @return
      */
-    ActionResponse InstallSoftwareAuto(SoftwareInstallRequest installRequest);
+    ActionResponse executeCommand(CommandRequest installRequest);
 }
