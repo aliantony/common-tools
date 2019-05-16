@@ -1359,7 +1359,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 categoryList.add(secondCategoryModel.getStringId());
                 enumCountResponse.setCode(categoryList);
                 // 设置查询资产条件参数，包括区域id，状态，资产品类型号
-                AssetQuery assetQuery = setAssetQueryParam(areaIds, search);
+                AssetQuery assetQuery = setAssetQueryParam(enumCountResponse, areaIds, search);
                 // 将查询结果放置结果集
                 enumCountResponse.setNumber((long) assetDao.findCountByCategoryModel(assetQuery));
                 enumCountResponse.setMsg(secondCategoryModel.getName());
@@ -1370,7 +1370,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return null;
     }
 
-    private AssetQuery setAssetQueryParam(List<Integer> areaIds, List<AssetCategoryModel> search) {
+    private AssetQuery setAssetQueryParam(EnumCountResponse enumCountResponse, List<Integer> areaIds,
+                                          List<AssetCategoryModel> search) {
         List<Integer> list = new ArrayList<>();
         search.stream().forEach(x -> list.add(x.getId()));
         AssetQuery assetQuery = new AssetQuery();
@@ -1378,6 +1379,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetQuery.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
         // 需要排除已退役资产
         List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
+        enumCountResponse.setStatus(status);
         assetQuery.setAssetStatusList(status);
         return assetQuery;
     }
