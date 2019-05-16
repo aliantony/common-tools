@@ -18,7 +18,7 @@ public class AssetSoftwareResponse extends BaseResponse {
      * 软件大小(KB)
      */
     @ApiModelProperty("软件大小(KB)")
-    private Integer            size;
+    private Long               size;
     /**
      * 软件大小(KB)
      */
@@ -275,11 +275,11 @@ public class AssetSoftwareResponse extends BaseResponse {
         this.assetCount = assetCount;
     }
 
-    public Integer getSize() {
+    public Long getSize() {
         return size;
     }
 
-    public void setSize(Integer size) {
+    public void setSize(Long size) {
         this.size = size;
     }
 

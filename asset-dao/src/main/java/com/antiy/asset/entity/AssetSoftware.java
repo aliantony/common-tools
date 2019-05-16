@@ -26,7 +26,7 @@ public class AssetSoftware extends BaseEntity {
     /**
      * 软件大小(KB)
      */
-    private Integer size;
+    private Long    size;
     /**
      * 操作系统(WINDOWS7-32-64,WINDOWS8-64)
      */
@@ -202,11 +202,11 @@ public class AssetSoftware extends BaseEntity {
         this.serviceLife = serviceLife;
     }
 
-    public Integer getSize() {
+    public Long getSize() {
         return size;
     }
 
-    public void setSize(Integer size) {
+    public void setSize(Long size) {
         this.size = size;
     }
 

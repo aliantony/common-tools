@@ -252,6 +252,18 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty("导出结束条数")
     private Integer       end;
+    /**
+     * 是否是准入查询
+     */
+    private boolean isAdmittance;
+
+    public boolean isAdmittance() {
+        return isAdmittance;
+    }
+
+    public void setAdmittance(boolean admittance) {
+        isAdmittance = admittance;
+    }
 
     public Integer getStart() {
         return start;
