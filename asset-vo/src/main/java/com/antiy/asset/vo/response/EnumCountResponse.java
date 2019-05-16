@@ -4,21 +4,23 @@ package com.antiy.asset.vo.response;
  * 统计返回
  */
 
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 枚举统计返回
  */
 public class EnumCountResponse {
     @ApiModelProperty("枚举名，用于展示")
-    private String msg;
+    private String        msg;
     @ApiModelProperty("用于做查询的参数")
-    private List<String> code;
+    private List<String>  code;
     @ApiModelProperty("统计的数量")
-    private long number;
+    private long          number;
+    @ApiModelProperty("资产状态")
+    private List<Integer> status;
 
     public String getMsg() {
         return msg;
@@ -59,6 +61,14 @@ public class EnumCountResponse {
         this.msg = msg;
         this.code = codeList;
         this.number = number;
+    }
+
+    public List<Integer> getStatus() {
+        return status;
+    }
+
+    public void setStatus(List<Integer> status) {
+        this.status = status;
     }
 
     @Override
