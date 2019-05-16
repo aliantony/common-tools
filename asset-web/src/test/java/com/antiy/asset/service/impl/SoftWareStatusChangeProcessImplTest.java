@@ -1,4 +1,20 @@
 package com.antiy.asset.service.impl;
+
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.*;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetOperationRecordDao;
@@ -20,24 +36,6 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.LoginUser;
 import com.antiy.common.encoder.AesEncoder;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
 
 public class SoftWareStatusChangeProcessImplTest {
     @Mock
@@ -90,7 +88,7 @@ public class SoftWareStatusChangeProcessImplTest {
         assetSoftware.setAssetCount(0);
         assetSoftware.setBuyDate(0L);
         assetSoftware.setServiceLife(0L);
-        assetSoftware.setSize(0);
+        // assetSoftware.setSize(0);
         assetSoftware.setOperationSystem("");
         assetSoftware.setCategoryModel("");
         assetSoftware.setCategoryModelName("");
