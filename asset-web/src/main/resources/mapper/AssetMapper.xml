@@ -1245,11 +1245,13 @@
                 id desc
             </otherwise>
         </choose>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
-        <if test="start!=null and end!=null and pageSize==-1">
-            limit #{start},#{end}
+        <if test="!all">
+            <if test="pageSize !=-1">
+                LIMIT #{pageSize} offset #{pageOffset}
+            </if>
+            <if test="start!=null and end!=null and pageSize==-1">
+                limit #{start},#{end}
+            </if>
         </if>
     </select>
 
