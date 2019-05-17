@@ -1458,4 +1458,11 @@
             </if>
         </where>
     </select>
+    <select id="getNumberById" resultType="java.lang.String" parameterType="java.lang.String">
+        select
+        number
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
 </mapper>
