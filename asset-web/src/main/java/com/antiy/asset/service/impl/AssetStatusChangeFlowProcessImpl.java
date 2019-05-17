@@ -13,15 +13,11 @@ import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -90,11 +86,6 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         }
 
         // 更新资产状态
-        // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName(), asset.getId(),
-            currentAsset != null ? currentAsset.getNumber() : "", asset, BusinessModuleEnum.HARD_ASSET,
-            BusinessPhaseEnum.getByStatus(assetStatusEnum.getCode())));
-        LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName() + " {}", asset);
         assetDao.update(asset);
         return ActionResponse.success();
     }
