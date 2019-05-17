@@ -187,7 +187,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Override
     public String deleteAssetLinkRelationById(BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
-        String assetId = assetLinkRelationDao.getById(baseRequest.getId()).getAssetId();
+        String assetId = assetLinkRelationDao.getById(baseRequest.getStringId()).getAssetId();
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_LINK_RELATION_DELETE.getName(),
             DataTypeUtils.stringToInteger(assetId), assetDao.getById(assetId).getNumber(), baseRequest,
             BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));

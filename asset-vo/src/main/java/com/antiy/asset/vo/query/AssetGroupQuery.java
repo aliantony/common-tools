@@ -1,13 +1,13 @@
 package com.antiy.asset.vo.query;
 
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.Size;
 
 /**
  * <p> AssetGroup 查询条件 </p>
@@ -23,7 +23,12 @@ public class AssetGroupQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty("资产组名称")
     @Size(message = "资产组名称长度不能大于60", max = 60)
-    private String name;
+    private String  name;
+    /**
+     * 是否全查询
+     */
+    @ApiModelProperty("是否全查询")
+    private boolean all;
     /**
      * 备注
      */
@@ -35,6 +40,14 @@ public class AssetGroupQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("创建人ID")
     @Encode
     private String createUser;
+
+    public boolean isAll() {
+        return all;
+    }
+
+    public void setAll(boolean all) {
+        this.all = all;
+    }
 
     public String getName() {
         return name;
