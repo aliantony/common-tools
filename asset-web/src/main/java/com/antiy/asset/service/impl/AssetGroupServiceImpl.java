@@ -139,6 +139,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
 
+        // 删除关联资产
+        assetGroupRelationDao.deleteByAssetGroupId(DataTypeUtils.stringToInteger(request.getId()));
+
         int result = 0;
         Map<String, Object> map = new HashMap<>();
         StringBuilder assetNameBuilder = new StringBuilder();
@@ -152,8 +155,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetGroupRelationList.add(assetGroupRelation);
             }
-
-            assetGroupRelationDao.deleteByAssetGroupId(DataTypeUtils.stringToInteger(request.getId()));
 
             result = assetGroupRelationDao.insertBatch(assetGroupRelationList);
 
