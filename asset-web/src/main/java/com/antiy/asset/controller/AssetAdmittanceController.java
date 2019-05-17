@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.util.Constants;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +14,7 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.AccessExport;
 import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.enums.AdmittanceStatusEnum;
@@ -107,7 +107,7 @@ public class AssetAdmittanceController {
         assetQuery.setPageSize(Constants.ALL_PAGE);
         if (start != null) {
             assetQuery.setStart(start - 1);
-            assetQuery.setEnd(end - start);
+            assetQuery.setEnd(end - start + 1);
         }
         assetQuery.setAssetStatusList(Arrays.asList(new Integer[] { 3, 4, 5, 6, 7, 8, 9 }));
         List<AssetResponse> assetList = assetService.findListAsset(assetQuery);
