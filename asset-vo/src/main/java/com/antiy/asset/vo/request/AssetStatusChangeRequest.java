@@ -32,7 +32,7 @@ public class AssetStatusChangeRequest extends BasicRequest implements ObjectVali
     private String  assetId;
 
     @ApiModelProperty("状态")
-    @NotBlank(message = "状态不能为空")
+    @NotNull(message = "状态不能为空")
     private Integer status;
 
     public Integer getStatus() {
