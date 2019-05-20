@@ -1245,11 +1245,13 @@
                 id desc
             </otherwise>
         </choose>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
-        <if test="start!=null and end!=null and pageSize==-1">
-            limit #{start},#{end}
+        <if test="!all">
+            <if test="pageSize !=-1">
+                LIMIT #{pageSize} offset #{pageOffset}
+            </if>
+            <if test="start!=null and end!=null and pageSize==-1">
+                limit #{start},#{end}
+            </if>
         </if>
     </select>
 
@@ -1457,5 +1459,12 @@
                 and t1.mac_address = #{mac}
             </if>
         </where>
+    </select>
+    <select id="getNumberById" resultType="java.lang.String" parameterType="java.lang.String">
+        select
+        number
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
     </select>
 </mapper>

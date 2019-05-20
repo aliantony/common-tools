@@ -284,7 +284,9 @@
             and agroup.status = 1
         </trim>
         order by agroup.id desc
-        <include refid="Page_List"></include>
+        <if test="!all">
+            <include refid="Page_List"></include>
+        </if>
     </select>
 
 

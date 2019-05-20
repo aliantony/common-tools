@@ -3,6 +3,7 @@ package com.antiy.asset.service.impl;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.web.util.HtmlUtils;
 
 import com.alibaba.fastjson.JSONObject;
@@ -25,9 +26,13 @@ import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.asset.vo.request.WorkOrderVO;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
@@ -37,7 +42,7 @@ import com.antiy.common.utils.ParamterExceptionUtils;
  * @description:
  */
 public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStatusChangeProcessService {
-
+    private Logger                               logger = LogUtils.get(this.getClass());
     @Resource
     private AssetOperationRecordDao              assetOperationRecordDao;
     @Resource
@@ -97,6 +102,13 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             // 软件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
+        } else if (AssetFlowCategoryEnum.HARDWARE_NO_REGISTER.getCode()
+            .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+            // 更新资产状态
+            Asset asset = new Asset();
+            asset.setId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
+            asset.setStatus(AssetStatusEnum.NOT_REGSIST.getCode());
+            assetDao.update(asset);
         }
 
         // 如果流程引擎为空,直接返回错误信息
@@ -151,6 +163,22 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             assetOperationRecord.setOriginStatus(assetStatusReqeust.getAssetStatus().getCode());
             assetOperationRecord.setContent(
                 assetFlowEnum != null ? assetFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
+
+            // 记录操作日志
+            if (assetFlowEnum != null) {
+                String number = null;
+                // 获取资产编号
+                try {
+                    number = assetDao.getNumberById(assetStatusReqeust.getAssetId());
+                } catch (Exception e) {
+                    LogUtils.warn(logger, "获取资产编号失败");
+                }
+                LogUtils.recordOperLog(new BusinessData(assetFlowEnum.getMsg(),
+                    DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()), number, assetStatusReqeust,
+                    BusinessModuleEnum.HARD_ASSET,
+                    BusinessPhaseEnum.getByStatus(assetStatusReqeust.getAssetStatus().getCode())));
+                LogUtils.info(logger, assetFlowEnum.getMsg() + " {}", number);
+            }
         }
 
         assetOperationRecord.setTargetType(assetStatusReqeust.getSoftware() ? AssetOperationTableEnum.SOFTWARE.getCode()

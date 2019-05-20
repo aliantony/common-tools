@@ -1,5 +1,17 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.io.Serializable;
+import java.util.*;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.dao.AssetGroupRelationDao;
@@ -32,16 +44,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.io.Serializable;
-import java.util.*;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 资产组表 服务实现类 </p>
@@ -136,6 +138,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         String[] assetIdArr = request.getAssetIds();
 
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
+
+        // 删除关联资产
+        assetGroupRelationDao.deleteByAssetGroupId(DataTypeUtils.stringToInteger(request.getId()));
 
         int result = 0;
         Map<String, Object> map = new HashMap<>();

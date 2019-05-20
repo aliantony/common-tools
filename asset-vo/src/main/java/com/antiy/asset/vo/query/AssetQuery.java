@@ -256,6 +256,19 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 是否是准入查询
      */
     private boolean isAdmittance;
+    /**
+     * 是否全查询
+     */
+    @ApiModelProperty("是否全查询")
+    private boolean       all;
+
+    public boolean getAll() {
+        return all;
+    }
+
+    public void setAll(boolean all) {
+        this.all = all;
+    }
 
     public boolean isAdmittance() {
         return isAdmittance;
