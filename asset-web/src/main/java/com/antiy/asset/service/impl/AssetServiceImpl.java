@@ -233,8 +233,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetRequest.setId(DataTypeUtils.integerToString(asset.getId()));
                         assetOuterRequestToChangeRecord.setAsset(assetRequest);
 
-                        LogHandle.log(requestAsset, AssetEventEnum.ASSET_INSERT.getName(),
-                            AssetEventEnum.ASSET_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                        // LogHandle.log(requestAsset, AssetEventEnum.ASSET_INSERT.getName(),
+                        // AssetEventEnum.ASSET_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                         // 记录操作日志和运行日志
                         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), asset.getId(),
                             asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
