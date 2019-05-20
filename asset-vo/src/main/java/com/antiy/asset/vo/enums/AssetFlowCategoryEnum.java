@@ -9,6 +9,8 @@ package com.antiy.asset.vo.enums;
  */
 public enum AssetFlowCategoryEnum {
     HARDWARE_REGISTER("HARDWARE_REGISTER", "硬件资产登记流程"),
+                                   HARDWARE_NO_REGISTER("HARDWARE_REGISTER",
+                                                        "硬件资产登记流程"),
     SOFTWARE_REGISTER("SOFTWARE_REGISTER","软件资产登记流程"),
     HARDWARE_CHANGE("HARDWARE_CHANGE","硬件资产变更流程"),
     HARDWARE_RETIRE("HARDWARE_RETIRE","硬件资产退役流程"),
