@@ -92,7 +92,7 @@ public class AssetStatusJumpController {
     @ApiOperation(value = "资产不予登记", notes = "传入实体对象信息")
     @PreAuthorize("hasAuthority('asset:noRegister')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "/noRegister", method = RequestMethod.POST)
     public ActionResponse assetNoRegister(@ApiParam(value = "assetStatusChangeRequest") @RequestBody(required = false) AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
         if (assetStatusChangeRequest.getSoftware()) {
             // 待启用
