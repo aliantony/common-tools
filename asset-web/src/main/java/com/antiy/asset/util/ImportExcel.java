@@ -23,6 +23,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -286,7 +288,7 @@ public class ImportExcel {
         initAnnotationList(clazz);
         List<T> dataList = new ArrayList<>();
         boolean flag = true;
-        Row firstRow = this.getRow(5);
+        Row firstRow = this.getRow(getDataRownum() - 1);
         int length = 0;
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
@@ -325,7 +327,7 @@ public class ImportExcel {
                 if (val == null && ef.required()) {
                     failNums++;
                     sb.append("数据不能为空,第").append(i + 1).append("行，第").append(column).append("列").append(ef.title())
-                            .append(",");
+                        .append(",");
                     log.error("数据不能为空,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
                     flag = false;
                     break;
@@ -334,18 +336,28 @@ public class ImportExcel {
                     if (ef.dataType() != null && !DataTypeEnum.validate(val.toString(), ef.dataType())) {
                         failNums++;
                         sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列").append(ef.title())
-                                .append(",");
+                            .append(",");
                         log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
                         flag = false;
                         break;
                     }
-                    //长度校验
-                    if (val.toString().length() > ef.length()) {
-                        sb.append("第").append(i + 1).append("行，第").append(column).append("列,").append(ef.title()).append(",数据长度超出")
-                                .append(",");
-                        log.error("第" + (i + 1) + "行，第" + column + "列," + ef.title() + ",数据长度超出");
-                        flag = false;
-                        break;
+                    // 长度校验
+                    if (val instanceof Double) {
+                        if (val.toString().substring(0, val.toString().lastIndexOf('.')).length() > ef.length()) {
+                            sb.append("第").append(i + 1).append("行，第").append(column).append("列,").append(ef.title())
+                                .append(",数据长度超出").append(",");
+                            log.error("第" + (i + 1) + "行，第" + column + "列," + ef.title() + ",数据长度超出");
+                            flag = false;
+                            break;
+                        }
+                    } else {
+                        if (val.toString().length() > ef.length()) {
+                            sb.append("第").append(i + 1).append("行，第").append(column).append("列,").append(ef.title())
+                                .append(",数据长度超出").append(",");
+                            log.error("第" + (i + 1) + "行，第" + column + "列," + ef.title() + ",数据长度超出");
+                            flag = false;
+                            break;
+                        }
                     }
                     // 是码表数据
                     if (StringUtils.isNotBlank(ef.dictType())) {
@@ -382,8 +394,14 @@ public class ImportExcel {
                         }
                     } else if (valType == Long.class) {
                         try {
-                            Date date = DateUtil.getJavaDate(Double.valueOf(val.toString()).doubleValue());
-                            val = date.getTime();
+                            if (val instanceof Double) {
+                                Date date = DateUtil.getJavaDate(Double.valueOf(val.toString()).doubleValue());
+                                val = date.getTime();
+                            } else if (val instanceof String) {
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                Date date = simpleDateFormat.parse(val.toString());
+                                val = date.getTime();
+                            }
                         } catch (NumberFormatException e) {
                             flag = false;
                             failNums++;
@@ -391,6 +409,10 @@ public class ImportExcel {
                                 .append(ef.title()).append(val).append(",");
                             log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
                             break;
+                        } catch (ParseException e) {
+                            sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
+                                .append(ef.title()).append(val).append(",");
+                            log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
                         }
                     } else if (valType == Double.class) {
                         val = Double.valueOf(val.toString());
@@ -445,8 +467,8 @@ public class ImportExcel {
      * @return
      */
     public String getResultMsg() {
-        sb.append("成功条数:").append(successNums).append(",").append("失败条数:")
-            .append(failNums).append(",").append("总条数:").append(totalNums).append(".");
+        sb.append("成功条数:").append(successNums).append(",").append("失败条数:").append(failNums).append(",").append("总条数:")
+            .append(totalNums).append(".");
         String resultString = sb.toString();
         sb.delete(0, sb.length());
         return resultString;
