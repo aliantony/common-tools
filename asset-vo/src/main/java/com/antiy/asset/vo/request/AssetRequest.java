@@ -195,7 +195,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
      * 保修期
      */
     @ApiModelProperty("保修期")
-    @Size(message = "保修期大于1位不能超过30位", max = 30)
+    @Size(message = "保修期大于0位不能超过30位", max = 30)
     private String                  warranty;
     /**
      * 资产准入状态

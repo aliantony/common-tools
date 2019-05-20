@@ -219,7 +219,7 @@
             #{serial },
         </if>
         <if test=" checkType != null">
-            #{check_type },
+            #{checkType },
         </if>
         <if test=" md5Code != null">
             #{md5Code },
