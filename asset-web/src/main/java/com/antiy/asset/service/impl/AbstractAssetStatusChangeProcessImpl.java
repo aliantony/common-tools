@@ -102,13 +102,6 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
             // 软件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
-        } else if (AssetFlowCategoryEnum.HARDWARE_NO_REGISTER.getCode()
-            .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
-            // 更新资产状态
-            Asset asset = new Asset();
-            asset.setId(DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()));
-            asset.setStatus(AssetStatusEnum.NOT_REGSIST.getCode());
-            assetDao.update(asset);
         }
 
         // 如果流程引擎为空,直接返回错误信息

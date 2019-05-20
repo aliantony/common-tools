@@ -8,12 +8,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.impl.AssetStatusChangeFactory;
 import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
 import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.request.AssetRelationSoftRequest;
+import com.antiy.asset.vo.request.AssetStatusChangeRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequst;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
@@ -79,4 +83,25 @@ public class AssetStatusJumpController {
         return ActionResponse.success(softwareRelationService.updateAssetReleation(assetRelationSoftRequest));
     }
 
+    /**
+     * 资产不予登记
+     *
+     * @param assetStatusChangeRequest
+     * @return actionResponse
+     */
+    @ApiOperation(value = "资产不予登记", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:noRegister')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ActionResponse assetNoRegister(@ApiParam(value = "assetStatusChangeRequest") @RequestBody(required = false) AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
+        if (assetStatusChangeRequest.getSoftware()) {
+            // 待启用
+            return null;
+        } else {
+            Asset asset = new Asset();
+            asset.setId(DataTypeUtils.stringToInteger(assetStatusChangeRequest.getAssetId()));
+            asset.setAssetStatus(AssetStatusEnum.NOT_REGSIST.getCode());
+            return ActionResponse.success(assetService.update(asset));
+        }
+    }
 }
