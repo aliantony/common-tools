@@ -1467,4 +1467,12 @@
         <include refid="Table_Name"></include>
         where id = #{id}
     </select>
+
+    <select id="getAreaIdById" resultType="java.lang.String" parameterType="java.lang.String">
+        select
+        area_id
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
 </mapper>
