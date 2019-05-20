@@ -546,7 +546,6 @@
         update
         <include refid="Table_Name"></include>
         set
-
         configure_status = 3
         where `software_id` = #{softwareId} and asset_id = #{assetId}
 
@@ -718,7 +717,15 @@
         update
         <include refid="Table_Name"></include>
         set configure_status = #{configureStatus}
-        where asset_id = #{assetId}
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="assetId != null ">
+                and asset_id = #{assetId}
+            </if>
+            <if test="softwareId != null ">
+                and software_id = #{softwareId}
+            </if>
+        </trim>
+
     </delete>
 
     <update id="updateInstallStatus" parameterType="com.antiy.asset.entity.AssetSoftwareRelation">
