@@ -31,14 +31,16 @@ public class AssetStatusChangeRequest extends BasicRequest implements ObjectVali
     @NotBlank(message = "资产主键不能为空")
     private String  assetId;
 
-    private Integer assetStatus;
+    @ApiModelProperty("状态")
+    @NotBlank(message = "状态不能为空")
+    private Integer status;
 
-    public Integer getAssetStatus() {
-        return assetStatus;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setAssetStatus(Integer assetStatus) {
-        this.assetStatus = assetStatus;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Boolean getSoftware() {
