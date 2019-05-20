@@ -342,7 +342,9 @@ public class ImportExcel {
                         break;
                     }
                     // 长度校验
-                    if (val.toString().length() > ef.length()) {
+                    if ((val instanceof Double
+                         && val.toString().substring(0, val.toString().lastIndexOf('.')).length() > ef.length())
+                        || val.toString().length() > ef.length()) {
                         sb.append("第").append(i + 1).append("行，第").append(column).append("列,").append(ef.title())
                             .append(",数据长度超出").append(",");
                         log.error("第" + (i + 1) + "行，第" + column + "列," + ef.title() + ",数据长度超出");
@@ -401,7 +403,7 @@ public class ImportExcel {
                             break;
                         } catch (ParseException e) {
                             sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
-                                    .append(ef.title()).append(val).append(",");
+                                .append(ef.title()).append(val).append(",");
                             log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
                         }
                     } else if (valType == Double.class) {
