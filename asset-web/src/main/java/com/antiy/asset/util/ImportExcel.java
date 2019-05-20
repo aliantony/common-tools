@@ -398,7 +398,15 @@ public class ImportExcel {
                                 Date date = DateUtil.getJavaDate(Double.valueOf(val.toString()).doubleValue());
                                 val = date.getTime();
                             } else if (val instanceof String) {
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                if (!val.toString().matches("^\\d{4}(\\-|\\/|\\.)\\d{1,2}\\1\\d{1,2}$")) {
+                                    flag = false;
+                                    failNums++;
+                                    sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
+                                            .append(ef.title()).append(val).append(",");
+                                    log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
+                                    break;
+                                }
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
                                 Date date = simpleDateFormat.parse(val.toString());
                                 val = date.getTime();
                             }

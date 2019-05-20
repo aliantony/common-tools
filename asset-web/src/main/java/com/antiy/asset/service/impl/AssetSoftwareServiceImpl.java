@@ -312,6 +312,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             t.setGmtCreate(System.currentTimeMillis());
             t.setSoftwareStatus(3);
             assetSoftwareDao.insert(t);
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(), t.getId(),
+                    t.getName(), t, BusinessModuleEnum.SOFTWARE_ASSET,
+                    BusinessPhaseEnum.NONE));
+            LogUtils.info(logger, AssetEventEnum.SOFT_INSERT.getName() + " {}", t);
         }
         return i + 1;
     }
@@ -816,6 +820,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareRelation.setInstallStatus(SoftInstallStatus.CONFIGURING.getCode());
         assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
         assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_CONFIG.getName(), Integer.valueOf(request.getSoftwareId()),
+                request.getSoftwareId(), request, BusinessModuleEnum.SOFTWARE_ASSET,
+                BusinessPhaseEnum.NONE));
+        LogUtils.info(logger, AssetEventEnum.SOFT_CONFIG.getName() + " {}", request);
         return ActionResponse.success(assetSoftwareRelationDao.insert(assetSoftwareRelation));
     }
 
