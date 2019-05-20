@@ -31,6 +31,16 @@ public class AssetStatusChangeRequest extends BasicRequest implements ObjectVali
     @NotBlank(message = "资产主键不能为空")
     private String  assetId;
 
+    private Integer assetStatus;
+
+    public Integer getAssetStatus() {
+        return assetStatus;
+    }
+
+    public void setAssetStatus(Integer assetStatus) {
+        this.assetStatus = assetStatus;
+    }
+
     public Boolean getSoftware() {
         return software;
     }
