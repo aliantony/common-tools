@@ -3617,22 +3617,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             if (assetStatusJumpRequst.getAgree()) {
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_NET.getCode());
-                // 基准验证结束，更新软硬件关系表中的配置状态为已配置
-                if (AssetTypeEnum.SOFTWARE.getCode().equals(assetStatusJumpRequst.getSource())) {
-                    ParamterExceptionUtils.isBlank(assetStatusJumpRequst.getSoftId(), "软件ID不能为空");
-                    ParamterExceptionUtils.isBlank(assetStatusJumpRequst.getAssetId(), "硬件ID不能为空");
-
-                    AssetSoftwareRelation softwareRelation = new AssetSoftwareRelation();
-                    softwareRelation.setSoftwareId(assetStatusJumpRequst.getSoftId());
-                    softwareRelation.setAssetId(assetId);
-                    if (!Objects.isNull(LoginUserUtil.getLoginUser())) {
-                        softwareRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
-                    }
-                    softwareRelation.setGmtModified(System.currentTimeMillis());
-                    softwareRelation.setConfigureStatus(ConfigureStatusEnum.CONFIGURED.getCode());
-                    assetSoftwareRelationDao.updateConfigStatusByAssetId(softwareRelation);
-                }
-
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_NET.getCode());
                 scheme.setAssetNextStatus(AssetStatusEnum.WAIT_NET.getCode());
 

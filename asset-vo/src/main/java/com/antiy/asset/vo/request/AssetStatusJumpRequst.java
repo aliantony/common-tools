@@ -44,26 +44,11 @@ public class AssetStatusJumpRequst extends BasicRequest {
     private Boolean         agree;
 
     /**
-     * 配置来源
-     */
-    @ApiModelProperty(value = "配置来源", allowableValues = "1-硬件/2-软件", notes = "配置来源")
-    @NotNull(message = "配置来源不能为空")
-    private Integer         source;
-
-    /**
      * 资产状态
      */
     @NotNull(message = "资产状态不能为空")
     @ApiModelProperty(value = "资产状态")
     private AssetStatusEnum assetStatusEnum;
-
-    public Integer getSource() {
-        return source;
-    }
-
-    public void setSource(Integer source) {
-        this.source = source;
-    }
 
     public AssetStatusEnum getAssetStatusEnum() {
         return assetStatusEnum;
