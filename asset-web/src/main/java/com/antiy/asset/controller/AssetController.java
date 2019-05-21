@@ -163,6 +163,9 @@ public class AssetController {
     @PreAuthorize(value = "hasAuthority('asset:asset:export')")
     public void export(@ApiParam(value = "query") AssetQuery assetQuery, HttpServletResponse response) throws Exception {
         iAssetService.exportData(assetQuery, response);
+        //记录操作日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(),assetQuery.getExceptId(),"导出硬件资产信息",assetQuery,
+                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
         // 写入业务日志
         LogHandle.log(assetQuery.toString(), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName(),
             AssetEventEnum.ASSET_ADMITTANCE_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
