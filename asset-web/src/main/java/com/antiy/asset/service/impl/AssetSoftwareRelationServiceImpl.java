@@ -346,6 +346,17 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         assetSoftwareRelation.setInstallStatus(SoftInstallStatus.UNINSTALLED.getCode());
         assetSoftwareRelation.setAssetId(assetRelationSoftRequest.getAssetId());
         assetSoftwareRelation.setSoftwareId(assetRelationSoftRequest.getSoftId());
+        // 基准验证结束，更新软硬件关系表中的配置状态为已配置
+        AssetSoftwareRelation softwareRelation = new AssetSoftwareRelation();
+        softwareRelation.setSoftwareId(assetRelationSoftRequest.getSoftId());
+        softwareRelation.setAssetId(assetRelationSoftRequest.getAssetId());
+        if (!Objects.isNull(LoginUserUtil.getLoginUser())) {
+            softwareRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        }
+        softwareRelation.setGmtModified(System.currentTimeMillis());
+        softwareRelation.setConfigureStatus(ConfigureStatusEnum.CONFIGURED.getCode());
+        assetSoftwareRelationDao.updateConfigStatusByAssetId(softwareRelation);
+
         return assetSoftwareRelationDao.updateByAssetId(assetSoftwareRelation);
     }
 
