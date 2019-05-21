@@ -40,10 +40,7 @@ import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.base.PageResult;
+import com.antiy.common.base.*;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.LogUtils;
@@ -221,7 +218,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void installSoftware(AssetSoftwareRelationList assetSoftwareRelationList) {
+    public ActionResponse installSoftware(AssetSoftwareRelationList assetSoftwareRelationList) {
         List<AssetSoftwareRelation> relationList = Lists.newArrayList();
         // 自动安装列表，用于下发给智甲
         List<AssetSoftwareRelation> autoInstallList = Lists.newArrayList();
@@ -268,6 +265,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 return 0;
             }
         });
+
         List<String> uuidList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(autoInstallList)) {
             autoInstallList.forEach(
@@ -281,7 +279,13 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             // 获取软件安装路径
             commandRequest.setUuidList(uuidList);
             // 远程调用安装指令
-            commandClient.executeCommand(commandRequest);
+            ActionResponse actionResponse = commandClient.executeCommand(commandRequest);
+
+            if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                LogUtils.info(logger, "远程调用安装指令" + " {}", relationList);
+                return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+            }
 
             // 更新安装状态
             AssetSoftwareRelation condition = new AssetSoftwareRelation();
@@ -298,6 +302,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 assetSoftwareRelationDao.updateInstallStatus(condition);
             }
         }
+        return ActionResponse.success();
     }
 
     private Integer countByAssetId(Integer assetId) {
