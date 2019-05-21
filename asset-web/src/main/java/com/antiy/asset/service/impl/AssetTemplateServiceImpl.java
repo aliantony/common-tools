@@ -1,5 +1,6 @@
 package com.antiy.asset.service.impl;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,13 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
     @Resource
     private IRedisService              redisService;
 
+    private static List<String>        REMOVE_SYSTEM_OS = new LinkedList<>();
+    static {
+        REMOVE_SYSTEM_OS.add("unix");
+        REMOVE_SYSTEM_OS.add("windows");
+        REMOVE_SYSTEM_OS.add("linux");
+    }
+
     @Override
     public List<String> queryAllCategoryModels() throws Exception {
         return iAssetCategoryModelService.getAll().stream().map(assetCategoryModel -> assetCategoryModel.getName())
@@ -49,6 +57,8 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
     @Override
     public List<String> getAllSystemOs() throws Exception {
         return redisService.getAllSystemOs().stream()
+            .filter(linkedHashMap -> !REMOVE_SYSTEM_OS.contains(
+                linkedHashMap.get("name") != null ? linkedHashMap.get("name").toString().toLowerCase() : null))
             .map(linkedHashMap -> linkedHashMap.get("name") != null ? linkedHashMap.get("name").toString() : null)
             .collect(Collectors.toList());
     }

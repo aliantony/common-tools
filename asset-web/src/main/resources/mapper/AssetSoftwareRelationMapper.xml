@@ -440,15 +440,16 @@
 
     <select id="countSoftwareByAssetId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
         select
-           count(1)
+          count (1) count
         from
-            asset_software_relation asoftrel
-            left join asset_software asoft on asoftrel.software_id = asoft.id
+        asset_software_relation asoftrel
+        left join asset_software asoft on asoftrel.software_id = asoft.id
         where
-            asset_id = #{assetId}
-            and asoftrel.status = 1
-            and asoft.status = 1
-            and asoftrel.install_status = 2
+        asset_id = #{assetId}
+        and asoft.id is not null
+        and asoftrel.status = 1
+        and asoft.status = 1
+        and asoftrel.install_status = 5
     </select>
 
     <select id="countAssetBySoftId" resultType="int" parameterType="int">
