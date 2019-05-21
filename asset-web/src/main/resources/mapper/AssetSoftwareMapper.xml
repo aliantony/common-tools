@@ -1121,10 +1121,14 @@
         group by
         a.asset_id
         order by
-        <if test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
-            ${sortName} ${sortOrder} ,
-        </if>
-        c.first_enter_nett desc
+        <choose>
+            <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
+                ${sortName} ${sortOrder}
+            </when>
+            <otherwise>
+                a.gmt_create desc
+            </otherwise>
+        </choose>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
