@@ -2013,10 +2013,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         });
 
-        // 退役再登记，需启动新流程
+        // 已退役、待登记，不予登记再登记，需启动新流程
         if (assetCount != null && assetCount > 0) {
             String assetId = assetOuterRequest.getAsset().getId();
-            if (AssetStatusEnum.RETIRE.getCode().equals(currentAsset.getAssetStatus())) {
+            if (AssetStatusEnum.RETIRE.getCode().equals(currentAsset.getAssetStatus())
+                || AssetStatusEnum.NOT_REGSIST.getCode().equals(currentAsset.getAssetStatus())
+                || AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
                 ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest
                     .getManualStartActivityRequest();
                 ParamterExceptionUtils.isNull(manualStartActivityRequest, "配置信息不能为空");
