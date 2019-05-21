@@ -202,4 +202,11 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     String getAreaIdById(String assetId);
+
+    /**
+     * 判断当前品类下是否有资产
+     * @param categoryModeId
+     * @return
+     */
+    Integer existAssetByCategoryModelId(String categoryModeId);
 }
