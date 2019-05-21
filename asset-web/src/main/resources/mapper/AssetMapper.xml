@@ -1482,7 +1482,7 @@
         FROM
         <include refid="Table_Name"></include>
         WHERE
-        category_model IN ( SELECT id FROM asset_category_model WHERE parent_id = #{categoryModeId} )
+        category_model IN ( #{childId} )
         AND `status` = 1
     </select>
 </mapper>

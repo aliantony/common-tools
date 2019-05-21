@@ -19,6 +19,7 @@ import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.util.CategoryModelUtil;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.NodeUtilsConverter;
@@ -75,7 +76,10 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Transactional
     public ActionResponse saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         //
-        Integer n = assetDao.existAssetByCategoryModelId(request.getParentId());
+
+        String childId = CategoryModelUtil.getIdString(assetCategoryModelDao.findAllCategory(),
+            DataTypeUtils.stringToInteger(request.getParentId()));
+        Integer n = assetDao.existAssetByCategoryModelId(childId);
         if (n > 1) {
             throw new BusinessException("该品类型号已经关联了资产，不能创建子节点");
         }
@@ -569,6 +573,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         }
         return list;
     }
+
 }
 
 @Component
