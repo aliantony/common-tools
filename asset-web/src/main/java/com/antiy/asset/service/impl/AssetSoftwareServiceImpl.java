@@ -790,7 +790,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
         // 1.保存操作流程
         if (request.getHard() == null) {
-            assetOperationRecordDao.insert(convertRecord(request, scheme, currentTimeMillis));
+            // 软件不记录
+            if (AssetTypeEnum.HARDWARE.getCode().equals(DataTypeUtils.stringToInteger(request.getSource()))) {
+                assetOperationRecordDao.insert(convertRecord(request, scheme, currentTimeMillis));
+            }
         }
 
         // 3.调用配置接口
