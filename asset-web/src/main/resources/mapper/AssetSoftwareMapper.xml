@@ -1126,7 +1126,7 @@
                 ${sortName} ${sortOrder}
             </when>
             <otherwise>
-                a.gmt_create desc
+                a.install_time desc
             </otherwise>
         </choose>
         <if test="pageSize !=-1">
