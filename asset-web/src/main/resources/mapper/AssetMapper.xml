@@ -1482,7 +1482,7 @@
         FROM
         <include refid="Table_Name"></include>
         WHERE
-        category_model IN = #{categoryModelId}
+        category_model = #{categoryModelId}
         AND `status` = 1
     </select>
 </mapper>
