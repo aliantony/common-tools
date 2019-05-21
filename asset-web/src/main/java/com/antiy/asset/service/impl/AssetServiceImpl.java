@@ -2224,7 +2224,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         storageDeviceEntity.setDueDate(System.currentTimeMillis());
         storageDeviceEntity.setEmail("32535694@163.com");
         storageDeviceEntity.setHardDiskNum(1);
-        storageDeviceEntity.setFirmware("spi1");
+        storageDeviceEntity.setFirmwareVersion("spi1");
         storageDeviceEntity.setHighCache("6GB/S");
         storageDeviceEntity.setHouseLocation("501机房004号");
         storageDeviceEntity.setManufacturer("联想");
@@ -3227,7 +3227,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setNumber(entity.getNumber());
                 asset.setName(entity.getName());
                 asset.setManufacturer(entity.getManufacturer());
-                asset.setFirmwareVersion(entity.getFirmware());
+                asset.setFirmwareVersion(entity.getFirmwareVersion());
                 asset.setSerial(entity.getSerial());
                 asset.setContactTel(entity.getTelephone());
                 asset.setLocation(entity.getLocation());
@@ -3243,7 +3243,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assets.add(asset);
                 assetStorageMedium.setGmtCreate(System.currentTimeMillis());
                 assetStorageMedium.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                assetStorageMedium.setFirmware(entity.getFirmware());
+                assetStorageMedium.setFirmwareVersion(entity.getFirmwareVersion());
                 assetStorageMedium.setDiskNumber(entity.getHardDiskNum());
                 assetStorageMedium.setDriverNumber(entity.getDriveNum());
                 assetStorageMedium.setMaximumStorage(entity.getCapacity());

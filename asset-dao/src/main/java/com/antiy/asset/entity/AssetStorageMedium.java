@@ -49,7 +49,7 @@ public class AssetStorageMedium extends BaseEntity {
     /**
      * 固件
      */
-    private String  firmware;
+    private String  firmwareVersion;
     /**
      * OS版本
      */
@@ -143,12 +143,12 @@ public class AssetStorageMedium extends BaseEntity {
         this.driverNumber = driverNumber;
     }
 
-    public String getFirmware() {
-        return firmware;
+    public String getFirmwareVersion() {
+        return firmwareVersion;
     }
 
-    public void setFirmware(String firmware) {
-        this.firmware = firmware;
+    public void setFirmwareVersion(String firmwareVersion) {
+        this.firmwareVersion = firmwareVersion;
     }
 
     public String getOsVersion() {
@@ -212,8 +212,8 @@ public class AssetStorageMedium extends BaseEntity {
         return "AssetStorageMedium{" + ", assetId=" + assetId + ", maximumStorage=" + maximumStorage + ", diskNumber="
                + diskNumber + ", highCache=" + highCache + ", innerInterface=" + innerInterface + ", raidSupport="
                + raidSupport + ", averageTransferRate=" + averageTransferRate + ", driverNumber=" + driverNumber
-               + ", firmware=" + firmware + ", osVersion=" + osVersion + ", gmtCreate=" + gmtCreate + ", gmtModified="
-               + gmtModified + ", memo=" + memo + ", createUser=" + createUser + ", modifyUser=" + modifyUser
-               + ", status=" + status + "}";
+               + ", firmwareVersion=" + firmwareVersion + ", osVersion=" + osVersion + ", gmtCreate=" + gmtCreate
+               + ", gmtModified=" + gmtModified + ", memo=" + memo + ", createUser=" + createUser + ", modifyUser="
+               + modifyUser + ", status=" + status + "}";
     }
 }

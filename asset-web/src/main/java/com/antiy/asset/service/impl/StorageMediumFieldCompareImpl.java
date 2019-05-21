@@ -138,7 +138,7 @@ public class StorageMediumFieldCompareImpl extends AbstractChangeRecordCompareIm
         oldStorageMedium.setInnerInterface(oldStorageMediumRequest.getInnerInterface());
         oldStorageMedium.setRaidSupport(oldStorageMediumRequest.getRaidSupport());
         oldStorageMedium.setAverageTransferRate(oldStorageMediumRequest.getAverageTransferRate());
-        oldStorageMedium.setFirmware(oldStorageMediumRequest.getFirmware());
+        oldStorageMedium.setFirmwareVersion(oldStorageMediumRequest.getFirmwareVersion());
         oldStorageMedium.setOsVersion(oldStorageMediumRequest.getOsVersion());
         oldStorageMedium.setDriverNumber(oldStorageMediumRequest.getDriverNumber());
 
@@ -149,7 +149,7 @@ public class StorageMediumFieldCompareImpl extends AbstractChangeRecordCompareIm
         newStorageMedium.setInnerInterface(newStorageMediumRequest.getInnerInterface());
         newStorageMedium.setRaidSupport(newStorageMediumRequest.getRaidSupport());
         newStorageMedium.setAverageTransferRate(newStorageMediumRequest.getAverageTransferRate());
-        newStorageMedium.setFirmware(newStorageMediumRequest.getFirmware());
+        newStorageMedium.setFirmwareVersion(newStorageMediumRequest.getFirmwareVersion());
         newStorageMedium.setOsVersion(newStorageMediumRequest.getOsVersion());
         newStorageMedium.setDriverNumber(newStorageMediumRequest.getDriverNumber());
 
