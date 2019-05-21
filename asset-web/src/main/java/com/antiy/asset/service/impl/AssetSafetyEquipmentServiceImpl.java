@@ -54,6 +54,7 @@ public class AssetSafetyEquipmentServiceImpl extends BaseServiceImpl<AssetSafety
         assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
         assetSafetyEquipmentDao.insert(assetSafetyEquipment);
         // 记录操作日志和运行日志
+
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SAFETY_EQUIPMENT_INSERT.getName(),
             DataTypeUtils.stringToInteger(request.getAssetId()), assetDao.getById(request.getAssetId()).getNumber(),
             assetSafetyEquipment, BusinessModuleEnum.SAFETY,

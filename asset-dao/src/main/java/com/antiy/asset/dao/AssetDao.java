@@ -195,4 +195,11 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     String getNumberById(String assetId);
+
+    /**
+     * 通过资产ID获取区域ID
+     * @param assetId
+     * @return
+     */
+    String getAreaIdById(String assetId);
 }

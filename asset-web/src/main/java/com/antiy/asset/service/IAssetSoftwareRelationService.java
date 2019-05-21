@@ -13,6 +13,7 @@ import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
@@ -114,7 +115,7 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @param assetSoftwareRelationList
      * @return
      */
-    void installSoftware(AssetSoftwareRelationList assetSoftwareRelationList);
+    ActionResponse installSoftware(AssetSoftwareRelationList assetSoftwareRelationList) throws Exception;
 
     /**
      * 软件安装列表

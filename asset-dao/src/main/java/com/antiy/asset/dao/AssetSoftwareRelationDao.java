@@ -140,9 +140,4 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * 更新关系表配置状态
      */
     Integer updateConfigStatusByAssetId(AssetSoftwareRelation assetSoftwareRelation) throws Exception;
-
-    /**
-     * 更新关系表安装状态
-     */
-    Integer updateInstallStatus(AssetSoftwareRelation assetSoftwareRelation);
 }

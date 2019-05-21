@@ -40,10 +40,7 @@ import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.base.PageResult;
+import com.antiy.common.base.*;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.LogUtils;
@@ -221,7 +218,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void installSoftware(AssetSoftwareRelationList assetSoftwareRelationList) {
+    public ActionResponse installSoftware(AssetSoftwareRelationList assetSoftwareRelationList) throws Exception {
         List<AssetSoftwareRelation> relationList = Lists.newArrayList();
         // 自动安装列表，用于下发给智甲
         List<AssetSoftwareRelation> autoInstallList = Lists.newArrayList();
@@ -268,6 +265,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 return 0;
             }
         });
+
         List<String> uuidList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(autoInstallList)) {
             autoInstallList.forEach(
@@ -281,27 +279,34 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             // 获取软件安装路径
             commandRequest.setUuidList(uuidList);
             // 远程调用安装指令
-            commandClient.executeCommand(commandRequest);
+            ActionResponse actionResponse = commandClient.executeCommand(commandRequest);
+
+            if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                LogUtils.info(logger, "远程调用安装指令" + " {}", relationList);
+                return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+            }
 
             // 更新安装状态
             AssetSoftwareRelation condition = new AssetSoftwareRelation();
             condition.setSoftwareId(assetSoftwareRelationList.getSoftwareId());
             for (AssetSoftwareRelation softwareRelation : autoInstallList) {
                 condition.setAssetId(softwareRelation.getAssetId());
-                condition.setInstallStatus(InstallStatus.INSTALLING.getCode());
+                condition.setInstallStatus(SoftInstallStatus.INSTALLING.getCode());
                 condition.setGmtModified(System.currentTimeMillis());
                 if (LoginUserUtil.getLoginUser() != null) {
                     condition.setModifyUser(LoginUserUtil.getLoginUser().getId());
                 } else {
                     LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", System.currentTimeMillis());
                 }
-                assetSoftwareRelationDao.updateInstallStatus(condition);
+                assetSoftwareRelationDao.updateConfigStatusByAssetId(condition);
                 //记录操作日志
                 LogUtils.recordOperLog(
                         new BusinessData(AssetEventEnum.SOFT_INSTALL.getName(), condition.getId(), "", condition,
                                 BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
             }
         }
+        return ActionResponse.success();
     }
 
     private Integer countByAssetId(Integer assetId) {
@@ -350,6 +355,17 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         assetSoftwareRelation.setInstallStatus(SoftInstallStatus.UNINSTALLED.getCode());
         assetSoftwareRelation.setAssetId(assetRelationSoftRequest.getAssetId());
         assetSoftwareRelation.setSoftwareId(assetRelationSoftRequest.getSoftId());
+        // 基准验证结束，更新软硬件关系表中的配置状态为已配置
+        AssetSoftwareRelation softwareRelation = new AssetSoftwareRelation();
+        softwareRelation.setSoftwareId(assetRelationSoftRequest.getSoftId());
+        softwareRelation.setAssetId(assetRelationSoftRequest.getAssetId());
+        if (!Objects.isNull(LoginUserUtil.getLoginUser())) {
+            softwareRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        }
+        softwareRelation.setGmtModified(System.currentTimeMillis());
+        softwareRelation.setInstallStatus(SoftInstallStatus.UNINSTALLED.getCode());
+        assetSoftwareRelationDao.updateConfigStatusByAssetId(softwareRelation);
+
         return assetSoftwareRelationDao.updateByAssetId(assetSoftwareRelation);
     }
 

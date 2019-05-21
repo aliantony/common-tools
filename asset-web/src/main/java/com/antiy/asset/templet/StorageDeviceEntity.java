@@ -103,8 +103,8 @@ public class StorageDeviceEntity {
     /**
      * 固件
      */
-    @ExcelField(value = "firmware", align = 1, title = "固件版本")
-    private String  firmware;
+    @ExcelField(value = "firmwareVersion", align = 1, title = "固件版本")
+    private String  firmwareVersion;
     /**
      * OS版本
      */
@@ -226,12 +226,12 @@ public class StorageDeviceEntity {
         this.averageTransmissionRate = averageTransmissionRate;
     }
 
-    public String getFirmware() {
-        return firmware;
+    public String getFirmwareVersion() {
+        return firmwareVersion;
     }
 
-    public void setFirmware(String firmware) {
-        this.firmware = firmware;
+    public void setFirmwareVersion(String firmwareVersion) {
+        this.firmwareVersion = firmwareVersion;
     }
 
     public String getSlotType() {

@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.response.*;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,6 +19,7 @@ import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.PageResult;
@@ -219,8 +219,7 @@ public class AssetSoftwareRelationController {
     @RequestMapping(value = "/software/install", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:softwarerelation:installSoftware')")
     public ActionResponse installSoftware(@ApiParam(value = "softwareQuery") @RequestBody AssetSoftwareRelationList assetSoftwareRelationList) throws Exception {
-        iAssetSoftwareRelationService.installSoftware(assetSoftwareRelationList);
-        return ActionResponse.success();
+        return iAssetSoftwareRelationService.installSoftware(assetSoftwareRelationList);
     }
 
     /**

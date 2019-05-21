@@ -145,14 +145,15 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
             .findAssetOperationRecordBarByAssetId(assetOperationRecordQuery);
 
         List<AssetOperationRecordBarResponse> assetOperationRecordBarResponseList = new ArrayList<>();
-        buidOperationRecordBarResponse(map, assetOperationRecordBarPOList, assetOperationRecordBarResponseList);
+        buidOperationRecordBarResponse(map, assetOperationRecordBarPOList, assetOperationRecordBarResponseList, 0);
 
         return assetOperationRecordBarResponseList;
     }
 
     private void buidOperationRecordBarResponse(HashMap<String, Object> map,
                                                 List<AssetOperationRecordBarPO> assetOperationRecordBarPOList,
-                                                List<AssetOperationRecordBarResponse> assetOperationRecordBarResponseList) {
+                                                List<AssetOperationRecordBarResponse> assetOperationRecordBarResponseList,
+                                                Integer total) {
 
         assetOperationRecordBarPOList.forEach(operationRecordBarPo -> {
             // 获取操作人员角色信息
@@ -171,6 +172,9 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
                 AssetOperationRecordBarResponse assetOperationRecordBarResponse = operationRecordBarPOToResponseConverter
                     .convert(assetOperationRecordBarPO, AssetOperationRecordBarResponse.class);
+
+                assetOperationRecordBarResponse.setTotal(total);
+
                 List<Scheme> schemeList = schemeDao.findSchemeByAssetIdAndGmtCreateTime(map);
 
                 List<AssetStatusBarResponse> fileInfoList = new ArrayList<>();
@@ -209,8 +213,9 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
         HashMap<String, Object> map = new HashMap<>();
         List<AssetOperationRecordBarPO> assetOperationRecordBarPOList = assetOperationRecordDao
             .findAssetOperationRecordBarByAssetId(assetOperationRecordQuery);
+        Integer total = assetOperationRecordDao.findCountAssetOperationRecordBarByAssetId(assetOperationRecordQuery);
         List<AssetOperationRecordBarResponse> assetOperationRecordBarResponseList = new ArrayList<>();
-        buidOperationRecordBarResponse(map, assetOperationRecordBarPOList, assetOperationRecordBarResponseList);
+        buidOperationRecordBarResponse(map, assetOperationRecordBarPOList, assetOperationRecordBarResponseList, total);
         return assetOperationRecordBarResponseList;
     }
 }
