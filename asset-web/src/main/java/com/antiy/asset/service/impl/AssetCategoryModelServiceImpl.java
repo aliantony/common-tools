@@ -19,7 +19,6 @@ import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.service.IAssetCategoryModelService;
-import com.antiy.asset.util.CategoryModelUtil;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.NodeUtilsConverter;
@@ -77,9 +76,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public ActionResponse saveAssetCategoryModel(AssetCategoryModelRequest request) throws Exception {
         //
 
-        String childId = CategoryModelUtil.getIdString(assetCategoryModelDao.findAllCategory(),
-            DataTypeUtils.stringToInteger(request.getParentId()));
-        Integer n = assetDao.existAssetByCategoryModelId(childId);
+        // String childId = CategoryModelUtil.getIdString(assetCategoryModelDao.findAllCategory(),
+        // DataTypeUtils.stringToInteger(request.getParentId()));
+        Integer n = assetDao.existAssetByCategoryModelId(request.getParentId());
         if (n > 0) {
             throw new BusinessException("该品类型号已经关联了资产，不能创建子节点");
         }
