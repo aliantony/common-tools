@@ -218,7 +218,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public ActionResponse installSoftware(AssetSoftwareRelationList assetSoftwareRelationList) {
+    public ActionResponse installSoftware(AssetSoftwareRelationList assetSoftwareRelationList) throws Exception {
         List<AssetSoftwareRelation> relationList = Lists.newArrayList();
         // 自动安装列表，用于下发给智甲
         List<AssetSoftwareRelation> autoInstallList = Lists.newArrayList();
@@ -292,14 +292,14 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             condition.setSoftwareId(assetSoftwareRelationList.getSoftwareId());
             for (AssetSoftwareRelation softwareRelation : autoInstallList) {
                 condition.setAssetId(softwareRelation.getAssetId());
-                condition.setInstallStatus(SoftInstallStatus.UNINSTALLED.getCode());
+                condition.setInstallStatus(SoftInstallStatus.INSTALLING.getCode());
                 condition.setGmtModified(System.currentTimeMillis());
                 if (LoginUserUtil.getLoginUser() != null) {
                     condition.setModifyUser(LoginUserUtil.getLoginUser().getId());
                 } else {
                     LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", System.currentTimeMillis());
                 }
-                assetSoftwareRelationDao.updateInstallStatus(condition);
+                assetSoftwareRelationDao.updateConfigStatusByAssetId(condition);
             }
         }
         return ActionResponse.success();
@@ -359,7 +359,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             softwareRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
         }
         softwareRelation.setGmtModified(System.currentTimeMillis());
-        softwareRelation.setInstallStatus(ConfigureStatusEnum.CONFIGURED.getCode());
+        softwareRelation.setInstallStatus(SoftInstallStatus.UNINSTALLED.getCode());
         assetSoftwareRelationDao.updateConfigStatusByAssetId(softwareRelation);
 
         return assetSoftwareRelationDao.updateByAssetId(assetSoftwareRelation);

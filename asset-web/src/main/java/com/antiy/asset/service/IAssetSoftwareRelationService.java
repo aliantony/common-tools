@@ -115,7 +115,7 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @param assetSoftwareRelationList
      * @return
      */
-    ActionResponse installSoftware(AssetSoftwareRelationList assetSoftwareRelationList);
+    ActionResponse installSoftware(AssetSoftwareRelationList assetSoftwareRelationList) throws Exception;
 
     /**
      * 软件安装列表

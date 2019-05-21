@@ -1,5 +1,23 @@
 package com.antiy.asset.service.impl;
 
+import java.util.*;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.transaction.support.TransactionTemplate;
+
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.entity.AssetSoftware;
@@ -22,23 +40,6 @@ import com.antiy.common.base.LoginUser;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.transaction.support.TransactionTemplate;
-
-import java.util.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({LoginUserUtil.class, AssetSoftwareRelationServiceImpl.class, LogUtils.class, BeanConvert.class, BeanUtils.class})
@@ -223,7 +224,7 @@ public class AssetSoftwareRelationServiceImplTest {
     }
 
     @Test
-    public void installSoftwareTest1() {
+    public void installSoftwareTest1() throws Exception {
         AssetSoftwareRelationList assetSoftwareRelationList = new AssetSoftwareRelationList();
         AssetInstallRequest request = new AssetInstallRequest();
         // request.setConfigureStatus(3);
@@ -239,7 +240,7 @@ public class AssetSoftwareRelationServiceImplTest {
     }
 
     @Test
-    public void installSoftwareTest2() {
+    public void installSoftwareTest2() throws Exception {
         AssetSoftwareRelationList assetSoftwareRelationList = new AssetSoftwareRelationList();
         AssetInstallRequest request = new AssetInstallRequest();
         // request.setConfigureStatus(3);
