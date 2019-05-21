@@ -17,6 +17,8 @@ public interface AssetOperationRecordDao extends IBaseDao<AssetOperationRecord> 
 
     List<AssetOperationRecordBarPO> findAssetOperationRecordBarByAssetId(AssetOperationRecordQuery assetOperationRecordQuery);
 
+    Integer findCountAssetOperationRecordBarByAssetId(AssetOperationRecordQuery assetOperationRecordQuery);
+
     /**
      * 通过ID获取最新的记录创建时间
      * @param assetId
