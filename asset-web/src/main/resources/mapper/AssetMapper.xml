@@ -1475,4 +1475,14 @@
         <include refid="Table_Name"></include>
         where id = #{id}
     </select>
+
+    <select id="existAssetByCategoryModelId" resultType="java.lang.Integer" parameterType="java.lang.String">
+        SELECT
+        count( 1 )
+        FROM
+        <include refid="Table_Name"></include>
+        WHERE
+        category_model IN ( #{childId} )
+        AND `status` = 1
+    </select>
 </mapper>
