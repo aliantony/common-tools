@@ -2,6 +2,7 @@ package com.antiy.asset.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.antiy.asset.entity.AssetCategoryModel;
 
@@ -19,7 +20,7 @@ public class CategoryModelUtil {
      * @param pid
      * @return
      */
-    public static String categoryModelList(List<AssetCategoryModel> modelListList, int pid) {
+    public static List<AssetCategoryModel> categoryModelList(List<AssetCategoryModel> modelListList, int pid) {
         for (AssetCategoryModel categoryModel : modelListList) {
             // 遍历出父id等于参数的id，add进子节点集合
             if (Integer.valueOf(categoryModel.getParentId()) == pid) {
@@ -28,10 +29,15 @@ public class CategoryModelUtil {
                 categoryModelList.add(categoryModel);
             }
         }
-        return categoryModelList.toString();
+        return categoryModelList;
     }
 
     public static String getIdString(List<AssetCategoryModel> modelListList, int pid) {
-        return StringUtils.trim(CategoryModelUtil.categoryModelList(modelListList, pid), "[", "]");
+        List<Integer> tempList = new ArrayList<>();
+
+        for (AssetCategoryModel assetCategoryModel : CategoryModelUtil.categoryModelList(modelListList, pid)) {
+            tempList.add(assetCategoryModel.getId());
+        }
+        return StringUtils.trim(tempList.stream().distinct().collect(Collectors.toList()).toString(), "[", "]");
     }
 }

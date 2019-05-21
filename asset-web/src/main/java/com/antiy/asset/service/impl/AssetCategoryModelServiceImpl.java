@@ -80,7 +80,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         String childId = CategoryModelUtil.getIdString(assetCategoryModelDao.findAllCategory(),
             DataTypeUtils.stringToInteger(request.getParentId()));
         Integer n = assetDao.existAssetByCategoryModelId(childId);
-        if (n > 1) {
+        if (n > 0) {
             throw new BusinessException("该品类型号已经关联了资产，不能创建子节点");
         }
         AssetCategoryModel assetCategoryModel = requestConverter.convert(request, AssetCategoryModel.class);
