@@ -32,6 +32,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.HtmlUtils;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -2012,9 +2013,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         });
-        if (assetCount > 0) {
+        if (assetCount != null && assetCount > 0) {
             // 已退役、待登记，不予登记再登记，需启动新流程
-            if (assetCount != null && assetCount > 0) {
                 String assetId = assetOuterRequest.getAsset().getId();
                 if (AssetStatusEnum.RETIRE.getCode().equals(currentAsset.getAssetStatus())
                     || AssetStatusEnum.NOT_REGSIST.getCode().equals(currentAsset.getAssetStatus())
@@ -2053,7 +2053,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
                             // 记录操作日志和运行日志
                             LogUtils.info(logger, AssetEventEnum.RETIRE_REGISTER.getName() + " {}",
-                                configRegisterRequest);
+                            JSON.toJSONString(configRegisterRequest));
                         }
 
                         // 更新资产状态为待配置
@@ -2064,10 +2064,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         map.put("id", assetId);
                         assetDao.changeStatus(map);
                         // ------------------对接配置模块------------------end
+                } else if (null != actionResponse && RespBasicCode.BUSSINESS_EXCETION.getResultCode()
+                    .equals(actionResponse.getHead().getCode())) {
+                    LogUtils.info(logger, AssetEventEnum.ASSET_START_ACTIVITY.getName() + " {}",
+                        JSON.toJSONString(manualStartActivityRequest));
+                    throw new BusinessException(actionResponse.getBody().toString());
+                } else if (actionResponse == null) {
+                    throw new BusinessException("流程服务异常");
                     }
+
                     // ------------------启动工作流------------------end
                 }
-            }
         }
         // TODO 下发智甲
         return assetCount;
