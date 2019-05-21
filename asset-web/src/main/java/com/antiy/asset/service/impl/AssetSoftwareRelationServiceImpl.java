@@ -296,6 +296,10 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                     LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", System.currentTimeMillis());
                 }
                 assetSoftwareRelationDao.updateInstallStatus(condition);
+                //记录操作日志
+                LogUtils.recordOperLog(
+                        new BusinessData(AssetEventEnum.SOFT_INSTALL.getName(), condition.getId(), "", condition,
+                                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
             }
         }
     }
