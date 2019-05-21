@@ -1476,7 +1476,7 @@
         where id = #{id}
     </select>
 
-    <select id="existAssetByCategoryModelId" resultType="java.lang.String" parameterType="java.lang.String">
+    <select id="existAssetByCategoryModelId" resultType="java.lang.Integer" parameterType="java.lang.String">
         SELECT
         count( 1 )
         FROM
