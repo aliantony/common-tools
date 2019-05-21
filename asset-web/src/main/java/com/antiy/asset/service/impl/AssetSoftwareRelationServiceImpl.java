@@ -292,7 +292,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             condition.setSoftwareId(assetSoftwareRelationList.getSoftwareId());
             for (AssetSoftwareRelation softwareRelation : autoInstallList) {
                 condition.setAssetId(softwareRelation.getAssetId());
-                condition.setInstallStatus(InstallStatus.INSTALLING.getCode());
+                condition.setInstallStatus(SoftInstallStatus.UNINSTALLED.getCode());
                 condition.setGmtModified(System.currentTimeMillis());
                 if (LoginUserUtil.getLoginUser() != null) {
                     condition.setModifyUser(LoginUserUtil.getLoginUser().getId());
