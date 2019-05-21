@@ -6,6 +6,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -150,7 +151,12 @@ public class ImportExcel {
         if (StringUtils.isBlank(filePath)) {
             throw new BusinessException("导入文档为空!");
         } else if (filePath.toLowerCase().endsWith(XLS) || filePath.toLowerCase().endsWith(XLSX)) {
-            this.wb = new XSSFWorkbook(is);
+
+            try {
+                this.wb = new XSSFWorkbook(is);
+            } catch (NotOfficeXmlFileException e) {
+                throw new BusinessException("文档格式不正确!");
+            }
         } else {
             throw new BusinessException("文档格式不正确!");
         }
@@ -288,7 +294,11 @@ public class ImportExcel {
         initAnnotationList(clazz);
         List<T> dataList = new ArrayList<>();
         boolean flag = true;
-        Row firstRow = this.getRow(getDataRownum() - 1);
+        Row firstRow = this.getRow(5);
+        if (firstRow == null) {
+            sb.append("模板不匹配,请重新选择对应模板！");
+            return null;
+        }
         int length = 0;
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {

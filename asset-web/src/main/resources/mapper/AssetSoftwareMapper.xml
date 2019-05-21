@@ -218,11 +218,11 @@
         <if test=" serial != null">
             #{serial },
         </if>
-        <if test=" checkType != null">
-            #{check_type },
-        </if>
         <if test=" md5Code != null">
             #{md5Code },
+        </if>
+        <if test=" checkType != null">
+            #{checkType },
         </if>
         <if test=" publisher != null">
             #{publisher },

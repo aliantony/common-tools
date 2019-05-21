@@ -57,7 +57,7 @@
             area_id,
         </if>
         <if test=" originStatus != null">
-            origin_status,
+            origin_status
         </if>
     </sql>
 
@@ -93,7 +93,7 @@
             #{areaId },
         </if>
         <if test=" originStatus != null">
-            #{originStatus },
+            #{originStatus }
         </if>
     </sql>
 
