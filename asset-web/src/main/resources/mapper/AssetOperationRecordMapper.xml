@@ -281,6 +281,26 @@
             LIMIT #{pageSize}
         </if>
     </select>
+    <select id="findCountAssetOperationRecordBarByAssetId" resultType="int"
+            parameterType="com.antiy.common.base.ObjectQuery">
+        SELECT
+        count(1)
+        FROM
+        asset_operation_record aor
+        LEFT JOIN scheme c ON c.id = aor.scheme_id
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test=" targetObjectId != null">
+                AND aor.target_object_id = #{targetObjectId}
+            </if>
+            <if test=" targetType != null">
+                AND aor.target_type = #{targetType.code}
+            </if>
+
+            <if test="originStatus != null">
+                AND aor.origin_status=#{originStatus}
+            </if>
+        </trim>
+    </select>
     <select id="getTimeByAssetId" resultType="java.lang.Long" parameterType="java.lang.String">
         select
         gmt_create
