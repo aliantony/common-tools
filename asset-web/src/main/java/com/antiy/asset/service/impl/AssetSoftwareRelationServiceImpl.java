@@ -359,7 +359,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             softwareRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
         }
         softwareRelation.setGmtModified(System.currentTimeMillis());
-        softwareRelation.setConfigureStatus(ConfigureStatusEnum.CONFIGURED.getCode());
+        softwareRelation.setInstallStatus(ConfigureStatusEnum.CONFIGURED.getCode());
         assetSoftwareRelationDao.updateConfigStatusByAssetId(softwareRelation);
 
         return assetSoftwareRelationDao.updateByAssetId(assetSoftwareRelation);
