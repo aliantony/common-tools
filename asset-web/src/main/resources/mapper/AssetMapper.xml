@@ -1223,28 +1223,21 @@
         </where>
         ORDER BY
         <choose>
-            <when test="isAdmittance != null and isAdmittance == true">
-                gmt_create desc
+            <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
+                ${sortName} ${sortOrder},
             </when>
             <otherwise>
-                <if test=" ids != null and ids.length > 0">
-                    FIELD(`id`,
-                    <foreach index="index" item="item" collection="ids" separator=",">
-                        #{item}
-                    </foreach>
-                    ) DESC,
-                </if>
-                <choose>
-                    <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
-                        ${sortName} ${sortOrder},
-                    </when>
-                    <otherwise>
-                        gmt_create desc,
-                    </otherwise>
-                </choose>
-                id desc
+                gmt_create desc,
             </otherwise>
         </choose>
+        <if test=" ids != null and ids.length > 0">
+            FIELD(`id`,
+            <foreach index="index" item="item" collection="ids" separator=",">
+                #{item}
+            </foreach>
+            ) DESC,
+        </if>
+        id desc
         <if test="!all">
             <if test="pageSize !=-1">
                 LIMIT #{pageSize} offset #{pageOffset}
