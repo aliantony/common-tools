@@ -440,7 +440,7 @@
 
     <select id="countSoftwareByAssetId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
         select
-          count (1) count
+          count(1) count
         from
         asset_software_relation asoftrel
         left join asset_software asoft on asoftrel.software_id = asoft.id
