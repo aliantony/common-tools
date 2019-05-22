@@ -116,4 +116,9 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+
+    <select id="getAll" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+    </select>
 </mapper>

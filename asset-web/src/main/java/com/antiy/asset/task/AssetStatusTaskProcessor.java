@@ -51,7 +51,7 @@ public class AssetStatusTaskProcessor {
     private AesEncoder aesEncoder;
 
     // 3.添加定时任务
-    @Scheduled(cron = "0 15 10 ? * *")
+    @Scheduled(cron = "0/30 * * * * ?")
     // 或直接指定时间间隔，例如：5秒
     // @Scheduled(fixedRate= 5*60*1000)
     private void configureTasks() {
@@ -86,7 +86,7 @@ public class AssetStatusTaskProcessor {
 
             try {
                 // 登记的资产信息
-                List<AssetStatusTask> statusTaskList = statusTaskDao.findTask();
+                List<AssetStatusTask> statusTaskList = statusTaskDao.getAll();
                 if (CollectionUtils.isNotEmpty(statusTaskList)) {
                     for (AssetStatusTask assetStatusTask : statusTaskList) {
                         Integer assetId = assetStatusTask.getAssetId();
@@ -100,12 +100,15 @@ public class AssetStatusTaskProcessor {
                                 asset.setGmtModified(System.currentTimeMillis());
                                 asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                                 assetDao.updateStatus(asset);
+
+                                // 删除使用过的任务
+                                statusTaskDao.deleteById(taskId);
                             }
                         }
                     }
                 }
             } catch (Exception e) {
-                LogUtils.warn(logger, "数据库连接失败 {}", "资产状态更新失败");
+                LogUtils.warn(logger, "查询失败 {}", e.getMessage());
             }
         }
     }
