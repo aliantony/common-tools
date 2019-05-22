@@ -3,6 +3,7 @@ package com.antiy.asset.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -147,8 +148,8 @@ public class AssetSoftwareController {
     @RequestMapping(value = "/export/file", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:software:exportFile')")
     public void exportFile(@ApiParam(value = "assetSoftwareQuery") AssetSoftwareQuery assetSoftwareQuery,
-                           HttpServletResponse response) throws Exception {
-        iAssetSoftwareService.exportData(assetSoftwareQuery, response);
+                           HttpServletResponse response, HttpServletRequest request) throws Exception {
+        iAssetSoftwareService.exportData(assetSoftwareQuery, response, request);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.antiy.asset.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -179,7 +180,8 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * @param assetQuery 导出模板的条件
      */
-    void exportData(AssetQuery assetQuery, HttpServletResponse servletResponse) throws Exception;
+    void exportData(AssetQuery assetQuery, HttpServletResponse servletResponse,
+                    HttpServletRequest request) throws Exception;
 
     /**
      * 硬件导入PC

@@ -898,7 +898,7 @@ public class AssetServiceImplTest {
 
         doReturn(result).when(assetServiceImpl).findPageAsset(any());
 
-        assetServiceImpl.exportData(new AssetQuery(), new Response());
+//        assetServiceImpl.exportData(new AssetQuery(), new Response());
     }
 
     @Test
