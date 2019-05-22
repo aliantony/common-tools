@@ -172,8 +172,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param activitiIds
      * @return
      */
-    List<String> sortAssetIds(@Param("ids") Set<String> activitiIds, @Param("sortName") String sorName,
-                              @Param("sortOrder") String sorOrder);
+    List<String> sortAssetIds(@Param("ids") Set<String> activitiIds, @Param("assetStatus") Integer assetStatus);
 
     /**
      * 
@@ -209,4 +208,12 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer existAssetByCategoryModelId(String categoryModeId);
+
+    /**
+     * 修改资产状态
+     * @param asset
+     * @return
+     * @throws Exception
+     */
+    Integer updateStatus(Asset asset) throws Exception;
 }

@@ -585,7 +585,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             configRegisterRequest.setAssetId(String.valueOf(id));
             configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
             configRegisterRequest
-                .setSuggest(assetOthersRequest == null ? request.getAsset().getMemo() : assetOthersRequest.getMemo());
+                .setSuggest(request.getManualStartActivityRequest().getSuggest());
             configRegisterRequest.setConfigUserIds(request.getManualStartActivityRequest().getConfigUserIds());
             configRegisterRequest.setRelId(String.valueOf(id));
             ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest,
@@ -752,30 +752,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
-        if (MapUtils.isNotEmpty(processMap)) {
-            Set<String> activitiIds = processMap.keySet();
-            List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getSortName(), query.getSortOrder());
-            Collections.reverse(sortedIds);
-            query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
-        }
-        /* if (MapUtils.isNotEmpty(processMap)) { List<Map.Entry<String, WaitingTaskReponse>> processList =
-         * Lists.newArrayList(); processList.addAll(processMap.entrySet()); Collections.sort(processList, (o1, o2) ->
-         * DataTypeUtils.stringToInteger(o1.getValue().getTaskId()) -
-         * DataTypeUtils.stringToInteger(o2.getValue().getTaskId())); List<String> lowIds = Lists.newArrayList();
-         * List<String> highIds = Lists.newArrayList(); processList.stream().forEach(v -> { if
-         * (Objects.isNull(v.getValue()) || "基准配置".equals(v.getValue().getName()) ||
-         * "基准验证".equals(v.getValue().getName())) { lowIds.add(v.getKey()); } else { highIds.add(v.getKey()); } });
-         * lowIds.addAll(highIds); query.setIds(lowIds.toArray(new String[] {})); } */
-        /* if (!Objects.isNull(processMap) && !processMap.isEmpty()) { query.setIds(processMap.keySet().toArray(new
-         * String[] {})); } */
-
-        // 如果是控制台进入，并且待办任务返回为空，则直接返回
-        if (query.getEnterControl() && MapUtils.isEmpty(processMap))
-
-        {
-            return null;
-        }
-
+        dealProcess(query, processMap);
         // 1.查询漏洞个数
         Map<String, String> vulCountMaps = new HashMap<>();
         if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
@@ -887,14 +864,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
-        if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
-            query.setIds(processMap.keySet().toArray(new String[] {}));
-        }
-
-        // 如果是从工作台进入，并且没有待办任务，则直接返回空即可
-        if (query.getEnterControl() && MapUtils.isEmpty(processMap)) {
-            return 0;
-        }
+        dealProcess(query, processMap);
         return assetDao.findCount(query);
     }
 
@@ -937,19 +907,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 query.setExistAssociateIds(associateAssetIdList);
             }
         }
-
+        // 获取用户待办任务
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
+        dealProcess(query, processMap);
+
         // 品类型号及其子品类
-        if (!Objects.isNull(query.getCategoryModels()) && query.getCategoryModels().length > 0) {
+        if (ArrayUtils.isNotEmpty(query.getCategoryModels())) {
             List<Integer> categoryModels = Lists.newArrayList();
             for (int i = 0; i < query.getCategoryModels().length; i++) {
                 categoryModels.addAll(assetCategoryModelService
                     .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
             }
             query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryModels));
-        }
-        if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
-            query.setIds(processMap.keySet().toArray(new String[] {}));
         }
 
         int count = 0;
@@ -995,6 +964,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.findListAsset(query));
+    }
+
+    /**
+     * 处理待办任务
+     */
+    public void dealProcess(AssetQuery query, Map<String, WaitingTaskReponse> processMap) {
+        // 只要是工作台进来的才去查询他的待办事项
+        if (query.getEnterControl()) {
+            if (MapUtils.isNotEmpty(processMap)) {
+                // 待办资产id
+                Set<String> activitiIds = processMap.keySet();
+                if (CollectionUtils.isNotEmpty(query.getAssetStatusList())) {
+                    query.setAssetStatus(query.getAssetStatusList().get(0));
+                    List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getAssetStatus());
+                    query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
+                } else {
+                    query.setIds(activitiIds.toArray(new String[] {}));
+                }
+            }
+        }
     }
 
     /**
@@ -3633,10 +3622,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_NET.getCode());
                 scheme.setAssetNextStatus(AssetStatusEnum.WAIT_NET.getCode());
 
-            } else {
-                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
-                this.changeStatusById(assetId, AssetStatusEnum.WAIT_SETTING.getCode());
-                scheme.setAssetNextStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             }
         }
 

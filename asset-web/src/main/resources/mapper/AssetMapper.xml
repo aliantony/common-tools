@@ -1223,28 +1223,21 @@
         </where>
         ORDER BY
         <choose>
-            <when test="isAdmittance != null and isAdmittance == true">
-                gmt_create desc
+            <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
+                ${sortName} ${sortOrder},
             </when>
             <otherwise>
-                <if test=" ids != null and ids.length > 0">
-                    FIELD(`id`,
-                    <foreach index="index" item="item" collection="ids" separator=",">
-                        #{item}
-                    </foreach>
-                    ) DESC,
-                </if>
-                <choose>
-                    <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
-                        ${sortName} ${sortOrder},
-                    </when>
-                    <otherwise>
-                        gmt_create desc,
-                    </otherwise>
-                </choose>
-                id desc
+                gmt_create desc,
             </otherwise>
         </choose>
+        <if test=" ids != null and ids.length > 0">
+            FIELD(`id`,
+            <foreach index="index" item="item" collection="ids" separator=",">
+                #{item}
+            </foreach>
+            ) DESC,
+        </if>
+        id desc
         <if test="!all">
             <if test="pageSize !=-1">
                 LIMIT #{pageSize} offset #{pageOffset}
@@ -1423,7 +1416,7 @@
         AND v.vul_status = 4
         and t2.asset_status in(7,8)
     </select>
-    <select id="sortAssetIds" resultType="java.lang.Integer">
+    <select id="sortAssetIds" resultType="java.lang.String">
         SELECT
         id
         FROM
@@ -1433,16 +1426,8 @@
         <foreach collection="ids" item="item" open="(" close=")" separator=",">
             #{item}
         </foreach>
-        ORDER BY
-        FIELD( asset_status, 3 ,4) ,
-        <choose>
-            <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
-                ${sortName} ${sortOrder}
-            </when>
-            <otherwise>
-                gmt_create desc
-            </otherwise>
-        </choose>
+        and asset_status = #{assetStatus}
+        and status = 1
     </select>
 
     <select id="queryAlarmAssetList" resultMap="BaseResultMap"
@@ -1484,4 +1469,11 @@
         as n
 
     </select>
+
+    <update id="updateStatusByAssetId" parameterType="com.antiy.asset.entity.Asset">
+        update
+        <include refid="Table_Name"></include>
+        set asset_status = #{assetStatus}
+        where id = #{id}
+    </update>
 </mapper>

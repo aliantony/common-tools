@@ -28,6 +28,7 @@ import com.antiy.asset.vo.request.AssetStatusChangeRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequst;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
@@ -157,5 +158,23 @@ public class AssetStatusJumpController {
             operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         }
+    }
+
+    /**
+     * 资产状态变更
+     *
+     * @param baseRequest
+     * @return actionResponse
+     */
+    @ApiOperation(value = "资产状态变更", notes = "传入实体对象信息")
+    @PreAuthorize("hasAuthority('asset:updateAssetStatus')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/updateAssetStatus", method = RequestMethod.POST)
+    public ActionResponse updateAssetStatus(@ApiParam(value = "baseRequest") @RequestBody(required = false) BaseRequest baseRequest) throws Exception {
+        Asset asset = new Asset();
+        asset.setId(baseRequest.getId());
+        asset.setGmtModified(System.currentTimeMillis());
+        asset.setModifyUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
+        return ActionResponse.success(assetDao.updateStatus(asset));
     }
 }
