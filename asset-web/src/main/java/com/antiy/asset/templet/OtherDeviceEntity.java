@@ -63,7 +63,7 @@ public class OtherDeviceEntity {
     /**
      * 到期时间
      */
-    @ExcelField(value = "dueDate", align = 1, title = "到期时间", isDate = true, required = false)
+    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true, required = true)
     private Long   dueDate;
     /**
      * 保修期
