@@ -98,7 +98,8 @@ public class AssetStatusTaskProcessor {
                                 asset.setId(assetStatusTask.getAssetId());
                                 asset.setAssetStatus(DataTypeUtils.stringToInteger(statusMap.get(taskId)));
                                 asset.setGmtModified(System.currentTimeMillis());
-                                asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                                asset.setModifyUser(
+                                    LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
                                 assetDao.updateStatus(asset);
 
                                 // 删除使用过的任务
