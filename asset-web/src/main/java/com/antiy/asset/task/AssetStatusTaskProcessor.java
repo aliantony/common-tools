@@ -50,8 +50,8 @@ public class AssetStatusTaskProcessor {
     @Resource
     private AesEncoder aesEncoder;
 
-    // 3.添加定时任务
-    @Scheduled(cron = "0/30 * * * * ?")
+    // 3.添加定时任务 5分钟/次
+    @Scheduled(cron = "0 5 * * * ? *")
     // 或直接指定时间间隔，例如：5秒
     // @Scheduled(fixedRate= 5*60*1000)
     private void configureTasks() {
