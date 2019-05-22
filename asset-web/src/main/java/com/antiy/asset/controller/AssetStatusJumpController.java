@@ -175,6 +175,6 @@ public class AssetStatusJumpController {
         asset.setId(baseRequest.getId());
         asset.setGmtModified(System.currentTimeMillis());
         asset.setModifyUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
-        return ActionResponse.success(assetDao.update(asset));
+        return ActionResponse.success(assetDao.updateStatus(asset));
     }
 }
