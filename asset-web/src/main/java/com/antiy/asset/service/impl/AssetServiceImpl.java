@@ -863,14 +863,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
-        if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
-            query.setIds(processMap.keySet().toArray(new String[] {}));
-        }
-
-        // 如果是从工作台进入，并且没有待办任务，则直接返回空即可
-        if (query.getEnterControl() && MapUtils.isEmpty(processMap)) {
-            return 0;
-        }
+        dealProcess(query, processMap);
         return assetDao.findCount(query);
     }
 
