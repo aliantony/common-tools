@@ -751,28 +751,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
-        if (MapUtils.isNotEmpty(processMap)) {
+        /*if (MapUtils.isNotEmpty(processMap)) {
             Set<String> activitiIds = processMap.keySet();
             List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getSortName(), query.getSortOrder());
             Collections.reverse(sortedIds);
             query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
-        }
-        /* if (MapUtils.isNotEmpty(processMap)) { List<Map.Entry<String, WaitingTaskReponse>> processList =
-         * Lists.newArrayList(); processList.addAll(processMap.entrySet()); Collections.sort(processList, (o1, o2) ->
-         * DataTypeUtils.stringToInteger(o1.getValue().getTaskId()) -
-         * DataTypeUtils.stringToInteger(o2.getValue().getTaskId())); List<String> lowIds = Lists.newArrayList();
-         * List<String> highIds = Lists.newArrayList(); processList.stream().forEach(v -> { if
-         * (Objects.isNull(v.getValue()) || "基准配置".equals(v.getValue().getName()) ||
-         * "基准验证".equals(v.getValue().getName())) { lowIds.add(v.getKey()); } else { highIds.add(v.getKey()); } });
-         * lowIds.addAll(highIds); query.setIds(lowIds.toArray(new String[] {})); } */
-        /* if (!Objects.isNull(processMap) && !processMap.isEmpty()) { query.setIds(processMap.keySet().toArray(new
-         * String[] {})); } */
+        }*/
 
         // 如果是控制台进入，并且待办任务返回为空，则直接返回
         if (query.getEnterControl() && MapUtils.isEmpty(processMap))
 
         {
-            return null;
+            query.setIds(null);
         }
 
         // 1.查询漏洞个数
@@ -2015,55 +2005,53 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         });
         if (assetCount != null && assetCount > 0) {
             // 已退役、待登记，不予登记再登记，需启动新流程
-                String assetId = assetOuterRequest.getAsset().getId();
-                if (AssetStatusEnum.RETIRE.getCode().equals(currentAsset.getAssetStatus())
-                    || AssetStatusEnum.NOT_REGSIST.getCode().equals(currentAsset.getAssetStatus())
-                    || AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
-                    ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest
-                        .getManualStartActivityRequest();
-                    ParamterExceptionUtils.isNull(manualStartActivityRequest, "配置信息不能为空");
-                    // ------------------启动工作流------------------start
-                    manualStartActivityRequest.setBusinessId(assetId);
-                    manualStartActivityRequest.setAssignee(String.valueOf(LoginUserUtil.getLoginUser().getId()));
-                    manualStartActivityRequest
-                        .setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
-                    ActionResponse actionResponse = activityClient.manualStartProcess(manualStartActivityRequest);
-                    if (null != actionResponse
-                        && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            String assetId = assetOuterRequest.getAsset().getId();
+            if (AssetStatusEnum.RETIRE.getCode().equals(currentAsset.getAssetStatus())
+                || AssetStatusEnum.NOT_REGSIST.getCode().equals(currentAsset.getAssetStatus())
+                || AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
+                ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest
+                    .getManualStartActivityRequest();
+                ParamterExceptionUtils.isNull(manualStartActivityRequest, "配置信息不能为空");
+                // ------------------启动工作流------------------start
+                manualStartActivityRequest.setBusinessId(assetId);
+                manualStartActivityRequest.setAssignee(String.valueOf(LoginUserUtil.getLoginUser().getId()));
+                manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
+                ActionResponse actionResponse = activityClient.manualStartProcess(manualStartActivityRequest);
+                if (null != actionResponse
+                    && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
 
-                        // ------------------对接配置模块------------------start
-                        ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
-                        configRegisterRequest.setHard(true);
-                        configRegisterRequest.setAssetId(assetId);
-                        configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
-                        configRegisterRequest
-                            .setSuggest(assetOuterRequest.getManualStartActivityRequest().getSuggest());
-                        configRegisterRequest
-                            .setConfigUserIds(assetOuterRequest.getManualStartActivityRequest().getConfigUserIds());
-                        configRegisterRequest.setRelId(String.valueOf(assetId));
-                        // 不重复记录操作记录
-                        configRegisterRequest.setHard(true);
-                        ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest,
-                            currentTimeMillis);
+                    // ------------------对接配置模块------------------start
+                    ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
+                    configRegisterRequest.setHard(true);
+                    configRegisterRequest.setAssetId(assetId);
+                    configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
+                    configRegisterRequest.setSuggest(assetOuterRequest.getManualStartActivityRequest().getSuggest());
+                    configRegisterRequest
+                        .setConfigUserIds(assetOuterRequest.getManualStartActivityRequest().getConfigUserIds());
+                    configRegisterRequest.setRelId(String.valueOf(assetId));
+                    // 不重复记录操作记录
+                    configRegisterRequest.setHard(true);
+                    ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest,
+                        currentTimeMillis);
 
-                        if (null == actionResponseAsset
-                            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {
-                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.RETIRE_REGISTER.getName(),
-                                Integer.valueOf(assetId), assetDao.getById(assetId).getNumber(), configRegisterRequest,
-                                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-                            // 记录操作日志和运行日志
-                            LogUtils.info(logger, AssetEventEnum.RETIRE_REGISTER.getName() + " {}",
+                    if (null == actionResponseAsset
+                        || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.RETIRE_REGISTER.getName(),
+                            Integer.valueOf(assetId), assetDao.getById(assetId).getNumber(), configRegisterRequest,
+                            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                        // 记录操作日志和运行日志
+                        LogUtils.info(logger, AssetEventEnum.RETIRE_REGISTER.getName() + " {}",
                             JSON.toJSONString(configRegisterRequest));
-                        }
+                    }
 
-                        // 更新资产状态为待配置
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("targetStatus", AssetStatusEnum.WAIT_SETTING.getCode());
-                        map.put("gmt_modified", currentTimeMillis);
-                        map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
-                        map.put("id", assetId);
-                        assetDao.changeStatus(map);
-                        // ------------------对接配置模块------------------end
+                    // 更新资产状态为待配置
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("targetStatus", AssetStatusEnum.WAIT_SETTING.getCode());
+                    map.put("gmt_modified", currentTimeMillis);
+                    map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
+                    map.put("id", assetId);
+                    assetDao.changeStatus(map);
+                    // ------------------对接配置模块------------------end
                 } else if (null != actionResponse && RespBasicCode.BUSSINESS_EXCETION.getResultCode()
                     .equals(actionResponse.getHead().getCode())) {
                     LogUtils.info(logger, AssetEventEnum.ASSET_START_ACTIVITY.getName() + " {}",
@@ -2071,10 +2059,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     throw new BusinessException(actionResponse.getBody().toString());
                 } else if (actionResponse == null) {
                     throw new BusinessException("流程服务异常");
-                    }
-
-                    // ------------------启动工作流------------------end
                 }
+
+                // ------------------启动工作流------------------end
+            }
         }
         // TODO 下发智甲
         return assetCount;
