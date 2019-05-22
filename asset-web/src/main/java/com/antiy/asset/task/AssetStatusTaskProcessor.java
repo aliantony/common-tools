@@ -92,7 +92,7 @@ public class AssetStatusTaskProcessor {
                         Integer assetId = assetStatusTask.getAssetId();
                         String taskId = assetStatusTask.getTaskId();
                         if (statusMap.containsKey(assetStatusTask.getTaskId())) {
-                            Integer currentStatus = assetDao.getById(assetId).getAssetStatus();
+                            Integer currentStatus = assetDao.getById(assetId.toString()).getAssetStatus();
                             if (!statusMap.get(taskId).equals(currentStatus.toString())) {
                                 Asset asset = new Asset();
                                 asset.setId(assetStatusTask.getAssetId());
