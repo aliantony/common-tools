@@ -3,6 +3,7 @@ package com.antiy.asset.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -126,7 +127,8 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
 
     List<String> pulldownManufacturer();
 
-    void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception;
+    void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response,
+                    HttpServletRequest request) throws Exception;
 
     PageResult<AssetSoftwareResponse> findPageInstallList(AssetSoftwareQuery softwareQuery) throws Exception;
 
@@ -151,7 +153,6 @@ public interface IAssetSoftwareService extends IBaseService<AssetSoftware> {
      * @param request
      */
     ActionResponse configRegister(ConfigRegisterRequest request, Long currentTimeMillis) throws Exception;
-
 
     /**
      * 处理资产上报的软件信息

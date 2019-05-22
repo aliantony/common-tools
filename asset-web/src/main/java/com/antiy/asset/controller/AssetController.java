@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.antiy.common.base.BusinessData;
@@ -62,8 +63,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:saveSingle')")
-    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset)
-                                                                                                                       throws Exception {
+    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset) throws Exception {
         return iAssetService.saveAsset(asset);
     }
 
@@ -129,8 +129,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/change/asset", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:changeAsset')")
-    public ActionResponse updateSingle(@RequestBody(required = false) AssetOuterRequest assetOuterRequest)
-                                                                                                          throws Exception {
+    public ActionResponse updateSingle(@RequestBody(required = false) AssetOuterRequest assetOuterRequest) throws Exception {
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
         iAssetService.changeAsset(assetOuterRequest);
         return ActionResponse.success();
@@ -146,8 +145,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:deleteById')")
-    public ActionResponse deleteById(@ApiParam(value = "queryCondition") @RequestBody BaseRequest request)
-                                                                                                          throws Exception {
+    public ActionResponse deleteById(@ApiParam(value = "queryCondition") @RequestBody BaseRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getStringId(), "ID不能为空");
         return ActionResponse.success(iAssetService.deleteById(request.getStringId()));
     }
@@ -161,11 +159,13 @@ public class AssetController {
     @ApiOperation(value = "根据条件导出硬件信息", notes = "主键封装对象")
     @RequestMapping(value = "/export/file", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:asset:export')")
-    public void export(@ApiParam(value = "query") AssetQuery assetQuery, HttpServletResponse response) throws Exception {
-        iAssetService.exportData(assetQuery, response);
-        //记录操作日志
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(),assetQuery.getExceptId(),"导出硬件资产信息",assetQuery,
-                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+    public void export(@ApiParam(value = "query") AssetQuery assetQuery, HttpServletResponse response,
+                       HttpServletRequest request) throws Exception {
+        iAssetService.exportData(assetQuery, response, request);
+        // 记录操作日志
+        LogUtils
+            .recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(), assetQuery.getExceptId(),
+                "导出硬件资产信息", assetQuery, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
         // 写入业务日志
         LogHandle.log(assetQuery.toString(), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName(),
             AssetEventEnum.ASSET_ADMITTANCE_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
@@ -201,8 +201,7 @@ public class AssetController {
     @RequestMapping(value = "/changeStatus/batch", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:changeStatus')")
     public ActionResponse changeStatus(@ApiParam(value = "资产ID数组") @RequestParam @Encode String[] ids,
-                                       @ApiParam(value = "资产新状态") @RequestParam("targetStatus") Integer targetStatus)
-                                                                                                                     throws Exception {
+                                       @ApiParam(value = "资产新状态") @RequestParam("targetStatus") Integer targetStatus) throws Exception {
         iAssetService.changeStatus(ids, targetStatus);
         return ActionResponse.success();
     }
@@ -219,8 +218,7 @@ public class AssetController {
     @RequestMapping(value = "/changeStatusById", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:changeStatusById')")
     public ActionResponse changeStatusById(@ApiParam(value = "资产ID") @RequestParam String id,
-                                           @ApiParam(value = "资产新状态") @RequestParam("targetStatus") Integer targetStatus)
-                                                                                                                         throws Exception {
+                                           @ApiParam(value = "资产新状态") @RequestParam("targetStatus") Integer targetStatus) throws Exception {
         iAssetService.changeStatusById(id, targetStatus);
         return ActionResponse.success();
     }
@@ -250,9 +248,8 @@ public class AssetController {
     @RequestMapping(value = "/query/pulldown/unconnectedManufacturer", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
     public ActionResponse<List<String>> pulldownUnconnectedManufacturer(@ApiParam("是否是网络设备") Integer isNet,
-                                                                        @ApiParam("主键") String primaryKey)
-                                                                                                          throws Exception {
-        return ActionResponse.success(iAssetService.pulldownUnconnectedManufacturer(isNet,primaryKey));
+                                                                        @ApiParam("主键") String primaryKey) throws Exception {
+        return ActionResponse.success(iAssetService.pulldownUnconnectedManufacturer(isNet, primaryKey));
     }
 
     /**
@@ -266,8 +263,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{ids}", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetByIds')")
-    public ActionResponse queryAssetByIds(@ApiParam(value = "资产ID数组") @RequestParam("idfs") @Encode String[] ids)
-                                                                                                                 throws Exception {
+    public ActionResponse queryAssetByIds(@ApiParam(value = "资产ID数组") @RequestParam("idfs") @Encode String[] ids) throws Exception {
         Integer[] id = DataTypeUtils.stringArrayToIntegerArray(ids);
         return ActionResponse.success(iAssetService.queryAssetByIds(id));
     }
@@ -320,8 +316,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/computer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importPc')")
-    public ActionResponse importPc(@ApiParam(value = "file") MultipartFile file, AssetImportRequest importRequest)
-                                                                                                                  throws Exception {
+    public ActionResponse importPc(@ApiParam(value = "file") MultipartFile file,
+                                   AssetImportRequest importRequest) throws Exception {
         return ActionResponse.success(iAssetService.importPc(file, importRequest));
     }
 
@@ -334,8 +330,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/net", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importNet')")
-    public ActionResponse importNet(@ApiParam(value = "file") MultipartFile file, AssetImportRequest importRequest)
-                                                                                                                   throws Exception {
+    public ActionResponse importNet(@ApiParam(value = "file") MultipartFile file,
+                                    AssetImportRequest importRequest) throws Exception {
 
         return ActionResponse.success(iAssetService.importNet(file, importRequest));
     }
@@ -349,8 +345,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/safety", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importSafety')")
-    public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file, AssetImportRequest importRequest)
-                                                                                                                      throws Exception {
+    public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file,
+                                       AssetImportRequest importRequest) throws Exception {
         return ActionResponse.success(iAssetService.importSecurity(file, importRequest));
     }
 
@@ -363,8 +359,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/storage", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importStorage')")
-    public ActionResponse importStorage(@ApiParam(value = "file") MultipartFile file, AssetImportRequest importRequest)
-                                                                                                                       throws Exception {
+    public ActionResponse importStorage(@ApiParam(value = "file") MultipartFile file,
+                                        AssetImportRequest importRequest) throws Exception {
 
         return ActionResponse.success(iAssetService.importStory(file, importRequest));
     }
@@ -378,8 +374,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/ohters", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importOhters')")
-    public ActionResponse importOhters(@ApiParam(value = "file") MultipartFile file, AssetImportRequest importRequest)
-                                                                                                                      throws Exception {
+    public ActionResponse importOhters(@ApiParam(value = "file") MultipartFile file,
+                                       AssetImportRequest importRequest) throws Exception {
 
         return ActionResponse.success(iAssetService.importOhters(file, importRequest));
     }
@@ -387,8 +383,7 @@ public class AssetController {
     @ApiOperation(value = "(无效)启动流程", notes = "启动流程")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/start/process", method = RequestMethod.POST)
-    public ActionResponse manualStartProcess(@ApiParam @RequestBody ManualStartActivityRequest manualStartActivityRequest)
-                                                                                                                          throws Exception {
+    public ActionResponse manualStartProcess(@ApiParam @RequestBody ManualStartActivityRequest manualStartActivityRequest) throws Exception {
         manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
         activityClient.manualStartProcess(manualStartActivityRequest);
         return ActionResponse.success();
@@ -397,8 +392,7 @@ public class AssetController {
     @ApiOperation(value = "(无效)处理流程", notes = "处理流程")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/deal/process", method = RequestMethod.POST)
-    public ActionResponse completeTask(@ApiParam @RequestBody ActivityHandleRequest activityHandleRequest)
-                                                                                                          throws Exception {
+    public ActionResponse completeTask(@ApiParam @RequestBody ActivityHandleRequest activityHandleRequest) throws Exception {
         activityClient.completeTask(activityHandleRequest);
         return ActionResponse.success();
     }
