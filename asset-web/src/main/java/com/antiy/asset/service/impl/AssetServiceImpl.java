@@ -3627,10 +3627,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_NET.getCode());
                 scheme.setAssetNextStatus(AssetStatusEnum.WAIT_NET.getCode());
 
-            } else {
-                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
-                this.changeStatusById(assetId, AssetStatusEnum.WAIT_SETTING.getCode());
-                scheme.setAssetNextStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             }
         }
 

@@ -1469,4 +1469,11 @@
         as n
 
     </select>
+
+    <update id="updateStatusByAssetId" parameterType="com.antiy.asset.entity.Asset">
+        update
+        <include refid="Table_Name"></include>
+        set asset_status = #{status}
+        where id = #{id}
+    </update>
 </mapper>
