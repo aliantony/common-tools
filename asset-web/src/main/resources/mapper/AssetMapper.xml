@@ -1478,11 +1478,10 @@
 
     <select id="existAssetByCategoryModelId" resultType="java.lang.Integer" parameterType="java.lang.String">
         SELECT
-        count( 1 )
-        FROM
-        <include refid="Table_Name"></include>
-        WHERE
-        category_model IN ( #{childId} )
-        AND `status` = 1
+        ( SELECT count( 1 ) FROM  asset WHERE category_model =#{categoryModeId} AND `status` = 1 )
+        +
+        ( SELECT  count( 1 ) FROM asset_software WHERE category_model =#{categoryModeId} AND `status` = 1)
+        as n
+
     </select>
 </mapper>
