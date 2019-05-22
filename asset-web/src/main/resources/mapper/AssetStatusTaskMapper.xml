@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.antiy.safety.dao.AssetStatusTaskDao">
+<mapper namespace="com.antiy.asset.dao.AssetStatusTaskDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.antiy.safety.entity.AssetStatusTask">
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetStatusTask">
         <id column="id" property="id"/>
         <result column="task_id" property="taskId"/>
         <result column="asset_id" property="assetId"/>
@@ -54,7 +54,7 @@
         </if>
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.safety.entity.AssetStatusTask" useGeneratedKeys="true" keyProperty="id"
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetStatusTask" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
         insert into
         <include refid="Table_Name"></include>
@@ -66,7 +66,7 @@
         </trim>
     </insert>
 
-    <update id="update" parameterType="com.antiy.safety.entity.AssetStatusTask">
+    <update id="update" parameterType="com.antiy.asset.entity.AssetStatusTask">
         update
         <include refid="Table_Name"></include>
         <trim prefix="SET" suffixOverrides=",">
