@@ -51,7 +51,7 @@ public class AssetStatusTaskProcessor {
     private AesEncoder aesEncoder;
 
     // 3.添加定时任务 5分钟/次
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     // 或直接指定时间间隔，例如：5秒
     // @Scheduled(fixedRate= 5*60*1000)
     private void configureTasks() {
@@ -118,7 +118,7 @@ public class AssetStatusTaskProcessor {
         List<WaitingTaskReponse> mergeWaitingTaskList = new ArrayList<>();
         if (registerWaitingTask != null
             && RespBasicCode.SUCCESS.getResultCode().equals(registerWaitingTask.getHead().getCode())) {
-            List<WaitingTaskReponse> waitingTaskReponseList = retireWaitingTask.getBody();
+            List<WaitingTaskReponse> waitingTaskReponseList = registerWaitingTask.getBody();
             if (CollectionUtils.isNotEmpty(waitingTaskReponseList)) {
                 mergeWaitingTaskList.addAll(waitingTaskReponseList);
             }
