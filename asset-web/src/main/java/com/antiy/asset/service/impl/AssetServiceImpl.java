@@ -751,26 +751,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
-        if (MapUtils.isNotEmpty(processMap)) {
-            //待办资产id
-            Set<String> activitiIds = processMap.keySet();
-            if (query.getEnterControl() && CollectionUtils.isNotEmpty(query.getAssetStatusList())) {
-                query.setAssetStatus(query.getAssetStatusList().get(0));
-                List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getAssetStatus());
-                Collections.reverse(sortedIds);
-                query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
-            } else {
-                query.setIds(activitiIds.toArray(new String[] {}));
-            }
-        }
-
-        // 如果是控制台进入，并且待办任务返回为空，则直接返回
-        if (query.getEnterControl() && MapUtils.isEmpty(processMap))
-
-        {
-            query.setIds(null);
-        }
-
+        dealProcess(query, processMap);
         // 1.查询漏洞个数
         Map<String, String> vulCountMaps = new HashMap<>();
         if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
@@ -932,19 +913,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 query.setExistAssociateIds(associateAssetIdList);
             }
         }
-
+        // 获取用户待办任务
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
+        dealProcess(query, processMap);
+
         // 品类型号及其子品类
-        if (!Objects.isNull(query.getCategoryModels()) && query.getCategoryModels().length > 0) {
+        if (ArrayUtils.isNotEmpty(query.getCategoryModels())) {
             List<Integer> categoryModels = Lists.newArrayList();
             for (int i = 0; i < query.getCategoryModels().length; i++) {
                 categoryModels.addAll(assetCategoryModelService
                     .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
             }
             query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryModels));
-        }
-        if (!Objects.isNull(processMap) && !processMap.isEmpty()) {
-            query.setIds(processMap.keySet().toArray(new String[] {}));
         }
 
         int count = 0;
@@ -990,6 +970,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.findListAsset(query));
+    }
+
+    /**
+     * 处理待办任务
+     */
+    public void dealProcess(AssetQuery query, Map<String, WaitingTaskReponse> processMap) {
+        // 只要是工作台进来的才去查询他的待办事项
+        if (query.getEnterControl()) {
+            if (MapUtils.isNotEmpty(processMap)) {
+                // 待办资产id
+                Set<String> activitiIds = processMap.keySet();
+                if (CollectionUtils.isNotEmpty(query.getAssetStatusList())) {
+                    query.setAssetStatus(query.getAssetStatusList().get(0));
+                    List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getAssetStatus());
+                    query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
+                } else {
+                    query.setIds(activitiIds.toArray(new String[] {}));
+                }
+            }
+        }
     }
 
     /**
