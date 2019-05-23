@@ -185,7 +185,6 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
                         JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
                         assetStatusBarResponse.setFileInfo(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
                     }
-                    assetStatusBarResponse.setMemo(scheme.getMemo());
                     fileInfoList.add(assetStatusBarResponse);
                 }
                 assetOperationRecordBarResponse.setFileInfos(fileInfoList);
