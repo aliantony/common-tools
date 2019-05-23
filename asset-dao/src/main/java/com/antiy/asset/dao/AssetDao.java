@@ -208,4 +208,12 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer existAssetByCategoryModelId(String categoryModeId);
+
+    /**
+     * 修改资产状态
+     * @param asset
+     * @return
+     * @throws Exception
+     */
+    Integer updateStatus(Asset asset) throws Exception;
 }

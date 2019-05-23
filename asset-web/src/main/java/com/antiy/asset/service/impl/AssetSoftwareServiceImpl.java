@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -312,9 +313,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             t.setGmtCreate(System.currentTimeMillis());
             t.setSoftwareStatus(3);
             assetSoftwareDao.insert(t);
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(), t.getId(),
-                    t.getName(), t, BusinessModuleEnum.SOFTWARE_ASSET,
-                    BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(), t.getId(), t.getName(), t,
+                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.SOFT_INSERT.getName() + " {}", t);
         }
         return i + 1;
@@ -726,9 +726,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response) throws Exception {
-        exportData("软件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), assetSoftwareQuery,
-            response);
+    public void exportData(AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response,
+                           HttpServletRequest request) throws Exception {
+        exportData("软件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), assetSoftwareQuery, response,
+            request);
     }
 
     @Override
@@ -824,9 +825,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
         assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_CONFIG.getName(), Integer.valueOf(request.getSoftwareId()),
-                request.getSoftwareId(), request, BusinessModuleEnum.SOFTWARE_ASSET,
-                BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(
+            new BusinessData(AssetEventEnum.SOFT_CONFIG.getName(), Integer.valueOf(request.getSoftwareId()),
+                request.getSoftwareId(), request, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.SOFT_CONFIG.getName() + " {}", request);
         return ActionResponse.success(assetSoftwareRelationDao.insert(assetSoftwareRelation));
     }
@@ -1047,8 +1048,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return stringBuilder.append(builder).append(sb).toString();
     }
 
-    private void exportData(String s, AssetSoftwareQuery assetSoftwareQuery,
-                            HttpServletResponse response) throws Exception {
+    private void exportData(String s, AssetSoftwareQuery assetSoftwareQuery, HttpServletResponse response,
+                            HttpServletRequest request) throws Exception {
         if ((assetSoftwareQuery.getStart() != null && assetSoftwareQuery.getEnd() != null)) {
             assetSoftwareQuery.setStart(assetSoftwareQuery.getStart() - 1);
             assetSoftwareQuery.setEnd(assetSoftwareQuery.getEnd() - assetSoftwareQuery.getStart());
@@ -1067,7 +1068,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_EXPORT.getName(), null, "导出软件", downloadVO,
                 BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", downloadVO);
-            excelDownloadUtil.excelDownload(response, s, downloadVO);
+            excelDownloadUtil.excelDownload(request, response, s, downloadVO);
         } else {
             throw new BusinessException("导出数据为空");
         }

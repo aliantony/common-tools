@@ -70,7 +70,6 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             // 1.保存方案信息
             scheme = convertScheme(assetStatusReqeust, gmtCreateTime);
             schemeDao.insert(scheme);
-            assetStatusReqeust.getManualStartActivityRequest().setSuggest(scheme.getMemo());
         }
 
         // 2.保存流程

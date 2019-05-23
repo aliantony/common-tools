@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -3492,7 +3493,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public void exportData(AssetQuery assetQuery, HttpServletResponse response) throws Exception {
+    public void exportData(AssetQuery assetQuery, HttpServletResponse response,
+                           HttpServletRequest request) throws Exception {
         if ((assetQuery.getStart() != null && assetQuery.getStart() != null)) {
             assetQuery.setStart(assetQuery.getStart() - 1);
             assetQuery.setEnd(assetQuery.getEnd() - assetQuery.getStart());
@@ -3506,7 +3508,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         downloadVO.setSheetName("资产信息表");
         downloadVO.setDownloadList(assetEntities);
         if (Objects.nonNull(assetEntities) && assetEntities.size() > 0) {
-            excelDownloadUtil.excelDownload(response,
+            excelDownloadUtil.excelDownload(request, response,
                 "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
         } else {
             throw new BusinessException("导出数据为空");
@@ -3620,10 +3622,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_NET.getCode());
                 scheme.setAssetNextStatus(AssetStatusEnum.WAIT_NET.getCode());
 
-            } else {
-                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
-                this.changeStatusById(assetId, AssetStatusEnum.WAIT_SETTING.getCode());
-                scheme.setAssetNextStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             }
         }
 
