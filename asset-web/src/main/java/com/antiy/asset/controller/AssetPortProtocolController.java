@@ -1,19 +1,21 @@
 package com.antiy.asset.controller;
 
-import com.antiy.asset.service.IAssetPortProtocolService;
-import com.antiy.asset.vo.query.AssetPortProtocolQuery;
-import com.antiy.asset.vo.request.AssetPortProtocolRequest;
-import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
+import javax.annotation.Resource;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import com.antiy.asset.service.IAssetPortProtocolService;
+import com.antiy.asset.vo.query.AssetPortProtocolQuery;
+import com.antiy.asset.vo.request.AssetPortProtocolRequest;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.QueryCondition;
+import com.antiy.common.utils.ParamterExceptionUtils;
+
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -65,9 +67,9 @@ public class AssetPortProtocolController {
      */
     @ApiOperation(value = "（无效）批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:portprotocol:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetPortProtocol") AssetPortProtocolQuery assetPortProtocol) throws Exception {
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetPortProtocol") AssetPortProtocolQuery assetPortProtocol) throws Exception {
         return ActionResponse.success(iAssetPortProtocolService.findPageAssetPortProtocol(assetPortProtocol));
     }
 
@@ -79,9 +81,9 @@ public class AssetPortProtocolController {
      */
     @ApiOperation(value = "（无效）通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:portprotocol:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "assetPortProtocol") QueryCondition query) throws Exception {
+    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetPortProtocol") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetPortProtocolService.getById(Integer.parseInt(query.getPrimaryKey())));
     }
@@ -96,7 +98,7 @@ public class AssetPortProtocolController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:portprotocol:deleteById')")
-    public ActionResponse deleteById(@ApiParam(value = "query") QueryCondition query) throws Exception {
+    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetPortProtocolService.deleteById(Integer.parseInt(query.getPrimaryKey())));
     }
