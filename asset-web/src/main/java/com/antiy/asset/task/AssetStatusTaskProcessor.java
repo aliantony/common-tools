@@ -10,7 +10,6 @@ import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +19,16 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetStatusTask;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.vo.enums.ActivityNodeStatusEnum;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.ProcessDefinitionKey;
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.response.WaitingTaskReponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -37,7 +40,7 @@ import com.antiy.common.utils.LoginUserUtil;
  **/
 @Component
 @Configuration      // 1.主要用于标记配置类，兼备Component的效果。
-@EnableScheduling   // 2.开启定时任务
+// @EnableScheduling // 2.开启定时任务
 public class AssetStatusTaskProcessor {
     private Logger     logger = LogUtils.get(this.getClass());
 
@@ -55,6 +58,7 @@ public class AssetStatusTaskProcessor {
     // 或直接指定时间间隔，例如：5秒
     // @Scheduled(fixedRate= 5*60*1000)
     private void configureTasks() {
+
         // 查询代办任务节点信息
         ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
 
@@ -71,6 +75,11 @@ public class AssetStatusTaskProcessor {
         // 构建任务ID与资产状态的映射关系
         Map<String, String> statusMap = new HashMap<>();
         List<WaitingTaskReponse> waitingTaskReponseList = getWaitingTask(registerWaitingTask, retireWaitingTask);
+
+        // 记录日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_STATUS_SCHEDULE_TASK.getName(), null, null,
+            waitingTaskReponseList, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+
         if (waitingTaskReponseList.size() > 0) {
             for (WaitingTaskReponse waitingTaskReponse : waitingTaskReponseList) {
                 if (ActivityNodeStatusEnum.getNodeStatus(waitingTaskReponse.getName()) != null) {
@@ -85,13 +94,13 @@ public class AssetStatusTaskProcessor {
                 List<AssetStatusTask> statusTaskList = statusTaskDao.getAll();
                 if (CollectionUtils.isNotEmpty(statusTaskList)) {
                     for (AssetStatusTask assetStatusTask : statusTaskList) {
-                        Integer assetId = assetStatusTask.getAssetId();
+                        String assetId = assetStatusTask.getAssetId();
                         String taskId = assetStatusTask.getTaskId();
                         if (statusMap.containsKey(assetStatusTask.getTaskId())) {
-                            Integer currentStatus = assetDao.getById(assetId.toString()).getAssetStatus();
+                            Integer currentStatus = assetDao.getById(assetId).getAssetStatus();
                             if (!statusMap.get(taskId).equals(currentStatus.toString())) {
                                 Asset asset = new Asset();
-                                asset.setId(assetStatusTask.getAssetId());
+                                asset.setId(DataTypeUtils.stringToInteger(assetStatusTask.getAssetId()));
                                 asset.setAssetStatus(DataTypeUtils.stringToInteger(statusMap.get(taskId)));
                                 asset.setGmtModified(System.currentTimeMillis());
                                 asset.setModifyUser(

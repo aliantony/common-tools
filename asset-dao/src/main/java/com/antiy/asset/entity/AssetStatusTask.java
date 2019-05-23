@@ -20,7 +20,33 @@ public class AssetStatusTask extends BaseEntity {
     /**
      * 资产主键
      */
-    private Integer           assetId;
+    private String            assetId;
+
+    /**
+     * 创建时间
+     */
+    private Long              gmtCreate;
+
+    /**
+     * 创建人
+     */
+    private Integer           createUser;
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
+    }
 
     public String getTaskId() {
         return taskId;
@@ -30,11 +56,11 @@ public class AssetStatusTask extends BaseEntity {
         this.taskId = taskId;
     }
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 
