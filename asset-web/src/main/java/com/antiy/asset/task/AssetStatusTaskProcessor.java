@@ -103,7 +103,7 @@ public class AssetStatusTaskProcessor {
                                 assetDao.updateStatus(asset);
 
                                 // 删除使用过的任务
-                                statusTaskDao.deleteById(taskId);
+                                statusTaskDao.deleteById(assetStatusTask.getStringId());
                             }
                         }
                     }
