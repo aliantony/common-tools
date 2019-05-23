@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.enums.DataTypeEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -148,8 +147,8 @@ public class AssetUserController {
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @PreAuthorize("hasAuthority('asset:user:queryList')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetUserResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@ApiParam(value = "assetUser") AssetUserQuery assetUser) throws Exception {
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
+    public ActionResponse queryList(@ApiParam(value = "assetUser") @RequestBody AssetUserQuery assetUser) throws Exception {
         if (StringUtils.isNotBlank(assetUser.getDepartmentId())) {
             List<AssetDepartmentResponse> responses = iAssetDepartmentService
                 .findAssetDepartmentById(DataTypeUtils.stringToInteger(assetUser.getDepartmentId()));
@@ -171,8 +170,8 @@ public class AssetUserController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @PreAuthorize("hasAuthority('asset:user:queryById')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetUserResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "id") QueryCondition queryCondition) throws Exception {
+    @RequestMapping(value = "/query", method = RequestMethod.POST)
+    public ActionResponse queryById(@ApiParam(value = "id") @RequestBody QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "Id不能为空");
         return ActionResponse
             .success(iAssetUserService.getById(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey())));
@@ -202,7 +201,7 @@ public class AssetUserController {
     @ApiOperation(value = "查询下拉项的资产使用者信息", notes = "无查询条件")
     @PreAuthorize("hasAuthority('asset:user:queryUserInAsset')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/userInAsset", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/userInAsset", method = RequestMethod.POST)
     public ActionResponse queryUserInAsset() throws Exception {
         return ActionResponse.success(iAssetUserService.queryUserInAsset());
     }
@@ -215,14 +214,14 @@ public class AssetUserController {
     @ApiOperation(value = "查询下拉项的资产使用者信息", notes = "无查询条件")
     @PreAuthorize("hasAuthority('asset:user:queryUserInAsset')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/test", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/test", method = RequestMethod.POST)
     public ActionResponse test() throws Exception {
-        System.out.println(DataTypeEnum.validate("1@qq.com", DataTypeEnum.EMAIL));
-        System.out.println(DataTypeEnum.validate("13551185326", DataTypeEnum.TEL));
-        System.out.println(DataTypeEnum.validate("510123199306233714", DataTypeEnum.IDCARD));
-        System.out.println(DataTypeEnum.validate("192.168.30.1", DataTypeEnum.IP));
-        System.out.println(DataTypeEnum.validate("255.255.255.1", DataTypeEnum.IP));
-        System.out.println(DataTypeEnum.validate("1A:2F:3D:4E:5B:6C", DataTypeEnum.MAC));
+        // System.out.println(DataTypeEnum.validate("1@qq.com", DataTypeEnum.EMAIL));
+        // System.out.println(DataTypeEnum.validate("13551185326", DataTypeEnum.TEL));
+        // System.out.println(DataTypeEnum.validate("510123199306233714", DataTypeEnum.IDCARD));
+        // System.out.println(DataTypeEnum.validate("192.168.30.1", DataTypeEnum.IP));
+        // System.out.println(DataTypeEnum.validate("255.255.255.1", DataTypeEnum.IP));
+        // System.out.println(DataTypeEnum.validate("1A:2F:3D:4E:5B:6C", DataTypeEnum.MAC));
         return ActionResponse.success(iAssetUserService.queryUserInAsset());
     }
 }

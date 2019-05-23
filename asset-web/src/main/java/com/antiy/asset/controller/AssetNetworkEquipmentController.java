@@ -40,7 +40,7 @@ public class AssetNetworkEquipmentController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:networkequipment:saveSingle')")
-    public ActionResponse saveSingle(@RequestBody @ApiParam(value = "assetNetworkEquipment") AssetNetworkEquipmentRequest assetNetworkEquipment) throws Exception {
+    public ActionResponse saveSingle(@ApiParam(value = "assetNetworkEquipment") @RequestBody AssetNetworkEquipmentRequest assetNetworkEquipment) throws Exception {
         iAssetNetworkEquipmentService.saveAssetNetworkEquipment(assetNetworkEquipment);
         return ActionResponse.success();
     }
@@ -55,7 +55,7 @@ public class AssetNetworkEquipmentController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:networkequipment:updateSingle')")
-    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetNetworkEquipment") AssetNetworkEquipmentRequest assetNetworkEquipment) throws Exception {
+    public ActionResponse updateSingle(@ApiParam(value = "assetNetworkEquipment") @RequestBody AssetNetworkEquipmentRequest assetNetworkEquipment) throws Exception {
         iAssetNetworkEquipmentService.updateAssetNetworkEquipment(assetNetworkEquipment);
         return ActionResponse.success();
     }
@@ -68,9 +68,9 @@ public class AssetNetworkEquipmentController {
      */
     @ApiOperation(value = "（无效）批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:networkequipment:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetNetworkEquipment") AssetNetworkEquipmentQuery assetNetworkEquipment) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetNetworkEquipment") @RequestBody AssetNetworkEquipmentQuery assetNetworkEquipment) throws Exception {
         return ActionResponse
             .success(iAssetNetworkEquipmentService.findPageAssetNetworkEquipment(assetNetworkEquipment));
     }
@@ -83,9 +83,9 @@ public class AssetNetworkEquipmentController {
      */
     @ApiOperation(value = "（无效）通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    @RequestMapping(value = "/query", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:networkequipment:queryById')")
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "assetNetworkEquipment") QueryCondition queryCondition) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetNetworkEquipment") @RequestBody QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetNetworkEquipmentService.getById(queryCondition.getPrimaryKey()));
     }
@@ -100,7 +100,7 @@ public class AssetNetworkEquipmentController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:networkequipment:deleteById')")
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") BaseRequest baseRequest) throws Exception {
+    public ActionResponse deleteById(@ApiParam(value = "query") @RequestBody BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isNull(baseRequest.getStringId(), "ID不能为空");
         return ActionResponse.success(iAssetNetworkEquipmentService.deleteById(baseRequest.getStringId()));
     }

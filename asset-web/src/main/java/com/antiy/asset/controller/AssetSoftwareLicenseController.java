@@ -1,5 +1,14 @@
 package com.antiy.asset.controller;
 
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.antiy.asset.service.IAssetSoftwareLicenseService;
 import com.antiy.asset.vo.query.AssetSoftwareLicenseQuery;
 import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
@@ -8,15 +17,8 @@ import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.slf4j.Logger;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import io.swagger.annotations.*;
 
 /**
  *
@@ -55,7 +57,7 @@ public class AssetSoftwareLicenseController {
     @ApiOperation(value = "（无效）修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetSoftwareLicense") AssetSoftwareLicenseRequest assetSoftwareLicenseRequest) throws Exception {
+    public ActionResponse updateSingle(@ApiParam(value = "assetSoftwareLicense") @RequestBody AssetSoftwareLicenseRequest assetSoftwareLicenseRequest) throws Exception {
         iAssetSoftwareLicenseService.updateAssetSoftwareLicense(assetSoftwareLicenseRequest);
         return ActionResponse.success();
     }
@@ -68,8 +70,8 @@ public class AssetSoftwareLicenseController {
     @PreAuthorize("hasAuthority('asset:softwarelicense:queryList')")
     @ApiOperation(value = "（无效）批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@ApiParam(value = "assetSoftwareLicense") AssetSoftwareLicenseQuery assetSoftwareLicenseQuery) throws Exception {
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
+    public ActionResponse queryList(@ApiParam(value = "assetSoftwareLicense") @RequestBody AssetSoftwareLicenseQuery assetSoftwareLicenseQuery) throws Exception {
         return ActionResponse
             .success(iAssetSoftwareLicenseService.findPageAssetSoftwareLicense(assetSoftwareLicenseQuery));
     }
@@ -82,8 +84,8 @@ public class AssetSoftwareLicenseController {
     @PreAuthorize("hasAuthority('asset:softwarelicense:queryById')")
     @ApiOperation(value = "（无效）通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "assetSoftwareLicense") QueryCondition queryCondition) throws Exception {
+    @RequestMapping(value = "/query", method = RequestMethod.POST)
+    public ActionResponse queryById(@ApiParam(value = "assetSoftwareLicense") @RequestBody QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetSoftwareLicenseService.getById(queryCondition.getPrimaryKey()));
     }
