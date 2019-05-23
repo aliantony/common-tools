@@ -95,13 +95,13 @@ public class AssetStatusTaskProcessor {
                 List<AssetStatusTask> statusTaskList = statusTaskDao.getAll();
                 if (CollectionUtils.isNotEmpty(statusTaskList)) {
                     for (AssetStatusTask assetStatusTask : statusTaskList) {
-                        Integer assetId = assetStatusTask.getAssetId();
+                        String assetId = assetStatusTask.getAssetId();
                         String taskId = assetStatusTask.getTaskId();
                         if (statusMap.containsKey(assetStatusTask.getTaskId())) {
-                            Integer currentStatus = assetDao.getById(assetId.toString()).getAssetStatus();
+                            Integer currentStatus = assetDao.getById(assetId).getAssetStatus();
                             if (!statusMap.get(taskId).equals(currentStatus.toString())) {
                                 Asset asset = new Asset();
-                                asset.setId(assetStatusTask.getAssetId());
+                                asset.setId(DataTypeUtils.stringToInteger(assetStatusTask.getAssetId()));
                                 asset.setAssetStatus(DataTypeUtils.stringToInteger(statusMap.get(taskId)));
                                 asset.setGmtModified(System.currentTimeMillis());
                                 asset.setModifyUser(

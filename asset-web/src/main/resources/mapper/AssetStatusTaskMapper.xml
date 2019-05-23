@@ -7,6 +7,8 @@
         <id column="id" property="id"/>
         <result column="task_id" property="taskId"/>
         <result column="asset_id" property="assetId"/>
+        <result column="create_user" property="createUser"/>
+        <result column="gmt_create" property="gmtCreate"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -25,6 +27,12 @@
         <if test=" assetId != null">
             asset_id,
         </if>
+        <if test=" createUser != null">
+            create_user,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create
+        </if>
     </sql>
 
     <sql id="IF_Value_Column_List">
@@ -33,6 +41,12 @@
         </if>
         <if test=" assetId != null">
             #{assetId },
+        </if>
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate }
         </if>
     </sql>
 
@@ -43,6 +57,12 @@
         <if test=" assetId != null">
             asset_id = #{assetId },
         </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" gmtCreate != null">
+            asset_id = #{gmtCreate }
+        </if>
     </sql>
 
     <sql id="Where_Column_List">
@@ -50,7 +70,7 @@
             and task_id = #{taskId }
         </if>
         <if test=" assetId != null">
-            and asset_id = #{assetId }
+            and gmt_create = #{assetId }
         </if>
     </sql>
 
