@@ -9,9 +9,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetStatusTaskDao;
@@ -38,8 +36,8 @@ import com.antiy.common.utils.LoginUserUtil;
  * @author zhangyajun
  * @create 2019-05-22 10:45
  **/
-@Component
-@Configuration      // 1.主要用于标记配置类，兼备Component的效果。
+// @Component
+// @Configuration // 1.主要用于标记配置类，兼备Component的效果。
 // @EnableScheduling // 2.开启定时任务
 public class AssetStatusTaskProcessor {
     private Logger     logger = LogUtils.get(this.getClass());
