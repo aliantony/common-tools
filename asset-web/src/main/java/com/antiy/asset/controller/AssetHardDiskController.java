@@ -67,9 +67,9 @@ public class AssetHardDiskController {
      */
     @ApiOperation(value = "（无效）批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:harddisk:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetHardDisk") AssetHardDiskQuery assetHardDisk) throws Exception {
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetHardDisk") AssetHardDiskQuery assetHardDisk) throws Exception {
         return ActionResponse.success(iAssetHardDiskService.findPageAssetHardDisk(assetHardDisk));
     }
 
@@ -81,7 +81,7 @@ public class AssetHardDiskController {
      */
     @ApiOperation(value = "（无效）通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:harddisk:queryById')")
     public ActionResponse queryById(@RequestBody @ApiParam(value = "assetHardDisk") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");

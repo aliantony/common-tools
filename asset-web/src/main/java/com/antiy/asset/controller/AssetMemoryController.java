@@ -67,9 +67,9 @@ public class AssetMemoryController {
      */
     @ApiOperation(value = "（无效）批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:memory:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetMemory") AssetMemoryQuery assetMemory) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetMemory") @RequestBody AssetMemoryQuery assetMemory) throws Exception {
         return ActionResponse.success(iAssetMemoryService.findPageAssetMemory(assetMemory));
     }
 
@@ -81,7 +81,7 @@ public class AssetMemoryController {
      */
     @ApiOperation(value = "（无效）通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:memory:queryById')")
     public ActionResponse queryById(@RequestBody @ApiParam(value = "assetMemory") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");

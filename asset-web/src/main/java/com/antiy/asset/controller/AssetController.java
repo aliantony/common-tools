@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.vo.request.*;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
@@ -23,10 +24,6 @@ import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.ActivityHandleRequest;
-import com.antiy.asset.vo.request.AssetImportRequest;
-import com.antiy.asset.vo.request.AssetOuterRequest;
-import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.AssetCountColumnarResponse;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
@@ -75,9 +72,9 @@ public class AssetController {
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "asset") AssetQuery asset) throws Exception {
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
 
@@ -89,18 +86,18 @@ public class AssetController {
      */
     @ApiOperation(value = "通联设置资产查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/unconnectedList", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/unconnectedList", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
-    public ActionResponse findUnconnectedAsset(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
+    public ActionResponse findUnconnectedAsset(@RequestBody @ApiParam(value = "asset") AssetQuery asset) throws Exception {
         return ActionResponse.success(iAssetService.findUnconnectedAsset(asset));
     }
 
     @ApiOperation(value = "通过区域Id查询当前区域是否存在资产", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/queryAssetCountByAreaIds", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/queryAssetCountByAreaIds", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetCountByAreaIds')")
-    public ActionResponse queryAssetCountByAreaIds(@ApiParam(value = "areaIds") Integer[] areaIds) throws Exception {
-        return ActionResponse.success(iAssetService.queryAssetCountByAreaIds(new ArrayList<>(Arrays.asList(areaIds))));
+    public ActionResponse queryAssetCountByAreaIds(@RequestBody @ApiParam(value = "areaIds") AssetCountByAreaIdsRequest areaIds) throws Exception {
+        return ActionResponse.success(iAssetService.queryAssetCountByAreaIds(new ArrayList<>(Arrays.asList(areaIds.getAreaIds()))));
     }
 
     /**
@@ -111,9 +108,9 @@ public class AssetController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "asset") AssetDetialCondition asset) throws Exception {
+    public ActionResponse queryById(@RequestBody @ApiParam(value = "asset") AssetDetialCondition asset) throws Exception {
         ParamterExceptionUtils.isNull(asset, "资产不能为空");
         ParamterExceptionUtils.isNull(asset.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetService.getByAssetId(asset));
@@ -231,7 +228,7 @@ public class AssetController {
      */
     @ApiOperation(value = "查询厂商接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/pulldown/manufacturer", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/pulldown/manufacturer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
     public ActionResponse<List<String>> pulldownManufacturer() throws Exception {
         return ActionResponse.success(iAssetService.pulldownManufacturer());
@@ -245,11 +242,10 @@ public class AssetController {
      */
     @ApiOperation(value = "查询通联设置厂商下拉接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/pulldown/unconnectedManufacturer", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/pulldown/unconnectedManufacturer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
-    public ActionResponse<List<String>> pulldownUnconnectedManufacturer(@ApiParam("是否是网络设备") Integer isNet,
-                                                                        @ApiParam("主键") String primaryKey) throws Exception {
-        return ActionResponse.success(iAssetService.pulldownUnconnectedManufacturer(isNet, primaryKey));
+    public ActionResponse<List<String>> pulldownUnconnectedManufacturer(@RequestBody UnconnectedManufacturerRequest request) throws Exception {
+        return ActionResponse.success(iAssetService.pulldownUnconnectedManufacturer(request.getIsNet(), request.getPrimaryKey()));
     }
 
     /**
@@ -275,7 +271,7 @@ public class AssetController {
      */
     @ApiOperation(value = "硬件资产按二级品类型号统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "assetCountResponse"), })
-    @RequestMapping(value = "/count/category", method = RequestMethod.GET)
+    @RequestMapping(value = "/count/category", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:countAssetByCategory')")
     public ActionResponse countAssetByCategory() throws Exception {
         return ActionResponse.success(iAssetService.countCategory());
@@ -288,7 +284,7 @@ public class AssetController {
      */
     @ApiOperation(value = "硬件资产按状态统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountColumnarResponse.class, responseContainer = "assetCountResponse"), })
-    @RequestMapping(value = "/count/status", method = RequestMethod.GET)
+    @RequestMapping(value = "/count/status", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:countAssetByStatus')")
     public ActionResponse countAssetByStatus() throws Exception {
         return ActionResponse.success(iAssetService.countStatus());
@@ -301,7 +297,7 @@ public class AssetController {
      */
     @ApiOperation(value = "硬件资产按厂商统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "assetCountResponse"), })
-    @RequestMapping(value = "/count/manufacturer", method = RequestMethod.GET)
+    @RequestMapping(value = "/count/manufacturer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:countAssetByManufacturer')")
     public ActionResponse countAssetByManufacturer() throws Exception {
         return ActionResponse.success(iAssetService.countManufacturer());

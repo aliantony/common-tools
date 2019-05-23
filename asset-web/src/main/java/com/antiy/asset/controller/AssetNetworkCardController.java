@@ -67,9 +67,9 @@ public class AssetNetworkCardController {
      */
     @ApiOperation(value = "（无效）批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:networkcard:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetNetworkCard") AssetNetworkCardQuery assetNetworkCard) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetNetworkCard") @RequestBody AssetNetworkCardQuery assetNetworkCard) throws Exception {
         PageResult<AssetNetworkCardResponse> pageResult = iAssetNetworkCardService
             .findPageAssetNetworkCard(assetNetworkCard);
         return ActionResponse.success(iAssetNetworkCardService.findPageAssetNetworkCard(assetNetworkCard));
@@ -83,9 +83,9 @@ public class AssetNetworkCardController {
      */
     @ApiOperation(value = "（无效）通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    @RequestMapping(value = "/query", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:networkcard:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "assetNetworkCard") QueryCondition queryCondition) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetNetworkCard") @RequestBody QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetNetworkCardService.getById(queryCondition.getPrimaryKey()));
     }

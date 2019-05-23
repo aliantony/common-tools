@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,9 +36,9 @@ public class AlarmAssetController {
 
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AlarmAssetResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:alarm:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "asset") AlarmAssetRequest request) throws Exception {
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "asset") AlarmAssetRequest request) throws Exception {
         return ActionResponse.success(assetService.queryAlarmAssetList(request));
     }
 }
