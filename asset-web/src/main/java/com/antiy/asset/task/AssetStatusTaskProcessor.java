@@ -20,12 +20,16 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetStatusTask;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.vo.enums.ActivityNodeStatusEnum;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.ProcessDefinitionKey;
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.response.WaitingTaskReponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -55,6 +59,7 @@ public class AssetStatusTaskProcessor {
     // 或直接指定时间间隔，例如：5秒
     // @Scheduled(fixedRate= 5*60*1000)
     private void configureTasks() {
+
         // 查询代办任务节点信息
         ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
 
@@ -71,6 +76,11 @@ public class AssetStatusTaskProcessor {
         // 构建任务ID与资产状态的映射关系
         Map<String, String> statusMap = new HashMap<>();
         List<WaitingTaskReponse> waitingTaskReponseList = getWaitingTask(registerWaitingTask, retireWaitingTask);
+
+        // 记录日志
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_STATUS_SCHEDULE_TASK.getName(), null, null,
+            waitingTaskReponseList, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+
         if (waitingTaskReponseList.size() > 0) {
             for (WaitingTaskReponse waitingTaskReponse : waitingTaskReponseList) {
                 if (ActivityNodeStatusEnum.getNodeStatus(waitingTaskReponse.getName()) != null) {
