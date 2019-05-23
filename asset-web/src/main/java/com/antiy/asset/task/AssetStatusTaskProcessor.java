@@ -57,10 +57,6 @@ public class AssetStatusTaskProcessor {
     private void configureTasks() {
         // 查询代办任务节点信息
         ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
-        if (LoginUserUtil.getLoginUser() != null) {
-            activityWaitingQuery.setUser(aesEncoder.encode(LoginUserUtil.getLoginUser().getId().toString(),
-                LoginUserUtil.getLoginUser().getUsername()));
-        }
 
         // 登记的资产待办信息
         activityWaitingQuery.setProcessDefinitionKey(ProcessDefinitionKey.HARDWARE_ADMITTANCE.getKey());
