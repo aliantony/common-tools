@@ -1,5 +1,14 @@
 package com.antiy.asset.controller;
 
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.antiy.asset.service.IAssetSafetyEquipmentService;
 import com.antiy.asset.vo.query.AssetSafetyEquipmentQuery;
 import com.antiy.asset.vo.request.AssetSafetyEquipmentRequest;
@@ -9,15 +18,8 @@ import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.slf4j.Logger;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -57,7 +59,7 @@ public class AssetSafetyEquipmentController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:safetyequipment:updateSingle')")
-    public ActionResponse updateSingle(@ApiParam(value = "assetSafetyEquipment") AssetSafetyEquipmentRequest assetSafetyEquipmentRequest) throws Exception {
+    public ActionResponse updateSingle(@ApiParam(value = "assetSafetyEquipment") @RequestBody AssetSafetyEquipmentRequest assetSafetyEquipmentRequest) throws Exception {
         return ActionResponse
             .success(iAssetSafetyEquipmentService.updateAssetSafetyEquipment(assetSafetyEquipmentRequest));
     }
@@ -70,9 +72,9 @@ public class AssetSafetyEquipmentController {
      */
     @ApiOperation(value = "（无效）批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSafetyEquipmentResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:safetyequipment:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetSafetyEquipment") AssetSafetyEquipmentQuery assetSafetyEquipmentQuery) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetSafetyEquipment") @RequestBody AssetSafetyEquipmentQuery assetSafetyEquipmentQuery) throws Exception {
         return ActionResponse
             .success(iAssetSafetyEquipmentService.findPageAssetSafetyEquipment(assetSafetyEquipmentQuery));
     }
@@ -85,9 +87,9 @@ public class AssetSafetyEquipmentController {
      */
     @ApiOperation(value = "（无效）通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSafetyEquipmentResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    @RequestMapping(value = "/query", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:safetyequipment:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "assetSafetyEquipment") QueryCondition queryCondition) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetSafetyEquipment") @RequestBody QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetSafetyEquipmentService.getById(queryCondition.getPrimaryKey()));
     }

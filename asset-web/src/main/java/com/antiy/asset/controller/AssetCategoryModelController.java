@@ -3,6 +3,7 @@ package com.antiy.asset.controller;
 import javax.annotation.Resource;
 
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.CategoryNodeRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,9 +69,9 @@ public class AssetCategoryModelController {
      */
     @ApiOperation(value = "(无效)批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetCategoryModel") AssetCategoryModelQuery assetCategoryModel)
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetCategoryModel") AssetCategoryModelQuery assetCategoryModel)
                                                                                                                        throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.findPageAssetCategoryModel(assetCategoryModel));
     }
@@ -83,9 +84,9 @@ public class AssetCategoryModelController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "QueryCondition") QueryCondition condition) throws Exception {
+    public ActionResponse queryById(@RequestBody @ApiParam(value = "QueryCondition") QueryCondition condition) throws Exception {
         ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "id不能为空");
         return ActionResponse.success(iAssetCategoryModelService.getById(Integer.parseInt(condition.getPrimaryKey())));
     }
@@ -113,9 +114,9 @@ public class AssetCategoryModelController {
      */
     @ApiOperation(value = "(无效)通过ID查询品类型号及其子品类型号", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/get/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/get/id", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:getById')")
-    public ActionResponse getById(@ApiParam(value = "QueryCondition") QueryCondition condition) throws Exception {
+    public ActionResponse getById(@RequestBody @ApiParam(value = "QueryCondition") QueryCondition condition) throws Exception {
         ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "id不能为空");
         return ActionResponse.success(iAssetCategoryModelService.findAssetCategoryModelById(Integer.parseInt(condition
             .getPrimaryKey())));
@@ -128,7 +129,7 @@ public class AssetCategoryModelController {
      */
     @ApiOperation(value = "查询硬件第二级数据接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/second", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/second", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:getAssetCategoryByName')")
     public ActionResponse getAssetCategoryByName() throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.getNextLevelCategoryByName("硬件"));
@@ -141,7 +142,7 @@ public class AssetCategoryModelController {
      */
     @ApiOperation(value = "查询软件第二级数据接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/software", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/software", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:getSoftwareCategoryByName')")
     public ActionResponse getSoftwareCategoryByName() throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.getNextLevelCategoryByName("软件"));
@@ -154,7 +155,7 @@ public class AssetCategoryModelController {
      */
     @ApiOperation(value = "查询品类树", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/node", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/node", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryCategoryNode')")
     public ActionResponse queryCategoryNode() throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.queryCategoryNode());
@@ -167,10 +168,10 @@ public class AssetCategoryModelController {
      */
     @ApiOperation(value = "通过类型查询品类树", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/typeNode", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/typeNode", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryCategoryNodeByType')")
-    public ActionResponse queryCategoryNodeByType(@ApiParam(value = "1--软件 2--硬件") Integer type) throws Exception {
-        return ActionResponse.success(iAssetCategoryModelService.queryCategoryNode(type));
+    public ActionResponse queryCategoryNodeByType(@RequestBody @ApiParam(value = "1--软件 2--硬件")CategoryNodeRequest categoryNodeRequest) throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.queryCategoryNode(categoryNodeRequest.getType()));
     }
 
     /**
@@ -180,9 +181,9 @@ public class AssetCategoryModelController {
      */
     @ApiOperation(value = "通过计算设备和网络设备树", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/computeNetNode", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/computeNetNode", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryComputeAndNetCategoryNode')")
-    public ActionResponse queryComputeAndNetCategoryNode(@ApiParam("是否是网络设备") Integer isNet) throws Exception {
-        return ActionResponse.success(iAssetCategoryModelService.queryComputeAndNetCategoryNode(isNet));
+    public ActionResponse queryComputeAndNetCategoryNode(@RequestBody @ApiParam("是否是网络设备") CategoryNodeRequest categoryNodeRequest) throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.queryComputeAndNetCategoryNode(categoryNodeRequest.getIsNet()));
     }
 }

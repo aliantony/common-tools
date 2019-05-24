@@ -3,6 +3,7 @@ package com.antiy.asset.controller;
 import javax.annotation.Resource;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,9 +35,9 @@ public class AssetOperationRecordController {
      */
     @ApiOperation(value = "查找资产操作历史", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOperationRecordBarResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:operationrecord:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetOperationRecordQuery") AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetOperationRecordQuery") @RequestBody AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
         return ActionResponse.success(assetOperationRecordService.queryStatusBarOrderByTime(assetOperationRecordQuery));
     }
 

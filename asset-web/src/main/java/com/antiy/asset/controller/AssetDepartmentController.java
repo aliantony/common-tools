@@ -86,9 +86,9 @@ public class AssetDepartmentController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetDepartmentResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:department:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "QueryCondition") QueryCondition condition) throws Exception {
+    public ActionResponse queryById(@RequestBody @ApiParam(value = "QueryCondition") QueryCondition condition) throws Exception {
         ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "id不能为空");
         return ActionResponse.success(iAssetDepartmentService.getById(Integer.parseInt(condition.getPrimaryKey())));
 
@@ -126,7 +126,7 @@ public class AssetDepartmentController {
      */
     @ApiOperation(value = "查询部门树形结构", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetDepartmentNodeResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/node", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/node", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:department:queryDepartmentNode')")
     public ActionResponse queryDepartmentNode() throws Exception {
         return ActionResponse.success(iAssetDepartmentService.findDepartmentNode());

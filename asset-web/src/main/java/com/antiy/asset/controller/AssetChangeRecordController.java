@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.request.RequestId;
+import com.antiy.asset.vo.request.UniformChangeInfoRequest;
+import com.antiy.common.base.QueryCondition;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +54,7 @@ public class AssetChangeRecordController {
     @ApiOperation(value = "(无效)修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetChangeRecord") AssetChangeRecordRequest assetChangeRecordRequest) throws Exception {
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetChangeRecord") AssetChangeRecordRequest assetChangeRecordRequest) throws Exception {
         iAssetChangeRecordService.updateAssetChangeRecord(assetChangeRecordRequest);
         return ActionResponse.success();
     }
@@ -63,34 +66,35 @@ public class AssetChangeRecordController {
      */
     @ApiOperation(value = "(无效)批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@ApiParam(value = "assetChangeRecord") AssetChangeRecordQuery assetChangeRecordQuery) throws Exception {
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetChangeRecord") AssetChangeRecordQuery assetChangeRecordQuery) throws Exception {
         return ActionResponse.success(iAssetChangeRecordService.findPageAssetChangeRecord(assetChangeRecordQuery));
     }
 
     /**
      * 通过ID删除
-     * @param id
+     * @param requestId
      * @return actionResponse
      */
     @ApiOperation(value = "(无效)通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetChangeRecordService.deleteById(id));
+    public ActionResponse deleteById(@RequestBody @ApiParam(value = "id") @PathVariable("id")RequestId requestId) throws Exception {
+        ParamterExceptionUtils.isNull(requestId.getId(), "ID不能为空");
+        return ActionResponse.success(iAssetChangeRecordService.deleteById(requestId.getId()));
     }
 
     /**
      * 通过ID查询变更信息统一接口
-     * @param businessId
+     * @param uniformChangeInfoRequest
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询变更信息统一接口", notes = "业务ID")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class, responseContainer = "actionResponse") })
-    @RequestMapping(value = "/queryUniformChangeInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/queryUniformChangeInfo", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:changerecord:queryUniformChangeInfo')")
-    public ActionResponse queryUniformChangeInfo(@ApiParam(value = "业务ID") Integer businessId, @ApiParam(value = "品类型号ID") Integer categoryModelId) throws Exception {
-        return ActionResponse.success(iAssetChangeRecordService.queryUniformChangeInfo(businessId, categoryModelId));
+    public ActionResponse queryUniformChangeInfo(@RequestBody @ApiParam(value = "businessId:业务ID;categoryModelId:品类型号ID") UniformChangeInfoRequest uniformChangeInfoRequest) throws Exception {
+        return ActionResponse.success(iAssetChangeRecordService.queryUniformChangeInfo(
+            uniformChangeInfoRequest.getBusinessId(), uniformChangeInfoRequest.getCategoryModelId()));
     }
 }

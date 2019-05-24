@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.ITopologyService;
 import com.antiy.asset.vo.enums.TopologyTypeEnum;
+import com.antiy.asset.vo.query.AssetTopologyQuery;
 import com.antiy.asset.vo.request.TopologyRequest;
 import com.antiy.asset.vo.response.TopologyResponse;
 import com.antiy.common.base.ActionResponse;
@@ -38,7 +39,7 @@ public class TopologyController {
     @ApiOperation(value = "(无效)查询网络拓扑初始化信息", notes = "传入实体对象信息")
     @PreAuthorize("hasAuthority('asset:topology:queryTopologyInit')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = TopologyResponse.class) })
-    @RequestMapping(value = "/query/init", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/init", method = RequestMethod.POST)
     public ActionResponse queryTopologyInit() throws Exception {
         return ActionResponse.success(iTopologyService.queryTopologyInit());
     }
@@ -65,10 +66,11 @@ public class TopologyController {
     @ApiOperation(value = "(无效)查询网络拓扑信息", notes = "传入实体对象信息")
     @PreAuthorize("hasAuthority('asset:topology:queryTopology')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class) })
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public ActionResponse<String> queryTopology(String topologyType) throws Exception {
-        ParamterExceptionUtils.isNull(TopologyTypeEnum.getTopologyByName(topologyType), "拓扑类型错误");
-        return ActionResponse
-            .success(iTopologyService.queryTopology(TopologyTypeEnum.getTopologyByName(topologyType).getCode()));
+    @RequestMapping(value = "/query", method = RequestMethod.POST)
+    public ActionResponse<String> queryTopology(@RequestBody AssetTopologyQuery assetTopologyQuery) throws Exception {
+        ParamterExceptionUtils.isNull(TopologyTypeEnum.getTopologyByName(assetTopologyQuery.getTopologyType()),
+            "拓扑类型错误");
+        return ActionResponse.success(iTopologyService
+            .queryTopology(TopologyTypeEnum.getTopologyByName(assetTopologyQuery.getTopologyType()).getCode()));
     }
 }

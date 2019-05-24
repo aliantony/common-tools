@@ -53,9 +53,9 @@ public class AssetAdmittanceController {
 
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:admittance:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "asset") AssetQuery asset) throws Exception {
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "asset") AssetQuery asset) throws Exception {
         asset.setAssetStatusList(Arrays.asList(new Integer[] { 3, 4, 5, 6, 7, 8, 9 }));
         asset.setAdmittance(true);
         return ActionResponse.success(assetService.findPageAsset(asset));

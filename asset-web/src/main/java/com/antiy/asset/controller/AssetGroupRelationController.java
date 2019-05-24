@@ -65,9 +65,9 @@ public class                       AssetGroupRelationController {
      */
     @ApiOperation(value = "(无效)批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     @PreAuthorize(value="hasAuthority('asset:grouprelation:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetGroupRelation") AssetGroupRelationQuery assetGroupRelation) throws Exception {
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetGroupRelation") AssetGroupRelationQuery assetGroupRelation) throws Exception {
         return ActionResponse.success(iAssetGroupRelationService.findPageAssetGroupRelation(assetGroupRelation));
     }
 
@@ -79,7 +79,7 @@ public class                       AssetGroupRelationController {
      */
     @ApiOperation(value = "(无效)通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     @PreAuthorize(value="hasAuthority('asset:grouprelation:queryById')")
     public ActionResponse queryById(@RequestBody @ApiParam(value = "assetGroupRelation") QueryCondition query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");

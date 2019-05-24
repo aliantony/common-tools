@@ -81,9 +81,9 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetSoftware") AssetSoftwareQuery assetSoftware) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetSoftware") @RequestBody AssetSoftwareQuery assetSoftware) throws Exception {
         return ActionResponse.success(iAssetSoftwareService.findPageAssetSoftware(assetSoftware));
     }
 
@@ -95,9 +95,9 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    @RequestMapping(value = "/query", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "assetSoftware") QueryCondition queryCondition) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetSoftware") @RequestBody QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetSoftwareService.getById(queryCondition.getPrimaryKey()));
     }
@@ -132,7 +132,7 @@ public class AssetSoftwareController {
 
     @ApiOperation(value = "查询厂商接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/pulldown/manufacturer", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/pulldown/manufacturer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:pulldownManufacturer')")
     public ActionResponse<List<String>> pulldownManufacturer() throws Exception {
         return ActionResponse.success(iAssetSoftwareService.pulldownManufacturer());
@@ -175,7 +175,7 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "软件资产按二级品类型号统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/count/category", method = RequestMethod.GET)
+    @RequestMapping(value = "/count/category", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:countAssetByCategory')")
     public ActionResponse countAssetByCategory() throws Exception {
         return ActionResponse.success(iAssetSoftwareService.countCategory());
@@ -188,7 +188,7 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "软件资产按状态统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountColumnarResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/count/status", method = RequestMethod.GET)
+    @RequestMapping(value = "/count/status", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:countAssetByStatus')")
     public ActionResponse countAssetByStatus() throws Exception {
         return ActionResponse.success(iAssetSoftwareService.countStatus());
@@ -201,7 +201,7 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "软件资产按厂商统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/count/manufacturer", method = RequestMethod.GET)
+    @RequestMapping(value = "/count/manufacturer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:countAssetByManufacturer')")
     public ActionResponse countAssetByManufacturer() throws Exception {
         return ActionResponse.success(iAssetSoftwareService.countManufacturer());
@@ -215,8 +215,8 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "软件资产厂商查询（无效)", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/manufacturer", method = RequestMethod.GET)
-    public ActionResponse<List<String>> queryAssetByManufacturer(@ApiParam(value = "manufacturerName") String manufacturerName) throws Exception {
+    @RequestMapping(value = "/query/manufacturer", method = RequestMethod.POST)
+    public ActionResponse<List<String>> queryAssetByManufacturer(@ApiParam(value = "manufacturerName") @RequestBody String manufacturerName) throws Exception {
         return ActionResponse.success(iAssetSoftwareService.getManufacturerName(manufacturerName));
     }
 
@@ -228,9 +228,9 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "软件详情查询", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/detail", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/detail", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:querySoftwareDetail')")
-    public ActionResponse<AssetSoftwareDetailResponse> querySoftwareDetail(@ApiParam(value = "softwareQuery") SoftwareQuery softwareQuery) throws Exception {
+    public ActionResponse<AssetSoftwareDetailResponse> querySoftwareDetail(@ApiParam(value = "softwareQuery") @RequestBody SoftwareQuery softwareQuery) throws Exception {
         ParamterExceptionUtils.isBlank(softwareQuery.getPrimaryKey(), "软件资产Id不能为空");
         return ActionResponse.success(iAssetSoftwareService.querySoftWareDetail(softwareQuery));
     }
@@ -243,9 +243,9 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "软件安装列表查询", notes = "软件安装列表查询")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/install", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/install", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:queryInstallList')")
-    public ActionResponse queryInstallList(@ApiParam(value = "softwareQuery") AssetSoftwareQuery softwareQuery) throws Exception {
+    public ActionResponse queryInstallList(@ApiParam(value = "softwareQuery") @RequestBody AssetSoftwareQuery softwareQuery) throws Exception {
         return ActionResponse.success(iAssetSoftwareService.findPageInstall(softwareQuery));
     }
 
@@ -257,9 +257,9 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "软件对应的硬件安装列表查询", notes = "软件安装列表查询")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/assetinstall", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/assetinstall", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:queryAssetInstallList')")
-    public ActionResponse queryAssetInstallList(@ApiParam(value = "softwareQuery") AssetSoftwareQuery softwareQuery) throws Exception {
+    public ActionResponse queryAssetInstallList(@ApiParam(value = "softwareQuery") @RequestBody AssetSoftwareQuery softwareQuery) throws Exception {
         // 只查询安装成功的
         softwareQuery.setInstallStatus(SoftInstallStatus.SUCCESS.getCode());
         return ActionResponse.success(iAssetSoftwareService.findPageAssetInstall(softwareQuery));
@@ -273,9 +273,9 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "自动安装、人工安装进度", notes = "自动安装、人工安装进度")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/installSchedule", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/installSchedule", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:queryInstallSchedule')")
-    public ActionResponse queryInstallSchedule(@ApiParam(value = "softwareQuery") AssetSoftwareQuery softwareQuery) throws Exception {
+    public ActionResponse queryInstallSchedule(@ApiParam(value = "softwareQuery") @RequestBody AssetSoftwareQuery softwareQuery) throws Exception {
         ParamterExceptionUtils.isBlank(softwareQuery.getId(), "软件ID不能为空");
         SoftwareInstallResponse softwareInstallResponse = new SoftwareInstallResponse();
         softwareInstallResponse.setAssetSoftware(

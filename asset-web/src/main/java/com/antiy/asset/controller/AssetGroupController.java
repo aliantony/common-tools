@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.request.UnconnectedManufacturerRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,9 +72,9 @@ public class AssetGroupController {
      */
     @ApiOperation(value = "批量查询", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:group:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetGroup") AssetGroupQuery assetGroup) throws Exception {
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetGroup") AssetGroupQuery assetGroup) throws Exception {
         return ActionResponse.success(iAssetGroupService.findPageAssetGroup(assetGroup));
     }
 
@@ -85,9 +86,9 @@ public class AssetGroupController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:group:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "queryCondition") QueryCondition queryCondition) throws Exception {
+    public ActionResponse queryById(@RequestBody @ApiParam(value = "queryCondition") QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "primaryKey不能为空");
         return ActionResponse.success(iAssetGroupService.findGroupById(queryCondition.getPrimaryKey()));
     }
@@ -99,7 +100,7 @@ public class AssetGroupController {
      */
     @ApiOperation(value = "查询下拉项的资产组创建人", notes = "")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetGroupResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/createUser", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/createUser", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:group:queryCreateUser')")
     public ActionResponse queryCreateUser() throws Exception {
         return ActionResponse.success(iAssetGroupService.queryCreateUser());
@@ -128,7 +129,7 @@ public class AssetGroupController {
      */
     @ApiOperation(value = "查询下拉项的资产组信息", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/groupInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/groupInfo", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:group:queryGroupInfo')")
     public ActionResponse<List<SelectResponse>> queryGroupInfo() throws Exception {
         return ActionResponse.success(iAssetGroupService.queryGroupInfo());
@@ -142,10 +143,10 @@ public class AssetGroupController {
      */
     @ApiOperation(value = "查询下拉项的资产组信息（通联设置界面）", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/unconnectedGroupInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/unconnectedGroupInfo", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:group:queryGroupInfo')")
-    public ActionResponse<List<SelectResponse>> queryUnconnectedGroupInfo(@ApiParam("是否是网络设备") Integer isNet,@ApiParam("主键")String primaryKey) throws Exception {
-        return ActionResponse.success(iAssetGroupService.queryUnconnectedGroupInfo(isNet,primaryKey));
+    public ActionResponse<List<SelectResponse>> queryUnconnectedGroupInfo(@RequestBody UnconnectedManufacturerRequest request) throws Exception {
+        return ActionResponse.success(iAssetGroupService.queryUnconnectedGroupInfo(request.getIsNet(), request.getPrimaryKey()));
     }
 
     // /**

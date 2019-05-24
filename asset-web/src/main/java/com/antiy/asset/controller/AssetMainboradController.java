@@ -68,9 +68,9 @@ public class AssetMainboradController {
      */
     @ApiOperation(value = "（无效）批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:mainborad:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetMainborad") AssetMainboradQuery assetMainborad) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetMainborad") @RequestBody AssetMainboradQuery assetMainborad) throws Exception {
         return ActionResponse.success(iAssetMainboradService.findPageAssetMainborad(assetMainborad));
     }
 
@@ -82,9 +82,9 @@ public class AssetMainboradController {
      */
     @ApiOperation(value = "（无效）通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    @RequestMapping(value = "/query", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:mainborad:queryById')")
-    public ActionResponse queryById(@ApiParam(value = "assetMainborad") QueryCondition queryCondition) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "assetMainborad") @RequestBody QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetMainboradService.getById(queryCondition.getPrimaryKey()));
     }

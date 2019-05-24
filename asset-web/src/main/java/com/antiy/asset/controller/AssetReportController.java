@@ -1,5 +1,13 @@
 package com.antiy.asset.controller;
 
+import javax.annotation.Resource;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.util.ExcelUtils;
@@ -10,14 +18,8 @@ import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -41,9 +43,9 @@ public class AssetReportController {
      */
     @ApiOperation(value = "根据时间条件查询分类统计资产数量", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/categoryCountByTime", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/categoryCountByTime", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
-    public ActionResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
+    public ActionResponse queryCategoryCountByTime(@RequestBody AssetReportCategoryCountQuery query) throws Exception {
         return ActionResponse.success(iAssetReportService.queryCategoryCountByTime(query));
     }
 
@@ -54,9 +56,9 @@ public class AssetReportController {
      */
     @ApiOperation(value = "根据时间条件查询分类统计资产数量（表格数据）", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportTableResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/categoryCountByTimeToTable", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/categoryCountByTimeToTable", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:report:categoryCountByTimeToTable')")
-    public ActionResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception {
+    public ActionResponse queryCategoryCountByTimeToTable(@RequestBody AssetReportCategoryCountQuery query) throws Exception {
         return ActionResponse.success(iAssetReportService.queryCategoryCountByTimeToTable(query));
     }
 
@@ -99,7 +101,7 @@ public class AssetReportController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/exportAreaTable", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:report:exportAreaTable')")
-    public void exportAreaTable(@ApiParam(value = "查询条件")@RequestBody ReportQueryRequest reportQueryRequest) {
+    public void exportAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
         ParamterExceptionUtils.isEmpty(reportQueryRequest.getAssetAreaIds(), "请指定要统计的区域");
         reportQueryRequest.setTopFive(false);
         ExcelUtils.exportFormToClient(iAssetAreaReportService.exportAreaTable(reportQueryRequest), "资产区域报表数据.xlsx");
@@ -112,9 +114,9 @@ public class AssetReportController {
      */
     @ApiOperation(value = "根据条件查询资产组top5", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/groupCountTop", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/groupCountTop", method = RequestMethod.POST)
     // @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
-    public ActionResponse getAssetConutWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
+    public ActionResponse getAssetConutWithGroup(@RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
         reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         return ActionResponse.success(iAssetReportService.getAssetConutWithGroup(reportQueryRequest));
     }
@@ -144,9 +146,9 @@ public class AssetReportController {
      */
     @ApiOperation(value = "资产组表格", notes = "根据时间查询资产组表格")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/queryAssetGroupTable", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/queryAssetGroupTable", method = RequestMethod.POST)
     // @PreAuthorize("hasAuthority('asset:report:queryAssetGroupTable')")
-    public ActionResponse queryAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception {
+    public ActionResponse queryAssetGroupTable(@RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
         reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         return ActionResponse.success(iAssetReportService.getAssetGroupReportTable(reportQueryRequest));
     }

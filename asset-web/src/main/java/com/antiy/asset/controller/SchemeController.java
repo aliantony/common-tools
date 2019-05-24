@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,9 +43,9 @@ public class SchemeController {
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SchemeResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:scheme:queryList')")
-    public ActionResponse queryList(@ApiParam(value = "assetSoftware") SchemeQuery schemeQuery) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetSoftware") @RequestBody SchemeQuery schemeQuery) throws Exception {
         return ActionResponse.success(iSchemeService.findPageScheme(schemeQuery));
     }
 
@@ -56,9 +57,9 @@ public class SchemeController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Scheme.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/AssetIdAndType", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/AssetIdAndType", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:scheme:queryByAssetId')")
-    public ActionResponse queryByAssetIdAndType(@ApiParam(value = "queryCondition") AssetIDAndSchemeTypeQuery assetIDAndSchemeTypeQuery) throws Exception {
+    public ActionResponse queryByAssetIdAndType(@ApiParam(value = "queryCondition") @RequestBody AssetIDAndSchemeTypeQuery assetIDAndSchemeTypeQuery) throws Exception {
         ParamterExceptionUtils.isNull(assetIDAndSchemeTypeQuery.getAssetId(), "资产ID不能为空");
         return ActionResponse.success(iSchemeService.findSchemeByAssetIdAndType(assetIDAndSchemeTypeQuery));
     }
@@ -71,9 +72,9 @@ public class SchemeController {
      */
     @ApiOperation(value = "通过资产ID查询上一个状态的备注信息", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Scheme.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/memoById", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/memoById", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:scheme:memoByAssetId')")
-    public ActionResponse queryMemoByAssetId(@ApiParam(value = "schemeQuery") SchemeQuery schemeQuery) throws Exception {
+    public ActionResponse queryMemoByAssetId(@ApiParam(value = "schemeQuery") @RequestBody SchemeQuery schemeQuery) throws Exception {
         return ActionResponse.success(iSchemeService.queryMemoById(schemeQuery));
     }
 }
