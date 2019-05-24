@@ -7,6 +7,7 @@ import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ import java.util.List;
  * @since 2018-12-27
  */
 
-public class AssetRequest extends BasicRequest implements ObjectValidator {
+public class AssetRequest extends BasicRequest implements ObjectValidator, Serializable {
 
     /**
      * id
@@ -488,4 +489,5 @@ public class AssetRequest extends BasicRequest implements ObjectValidator {
     public void setSoftwareVersion(String softwareVersion) {
         this.softwareVersion = softwareVersion;
     }
+
 }

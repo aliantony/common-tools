@@ -12,6 +12,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
+
 /**
  * <p> AssetHardDiskRequest 请求对象 </p>
  *
@@ -19,7 +21,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetHardDiskRequest extends BasicRequest implements ObjectValidator {
+public class AssetHardDiskRequest extends BasicRequest implements ObjectValidator, Serializable {
     /**
      * 主键
      */
@@ -204,4 +206,5 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
                + ", diskType=" + diskType + ", buyDate=" + buyDate + ", useTimes=" + useTimes + ", cumulativeHour="
                + cumulativeHour + ", memo='" + memo + '\'' + '}';
     }
+
 }

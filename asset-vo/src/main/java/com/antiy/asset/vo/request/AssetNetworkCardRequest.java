@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.request;
 
+import java.io.Serializable;
 import java.util.regex.Matcher;
 
 import javax.validation.constraints.NotBlank;
@@ -23,7 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetNetworkCardRequest extends BasicRequest implements ObjectValidator {
+public class AssetNetworkCardRequest extends BasicRequest implements ObjectValidator, Serializable {
     /**
      * 主键
      */
