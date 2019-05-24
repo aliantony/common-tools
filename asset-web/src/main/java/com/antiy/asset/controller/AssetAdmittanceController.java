@@ -5,7 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +46,9 @@ import io.swagger.annotations.*;
 public class AssetAdmittanceController {
 
     @Resource
-    public IAssetService assetService;
+    public IAssetService     assetService;
+    @Resource
+    public ExcelDownloadUtil excelDownloadUtil;
 
     /**
      * 批量查询
@@ -97,7 +103,8 @@ public class AssetAdmittanceController {
     @RequestMapping(value = "/access/export", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:admittance:export')")
     public ActionResponse export(@ApiParam(value = "asset") @RequestParam(required = false) Integer status,
-                                 Integer start, Integer end) throws Exception {
+                                 Integer start, Integer end, HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
         if (start != null || end != null) {
             ParamterExceptionUtils.isTrue(start != null && end != null, "导出条数有误");
             ParamterExceptionUtils.isTrue(start <= end, "导出条数有误");
@@ -118,8 +125,10 @@ public class AssetAdmittanceController {
         accessExportList.stream().forEach(asset -> {
             asset.setAdmittanceStatusString(AdmittanceStatusEnum.getAdmittanceStatusEnum(asset.getAdmittanceStatus()));
         });
-        ExcelUtils.exportToClient(AccessExport.class,
-            "准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + ".xlsx", "", accessExportList);
+        DownloadVO downloadVO = new DownloadVO();
+        downloadVO.setDownloadList(accessExportList);
+        excelDownloadUtil.excelDownload(request, response,
+            "准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(), 0, "", assetQuery,
             BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
