@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.antiy.common.encoder.Encode;
 
@@ -23,6 +24,7 @@ public class ConfigRegisterRequest {
      */
     @ApiModelProperty(value = "配置建议", required = true)
     @NotBlank(message = "配置建议")
+    @Size(message = "配置建议最大300个字符", max = 300)
     private String       suggest;
 
     /**

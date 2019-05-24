@@ -297,7 +297,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 if (LoginUserUtil.getLoginUser() != null) {
                     condition.setModifyUser(LoginUserUtil.getLoginUser().getId());
                 } else {
-                    LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", System.currentTimeMillis());
+                    LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "失败");
                 }
                 assetSoftwareRelationDao.updateConfigStatusByAssetId(condition);
                 //记录操作日志

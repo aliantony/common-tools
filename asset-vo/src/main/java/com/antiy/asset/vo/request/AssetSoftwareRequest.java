@@ -19,12 +19,12 @@ import java.util.Arrays;
  */
 @ApiModel(value = "软件请求")
 public class AssetSoftwareRequest extends BasicRequest implements ObjectValidator {
-    @ApiModelProperty(value = "登记流程数据")
-    @Valid
-    private ManualStartActivityRequest  activityRequest;
-    @ApiModelProperty(value = "流程处理")
-    @Valid
-    private ActivityHandleRequest       request;
+    // @ApiModelProperty(value = "登记流程数据")
+    // @Valid
+    // private ManualStartActivityRequest activityRequest;
+    // @ApiModelProperty(value = "流程处理")
+    // @Valid
+    // private ActivityHandleRequest request;
     @Valid
     @ApiModelProperty(value = "软件license")
     private AssetSoftwareLicenseRequest softwareLicenseRequest;
@@ -213,13 +213,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.buyDate = buyDate;
     }
 
-    public ActivityHandleRequest getRequest() {
-        return request;
-    }
 
-    public void setRequest(ActivityHandleRequest request) {
-        this.request = request;
-    }
 
     public String getAssetSoftwareRelationId() {
         return assetSoftwareRelationId;
@@ -378,13 +372,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     public void validate() throws RequestParamValidateException {
     }
 
-    public ManualStartActivityRequest getActivityRequest() {
-        return activityRequest;
-    }
 
-    public void setActivityRequest(ManualStartActivityRequest activityRequest) {
-        this.activityRequest = activityRequest;
-    }
 
     public AssetSoftwareLicenseRequest getSoftwareLicenseRequest() {
         return softwareLicenseRequest;
@@ -418,22 +406,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.serial = serial;
     }
 
-    @Override
-    public String toString() {
-        return "AssetSoftwareRequest{" + "activityRequest=" + activityRequest + ", request=" + request
-               + ", softwareLicenseRequest=" + softwareLicenseRequest + ", assetPortProtocolRequest="
-               + assetPortProtocolRequest + ", assetIds=" + Arrays.toString(assetIds) + ", md5Code='" + md5Code + '\''
-               + ", id='" + id + '\'' + ", size=" + size + ", operationSystems=" + Arrays.toString(operationSystems)
-               + ", categoryModel='" + categoryModel + '\'' + ", name='" + name + '\'' + ", uploadSoftwareName='"
-               + uploadSoftwareName + '\'' + ", path='" + path + '\'' + ", version='" + version + '\''
-               + ", manufacturer='" + manufacturer + '\'' + ", description='" + description + '\'' + ", serial='"
-               + serial + '\'' + ", serviceLife=" + serviceLife + ", softwareStatus=" + softwareStatus
-               + ", authorization=" + authorization + ", reportSource=" + reportSource + ", protocol='" + protocol
-               + '\'' + ", language='" + language + '\'' + ", releaseTime=" + releaseTime + ", publisher='" + publisher
-               + '\'' + ", memo='" + memo + '\'' + ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\''
-               + ", buyDate=" + buyDate + ", manualDocUrl='" + manualDocUrl + '\'' + ", manualDocName='" + manualDocName
-               + '\'' + '}';
-    }
 
     public Long getServiceLife() {
         return serviceLife;
@@ -457,5 +429,21 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
 
     public void setCheckType(String checkType) {
         this.checkType = checkType;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetSoftwareRequest{" + "softwareLicenseRequest=" + softwareLicenseRequest
+               + ", assetPortProtocolRequest=" + assetPortProtocolRequest + ", assetIds=" + Arrays.toString(assetIds)
+               + ", checkType='" + checkType + '\'' + ", md5Code='" + md5Code + '\'' + ", id='" + id + '\'' + ", size="
+               + size + ", operationSystems=" + Arrays.toString(operationSystems) + ", categoryModel='" + categoryModel
+               + '\'' + ", name='" + name + '\'' + ", uploadSoftwareName='" + uploadSoftwareName + '\'' + ", path='"
+               + path + '\'' + ", version='" + version + '\'' + ", manufacturer='" + manufacturer + '\''
+               + ", description='" + description + '\'' + ", serial='" + serial + '\'' + ", serviceLife=" + serviceLife
+               + ", softwareStatus=" + softwareStatus + ", authorization=" + authorization + ", reportSource="
+               + reportSource + ", protocol='" + protocol + '\'' + ", language='" + language + '\'' + ", releaseTime="
+               + releaseTime + ", publisher='" + publisher + '\'' + ", memo='" + memo + '\''
+               + ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\'' + ", buyDate=" + buyDate
+               + ", manualDocUrl='" + manualDocUrl + '\'' + ", manualDocName='" + manualDocName + '\'' + '}';
     }
 }

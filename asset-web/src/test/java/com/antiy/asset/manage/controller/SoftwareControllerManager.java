@@ -21,8 +21,7 @@ public class SoftwareControllerManager {
         AssetSoftwareRequest request = new AssetSoftwareRequest();
         ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
         ActivityHandleRequest handleRequest = new ActivityHandleRequest();
-        request.setActivityRequest(activityRequest);
-        request.setRequest(handleRequest);
+
         request.setSoftwareLicenseRequest(new AssetSoftwareLicenseRequest());
         request.setAssetPortProtocolRequest(new AssetPortProtocolRequest());
         handleRequest.setTaskId("1");

@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.springframework.web.util.HtmlUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.dao.AssetOperationRecordDao;
-import com.antiy.asset.dao.AssetSoftwareDao;
-import com.antiy.asset.dao.SchemeDao;
+import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.AssetSoftware;
@@ -61,7 +58,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     private WorkOrderClient                      workOrderClient;
     @Resource
     private AesEncoder                           aesEncoder;
-
+    @Resource
+    AssetStatusTaskDao                           statusTaskDao;
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
         Long gmtCreateTime = System.currentTimeMillis();
@@ -107,6 +105,14 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         // 如果流程引擎为空,直接返回错误信息
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            // 记录流程失败的资产节点信息，用于资产状态的定时任务
+            // AssetStatusTask assetStatusTask = new AssetStatusTask();
+            // assetStatusTask.setAssetId(assetStatusReqeust.getAssetId());
+            // assetStatusTask.setTaskId(assetStatusReqeust.getActivityHandleRequest().getTaskId());
+            // assetStatusTask.setGmtCreate(System.currentTimeMillis());
+            // assetStatusTask.setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId()
+            // : null);
+            // statusTaskDao.insert(assetStatusTask);
             return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
         }
 
