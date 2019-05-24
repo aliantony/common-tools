@@ -1,7 +1,10 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
+import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.entity.AssetSoftware;
+import com.antiy.asset.entity.AssetSoftwareInstall;
+import com.antiy.asset.entity.AssetSoftwareLicense;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.intergration.BaseLineClient;
@@ -13,8 +16,10 @@ import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.templet.AssetSoftwareEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
 import com.antiy.asset.templet.ImportResult;
-import com.antiy.asset.util.*;
-import com.antiy.asset.vo.enums.SoftwareStatusEnum;
+import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.CountTypeUtil;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.ConfigRegisterRequest;
 import com.antiy.asset.vo.query.SoftwareQuery;
@@ -25,14 +30,18 @@ import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.exception.BusinessException;
-import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
-import org.mockito.internal.util.StringUtil;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -44,16 +53,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import static org.assertj.core.api.Assertions.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @RunWith(PowerMockRunner.class)
@@ -155,7 +162,7 @@ public class AssetSoftwareServiceImplTest {
     public void saveAssetSoftwareTest1() throws Exception {
         AssetSoftwareRequest request = new AssetSoftwareRequest();
         ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
-        request.setActivityRequest(activityRequest);
+
         Integer expect = 2;
         AssetSoftware assetSoftware = new AssetSoftware();
         assetSoftware.setName("kaka");
@@ -186,7 +193,7 @@ public class AssetSoftwareServiceImplTest {
     public void saveAssetSoftwareTest2() throws Exception {
         AssetSoftwareRequest request = new AssetSoftwareRequest();
         ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
-        request.setActivityRequest(activityRequest);
+
         Integer expect = 2;
         AssetSoftware assetSoftware = new AssetSoftware();
         assetSoftware.setName("kaka");
@@ -233,7 +240,7 @@ public class AssetSoftwareServiceImplTest {
         AssetSoftwareRequest request = new AssetSoftwareRequest();
         request.setId("1");
         ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
-        request.setActivityRequest(activityRequest);
+
         AssetSoftware software = new AssetSoftware();
         software.setSoftwareStatus(5);
         ActionResponse response = ActionResponse.success();
@@ -252,7 +259,7 @@ public class AssetSoftwareServiceImplTest {
         AssetSoftwareRequest request = new AssetSoftwareRequest();
         request.setId("1");
         ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
-        request.setActivityRequest(activityRequest);
+
         AssetSoftware software = new AssetSoftware();
         software.setSoftwareStatus(4);
         ActionResponse response = ActionResponse.success();

@@ -10,6 +10,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * <p> AssetCpuRequest 请求对象 </p>
@@ -18,7 +19,7 @@ import javax.validation.constraints.Size;
  * @since 2018-12-27
  */
 
-public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
+public class AssetCpuRequest extends BasicRequest implements ObjectValidator, Serializable {
 
     /**
      * 主键
@@ -146,5 +147,4 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator {
     public void validate() throws RequestParamValidateException {
 
     }
-
 }

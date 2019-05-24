@@ -10,6 +10,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * <p> AssetMemoryRequest 请求对象 </p>
@@ -18,7 +19,7 @@ import javax.validation.constraints.Size;
  * @since 2018-12-27
  */
 
-public class AssetMemoryRequest extends BasicRequest implements ObjectValidator {
+public class AssetMemoryRequest extends BasicRequest implements ObjectValidator, Serializable {
     /**
      * 主键
      */
@@ -35,22 +36,22 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      * 内存品牌
      */
     @ApiModelProperty("内存品牌")
-//    @NotBlank(message = "内存品牌不能为空")
+    // @NotBlank(message = "内存品牌不能为空")
     @Size(message = "内存品牌长度不能超过30位", max = 30)
     private String  brand;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    @Size(message = "序列号长度不能超过30位",max = 30)
-    private String serial;
+    @Size(message = "序列号长度不能超过30位", max = 30)
+    private String  serial;
     /**
      * 内存类型：1未知，2-ddr2,3-ddr3,4-ddr4
      */
-//    @NotNull(message = "内存类型不能为空")
+    // @NotNull(message = "内存类型不能为空")
     @ApiModelProperty("内存类型：1未知，2-ddr2,3-ddr3,4-ddr4")
-    @Max(message = "内存类型不能大于4",value = 4)
-    @Min(message = "内存类型不能小于1",value = 1)
+    @Max(message = "内存类型不能大于4", value = 4)
+    @Min(message = "内存类型不能小于1", value = 1)
     private Integer transferType;
     /**
      * 内存容量
@@ -63,22 +64,22 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
      * 内存主频(MHz)
      */
     @ApiModelProperty("内存主频(MHz)")
-//    @NotNull(message = "内存主频不能为空")
+    // @NotNull(message = "内存主频不能为空")
     @Max(value = 99999999, message = "内存主频不超过99999999")
     private Double  frequency;
     /**
      * 插槽类型:1-SDRAM,2-SIMM,3-DIMM,4-RIMM
      */
     @ApiModelProperty("插槽类型:1-SDRAM,2-SIMM,3-DIMM,4-RIMM")
-    @Max(message = "内存类型不能大于4",value = 4)
-    @Min(message = "内存类型不能小于1",value = 1)
+    @Max(message = "内存类型不能大于4", value = 4)
+    @Min(message = "内存类型不能小于1", value = 1)
     private Integer slotType;
     /**
      * 是否带散热片:0-不带，1-带
      */
     @ApiModelProperty("是否带散热片:0-不带，1-带")
-    @Max(message = "是否带散热片不能大于1",value = 1)
-    @Min(message = "是否带散热片不能小于0",value = 0)
+    @Max(message = "是否带散热片不能大于1", value = 1)
+    @Min(message = "是否带散热片不能小于0", value = 0)
     private Integer heatsink;
     /**
      * 针脚数
@@ -232,4 +233,5 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator 
     public void setSerial(String serial) {
         this.serial = serial;
     }
+
 }

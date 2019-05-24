@@ -140,4 +140,11 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * 更新关系表配置状态
      */
     Integer updateConfigStatusByAssetId(AssetSoftwareRelation assetSoftwareRelation) throws Exception;
+
+    /**
+     * 查询资产上安装的软件，用于下发智甲
+     * @param assetId
+     * @return
+     */
+    List<AssetSoftware> findInstalledSoft(@Param("assetId") String assetId);
 }

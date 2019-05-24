@@ -8,6 +8,8 @@ import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.common.base.ActionResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
  * @Author: lvliang
  * @Date: 2019/5/16 13:35
  */
+@Component
 public class AssetClientImpl implements AssetClient {
     @Resource
     private BaseClient baseClient;

@@ -728,4 +728,30 @@
         </trim>
 
     </delete>
+    <!--查询资产上安装的软件，用于下发智甲-->
+    <select id="findInstalledSoft" resultType="com.antiy.asset.entity.AssetSoftware"
+            parameterType="java.lang.String">
+        select
+        b.id,
+        b.name,
+        b.manufacturer,
+        b.version,
+        b.operation_system as operationSystem,
+        b.protocol,
+        b.service_life as serviceLife,
+        b.buy_date as buyDate,
+        b.release_time as releaseTime,
+        b.serial,
+        b.path,
+        b.md5_code as md5Code,
+        b.check_type as checkType
+        from
+        asset_software_relation a
+        left join asset_software b on a.software_id = b.id
+        where
+        asset_id = #{assetId}
+        and a.install_status = 5
+        and b.status = 1
+        and a.status = 1
+    </select>
 </mapper>
