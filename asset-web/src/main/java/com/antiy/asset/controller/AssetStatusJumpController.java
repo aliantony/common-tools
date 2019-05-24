@@ -114,6 +114,7 @@ public class AssetStatusJumpController {
         String assetId = assetStatusChangeRequest.getAssetId();
         if (assetStatusChangeRequest.getSoftware()) {
             AssetSoftware assetSoftware = new AssetSoftware();
+            assetSoftware.setId(DataTypeUtils.stringToInteger(assetStatusChangeRequest.getAssetId()));
             assetSoftware.setGmtModified(System.currentTimeMillis());
             if (LoginUserUtil.getLoginUser() == null) {
                 LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
