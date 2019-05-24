@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.intergration.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -37,10 +38,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.AreaClient;
-import com.antiy.asset.intergration.EmergencyClient;
-import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareService;
@@ -165,7 +162,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private IAssetSoftwareService                                              softwareService;
     @Resource
     private IRedisService                                                      redisService;
-
+    @Resource
+    private AssetClient                                                        assetClient;
     private static final int                                                   ALL_PAGE = -1;
 
     @Resource
@@ -584,8 +582,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             configRegisterRequest.setHard(true);
             configRegisterRequest.setAssetId(String.valueOf(id));
             configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
-            configRegisterRequest
-                .setSuggest(request.getManualStartActivityRequest().getSuggest());
+            configRegisterRequest.setSuggest(request.getManualStartActivityRequest().getSuggest());
             configRegisterRequest.setConfigUserIds(request.getManualStartActivityRequest().getConfigUserIds());
             configRegisterRequest.setRelId(String.valueOf(id));
             ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest,
@@ -2065,6 +2062,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
         // TODO 下发智甲
+        AssetExternalRequest assetExternalRequest = BeanConvert.convertBean(assetOuterRequest,
+            AssetExternalRequest.class);
+        assetExternalRequest.setAsset(BeanConvert.convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class));
+        // 获取资产上安装的软件信息
+        List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
+            .findInstalledSoft(assetOuterRequest.getAsset().getId());
+        assetExternalRequest.setAssetSoftwareRequestList(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
+        assetClient.issueAssetData(new ArrayList() {
+            {
+                add(assetExternalRequest);
+            }
+        });
         return assetCount;
     }
 
