@@ -12,7 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetStorageMediumResponse extends BaseEntity {
+public class AssetStorageMediumResponse extends BaseResponse {
     /**
      * 资产主键
      */

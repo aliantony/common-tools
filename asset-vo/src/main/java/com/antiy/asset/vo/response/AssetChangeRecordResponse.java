@@ -11,7 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetChangeRecordResponse extends BaseEntity {
+public class AssetChangeRecordResponse extends BaseResponse {
     /**
      * 修改对象的JSON串
      */
