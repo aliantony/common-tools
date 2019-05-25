@@ -895,7 +895,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             scheme.setSchemeSource(1);
         }
-        scheme.setAssetId(registerRequest.getAssetId());
+        scheme.setAssetId(aesEncoder.decode(registerRequest.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         scheme.setGmtCreate(gmtCreateTime);
         scheme.setFileInfo(registerRequest.getFiles());
@@ -910,12 +910,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             assetOperationRecord.setOriginStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
             assetOperationRecord.setContent(SOFTWARE_INSTALL_CONFIG.getMsg());
             assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
-            assetOperationRecord.setTargetObjectId(request.getSoftwareId());
+            assetOperationRecord
+                .setTargetObjectId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         } else {
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setContent(HARDWARE_CONFIG_BASELINE.getMsg());
             assetOperationRecord.setSchemeId(scheme.getId());
-            assetOperationRecord.setTargetObjectId(request.getAssetId());
+            assetOperationRecord
+                .setTargetObjectId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         }
         assetOperationRecord.setAreaId("");
         assetOperationRecord.setGmtCreate(gmtCreateTime);
