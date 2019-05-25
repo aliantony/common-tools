@@ -97,7 +97,7 @@ public class AssetController {
     @RequestMapping(value = "/query/queryAssetCountByAreaIds", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetCountByAreaIds')")
     public ActionResponse queryAssetCountByAreaIds(@RequestBody @ApiParam(value = "areaIds") AssetCountByAreaIdsRequest areaIds) throws Exception {
-        return ActionResponse.success(iAssetService.queryAssetCountByAreaIds(new ArrayList<>(Arrays.asList(areaIds.getAreaIds()))));
+        return ActionResponse.success(iAssetService.queryAssetCountByAreaIds(DataTypeUtils.stringListToIntegerList(areaIds.getAreaIds())));
     }
 
     /**
