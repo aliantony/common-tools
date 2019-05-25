@@ -583,6 +583,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // ID加密
             if (LoginUserUtil.getLoginUser() != null) {
                 String aesAssestId = aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername());
+                configRegisterRequest.setRelId(aesAssestId);
                 configRegisterRequest.setAssetId(aesAssestId);
             } else {
                 LogUtils.warn(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}",
@@ -593,8 +594,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
             configRegisterRequest.setSuggest(request.getManualStartActivityRequest().getSuggest());
-            configRegisterRequest.setConfigUserIds(request.getManualStartActivityRequest().getConfigUserIds());
-            configRegisterRequest.setRelId(String.valueOf(id));
+            List<String> configUserId = request.getManualStartActivityRequest().getConfigUserIds();
+            List<String> aesConfigUserId = new ArrayList<>();
+            for (String userId : configUserId) {
+                aesConfigUserId.add(aesEncoder.encode(userId, LoginUserUtil.getLoginUser().getUsername()));
+            }
+            configRegisterRequest.setConfigUserIds(aesConfigUserId);
             ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest,
                 currentTimeMillis);
             if (null == actionResponseAsset
