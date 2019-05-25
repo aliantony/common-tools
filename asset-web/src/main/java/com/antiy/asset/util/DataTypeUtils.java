@@ -76,4 +76,17 @@ public class DataTypeUtils {
         }
         return result;
     }
+
+    public static List<Integer> stringListToIntegerList(List<String> values) {
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < values.size(); i++) {
+            try {
+                result.add(DataTypeUtils.stringToInteger(values.get(i)));
+            } catch (NumberFormatException e) {
+                logger.error("转换出错", e);
+                throw new BusinessException("转换出错");
+            }
+        }
+        return result;
+    }
 }

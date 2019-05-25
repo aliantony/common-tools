@@ -1,5 +1,10 @@
 package com.antiy.asset.vo.request;
 
+import java.util.List;
+
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -7,15 +12,16 @@ import io.swagger.annotations.ApiModelProperty;
  * @description
  * @create 2019/5/23 10:41
  */
-public class AssetCountByAreaIdsRequest {
+public class AssetCountByAreaIdsRequest extends BaseRequest {
     @ApiModelProperty("areaIds")
-    private Integer[] areaIds;
+    @Encode
+    private List<String> areaIds;
 
-    public Integer[] getAreaIds() {
+    public List<String> getAreaIds() {
         return areaIds;
     }
 
-    public void setAreaIds(Integer[] areaIds) {
+    public void setAreaIds(List<String> areaIds) {
         this.areaIds = areaIds;
     }
 }
