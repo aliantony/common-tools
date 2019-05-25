@@ -56,7 +56,7 @@ public class EmergencyClientImpl implements EmergencyClient {
     @Override
     @AssetLog(description = "查询告警资产的总个数")
     public ActionResponse<AlarmAssetIdResponse> queryEmergecyAllCount() {
-        return (ActionResponse) baseClient.get(null,
+        return (ActionResponse) baseClient.post(null,
             new ParameterizedTypeReference<ActionResponse<AlarmAssetIdResponse>>() {
             }, emergencyCountClientUrl);
     }

@@ -25,7 +25,7 @@ public class SysRoleClientImpl implements SysUserClient {
 
     @Override
     public ActionResponse queryUserRoleById(String id) {
-        return (ActionResponse) baseClient.get(null, new ParameterizedTypeReference<ActionResponse>() {
+        return (ActionResponse) baseClient.post(null, new ParameterizedTypeReference<ActionResponse>() {
         }, userRoleUrl + id);
     }
 

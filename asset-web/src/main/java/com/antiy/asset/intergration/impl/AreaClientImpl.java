@@ -27,7 +27,7 @@ public class AreaClientImpl implements AreaClient {
 
     @Override
     public ActionResponse queryAreaById(String id) {
-        return (ActionResponse) baseClient.get(null, new ParameterizedTypeReference<ActionResponse>() {
+        return (ActionResponse) baseClient.post(null, new ParameterizedTypeReference<ActionResponse>() {
         }, areaUrl + id);
     }
 
@@ -35,7 +35,7 @@ public class AreaClientImpl implements AreaClient {
 
     @Override
     public ActionResponse queryCdeAndAreaId(String code) {
-        return (ActionResponse) baseClient.get(null, new ParameterizedTypeReference<ActionResponse>() {
+        return (ActionResponse) baseClient.post(null, new ParameterizedTypeReference<ActionResponse>() {
         }, cdeAndAreaId+code);
     }
 
