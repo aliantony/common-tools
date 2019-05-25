@@ -12,7 +12,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.antiy.asset.intergration.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -38,6 +37,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.*;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareService;
@@ -580,6 +580,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 对接配置模块
             ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
             configRegisterRequest.setHard(true);
+            // ID加密
+            if (LoginUserUtil.getLoginUser() != null) {
+                String aesAssestId = aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername());
+                configRegisterRequest.setAssetId(aesAssestId);
+            } else {
+                LogUtils.warn(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}",
+                    AssetEventEnum.GET_USER_INOF.getName());
+                // 用户服务异常，逻辑删登记的资产
+                assetDao.deleteById(id);
+                throw new BusinessException(AssetEventEnum.GET_USER_INOF.getName() + "： 用户服务异常");
+            }
             configRegisterRequest.setAssetId(String.valueOf(id));
             configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
             configRegisterRequest.setSuggest(request.getManualStartActivityRequest().getSuggest());
@@ -2020,7 +2031,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // ------------------对接配置模块------------------start
                     ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
                     configRegisterRequest.setHard(true);
-                    configRegisterRequest.setAssetId(assetId);
+                    if (LoginUserUtil.getLoginUser() != null) {
+                        String aesAssestId = aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername());
+                        configRegisterRequest.setAssetId(aesAssestId);
+                    } else {
+                        LogUtils.warn(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}",
+                            AssetEventEnum.GET_USER_INOF.getName());
+                        throw new BusinessException(AssetEventEnum.GET_USER_INOF.getName() + "： 用户服务异常");
+                    }
+
                     configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
                     configRegisterRequest.setSuggest(assetOuterRequest.getManualStartActivityRequest().getSuggest());
                     configRegisterRequest
@@ -2045,7 +2064,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     Map<String, Object> map = new HashMap<>();
                     map.put("targetStatus", AssetStatusEnum.WAIT_SETTING.getCode());
                     map.put("gmt_modified", currentTimeMillis);
-                    map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
+                    map.put("modifyUser",
+                        LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
                     map.put("id", assetId);
                     assetDao.changeStatus(map);
                     // ------------------对接配置模块------------------end
