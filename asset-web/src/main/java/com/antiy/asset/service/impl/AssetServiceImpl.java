@@ -64,7 +64,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import sun.rmi.runtime.Log;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -592,7 +591,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetDao.deleteById(id);
                 throw new BusinessException(AssetEventEnum.GET_USER_INOF.getName() + "： 用户服务异常");
             }
-            configRegisterRequest.setAssetId(String.valueOf(id));
             configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
             configRegisterRequest.setSuggest(request.getManualStartActivityRequest().getSuggest());
             configRegisterRequest.setConfigUserIds(request.getManualStartActivityRequest().getConfigUserIds());
