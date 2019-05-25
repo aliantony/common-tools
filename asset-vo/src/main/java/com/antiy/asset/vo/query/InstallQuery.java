@@ -1,20 +1,21 @@
 package com.antiy.asset.vo.query;
 
+import java.util.List;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 public class InstallQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty("综合查询")
-    @Size(max = 30,message = "综合查询长度不能超过30个字符")
+    @Size(max = 30, message = "综合查询长度不能超过30个字符")
     private String        multipleQuery;
 
     @ApiModelProperty(value = "软件id", required = true)
@@ -48,7 +49,8 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
     private List<Integer> assetStatusList;
 
     @ApiModelProperty("品类型号")
-    private List<Integer>  categoryModels;
+    @Encode
+    private List<String>  categoryModels;
 
     public String getMultipleQuery() {
         return multipleQuery;
@@ -106,11 +108,11 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
         this.softwareId = softwareId;
     }
 
-    public List<Integer> getCategoryModels() {
+    public List<String> getCategoryModels() {
         return categoryModels;
     }
 
-    public void setCategoryModels(List<Integer> categoryModels) {
+    public void setCategoryModels(List<String> categoryModels) {
         this.categoryModels = categoryModels;
     }
 

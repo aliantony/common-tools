@@ -1,5 +1,6 @@
 package com.antiy.asset.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -56,8 +57,21 @@ public class DataTypeUtils {
             try {
                 result[i] = String.valueOf(values.get(i));
             } catch (NumberFormatException e) {
-                logger.error("整形转换为字符串出错", e);
-                throw new BusinessException("整形转换为字符串出错");
+                logger.error("转换出错", e);
+                throw new BusinessException("转换出错");
+            }
+        }
+        return result;
+    }
+
+    public static List<String> integerListToStringList(List values) {
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < values.size(); i++) {
+            try {
+                result.add(String.valueOf(values.get(i)));
+            } catch (NumberFormatException e) {
+                logger.error("转换出错", e);
+                throw new BusinessException("转换出错");
             }
         }
         return result;

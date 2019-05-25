@@ -332,7 +332,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             .getByName(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
         List<Integer> categoryModelIdsById = iAssetCategoryModelService
             .findAssetCategoryModelIdsById(assetCategoryModel.getId());
-        query.setCategoryModels(categoryModelIdsById);
+        query.setCategoryModels(DataTypeUtils.integerListToStringList(categoryModelIdsById));
         if (count != 0) {
             List<AssetSoftwareInstall> queryInstallList = assetSoftwareRelationDao.queryInstallList(query);
             // 处理安装状态和配置状态

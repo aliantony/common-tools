@@ -64,6 +64,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import sun.rmi.runtime.Log;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -808,7 +809,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 if (CollectionUtils.isEmpty(alarmCountList)) {
                     return new ArrayList<AssetResponse>();
                 }
-                alarmCountMaps = alarmCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
+                alarmCountMaps = alarmCountList.stream().collect(Collectors.toMap(idcount -> aesEncoder.decode(idcount.getId(), LoginUserUtil.getLoginUser().getUsername()), IdCount::getCount));
                 String[] ids = new String[alarmCountMaps.size()];
                 query.setIds(alarmCountMaps.keySet().toArray(ids));
                 // 由于计算Id列表添加了区域，此处不用添加
@@ -1355,7 +1356,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 List<AssetCategoryModel> search = iAssetCategoryModelService.recursionSearch(categoryModelDaoAll,
                     secondCategoryModel.getId());
                 List<String> categoryList = new ArrayList<>();
-                categoryList.add(secondCategoryModel.getStringId());
+                categoryList.add(aesEncoder.encode(secondCategoryModel.getStringId(),LoginUserUtil.getLoginUser().getUsername()));
                 enumCountResponse.setCode(categoryList);
                 // 设置查询资产条件参数，包括区域id，状态，资产品类型号
                 AssetQuery assetQuery = setAssetQueryParam(enumCountResponse, areaIds, search);
@@ -3478,7 +3479,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuilder stringBuilder = new StringBuilder();
 
         for (LinkedHashMap linkedHashMap : mapList) {
-            stringBuilder.append(linkedHashMap.get("stringId")).append(",");
+            stringBuilder.append(aesEncoder.decode(linkedHashMap.get("stringId").toString(),LoginUserUtil.getLoginUser().getUsername())).append(",");
         }
         String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
 
@@ -3608,7 +3609,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
         if (response != null) {
             if (CollectionUtils.isEmpty(response.getChildrenNode())) {
-                result.add(response.getStringId());
+                result.add(aesEncoder.decode(response.getStringId(),LoginUserUtil.getLoginUser().getUsername()));
             } else {
                 for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse : response.getChildrenNode()) {
                     operatingSystemRecursion(result, baselineCategoryModelNodeResponse);

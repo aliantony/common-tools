@@ -1,10 +1,12 @@
 package com.antiy.asset.intergration.impl;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,8 @@ import com.antiy.asset.vo.query.BaselineCategoryModelQuery;
 import com.antiy.asset.vo.response.BaselineCategoryModelNodeResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LoginUserUtil;
 
 @Component
 public class OperatingSystemClientImpl implements OperatingSystemClient {
@@ -32,6 +36,9 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
     @Value("${getOperatingSystemTreeUrl}")
     private String     getOperatingSystemTreeUrl;
 
+    @Resource
+    private AesEncoder aesEncoder;
+
     /**
      * 获取操作系统列表，非树
      * @return
@@ -39,9 +46,24 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
     @Override
     @AssetLog(description = "获取操作系统列表", operationType = AssetLogOperationType.QUERY)
     public ActionResponse<List<LinkedHashMap>> getOperatingSystem() {
-        return (ActionResponse) baseClient.post(null,
+        return decode((ActionResponse) baseClient.post(null,
             new ParameterizedTypeReference<ActionResponse<List<LinkedHashMap>>>() {
-        }, getOperatingSystemListUrl);
+            }, getOperatingSystemListUrl));
+    }
+
+    private ActionResponse<List<LinkedHashMap>> decode(ActionResponse<List<LinkedHashMap>> oldValue) {
+        if (oldValue != null && oldValue.getBody() != null) {
+            List<LinkedHashMap> newList = new ArrayList<LinkedHashMap>();
+            for (LinkedHashMap linkedHashMap : oldValue.getBody()) {
+                LinkedHashMap newMap = linkedHashMap;
+                if (linkedHashMap.get("id") != null && StringUtils.isNotBlank(linkedHashMap.get("id").toString())) {
+                    newMap.put("id", aesEncoder.decode(linkedHashMap.get("id").toString(),
+                        LoginUserUtil.getLoginUser().getUsername()));
+                }
+                newList.add(newMap);
+            }
+        }
+        return oldValue;
     }
 
     @Override
@@ -52,7 +74,7 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             return null;
         }
-        return  actionResponse.getBody();
+        return actionResponse.getBody();
     }
 
     /**

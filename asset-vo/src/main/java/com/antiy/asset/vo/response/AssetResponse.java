@@ -258,8 +258,9 @@ public class AssetResponse extends BaseResponse {
     }
 
     public void setInstallTypeName(String installTypeName) {
-        this.installTypeName = InstallType.getInstallTypeByCode(installType) != null ? InstallType
-            .getInstallTypeByCode(installType).getStatus() : "";
+        this.installTypeName = InstallType.getInstallTypeByCode(installType) != null
+            ? InstallType.getInstallTypeByCode(installType).getStatus()
+            : "";
     }
 
     public String getVulCount() {
