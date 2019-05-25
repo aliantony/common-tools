@@ -147,7 +147,7 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("父类资源Id")
     @Encode
-    private Integer                  parentId;
+    private String                   parentId;
     /**
      * 所属标签
      */
@@ -258,8 +258,9 @@ public class AssetResponse extends BaseResponse {
     }
 
     public void setInstallTypeName(String installTypeName) {
-        this.installTypeName = InstallType.getInstallTypeByCode(installType) != null ? InstallType
-            .getInstallTypeByCode(installType).getStatus() : "";
+        this.installTypeName = InstallType.getInstallTypeByCode(installType) != null
+            ? InstallType.getInstallTypeByCode(installType).getStatus()
+            : "";
     }
 
     public String getVulCount() {
@@ -494,11 +495,11 @@ public class AssetResponse extends BaseResponse {
         this.importanceDegree = importanceDegree;
     }
 
-    public Integer getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 

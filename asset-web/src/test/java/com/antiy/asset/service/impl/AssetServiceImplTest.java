@@ -881,7 +881,7 @@ public class AssetServiceImplTest {
         assetResponse.setEmail("");
         assetResponse.setAssetSource(0);
         assetResponse.setImportanceDegree(0);
-        assetResponse.setParentId(0);
+        assetResponse.setParentId(0+"");
         assetResponse.setTags("");
         assetResponse.setServiceLife(0L);
         assetResponse.setBuyDate(0L);
