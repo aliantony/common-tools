@@ -1344,7 +1344,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 List<AssetCategoryModel> search = iAssetCategoryModelService.recursionSearch(categoryModelDaoAll,
                     secondCategoryModel.getId());
                 List<String> categoryList = new ArrayList<>();
-                categoryList.add(secondCategoryModel.getStringId());
+                categoryList.add(aesEncoder.encode(secondCategoryModel.getStringId(),LoginUserUtil.getLoginUser().getUsername()));
                 enumCountResponse.setCode(categoryList);
                 // 设置查询资产条件参数，包括区域id，状态，资产品类型号
                 AssetQuery assetQuery = setAssetQueryParam(enumCountResponse, areaIds, search);
