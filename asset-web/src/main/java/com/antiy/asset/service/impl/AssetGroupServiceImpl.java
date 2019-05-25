@@ -142,7 +142,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         // 删除关联资产
         assetGroupRelationDao.deleteByAssetGroupId(DataTypeUtils.stringToInteger(request.getId()));
 
-        int result = 0;
+        int assetRelationResult = 0;
+        int updateGroupResult;
+        int deleteGroupResult = 0;
         Map<String, Object> map = new HashMap<>();
         StringBuilder assetNameBuilder = new StringBuilder();
 
@@ -156,19 +158,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 assetGroupRelationList.add(assetGroupRelation);
             }
 
-            result = assetGroupRelationDao.insertBatch(assetGroupRelationList);
+            assetRelationResult = assetGroupRelationDao.insertBatch(assetGroupRelationList);
 
-            if (!Objects.equals(0, result)) {
-                // 写入业务日志
-                // LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
-                // AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
-                // assetGroup.getId(), assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET,
-                // BusinessPhaseEnum.NONE));
-                // LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}",
-                // assetGroup.toString());
-            }
-            assetGroupDao.update(assetGroup);
+            updateGroupResult = assetGroupDao.update(assetGroup);
 
             // -----------------------------更新资产主表的资产组字段内容start-----------------------------
             for (String assetId : assetIdArr) {
@@ -181,7 +173,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             }
             // -----------------------------更新资产主表的资产组字段内容end-----------------------------
         } else {
-            assetGroupDao.update(assetGroup);
+            updateGroupResult = assetGroupDao.update(assetGroup);
             List<String> assetIdList = assetGroupRelationDao.findAssetIdByAssetGroupId(request.getId());
             assetIdList.forEach(assetId -> {
                 List<String> assetGroupNameList = null;
@@ -206,8 +198,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             RemoveAssociateAssetRequest removeAssociateAssetRequest = new RemoveAssociateAssetRequest();
             removeAssociateAssetRequest.setGroupId(request.getId());
             removeAssociateAssetRequest.setRemoveAsset(request.getDeleteAssetIds());
-            assetGroupRelationDao.batchDeleteById(removeAssociateAssetRequest);
-
+            deleteGroupResult = assetGroupRelationDao.batchDeleteById(removeAssociateAssetRequest);
             for (String assetId : request.getDeleteAssetIds()) {
                 List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
                 String assetGroupName = assetGroupNameList.toString();
@@ -215,17 +206,28 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             }
         }
 
-        if (!Objects.equals(0, result)) {
+        if (!Objects.equals(0, assetRelationResult)) {
             // 写入业务日志
-            // LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(),
-            // AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-            // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(), assetGroup
-            // .getId(), assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-            // LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}",
-            // assetGroup.toString());
+            LogUtils.recordOperLog(
+                new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName(), assetGroup.getId(),
+                    assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}", assetGroup);
+        }
+        if (!Objects.equals(0, deleteGroupResult)) {
+            // 写入业务日志
+            LogUtils.recordOperLog(
+                new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(), assetGroup.getId(),
+                    assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}", assetGroup);
         }
 
-        return result;
+        if (!Objects.equals(0, updateGroupResult)) {
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_UPDATE.getName(), assetGroup.getId(),
+                assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_UPDATE.getName() + " {}", assetGroup);
+        }
+
+        return updateGroupResult;
     }
 
     @Override
