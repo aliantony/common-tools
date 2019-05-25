@@ -138,13 +138,22 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         String[] assetIdArr = request.getAssetIds();
 
         List<AssetGroupRelation> assetGroupRelationList = new ArrayList<>();
-
-        // 删除关联资产
-        assetGroupRelationDao.deleteByAssetGroupId(DataTypeUtils.stringToInteger(request.getId()));
-
-        int assetRelationResult = 0;
+        int assetRelationResult;
         int updateGroupResult;
         int deleteGroupResult = 0;
+
+        // 删除关联资产
+        assetRelationResult = assetGroupRelationDao
+            .deleteByAssetGroupId(DataTypeUtils.stringToInteger(request.getId()));
+
+        if (!Objects.equals(0, assetRelationResult)) {
+            // 写入业务日志(删除关联资产)
+            LogUtils.recordOperLog(
+                new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(), assetGroup.getId(),
+                    assetGroup.getName(), assetGroup, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}", assetGroup);
+        }
+
         Map<String, Object> map = new HashMap<>();
         StringBuilder assetNameBuilder = new StringBuilder();
 
@@ -364,9 +373,16 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     public Integer deleteById(Serializable id) throws Exception {
         // 存在关联资产不能删除资产组
         Integer amount = assetGroupRelationDao.existRelateAssetInGroup(id);
+
         if (amount > 0) {
             throw new BusinessException("不允许删除有关联资产的资产组");
         } else {
+            if (!Objects.equals(0, amount)) {
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_DELETE.getName(),
+                    DataTypeUtils.stringToInteger(id.toString()), "", id, BusinessModuleEnum.HARD_ASSET,
+                    BusinessPhaseEnum.NONE));
+                LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_DELETE.getName() + " {}", id);
+            }
             return assetGroupDao.deleteById(Integer.valueOf((String) id));
         }
     }
