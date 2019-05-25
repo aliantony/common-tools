@@ -1020,7 +1020,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 StringBuilder stringBuilder = new StringBuilder();
 
                 for (LinkedHashMap linkedHashMap : mapList) {
-                    stringBuilder.append(linkedHashMap.get("stringId")).append(",");
+                    stringBuilder.append(aesEncoder.decode(linkedHashMap.get("stringId").toString(),LoginUserUtil.getLoginUser().getUsername())).append(",");
                 }
                 String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
 
