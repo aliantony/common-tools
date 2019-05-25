@@ -8,6 +8,7 @@ import java.util.Objects;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.biz.file.FileDto;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -146,8 +147,8 @@ public class FileController {
     private void uploadToHdfs(MultipartFile tmpFile, List<FileRespVO> fileRespVOS, String md5,
                               FileUseEnum fileUseEnum) throws Exception {
 
-        String filePath = fileUtils.saveFile2Local(tmpFile, modelName);
-        File file = new File(filePath);
+        FileDto fileDto = fileUtils.saveFile2LocalWithChannel(tmpFile, modelName);
+        File file = new File(fileDto.getPath());
         if (!file.exists()) {
             throw new BusinessException("文件不存在");
         }
@@ -189,7 +190,7 @@ public class FileController {
         if (RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
             FileRespVO fileRep = (FileRespVO) fileResponse.getData();
             if (StringUtils.isNotEmpty(md5)) {
-                if (!fileRep.getMd5().equals(md5.toLowerCase())) {
+                if (!fileDto.getMd5().equals(md5.toLowerCase())) {
                     fileUtils.delete(defaultHDFSUrl + fileRep.getFileUrl());
                     throw new BusinessException("MD5校验失败");
                 }
