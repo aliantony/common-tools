@@ -246,8 +246,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             AssetGroupResponse.class);
 
         for (AssetGroupResponse assetGroupResponse : assetResponseList) {
-            List<String> assetList = assetGroupRelationDao.findAssetNameByAssetGroupId(Integer
-                .valueOf(assetGroupResponse.getStringId()));
+            List<String> assetList = assetGroupRelationDao
+                .findAssetNameByAssetGroupId(Integer.valueOf(assetGroupResponse.getStringId()));
             StringBuilder assetDetail = new StringBuilder();
             for (String assetName : assetList) {
                 if (assetList.size() == 1 || assetList.size() == assetList.size() - 1) {
@@ -292,18 +292,18 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
             if ((isNet == null) || isNet == 1) {
                 if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-                    categoryCondition.addAll(assetCategoryModelService.findAssetCategoryModelIdsById(
-                        Integer.parseInt(entry.getKey()), all));
+                    categoryCondition.addAll(
+                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
                 }
             }
             if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-                categoryCondition.addAll(assetCategoryModelService.findAssetCategoryModelIdsById(
-                    Integer.parseInt(entry.getKey()), all));
+                categoryCondition.addAll(
+                    assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
             }
         }
         query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
-        query.setAreaIds(DataTypeUtils
-            .integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        query.setAreaIds(
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
@@ -377,12 +377,10 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         if (amount > 0) {
             throw new BusinessException("不允许删除有关联资产的资产组");
         } else {
-            if (!Objects.equals(0, amount)) {
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_DELETE.getName(),
-                    DataTypeUtils.stringToInteger(id.toString()), "", id, BusinessModuleEnum.HARD_ASSET,
-                    BusinessPhaseEnum.NONE));
-                LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_DELETE.getName() + " {}", id);
-            }
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_DELETE.getName(),
+                DataTypeUtils.stringToInteger(id.toString()), "", id, BusinessModuleEnum.HARD_ASSET,
+                BusinessPhaseEnum.NONE));
+            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_DELETE.getName() + " {}", id);
             return assetGroupDao.deleteById(Integer.valueOf((String) id));
         }
     }
