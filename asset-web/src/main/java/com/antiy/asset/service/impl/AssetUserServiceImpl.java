@@ -1,5 +1,17 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.antiy.asset.convert.UserSelectResponseConverter;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetUserDao;
@@ -22,16 +34,6 @@ import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 资产用户信息 服务实现类 </p>
@@ -66,8 +68,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         assetUserDao.insert(assetUser);
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_USER_INSERT.getName(), assetUser.getId(),
-            assetUser.getName(),
-            assetUser, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+            assetUser.getName(), assetUser, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_INSERT.getName() + " {}", assetUser);
         return aesEncoder.encode(assetUser.getStringId(), LoginUserUtil.getLoginUser().getUsername());
     }
@@ -80,8 +81,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         assetUser.setGmtCreate(System.currentTimeMillis());
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_USER_UPDATE.getName(), assetUser.getId(),
-            assetUser.getName(),
-            assetUser, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+            assetUser.getName(), assetUser, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_UPDATE.getName() + " {}", assetUser);
         return assetUserDao.update(assetUser);
     }
@@ -145,10 +145,10 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         List<Asset> assets = assetDao.getByWhere(param);
         BusinessExceptionUtils.isTrue(CollectionUtils.isEmpty(assets), "该人员已经是资产使用者,不能注销");
         assetUserDao.deleteById(id);
+        AssetUser userInfo = assetUserDao.getById(id);
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_USER_DELETE.getName(), id,
-            assetUserDao.getById(id).getName(),
-                id, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+            userInfo != null ? userInfo.getName() : null, id, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_DELETE.getName() + " {}", id);
         return ActionResponse.success();
     }
