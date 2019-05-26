@@ -62,7 +62,7 @@ public class AssetNetworkCardRequest extends BasicRequest implements ObjectValid
      */
     @ApiModelProperty("IP地址")
     @NotBlank(message = "IP地址不能为空")
-    @Size(message = "IP地址长度应该在8-15位", min = 8, max = 15)
+    @Size(message = "IP地址长度应该在7-15位", min = 7, max = 15)
     @Pattern(regexp = "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$", message = "ip地址错误")
     private String ipAddress;
     /**

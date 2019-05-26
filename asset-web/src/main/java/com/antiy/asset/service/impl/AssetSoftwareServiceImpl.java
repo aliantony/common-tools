@@ -663,7 +663,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 List<AssetCategoryModel> search = iAssetCategoryModelService.recursionSearch(categoryModelDaoAll,
                     secondCategoryModel.getId());
                 List<String> idList = iAssetCategoryModelService.getCategoryIdList(search);
-                enumCountResponse.setCode(idList);
+                List<String> newIds = new ArrayList<>();
+                for (String string : idList) {
+                    newIds.add(aesEncoder.encode(string,LoginUserUtil.getLoginUser().getUsername()));
+                }
+                enumCountResponse.setCode(newIds);
                 // 设置查询资产条件参数，包括，状态，资产品类型号
                 AssetSoftwareQuery assetSoftwareQuery = setAssetSoftwareQueryParam(search);
                 // 将查询结果放置结果集
@@ -889,7 +893,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             scheme.setSchemeSource(1);
         }
-        scheme.setAssetId(registerRequest.getAssetId());
+        // scheme.setAssetId(registerRequest.getAssetId());
+        scheme.setAssetId(aesEncoder.decode(registerRequest.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         scheme.setGmtCreate(gmtCreateTime);
         scheme.setFileInfo(registerRequest.getFiles());
@@ -904,12 +909,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             assetOperationRecord.setOriginStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
             assetOperationRecord.setContent(SOFTWARE_INSTALL_CONFIG.getMsg());
             assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
-            assetOperationRecord.setTargetObjectId(request.getSoftwareId());
+            assetOperationRecord
+                .setTargetObjectId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         } else {
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setContent(HARDWARE_CONFIG_BASELINE.getMsg());
             assetOperationRecord.setSchemeId(scheme.getId());
-            assetOperationRecord.setTargetObjectId(request.getAssetId());
+            assetOperationRecord
+                .setTargetObjectId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         }
         assetOperationRecord.setAreaId("");
         assetOperationRecord.setGmtCreate(gmtCreateTime);
@@ -1014,7 +1021,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 StringBuilder stringBuilder = new StringBuilder();
 
                 for (LinkedHashMap linkedHashMap : mapList) {
-                    stringBuilder.append(linkedHashMap.get("stringId")).append(",");
+                    stringBuilder.append(aesEncoder.decode(linkedHashMap.get("stringId").toString(),LoginUserUtil.getLoginUser().getUsername())).append(",");
                 }
                 String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
 

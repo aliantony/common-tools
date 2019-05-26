@@ -28,8 +28,8 @@ public class AssetImportRequest extends BasicRequest implements ObjectValidator 
      * 品类型号
      */
     @ApiModelProperty("品类型号：1.计算设备2，安全设备3，网络设备，4，存储设备5，其他设备")
-
-    private Integer  category;
+    @Encode
+    private String   category;
     /**
      * 用户
      */
@@ -73,11 +73,11 @@ public class AssetImportRequest extends BasicRequest implements ObjectValidator 
         this.memo = memo;
     }
 
-    public Integer getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Integer category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 }

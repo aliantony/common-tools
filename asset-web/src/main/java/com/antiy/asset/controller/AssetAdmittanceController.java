@@ -86,7 +86,7 @@ public class AssetAdmittanceController {
 
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName(), asset.getId(),
-            assetService.getById(asset.getId()).getName(), asset, BusinessModuleEnum.HARD_ASSET,
+            assetService.getById(asset.getId()+"").getName(), asset, BusinessModuleEnum.HARD_ASSET,
             BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
             AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName() + " {}", asset.toString());

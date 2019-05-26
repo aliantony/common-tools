@@ -28,4 +28,15 @@ public enum AssetSecondCategoryEnum {
     public String getMsg() {
         return msg;
     }
+
+    public static AssetSecondCategoryEnum getEnumByCode(String code) {
+        AssetSecondCategoryEnum[] assetSecondCategoryEnums = AssetSecondCategoryEnum.values();
+        for (AssetSecondCategoryEnum assetSecondCategoryEnum : assetSecondCategoryEnums) {
+            if (assetSecondCategoryEnum.code.equals(code)) {
+                return assetSecondCategoryEnum;
+            }
+        }
+        return null;
+    }
+
 }

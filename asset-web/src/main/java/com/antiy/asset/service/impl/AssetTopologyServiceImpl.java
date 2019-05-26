@@ -4,23 +4,16 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.dao.AssetTopologyDao;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.IdCount;
-import com.antiy.asset.intergration.EmergencyClient;
-import com.antiy.asset.util.ArrayTypeUtil;
-import com.antiy.asset.vo.query.AlarmAssetIdQuery;
-import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.*;
-import com.antiy.common.enums.ModuleEnum;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
+import com.antiy.asset.dao.AssetTopologyDao;
+import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroup;
+import com.antiy.asset.entity.IdCount;
+import com.antiy.asset.intergration.EmergencyClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetTopologyService;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
@@ -28,7 +21,15 @@ import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetTopologyQuery;
 import com.antiy.asset.vo.response.AssetNodeInfoResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.base.PageResult;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
@@ -64,8 +65,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     @Override
     public AssetNodeInfoResponse queryAssetNodeInfo(String assetId) {
         AssetNodeInfoResponse assetNodeInfoResponse = assetLinkRelationDao.queryAssetNodeInfo(assetId);
-        assetNodeInfoResponse.setInstallTypeName(InstallType.getInstallTypeByCode(
-            assetNodeInfoResponse.getInstallType()).getStatus());
+        assetNodeInfoResponse
+            .setInstallTypeName(InstallType.getInstallTypeByCode(assetNodeInfoResponse.getInstallType()).getStatus());
         return assetNodeInfoResponse;
     }
 
@@ -74,8 +75,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         Map<String, Integer> resultMap = new HashMap<>(2);
         // 1.查询资产总数
         AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser()
-            .getAreaIdsOfCurrentUser()));
+        assetQuery.setAreaIds(
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         // 1.1资产状态为已入网和待退役
         List<Integer> assetStatusList = new ArrayList<>(2);
         assetStatusList.add(AssetStatusEnum.NET_IN.getCode());
@@ -112,8 +113,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     @Override
     public PageResult<AssetResponse> getTopologyList(AssetQuery query) throws Exception {
         if (query.getAreaIds() == null) {
-            query.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser()
-                .getAreaIdsOfCurrentUser()));
+            query.setAreaIds(
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         Integer count = assetTopologyDao.findTopologyListAssetCount(query);
         if (count != null && count > 0) {

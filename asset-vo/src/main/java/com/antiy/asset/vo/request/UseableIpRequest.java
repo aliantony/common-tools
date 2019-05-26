@@ -1,14 +1,15 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.asset.vo.response.CategoryType;
+import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
 
-public class UseableIpRequest {
+public class UseableIpRequest extends BaseRequest {
     /**
      * 资产id
      */
     @Encode
-    private String assetId;
+    private String       assetId;
     /**
      * 设备类型
      */

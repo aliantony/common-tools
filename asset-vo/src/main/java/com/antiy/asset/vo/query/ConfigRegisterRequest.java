@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
 
 import io.swagger.annotations.ApiModel;
@@ -18,7 +19,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @create 2019-04-04 15:14
  */
 @ApiModel("配置请求")
-public class ConfigRegisterRequest {
+public class ConfigRegisterRequest extends BaseRequest {
     /**
      * 配置建议
      */
