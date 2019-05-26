@@ -893,9 +893,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             scheme.setSchemeSource(1);
         }
-        scheme.setAssetId(registerRequest.getAssetId());
-        // scheme.setAssetId(aesEncoder.decode(registerRequest.getAssetId(),
-        // LoginUserUtil.getLoginUser().getUsername()));
+        // scheme.setAssetId(registerRequest.getAssetId());
+        scheme.setAssetId(aesEncoder.decode(registerRequest.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         scheme.setGmtCreate(gmtCreateTime);
         scheme.setFileInfo(registerRequest.getFiles());
