@@ -267,7 +267,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         });
 
         List<String> uuidList = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(autoInstallList)) {
+       /* if (CollectionUtils.isNotEmpty(autoInstallList)) {
             autoInstallList.forEach(
                 assetSoftwareRelation -> uuidList.add(assetDao.getUUIDByAssetId(assetSoftwareRelation.getAssetId())));
 
@@ -279,13 +279,13 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             // 获取软件安装路径
             commandRequest.setUuidList(uuidList);
             // 远程调用安装指令
-            /*ActionResponse actionResponse = commandClient.executeCommand(commandRequest);
+            ActionResponse actionResponse = commandClient.executeCommand(commandRequest);
 
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 LogUtils.info(logger, "远程调用安装指令" + " {}", relationList);
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
-            }*/
+            }
 
             // 更新安装状态
             AssetSoftwareRelation condition = new AssetSoftwareRelation();
@@ -305,7 +305,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                         new BusinessData(AssetEventEnum.SOFT_INSTALL.getName(), condition.getId(), "", condition,
                                 BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
             }
-        }
+        }*/
         return ActionResponse.success();
     }
 
