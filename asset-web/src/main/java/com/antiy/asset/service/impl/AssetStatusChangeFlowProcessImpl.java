@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.encoder.AesEncoder;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,8 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
     private Logger         logger = LogUtils.get(this.getClass());
     @Resource
     private AssetDao       assetDao;
-
+    @Resource
+    private AesEncoder     aesEncoder;
     @Resource
     private BaseLineClient baseLineClient;
 
@@ -57,7 +59,9 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         ParamterExceptionUtils.isNull(assetStatusReqeust.getAssetStatus(), "硬件当前状态不能为空");
         if (!assetStatusReqeust.getAgree()
             && AssetStatusEnum.WAIT_NET.getCode().equals(assetStatusReqeust.getAssetStatus().getCode())) {
-            ActionResponse actionResponseVerify = baseLineClient.updateAssetVerify(asset.getStringId());
+
+            ActionResponse actionResponseVerify = baseLineClient
+                .updateAssetVerify(aesEncoder.encode(asset.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
             if (null == actionResponseVerify
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseVerify.getHead().getCode())) {
                 logger.warn("调用基准待验证接口失败,回滚资产状态,{}", assetStatusReqeust);
