@@ -177,17 +177,17 @@ public class AssetController {
     /**
      * 导出模板
      *
-     * @param strings 封装对象
+     * @param types 封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "导出模板", notes = "主键封装对象")
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:asset:exportTemplate')")
-    public void exportTemplate(@ApiParam("导出的模板类型 compute_device-计算设备 storage_device-存储设备 other_device-其它设备 safety_device-安全设备 network_device-网络设备") String[] strings) throws Exception {
-        ParamterExceptionUtils.isNull(strings, "类型不能为空");
-        AssetSecondCategoryEnum[] assetSecondCategoryEnums = new AssetSecondCategoryEnum[strings.length];
-        for (int i = 0; i < strings.length; i++) {
-            AssetSecondCategoryEnum assetSecondCategoryEnum = AssetSecondCategoryEnum.getEnumByCode(strings[i]);
+    public void exportTemplate(@ApiParam("导出的模板类型 compute_device-计算设备 storage_device-存储设备 other_device-其它设备 safety_device-安全设备 network_device-网络设备") String[] types) throws Exception {
+        ParamterExceptionUtils.isNull(types, "类型不能为空");
+        AssetSecondCategoryEnum[] assetSecondCategoryEnums = new AssetSecondCategoryEnum[types.length];
+        for (int i = 0; i < types.length; i++) {
+            AssetSecondCategoryEnum assetSecondCategoryEnum = AssetSecondCategoryEnum.getEnumByCode(types[i]);
             if (assetSecondCategoryEnum != null) {
                 assetSecondCategoryEnums[i] = assetSecondCategoryEnum;
             } else {
