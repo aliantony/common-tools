@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.antiy.asset.entity.Asset;
@@ -173,9 +174,9 @@ public interface IAssetService extends IBaseService<Asset> {
     Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception;
 
     /**
-     * @param type 导出模板的类型
+     * @param assetSecondCategoryEnums 导出模板的类型
      */
-    void exportTemplate(Integer[] type) throws Exception;
+    void exportTemplate(AssetSecondCategoryEnum[] assetSecondCategoryEnums) throws Exception;
 
     /**
      * @param assetQuery 导出模板的条件

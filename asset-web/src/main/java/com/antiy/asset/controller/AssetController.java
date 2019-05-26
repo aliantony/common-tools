@@ -8,10 +8,12 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
 import com.antiy.asset.vo.request.*;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.exception.BusinessException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -97,7 +99,8 @@ public class AssetController {
     @RequestMapping(value = "/query/queryAssetCountByAreaIds", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetCountByAreaIds')")
     public ActionResponse queryAssetCountByAreaIds(@RequestBody @ApiParam(value = "areaIds") AssetCountByAreaIdsRequest areaIds) throws Exception {
-        return ActionResponse.success(iAssetService.queryAssetCountByAreaIds(DataTypeUtils.stringListToIntegerList(areaIds.getAreaIds())));
+        return ActionResponse.success(
+            iAssetService.queryAssetCountByAreaIds(DataTypeUtils.stringListToIntegerList(areaIds.getAreaIds())));
     }
 
     /**
@@ -174,15 +177,24 @@ public class AssetController {
     /**
      * 导出模板
      *
-     * @param type 封装对象
+     * @param strings 封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "导出模板", notes = "主键封装对象")
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:asset:exportTemplate')")
-    public void exportTemplate(@ApiParam("导出的模板类型") Integer[] type) throws Exception {
-        ParamterExceptionUtils.isNull(type, "类型不能为空");
-        iAssetService.exportTemplate(type);
+    public void exportTemplate(@ApiParam("导出的模板类型 compute_device-计算设备 storage_device-存储设备 other_device-其它设备 safety_device-安全设备 network_device-网络设备") String[] strings) throws Exception {
+        ParamterExceptionUtils.isNull(strings, "类型不能为空");
+        AssetSecondCategoryEnum[] assetSecondCategoryEnums = new AssetSecondCategoryEnum[strings.length];
+        for (int i = 0; i < strings.length; i++) {
+            AssetSecondCategoryEnum assetSecondCategoryEnum = AssetSecondCategoryEnum.getEnumByCode(strings[i]);
+            if (assetSecondCategoryEnum != null) {
+                assetSecondCategoryEnums[i] = assetSecondCategoryEnum;
+            } else {
+                ParamterExceptionUtils.isTrue(false, "枚举类型错误");
+            }
+        }
+        iAssetService.exportTemplate(assetSecondCategoryEnums);
 
     }
 
@@ -245,7 +257,8 @@ public class AssetController {
     @RequestMapping(value = "/query/pulldown/unconnectedManufacturer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
     public ActionResponse<List<String>> pulldownUnconnectedManufacturer(@RequestBody UnconnectedManufacturerRequest request) throws Exception {
-        return ActionResponse.success(iAssetService.pulldownUnconnectedManufacturer(request.getIsNet(), request.getPrimaryKey()));
+        return ActionResponse
+            .success(iAssetService.pulldownUnconnectedManufacturer(request.getIsNet(), request.getPrimaryKey()));
     }
 
     /**
