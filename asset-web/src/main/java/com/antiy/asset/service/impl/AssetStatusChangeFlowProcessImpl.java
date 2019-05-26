@@ -61,7 +61,7 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
             && AssetStatusEnum.WAIT_NET.getCode().equals(assetStatusReqeust.getAssetStatus().getCode())) {
 
             ActionResponse actionResponseVerify = baseLineClient
-                .updateAssetVerify(aesEncoder.encode(asset.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+                .updateAssetVerify(asset.getStringId());
             if (null == actionResponseVerify
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseVerify.getHead().getCode())) {
                 logger.warn("调用基准待验证接口失败,回滚资产状态,{}", assetStatusReqeust);
