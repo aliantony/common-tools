@@ -28,6 +28,7 @@ public class AssetSoftwareResponse extends BaseResponse {
      * 操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)
      */
     @ApiModelProperty("操作系统(WINDTO;WS7-32-64,WINDTO;WS8-64)")
+    @Encode
     private List<String>       operationSystems;
 
     /**
