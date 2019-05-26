@@ -493,16 +493,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         BusinessExceptionUtils.isEmpty(list, "品类不存在，删除失败");
         // 删除品类及其子品类
         Integer result = assetCategoryModelDao.delete(list);
-        if (!Objects.equals(0, result)) {
-            // 写入业务日志
-            // LogHandle.log(list.toString(), AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
-            // AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-            // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_DELETE.getName(), null, "批量删除",
-                assetQuery,
-                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-            LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", list.toString());
-        }
         return ActionResponse.success(result);
     }
 
