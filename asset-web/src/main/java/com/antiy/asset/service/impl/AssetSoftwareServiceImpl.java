@@ -665,7 +665,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 List<String> idList = iAssetCategoryModelService.getCategoryIdList(search);
                 List<String> newIds = new ArrayList<>();
                 for (String string : idList) {
-                    newIds.add(aesEncoder.encode(string,LoginUserUtil.getLoginUser().getUsername()));
+                    newIds.add(aesEncoder.encode(string, LoginUserUtil.getLoginUser().getUsername()));
                 }
                 enumCountResponse.setCode(newIds);
                 // 设置查询资产条件参数，包括，状态，资产品类型号
@@ -843,9 +843,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
         assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(
-            new BusinessData(AssetEventEnum.SOFT_CONFIG.getName(), Integer.valueOf(softwareId), softwareId, request,
-                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_CONFIG.getName(), Integer.valueOf(softwareId),
+            softwareId, request, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.SOFT_CONFIG.getName() + " {}", request);
         return ActionResponse.success(assetSoftwareRelationDao.insert(assetSoftwareRelation));
     }
@@ -1037,7 +1036,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 StringBuilder stringBuilder = new StringBuilder();
 
                 for (LinkedHashMap linkedHashMap : mapList) {
-                    stringBuilder.append(aesEncoder.decode(linkedHashMap.get("stringId").toString(),LoginUserUtil.getLoginUser().getUsername())).append(",");
+                    stringBuilder.append(aesEncoder.decode(linkedHashMap.get("stringId").toString(),
+                        LoginUserUtil.getLoginUser().getUsername())).append(",");
                 }
                 String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
 
