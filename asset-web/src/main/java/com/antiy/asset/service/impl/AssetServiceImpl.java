@@ -812,7 +812,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 if (CollectionUtils.isEmpty(alarmCountList)) {
                     return new ArrayList<AssetResponse>();
                 }
-                alarmCountMaps = alarmCountList.stream().collect(Collectors.toMap(idcount -> aesEncoder.decode(idcount.getId(), LoginUserUtil.getLoginUser().getUsername()), IdCount::getCount));
+                alarmCountMaps = alarmCountList.stream()
+                    .collect(Collectors.toMap(
+                        idcount -> aesEncoder.decode(idcount.getId(), LoginUserUtil.getLoginUser().getUsername()),
+                        IdCount::getCount));
                 String[] ids = new String[alarmCountMaps.size()];
                 query.setIds(alarmCountMaps.keySet().toArray(ids));
                 // 由于计算Id列表添加了区域，此处不用添加
@@ -838,7 +841,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetResponse> objects = responseConverter.convert(assetList, AssetResponse.class);
         for (AssetResponse object : objects) {
             if (MapUtils.isNotEmpty(processMap)) {
-                object.setWaitingTaskReponse(processMap.get(object.getStringId()));
+                object.setWaitingTaskReponse(processMap
+                    .get(aesEncoder.encode(object.getStringId(), LoginUserUtil.getLoginUser().getUsername())));
             }
 
             if (MapUtils.isNotEmpty(vulCountMaps)) {
@@ -1358,7 +1362,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 List<AssetCategoryModel> search = iAssetCategoryModelService.recursionSearch(categoryModelDaoAll,
                     secondCategoryModel.getId());
                 List<String> categoryList = new ArrayList<>();
-                categoryList.add(aesEncoder.encode(secondCategoryModel.getStringId(),LoginUserUtil.getLoginUser().getUsername()));
+                categoryList.add(
+                    aesEncoder.encode(secondCategoryModel.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
                 enumCountResponse.setCode(categoryList);
                 // 设置查询资产条件参数，包括区域id，状态，资产品类型号
                 AssetQuery assetQuery = setAssetQueryParam(enumCountResponse, areaIds, search);
@@ -3490,7 +3495,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuilder stringBuilder = new StringBuilder();
 
         for (LinkedHashMap linkedHashMap : mapList) {
-            stringBuilder.append(aesEncoder.decode(linkedHashMap.get("stringId").toString(),LoginUserUtil.getLoginUser().getUsername())).append(",");
+            stringBuilder.append(
+                aesEncoder.decode(linkedHashMap.get("stringId").toString(), LoginUserUtil.getLoginUser().getUsername()))
+                .append(",");
         }
         String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
 
@@ -3620,7 +3627,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
         if (response != null) {
             if (CollectionUtils.isEmpty(response.getChildrenNode())) {
-                result.add(aesEncoder.decode(response.getStringId(),LoginUserUtil.getLoginUser().getUsername()));
+                result.add(aesEncoder.decode(response.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
             } else {
                 for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse : response.getChildrenNode()) {
                     operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
