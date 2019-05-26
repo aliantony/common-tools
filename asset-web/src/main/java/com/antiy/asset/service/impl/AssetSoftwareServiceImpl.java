@@ -786,6 +786,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         if (currentTimeMillis == null) {
             currentTimeMillis = System.currentTimeMillis();
         }
+
         Scheme scheme = convertScheme(request, currentTimeMillis);
 
         // 2.保存配置建议信息
@@ -807,9 +808,24 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public ActionResponse softwareInstallConfig(ConfigRegisterRequest request) throws Exception {
+        String assetId = request.getAssetId();
+        String softwareId = request.getSoftwareId();
         if (LoginUserUtil.getLoginUser() != null) {
             // 软件安装
             request.setSource("2");
+            request.setAssetId(aesEncoder.encode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
+            // request.setStringId (aesEncoder.encode (request.getStringId (),LoginUserUtil.getLoginUser ().getUsername
+            // ()));
+            request.setRelId(aesEncoder.encode(request.getRelId(), LoginUserUtil.getLoginUser().getUsername()));
+            request
+                .setSoftwareId(aesEncoder.encode(request.getSoftwareId(), LoginUserUtil.getLoginUser().getUsername()));
+            List<String> configUserIds = request.getConfigUserIds();
+            List<String> ids = new ArrayList<>();
+            for (String configUserId : configUserIds) {
+                String encode = aesEncoder.encode(configUserId, LoginUserUtil.getLoginUser().getUsername());
+                ids.add(encode);
+            }
+            request.setConfigUserIds(ids);
             ActionResponse actionResponse = this.configRegister(request, null);
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
@@ -821,15 +837,15 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
         // 配置调用成功，新增软硬件关系表状态
         AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-        assetSoftwareRelation.setAssetId(request.getAssetId());
-        assetSoftwareRelation.setSoftwareId(request.getSoftwareId());
+        assetSoftwareRelation.setAssetId(assetId);
+        assetSoftwareRelation.setSoftwareId(softwareId);
         assetSoftwareRelation.setInstallStatus(SoftInstallStatus.CONFIGURING.getCode());
         assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
         assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(
-            new BusinessData(AssetEventEnum.SOFT_CONFIG.getName(), Integer.valueOf(request.getSoftwareId()),
-                request.getSoftwareId(), request, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+            new BusinessData(AssetEventEnum.SOFT_CONFIG.getName(), Integer.valueOf(softwareId), softwareId, request,
+                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.SOFT_CONFIG.getName() + " {}", request);
         return ActionResponse.success(assetSoftwareRelationDao.insert(assetSoftwareRelation));
     }
