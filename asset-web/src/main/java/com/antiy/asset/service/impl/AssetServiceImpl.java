@@ -2084,19 +2084,28 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // ------------------启动工作流------------------end
             }
         }
-        // TODO 下发智甲
+        // 下发智甲
         AssetExternalRequest assetExternalRequest = BeanConvert.convertBean(assetOuterRequest,
             AssetExternalRequest.class);
-        assetExternalRequest.setAsset(BeanConvert.convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class));
+        assetExternalRequest.setAsset(
+            BeanConvert.convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class));
         // 获取资产上安装的软件信息
         List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
             .findInstalledSoft(assetOuterRequest.getAsset().getId());
-        assetExternalRequest.setAssetSoftwareRequestList(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
-        assetClient.issueAssetData(new ArrayList() {
+        assetExternalRequest
+            .setAssetSoftwareRequestList(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
+        List<AssetExternalRequest> assetExternalRequests = new ArrayList() {
             {
                 add(assetExternalRequest);
             }
-        });
+        };
+        ActionResponse actionResponse = assetClient.issueAssetData(assetExternalRequests);
+        if (actionResponse == null
+            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), 0, "", null,
+                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
+            LogUtils.error(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetExternalRequests.toString());
+        }
         return assetCount;
     }
 
