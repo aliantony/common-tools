@@ -6,16 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
+import com.antiy.asset.vo.response.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.AlarmAssetResponse;
-import com.antiy.asset.vo.response.AssetOuterResponse;
-import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.EnumCountResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -257,6 +254,6 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      * @throws Exception
      */
-    List<AlarmAssetResponse> queryAlarmAssetList(AlarmAssetRequest alarmAssetRequest) throws Exception;
+    AlarmAssetDataResponse queryAlarmAssetList(AlarmAssetRequest alarmAssetRequest) throws Exception;
 
 }
