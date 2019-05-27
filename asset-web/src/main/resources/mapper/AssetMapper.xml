@@ -1484,7 +1484,7 @@
     </select>
     <select id="findAssetIds" resultType="java.lang.String">
         select id from asset where 1 = 1
-        <if test="areaIds != null areaIds.length > 0">
+        <if test="areaIds != null and areaIds.length > 0">
             and area_id in
             <foreach collection="areaIds" item="item" open="(" close=")" separator=",">
                 #{item}
