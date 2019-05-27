@@ -78,11 +78,4 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
      * @return
      */
     String getPath(String id);
-
-    /**
-     * 通过软件ID和资产ID获取配置状态
-     * @param query
-     * @return
-     */
-    Integer findInstallStatus(AssetSoftwareQuery query);
 }
