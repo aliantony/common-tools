@@ -362,11 +362,4 @@
             </trim>
         </where>
     </select>
-    <select id="getUUIDByAssetId" resultType="java.lang.String" parameterType="java.lang.String">
-        select
-        uuid
-        from
-        <include refid="Table_Name"></include>
-        where id = #{id}
-    </select>
 </mapper>
