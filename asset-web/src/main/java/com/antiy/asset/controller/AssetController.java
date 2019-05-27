@@ -183,18 +183,9 @@ public class AssetController {
     @ApiOperation(value = "导出模板", notes = "主键封装对象")
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:asset:exportTemplate')")
-    public void exportTemplate(@ApiParam("导出的模板类型 compute_device-计算设备 storage_device-存储设备 other_device-其它设备 safety_device-安全设备 network_device-网络设备") String[] types) throws Exception {
+    public void exportTemplate(@ApiParam("导出的模板类型")@Encode String[] types) throws Exception {
         ParamterExceptionUtils.isNull(types, "类型不能为空");
-        AssetSecondCategoryEnum[] assetSecondCategoryEnums = new AssetSecondCategoryEnum[types.length];
-        for (int i = 0; i < types.length; i++) {
-            AssetSecondCategoryEnum assetSecondCategoryEnum = AssetSecondCategoryEnum.getEnumByCode(types[i]);
-            if (assetSecondCategoryEnum != null) {
-                assetSecondCategoryEnums[i] = assetSecondCategoryEnum;
-            } else {
-                ParamterExceptionUtils.isTrue(false, "枚举类型错误");
-            }
-        }
-        iAssetService.exportTemplate(assetSecondCategoryEnums);
+        iAssetService.exportTemplate(types);
 
     }
 
