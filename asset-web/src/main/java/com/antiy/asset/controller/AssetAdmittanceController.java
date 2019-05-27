@@ -86,7 +86,7 @@ public class AssetAdmittanceController {
 
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName(), asset.getId(),
-            assetService.getById(asset.getId()+"").getName(), asset, BusinessModuleEnum.HARD_ASSET,
+            assetService.getById(asset.getId() + "").getName(), asset, BusinessModuleEnum.HARD_ASSET,
             BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
             AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName() + " {}", asset.toString());
@@ -130,8 +130,8 @@ public class AssetAdmittanceController {
         excelDownloadUtil.excelDownload(request, response,
             "准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(), 0, "", assetQuery,
-            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(new BusinessData("准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT),
+            0, "", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
             AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName() + " {}", assetQuery.toString());
         return ActionResponse.success();
