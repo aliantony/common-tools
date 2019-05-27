@@ -65,7 +65,7 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
             if (null == actionResponseVerify
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseVerify.getHead().getCode())) {
                 logger.warn("调用基准待验证接口失败,回滚资产状态,{}", assetStatusReqeust);
-                asset.setStatus(assetStatusReqeust.getAssetStatus().getCode());
+                asset.setAssetStatus(assetStatusReqeust.getAssetStatus().getCode());
                 assetDao.update(asset);
                 return actionResponseVerify;
             }
