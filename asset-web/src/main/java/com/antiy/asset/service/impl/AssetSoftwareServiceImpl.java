@@ -816,7 +816,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         query.setSoftwareId(request.getSoftwareId());
         Integer installStatus = assetSoftwareDao.findInstallStatus(query);
         if (SoftInstallStatus.INSTALLING.getCode().equals(installStatus)) {
-            throw new BusinessException("请勿重复配置改资产");
+            throw new BusinessException("请勿重复配置该资产");
         }
         String assetId = request.getAssetId();
         String softwareId = request.getSoftwareId();
