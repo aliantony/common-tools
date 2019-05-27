@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
+import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.common.base.IBaseDao;
@@ -155,4 +156,12 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer checkInstalled(@Param("softwareId") String softwareId,@Param("list") List<String> assetIds);
+
+    /**
+     * 通过软件ID和资产ID获取配置状态
+     * @param query
+     * @return
+     */
+    Integer findInstallStatus(AssetSoftwareQuery query);
+
 }
