@@ -125,7 +125,7 @@ public class AssetStatusJumpController {
             operationRecord(assetStatusChangeRequest, assetId);
             LogUtils.recordOperLog(
                 new BusinessData(AssetEventEnum.SOFT_NO_REGISTER.getName(), DataTypeUtils.stringToInteger(assetId),
-                    null, assetStatusChangeRequest, BusinessModuleEnum.SOFTWARE_ASSET,
+                        assetStatusChangeRequest.getAssetId(), assetStatusChangeRequest, BusinessModuleEnum.SOFTWARE_ASSET,
                     BusinessPhaseEnum.getByStatus(assetStatusChangeRequest.getStatus())));
             LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetStatusChangeRequest);
 
