@@ -156,6 +156,9 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
     @Encode
     private String        assetId;
 
+    @ApiModelProperty(value = "资产id", hidden = true)
+    private String        softwareId;
+
     @ApiModelProperty(value = "1表示查询发布时间，2表示查询到期时间")
     private Integer       queryTime;
 
@@ -179,6 +182,14 @@ public class AssetSoftwareQuery extends ObjectQuery implements ObjectValidator {
      * 资产状态
      */
     private List<Integer> assetStatus;
+
+    public String getSoftwareId() {
+        return softwareId;
+    }
+
+    public void setSoftwareId(String softwareId) {
+        this.softwareId = softwareId;
+    }
 
     public List<String> getRemoveManufacturers() {
         return removeManufacturers;
