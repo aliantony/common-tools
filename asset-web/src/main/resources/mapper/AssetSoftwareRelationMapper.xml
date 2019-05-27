@@ -6,6 +6,7 @@
     <resultMap id="InstallResultMap" type="com.antiy.asset.entity.AssetSoftwareInstall">
         <id column="id" property="id"/>
         <result column="asset_id" property="assetId"/>
+        <result column="area_id" property="areaId"/>
         <result column="install_type" property="installType"/>
         <result column="install_status" property="installStatus"/>
         <result column="install_time" property="installTime"/>
@@ -607,12 +608,12 @@
         select * from (select distinct
         d.id,
         a.id as asset_id,
-        a.area_id,
         a.asset_group,
         a.category_model,
         a.first_enter_nett,
         a.number,
         a.name,
+        a.area_id,
         a.operation_system,
         c.name as category_model_name,
         a.manufacturer,
@@ -753,5 +754,14 @@
         and a.install_status = 5
         and b.status = 1
         and a.status = 1
+    </select>
+    <!--检查资产是否能进行安装-->
+    <select id="checkInstalled" resultType="java.lang.Integer">
+        select count(1) count from asset_software_relation where software_id = #{softwareId} and asset_id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        and install_status in (1,2,5,6)
+        and status = 1
     </select>
 </mapper>

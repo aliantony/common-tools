@@ -54,11 +54,11 @@ public enum AssetEventEnum {
     ASSET_SAFE_DETAIL_UPDATE(45,"资产安全设备修改"),
     ASSET_SAFE_DETAIL_INSERT(46,"资产安全设备新增"),
     SOFT_DELETE(47,"软件资产删除"),
-    SOFT_UPDATE(48,"软件资产修改"),
-    SOFT_INSERT(49,"软件资产新增"),
+    SOFT_UPDATE(48,"软件变更"),
+    SOFT_INSERT(49,"软件登记"),
                             SOFT_EXPORT(50,
-                                        "软件资产导出"),
-    SOFT_INSTALL(51,"软件资产安装"),
+                                        "软件导出"),
+    SOFT_INSTALL(51,"软件安装"),
     SOFT_LICENSE_DELETE(52,"软件资产许可删除"),
     SOFT_LICENSE_UPDATE(53,"软件资产许可修改"),
     SOFT_LICENSE_INSERT(54,"软件资产许可新增"),
@@ -108,8 +108,11 @@ public enum AssetEventEnum {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "硬件退役再登记"), GET_USER_INOF(102,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "获取登录用户"), ASSET_STATUS_SCHEDULE_TASK(103,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "执行资产状态定时任务"), NO_REGISTER(104,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "硬件不予登记再登记"), SETTING_REGISTER(105,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       "硬件配置待再登记");
+            "硬件不予登记再登记"),
+    SETTING_REGISTER(105,
+            "硬件配置待再登记"), SOFT_NO_REGISTER(106,
+            "软件不予登记");
+
 
 
     private Integer status;

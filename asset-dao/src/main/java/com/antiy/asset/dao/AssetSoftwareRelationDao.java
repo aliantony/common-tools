@@ -147,4 +147,12 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     List<AssetSoftware> findInstalledSoft(@Param("assetId") String assetId);
+
+    /**
+     * 等判断软件是否已经执行过安装操作
+     * @param softwareId
+     * @param assetIds
+     * @return
+     */
+    Integer checkInstalled(@Param("softwareId") String softwareId,@Param("list") List<String> assetIds);
 }

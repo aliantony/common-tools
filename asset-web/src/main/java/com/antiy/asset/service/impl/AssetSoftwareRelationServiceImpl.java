@@ -1,9 +1,12 @@
 package com.antiy.asset.service.impl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.request.*;
+import com.antiy.common.utils.BusinessExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -32,10 +35,6 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
-import com.antiy.asset.vo.request.AssetRelationSoftRequest;
-import com.antiy.asset.vo.request.AssetSoftwareRelationList;
-import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
-import com.antiy.asset.vo.request.CommandRequest;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
@@ -219,11 +218,14 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public ActionResponse installSoftware(AssetSoftwareRelationList assetSoftwareRelationList) throws Exception {
+        // 人工安装
+        ParamterExceptionUtils.isEmpty(assetSoftwareRelationList.getAssetInstallRequestList(), "安装信息不能为空！");
+        if(checkInstalled(assetSoftwareRelationList)) {
+            BusinessExceptionUtils.isTrue(false, "所选资产已经安装成功或在安装中,不允许再次操作!");
+        }
         List<AssetSoftwareRelation> relationList = Lists.newArrayList();
         // 自动安装列表，用于下发给智甲
         List<AssetSoftwareRelation> autoInstallList = Lists.newArrayList();
-        // 人工安装
-        ParamterExceptionUtils.isEmpty(assetSoftwareRelationList.getAssetInstallRequestList(), "安装信息不能为空！");
         assetSoftwareRelationList.getAssetInstallRequestList().stream().forEach(assetInstallRequest -> {
             AssetSoftwareRelation relation = new AssetSoftwareRelation();
             // 关系表主键
@@ -266,8 +268,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             }
         });
 
-        List<String> uuidList = new ArrayList<>();
-       /* if (CollectionUtils.isNotEmpty(autoInstallList)) {
+        /*List<String> uuidList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(autoInstallList)) {
             autoInstallList.forEach(
                 assetSoftwareRelation -> uuidList.add(assetDao.getUUIDByAssetId(assetSoftwareRelation.getAssetId())));
 
@@ -308,6 +310,21 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         }*/
         return ActionResponse.success();
     }
+
+    /**
+     * 幂等判断软件是否已经执行过安装操作
+     * @param assetSoftwareRelationList
+     */
+    private boolean checkInstalled(AssetSoftwareRelationList assetSoftwareRelationList) {
+        Integer result = 0;
+        if (CollectionUtils.isNotEmpty(assetSoftwareRelationList.getAssetInstallRequestList())) {
+            result = assetSoftwareRelationDao.checkInstalled(assetSoftwareRelationList.getSoftwareId(),
+                    assetSoftwareRelationList.getAssetInstallRequestList().stream().map(AssetInstallRequest::getAssetId)
+                            .collect(Collectors.toList()));
+        }
+        return result > 0;
+    }
+
 
     private Integer countByAssetId(Integer assetId) {
         return assetSoftwareRelationDao.countSoftwareByAssetId(assetId);
