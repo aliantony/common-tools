@@ -391,7 +391,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     if (SoftwareStatusEnum.NOT_REGSIST.getCode().equals(softwareStatus)
                         || SoftwareStatusEnum.WATI_REGSIST.getCode().equals(softwareStatus)) {
                         // 记录操作日志和运行日志
-                        software.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+                        assetSoftware.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
                         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(),
                             assetSoftware.getId(), assetSoftware.getName(), assetSoftware,
                             BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
