@@ -2,6 +2,7 @@ package com.antiy.asset.vo.request;
 
 import java.util.List;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -23,6 +24,7 @@ public class ManualStartActivityRequest {
      * 业务Id
      */
     @ApiModelProperty(value = "业务Id")
+    @Encode
     private String businessId;
 
     /**
