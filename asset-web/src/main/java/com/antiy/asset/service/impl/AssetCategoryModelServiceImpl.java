@@ -101,7 +101,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             LogUtils.recordOperLog(
                 new BusinessData(AssetEventEnum.ASSET_CATEGORY_INSERT.getName(), assetCategoryModel.getId(),
                     assetCategoryModel.getName(),
-                    assetCategoryModel, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                    assetCategoryModel, BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}",
                 assetCategoryModel.toString());
         }
@@ -155,7 +155,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             // 记录操作日志和运行日志
             LogUtils
                 .recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(), updateCategory.getId(),
-                updateCategory.getName(), updateCategory, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                updateCategory.getName(), updateCategory, BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_UPDATE.getName() + " {}", updateCategory.toString());
         }
         return ActionResponse.success(result);
@@ -236,7 +236,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         // AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
-            assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel, BusinessModuleEnum.HARD_ASSET,
+            assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel, BusinessModuleEnum.PRODUCT_TYPE_NUMBER,
             BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", assetCategoryModel.toString());
         return deleteAllById(id);
