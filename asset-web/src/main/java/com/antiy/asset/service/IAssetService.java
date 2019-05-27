@@ -1,6 +1,7 @@
 package com.antiy.asset.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +49,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @param query
      * @return
      */
-    List<AssetResponse> findListAsset(AssetQuery query) throws Exception;
+    List<AssetResponse> findListAsset(AssetQuery query, Map<String, WaitingTaskReponse> processMap) throws Exception;
 
     /**
      * 批量查询
