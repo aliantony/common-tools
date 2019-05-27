@@ -123,6 +123,12 @@ public class AssetStatusJumpController {
             }
             assetSoftware.setSoftwareStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
             operationRecord(assetStatusChangeRequest, assetId);
+            LogUtils.recordOperLog(
+                new BusinessData(AssetEventEnum.SOFT_NO_REGISTER.getName(), DataTypeUtils.stringToInteger(assetId),
+                    null, assetStatusChangeRequest, BusinessModuleEnum.SOFTWARE_ASSET,
+                    BusinessPhaseEnum.getByStatus(assetStatusChangeRequest.getStatus())));
+            LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetStatusChangeRequest);
+
             return ActionResponse.success(softwareDao.update(assetSoftware));
         } else {
             Asset asset = new Asset();
@@ -131,10 +137,9 @@ public class AssetStatusJumpController {
             operationRecord(assetStatusChangeRequest, assetId);
 
             // 记录日志
-            LogUtils.recordOperLog(
-                new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), DataTypeUtils.stringToInteger(assetId),
-                    assetDao.getNumberById(assetId), assetStatusChangeRequest, BusinessModuleEnum.HARD_ASSET,
-                    BusinessPhaseEnum.getByStatus(assetStatusChangeRequest.getStatus())));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(),
+                DataTypeUtils.stringToInteger(assetId), assetDao.getNumberById(assetId), assetStatusChangeRequest,
+                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.getByStatus(assetStatusChangeRequest.getStatus())));
             LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetStatusChangeRequest);
             return ActionResponse.success(assetService.update(asset));
         }

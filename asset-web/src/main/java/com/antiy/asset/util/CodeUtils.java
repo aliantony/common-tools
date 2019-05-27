@@ -1,5 +1,6 @@
 package com.antiy.asset.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,38 +20,6 @@ import com.antiy.common.utils.SpringUtil;
 @Component
 public class CodeUtils {
 
-    private static Map<String, Map<Integer, String>> codeMap  = new HashMap<>();
-    private static Map<Integer, String>               code     = new HashMap<>(16);
-    private static Boolean                           initflag = false;
-
-    private static void init() {
-        if (!initflag) {
-            String key = RedisKeyUtil.getKeyWhenGetObjectsByKeyword(ModuleEnum.COMMON.getType(), CodeType.class);
-            try {
-                RedisUtil redisUtil = SpringUtil.getBean(RedisUtil.class);
-                List<CodeType> codeTypeList = redisUtil.getObjectsByKeyword(key, CodeType.class);
-                for (CodeType codeType : codeTypeList) {
-                    String ke = RedisKeyUtil.getKeyWhenOperateObjectList(ModuleEnum.COMMON.getType(),
-                        codeType.getCode(), Code.class);
-                    List<Code> list = redisUtil.getObjectList(ke, Code.class);
-                    code = new HashMap<>(16);
-                    for (Code cod : list) {
-                        code.put(Integer.parseInt(cod.getCode()), cod.getValue());
-                    }
-                    codeMap.put(codeType.getCode(), code);
-                }
-            } catch (Exception e) {
-                throw new BusinessException("初始化码表信息失败");
-            }
-            code = new HashMap<>(16);
-            code.put(1, "是");
-            code.put(0, "否");
-            codeMap.put("yesorno", code);
-            initflag = true;
-        }
-
-    }
-
     /**
      * 获取code码
      *
@@ -59,15 +28,17 @@ public class CodeUtils {
      * @return
      */
     public static Integer getCodeValue(String codeType, String codeName) {
-        init();
-        if (StringUtils.isEmpty(codeType) || StringUtils.isEmpty(codeName)) {
-            return null;
-        }
-        Map<Integer, String> map = codeMap.get(codeType);
-        for (Map.Entry entry : map.entrySet()) {
-            if (codeName.equals(entry.getValue())) {
-                return (Integer) entry.getKey();
+        String key = RedisKeyUtil.getKeyWhenOperateObjectList(ModuleEnum.COMMON.getType(), codeType, Code.class);
+        RedisUtil redisUtil = SpringUtil.getBean(RedisUtil.class);
+        try {
+            List<Code> codeList = redisUtil.getObjectList(key, Code.class);
+            for (Code code : codeList) {
+                if (codeName.equals(code.getValue())) {
+                    return Integer.parseInt(code.getCode());
+                }
             }
+        } catch (Exception e) {
+            throw new BusinessException("获取码表信息失败");
         }
         return null;
     }
@@ -80,13 +51,19 @@ public class CodeUtils {
      * @return
      */
     public static String getCodeName(String codeType, Integer codeValue) {
-        init();
-        if (StringUtils.isEmpty(codeType) || codeValue == null) {
-            return "";
+        String key = RedisKeyUtil.getKeyWhenOperateObjectList(ModuleEnum.COMMON.getType(), codeType, Code.class);
+        RedisUtil redisUtil = SpringUtil.getBean(RedisUtil.class);
+        try {
+            List<Code> codeList = redisUtil.getObjectList(key, Code.class);
+            for (Code code : codeList) {
+                if (codeValue.equals(Integer.valueOf(code.getCode()))) {
+                    return code.getValue();
+                }
+            }
+        } catch (Exception e) {
+            throw new BusinessException("获取码表信息失败");
         }
-        Map<Integer, String> map = codeMap.get(codeType);
-
-        return map.get(codeValue);
+        return null;
     }
 
     /**
@@ -96,16 +73,18 @@ public class CodeUtils {
      * @return
      */
     public static List<String> getCodeList(String codeType) {
-        init();
-        if (StringUtils.isEmpty(codeType)) {
-            return null;
+        String key = RedisKeyUtil.getKeyWhenOperateObjectList(ModuleEnum.COMMON.getType(), codeType, Code.class);
+        RedisUtil redisUtil = SpringUtil.getBean(RedisUtil.class);
+        try {
+            List<Code> codeList = redisUtil.getObjectList(key, Code.class);
+            List<String> list = new ArrayList<>();
+            for (Code code : codeList) {
+                list.add(code.getValue());
+            }
+            return list;
+        } catch (Exception e) {
+            throw new BusinessException("获取码表信息失败");
         }
-        List<String> list = Lists.newArrayList();
-        Map<Integer, String> map = codeMap.get(codeType);
-        for (Map.Entry entry : map.entrySet()) {
-            list.add(entry.getValue().toString());
-        }
-        return list;
     }
 
     /**
@@ -115,12 +94,19 @@ public class CodeUtils {
      * @return
      */
     public static String[] getCodeArray(String codeType) {
-        init();
-        List list = getCodeList(codeType);
-        if (list == null || list.isEmpty()) {
-            return null;
+        String key = RedisKeyUtil.getKeyWhenOperateObjectList(ModuleEnum.COMMON.getType(), codeType, Code.class);
+        RedisUtil redisUtil = SpringUtil.getBean(RedisUtil.class);
+        try {
+            List<Code> codeList = redisUtil.getObjectList(key, Code.class);
+            String[] s = new String[codeList.size()];
+            int i = 0;
+            for (Code code : codeList) {
+                s[i] = code.getValue();
+                i++;
+            }
+            return s;
+        } catch (Exception e) {
+            throw new BusinessException("获取码表信息失败");
         }
-        String[] strings = (String[]) list.toArray(new String[list.size()]);
-        return strings;
     }
 }
