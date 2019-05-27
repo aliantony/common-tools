@@ -65,6 +65,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 操作系统(WINDOWS7-32-64,WINDOWS8-64)
      */
     @ApiModelProperty(value = "操作系统数组")
+    @Encode
     private String[]                    operationSystems;
     /**
      * 软件品类

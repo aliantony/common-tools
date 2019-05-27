@@ -1,31 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
-import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -54,6 +28,30 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
+import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
 
 /**
  * <p> 软件信息表 服务实现类 </p>
@@ -667,7 +665,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 List<String> idList = iAssetCategoryModelService.getCategoryIdList(search);
                 List<String> newIds = new ArrayList<>();
                 for (String string : idList) {
-                    newIds.add(aesEncoder.encode(string,LoginUserUtil.getLoginUser().getUsername()));
+                    newIds.add(aesEncoder.encode(string, LoginUserUtil.getLoginUser().getUsername()));
                 }
                 enumCountResponse.setCode(newIds);
                 // 设置查询资产条件参数，包括，状态，资产品类型号
@@ -788,6 +786,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         if (currentTimeMillis == null) {
             currentTimeMillis = System.currentTimeMillis();
         }
+
         Scheme scheme = convertScheme(request, currentTimeMillis);
 
         // 2.保存配置建议信息
@@ -809,9 +808,24 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     @Override
     public ActionResponse softwareInstallConfig(ConfigRegisterRequest request) throws Exception {
+        String assetId = request.getAssetId();
+        String softwareId = request.getSoftwareId();
         if (LoginUserUtil.getLoginUser() != null) {
             // 软件安装
             request.setSource("2");
+            request.setAssetId(aesEncoder.encode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
+            // request.setStringId (aesEncoder.encode (request.getStringId (),LoginUserUtil.getLoginUser ().getUsername
+            // ()));
+            request.setRelId(aesEncoder.encode(request.getRelId(), LoginUserUtil.getLoginUser().getUsername()));
+            request
+                .setSoftwareId(aesEncoder.encode(request.getSoftwareId(), LoginUserUtil.getLoginUser().getUsername()));
+            List<String> configUserIds = request.getConfigUserIds();
+            List<String> ids = new ArrayList<>();
+            for (String configUserId : configUserIds) {
+                String encode = aesEncoder.encode(configUserId, LoginUserUtil.getLoginUser().getUsername());
+                ids.add(encode);
+            }
+            request.setConfigUserIds(ids);
             ActionResponse actionResponse = this.configRegister(request, null);
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
@@ -823,15 +837,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
         // 配置调用成功，新增软硬件关系表状态
         AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-        assetSoftwareRelation.setAssetId(request.getAssetId());
-        assetSoftwareRelation.setSoftwareId(request.getSoftwareId());
+        assetSoftwareRelation.setAssetId(assetId);
+        assetSoftwareRelation.setSoftwareId(softwareId);
         assetSoftwareRelation.setInstallStatus(SoftInstallStatus.CONFIGURING.getCode());
         assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
         assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(
-            new BusinessData(AssetEventEnum.SOFT_CONFIG.getName(), Integer.valueOf(request.getSoftwareId()),
-                request.getSoftwareId(), request, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_CONFIG.getName(), Integer.valueOf(softwareId),
+            softwareId, request, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.SOFT_CONFIG.getName() + " {}", request);
         return ActionResponse.success(assetSoftwareRelationDao.insert(assetSoftwareRelation));
     }
@@ -895,6 +908,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             scheme.setSchemeSource(1);
         }
+        // scheme.setAssetId(registerRequest.getAssetId());
         scheme.setAssetId(aesEncoder.decode(registerRequest.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
         scheme.setGmtCreate(gmtCreateTime);
@@ -1022,7 +1036,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 StringBuilder stringBuilder = new StringBuilder();
 
                 for (LinkedHashMap linkedHashMap : mapList) {
-                    stringBuilder.append(aesEncoder.decode(linkedHashMap.get("stringId").toString(),LoginUserUtil.getLoginUser().getUsername())).append(",");
+                    stringBuilder.append(aesEncoder.decode(linkedHashMap.get("stringId").toString(),
+                        LoginUserUtil.getLoginUser().getUsername())).append(",");
                 }
                 String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
 

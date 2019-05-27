@@ -812,7 +812,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 if (CollectionUtils.isEmpty(alarmCountList)) {
                     return new ArrayList<AssetResponse>();
                 }
-                alarmCountMaps = alarmCountList.stream().collect(Collectors.toMap(idcount -> aesEncoder.decode(idcount.getId(), LoginUserUtil.getLoginUser().getUsername()), IdCount::getCount));
+                alarmCountMaps = alarmCountList.stream()
+                    .collect(Collectors.toMap(
+                        idcount -> aesEncoder.decode(idcount.getId(), LoginUserUtil.getLoginUser().getUsername()),
+                        IdCount::getCount));
                 String[] ids = new String[alarmCountMaps.size()];
                 query.setIds(alarmCountMaps.keySet().toArray(ids));
                 // 由于计算Id列表添加了区域，此处不用添加
@@ -1358,7 +1361,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 List<AssetCategoryModel> search = iAssetCategoryModelService.recursionSearch(categoryModelDaoAll,
                     secondCategoryModel.getId());
                 List<String> categoryList = new ArrayList<>();
-                categoryList.add(aesEncoder.encode(secondCategoryModel.getStringId(),LoginUserUtil.getLoginUser().getUsername()));
+                categoryList.add(
+                    aesEncoder.encode(secondCategoryModel.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
                 enumCountResponse.setCode(categoryList);
                 // 设置查询资产条件参数，包括区域id，状态，资产品类型号
                 AssetQuery assetQuery = setAssetQueryParam(enumCountResponse, areaIds, search);
@@ -2094,19 +2098,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // ------------------启动工作流------------------end
             }
         }
-        // TODO 下发智甲
+        // 下发智甲
         AssetExternalRequest assetExternalRequest = BeanConvert.convertBean(assetOuterRequest,
             AssetExternalRequest.class);
-        assetExternalRequest.setAsset(BeanConvert.convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class));
+        assetExternalRequest.setAsset(
+            BeanConvert.convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class));
         // 获取资产上安装的软件信息
         List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
             .findInstalledSoft(assetOuterRequest.getAsset().getId());
-        assetExternalRequest.setAssetSoftwareRequestList(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
-        assetClient.issueAssetData(new ArrayList() {
+        assetExternalRequest
+            .setAssetSoftwareRequestList(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
+        List<AssetExternalRequest> assetExternalRequests = new ArrayList() {
             {
                 add(assetExternalRequest);
             }
-        });
+        };
+        // 暂时注释
+        /* ActionResponse actionResponse = assetClient.issueAssetData(assetExternalRequests); if (actionResponse == null
+         * || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+         * LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), 0, "", null,
+         * BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN)); LogUtils.error(logger,
+         * AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetExternalRequests.toString()); } */
         return assetCount;
     }
 
@@ -2120,10 +2132,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     /**
      * 导出后的文件格式为.zip压缩包
-     * @param types 导出模板的类型
+     * @param assetSecondCategoryEnums 导出模板的类型
      */
     @Override
-    public void exportTemplate(Integer[] types) throws Exception {
+    public void exportTemplate(AssetSecondCategoryEnum[] assetSecondCategoryEnums) throws Exception {
         List<AssetCategoryModel> categoryModelList = assetCategoryModelDao.getNextLevelCategoryByName("硬件");
         // 根据时间戳创建文件夹，防止产生冲突
         Long currentTime = System.currentTimeMillis();
@@ -2134,14 +2146,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             logger.info(dictionaryFile.getName() + "目录创建" + isSuccess(dictionaryFile.mkdirs()));
         }
         // 创造模板文件
-        File[] files = new File[types.length];
+        File[] files = new File[assetSecondCategoryEnums.length];
         // 创造压缩文件
         File zip = new File("/temp" + currentTime + "/模板.zip");
-        Map<Integer, AssetCategoryModel> categoryModelMap = new HashMap<>();
-        categoryModelList.forEach(x -> categoryModelMap.put(x.getId(), x));
+        Map<String, AssetCategoryModel> categoryModelMap = new HashMap<>();
+        categoryModelList.forEach(x -> categoryModelMap.put(x.getName(), x));
         int m = 0;
-        for (Integer type : types) {
-            AssetCategoryModel assetCategoryModel = categoryModelMap.get(type);
+        for (AssetSecondCategoryEnum assetSecondCategoryEnum : assetSecondCategoryEnums) {
+            AssetCategoryModel assetCategoryModel = categoryModelMap.get(assetSecondCategoryEnum.getMsg());
             if (Objects.nonNull(assetCategoryModel)) {
                 // 生成模板文件
                 String categoryName = exportTemplate(dictionary + "/", assetCategoryModel);
@@ -3499,7 +3511,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuilder stringBuilder = new StringBuilder();
 
         for (LinkedHashMap linkedHashMap : mapList) {
-            stringBuilder.append(aesEncoder.decode(linkedHashMap.get("stringId").toString(),LoginUserUtil.getLoginUser().getUsername())).append(",");
+            stringBuilder.append(
+                aesEncoder.decode(linkedHashMap.get("stringId").toString(), LoginUserUtil.getLoginUser().getUsername()))
+                .append(",");
         }
         String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
 
@@ -3629,7 +3643,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
         if (response != null) {
             if (CollectionUtils.isEmpty(response.getChildrenNode())) {
-                result.add(aesEncoder.decode(response.getStringId(),LoginUserUtil.getLoginUser().getUsername()));
+                result.add(aesEncoder.decode(response.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
             } else {
                 for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse : response.getChildrenNode()) {
                     operatingSystemRecursion(result, baselineCategoryModelNodeResponse);

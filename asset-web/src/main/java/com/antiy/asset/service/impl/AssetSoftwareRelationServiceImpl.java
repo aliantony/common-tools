@@ -267,7 +267,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         });
 
         List<String> uuidList = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(autoInstallList)) {
+       /* if (CollectionUtils.isNotEmpty(autoInstallList)) {
             autoInstallList.forEach(
                 assetSoftwareRelation -> uuidList.add(assetDao.getUUIDByAssetId(assetSoftwareRelation.getAssetId())));
 
@@ -305,7 +305,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                         new BusinessData(AssetEventEnum.SOFT_INSTALL.getName(), condition.getId(), "", condition,
                                 BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
             }
-        }
+        }*/
         return ActionResponse.success();
     }
 
