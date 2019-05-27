@@ -352,7 +352,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                     );
                     assetSoftware.setOperationSystem(stringBuffer.substring(0, stringBuffer.length() - 1));
-                    int assetSoftwareCount = assetSoftwareDao.update(assetSoftware);
 
                     /**
                      * // 2.更新license表 if (null != request.getSoftwareLicenseRequest() &&
@@ -389,12 +388,22 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                      *
                      * } }
                      */
+                    if (SoftwareStatusEnum.NOT_REGSIST.getCode().equals(softwareStatus)
+                        || SoftwareStatusEnum.WATI_REGSIST.getCode().equals(softwareStatus)) {
+                        // 记录操作日志和运行日志
+                        software.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(),
+                            assetSoftware.getId(), assetSoftware.getName(), assetSoftware,
+                            BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+                    } else if (SoftwareStatusEnum.WATI_REGSIST.getCode().equals(softwareStatus)) {
+                        // 记录操作日志和运行日志
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(),
+                            assetSoftware.getId(), assetSoftware.getName(), assetSoftware,
+                            BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+                    }
+                    int assetSoftwareCount = assetSoftwareDao.update(assetSoftware);
                     // 记录更新操作
                     assetOperationRecordDao.insert(convertAssetOperationRecord(request, softwareStatus));
-                    // 记录操作日志和运行日志
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(), assetSoftware.getId(),
-                        assetSoftware.getName(), assetSoftware, BusinessModuleEnum.SOFTWARE_ASSET,
-                        BusinessPhaseEnum.NONE));
                     LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetSoftware);
 
                     return assetSoftwareCount;
@@ -1096,8 +1105,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         downloadVO.setDownloadList(softwareEntities);
         if (Objects.nonNull(softwareEntities) && softwareEntities.size() > 0) {
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData( s, null, "导出软件", downloadVO,
-                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(s, null, "导出软件", downloadVO, BusinessModuleEnum.SOFTWARE_ASSET,
+                BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", downloadVO);
             excelDownloadUtil.excelDownload(request, response, s, downloadVO);
         } else {
