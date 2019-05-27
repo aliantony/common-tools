@@ -47,6 +47,12 @@ public class AssetSoftwareInstallResponse {
     @Encode(message = "责任人主键加密失败")
     private String  userId;
     /**
+     * 区域主键
+     */
+    @ApiModelProperty("区域主键")
+    @Encode(message = "区域主键加密失败")
+    private String  areaId;
+    /**
      * 责任人
      */
     @ApiModelProperty("责任人")
@@ -236,6 +242,14 @@ public class AssetSoftwareInstallResponse {
         this.installStatusStr = SoftInstallStatus.getInstallStatusByCode(installStatus) != null
             ? SoftInstallStatus.getInstallStatusByCode(installStatus).getStatus()
             : null;
+    }
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
     }
 
     public String getInstallTypeStr() {
