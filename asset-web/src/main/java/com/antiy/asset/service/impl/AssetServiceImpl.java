@@ -2061,8 +2061,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
                     configRegisterRequest.setHard(true);
                     if (LoginUserUtil.getLoginUser() != null) {
-                        String aesAssestId = aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername());
-                        configRegisterRequest.setAssetId(aesAssestId);
+                        configRegisterRequest
+                            .setAssetId(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
                     } else {
                         LogUtils.warn(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}",
                             AssetEventEnum.GET_USER_INOF.getName());
@@ -2071,9 +2071,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                     configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
                     configRegisterRequest.setSuggest(assetOuterRequest.getManualStartActivityRequest().getSuggest());
+                    List<String> configUserIdList = assetOuterRequest.getManualStartActivityRequest()
+                        .getConfigUserIds();
+                    List<String> aesConfigUserIdList = new ArrayList<>();
+                    configUserIdList.forEach(
+                        e -> aesConfigUserIdList.add(aesEncoder.encode(e, LoginUserUtil.getLoginUser().getUsername())));
                     configRegisterRequest
-                        .setConfigUserIds(assetOuterRequest.getManualStartActivityRequest().getConfigUserIds());
-                    configRegisterRequest.setRelId(String.valueOf(assetId));
+                        .setConfigUserIds(aesConfigUserIdList);
+                    configRegisterRequest
+                        .setRelId(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
                     // 避免重复记录操作记录
                     configRegisterRequest.setHard(true);
                     ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest,
