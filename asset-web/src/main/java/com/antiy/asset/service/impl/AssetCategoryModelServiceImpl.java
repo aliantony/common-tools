@@ -98,10 +98,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             // LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_INSERT.getName(),
             // AssetEventEnum.ASSET_CATEGORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(
-                new BusinessData(AssetEventEnum.ASSET_CATEGORY_INSERT.getName(), assetCategoryModel.getId(),
-                    assetCategoryModel.getName(),
-                    assetCategoryModel, BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_INSERT.getName(),
+                assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel,
+                BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}",
                 assetCategoryModel.toString());
         }
@@ -153,9 +152,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             // LogHandle.log(updateCategory.toString(), AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(),
             // AssetEventEnum.ASSET_CATEGORY_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
-            LogUtils
-                .recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(), updateCategory.getId(),
-                updateCategory.getName(), updateCategory, BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(),
+                updateCategory.getId(), updateCategory.getName(), updateCategory,
+                BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_UPDATE.getName() + " {}", updateCategory.toString());
         }
         return ActionResponse.success(result);
@@ -236,8 +235,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         // AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
-            assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel, BusinessModuleEnum.PRODUCT_TYPE_NUMBER,
-            BusinessPhaseEnum.NONE));
+            assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel,
+            BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", assetCategoryModel.toString());
         return deleteAllById(id);
     }
@@ -280,7 +279,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     @Override
     public AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types,
                                                                   Map<String, String> initMap) throws Exception {
-        checkParameterTypes(types);
+        checkParameterTypes(types, initMap);
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
         query.setPageSize(Constants.ALL_PAGE);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
@@ -334,12 +333,12 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         }
     }
 
-    private void checkParameterTypes(String[] types) {
-        ParamterExceptionUtils.isTrue(types.length <= 5, "参数错误");
+    private void checkParameterTypes(String[] types, Map<String, String> map) {
 
+        ParamterExceptionUtils.isTrue(types.length <= map.size(), "参数数量错误");
+        Set set = map.keySet();
         for (String type : types) {
-            int itype = Integer.parseInt(type);
-            ParamterExceptionUtils.isTrue(itype >= 4 && itype <= 8, "参数错误");
+            ParamterExceptionUtils.isTrue(set.contains(type), "参数类型错误");
         }
     }
 
