@@ -755,4 +755,13 @@
         and b.status = 1
         and a.status = 1
     </select>
+    <!--检查资产是否能进行安装-->
+    <select id="checkInstalled" resultType="java.lang.Integer">
+        select count(1) count from asset_software_relation where software_id = #{softwareId} and asset_id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        and install_status in (1,2,5,6)
+        and status = 1
+    </select>
 </mapper>
