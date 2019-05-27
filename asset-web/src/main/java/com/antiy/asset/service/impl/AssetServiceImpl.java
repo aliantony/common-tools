@@ -877,9 +877,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
-        //工作台进来才会去查询待办任务
-        Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
-        dealProcess(query, processMap);
         return assetDao.findCount(query);
     }
 
