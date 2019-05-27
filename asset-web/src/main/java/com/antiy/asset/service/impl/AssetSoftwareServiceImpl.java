@@ -1096,7 +1096,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         downloadVO.setDownloadList(softwareEntities);
         if (Objects.nonNull(softwareEntities) && softwareEntities.size() > 0) {
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_EXPORT.getName(), null, "导出软件", downloadVO,
+            LogUtils.recordOperLog(new BusinessData( s, null, "导出软件", downloadVO,
                 BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", downloadVO);
             excelDownloadUtil.excelDownload(request, response, s, downloadVO);
