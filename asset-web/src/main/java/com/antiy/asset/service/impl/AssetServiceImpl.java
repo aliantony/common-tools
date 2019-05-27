@@ -3740,7 +3740,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<AlarmAssetResponse> queryAlarmAssetList(AlarmAssetRequest alarmAssetRequest) throws Exception {
+    public AlarmAssetDataResponse queryAlarmAssetList(AlarmAssetRequest alarmAssetRequest) throws Exception {
         List<Asset> assetList = assetDao.queryAlarmAssetList(alarmAssetRequest);
         BaseConverter<Asset, AlarmAssetResponse> converter = new BaseConverter<Asset, AlarmAssetResponse>() {
             @Override
@@ -3750,7 +3750,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 alarmAssetResponse.setAssetId(asset.getStringId());
             }
         };
-        return converter.convert(assetList, AlarmAssetResponse.class);
+        return new AlarmAssetDataResponse(converter.convert(assetList, AlarmAssetResponse.class));
     }
 
     @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")

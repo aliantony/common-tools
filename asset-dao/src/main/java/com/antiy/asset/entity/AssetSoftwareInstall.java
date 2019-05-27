@@ -18,6 +18,11 @@ public class AssetSoftwareInstall {
 
     private String  assetId;
     /**
+     * 
+     */
+    private String  areaId;
+
+    /**
      * 软件ID
      */
 
@@ -271,6 +276,14 @@ public class AssetSoftwareInstall {
 
     public void setOperationSystem(String operationSystem) {
         this.operationSystem = operationSystem;
+    }
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
     }
 
     @Override
