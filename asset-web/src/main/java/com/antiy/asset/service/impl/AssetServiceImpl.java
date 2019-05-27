@@ -3746,6 +3746,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return new AlarmAssetDataResponse(converter.convert(assetList, AlarmAssetResponse.class));
     }
 
+    @Override
+    public List<String> findAssetIds() {
+        return assetDao.findAssetIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+    }
+
     @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
     public void listen(String data, Acknowledgment ack) {
         AreaOperationRequest areaOperationRequest = JsonUtil.json2Object(data, AreaOperationRequest.class);

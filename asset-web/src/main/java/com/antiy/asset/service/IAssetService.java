@@ -257,4 +257,9 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     AlarmAssetDataResponse queryAlarmAssetList(AlarmAssetRequest alarmAssetRequest) throws Exception;
 
+    /**
+     * 获取资产id列表
+     * @return
+     */
+    List<String> findAssetIds();
 }
