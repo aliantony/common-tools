@@ -400,7 +400,7 @@ public class AssetController {
     @ApiOperation(value = "获取资产id列表", notes = "获取资产id列表")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/assetIds", method = RequestMethod.POST)
-    public ActionResponse findAssetIds(@ApiParam @RequestBody ActivityHandleRequest activityHandleRequest) throws Exception {
+    public ActionResponse findAssetIds() throws Exception {
         return ActionResponse.success(iAssetService.findAssetIds());
     }
 }
