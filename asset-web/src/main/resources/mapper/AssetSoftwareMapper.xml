@@ -1106,4 +1106,14 @@
         and status = 1
         limit 0,1
     </select>
+
+    <select id="findInstallStatus" resultType="java.lang.Integer">
+        select install_status
+        from
+        <include refid="Table_Name"/>
+        where software_id = #{softwareId} and asset_id = #{assetId}
+        and status = 1
+    </select>
+
+
 </mapper>
