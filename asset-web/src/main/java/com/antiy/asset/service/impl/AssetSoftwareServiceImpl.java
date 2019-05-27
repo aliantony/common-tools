@@ -816,7 +816,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         query.setSoftwareId(request.getSoftwareId());
         Integer installStatus = assetSoftwareDao.findInstallStatus(query);
         if (SoftInstallStatus.INSTALLING.getCode().equals(installStatus)) {
-            throw new BusinessException("请勿重复配置改资产");
+            throw new BusinessException("请勿重复配置该资产");
         }
         String assetId = request.getAssetId();
         String softwareId = request.getSoftwareId();
@@ -1096,7 +1096,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         downloadVO.setDownloadList(softwareEntities);
         if (Objects.nonNull(softwareEntities) && softwareEntities.size() > 0) {
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_EXPORT.getName() + s, null, "导出软件", downloadVO,
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_EXPORT.getName(), null, "导出软件", downloadVO,
                 BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", downloadVO);
             excelDownloadUtil.excelDownload(request, response, s, downloadVO);
