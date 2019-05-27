@@ -2138,10 +2138,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     /**
      * 导出后的文件格式为.zip压缩包
-     * @param assetSecondCategoryEnums 导出模板的类型
+     * @param types 导出模板的类型
      */
     @Override
-    public void exportTemplate(AssetSecondCategoryEnum[] assetSecondCategoryEnums) throws Exception {
+    public void exportTemplate(String[] types) throws Exception {
         List<AssetCategoryModel> categoryModelList = assetCategoryModelDao.getNextLevelCategoryByName("硬件");
         // 根据时间戳创建文件夹，防止产生冲突
         Long currentTime = System.currentTimeMillis();
@@ -2152,14 +2152,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             logger.info(dictionaryFile.getName() + "目录创建" + isSuccess(dictionaryFile.mkdirs()));
         }
         // 创造模板文件
-        File[] files = new File[assetSecondCategoryEnums.length];
+        File[] files = new File[types.length];
         // 创造压缩文件
         File zip = new File("/temp" + currentTime + "/模板.zip");
         Map<String, AssetCategoryModel> categoryModelMap = new HashMap<>();
-        categoryModelList.forEach(x -> categoryModelMap.put(x.getName(), x));
+        categoryModelList.forEach(x -> categoryModelMap.put(x.getStringId(), x));
         int m = 0;
-        for (AssetSecondCategoryEnum assetSecondCategoryEnum : assetSecondCategoryEnums) {
-            AssetCategoryModel assetCategoryModel = categoryModelMap.get(assetSecondCategoryEnum.getMsg());
+        for (String type : types) {
+            AssetCategoryModel assetCategoryModel = categoryModelMap.get(type);
             if (Objects.nonNull(assetCategoryModel)) {
                 // 生成模板文件
                 String categoryName = exportTemplate(dictionary + "/", assetCategoryModel);

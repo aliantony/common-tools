@@ -174,9 +174,9 @@ public interface IAssetService extends IBaseService<Asset> {
     Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception;
 
     /**
-     * @param assetSecondCategoryEnums 导出模板的类型
+     * @param types 导出模板的类型
      */
-    void exportTemplate(AssetSecondCategoryEnum[] assetSecondCategoryEnums) throws Exception;
+    void exportTemplate(String[] types) throws Exception;
 
     /**
      * @param assetQuery 导出模板的条件
