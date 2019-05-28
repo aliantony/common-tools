@@ -988,9 +988,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (CollectionUtils.isNotEmpty(query.getAssetStatusList())) {
                 if (query.getEnterControl()) {
                     query.setAssetStatus(query.getAssetStatusList().get(0));
+                    List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getAssetStatus());
+                    query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
                 }
-                List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getAssetStatus());
-                query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
             } else {
                 query.setIds(activitiIds.toArray(new String[] {}));
             }
