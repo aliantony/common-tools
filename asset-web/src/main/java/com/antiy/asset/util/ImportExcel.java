@@ -334,7 +334,7 @@ public class ImportExcel {
                 Object val = this.getCellValue(dataRow, column++);
                 ExcelField ef = (ExcelField) os[0];
                 // 必填字段校验
-                if (val == null && ef.required() && StringUtils.isBlank(val.toString())) {
+                if ((val == null || StringUtils.isBlank(val.toString())) && ef.required()) {
                     failNums++;
                     sb.append("数据不能为空,第").append(i + 1).append("行，第").append(column).append("列").append(ef.title())
                         .append(",");
