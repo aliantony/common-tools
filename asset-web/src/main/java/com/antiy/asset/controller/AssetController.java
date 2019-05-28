@@ -167,9 +167,9 @@ public class AssetController {
             .recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(), assetQuery.getExceptId(),
                 "导出硬件资产信息", assetQuery, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
         // 写入业务日志
-        LogHandle.log(assetQuery.toString(), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName(),
-            AssetEventEnum.ASSET_ADMITTANCE_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(LogUtils.get(AssetController.class), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName() + " {}",
+        LogHandle.log(assetQuery.toString(), AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(),
+            AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(LogUtils.get(AssetController.class), AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName() + " {}",
             assetQuery.toString());
 
     }
