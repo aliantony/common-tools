@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
+
 import java.util.List;
 
 /**
@@ -7,7 +9,7 @@ import java.util.List;
  * @Date: 2019/5/28 9:40
  */
 public class IDResponse extends BaseResponse {
-
+    @Encode
     private List<String> ids;
 
     public List<String> getIds() {
