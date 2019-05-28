@@ -989,12 +989,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (MapUtils.isNotEmpty(processMap)) {
             // 待办资产id
             Set<String> activitiIds = processMap.keySet();
-            if (CollectionUtils.isNotEmpty(query.getAssetStatusList())) {
-                if (query.getEnterControl()) {
-                    query.setAssetStatus(query.getAssetStatusList().get(0));
-                    List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getAssetStatus());
-                    query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
-                }
+            if (CollectionUtils.isNotEmpty(query.getAssetStatusList()) && query.getEnterControl()) {
+                query.setAssetStatus(query.getAssetStatusList().get(0));
+                List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getAssetStatus());
+                query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
+
             }
         }
     }

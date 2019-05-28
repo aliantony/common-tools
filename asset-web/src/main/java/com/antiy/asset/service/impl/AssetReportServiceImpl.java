@@ -52,7 +52,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     IAssetCategoryModelService  iAssetCategoryModelService;
 
     private final static String DAY    = "%w";
-    private final static String WEEK   = "%u";
+    private final static String WEEK   = "%U";
     private final static String MONTH  = "%Y-%m";
 
     @Resource
@@ -82,6 +82,11 @@ public class AssetReportServiceImpl implements IAssetReportService {
             map = buildCategoryCountByTime(query, ReportDateUtils.getCurrentMonthOfYear());
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
             query.setFormat(MONTH);
+            // 如果为当前月，则显示为周
+            Long mouth = ReportDateUtils.monthDiff(query.getBeginTime(),query.getEndTime());
+            if(mouth == 0){
+                query.setFormat(WEEK);
+            }
             map = buildCategoryCountByTime(query,
                 ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
         } else {
@@ -479,6 +484,12 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
             case "5":
                 reportQueryRequest.setSqlTime("%Y-%m");
+
+                // 如果为当前月，则显示为周
+                Long mouth = ReportDateUtils.monthDiff(reportQueryRequest.getStartTime(),reportQueryRequest.getEndTime());
+                if(mouth == 0){
+                    reportQueryRequest.setSqlTime("%U");
+                }
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils
                     .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
             default:

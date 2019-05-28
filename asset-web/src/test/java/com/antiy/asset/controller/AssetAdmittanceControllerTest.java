@@ -79,7 +79,7 @@ public class AssetAdmittanceControllerTest {
         List<AssetResponse> assetList = new ArrayList<>();
         AssetResponse response = new AssetResponse();
         assetList.add(response);
-        when(assetService.findListAsset(any())).thenReturn(assetList);
+        //when(assetService.findListAsset(any())).thenReturn(assetList);
 
         String fileName = "资产准入管理.xlsx";
         this.mockMvc
