@@ -919,6 +919,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 query.setExistAssociateIds(associateAssetIdList);
             }
         }
+        if (ArrayUtils.isEmpty(query.getAreaIds())) {
+            query.setAreaIds(
+                    DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
         dealProcess(query, processMap);
         // 品类型号及其子品类
@@ -985,12 +989,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (MapUtils.isNotEmpty(processMap)) {
             // 待办资产id
             Set<String> activitiIds = processMap.keySet();
-            if (CollectionUtils.isNotEmpty(query.getAssetStatusList())) {
+            if (CollectionUtils.isNotEmpty(query.getAssetStatusList()) && query.getEnterControl()) {
                 query.setAssetStatus(query.getAssetStatusList().get(0));
                 List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getAssetStatus());
                 query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
-            } else {
-                query.setIds(activitiIds.toArray(new String[] {}));
+
             }
         }
     }

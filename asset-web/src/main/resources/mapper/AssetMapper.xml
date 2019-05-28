@@ -667,20 +667,8 @@
         <if test=" multipleQuery != null and multipleQuery != ''">
             and (name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and inner_ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and outer_ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and mac_address like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and mac_address like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and mac like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or ip like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or mac like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             )
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
@@ -840,12 +828,53 @@
 
 
     <select id="findCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select count(1) count
+        select count(1) count from (select
+        a.id,
+        a.area_id,
+        a.asset_group,
+        a.category_model,
+        a.admittance_status,
+        a.number,
+        a.name,
+        d.name as responsible_user_name,
+        a.install_type,
+        a.serial,
+        c.name as category_model_name,
+        a.manufacturer, asset_status,
+        a.operation_system,
+        a.system_bit,
+        a.location,
+        a.house_location,
+        a.latitude,
+        a.longitude,
+        a.firmware_version,
+        a.uuid,
+        a.responsible_user_id,
+        a.contact_tel,
+        a.email,
+        a.asset_source,
+        a.importance_degree,
+        a.describle,
+        a.parent_id,
+        a.tags,
+        a.first_enter_nett,
+        a.service_life,
+        a. buy_date,
+        a.warranty,
+        a.gmt_create,
+        concat(ifnull(group_concat(b.ip_address),''), ifnull(e.outer_ip,''), ifnull(f.ip,'') ) AS ip,
+        concat(ifnull(group_concat( b.mac_address ),''), ifnull(e.mac_address,''), ifnull(f.mac,'') ) AS mac
         from
-        <include refid="Table_Name"></include>
+        asset a
+        left join asset_network_card b on a.id = b.asset_id and b.status = 1
+        left join asset_category_model c on a.category_model = c.id
+        left join asset_user d on a.responsible_user_id = d.id
+        LEFT JOIN asset_safety_equipment f ON a.id = f.asset_id
+        LEFT JOIN asset_network_equipment e ON a.id = e.asset_id
+        where a.status = 1
+        group by a.id) asset
         <where>
             <trim prefixOverrides="and">
-                status = 1
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
@@ -1187,34 +1216,17 @@
         a. buy_date,
         a.warranty,
         a.gmt_create,
-        case
-        when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
-        replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
-        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
-        where asset_id = a.id and status = 1) is
-        not
-        null then
-        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
-        where asset_id = a.id and status = 1)
-        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as ip,
-        case
-        when replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',') is not null then
-        replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',')
-        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
-        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as mac
+        concat(ifnull(group_concat(b.ip_address),''), ifnull(e.outer_ip,''), ifnull(f.ip,'') ) AS ip,
+        concat(ifnull(group_concat( b.mac_address ),''), ifnull(e.mac_address,''), ifnull(f.mac,'') ) AS mac
         from
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1
         left join asset_category_model c on a.category_model = c.id
         left join asset_user d on a.responsible_user_id = d.id
+        LEFT JOIN asset_safety_equipment f ON a.id = f.asset_id
+        LEFT JOIN asset_network_equipment e ON a.id = e.asset_id
         where a.status = 1
-        group by a.id
-        order by a.gmt_create desc) asset
+        group by a.id) asset
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
@@ -1226,7 +1238,7 @@
                 ${sortName} ${sortOrder},
             </when>
             <otherwise>
-                gmt_create desc,
+                id desc,
             </otherwise>
         </choose>
         <if test=" ids != null and ids.length > 0">
@@ -1425,7 +1437,9 @@
         <foreach collection="ids" item="item" open="(" close=")" separator=",">
             #{item}
         </foreach>
-        and asset_status = #{assetStatus}
+        <if test="assetStatus != null and assetStatus != '' ">
+            and asset_status = #{assetStatus}
+        </if>
         and status = 1
     </select>
 

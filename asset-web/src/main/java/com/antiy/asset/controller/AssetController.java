@@ -14,6 +14,7 @@ import com.antiy.common.base.BusinessData;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,6 +78,9 @@ public class AssetController {
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
     public ActionResponse queryList(@RequestBody @ApiParam(value = "asset") AssetQuery asset) throws Exception {
+        if (StringUtils.isNotBlank(asset.getSortName()) && StringUtils.isNotBlank(asset.getSortOrder())) {
+            asset.setSortName("id");
+        }
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
 
@@ -167,9 +171,9 @@ public class AssetController {
             .recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(), assetQuery.getExceptId(),
                 "导出硬件资产信息", assetQuery, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
         // 写入业务日志
-        LogHandle.log(assetQuery.toString(), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName(),
-            AssetEventEnum.ASSET_ADMITTANCE_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(LogUtils.get(AssetController.class), AssetEventEnum.ASSET_ADMITTANCE_INSERT.getName() + " {}",
+        LogHandle.log(assetQuery.toString(), AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(),
+            AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getStatus(), ModuleEnum.ASSET.getCode());
+        LogUtils.info(LogUtils.get(AssetController.class), AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName() + " {}",
             assetQuery.toString());
 
     }

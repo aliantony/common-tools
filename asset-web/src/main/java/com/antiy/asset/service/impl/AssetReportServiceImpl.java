@@ -1,5 +1,15 @@
 package com.antiy.asset.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.MapUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.entity.AssetCategoryEntity;
@@ -29,14 +39,6 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * 资产报表实现类
@@ -52,7 +54,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     IAssetCategoryModelService  iAssetCategoryModelService;
 
     private final static String DAY    = "%w";
-    private final static String WEEK   = "%u";
+    private final static String WEEK   = "%U";
     private final static String MONTH  = "%Y-%m";
 
     @Resource
@@ -82,6 +84,11 @@ public class AssetReportServiceImpl implements IAssetReportService {
             map = buildCategoryCountByTime(query, ReportDateUtils.getCurrentMonthOfYear());
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
             query.setFormat(MONTH);
+            // 如果为当前月，则显示为周
+            Long mouth = ReportDateUtils.monthDiff(query.getBeginTime(), query.getEndTime());
+            if (mouth == 0) {
+                query.setFormat(WEEK);
+            }
             map = buildCategoryCountByTime(query,
                 ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
         } else {
@@ -479,6 +486,13 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
             case "5":
                 reportQueryRequest.setSqlTime("%Y-%m");
+
+                // 如果为当前月，则显示为周
+                Long mouth = ReportDateUtils.monthDiff(reportQueryRequest.getStartTime(),
+                    reportQueryRequest.getEndTime());
+                if (mouth == 0) {
+                    reportQueryRequest.setSqlTime("%U");
+                }
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils
                     .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
             default:
@@ -630,6 +644,13 @@ public class AssetReportServiceImpl implements IAssetReportService {
             return getAssetReportTableResponse(query, ReportDateUtils.getCurrentMonthOfYear());
         } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
             query.setFormat(MONTH);
+
+            // 如果为当前月，则显示为周
+            Long mouth = ReportDateUtils.monthDiff(query.getBeginTime(), query.getEndTime());
+            if (mouth == 0) {
+                query.setFormat(WEEK);
+            }
+
             return getAssetReportTableResponse(query,
                 ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
         } else {
@@ -749,6 +770,13 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear(), "本年");
             case "5":
                 reportQueryRequest.setSqlTime("%Y-%m");
+                // 如果为当前月，则显示为周
+                Long mouth = ReportDateUtils.monthDiff(reportQueryRequest.getStartTime(),
+                    reportQueryRequest.getEndTime());
+                if (mouth == 0) {
+                    reportQueryRequest.setSqlTime("%U");
+                }
+
                 return buildAssetReportTable(reportQueryRequest,
                     ReportDateUtils.getMonthWithDate(reportQueryRequest.getStartTime(),
                         reportQueryRequest.getEndTime()),
