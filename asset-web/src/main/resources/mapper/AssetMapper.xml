@@ -667,20 +667,8 @@
         <if test=" multipleQuery != null and multipleQuery != ''">
             and (name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and inner_ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and outer_ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and mac_address like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and mac_address like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and mac like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            or ip like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or mac like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             )
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
