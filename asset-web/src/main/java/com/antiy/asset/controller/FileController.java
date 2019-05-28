@@ -179,8 +179,10 @@ public class FileController {
         // 调用上传接口
         FileResponse fileResponse = fileUtils.uploadFromLocal(modelName, file);
 
+
         if (RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
             FileRespVO fileRep = (FileRespVO) fileResponse.getData();
+            fileRep.setMd5(fileDto.getMd5());
             if (StringUtils.isNotEmpty(md5)) {
                 if (!fileDto.getMd5().equals(md5.toLowerCase())) {
                     fileUtils.delete(defaultHDFSUrl + fileRep.getFileUrl());
