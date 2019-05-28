@@ -78,4 +78,11 @@ public interface AssetSoftwareDao extends IBaseDao<AssetSoftware> {
      * @return
      */
     String getPath(String id);
+
+    /**
+     * 通过ID获取软件名称
+     * @param id
+     * @return
+     */
+    String getNameById(String id);
 }

@@ -1104,4 +1104,27 @@
         and status = 1
         limit 0,1
     </select>
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        a.id, size, operation_system, a.category_model,
+        a.name, upload_software_name, path, version,
+        manufacturer, a.description, asset_group,service_life,
+        software_label, software_status, authorization,
+        report_source, protocol, language, a.release_time,
+        publisher, a.gmt_create, a.memo, a.gmt_modified,
+        a.create_user,a.modify_user, a.status, a.buy_date,
+        b.name as category_model_name,md5_code,check_type,serial,manual_doc_url,manual_doc_name
+        from
+        <include refid="Table_Name"></include>
+        a
+        left join asset_category_model b on a.category_model=b.id
+        where a.id = #{id}
+    </select>
+    <select id="getNameById" resultType="java.lang.String" parameterType="java.lang.String">
+        select
+        name
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
 </mapper>
