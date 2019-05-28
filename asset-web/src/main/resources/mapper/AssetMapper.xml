@@ -1425,7 +1425,9 @@
         <foreach collection="ids" item="item" open="(" close=")" separator=",">
             #{item}
         </foreach>
-        and asset_status = #{assetStatus}
+        <if test="assetStatus != null and assetStatus != '' ">
+            and asset_status = #{assetStatus}
+        </if>
         and status = 1
     </select>
 
