@@ -112,8 +112,8 @@ public enum AssetEventEnum {
             "硬件不予登记再登记"),
     SETTING_REGISTER(105,
             "硬件配置待再登记"), SOFT_NO_REGISTER(106,
-            "软件不予登记");
-
+            "软件不予登记"),
+    HARD_EXPORT(109,"硬件资产导出");
 
 
     private Integer status;
