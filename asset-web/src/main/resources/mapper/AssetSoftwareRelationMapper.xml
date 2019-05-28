@@ -246,7 +246,7 @@
                 #{item}
             </foreach>
         </if>
-        <if test=" multipleQuery != null">
+        <if test=" multipleQuery != null and multipleQuery != ''">
             and (name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or exists (select 1 from asset_network_card b where asset.asset_id = b.asset_id and ip_address like
