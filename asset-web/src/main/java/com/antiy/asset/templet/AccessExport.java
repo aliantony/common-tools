@@ -9,18 +9,6 @@ public class AccessExport {
     @ExcelField(value = "name", align = 1, title = "名称", type = 0)
     private String  name;
     /**
-     * 资产编号
-     */
-    @ExcelField(value = "number", align = 1, title = "编号", type = 0)
-    private String  number;
-
-    private Integer admittanceStatus;
-    /**
-     * 资产准入状态
-     */
-    @ExcelField(value = "admittanceStatusString", align = 1, title = "状态", type = 0)
-    private String admittanceStatusString;
-    /**
      * 资产组
      */
     @ExcelField(value = "assetGroup", align = 1, title = "资产组", type = 0)
@@ -36,13 +24,13 @@ public class AccessExport {
     @ExcelField(value = "mac", align = 1, title = "mac", type = 0)
     private String  mac;
 
-    public String getNumber() {
-        return number;
-    }
+    private Integer admittanceStatus;
+    /**
+     * 资产准入状态
+     */
+    @ExcelField(value = "admittanceStatusString", align = 1, title = "状态", type = 0)
+    private String admittanceStatusString;
 
-    public void setNumber(String number) {
-        this.number = number;
-    }
 
     public String getName() {
         return name;
