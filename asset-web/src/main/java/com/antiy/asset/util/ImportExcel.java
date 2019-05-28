@@ -334,7 +334,7 @@ public class ImportExcel {
                 Object val = this.getCellValue(dataRow, column++);
                 ExcelField ef = (ExcelField) os[0];
                 // 必填字段校验
-                if (val == null && ef.required()) {
+                if ((val == null || StringUtils.isBlank(val.toString())) && ef.required()) {
                     failNums++;
                     sb.append("数据不能为空,第").append(i + 1).append("行，第").append(column).append("列").append(ef.title())
                         .append(",");
@@ -447,6 +447,15 @@ public class ImportExcel {
                             methodName = methodName.replaceAll("set", "get");
                         }
                         clazz.getMethod(methodName, valType).invoke(data, val);
+                    }
+                } else {
+                    if (ef.dataType() != null && !DataTypeEnum.validate(val.toString(), ef.dataType())) {
+                        failNums++;
+                        sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列").append(ef.title())
+                                .append(",");
+                        log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
+                        flag = false;
+                        break;
                     }
                 }
             }

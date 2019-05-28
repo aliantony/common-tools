@@ -1,5 +1,6 @@
 package com.antiy.asset.intergration.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.intergration.AreaClient;
 import com.antiy.asset.util.BaseClient;
 import com.antiy.common.base.ActionResponse;
@@ -35,8 +36,10 @@ public class AreaClientImpl implements AreaClient {
 
     @Override
     public ActionResponse queryCdeAndAreaId(String code) {
-        return (ActionResponse) baseClient.post(null, new ParameterizedTypeReference<ActionResponse>() {
-        }, cdeAndAreaId+code);
+        JSONObject object = new JSONObject();
+        object.put("roleCode", code);
+        return (ActionResponse) baseClient.post(object, new ParameterizedTypeReference<ActionResponse>() {
+        }, cdeAndAreaId);
     }
 
 

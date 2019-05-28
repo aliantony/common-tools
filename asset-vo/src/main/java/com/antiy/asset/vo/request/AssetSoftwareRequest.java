@@ -98,8 +98,8 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty(value = "软件版本")
     @NotBlank(message = "软件版本不能为空")
-    @Size(message = "软件版本不能超过30位",max = 30, min = 1)
-    @Pattern(regexp = "^[+]?\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$", message = "软件版本格式不正确")
+    @Size(message = "软件版本不能超过30位", max = 30)
+    // @Pattern(regexp = "^[+]?\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$", message = "软件版本格式不正确")
     private String                      version;
     /**
      * 厂商

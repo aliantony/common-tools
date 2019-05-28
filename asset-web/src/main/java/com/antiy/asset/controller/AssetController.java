@@ -169,7 +169,7 @@ public class AssetController {
         // 记录操作日志
         LogUtils
             .recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(), assetQuery.getExceptId(),
-                "导出硬件资产信息", assetQuery, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+                "导出硬件资产信息", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         // 写入业务日志
         LogHandle.log(assetQuery.toString(), AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName(),
             AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getStatus(), ModuleEnum.ASSET.getCode());

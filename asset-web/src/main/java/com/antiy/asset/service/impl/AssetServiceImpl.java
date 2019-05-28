@@ -1,38 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
@@ -64,6 +31,37 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -619,6 +617,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
     }
+
 
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
                                 AssetStorageMedium medium) throws Exception {
@@ -2472,9 +2471,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return isDelete ? "成功" : "失败";
     }
 
+    private boolean isDataBig(Long date) {
+        String Due = DateUtils.convertDateString(date, "yyyy-MM-dd");
+        Date format = DateUtils.getDateFormat(Due, DateUtils.NO_TIME_FORMAT);
+        String dateString = DateUtils.convertDateString(System.currentTimeMillis(), DateUtils.NO_TIME_FORMAT);
+        Date dateFormat = DateUtils.getDateFormat(dateString, DateUtils.NO_TIME_FORMAT);
+
+        return format.getTime() < dateFormat.getTime();
+    }
+
+    private boolean isBuyDataBig(Long date) {
+        String Due = DateUtils.convertDateString(date, "yyyy-MM-dd");
+        Date format = DateUtils.getDateFormat(Due, DateUtils.NO_TIME_FORMAT);
+        String dateString = DateUtils.convertDateString(System.currentTimeMillis(), DateUtils.NO_TIME_FORMAT);
+        Date dateFormat = DateUtils.getDateFormat(dateString, DateUtils.NO_TIME_FORMAT);
+
+        return format.getTime() > dateFormat.getTime();
+    }
+
     @Override
     public String importPc(MultipartFile file, AssetImportRequest importRequest) throws Exception {
 
+        AssetCategoryModel categoryModel = assetCategoryModelDao
+            .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
+        if (Objects.isNull(categoryModel)) {
+            return "上传失败，选择品类型号不存在，或已被注销！";
+        }
         // String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
         // DataTypeUtils.stringToInteger(importRequest.getAreaId()));
         //
@@ -2550,17 +2572,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             if (entity.getBuyDate() != null) {
 
-                if (entity.getBuyDate() > System.currentTimeMillis()) {
+                if (isBuyDataBig(entity.getBuyDate())) {
                     error++;
                     a++;
-                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    builder.append("第").append(a).append("行").append("购买时间需小于等于今天，");
                     continue;
                 }
             }
-            if (entity.getDueTime() < System.currentTimeMillis()) {
+
+            if (isDataBig(entity.getDueTime())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("到期时间需大于今天，");
+                builder.append("第").append(a).append("行").append("到期时间需大于等于今天，");
                 continue;
             }
 
@@ -2628,7 +2651,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setDescrible(entity.getDescription());
                 asset.setContactTel(entity.getTelephone());
                 asset.setEmail(entity.getEmail());
-                asset.setCategoryModel("4");
+                asset.setCategoryModel(importRequest.getCategory());
                 asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
                 computerVo.setAsset(asset);
 
@@ -2798,6 +2821,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public String importNet(MultipartFile file, AssetImportRequest importRequest) throws Exception {
+        AssetCategoryModel categoryModel = assetCategoryModelDao
+            .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
+        if (Objects.isNull(categoryModel)) {
+            return "上传失败，选择品类型号不存在，或已被注销！";
+        }
         ImportResult<NetworkDeviceEntity> result = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class, file, 5,
             0);
         if (Objects.isNull(result.getDataList())) {
@@ -2851,22 +2879,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产名称重复，");
                 continue;
             }
+
             if (networkDeviceEntity.getButDate() != null) {
 
-                if (networkDeviceEntity.getButDate() > System.currentTimeMillis()) {
+                if (isBuyDataBig(networkDeviceEntity.getButDate())) {
                     error++;
                     a++;
-                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    builder.append("第").append(a).append("行").append("购买时间需小于等于今天，");
                     continue;
                 }
             }
 
-            if (networkDeviceEntity.getDueDate() < System.currentTimeMillis()) {
+            if (isDataBig(networkDeviceEntity.getDueDate())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("到期时间需大于今天，");
+                builder.append("第").append(a).append("行").append("到期时间需大于等于今天，");
                 continue;
             }
+
 
             if (CheckRepeat(networkDeviceEntity.getNumber())) {
                 repeat++;
@@ -3000,7 +3030,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public String importSecurity(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-
+        AssetCategoryModel categoryModel = assetCategoryModelDao
+            .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
+        if (Objects.isNull(categoryModel)) {
+            return "上传失败，选择品类型号不存在，或已被注销！";
+        }
         ImportResult<SafetyEquipmentEntiy> result = ExcelUtils.importExcelFromClient(SafetyEquipmentEntiy.class, file,
             5, 0);
 
@@ -3064,20 +3098,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             if (entity.getBuyDate() != null) {
 
-                if (entity.getBuyDate() > System.currentTimeMillis()) {
+                if (isBuyDataBig(entity.getBuyDate())) {
                     error++;
                     a++;
-                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    builder.append("第").append(a).append("行").append("购买时间需小于等于今天，");
                     continue;
                 }
             }
 
-            if (entity.getDueDate() < System.currentTimeMillis()) {
+            if (isDataBig(entity.getDueDate())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("到期时间需大于今天，");
+                builder.append("第").append(a).append("行").append("到期时间需大于等于今天，");
                 continue;
             }
+
 
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
@@ -3143,7 +3178,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setDescrible(entity.getMemo());
                 asset.setContactTel(entity.getTelephone());
                 asset.setEmail(entity.getEmail());
-                asset.setCategoryModel("7");
+                asset.setCategoryModel(importRequest.getCategory());
                 assets.add(asset);
                 assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
                 assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3192,7 +3227,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public String importStory(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-
+        AssetCategoryModel categoryModel = assetCategoryModelDao
+            .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
+        if (Objects.isNull(categoryModel)) {
+            return "上传失败，选择品类型号不存在，或已被注销！";
+        }
         ImportResult<StorageDeviceEntity> result = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 5,
             0);
         if (Objects.isNull(result.getDataList())) {
@@ -3240,21 +3279,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复");
                 continue;
             }
+
             if (entity.getBuyDate() != null) {
 
-                if (entity.getBuyDate() > System.currentTimeMillis()) {
+                if (isBuyDataBig(entity.getBuyDate())) {
                     error++;
                     a++;
-                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    builder.append("第").append(a).append("行").append("购买时间需小于等于今天，");
                     continue;
                 }
             }
-            if (entity.getDueDate() < System.currentTimeMillis()) {
+
+            if (isDataBig(entity.getDueDate())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("到期时间需大于今天，");
+                builder.append("第").append(a).append("行").append("到期时间需大于等于今天，");
                 continue;
             }
+
 
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
@@ -3307,7 +3349,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setMemo(entity.getMemo());
                 asset.setContactTel(entity.getTelephone());
                 asset.setEmail(entity.getEmail());
-                asset.setCategoryModel("6");
+                asset.setCategoryModel(importRequest.getCategory());
                 assets.add(asset);
                 assetStorageMedium.setGmtCreate(System.currentTimeMillis());
                 assetStorageMedium.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3364,7 +3406,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public String importOhters(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-
+        AssetCategoryModel categoryModel = assetCategoryModelDao
+            .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
+        if (Objects.isNull(categoryModel)) {
+            return "上传失败，选择品类型号不存在，或已被注销！";
+        }
         ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 5, 0);
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
@@ -3411,19 +3457,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             if (entity.getBuyDate() != null) {
 
-                if (entity.getBuyDate() > System.currentTimeMillis()) {
+                if (isBuyDataBig(entity.getBuyDate())) {
                     error++;
                     a++;
-                    builder.append("第").append(a).append("行").append("购买时间需小于今天，");
+                    builder.append("第").append(a).append("行").append("购买时间需小于等于今天，");
                     continue;
                 }
             }
-            if (entity.getDueDate() < System.currentTimeMillis()) {
+
+            if (isDataBig(entity.getDueDate())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("到期时间需大于今天，");
+                builder.append("第").append(a).append("行").append("到期时间需大于等于今天，");
                 continue;
             }
+
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
@@ -3446,6 +3494,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("当前用户没有此所属区域，");
                 continue;
             }
+
             if (repeat + error == 0) {
                 assetNames.add(entity.getName());
                 assetNumbers.add(entity.getNumber());
@@ -3469,7 +3518,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setMemo(entity.getMemo());
                 asset.setContactTel(entity.getTelephone());
                 asset.setEmail(entity.getEmail());
-                asset.setCategoryModel("8");
+                asset.setCategoryModel(importRequest.getCategory());
                 assets.add(asset);
             }
 
@@ -3509,7 +3558,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private void importActivity(List<ManualStartActivityRequest> manualStartActivityRequests, String stringId) {
         ActionResponse actionResponse = areaClient.queryCdeAndAreaId("zichanguanliyuan");
-        // ActionResponse actionResponse = areaClient.queryCdeAndAreaId("config_admin");
+
         List<LinkedHashMap> mapList = (List<LinkedHashMap>) actionResponse.getBody();
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -3519,6 +3568,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .append(",");
         }
         String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
+
 
         Map<String, Object> formData = new HashMap<>();
 

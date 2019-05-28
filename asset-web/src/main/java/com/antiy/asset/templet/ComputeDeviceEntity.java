@@ -129,12 +129,12 @@ public class ComputeDeviceEntity {
     /**
      * 网卡ip地址
      */
-    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip(必填)", dataType = DataTypeEnum.IP, required = false)
+    @ExcelField(value = "networkIpAddress", align = 1, title = "网卡ip(必填)", dataType = DataTypeEnum.IP, required = true)
     private String  networkIpAddress;
     /**
      * 网卡mac地址
      */
-    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac(必填)", dataType = DataTypeEnum.MAC, required = false)
+    @ExcelField(value = "networkMacAddress", align = 1, title = "网卡mac(必填)", dataType = DataTypeEnum.MAC, required = true)
     private String  networkMacAddress;
     /**
      * 网卡子网掩码
