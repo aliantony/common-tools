@@ -14,6 +14,7 @@ import com.antiy.common.base.BusinessData;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,6 +78,9 @@ public class AssetController {
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
     public ActionResponse queryList(@RequestBody @ApiParam(value = "asset") AssetQuery asset) throws Exception {
+        if (StringUtils.isNotBlank(asset.getSortName()) && StringUtils.isNotBlank(asset.getSortOrder())) {
+            asset.setSortName("id");
+        }
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
 

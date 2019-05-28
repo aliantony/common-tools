@@ -1187,34 +1187,17 @@
         a. buy_date,
         a.warranty,
         a.gmt_create,
-        case
-        when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
-        replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
-        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
-        where asset_id = a.id and status = 1) is
-        not
-        null then
-        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
-        where asset_id = a.id and status = 1)
-        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as ip,
-        case
-        when replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',') is not null then
-        replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',')
-        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
-        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as mac
+        concat(ifnull(group_concat(b.ip_address),''), ifnull(e.outer_ip,''), ifnull(f.ip,'') ) AS ip,
+        concat(ifnull(group_concat( b.mac_address ),''), ifnull(e.mac_address,''), ifnull(f.mac,'') ) AS mac
         from
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1
         left join asset_category_model c on a.category_model = c.id
         left join asset_user d on a.responsible_user_id = d.id
+        LEFT JOIN asset_safety_equipment f ON a.id = f.asset_id
+        LEFT JOIN asset_network_equipment e ON a.id = e.asset_id
         where a.status = 1
-        group by a.id
-        order by a.gmt_create desc) asset
+        group by a.id) asset
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
@@ -1226,7 +1209,7 @@
                 ${sortName} ${sortOrder},
             </when>
             <otherwise>
-                gmt_create desc,
+                id desc,
             </otherwise>
         </choose>
         <if test=" ids != null and ids.length > 0">
