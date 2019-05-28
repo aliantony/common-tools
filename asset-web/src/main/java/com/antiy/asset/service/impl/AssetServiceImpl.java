@@ -758,7 +758,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<AssetResponse> findListAsset(AssetQuery query,Map<String, WaitingTaskReponse> processMap) throws Exception {
+    public List<AssetResponse> findListAsset(AssetQuery query,
+                                             Map<String, WaitingTaskReponse> processMap) throws Exception {
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
@@ -972,7 +973,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
         }
 
-        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.findListAsset(query,processMap));
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
+            this.findListAsset(query, processMap));
     }
 
     /**
@@ -2069,8 +2071,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     List<String> aesConfigUserIdList = new ArrayList<>();
                     configUserIdList.forEach(
                         e -> aesConfigUserIdList.add(aesEncoder.encode(e, LoginUserUtil.getLoginUser().getUsername())));
-                    configRegisterRequest
-                        .setConfigUserIds(aesConfigUserIdList);
+                    configRegisterRequest.setConfigUserIds(aesConfigUserIdList);
                     configRegisterRequest
                         .setRelId(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
                     // 避免重复记录操作记录
@@ -3747,8 +3748,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<String> findAssetIds() {
-        return assetDao.findAssetIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+    public IDResponse findAssetIds() {
+        IDResponse idResponse = new IDResponse();
+        idResponse.setIds(assetDao.findAssetIds(
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser())));
+        return idResponse;
     }
 
     @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")

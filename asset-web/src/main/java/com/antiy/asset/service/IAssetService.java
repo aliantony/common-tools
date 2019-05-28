@@ -261,5 +261,5 @@ public interface IAssetService extends IBaseService<Asset> {
      * 获取资产id列表
      * @return
      */
-    List<String> findAssetIds();
+    IDResponse findAssetIds();
 }
