@@ -1,5 +1,6 @@
 package com.antiy.asset.dao;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.antiy.asset.entity.AssetGroup;
@@ -44,4 +45,12 @@ public interface AssetGroupDao extends IBaseDao<AssetGroup> {
      * @return
      */
     List<AssetGroup> findPulldownUnconnectedGroup(AssetQuery query);
+
+    /**
+     * 通过ID获取资产组名称
+     * @param id
+     * @return
+     */
+    String getNameById(Serializable id);
+
 }
