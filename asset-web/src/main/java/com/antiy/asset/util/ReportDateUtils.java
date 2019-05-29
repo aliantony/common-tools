@@ -89,9 +89,6 @@ public class ReportDateUtils {
         // 获取本月第一天
         LocalDate firstday = today.with(TemporalAdjusters.firstDayOfMonth());
 
-        // 获取本月最后一天
-        LocalDate lastDay = today.with(TemporalAdjusters.lastDayOfMonth());
-
         WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 4);
         int firstWeek = firstday.get(weekFields.weekOfYear());
         int currentWeek = today.get(weekFields.weekOfYear());
@@ -137,6 +134,21 @@ public class ReportDateUtils {
     }
 
     /**
+     * 获取月份差,如果是开始时间和结束时间都为当前月，则返回0
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public static Long monthDiff(Long startTime, Long endTime) {
+        ParamterExceptionUtils.isTrue(endTime > startTime, "结束时间必须大于开始时间");
+        LocalDate startDate = getDateTimeOfTimestamp(startTime).toLocalDate();
+        LocalDate endDate = getDateTimeOfTimestamp(endTime).toLocalDate();
+
+        // 获取时间差月份
+        return startDate.until(endDate, ChronoUnit.MONTHS);
+    }
+
+    /**
      * 获取当前时间区间内的月份信息
      * @param startTime
      * @param endTime
@@ -146,11 +158,14 @@ public class ReportDateUtils {
 
         ParamterExceptionUtils.isTrue(endTime > startTime, "结束时间必须大于开始时间");
         LocalDate startDate = getDateTimeOfTimestamp(startTime).toLocalDate();
-        LocalDate endDate = getDateTimeOfTimestamp(endTime).toLocalDate();
 
         // 获取时间差月份
-        Long months = startDate.until(endDate, ChronoUnit.MONTHS);
+        Long months = monthDiff(startTime, endTime);
 
+        // 如果是当前月，则需要显示周
+        if (months == 0) {
+            return getWeekOfMonth();
+        }
         ParamterExceptionUtils.isTrue(months < 12, "月份不能超过12个月");
 
         TreeMap<String, String> resultMaps = new TreeMap<>();

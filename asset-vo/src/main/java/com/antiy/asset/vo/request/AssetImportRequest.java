@@ -6,6 +6,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 /**
@@ -29,6 +30,7 @@ public class AssetImportRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("品类型号：1.计算设备2，安全设备3，网络设备，4，存储设备5，其他设备")
     @Encode
+    @NotBlank(message = "品类型号不能为空")
     private String   category;
     /**
      * 用户

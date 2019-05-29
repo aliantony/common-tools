@@ -144,8 +144,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         param.put("responsibleUserId", id);
         List<Asset> assets = assetDao.getByWhere(param);
         BusinessExceptionUtils.isTrue(CollectionUtils.isEmpty(assets), "该人员已经是资产使用者,不能注销");
-        assetUserDao.deleteById(id);
         AssetUser userInfo = assetUserDao.getById(id);
+        assetUserDao.deleteById(id);
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_USER_DELETE.getName(), id,
             userInfo != null ? userInfo.getName() : null, id, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));

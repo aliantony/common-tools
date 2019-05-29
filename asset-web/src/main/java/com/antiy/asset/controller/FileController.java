@@ -8,7 +8,6 @@ import java.util.Objects;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
-import com.antiy.biz.file.FileDto;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -22,14 +21,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.antiy.asset.util.FileUtil;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.FileUseEnum;
+import com.antiy.biz.file.FileDto;
 import com.antiy.biz.file.FileRespVO;
 import com.antiy.biz.file.FileResponse;
 import com.antiy.biz.file.FileUtils;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -74,8 +71,6 @@ public class FileController {
             List<FileRespVO> fileRespVOS = new ArrayList<>();
             for (MultipartFile file : fileList) {
                 // 记录操作日志
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.FILE_UPLOAD.getName(), null, null, fileRespVOS,
-                    BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
                 uploadToHdfs(file, fileRespVOS, md5, fileUse);
             }
 
@@ -103,9 +98,6 @@ public class FileController {
         response.setContentType("application/x-msdownload;");
         response.setHeader("Content-disposition",
             "attachment; filename=" + new String(fileName.getBytes(UTF8), "ISO8859-1"));
-        // 记录操作日志
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.FILE_DOWNLOAD.getName(), null, null, fileName,
-            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         // 记录运行日志
         LogUtils.info(logger, AssetEventEnum.FILE_DOWNLOAD.getName() + " {}", fileName);
         FileResponse fileResponse = fileUtils.download(defaultHDFSUrl.concat(url));
@@ -187,8 +179,10 @@ public class FileController {
         // 调用上传接口
         FileResponse fileResponse = fileUtils.uploadFromLocal(modelName, file);
 
+
         if (RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
             FileRespVO fileRep = (FileRespVO) fileResponse.getData();
+            fileRep.setMd5(fileDto.getMd5());
             if (StringUtils.isNotEmpty(md5)) {
                 if (!fileDto.getMd5().equals(md5.toLowerCase())) {
                     fileUtils.delete(defaultHDFSUrl + fileRep.getFileUrl());

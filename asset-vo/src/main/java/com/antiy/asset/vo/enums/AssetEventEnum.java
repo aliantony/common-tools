@@ -26,9 +26,9 @@ public enum AssetEventEnum {
     ASSET_DEPAETMENT_UPDATE(18,"资产部门修改"),
     ASSET_DEPAETMENT_DELETE(19,"资产部门删除"),
                             ASSET_GROUP_DELETE(20,
-                                               "资产组注销"),
-    ASSET_GROUP_INSERT(21,"资产组新增"),
-    ASSET_GROUP_UPDATE(22,"资产组修改"),
+                                               "注销资产组信息"), ASSET_GROUP_INSERT(21,
+                                                                              "登记资产组信息"), ASSET_GROUP_UPDATE(22,
+                                                                                                             "变更资产组信息"),
     ASSET_GROUP_RELATION_UPDATE(23,"资产组关联修改"),
     ASSET_GROUP_RELATION_DELETE(24,"资产组关联删除"),
     ASSET_GROUP_RELATION_INSERT(25,"资产组关联新增"),
@@ -88,7 +88,8 @@ public enum AssetEventEnum {
     ASSET_LINK_RELATION_INSERT(78,"资产通联关系插入"),
     ASSET_LINK_RELATION_UPDATE(79,"资产通联关系更新"),
     ASSET_LINK_RELATION_DELETE(80,"资产通联关系删除"),
-    ASSET_ADMITTANCE_INSERT(81,"资产进入准入管理"),
+    ASSET_ADMITTANCE_ALLOW(107,"资产允许准入"),
+    ASSET_ADMITTANCE_REFUSE(108,"资产禁止准入"),
                             ASSET_REPORT_EXPORT(82,
                                                 "资产报表导出"), ASSET_REPORT_IMPORT(83,
                                                                                "资产报表导入"), ASSET_SAFETY_EQUIPMENT_INSERT(84,
@@ -111,8 +112,8 @@ public enum AssetEventEnum {
             "硬件不予登记再登记"),
     SETTING_REGISTER(105,
             "硬件配置待再登记"), SOFT_NO_REGISTER(106,
-            "软件不予登记");
-
+            "软件不予登记"),
+    HARD_EXPORT(109,"硬件资产导出");
 
 
     private Integer status;

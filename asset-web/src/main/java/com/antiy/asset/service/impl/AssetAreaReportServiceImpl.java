@@ -5,12 +5,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -29,7 +23,13 @@ import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.asset.vo.response.ReportData;
 import com.antiy.asset.vo.response.ReportTableHead;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.DataTypeUtils;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
  * @author: zhangbing
@@ -97,9 +97,15 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             });
         }
         // 4.获取每个地区在每个时间区间的增量
+        String timeType = ReportDateUtils.getTimeType(DataTypeUtils.stringToInteger(reportRequest.getTimeType()));
+        // 如果为当前月，则显示为周
+        Long mouth = ReportDateUtils.monthDiff(reportRequest.getStartTime(), reportRequest.getEndTime());
+        if (mouth == 0) {
+            timeType = "%U";
+        }
+
         List<Map<String, String>> addData = assetReportDao.queryAddAssetWithArea(reportRequest.getAssetAreaIds(),
-            reportRequest.getStartTime(), reportRequest.getEndTime(),
-            ReportDateUtils.getTimeType(DataTypeUtils.stringToInteger(reportRequest.getTimeType())));
+            reportRequest.getStartTime(), reportRequest.getEndTime(), timeType);
         topAreaIds.stream().forEach(top -> {
             ReportData reportData = new ReportData();
             // 区域在区间总数

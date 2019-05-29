@@ -1,14 +1,5 @@
 package com.antiy.asset.controller;
 
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.Asset;
@@ -34,8 +25,15 @@ import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-
 import io.swagger.annotations.*;
+import org.slf4j.Logger;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * 资产状态跃迁统一接口
@@ -137,10 +135,10 @@ public class AssetStatusJumpController {
             operationRecord(assetStatusChangeRequest, assetId);
 
             // 记录日志
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(),
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
                 DataTypeUtils.stringToInteger(assetId), assetDao.getNumberById(assetId), assetStatusChangeRequest,
                 BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.getByStatus(assetStatusChangeRequest.getStatus())));
-            LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetStatusChangeRequest);
+            LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
             return ActionResponse.success(assetService.update(asset));
         }
     }

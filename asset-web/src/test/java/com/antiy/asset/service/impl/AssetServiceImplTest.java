@@ -338,7 +338,7 @@ public class AssetServiceImplTest {
 
         when(activityClient.queryAllWaitingTask(any())).thenReturn(actionResponse);
 
-        List<AssetResponse> result = assetServiceImpl.findListAsset(new AssetQuery());
+        List<AssetResponse> result = assetServiceImpl.findListAsset(new AssetQuery(), null);
         Assert.assertNotNull(result);
     }
 
