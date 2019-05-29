@@ -61,6 +61,6 @@ public interface IAssetReportService {
      * @param reportQueryRequest
      * @throws Exception
      */
-    ReportForm exportAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception;
+    void exportAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception;
 
 }

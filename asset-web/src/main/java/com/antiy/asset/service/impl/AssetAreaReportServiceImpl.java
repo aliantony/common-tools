@@ -1,10 +1,17 @@
 package com.antiy.asset.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.common.base.BusinessData;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.exception.BusinessException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -254,11 +261,35 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
      * @returnK
      */
     @Override
-    public ReportForm exportAreaTable(ReportQueryRequest reportQueryRequest) {
+    public void exportAreaTable(ReportQueryRequest reportQueryRequest) {
+        String titleStr;
+        switch (reportQueryRequest.getTimeType()) {
+            case "1":
+                titleStr = "本周";
+                break;
+            case "2":
+                titleStr = "本月";
+                break;
+            case "3":
+                titleStr = "本季度";
+                break;
+            case "4":
+                titleStr = "本年";
+                break;
+            case "5":
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
+                Date startTime = new Date(reportQueryRequest.getStartTime());
+                Date endTime = new Date(reportQueryRequest.getEndTime());
+                titleStr = simpleDateFormat.format(startTime) + "-" + simpleDateFormat.format(endTime);
+                break;
+            default:
+                throw new BusinessException("timeType参数异常");
+        }
         ReportForm reportForm = new ReportForm();
         AssetReportResponse assetReportResponse = this.getAssetWithArea(reportQueryRequest);
         // 表格标题
-        reportForm.setTitle("资产区域报表数据");
+        String title = "资产" + titleStr + "区域总数";
+        reportForm.setTitle(title);
         // 表格行头
         reportForm.setHeaderList(assetReportResponse.getDate());
         // 表格列头
@@ -282,7 +313,14 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             }
         }
         reportForm.setData(datas);
-        return reportForm;
+        String fileName = title + ".xlsx";
+        ExcelUtils.exportFormToClient(reportForm, fileName);
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(title, 0, "", reportQueryRequest,
+                BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
+        LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
+                reportQueryRequest.toString());
+
     }
 
     private String getAreaNameById(String id, List<AssetAreaReportRequest> assetAreaIds) {

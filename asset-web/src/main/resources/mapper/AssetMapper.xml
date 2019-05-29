@@ -1235,20 +1235,19 @@
         ORDER BY
         <choose>
             <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
-                ${sortName} ${sortOrder},
+                ${sortName} ${sortOrder}
             </when>
             <otherwise>
-                id desc,
+                id desc
             </otherwise>
         </choose>
         <if test=" ids != null and ids.length > 0">
-            FIELD(`id`,
+            ,FIELD(`id`,
             <foreach index="index" item="item" collection="ids" separator=",">
                 #{item}
             </foreach>
-            ) DESC,
+            ) DESC
         </if>
-        id desc
         <if test="!all">
             <if test="pageSize !=-1">
                 LIMIT #{pageSize} offset #{pageOffset}
@@ -1497,9 +1496,9 @@
         where id = #{id}
     </select>
     <select id="findAssetIds" resultType="java.lang.String">
-        select id from asset where 1 = 1
-        <if test="areaIds != null and areaIds.length > 0">
-            and area_id in
+        select id from asset
+        <if test="areaIds != null and areaIds.size() > 0">
+            where area_id in
             <foreach collection="areaIds" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>

@@ -5,6 +5,8 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.controller.AssetAdmittanceController;
+import com.antiy.common.utils.DateUtils;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -417,7 +419,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
             default:
                 throw new BusinessException("timeType参数异常");
         }
-        reportForm.setTitle("资产" + titleStr + "品类型号总数");
+        String title = "资产" + titleStr + "品类型号总数";
+        reportForm.setTitle(title);
         AssetReportResponse assetReportResponse = this.queryCategoryCountByTime(assetReportCategoryCountQuery);
         List<String> headerList = assetReportResponse.getDate();
         List<ReportData> reportDataList = assetReportResponse.getList();
@@ -450,18 +453,20 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setHeaderList(headerList);
         reportForm.setData(data);
         reportForm.setColumnList(columnList);
+        String fileName = title + ".xlsx";
+        ExcelUtils.exportFormToClient(reportForm, fileName);
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_REPORT_EXPORT.getName(), null, null, reportForm,
+        LogUtils.recordOperLog(new BusinessData(title, 0, "", assetReportCategoryCountQuery,
             BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
-        LogUtils.info(logger, AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}", reportForm);
-        ExcelUtils.exportFormToClient(reportForm, "报表导出.xlsx");
+        LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
+            assetReportCategoryCountQuery.toString());
     }
 
     private String getTitleStr(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
         String beginTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getBeginTime()));
         String endTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getEndTime()));
-        return new StringBuffer(beginTime).append("~").append(endTime).toString();
+        return new StringBuffer(beginTime).append("-").append(endTime).toString();
     }
 
     @Override
@@ -788,7 +793,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     @Override
-    public ReportForm exportAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception {
+    public void exportAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception {
         ReportForm reportForm = new ReportForm();
         String titleStr;
         switch (reportQueryRequest.getTimeType()) {
@@ -805,10 +810,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 titleStr = "本年";
                 break;
             case "5":
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
                 Date startTime = new Date(reportQueryRequest.getStartTime());
                 Date endTime = new Date(reportQueryRequest.getEndTime());
-                titleStr = simpleDateFormat.format(startTime) + "~" + simpleDateFormat.format(endTime);
+                titleStr = simpleDateFormat.format(startTime) + "-" + simpleDateFormat.format(endTime);
                 break;
             default:
                 throw new BusinessException("timeType参数异常");
@@ -842,12 +847,19 @@ public class AssetReportServiceImpl implements IAssetReportService {
             }
             i++;
         }
-
-        reportForm.setTitle("资产组" + titleStr + "统计");
+        String title = "资产组" + titleStr + "总数";
+        reportForm.setTitle(title);
         reportForm.setHeaderList(headerList);
         reportForm.setColumnList(columnList);
         reportForm.setData(data);
-        return reportForm;
+        String fileName = title + ".xlsx";
+        ExcelUtils.exportFormToClient(reportForm, fileName);
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(
+            new BusinessData(title, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
+        LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
+            reportQueryRequest.toString());
+
     }
 
     private AssetReportTableResponse buildAssetReportTable(ReportQueryRequest reportQueryRequest,
