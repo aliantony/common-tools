@@ -1246,9 +1246,8 @@
             <foreach index="index" item="item" collection="ids" separator=",">
                 #{item}
             </foreach>
-            ) DESC,
+            ) DESC
         </if>
-        id desc
         <if test="!all">
             <if test="pageSize !=-1">
                 LIMIT #{pageSize} offset #{pageOffset}
