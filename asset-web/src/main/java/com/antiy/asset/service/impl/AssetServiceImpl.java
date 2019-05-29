@@ -2,7 +2,6 @@ package com.antiy.asset.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.controller.AssetController;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.*;
@@ -2618,6 +2617,38 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+            if (Objects.isNull(entity.getMemoryNum()) || entity.getMemoryNum() < 1
+                || Objects.isNull(entity.getMemoryCapacity())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("内存数量默认1，内存容量不为空，");
+                continue;
+            }
+
+            if (Objects.isNull(entity.getHardDisCapacityl()) || Objects.isNull(entity.getHardDiskType())
+                || Objects.isNull(entity.getHardDiskNum()) || entity.getHardDiskNum() < 1) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("硬盘数量默认1，硬盘容量不为空，硬盘磁盘类型不为空，");
+                continue;
+            }
+
+            if (Objects.isNull(entity.getMainboradNum()) || entity.getMainboradNum() < 1
+                || StringUtils.isBlank(entity.getMainboradBrand())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("主板数量默认1，主板品牌不为空，");
+                continue;
+            }
+
+            if (Objects.isNull(entity.getCpuNum()) || entity.getCpuNum() < 1
+                || Objects.isNull(entity.getCpuMainFrequency())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("CPU数量默认1，CPU主频不为空，");
+                continue;
+            }
+
             if (repeat + error == 0) {
                 assetNames.add(entity.getName());
                 assetNumbers.add(entity.getNumber());
@@ -2804,6 +2835,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_COMPUTER.getName() + " {}", computerVos.toString());
 
         String res = "导入成功" + success + "条。";
+        if (repeat + error > 0) {
+            res = "导入失败。";
+        }
         // re += repeat > 0 ? ", " + repeat + "条编号重复" : ",";
         // re += error > 0 ? ", " + error + "条数据导入失败" : ",";
         StringBuilder stringBuilder = new StringBuilder(res);
@@ -3013,6 +3047,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_NET.getName(), 0, "", null,
             BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         String re = "导入成功" + success + "条。";
+        if (repeat + error > 0) {
+            re = "导入失败。";
+        }
         // re += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(re);
@@ -3208,6 +3245,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_SAFETY.getName(), 0, "", null,
             BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         String res = "导入成功" + success + "条";
+        if (repeat + error > 0) {
+            res = "导入失败。";
+        }
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
@@ -3392,6 +3432,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_STORAGE.getName(), 0, "", null,
             BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         String res = "导入成功" + success + "条";
+        if (repeat + error > 0) {
+            res = "导入失败。";
+        }
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
@@ -3545,6 +3588,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_OTHERS.getName() + " {}", assets.toString());
         String res = "导入成功" + success + "条";
+        if (repeat + error > 0) {
+            res = "导入失败。";
+        }
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
