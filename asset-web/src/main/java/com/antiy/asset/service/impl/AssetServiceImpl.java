@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.controller.AssetController;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.*;
@@ -618,7 +619,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     }
 
-
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
                                 AssetStorageMedium medium) throws Exception {
         medium.setAssetId(asset.getStringId());
@@ -920,7 +920,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
-                    DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
         dealProcess(query, processMap);
@@ -2897,7 +2897,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-
             if (CheckRepeat(networkDeviceEntity.getNumber())) {
                 repeat++;
                 a++;
@@ -3113,7 +3112,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
@@ -3296,7 +3294,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("到期时间需大于等于今天，");
                 continue;
             }
-
 
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
@@ -3574,7 +3571,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
 
-
         Map<String, Object> formData = new HashMap<>();
 
         formData.put("admittanceUserId", ids);
@@ -3632,7 +3628,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (Objects.nonNull(assetEntities) && assetEntities.size() > 0) {
             excelDownloadUtil.excelDownload(request, response,
                 "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
-            LogUtils.recordOperLog(new BusinessData("硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT),
+            LogUtils
+                .recordOperLog(new BusinessData("硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT),
                     0, "", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         } else {
             throw new BusinessException("导出数据为空");
