@@ -313,8 +313,8 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             }
         }
         reportForm.setData(datas);
-        ExcelUtils.exportFormToClient(reportForm, title + ".xlsx");
         String fileName = title + ".xlsx";
+        ExcelUtils.exportFormToClient(reportForm, fileName);
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(fileName, 0, "", reportQueryRequest,
                 BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));

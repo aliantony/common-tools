@@ -453,8 +453,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setHeaderList(headerList);
         reportForm.setData(data);
         reportForm.setColumnList(columnList);
-        ExcelUtils.exportFormToClient(reportForm, title + ".xlsx");
         String fileName = title + ".xlsx";
+        ExcelUtils.exportFormToClient(reportForm, fileName);
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(fileName, 0, "", assetReportCategoryCountQuery,
             BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
@@ -852,8 +852,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setHeaderList(headerList);
         reportForm.setColumnList(columnList);
         reportForm.setData(data);
-        ExcelUtils.exportFormToClient(reportForm, title + ".xlsx");
         String fileName = title + ".xlsx";
+        ExcelUtils.exportFormToClient(reportForm, fileName);
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(
             new BusinessData(fileName, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
