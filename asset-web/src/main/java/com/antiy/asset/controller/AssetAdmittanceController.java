@@ -87,18 +87,18 @@ public class AssetAdmittanceController {
         Asset asset = new Asset();
         asset.setId(DataTypeUtils.stringToInteger(admittance.getStringId()));
         asset.setAdmittanceStatus(admittance.getAdmittanceStatus());
-
+        Asset log = assetService.getById(admittance.getStringId());
         // 记录操作日志和运行日志
         if (admittance.getAdmittanceStatus() == 2) {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_ALLOW.getName(), asset.getId(),
-                assetService.getById(asset.getId() + "").getName(), asset, BusinessModuleEnum.ACCESS_MANAGEMENT,
-                BusinessPhaseEnum.NONE));
+                    log.getName(), log, BusinessModuleEnum.ACCESS_MANAGEMENT,
+                    BusinessPhaseEnum.getByStatus(log.getAssetStatus())));
             LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
                 AssetEventEnum.ASSET_ADMITTANCE_ALLOW.getName() + " {}", asset.toString());
         } else if (admittance.getAdmittanceStatus() == 3) {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_REFUSE.getName(), asset.getId(),
-                assetService.getById(asset.getId() + "").getName(), asset, BusinessModuleEnum.ACCESS_MANAGEMENT,
-                BusinessPhaseEnum.NONE));
+                    log.getName(), log, BusinessModuleEnum.ACCESS_MANAGEMENT,
+                    BusinessPhaseEnum.getByStatus(log.getAssetStatus())));
             LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
                 AssetEventEnum.ASSET_ADMITTANCE_REFUSE.getName() + " {}", asset.toString());
         }
