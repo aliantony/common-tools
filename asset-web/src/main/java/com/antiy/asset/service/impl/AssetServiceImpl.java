@@ -2125,12 +2125,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetCount;
     }
 
-    private void updateAssetStatus(Integer assetStatus, Long currentTimeMillis, String assetId) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("targetStatus", assetStatus);
-        map.put("gmt_modified", currentTimeMillis);
-        map.put("modifyUser", LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
-        map.put("id", assetId);
+    private void updateAssetStatus(Integer assetStatus, Long currentTimeMillis, String assetId) throws Exception {
+        Asset asset = new Asset();
+        asset.setId(DataTypeUtils.stringToInteger(assetId));
+        asset.setGmtModified(currentTimeMillis);
+        asset.setModifyUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
+        asset.setAssetStatus(assetStatus);
+        assetDao.updateStatus(asset);
     }
 
     /**
