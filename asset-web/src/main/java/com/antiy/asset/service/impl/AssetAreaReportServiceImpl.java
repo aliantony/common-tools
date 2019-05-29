@@ -287,7 +287,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
                 Date startTime = new Date(reportQueryRequest.getStartTime());
                 Date endTime = new Date(reportQueryRequest.getEndTime());
                 titleStr = simpleDateFormat.format(startTime) + "~" + simpleDateFormat.format(endTime);
-                fileNameStr = simpleDateFormat.format(startTime) + "-" + simpleDateFormat.format(endTime);
+                fileNameStr = simpleDateFormatTwo.format(startTime) + "-" + simpleDateFormatTwo.format(endTime);
                 break;
             default:
                 throw new BusinessException("timeType参数异常");

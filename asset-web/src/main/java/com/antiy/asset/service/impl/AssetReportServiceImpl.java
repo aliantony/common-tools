@@ -839,7 +839,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
             default:
                 throw new BusinessException("timeType参数异常");
         }
-
         AssetReportTableResponse assetReportTableResponse = this.getAssetGroupReportTable(reportQueryRequest);
         // 第二行标题
         List<String> headerList = new ArrayList<>();
@@ -870,6 +869,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             i++;
         }
         String title = "资产组" + titleStr + "总数";
+        fileNameStr = "资产组" + fileNameStr + "总数";
         reportForm.setTitle(title);
         reportForm.setHeaderList(headerList);
         reportForm.setColumnList(columnList);
