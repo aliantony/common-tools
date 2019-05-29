@@ -400,25 +400,32 @@ public class AssetReportServiceImpl implements IAssetReportService {
     public void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception {
         ReportForm reportForm = new ReportForm();
         String titleStr;
+        String fileNameStr;
         switch (assetReportCategoryCountQuery.getShowCycleType()) {
             case THIS_WEEK:
                 titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
+                fileNameStr = titleStr;
                 break;
             case THIS_MONTH:
                 titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
+                fileNameStr = titleStr;
                 break;
             case THIS_QUARTER:
                 titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
+                fileNameStr = titleStr;
                 break;
             case THIS_YEAR:
                 titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
+                fileNameStr = titleStr;
                 break;
             case ASSIGN_TIME:
                 titleStr = getTitleStr(assetReportCategoryCountQuery);
+                fileNameStr = getFileName(assetReportCategoryCountQuery);
                 break;
             default:
                 throw new BusinessException("timeType参数异常");
         }
+        fileNameStr = "资产" + fileNameStr + "品类型号总数";
         String title = "资产" + titleStr + "品类型号总数";
         reportForm.setTitle(title);
         AssetReportResponse assetReportResponse = this.queryCategoryCountByTime(assetReportCategoryCountQuery);
@@ -453,10 +460,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setHeaderList(headerList);
         reportForm.setData(data);
         reportForm.setColumnList(columnList);
-        String fileName = title + ".xlsx";
+        String fileName = fileNameStr + ".xlsx";
         ExcelUtils.exportFormToClient(reportForm, fileName);
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(title, 0, "", assetReportCategoryCountQuery,
+        LogUtils.recordOperLog(new BusinessData(fileNameStr, 0, "", assetReportCategoryCountQuery,
             BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
             assetReportCategoryCountQuery.toString());
@@ -464,6 +471,13 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     private String getTitleStr(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
+        String beginTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getBeginTime()));
+        String endTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getEndTime()));
+        return new StringBuffer(beginTime).append("~").append(endTime).toString();
+    }
+
+    private String getFileName(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM");
         String beginTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getBeginTime()));
         String endTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getEndTime()));
         return new StringBuffer(beginTime).append("-").append(endTime).toString();
@@ -796,28 +810,36 @@ public class AssetReportServiceImpl implements IAssetReportService {
     public void exportAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception {
         ReportForm reportForm = new ReportForm();
         String titleStr;
+        String fileNameStr;
         switch (reportQueryRequest.getTimeType()) {
             case "1":
                 titleStr = "本周";
+                fileNameStr = titleStr;
                 break;
             case "2":
                 titleStr = "本月";
+                fileNameStr = titleStr;
                 break;
             case "3":
                 titleStr = "本季度";
+                fileNameStr = titleStr;
                 break;
             case "4":
                 titleStr = "本年";
+                fileNameStr = titleStr;
                 break;
             case "5":
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
+                SimpleDateFormat simpleDateFormatTwo = new SimpleDateFormat("yyyyMM");
                 Date startTime = new Date(reportQueryRequest.getStartTime());
                 Date endTime = new Date(reportQueryRequest.getEndTime());
-                titleStr = simpleDateFormat.format(startTime) + "-" + simpleDateFormat.format(endTime);
+                titleStr = simpleDateFormat.format(startTime) + "~" + simpleDateFormat.format(endTime);
+                fileNameStr = simpleDateFormatTwo.format(startTime) + "-" + simpleDateFormatTwo.format(endTime);
                 break;
             default:
                 throw new BusinessException("timeType参数异常");
         }
+
         AssetReportTableResponse assetReportTableResponse = this.getAssetGroupReportTable(reportQueryRequest);
         // 第二行标题
         List<String> headerList = new ArrayList<>();
@@ -852,11 +874,11 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setHeaderList(headerList);
         reportForm.setColumnList(columnList);
         reportForm.setData(data);
-        String fileName = title + ".xlsx";
+        String fileName = fileNameStr + ".xlsx";
         ExcelUtils.exportFormToClient(reportForm, fileName);
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(
-            new BusinessData(title, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(new BusinessData(fileNameStr, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT,
+            BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
             reportQueryRequest.toString());
 

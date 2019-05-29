@@ -263,24 +263,31 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
     @Override
     public void exportAreaTable(ReportQueryRequest reportQueryRequest) {
         String titleStr;
+        String fileNameStr;
         switch (reportQueryRequest.getTimeType()) {
             case "1":
                 titleStr = "本周";
+                fileNameStr = titleStr;
                 break;
             case "2":
                 titleStr = "本月";
+                fileNameStr = titleStr;
                 break;
             case "3":
                 titleStr = "本季度";
+                fileNameStr = titleStr;
                 break;
             case "4":
                 titleStr = "本年";
+                fileNameStr = titleStr;
                 break;
             case "5":
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
+                SimpleDateFormat simpleDateFormatTwo = new SimpleDateFormat("yyyyMM");
                 Date startTime = new Date(reportQueryRequest.getStartTime());
                 Date endTime = new Date(reportQueryRequest.getEndTime());
-                titleStr = simpleDateFormat.format(startTime) + "-" + simpleDateFormat.format(endTime);
+                titleStr = simpleDateFormat.format(startTime) + "~" + simpleDateFormat.format(endTime);
+                fileNameStr = simpleDateFormat.format(startTime) + "-" + simpleDateFormat.format(endTime);
                 break;
             default:
                 throw new BusinessException("timeType参数异常");
@@ -288,6 +295,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         ReportForm reportForm = new ReportForm();
         AssetReportResponse assetReportResponse = this.getAssetWithArea(reportQueryRequest);
         // 表格标题
+        fileNameStr = "资产" + fileNameStr + "区域总数";
         String title = "资产" + titleStr + "区域总数";
         reportForm.setTitle(title);
         // 表格行头
@@ -313,13 +321,13 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             }
         }
         reportForm.setData(datas);
-        String fileName = title + ".xlsx";
+        String fileName = fileNameStr + ".xlsx";
         ExcelUtils.exportFormToClient(reportForm, fileName);
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(title, 0, "", reportQueryRequest,
-                BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(
+            new BusinessData(fileNameStr, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
-                reportQueryRequest.toString());
+            reportQueryRequest.toString());
 
     }
 
