@@ -1235,14 +1235,14 @@
         ORDER BY
         <choose>
             <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
-                ${sortName} ${sortOrder},
+                ${sortName} ${sortOrder}
             </when>
             <otherwise>
-                id desc,
+                id desc
             </otherwise>
         </choose>
         <if test=" ids != null and ids.length > 0">
-            FIELD(`id`,
+            ,FIELD(`id`,
             <foreach index="index" item="item" collection="ids" separator=",">
                 #{item}
             </foreach>
