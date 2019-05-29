@@ -139,7 +139,7 @@ public class FileController {
     private void uploadToHdfs(MultipartFile tmpFile, List<FileRespVO> fileRespVOS, String md5,
                               FileUseEnum fileUseEnum) throws Exception {
 
-        FileDto fileDto = fileUtils.saveFile2LocalWithChannel(tmpFile, modelName);
+        FileDto fileDto = fileUtils.uploadFileFromLocal(tmpFile, modelName);
         File file = new File(fileDto.getPath());
         if (!file.exists()) {
             throw new BusinessException("文件不存在");
@@ -182,7 +182,6 @@ public class FileController {
 
         if (RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
             FileRespVO fileRep = (FileRespVO) fileResponse.getData();
-            fileRep.setMd5(fileDto.getMd5());
             if (StringUtils.isNotEmpty(md5)) {
                 if (!fileDto.getMd5().equals(md5.toLowerCase())) {
                     fileUtils.delete(defaultHDFSUrl + fileRep.getFileUrl());
