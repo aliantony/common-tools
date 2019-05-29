@@ -217,5 +217,5 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     Integer updateStatus(Asset asset) throws Exception;
 
-    List<String> findAssetIds(@Param("areaIds") String[] areaIds);
+    List<String> findAssetIds(@Param("areaIds") List<Integer> areaIds);
 }
