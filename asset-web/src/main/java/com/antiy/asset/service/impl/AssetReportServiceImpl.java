@@ -5,6 +5,8 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.controller.AssetAdmittanceController;
+import com.antiy.common.utils.DateUtils;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -451,11 +453,13 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setHeaderList(headerList);
         reportForm.setData(data);
         reportForm.setColumnList(columnList);
-        // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_REPORT_EXPORT.getName(), null, null, reportForm,
-            BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
-        LogUtils.info(logger, AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}", reportForm);
         ExcelUtils.exportFormToClient(reportForm, title + ".xlsx");
+        String fileName = title + ".xlsx";
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(fileName, 0, "", assetReportCategoryCountQuery,
+            BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
+        LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
+            assetReportCategoryCountQuery.toString());
     }
 
     private String getTitleStr(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
@@ -849,6 +853,13 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setColumnList(columnList);
         reportForm.setData(data);
         ExcelUtils.exportFormToClient(reportForm, title + ".xlsx");
+        String fileName = title + ".xlsx";
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(
+            new BusinessData(fileName, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
+        LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
+            reportQueryRequest.toString());
+
     }
 
     private AssetReportTableResponse buildAssetReportTable(ReportQueryRequest reportQueryRequest,

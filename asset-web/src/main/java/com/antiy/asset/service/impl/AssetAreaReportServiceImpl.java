@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.common.base.BusinessData;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -310,6 +314,13 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         }
         reportForm.setData(datas);
         ExcelUtils.exportFormToClient(reportForm, title + ".xlsx");
+        String fileName = title + ".xlsx";
+        // 记录操作日志和运行日志
+        LogUtils.recordOperLog(new BusinessData(fileName, 0, "", reportQueryRequest,
+                BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
+        LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
+                reportQueryRequest.toString());
+
     }
 
     private String getAreaNameById(String id, List<AssetAreaReportRequest> assetAreaIds) {
