@@ -1104,4 +1104,11 @@
         and status = 1
         limit 0,1
     </select>
+    <select id="getNameById" resultType="java.lang.String" parameterType="java.lang.String">
+        select
+        name
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
 </mapper>
