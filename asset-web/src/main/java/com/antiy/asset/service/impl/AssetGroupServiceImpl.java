@@ -173,10 +173,27 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 ParamterExceptionUtils.isTrue(assetGroupNameList.size() <= Constants.MAX_ASSET_RELATION_GROUP_COUNT,
                     "资产关联的资产组不能超过10个");
                 String assetGroupName = assetGroupNameList.toString();
-                updateAssetGroupName(map, assetNameBuilder, assetId.toString(), assetGroupNameList, assetGroupName);
+                updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
             }
+            // -----------------------------更新资产主表的资产组字段内容end-----------------------------
+        } else {
+            assetGroupDao.update(assetGroup);
+            List<String> assetIdList = assetGroupRelationDao.findAssetIdByAssetGroupId(request.getId());
+            assetIdList.forEach(assetId -> {
+                List<String> assetGroupNameList = null;
+                try {
+                    assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
+                } catch (Exception e) {
+                    LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}",
+                        assetGroup.toString());
+                }
+                // 资产关联的资产组不能超过10个
+                ParamterExceptionUtils.isTrue(assetGroupNameList.size() <= Constants.MAX_ASSET_RELATION_GROUP_COUNT,
+                    "资产关联的资产组不能超过10个");
+                String assetGroupName = assetGroupNameList.toString();
+                updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
+            });
         }
-        // -----------------------------更新资产主表的资产组字段内容end-----------------------------
 
         // 移除资产后，更新资产主表中对应资产组字段
         assetNameBuilder.setLength(0);
@@ -203,7 +220,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}", assetGroup.toString());
         }
 
-        assetGroupDao.update(assetGroup);
         return result;
     }
 

@@ -48,8 +48,10 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         if (BooleanUtils.isTrue(reportRequest.getTopFive())) {
             // 1.查询TOP5的区域信息
             topAreaIds = getTopFive(reportRequest);
-            reportRequest.setAssetAreaIds(reportRequest.getAssetAreaIds().stream()
-                .filter(report -> topAreaIds.contains(report.getParentAreaId())).collect(Collectors.toList()));
+            if (CollectionUtils.isNotEmpty(topAreaIds)) {
+                reportRequest.setAssetAreaIds(reportRequest.getAssetAreaIds().stream()
+                        .filter(report -> topAreaIds.contains(report.getParentAreaId())).collect(Collectors.toList()));
+            }
         } else {
             topAreaIds = reportRequest.getAssetAreaIds().stream().map(AssetAreaReportRequest::getParentAreaId)
                 .collect(Collectors.toList());
