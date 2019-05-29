@@ -448,15 +448,6 @@ public class ImportExcel {
                         }
                         clazz.getMethod(methodName, valType).invoke(data, val);
                     }
-                } else {
-                    if (ef.dataType() != null && !DataTypeEnum.validate(val.toString(), ef.dataType())) {
-                        failNums++;
-                        sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列").append(ef.title())
-                                .append(",");
-                        log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
-                        flag = false;
-                        break;
-                    }
                 }
             }
             if (flag) {
