@@ -1,34 +1,38 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
+import io.swagger.annotations.ApiModelProperty;
 
 public class AccessExport {
     /**
      * 资产名称
      */
     @ExcelField(value = "name", align = 1, title = "名称", type = 0)
+    @ApiModelProperty("名称")
     private String  name;
     /**
      * 资产组
      */
     @ExcelField(value = "assetGroup", align = 1, title = "资产组", type = 0)
+    @ApiModelProperty("资产组")
     private String  assetGroup;
     /**
      * ip
      */
     @ExcelField(value = "ip", align = 1, title = "ip", type = 0)
+    @ApiModelProperty("ip")
     private String  ip;
     /**
      * mac
      */
     @ExcelField(value = "mac", align = 1, title = "mac", type = 0)
+    @ApiModelProperty("mac")
     private String  mac;
-
-    private Integer admittanceStatus;
     /**
      * 资产准入状态
      */
     @ExcelField(value = "admittanceStatusString", align = 1, title = "状态", type = 0)
+    @ApiModelProperty("mac")
     private String admittanceStatusString;
 
 
@@ -64,13 +68,6 @@ public class AccessExport {
         this.mac = mac;
     }
 
-    public Integer getAdmittanceStatus() {
-        return admittanceStatus;
-    }
-
-    public void setAdmittanceStatus(Integer admittanceStatus) {
-        this.admittanceStatus = admittanceStatus;
-    }
 
     public String getAdmittanceStatusString() {
         return admittanceStatusString;
