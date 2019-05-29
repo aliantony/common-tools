@@ -806,7 +806,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 titleStr = "本年";
                 break;
             case "5":
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
                 Date startTime = new Date(reportQueryRequest.getStartTime());
                 Date endTime = new Date(reportQueryRequest.getEndTime());
                 titleStr = simpleDateFormat.format(startTime) + "~" + simpleDateFormat.format(endTime);
