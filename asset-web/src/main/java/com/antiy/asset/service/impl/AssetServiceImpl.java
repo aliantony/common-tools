@@ -1,5 +1,38 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
@@ -31,37 +64,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -618,7 +620,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     }
 
-
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
                                 AssetStorageMedium medium) throws Exception {
         medium.setAssetId(asset.getStringId());
@@ -920,7 +921,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
-                    DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
         dealProcess(query, processMap);
@@ -2618,6 +2619,38 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+            if (Objects.isNull(entity.getMemoryNum()) || entity.getMemoryNum() < 1
+                || Objects.isNull(entity.getMemoryCapacity())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("内存数量默认1，内存容量不为空，");
+                continue;
+            }
+
+            if (Objects.isNull(entity.getHardDisCapacityl()) || Objects.isNull(entity.getHardDiskType())
+                || Objects.isNull(entity.getHardDiskNum()) || entity.getHardDiskNum() < 1) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("硬盘数量默认1，硬盘容量不为空，硬盘磁盘类型不为空，");
+                continue;
+            }
+
+            if (Objects.isNull(entity.getMainboradNum()) || entity.getMainboradNum() < 1
+                || StringUtils.isBlank(entity.getMainboradBrand())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("主板数量默认1，主板品牌不为空，");
+                continue;
+            }
+
+            if (Objects.isNull(entity.getCpuNum()) || entity.getCpuNum() < 1
+                || Objects.isNull(entity.getCpuMainFrequency())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("CPU数量默认1，CPU主频不为空，");
+                continue;
+            }
+
             if (repeat + error == 0) {
                 assetNames.add(entity.getName());
                 assetNumbers.add(entity.getNumber());
@@ -2804,6 +2837,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_COMPUTER.getName() + " {}", computerVos.toString());
 
         String res = "导入成功" + success + "条。";
+        if (repeat + error > 0) {
+            res = "导入失败。";
+        }
         // re += repeat > 0 ? ", " + repeat + "条编号重复" : ",";
         // re += error > 0 ? ", " + error + "条数据导入失败" : ",";
         StringBuilder stringBuilder = new StringBuilder(res);
@@ -2896,7 +2932,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("到期时间需大于等于今天，");
                 continue;
             }
-
 
             if (CheckRepeat(networkDeviceEntity.getNumber())) {
                 repeat++;
@@ -3014,6 +3049,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_NET.getName(), 0, "", null,
             BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         String re = "导入成功" + success + "条。";
+        if (repeat + error > 0) {
+            re = "导入失败。";
+        }
         // re += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // re += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(re);
@@ -3113,7 +3151,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
@@ -3210,6 +3247,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_SAFETY.getName(), 0, "", null,
             BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         String res = "导入成功" + success + "条";
+        if (repeat + error > 0) {
+            res = "导入失败。";
+        }
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
@@ -3297,7 +3337,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
@@ -3359,7 +3398,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetStorageMedium.setMaximumStorage(entity.getCapacity());
                 assetStorageMedium.setMemo(entity.getMemo());
                 assetStorageMedium.setHighCache(entity.getHighCache());
-                assetStorageMedium.setRaidSupport(entity.getRaidSupport().equals("0") ? "否" : "是");
+                if (entity.getRaidSupport() == null) {
+                    assetStorageMedium.setRaidSupport("否");
+                } else {
+
+                    assetStorageMedium.setRaidSupport(entity.getRaidSupport().equals("0") ? "否" : "是");
+                }
                 assetStorageMedium.setInnerInterface(entity.getInnerInterface());
                 assetStorageMedium.setOsVersion(entity.getSlotType());
                 assetStorageMedium.setAverageTransferRate(entity.getAverageTransmissionRate());
@@ -3390,6 +3434,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_STORAGE.getName(), 0, "", null,
             BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         String res = "导入成功" + success + "条";
+        if (repeat + error > 0) {
+            res = "导入失败。";
+        }
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
@@ -3543,6 +3590,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_OTHERS.getName() + " {}", assets.toString());
         String res = "导入成功" + success + "条";
+        if (repeat + error > 0) {
+            res = "导入失败。";
+        }
         // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
         // res += error > 0 ? ", " + error + "条数据导入失败" : "";
         StringBuilder stringBuilder = new StringBuilder(res);
@@ -3568,7 +3618,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .append(",");
         }
         String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
-
 
         Map<String, Object> formData = new HashMap<>();
 
@@ -3627,6 +3676,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (Objects.nonNull(assetEntities) && assetEntities.size() > 0) {
             excelDownloadUtil.excelDownload(request, response,
                 "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
+            LogUtils
+                .recordOperLog(new BusinessData("硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT),
+                    0, "", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         } else {
             throw new BusinessException("导出数据为空");
         }
@@ -3728,6 +3780,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_CONFIG_BASELINE.getMsg());
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
+            assetOperationRecord.setProcessResult(1);
             scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
         } else if (AssetStatusEnum.WAIT_VALIDATE.getCode()
             .equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
@@ -3736,17 +3789,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             if (assetStatusJumpRequst.getAgree()) {
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_NET.getCode());
+                assetOperationRecord.setProcessResult(1);
                 this.changeStatusById(assetId, AssetStatusEnum.WAIT_NET.getCode());
                 scheme.setAssetNextStatus(AssetStatusEnum.WAIT_NET.getCode());
-
             }
+            assetOperationRecord.setProcessResult(0);
         }
 
         // 2.保存流程
 
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
-        assetOperationRecord.setProcessResult(1);
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         assetOperationRecord.setGmtCreate(gmtCreateTime);

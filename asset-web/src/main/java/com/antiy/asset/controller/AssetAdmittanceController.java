@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.common.base.BaseConverter;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -46,9 +47,11 @@ import io.swagger.annotations.*;
 public class AssetAdmittanceController {
 
     @Resource
-    public IAssetService     assetService;
+    public IAssetService                              assetService;
     @Resource
-    public ExcelDownloadUtil excelDownloadUtil;
+    public ExcelDownloadUtil                          excelDownloadUtil;
+    @Resource
+    public BaseConverter<AssetResponse, AccessExport> baseConverter;
 
     /**
      * 批量查询
@@ -87,16 +90,20 @@ public class AssetAdmittanceController {
         // 记录操作日志和运行日志
         if (admittance.getAdmittanceStatus() == 2) {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_ALLOW.getName(), asset.getId(),
+                assetService.getById(asset.getId() + "").getName(), asset, BusinessModuleEnum.HARD_ASSET,
+                BusinessPhaseEnum.NONE));
                     assetService.getById(asset.getId() + "").getName(), asset, BusinessModuleEnum.ACCESS_MANAGEMENT,
                     BusinessPhaseEnum.NONE));
             LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
-                    AssetEventEnum.ASSET_ADMITTANCE_ALLOW.getName() + " {}", asset.toString());
+                AssetEventEnum.ASSET_ADMITTANCE_ALLOW.getName() + " {}", asset.toString());
         } else if (admittance.getAdmittanceStatus() == 3) {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_REFUSE.getName(), asset.getId(),
+                assetService.getById(asset.getId() + "").getName(), asset, BusinessModuleEnum.HARD_ASSET,
+                BusinessPhaseEnum.NONE));
                     assetService.getById(asset.getId() + "").getName(), asset, BusinessModuleEnum.ACCESS_MANAGEMENT,
                     BusinessPhaseEnum.NONE));
             LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
-                    AssetEventEnum.ASSET_ADMITTANCE_REFUSE.getName() + " {}", asset.toString());
+                AssetEventEnum.ASSET_ADMITTANCE_REFUSE.getName() + " {}", asset.toString());
         }
 
         return ActionResponse.success(assetService.update(asset));
@@ -125,15 +132,12 @@ public class AssetAdmittanceController {
             assetQuery.setStart(start - 1);
             assetQuery.setEnd(end - start + 1);
         }
-        assetQuery.setAssetStatusList(Arrays.asList(new Integer[] { 3, 4, 5, 6, 7, 8, 9 }));
+        assetQuery.setAssetStatusList(Arrays.asList(3, 4, 5, 6, 7, 8, 9));
         List<AssetResponse> assetList = assetService.findListAsset(assetQuery, null);
         if (!CollectionUtils.isNotEmpty(assetList)) {
             return ActionResponse.success("没有数据可以导出");
         }
-        List<AccessExport> accessExportList = BeanConvert.convert(assetList, AccessExport.class);
-        accessExportList.stream().forEach(asset -> {
-            asset.setAdmittanceStatusString(AdmittanceStatusEnum.getAdmittanceStatusEnum(asset.getAdmittanceStatus()));
-        });
+        List<AccessExport> accessExportList = baseConverter.convert(assetList, AccessExport.class);
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setDownloadList(accessExportList);
         excelDownloadUtil.excelDownload(request, response,
