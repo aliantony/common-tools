@@ -3359,7 +3359,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetStorageMedium.setMaximumStorage(entity.getCapacity());
                 assetStorageMedium.setMemo(entity.getMemo());
                 assetStorageMedium.setHighCache(entity.getHighCache());
-                assetStorageMedium.setRaidSupport(entity.getRaidSupport().equals("0") ? "否" : "是");
+                if (entity.getRaidSupport() == null) {
+                    assetStorageMedium.setRaidSupport("否");
+                } else {
+
+                    assetStorageMedium.setRaidSupport(entity.getRaidSupport().equals("0") ? "否" : "是");
+                }
                 assetStorageMedium.setInnerInterface(entity.getInnerInterface());
                 assetStorageMedium.setOsVersion(entity.getSlotType());
                 assetStorageMedium.setAverageTransferRate(entity.getAverageTransmissionRate());
