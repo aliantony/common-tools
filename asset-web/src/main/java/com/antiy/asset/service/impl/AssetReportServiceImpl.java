@@ -417,7 +417,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
             default:
                 throw new BusinessException("timeType参数异常");
         }
-        reportForm.setTitle("资产" + titleStr + "品类型号总数");
+        String title = "资产" + titleStr + "品类型号总数";
+        reportForm.setTitle(title);
         AssetReportResponse assetReportResponse = this.queryCategoryCountByTime(assetReportCategoryCountQuery);
         List<String> headerList = assetReportResponse.getDate();
         List<ReportData> reportDataList = assetReportResponse.getList();
@@ -454,7 +455,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_REPORT_EXPORT.getName(), null, null, reportForm,
             BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}", reportForm);
-        ExcelUtils.exportFormToClient(reportForm, "报表导出.xlsx");
+        ExcelUtils.exportFormToClient(reportForm, title + ".xlsx");
     }
 
     private String getTitleStr(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
