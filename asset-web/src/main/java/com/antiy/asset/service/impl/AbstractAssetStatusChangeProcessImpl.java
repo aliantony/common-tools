@@ -173,7 +173,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                     LogUtils.warn(logger, "获取资产编号失败");
                 }
                 LogUtils.recordOperLog(new BusinessData(assetFlowEnum.getMsg(),
-                    DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()), number, assetStatusReqeust,
+                    DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
+                    assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
                     BusinessModuleEnum.HARD_ASSET,
                     BusinessPhaseEnum.getByStatus(assetStatusReqeust.getAssetStatus().getCode())));
                 LogUtils.info(logger, assetFlowEnum.getMsg() + " {}", number);
