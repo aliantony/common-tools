@@ -166,15 +166,6 @@ public class AssetController {
     public void export(@ApiParam(value = "query") AssetQuery assetQuery, HttpServletResponse response,
                        HttpServletRequest request) throws Exception {
         iAssetService.exportData(assetQuery, response, request);
-        // 记录操作日志
-        LogUtils
-            .recordOperLog(new BusinessData(AssetEventEnum.HARD_EXPORT.getName(), assetQuery.getExceptId(),
-                "导出硬件资产信息", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-        // 写入业务日志
-        LogHandle.log(assetQuery.toString(), AssetEventEnum.HARD_EXPORT.getName(),
-            AssetEventEnum.HARD_EXPORT.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(LogUtils.get(AssetController.class), AssetEventEnum.HARD_EXPORT.getName() + " {}",
-            assetQuery.toString());
 
     }
 
