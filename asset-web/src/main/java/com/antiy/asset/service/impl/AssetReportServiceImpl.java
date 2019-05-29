@@ -789,7 +789,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     @Override
-    public ReportForm exportAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception {
+    public void exportAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception {
         ReportForm reportForm = new ReportForm();
         String titleStr;
         switch (reportQueryRequest.getTimeType()) {
@@ -843,12 +843,12 @@ public class AssetReportServiceImpl implements IAssetReportService {
             }
             i++;
         }
-
-        reportForm.setTitle("资产组" + titleStr + "统计");
+        String title = "资产组" + titleStr + "总数";
+        reportForm.setTitle(title);
         reportForm.setHeaderList(headerList);
         reportForm.setColumnList(columnList);
         reportForm.setData(data);
-        return reportForm;
+        ExcelUtils.exportFormToClient(reportForm, title + ".xlsx");
     }
 
     private AssetReportTableResponse buildAssetReportTable(ReportQueryRequest reportQueryRequest,

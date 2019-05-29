@@ -104,7 +104,7 @@ public class AssetReportController {
     public void exportAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
         ParamterExceptionUtils.isEmpty(reportQueryRequest.getAssetAreaIds(), "请指定要统计的区域");
         reportQueryRequest.setTopFive(false);
-        ExcelUtils.exportFormToClient(iAssetAreaReportService.exportAreaTable(reportQueryRequest), "资产区域报表数据.xlsx");
+      iAssetAreaReportService.exportAreaTable(reportQueryRequest);
     }
 
     /**
@@ -164,6 +164,6 @@ public class AssetReportController {
     // @PreAuthorize("hasAuthority('asset:report:exportAssetGroupTable')")
     public void exportAssetGroupTable(@ApiParam(value = "查询条件") ReportQueryRequest reportQueryRequest) throws Exception {
         reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
-        ExcelUtils.exportFormToClient(iAssetReportService.exportAssetGroupTable(reportQueryRequest), "导出资产组报表.xlsx");
+        iAssetReportService.exportAssetGroupTable(reportQueryRequest);
     }
 }

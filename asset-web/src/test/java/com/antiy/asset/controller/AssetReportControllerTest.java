@@ -139,7 +139,7 @@ public class AssetReportControllerTest {
     @Test
     public void exportAreaTable() throws Exception {
         String json = gson.toJson(reportQueryRequestInit());
-        Mockito.when(iAssetAreaReportService.exportAreaTable(Mockito.any())).thenReturn(reportFormInit());
+//        Mockito.when(iAssetAreaReportService.exportAreaTable(Mockito.any())).thenReturn(reportFormInit());
         postAction("/api/v1/asset/report/query/exportAreaTable",json);
         Mockito.verify(iAssetAreaReportService).exportAreaTable(Mockito.any());
     }
@@ -222,7 +222,7 @@ public class AssetReportControllerTest {
         reportQueryRequest.setStartTime(1551422114000L);
         reportQueryRequest.setEndTime(1551423114000L);
         reportQueryRequest.setTimeType("1");
-        Mockito.when(iAssetReportService.exportAssetGroupTable(Mockito.any())).thenReturn(reportFormInit());
+//        Mockito.when(iAssetReportService.exportAssetGroupTable(Mockito.any())).thenReturn(reportFormInit());
         getAction("/api/v1/asset/report/query/exportAssetGroupTable",reportQueryRequest)
                 .andReturn().getResponse().getContentAsString();
         Mockito.verify(iAssetReportService).exportAssetGroupTable(Mockito.any());
