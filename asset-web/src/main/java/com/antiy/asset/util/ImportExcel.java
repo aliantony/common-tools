@@ -155,13 +155,13 @@ public class ImportExcel {
             try {
                 this.wb = new XSSFWorkbook(is);
             } catch (NotOfficeXmlFileException e) {
-                throw new BusinessException("文档格式不正确!");
+                throw new BusinessException("导入失败，文档格式不正确!");
             }
         } else {
-            throw new BusinessException("文档格式不正确!");
+            throw new BusinessException("导入失败，文档格式不正确!");
         }
         if (this.wb.getNumberOfSheets() < sheetIndex) {
-            throw new BusinessException("文档中没有工作表!");
+            throw new BusinessException("导入失败，文档中没有工作表!");
         }
         this.sheet = this.wb.getSheetAt(sheetIndex);
         this.headerNum = headerNum;
@@ -296,7 +296,7 @@ public class ImportExcel {
         boolean flag = true;
         Row firstRow = this.getRow(5);
         if (firstRow == null) {
-            sb.append("模板不匹配,请重新选择对应模板！");
+            sb.append("导入失败，模板不匹配,请重新选择对应模板！");
             return null;
         }
         int length = 0;
@@ -308,12 +308,12 @@ public class ImportExcel {
         }
         int numberOfCells = firstRow.getPhysicalNumberOfCells();
         if (length != numberOfCells) {
-            sb.append("模板不匹配,请重新选择对应模板！");
+            sb.append("导入失败，模板不匹配,请重新选择对应模板！");
             return null;
         }
 
         if (lastRowNum > 112) {
-            sb.append("一次最多只能导入100条数据！");
+            sb.append("导入失败，一次最多只能导入100条数据！");
             return null;
         }
 
@@ -354,6 +354,7 @@ public class ImportExcel {
                     // 长度校验
                     if (val instanceof Double) {
                         if (val.toString().substring(0, val.toString().lastIndexOf('.')).length() > ef.length()) {
+                            failNums++;
                             sb.append("第").append(i + 1).append("行，第").append(column).append("列,").append(ef.title())
                                 .append(",数据长度超出").append(",");
                             log.error("第" + (i + 1) + "行，第" + column + "列," + ef.title() + ",数据长度超出");
@@ -362,6 +363,7 @@ public class ImportExcel {
                         }
                     } else {
                         if (val.toString().length() > ef.length()) {
+                            failNums++;
                             sb.append("第").append(i + 1).append("行，第").append(column).append("列,").append(ef.title())
                                 .append(",数据长度超出").append(",");
                             log.error("第" + (i + 1) + "行，第" + column + "列," + ef.title() + ",数据长度超出");
@@ -428,6 +430,7 @@ public class ImportExcel {
                             log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
                             break;
                         } catch (ParseException e) {
+                            failNums++;
                             sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
                                 .append(ef.title()).append(val).append(",");
                             log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
@@ -485,11 +488,12 @@ public class ImportExcel {
      * @return
      */
     public String getResultMsg() {
-        sb.append("成功条数:").append(successNums).append(",").append("失败条数:").append(failNums).append(",").append("总条数:")
-            .append(totalNums).append(".");
+        // sb.append("成功条数:").append(successNums).append(",").append("失败条数:").append(failNums).append(",").append("总条数:")
+        // .append(totalNums).append(".");
         String resultString = sb.toString();
         sb.delete(0, sb.length());
-        return resultString;
+        return failNums > 0 ? "导入失败，" + resultString : resultString;
+
     }
 
     /**

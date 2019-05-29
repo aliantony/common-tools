@@ -1,38 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
@@ -64,6 +31,37 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -3072,14 +3070,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetCategoryModel categoryModel = assetCategoryModelDao
             .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
         if (Objects.isNull(categoryModel)) {
-            return "上传失败，选择品类型号不存在，或已被注销！";
+            return "导入失败，选择品类型号不存在，或已被注销！";
         }
         ImportResult<SafetyEquipmentEntiy> result = ExcelUtils.importExcelFromClient(SafetyEquipmentEntiy.class, file,
             5, 0);
 
         StringBuilder builder = new StringBuilder();
         if (Objects.isNull(result.getDataList())) {
-            return result.getMsg();
+            return "导入失败，" + result.getMsg();
         }
         List<SafetyEquipmentEntiy> resultDataList = result.getDataList();
         if (resultDataList.size() == 0) {
@@ -3457,15 +3455,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetCategoryModel categoryModel = assetCategoryModelDao
             .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
         if (Objects.isNull(categoryModel)) {
-            return "上传失败，选择品类型号不存在，或已被注销！";
+            return "导入失败，选择品类型号不存在，或已被注销！";
         }
         ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 5, 0);
         if (Objects.isNull(result.getDataList())) {
-            return result.getMsg();
+            return "导入失败，" + result.getMsg();
         }
         List<OtherDeviceEntity> resultDataList = result.getDataList();
-        if (resultDataList.size() == 0) {
-            return result.getMsg();
+        if (resultDataList.size() == 0 && StringUtils.isBlank(result.getMsg())) {
+            return "导入失败，模板中无数据！" + result.getMsg();
         }
         int success = 0;
         int repeat = 0;
@@ -3480,27 +3478,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (assetNames.contains(entity.getName())) {
                 repeat++;
                 a++;
-                builder.append("第").append(a).append("行").append("资产名称重复，");
+                builder.append("第").append(a).append("行").append("资产名称重复！");
                 continue;
             }
             if (assetNumbers.contains(entity.getNumber())) {
                 repeat++;
                 a++;
-                builder.append("第").append(a).append("行").append("资产编号重复，");
+                builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
 
             if (checkRepeatName(entity.getName())) {
                 repeat++;
                 a++;
-                builder.append("第").append(a).append("行").append("资产名称重复，");
+                builder.append("第").append(a).append("行").append("资产名称重复！");
                 continue;
             }
 
             if (CheckRepeat(entity.getNumber())) {
                 repeat++;
                 a++;
-                builder.append("第").append(a).append("行").append("资产编号重复，");
+                builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
             if (entity.getBuyDate() != null) {
@@ -3508,7 +3506,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 if (isBuyDataBig(entity.getBuyDate())) {
                     error++;
                     a++;
-                    builder.append("第").append(a).append("行").append("购买时间需小于等于今天，");
+                    builder.append("第").append(a).append("行").append("购买时间需小于等于今天！");
                     continue;
                 }
             }
@@ -3516,14 +3514,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (isDataBig(entity.getDueDate())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("到期时间需大于等于今天，");
+                builder.append("第").append(a).append("行").append("到期时间需大于等于今天！");
                 continue;
             }
 
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("没有此使用者，");
+                builder.append("第").append(a).append("行").append("没有此使用者！");
                 continue;
             }
 
@@ -3539,7 +3537,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("当前用户没有此所属区域，");
+                builder.append("第").append(a).append("行").append("当前用户没有此所属区域！");
                 continue;
             }
 
@@ -3592,18 +3590,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_OTHERS.getName() + " {}", assets.toString());
         String res = "导入成功" + success + "条";
         if (repeat + error > 0) {
-            res = "导入失败。";
+            res = "导入失败，";
         }
-        // res += repeat > 0 ? ", " + repeat + "条编号重复" : "";
-        // res += error > 0 ? ", " + error + "条数据导入失败" : "";
+
         StringBuilder stringBuilder = new StringBuilder(res);
-        // if (error + repeat > 0) {
-        // stringBuilder.append("其中").append(builder);
-        // }
-        //
-        // return stringBuilder.toString();
+
         StringBuilder sb = new StringBuilder(result.getMsg());
-        sb.delete(sb.lastIndexOf("成"), sb.lastIndexOf("."));
+
+        if (result.getMsg().contains("导入失败")) {
+            return sb.toString();
+        }
+
         return stringBuilder.append(builder).append(sb).toString();
     }
 
