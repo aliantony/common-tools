@@ -466,7 +466,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
         String beginTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getBeginTime()));
         String endTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getEndTime()));
-        return new StringBuffer(beginTime).append("~").append(endTime).toString();
+        return new StringBuffer(beginTime).append("-").append(endTime).toString();
     }
 
     @Override
@@ -813,7 +813,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
                 Date startTime = new Date(reportQueryRequest.getStartTime());
                 Date endTime = new Date(reportQueryRequest.getEndTime());
-                titleStr = simpleDateFormat.format(startTime) + "~" + simpleDateFormat.format(endTime);
+                titleStr = simpleDateFormat.format(startTime) + "-" + simpleDateFormat.format(endTime);
                 break;
             default:
                 throw new BusinessException("timeType参数异常");
