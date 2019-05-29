@@ -274,14 +274,9 @@
         <if test="installType != null ">
             and install_type =#{installType}
         </if>
-        <choose>
-            <when test="installStatus == 1">
-                and (install_status =#{installStatus} or install_status is null)
-            </when>
-            <when test="installStatus != null and installStatus != 4">
-                and install_status =#{installStatus}
-            </when>
-        </choose>
+        <if test="installStatus != null">
+            and install_status =#{installStatus}
+        </if>
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetSoftwareRelation" useGeneratedKeys="true"
