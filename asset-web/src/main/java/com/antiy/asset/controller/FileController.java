@@ -147,7 +147,8 @@ public class FileController {
                 throw new BusinessException("文件过大");
             }
 
-            if (!FileUseEnum.INSTALL_PACKAGE.getFormat().contains(FileUtil.getExtensionName(tmpFile.getName()))) {
+            if (!FileUseEnum.INSTALL_PACKAGE.getFormat()
+                .contains(FileUtil.getExtensionName(tmpFile.getOriginalFilename()))) {
                 throw new BusinessException("文件格式错误");
             }
         } else if (FileUseEnum.INSTALL_INTRODUCE_MANUAL.getCode().equals(fileUseEnum.getCode())) {
@@ -156,7 +157,7 @@ public class FileController {
             }
 
             if (!FileUseEnum.INSTALL_INTRODUCE_MANUAL.getFormat()
-                .contains(FileUtil.getExtensionName(tmpFile.getName()))) {
+                .contains(FileUtil.getExtensionName(tmpFile.getOriginalFilename()))) {
                 throw new BusinessException("文件格式错误");
             }
         } else if (FileUseEnum.SCHEME_FILE.getCode().equals(fileUseEnum.getCode())) {
@@ -164,7 +165,8 @@ public class FileController {
                 throw new BusinessException("文件过大");
             }
 
-            if (!FileUseEnum.SCHEME_FILE.getFormat().contains(FileUtil.getExtensionName(tmpFile.getName()))) {
+            if (!FileUseEnum.SCHEME_FILE.getFormat()
+                .contains(FileUtil.getExtensionName(tmpFile.getOriginalFilename()))) {
                 throw new BusinessException("文件格式错误");
             }
         }
