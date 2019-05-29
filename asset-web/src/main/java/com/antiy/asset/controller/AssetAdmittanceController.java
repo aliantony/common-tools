@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.convert.AccessExportConvert;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
@@ -47,11 +48,11 @@ import io.swagger.annotations.*;
 public class AssetAdmittanceController {
 
     @Resource
-    public IAssetService                              assetService;
+    public IAssetService       assetService;
     @Resource
-    public ExcelDownloadUtil                          excelDownloadUtil;
+    public ExcelDownloadUtil   excelDownloadUtil;
     @Resource
-    public BaseConverter<AssetResponse, AccessExport> baseConverter;
+    public AccessExportConvert accessExportConvert;
 
     /**
      * 批量查询
@@ -133,7 +134,7 @@ public class AssetAdmittanceController {
         if (!CollectionUtils.isNotEmpty(assetList)) {
             return ActionResponse.success("没有数据可以导出");
         }
-        List<AccessExport> accessExportList = baseConverter.convert(assetList, AccessExport.class);
+        List<AccessExport> accessExportList = accessExportConvert.convert(assetList, AccessExport.class);
         DownloadVO downloadVO = new DownloadVO();
         downloadVO.setDownloadList(accessExportList);
         excelDownloadUtil.excelDownload(request, response,
