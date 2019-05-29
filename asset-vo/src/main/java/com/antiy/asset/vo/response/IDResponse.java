@@ -8,20 +8,15 @@ import java.util.List;
  * @Author: lvliang
  * @Date: 2019/5/28 9:40
  */
-public class IDResponse extends BaseResponse {
-    @Encode
-    private List<String> ids;
+public class IDResponse {
 
-    public List<String> getIds() {
-        return ids;
+    private String       result;
+
+    public String getResult() {
+        return result;
     }
 
-    public void setIds(List<String> ids) {
-        this.ids = ids;
-    }
-
-    @Override
-    public String toString() {
-        return "IDResponse{" + "ids=" + ids + '}';
+    public void setResult(String result) {
+        this.result = result;
     }
 }

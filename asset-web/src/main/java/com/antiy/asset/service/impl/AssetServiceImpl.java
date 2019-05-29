@@ -3856,8 +3856,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public IDResponse findAssetIds() {
         IDResponse idResponse = new IDResponse();
-        idResponse.setIds(assetDao.findAssetIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser())));
+        List<Integer> list = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        if (CollectionUtils.isEmpty(list)) {
+            return idResponse;
+        }
+        idResponse.setResult(StringUtils
+            .join(assetDao.findAssetIds(list).toArray(), ","));
         return idResponse;
     }
 
