@@ -32,7 +32,7 @@ public class AccessExport {
      * 资产准入状态
      */
     @ExcelField(value = "admittanceStatusString", align = 1, title = "状态", type = 0)
-    @ApiModelProperty("mac")
+    @ApiModelProperty("状态")
     private String admittanceStatusString;
 
 
