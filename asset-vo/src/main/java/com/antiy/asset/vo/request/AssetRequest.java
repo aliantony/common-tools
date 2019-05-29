@@ -115,7 +115,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      * 物理位置
      */
     @ApiModelProperty("物理位置")
-    // @NotBlank(message = "物理位置不能为空")
+    @NotBlank(message = "物理位置不能为空")
     @Size(message = "物理位置不能超过30位", max = 30)
     private String                  location;
     /**
