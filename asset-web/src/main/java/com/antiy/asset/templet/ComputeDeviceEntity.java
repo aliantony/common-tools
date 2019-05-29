@@ -246,7 +246,7 @@ public class ComputeDeviceEntity {
     /**
      * 主板品牌
      */
-    @ExcelField(value = "mainboradBrand", align = 1, title = "主板品牌")
+    @ExcelField(value = "mainboradBrand", align = 1, title = "主板品牌(必填)")
     private String  mainboradBrand;
     /**
      * 主板型号
