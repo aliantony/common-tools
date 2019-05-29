@@ -868,7 +868,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
             }
             i++;
         }
-        String title = "资产组" + titleStr + "总数";
+        String title = "资产" + titleStr + "资产组总数";
         fileNameStr = "资产" + fileNameStr + "资产组总数";
         reportForm.setTitle(title);
         reportForm.setHeaderList(headerList);
