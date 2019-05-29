@@ -1,6 +1,9 @@
 package com.antiy.asset.controller;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.antiy.asset.util.FileUtil;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.FileUseEnum;
-import com.antiy.biz.file.FileDto;
 import com.antiy.biz.file.FileRespVO;
 import com.antiy.biz.file.FileResponse;
 import com.antiy.biz.file.FileUtils;
@@ -138,22 +140,14 @@ public class FileController {
      */
     private void uploadToHdfs(MultipartFile tmpFile, List<FileRespVO> fileRespVOS, String md5,
                               FileUseEnum fileUseEnum) throws Exception {
-
-        FileDto fileDto = fileUtils.uploadFileFromLocal(tmpFile, modelName);
-        File file = new File(fileDto.getPath());
-        if (!file.exists()) {
-            throw new BusinessException("文件不存在");
-        }
-
         long fileSize = tmpFile.getSize();
-
         // 文件大小校验
         if (FileUseEnum.INSTALL_PACKAGE.getCode().equals(fileUseEnum.getCode())) {
             if (fileSize > FileUseEnum.INSTALL_PACKAGE.getSize()) {
                 throw new BusinessException("文件过大");
             }
 
-            if (!FileUseEnum.INSTALL_PACKAGE.getFormat().contains(FileUtil.getExtensionName(file.getName()))) {
+            if (!FileUseEnum.INSTALL_PACKAGE.getFormat().contains(FileUtil.getExtensionName(tmpFile.getName()))) {
                 throw new BusinessException("文件格式错误");
             }
         } else if (FileUseEnum.INSTALL_INTRODUCE_MANUAL.getCode().equals(fileUseEnum.getCode())) {
@@ -161,7 +155,8 @@ public class FileController {
                 throw new BusinessException("文件过大");
             }
 
-            if (!FileUseEnum.INSTALL_INTRODUCE_MANUAL.getFormat().contains(FileUtil.getExtensionName(file.getName()))) {
+            if (!FileUseEnum.INSTALL_INTRODUCE_MANUAL.getFormat()
+                .contains(FileUtil.getExtensionName(tmpFile.getName()))) {
                 throw new BusinessException("文件格式错误");
             }
         } else if (FileUseEnum.SCHEME_FILE.getCode().equals(fileUseEnum.getCode())) {
@@ -169,7 +164,7 @@ public class FileController {
                 throw new BusinessException("文件过大");
             }
 
-            if (!FileUseEnum.SCHEME_FILE.getFormat().contains(FileUtil.getExtensionName(file.getName()))) {
+            if (!FileUseEnum.SCHEME_FILE.getFormat().contains(FileUtil.getExtensionName(tmpFile.getName()))) {
                 throw new BusinessException("文件格式错误");
             }
         }
@@ -177,26 +172,23 @@ public class FileController {
         logger.info("单个文件上传开始");
 
         // 调用上传接口
-        FileResponse fileResponse = fileUtils.uploadFromLocal(modelName, file);
+        FileResponse<FileRespVO> fileResponse = fileUtils.uploadFileFromLocal(tmpFile, modelName);
 
 
         if (RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
-            FileRespVO fileRep = (FileRespVO) fileResponse.getData();
+            FileRespVO fileRespVO = fileResponse.getData();
             if (StringUtils.isNotEmpty(md5)) {
-                if (!fileDto.getMd5().equals(md5.toLowerCase())) {
-                    fileUtils.delete(defaultHDFSUrl + fileRep.getFileUrl());
+                if (!fileRespVO.getMd5().equals(md5.toLowerCase())) {
+                    fileUtils.delete(defaultHDFSUrl + fileRespVO.getFileUrl());
                     throw new BusinessException("MD5校验失败");
                 }
             }
-            fileRespVOS.add(fileRep);
+            fileRespVOS.add(fileRespVO);
         } else {
             // 记录运行日志
             LogUtils.info(logger, AssetEventEnum.FILE_UPLOAD.getName() + " {}",
                 RespBasicCode.BUSSINESS_EXCETION.getResultDes());
         }
-
-        // 删除临时文件
-        fileUtils.deleteFile(file.toURI());
 
         logger.info("单个文件上传结束");
     }
