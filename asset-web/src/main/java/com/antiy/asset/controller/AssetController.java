@@ -13,7 +13,6 @@ import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
-import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
@@ -299,14 +298,11 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/computer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importPc')")
-    public ActionResponse importPc(@NotNull @ApiParam(value = "file") MultipartFile file,
+    public ActionResponse importPc(@NotNull(message = "导入失败，没有文件！") @ApiParam(value = "file") MultipartFile file,
                                    AssetImportRequest importRequest) throws Exception {
-        if (file == null) {
-
-            throw new BusinessException ("文件为空");
-        } else {
-            System.out.println ("-----------why--------值=" + file + "," + "当前类=.()");
-        }
+        // if (file == null)
+        // throw new BusinessException ("文件为空");
+        //
         return ActionResponse.success(iAssetService.importPc(file, importRequest));
     }
 
