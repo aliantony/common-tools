@@ -21,6 +21,7 @@ import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
 import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
 import com.antiy.asset.vo.request.AssetRelationSoftRequest;
@@ -127,7 +128,7 @@ public class AssetStatusJumpController {
                 new BusinessData(AssetEventEnum.SOFT_NO_REGISTER.getName(), DataTypeUtils.stringToInteger(assetId),
                     softwareDao.getById(assetId).getName(), assetStatusChangeRequest, BusinessModuleEnum.SOFTWARE_ASSET,
                     BusinessPhaseEnum.NOT_REGISTER));
-            LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetStatusChangeRequest);
+            LogUtils.info(logger, AssetEventEnum.SOFT_NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
 
             return ActionResponse.success(softwareDao.update(assetSoftware));
         } else {
@@ -182,6 +183,19 @@ public class AssetStatusJumpController {
         asset.setGmtModified(System.currentTimeMillis());
         asset.setModifyUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
         asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+        // 记录操作记录
+        AssetOperationRecord operationRecord = new AssetOperationRecord();
+        operationRecord.setAreaId(assetDao.getAreaIdById(baseRequest.getStringId()));
+        operationRecord.setTargetObjectId(baseRequest.getStringId());
+        operationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
+        operationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+        operationRecord.setGmtCreate(System.currentTimeMillis());
+        operationRecord.setContent(AssetFlowEnum.HARDWARE_BASELINE_VALIDATE.getMsg());
+        operationRecord
+            .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
+        operationRecord
+            .setOperateUserId(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
+        operationRecord.setProcessResult(0);
         return ActionResponse.success(assetDao.updateStatus(asset));
     }
 }

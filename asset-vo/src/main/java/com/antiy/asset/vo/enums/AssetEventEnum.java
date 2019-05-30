@@ -113,7 +113,7 @@ public enum AssetEventEnum {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    "资产不予登记"),
     SETTING_REGISTER(105,
                                              "登记资产"), SOFT_NO_REGISTER(106,
-            "软件不予登记"),
+                                                                       "资产不予登记"),
     HARD_EXPORT(109,"硬件资产导出"),
                             HARD_WAITTING_REGISTER(110,
                                                    "登记资产"), ASSET_RETIRE_START(111,
