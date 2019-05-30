@@ -620,8 +620,9 @@
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
+        asset.status = 1
         <if test=" areaIds != null and areaIds.length > 0 and ids == null">
-            and area_id in
+            and asset.area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
                 #{item}
             </foreach>
@@ -636,7 +637,7 @@
             </foreach>
         </if>
         <if test=" areaIds != null and areaIds.length > 0 and ids != null and ids.length > 0">
-            and (area_id in
+            and (asset.area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
                 #{item}
             </foreach>
@@ -649,7 +650,7 @@
                     or
                 </otherwise>
             </choose>
-            id in
+            asset.id in
             <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
                 #{item}
             </foreach>
@@ -657,7 +658,7 @@
         </if>
 
         <if test="areaIds==null and ids != null and ids.length > 0">
-            and id in
+            and asset.id in
             <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
                 #{item}
             </foreach>
@@ -674,107 +675,104 @@
         </if>
 
         <if test=" multipleQuery != null and multipleQuery != ''">
-            and (name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            and (asset.name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or asset.number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or ip like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or mac like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             )
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
-            and asset_status in
+            and asset.asset_status in
             <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
                 #{assetStatus}
             </foreach>
         </if>
         <if test="name != null">
-            and name like binary CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+            and asset.name like binary CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
         </if>
         <if test="assetName != null">
-            and name =#{assetName}
+            and asset.name =#{assetName}
         </if>
         <if test="assetStatus != null">
-            and asset_status = #{assetStatus}
+            and asset.asset_status = #{assetStatus}
         </if>
         <if test=" categoryModels != null and categoryModels.length > 0">
-            and category_model in
+            and asset.category_model in
             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
         </if>
         <if test=" categoryModel != null and categoryModel != ''">
-            and category_model = #{categoryModel}
-        </if>
-        <if test=" parentId != null and parentId != ''">
-            and parent_id = #{parentId}
+            and asset.category_model = #{categoryModel}
         </if>
         <if test=" admittanceStatus != null">
-            and admittance_status = #{admittanceStatus}
+            and asset.admittance_status = #{admittanceStatus}
         </if>
         <if test=" number != null and number != ''">
-            and number = #{number}
+            and asset.number = #{number}
         </if>
         <if test=" uuid != null and uuid != ''">
-            and uuid like binary CONCAT('%', replace(replace(#{uuid},'%','\%'),'_','\_'), '%')
+            and asset.uuid like binary CONCAT('%', replace(replace(#{uuid},'%','\%'),'_','\_'), '%')
         </if>
         <if test=" serial != null">
-            and serial like binary CONCAT('%', replace(replace(#{uuid},'%','\%'),'_','\_')#{serial}, '%')
+            and asset.serial like binary CONCAT('%', replace(replace(#{uuid},'%','\%'),'_','\_')#{serial}, '%')
         </if>
         <if test=" manufacturer != null and  manufacturer != ''">
-            and manufacturer like binary CONCAT('%',replace(replace(#{manufacturer},'%','\%'),'_','\_'), '%')
+            and asset.manufacturer like binary CONCAT('%',replace(replace(#{manufacturer},'%','\%'),'_','\_'), '%')
         </if>
         <if test=" manufacturers != null and manufacturers.size() > 0">
-            and manufacturer in
+            and asset.manufacturer in
             <foreach collection="manufacturers" separator="," open="(" close=")" item="item">
                 #{item}
             </foreach>
         </if>
 
         <if test="removeManufacturers != null and removeManufacturers.size() > 0">
-            and manufacturer not in
+            and asset.manufacturer not in
             <foreach collection="removeManufacturers" separator="," open="(" close=")" item="item">
                 #{item}
             </foreach>
         </if>
 
         <if test=" operationSystem != null and operationSystem != ''">
-            and operation_system = #{operationSystem}
+            and asset.operation_system = #{operationSystem}
         </if>
         <if test=" responsibleUserId != null and responsibleUserId != ''">
-            and responsible_user_id = #{responsibleUserId }
+            and asset.responsible_user_id = #{responsibleUserId }
         </if>
         <if test=" assetSource != null and assetSource != ''">
-            and asset_source = #{assetSource }
+            and asset.asset_source = #{assetSource }
         </if>
         <if test=" importanceDegree != null">
-            and importance_degree = #{importanceDegree }
+            and asset.importance_degree = #{importanceDegree }
         </if>
         <if test=" timeType != null and timeType == 2  and beginTime != null">
-            and first_enter_nett &gt;= #{beginTime }
+            and asset.first_enter_nett &gt;= #{beginTime }
         </if>
         <if test=" timeType != null and timeType == 2  and endTime != null">
-            and first_enter_nett &lt;= #{endTime }
+            and asset.first_enter_nett &lt;= #{endTime }
         </if>
         <if test=" timeType != null and timeType == 1  and beginTime != null">
-            and gmt_create &gt;= #{beginTime }
+            and asset.gmt_create &gt;= #{beginTime }
         </if>
         <if test=" timeType != null and timeType == 1  and endTime != null">
-            and gmt_create &lt;= #{endTime }
+            and asset.gmt_create &lt;= #{endTime }
         </if>
         <if test=" timeType != null and timeType == 3  and beginTime != null">
-            and service_life &gt;= #{beginTime }
+            and asset.service_life &gt;= #{beginTime }
         </if>
         <if test=" timeType != null and timeType == 3  and endTime != null">
-            and service_life &lt;= #{endTime }
+            and asset.service_life &lt;= #{endTime }
         </if>
         <if test="associateGroup and existAssociateIds != null ">
-            and id not in (
+            and asset.id not in (
             <foreach index="index" item="item" collection="existAssociateIds" separator=",">
                 #{item}
             </foreach>
             )
         </if>
         <if test="installType != null and installType != ''">
-            and install_type = #{installType}
+            and asset.install_type = #{installType}
         </if>
     </sql>
 
@@ -837,51 +835,15 @@
 
 
     <select id="findCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select count(1) count from (select
-        a.id,
-        a.area_id,
-        a.asset_group,
-        a.category_model,
-        a.admittance_status,
-        a.number,
-        a.name,
-        d.name as responsible_user_name,
-        a.install_type,
-        a.serial,
-        c.name as category_model_name,
-        a.manufacturer, asset_status,
-        a.operation_system,
-        a.system_bit,
-        a.location,
-        a.house_location,
-        a.latitude,
-        a.longitude,
-        a.firmware_version,
-        a.uuid,
-        a.responsible_user_id,
-        a.contact_tel,
-        a.email,
-        a.asset_source,
-        a.importance_degree,
-        a.describle,
-        a.parent_id,
-        a.tags,
-        a.first_enter_nett,
-        a.service_life,
-        a. buy_date,
-        a.warranty,
-        a.gmt_create,
-        concat(ifnull(group_concat(b.ip_address),''), ifnull(e.outer_ip,''), ifnull(f.ip,'') ) AS ip,
-        concat(ifnull(group_concat( b.mac_address ),''), ifnull(e.mac_address,''), ifnull(f.mac,'') ) AS mac
+        select
+        count(1) count
         from
-        asset a
-        left join asset_network_card b on a.id = b.asset_id and b.status = 1
-        left join asset_category_model c on a.category_model = c.id
-        left join asset_user d on a.responsible_user_id = d.id
-        LEFT JOIN asset_safety_equipment f ON a.id = f.asset_id
-        LEFT JOIN asset_network_equipment e ON a.id = e.asset_id
-        where a.status = 1
-        group by a.id) asset
+        asset asset
+        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and asset_network_card.status = 1
+        left join asset_category_model asset_category_model on asset.category_model = asset_category_model.id
+        left join asset_user asset_user on asset.responsible_user_id = asset_user.id
+        LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
+        LEFT JOIN asset_network_equipment asset_network_equipment ON asset.id = asset_network_equipment.asset_id
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
@@ -1191,67 +1153,64 @@
 
     <select id="findListAsset" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select * from (select
-        a.id,
-        a.area_id,
-        a.asset_group,
-        a.category_model,
-        a.admittance_status,
-        a.number,
-        a.name,
-        d.name as responsible_user_name,
-        a.install_type,
-        a.serial,
-        c.name as category_model_name,
-        a.manufacturer, asset_status,
-        a.operation_system,
-        a.system_bit,
-        a.location,
-        a.house_location,
-        a.latitude,
-        a.longitude,
-        a.firmware_version,
-        a.uuid,
-        a.responsible_user_id,
-        a.contact_tel,
-        a.email,
-        a.asset_source,
-        a.importance_degree,
-        a.describle,
-        a.parent_id,
-        a.tags,
-        a.first_enter_nett,
-        a.service_life,
-        a. buy_date,
-        a.warranty,
-        a.gmt_create,
-        concat(ifnull(group_concat(b.ip_address),''), ifnull(e.outer_ip,''), ifnull(f.ip,'') ) AS ip,
-        concat(ifnull(group_concat( b.mac_address ),''), ifnull(e.mac_address,''), ifnull(f.mac,'') ) AS mac
-        from
-        asset a
-        left join asset_network_card b on a.id = b.asset_id and b.status = 1
-        left join asset_category_model c on a.category_model = c.id
-        left join asset_user d on a.responsible_user_id = d.id
-        LEFT JOIN asset_safety_equipment f ON a.id = f.asset_id
-        LEFT JOIN asset_network_equipment e ON a.id = e.asset_id
-        where a.status = 1
-        group by a.id) asset
+        select
+            asset.id,
+            asset.area_id,
+            asset.asset_group,
+            asset.category_model,
+            asset.admittance_status,
+            asset.number,
+            asset.name,
+            asset_user.name as responsible_user_name,
+            asset.install_type,
+            asset.serial,
+            asset_category_model.name as category_model_name,
+            asset.manufacturer, asset_status,
+            asset.operation_system,
+            asset.system_bit,
+            asset.location,
+            asset.house_location,
+            asset.latitude,
+            asset.longitude,
+            asset.firmware_version,
+            asset.uuid,
+            asset.responsible_user_id,
+            asset.contact_tel,
+            asset.email,
+            asset.asset_source,
+            asset.importance_degree,
+            asset.describle,
+            asset.parent_id,
+            asset.first_enter_nett,
+            asset.service_life,
+            asset.buy_date,
+            asset.warranty,
+            asset.gmt_create,
+            concat(ifnull(group_concat(asset_network_card.ip_address),''), ifnull(asset_network_equipment.outer_ip,''), ifnull(asset_safety_equipment.ip,'') ) AS ip,
+            concat(ifnull(group_concat( asset_network_card.mac_address ),''), ifnull(asset_network_equipment.mac_address,''), ifnull(asset_safety_equipment.mac,'') ) AS mac
+        from asset asset
+        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and asset_network_card.status = 1
+        left join asset_category_model asset_category_model on asset.category_model = asset_category_model.id
+        left join asset_user asset_user on asset.responsible_user_id = asset_user.id
+        LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
+        LEFT JOIN asset_network_equipment asset_network_equipment ON asset.id = asset_network_equipment.asset_id
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
+        group by asset.id
         ORDER BY
         <choose>
             <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
                 ${sortName} ${sortOrder}
             </when>
             <otherwise>
-                id desc
+                asset.id desc
             </otherwise>
         </choose>
         <if test=" ids != null and ids.length > 0">
-            ,FIELD(`id`,
+            ,FIELD(asset.`id`,
             <foreach index="index" item="item" collection="ids" separator=",">
                 #{item}
             </foreach>
