@@ -113,7 +113,8 @@ public enum AssetEventEnum {
     SETTING_REGISTER(105,
             "硬件配置待再登记"), SOFT_NO_REGISTER(106,
             "软件不予登记"),
-    HARD_EXPORT(109,"硬件资产导出");
+                            HARD_EXPORT(109, "硬件资产导出"), ASSET_RETIRE_START(110, "资产发起退役"), ASSET_RETIRE_IMPL(111,
+                                                                                                             "资产实施退役");
 
 
     private Integer status;
