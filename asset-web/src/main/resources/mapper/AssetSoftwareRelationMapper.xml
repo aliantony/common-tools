@@ -410,7 +410,7 @@
             and asoft.id is not null
             and asoftrel.status = 1
             and asoftrel.install_status = 5
-            order by order by install_time desc
+            order by install_time desc
     </select>
 
     <select id="getSimpleSoftwareByAssetId" resultMap="BaseResultMap"
