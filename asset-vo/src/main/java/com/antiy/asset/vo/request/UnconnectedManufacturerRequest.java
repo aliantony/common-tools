@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.request;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -11,7 +12,8 @@ public class UnconnectedManufacturerRequest {
     @ApiModelProperty("是否是网络设备")
     private Integer isNet;
     @ApiModelProperty("主键")
-    private String primaryKey;
+    @Encode
+    private String  primaryKey;
 
     public Integer getIsNet() {
         return isNet;
