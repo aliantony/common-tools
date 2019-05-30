@@ -55,7 +55,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     private Logger              logger = LogUtils.get(this.getClass());
 
     private final static String DAY    = "%w";
-    private final static String WEEK   = "%U";
+    private final static String WEEK   = "%u";
     private final static String MONTH  = "%Y-%m";
 
     @Resource
@@ -206,27 +206,22 @@ public class AssetReportServiceImpl implements IAssetReportService {
                         && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         computeNewAdd = computeNewAdd + categoryEntity.getCategoryCount();
-                        computeAmount = computeAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         networkNewAdd = networkNewAdd + categoryEntity.getCategoryCount();
-                        networkAmount = networkAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         storageNewAdd = storageNewAdd + categoryEntity.getCategoryCount();
-                        storageAmount = storageAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         safetyNewAdd = safetyNewAdd + categoryEntity.getCategoryCount();
-                        safetyAmount = safetyAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)
                                && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
                         otherNewAdd = otherNewAdd + categoryEntity.getCategoryCount();
-                        otherAmount = otherAmount + assetReportDao.findCategoryCountAmount(filterMap);
                     }
                 }
             }

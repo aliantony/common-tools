@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
@@ -21,6 +22,7 @@ import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
 import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
 import com.antiy.asset.vo.request.AssetRelationSoftRequest;
@@ -54,6 +56,8 @@ public class AssetStatusJumpController {
     AssetDao                              assetDao;
     @Resource
     AssetSoftwareDao                      softwareDao;
+    @Resource
+    AssetOperationRecordDao               operationRecordDao;
 
     @Resource
     private IAssetSoftwareRelationService softwareRelationService;
@@ -127,7 +131,7 @@ public class AssetStatusJumpController {
                 new BusinessData(AssetEventEnum.SOFT_NO_REGISTER.getName(), DataTypeUtils.stringToInteger(assetId),
                     softwareDao.getById(assetId).getName(), assetStatusChangeRequest, BusinessModuleEnum.SOFTWARE_ASSET,
                     BusinessPhaseEnum.NOT_REGISTER));
-            LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetStatusChangeRequest);
+            LogUtils.info(logger, AssetEventEnum.SOFT_NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
 
             return ActionResponse.success(softwareDao.update(assetSoftware));
         } else {
@@ -146,7 +150,7 @@ public class AssetStatusJumpController {
     }
 
     private void operationRecord(@RequestBody(required = false) @ApiParam("assetStatusChangeRequest") AssetStatusChangeRequest assetStatusChangeRequest,
-                                 String id) {
+                                 String id) throws Exception {
         // 记录操作历史到数据库
         AssetOperationRecord operationRecord = new AssetOperationRecord();
         operationRecord.setTargetObjectId(id);
@@ -164,6 +168,7 @@ public class AssetStatusJumpController {
             operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         }
+        operationRecordDao.insert(operationRecord);
     }
 
     /**
@@ -182,6 +187,20 @@ public class AssetStatusJumpController {
         asset.setGmtModified(System.currentTimeMillis());
         asset.setModifyUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
         asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+        // 记录操作记录
+        AssetOperationRecord operationRecord = new AssetOperationRecord();
+        operationRecord.setAreaId(assetDao.getAreaIdById(baseRequest.getStringId()));
+        operationRecord.setTargetObjectId(baseRequest.getStringId());
+        operationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
+        operationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+        operationRecord.setGmtCreate(System.currentTimeMillis());
+        operationRecord.setContent(AssetFlowEnum.HARDWARE_BASELINE_VALIDATE.getMsg());
+        operationRecord
+            .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
+        operationRecord
+            .setOperateUserId(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
+        operationRecord.setProcessResult(0);
+        operationRecordDao.insert(operationRecord);
         return ActionResponse.success(assetDao.updateStatus(asset));
     }
 }
