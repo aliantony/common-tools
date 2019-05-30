@@ -2050,10 +2050,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SETTING_REGISTER.getName(),
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.HARD_WAITTING_REGISTER.getName(),
                     Integer.valueOf(assetId), assetDao.getById(assetId).getNumber(), assetOuterRequest,
                     BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
-                LogUtils.info(logger, AssetEventEnum.SETTING_REGISTER.getName() + " {}",
+                LogUtils.info(logger, AssetEventEnum.HARD_WAITTING_REGISTER.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             }
 
