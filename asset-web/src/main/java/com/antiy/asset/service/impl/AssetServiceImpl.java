@@ -2594,6 +2594,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
 
+
             if (isDataBig(entity.getDueTime())) {
                 error++;
                 a++;
@@ -2644,6 +2645,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 a++;
                 builder.append("第").append(a).append("行").append("硬盘数量需大于等于1  ！");
                 continue;
+            }
+
+            if (entity.getHardDiskBuyDate() != null) {
+
+                if (isBuyDataBig(entity.getHardDiskBuyDate())) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("硬盘购买时间需小于等于今天！");
+                    continue;
+                }
             }
 
             if (entity.getMainboradNum() < 1) {
