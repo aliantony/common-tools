@@ -109,11 +109,11 @@ public class AssetAreaReportServiceImplTest {
         allDataList.add(2);
         expected.setAlldata(allDataList);
 
-        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(),
-                Mockito.any())).thenReturn(initData);
-        when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(),
-                Mockito.any())).thenReturn(addData);
-        when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
+//        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(),
+//                Mockito.any())).thenReturn(initData);
+//        when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(),
+//                Mockito.any())).thenReturn(addData);
+//        when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
         //情景一：TOP5为true
         AssetReportResponse actual = assetAreaReportService.getAssetWithArea(reportRequest);
         Assert.assertEquals(expected.getAlldata().get(0),actual.getAlldata().get(0));

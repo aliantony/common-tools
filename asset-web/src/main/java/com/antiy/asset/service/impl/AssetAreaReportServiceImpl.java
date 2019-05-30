@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
@@ -54,6 +55,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
 
     @Override
     public AssetReportResponse getAssetWithArea(ReportQueryRequest reportRequest) {
+        reportRequest.setAssetStatusList(getStatusList());
         dealArea(reportRequest);
         AssetReportResponse assetReportResponse = new AssetReportResponse();
         List<ReportData> reportDataList = Lists.newArrayList();
@@ -85,7 +87,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
 
         // 3.获取起始时间初始值
         List<Map<String, Integer>> initData = assetReportDao.queryAssetWithAreaByDate(reportRequest.getAssetAreaIds(),
-            reportRequest.getStartTime());
+            reportRequest.getStartTime(), reportRequest.getAssetStatusList());
         // 计算初始值
         if (CollectionUtils.isNotEmpty(topAreaIds)) {
             topAreaIds.stream().forEach(top -> {
@@ -112,7 +114,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         }
 
         List<Map<String, String>> addData = assetReportDao.queryAddAssetWithArea(reportRequest.getAssetAreaIds(),
-            reportRequest.getStartTime(), reportRequest.getEndTime(), timeType);
+            reportRequest.getStartTime(), reportRequest.getEndTime(), timeType, reportRequest.getAssetStatusList());
         topAreaIds.stream().forEach(top -> {
             ReportData reportData = new ReportData();
             // 区域在区间总数
@@ -324,8 +326,8 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         String fileName = fileNameStr + ".xlsx";
         ExcelUtils.exportFormToClient(reportForm, fileName);
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(
-            new BusinessData(fileNameStr, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(new BusinessData(fileNameStr, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT,
+            BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
             reportQueryRequest.toString());
 
@@ -417,4 +419,16 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         }
         return result;
     }
+
+    private List<Integer> getStatusList() {
+        List<Integer> statusList = new ArrayList<>();
+        for (AssetStatusEnum assetStatusEnum : AssetStatusEnum.values()) {
+            if (!assetStatusEnum.equals(AssetStatusEnum.RETIRE) && !assetStatusEnum.equals(AssetStatusEnum.NOT_REGSIST)
+                && !assetStatusEnum.equals(AssetStatusEnum.WATI_REGSIST)) {
+                statusList.add(assetStatusEnum.getCode());
+            }
+        }
+        return statusList;
+    }
+
 }
