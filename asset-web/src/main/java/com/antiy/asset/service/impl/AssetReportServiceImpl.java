@@ -53,8 +53,6 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 @Service
 public class AssetReportServiceImpl implements IAssetReportService {
     private Logger              logger = LogUtils.get(this.getClass());
-    @Resource
-    IAssetCategoryModelService  iAssetCategoryModelService;
 
     private final static String DAY    = "%w";
     private final static String WEEK   = "%U";
@@ -115,7 +113,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         Map<String, Object> map = new HashMap<>();
         List<Integer> statusList = new ArrayList<>();
         getStatusList(statusList);
-        query.setStatusList(statusList);
+        query.setAssetStatusList(statusList);
         List<AssetCategoryModel> categoryModels = categoryModelDao.findAllCategory();
         // 构造柱状图所需的source
         Iterator<Map.Entry<String, String>> iterator = weekMap.entrySet().iterator();
