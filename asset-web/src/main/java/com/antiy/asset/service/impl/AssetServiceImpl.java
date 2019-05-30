@@ -3002,7 +3002,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setBuyDate(networkDeviceEntity.getButDate());
                 asset.setServiceLife(networkDeviceEntity.getDueDate());
                 asset.setWarranty(networkDeviceEntity.getWarranty());
-                asset.setMemo(networkDeviceEntity.getMemo());
                 asset.setContactTel(networkDeviceEntity.getTelephone());
                 asset.setEmail(networkDeviceEntity.getEmail());
                 asset.setCategoryModel(importRequest.getCategory());
@@ -3020,7 +3019,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetNetworkEquipment.setCpuVersion(networkDeviceEntity.getCpuVersion());
                 assetNetworkEquipment.setSubnetMask(networkDeviceEntity.getSubnetMask());
                 assetNetworkEquipment.setExpectBandwidth(networkDeviceEntity.getExpectBandwidth());
-                assetNetworkEquipment.setMemo(networkDeviceEntity.getMemo());
                 assetNetworkEquipment.setNcrmSize(networkDeviceEntity.getNcrmSize());
                 assetNetworkEquipment.setCpuSize(networkDeviceEntity.getCpuSize());
                 assetNetworkEquipment.setDramSize(networkDeviceEntity.getDramSize());
@@ -3389,7 +3387,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setBuyDate(entity.getBuyDate());
                 asset.setServiceLife(entity.getDueDate());
                 asset.setWarranty(entity.getWarranty());
-                asset.setMemo(entity.getMemo());
                 asset.setContactTel(entity.getTelephone());
                 asset.setEmail(entity.getEmail());
                 asset.setCategoryModel(importRequest.getCategory());
@@ -3401,7 +3398,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetStorageMedium.setDiskNumber(entity.getHardDiskNum());
                 assetStorageMedium.setDriverNumber(entity.getDriveNum());
                 assetStorageMedium.setMaximumStorage(entity.getCapacity());
-                assetStorageMedium.setMemo(entity.getMemo());
                 assetStorageMedium.setHighCache(entity.getHighCache());
                 // if (entity.getRaidSupport() == null) {
                 // assetStorageMedium.setRaidSupport("否");
