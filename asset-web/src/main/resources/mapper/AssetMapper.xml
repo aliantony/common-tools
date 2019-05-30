@@ -1079,6 +1079,7 @@
         a. buy_date,
         a.warranty,
         a.gmt_create,
+        a.status,
         case
         when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
         replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
