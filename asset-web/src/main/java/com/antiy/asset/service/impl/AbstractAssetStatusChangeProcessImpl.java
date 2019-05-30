@@ -86,7 +86,6 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         ActionResponse actionResponse = null;
         if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
             .equals(AssetFlowCategoryEnum.HARDWARE_RETIRE.getCode())) {
-
             // 记录操作日志
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_RETIRE_START.getName(),
                 DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
@@ -100,10 +99,31 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
                    || AssetFlowCategoryEnum.HARDWARE_IMPL_RETIRE.getCode()
                        .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_RETIRE_IMPL.getName(),
-                DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
-                assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
-                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.RETIRE));
+            // 记录日志
+            if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode()
+                .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+                switch (getNextAssetStatus(assetStatusReqeust).getCode()) {
+                    case 6:
+                        LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.ASSET_NET_IN_CHECK.getName(),
+                            DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
+                            assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
+                            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
+                        break;
+                    case 7:
+                        LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.ASSET_NET_IN.getName(),
+                            DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
+                            assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
+                            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
+                        break;
+                }
+
+            } else if (AssetFlowCategoryEnum.HARDWARE_IMPL_RETIRE.getCode()
+                .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_RETIRE_IMPL.getName(),
+                    DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
+                    assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
+                    BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.RETIRE));
+            }
             // 硬件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         } else if (AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode()
@@ -111,6 +131,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             // 软件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         }
+
 
         // 如果流程引擎为空,直接返回错误信息
         if (null == actionResponse
@@ -182,12 +203,18 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                 } catch (Exception e) {
                     LogUtils.warn(logger, "获取资产编号失败");
                 }
-                LogUtils.recordOperLog(new BusinessData(assetFlowEnum.getMsg(),
-                    DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
-                    assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
-                    BusinessModuleEnum.HARD_ASSET,
-                    BusinessPhaseEnum.getByStatus(assetStatusReqeust.getAssetStatus().getCode())));
-                LogUtils.info(logger, assetFlowEnum.getMsg() + " {}", number);
+
+                if (!(assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
+                    .equals(AssetFlowCategoryEnum.HARDWARE_RETIRE.getCode())
+                      || assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
+                          .equals(AssetFlowCategoryEnum.HARDWARE_IMPL_RETIRE.getCode()))) {
+                    LogUtils.recordOperLog(new BusinessData(assetFlowEnum.getMsg(),
+                        DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
+                        assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
+                        BusinessModuleEnum.HARD_ASSET,
+                        BusinessPhaseEnum.getByStatus(assetStatusReqeust.getAssetStatus().getCode())));
+                    LogUtils.info(logger, assetFlowEnum.getMsg() + " {}", number);
+                }
             }
         }
 
