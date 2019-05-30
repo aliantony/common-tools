@@ -172,8 +172,13 @@
                 #{areaId}
             </foreach>
         </if>
+        <if test="assetStatusList!=null and assetStatusList.size()>0">
+            and asset.status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
         AND asset.gmt_create > #{beginTime}
-        AND asset.asset_status &lt;&gt; 9
         AND asset.status =1
         AND asset.category_model IS NOT NULL
         GROUP BY
@@ -219,7 +224,6 @@
         asset
         WHERE
         asset.gmt_create &lt;= #{beginTime}
-        AND asset.asset_status &lt;&gt; 9
         AND asset.status =1
         AND asset.category_model IS NOT NULL
         and asset.category_model = #{categoryModel}
