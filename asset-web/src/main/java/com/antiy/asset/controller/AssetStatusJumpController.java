@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
@@ -55,6 +56,8 @@ public class AssetStatusJumpController {
     AssetDao                              assetDao;
     @Resource
     AssetSoftwareDao                      softwareDao;
+    @Resource
+    AssetOperationRecordDao               operationRecordDao;
 
     @Resource
     private IAssetSoftwareRelationService softwareRelationService;
@@ -147,7 +150,7 @@ public class AssetStatusJumpController {
     }
 
     private void operationRecord(@RequestBody(required = false) @ApiParam("assetStatusChangeRequest") AssetStatusChangeRequest assetStatusChangeRequest,
-                                 String id) {
+                                 String id) throws Exception {
         // 记录操作历史到数据库
         AssetOperationRecord operationRecord = new AssetOperationRecord();
         operationRecord.setTargetObjectId(id);
@@ -165,6 +168,7 @@ public class AssetStatusJumpController {
             operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         }
+        operationRecordDao.insert(operationRecord);
     }
 
     /**
@@ -196,6 +200,7 @@ public class AssetStatusJumpController {
         operationRecord
             .setOperateUserId(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
         operationRecord.setProcessResult(0);
+        operationRecordDao.insert(operationRecord);
         return ActionResponse.success(assetDao.updateStatus(asset));
     }
 }
