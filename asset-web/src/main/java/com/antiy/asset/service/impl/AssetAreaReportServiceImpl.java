@@ -108,7 +108,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         // 如果为当前月，则显示为周
         Long mouth = ReportDateUtils.monthDiff(reportRequest.getStartTime(), reportRequest.getEndTime());
         if (mouth == 0 && !"1".equals(reportRequest.getTimeType())) {
-            timeType = "%U";
+            timeType = "%u";
         }
 
         List<Map<String, String>> addData = assetReportDao.queryAddAssetWithArea(reportRequest.getAssetAreaIds(),
