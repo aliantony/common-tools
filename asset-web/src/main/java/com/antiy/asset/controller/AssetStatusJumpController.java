@@ -126,7 +126,7 @@ public class AssetStatusJumpController {
             LogUtils.recordOperLog(
                 new BusinessData(AssetEventEnum.SOFT_NO_REGISTER.getName(), DataTypeUtils.stringToInteger(assetId),
                     softwareDao.getById(assetId).getName(), assetStatusChangeRequest, BusinessModuleEnum.SOFTWARE_ASSET,
-                    BusinessPhaseEnum.getByStatus(SoftwareStatusEnum.NOT_REGSIST.getCode())));
+                    BusinessPhaseEnum.NOT_REGISTER));
             LogUtils.info(logger, AssetEventEnum.SOFT_UPDATE.getName() + " {}", assetStatusChangeRequest);
 
             return ActionResponse.success(softwareDao.update(assetSoftware));
@@ -139,7 +139,7 @@ public class AssetStatusJumpController {
             // 记录日志
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
                 DataTypeUtils.stringToInteger(assetId), assetDao.getNumberById(assetId), assetStatusChangeRequest,
-                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.getByStatus(AssetStatusEnum.NOT_REGSIST.getCode())));
+                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
             LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
             return ActionResponse.success(assetService.update(asset));
         }

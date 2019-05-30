@@ -91,7 +91,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_RETIRE_START.getName(),
                 DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
                 assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
-                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.getByStatus(AssetStatusEnum.WAIT_RETIRE.getCode())));
+                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_RETIRE));
             // 启动流程
             assetStatusReqeust.getManualStartActivityRequest()
                 .setAssignee(LoginUserUtil.getLoginUser().getId().toString());
@@ -103,7 +103,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_RETIRE_IMPL.getName(),
                 DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
                 assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
-                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.getByStatus(AssetStatusEnum.RETIRE.getCode())));
+                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.RETIRE));
             // 硬件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         } else if (AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode()
