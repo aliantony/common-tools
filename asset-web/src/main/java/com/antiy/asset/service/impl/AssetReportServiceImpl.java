@@ -164,15 +164,15 @@ public class AssetReportServiceImpl implements IAssetReportService {
             assetCategoryModel.setName(assetCategoryEntity.getCategoryName());
             String secondCategoryName = this.getParentCategory(assetCategoryModel, categoryModels).getName();
             if (AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg().equals(secondCategoryName)) {
-                computerAmountSum = assetCategoryEntity.getCategoryCount();
+                computerAmountSum = computerAmountSum + assetCategoryEntity.getCategoryCount();
             } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)) {
-                otherAmountSum = assetCategoryEntity.getCategoryCount();
+                otherAmountSum = otherAmountSum + assetCategoryEntity.getCategoryCount();
             } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(secondCategoryName)) {
-                safetyAmountSum = assetCategoryEntity.getCategoryCount();
+                safetyAmountSum = safetyAmountSum + assetCategoryEntity.getCategoryCount();
             } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(secondCategoryName)) {
-                storageAmountSum = assetCategoryEntity.getCategoryCount();
+                storageAmountSum = storageAmountSum + assetCategoryEntity.getCategoryCount();
             } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryName)) {
-                networkAmountSum = assetCategoryEntity.getCategoryCount();
+                networkAmountSum = networkAmountSum + assetCategoryEntity.getCategoryCount();
             }
         }
         boolean first = true;

@@ -173,7 +173,7 @@
             </foreach>
         </if>
         <if test="assetStatusList!=null and assetStatusList.size()>0">
-            and asset.status in
+            and asset.asset_status in
             <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
                 #{assetStatus}
             </foreach>
@@ -207,7 +207,7 @@
         AND asset.status =1
         AND asset.category_model IS NOT NULL
         <if test="assetStatusList!=null and assetStatusList.size()>0">
-            and asset.status in
+            and asset.asset_status in
             <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
                 #{assetStatus}
             </foreach>
@@ -234,7 +234,7 @@
             </foreach>
         </if>
         <if test="assetStatusList!=null and assetStatusList.size()>0">
-            and asset.status in
+            and asset.asset_status in
             <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
                 #{assetStatus}
             </foreach>
