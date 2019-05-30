@@ -3226,6 +3226,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetSafetyEquipment.setIp(entity.getIp());
                 assetSafetyEquipment.setMemo(entity.getMemo());
+                assetSafetyEquipment.setMac(entity.getMac());
                 assetSafetyEquipments.add(assetSafetyEquipment);
             }
             a++;
@@ -3406,7 +3407,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // } else {
                 //
                 // }
-                assetStorageMedium.setRaidSupport(entity.getRaidSupport().equals("0") ? "否" : "是");
+                if (entity.getRaidSupport() != null) {
+
+                    assetStorageMedium.setRaidSupport(entity.getRaidSupport().equals("0") ? "否" : "是");
+                }
                 assetStorageMedium.setInnerInterface(entity.getInnerInterface());
                 assetStorageMedium.setOsVersion(entity.getSlotType());
                 assetStorageMedium.setAverageTransferRate(entity.getAverageTransmissionRate());

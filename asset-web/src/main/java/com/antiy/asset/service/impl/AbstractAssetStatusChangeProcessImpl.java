@@ -86,6 +86,12 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         ActionResponse actionResponse = null;
         if (assetStatusReqeust.getAssetFlowCategoryEnum().getCode()
             .equals(AssetFlowCategoryEnum.HARDWARE_RETIRE.getCode())) {
+
+            // 记录操作日志
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_RETIRE_START.getName(),
+                DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
+                assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
+                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.getByStatus(AssetStatusEnum.WAIT_RETIRE.getCode())));
             // 启动流程
             assetStatusReqeust.getManualStartActivityRequest()
                 .setAssignee(LoginUserUtil.getLoginUser().getId().toString());
@@ -94,6 +100,10 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
                    || AssetFlowCategoryEnum.HARDWARE_IMPL_RETIRE.getCode()
                        .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_RETIRE_IMPL.getName(),
+                DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
+                assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
+                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.getByStatus(AssetStatusEnum.RETIRE.getCode())));
             // 硬件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         } else if (AssetFlowCategoryEnum.SOFTWARE_REGISTER.getCode()
