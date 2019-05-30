@@ -409,6 +409,8 @@
             asset_id = #{assetid}
             and asoft.id is not null
             and asoftrel.status = 1
+            and asoftrel.install_status = 5
+            order by order by install_time desc
     </select>
 
     <select id="getSimpleSoftwareByAssetId" resultMap="BaseResultMap"
@@ -597,6 +599,7 @@
         where
 	        a.asset_id = #{id}
 	        and a.status = 1
+	        order by id desc
     </select>
 
     <select id="queryInstallList" resultMap="InstallResultMap" parameterType="com.antiy.asset.vo.query.InstallQuery">
