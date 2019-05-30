@@ -236,7 +236,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // 记录操作日志和运行日志
                         LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(),
                             asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                            BusinessPhaseEnum.WAIT_REGISTER));
+                            BusinessPhaseEnum.WAIT_SETTING));
                         LogUtils.info(logger, AssetOperateLogEnum.REGISTER_ASSET.getName() + " {}",
                             requestAsset.toString());
 
@@ -409,11 +409,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetRequest.setId(asset1.getStringId());
                         assetOuterRequestToChangeRecord.setAsset(assetRequest);
 
-                        LogHandle.log(assetOthersRequest, AssetEventEnum.ASSET_INSERT.getName(),
-                            AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+
                         LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(),
                             asset1.getId(), asset1.getNumber(), asset1, BusinessModuleEnum.HARD_ASSET,
-                            BusinessPhaseEnum.WAIT_REGISTER));
+                            BusinessPhaseEnum.WAIT_SETTING));
                         LogUtils.info(logger, AssetOperateLogEnum.REGISTER_ASSET.getName() + " {}",
                             assetOthersRequest.toString());
                     }
