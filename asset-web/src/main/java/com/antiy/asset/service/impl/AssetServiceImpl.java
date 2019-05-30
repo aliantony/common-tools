@@ -173,7 +173,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetRequest requestAsset = request.getAsset();
 
         // 判断物理位置是否为空，因为其它设备没有物理位置所以需要单独校验
-        checkLocationNotBlank(requestAsset);
+        //        checkLocationNotBlank(requestAsset);
 
         AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
