@@ -169,7 +169,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
-
+        if (request.getAsset() != null) {
+            ParamterExceptionUtils.isBlank(request.getAsset().getLocation().trim(), "物理位置不能为空");
+        }
         AssetRequest requestAsset = request.getAsset();
         AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
@@ -527,7 +529,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetCategoryModel assetCategoryModel = assetCategoryModelDao
             .getByName(AssetSecondCategoryEnum.OTHER_DEVICE.getMsg());
         if (!Objects.equals(assetCategoryModel.getStringId(), secondCategory)) {
-            ParamterExceptionUtils.isBlank(request.getLocation(), "物理位置不能为空");
+            ParamterExceptionUtils.isBlank(request.getLocation().trim(), "物理位置不能为空");
         }
     }
 
