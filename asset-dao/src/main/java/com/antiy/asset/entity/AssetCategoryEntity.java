@@ -1,6 +1,5 @@
 package com.antiy.asset.entity;
 
-import java.util.Objects;
 
 /**
  * 报表统计结果
