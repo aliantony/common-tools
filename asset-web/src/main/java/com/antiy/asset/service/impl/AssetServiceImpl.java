@@ -171,10 +171,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
 
         AssetRequest requestAsset = request.getAsset();
-
-        // 判断物理位置是否为空，因为其它设备没有物理位置所以需要单独校验
-        checkLocationNotBlank(requestAsset);
-
         AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
         AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
@@ -237,8 +233,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         // 记录操作日志和运行日志
                         LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(),
-                            asset.getId(),
-                            asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
+                            asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
+                            BusinessPhaseEnum.WAIT_REGISTER));
                         LogUtils.info(logger, AssetOperateLogEnum.REGISTER_ASSET.getName() + " {}",
                             requestAsset.toString());
 
@@ -413,10 +409,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         LogHandle.log(assetOthersRequest, AssetEventEnum.ASSET_INSERT.getName(),
                             AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                        LogUtils.recordOperLog(
-                            new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(), asset1.getId(),
-                                asset1.getNumber(),
-                                asset1, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
+                        LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(),
+                            asset1.getId(), asset1.getNumber(), asset1, BusinessModuleEnum.HARD_ASSET,
+                            BusinessPhaseEnum.WAIT_REGISTER));
                         LogUtils.info(logger, AssetOperateLogEnum.REGISTER_ASSET.getName() + " {}",
                             assetOthersRequest.toString());
                     }
@@ -1414,6 +1409,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
+        // 判断物理位置是否为空，因为其它设备没有物理位置所以需要单独校验
+        checkLocationNotBlank(assetOuterRequest.getAsset());
+
         if (LoginUserUtil.getLoginUser() == null) {
             throw new BusinessException("获取用户失败");
         }
@@ -2339,7 +2337,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     continue;
                 }
             }
-
 
             if (isDataBig(entity.getDueTime())) {
                 error++;

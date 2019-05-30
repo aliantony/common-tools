@@ -37,7 +37,12 @@
         asset
         WHERE
         gmt_create &lt;= #{endTime}
-        AND asset_status != '9'
+        <if test="assetStatusList!=null and assetStatusList.size()>0">
+            and asset.asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
         AND STATUS = 1
     </select>
     <!--统计初始数据-->
@@ -57,7 +62,12 @@
         asset
         WHERE
         gmt_create &lt; #{startTime}
-        AND asset_status != '9'
+        <if test="assetStatusList!=null and assetStatusList.size()>0">
+            and asset.asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
         AND STATUS = 1
         AND area_id in
         <foreach collection="list" item="item" open="(" close=")" separator=",">
@@ -95,7 +105,12 @@
         WHERE
         gmt_create &lt; #{endTime}
         and gmt_create > #{startTime}
-        AND asset_status != '9'
+        <if test="assetStatusList!=null and assetStatusList.size()>0">
+            and asset.asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
         AND STATUS = 1
         GROUP BY
         date

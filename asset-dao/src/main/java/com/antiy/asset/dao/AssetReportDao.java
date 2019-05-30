@@ -31,7 +31,8 @@ public interface AssetReportDao {
      * @return
      */
     List<Map<String, Integer>> queryAssetWithAreaByDate(@Param("list") List<AssetAreaReportRequest> list,
-                                                        @Param("startTime") Long startTime);
+                                                        @Param("startTime") Long startTime,
+                                                        @Param("assetStatusList") List<Integer> assetStatusList);
 
     /**
      * 统计时间区间内每个区域资产增量
@@ -42,7 +43,8 @@ public interface AssetReportDao {
      */
     List<Map<String, String>> queryAddAssetWithArea(@Param("list") List<AssetAreaReportRequest> list,
                                                     @Param("startTime") Long startTime, @Param("endTime") Long endTime,
-                                                    @Param("timeType") String timeType);
+                                                    @Param("timeType") String timeType,
+                                                    @Param("assetStatusList") List<Integer> assetStatusList);
 
     /**
      * 获取开始时间以前的数据
