@@ -111,8 +111,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
     private Map<String, Object> buildCategoryCountByTime(AssetReportCategoryCountQuery query,
                                                          Map<String, String> weekMap) throws Exception {
         Map<String, Object> map = new HashMap<>();
-        List<Integer> statusList = new ArrayList<>();
-        getStatusList(statusList);
+        List<Integer> statusList = getStatusList();
+
         query.setAssetStatusList(statusList);
         List<AssetCategoryModel> categoryModels = categoryModelDao.findAllCategory();
         // 构造柱状图所需的source
@@ -152,6 +152,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         Map<String, Object> filterMap = new HashMap<>();
         filterMap.put("beginTime", query.getBeginTime());
         filterMap.put("areaIds", query.getAreaIds());
+        filterMap.put("assetStatusList", statusList);
         List<AssetCategoryEntity> previousCategoryEntity = assetReportDao.findCategoryCountPrevious(query);
         int computerAmountSum = 0;
         int networkAmountSum = 0;
@@ -164,15 +165,15 @@ public class AssetReportServiceImpl implements IAssetReportService {
             assetCategoryModel.setName(assetCategoryEntity.getCategoryName());
             String secondCategoryName = this.getParentCategory(assetCategoryModel, categoryModels).getName();
             if (AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg().equals(secondCategoryName)) {
-                computerAmountSum = assetCategoryEntity.getCategoryCount();
+                computerAmountSum = computerAmountSum + assetCategoryEntity.getCategoryCount();
             } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)) {
-                otherAmountSum = assetCategoryEntity.getCategoryCount();
+                otherAmountSum = otherAmountSum + assetCategoryEntity.getCategoryCount();
             } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(secondCategoryName)) {
-                safetyAmountSum = assetCategoryEntity.getCategoryCount();
+                safetyAmountSum = safetyAmountSum + assetCategoryEntity.getCategoryCount();
             } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(secondCategoryName)) {
-                storageAmountSum = assetCategoryEntity.getCategoryCount();
+                storageAmountSum = storageAmountSum + assetCategoryEntity.getCategoryCount();
             } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryName)) {
-                networkAmountSum = assetCategoryEntity.getCategoryCount();
+                networkAmountSum = networkAmountSum + assetCategoryEntity.getCategoryCount();
             }
         }
         boolean first = true;
@@ -317,13 +318,15 @@ public class AssetReportServiceImpl implements IAssetReportService {
         return map;
     }
 
-    private void getStatusList(List<Integer> statusList) {
+    private List<Integer> getStatusList() {
+        List<Integer> statusList = new ArrayList<>();
         for (AssetStatusEnum assetStatusEnum : AssetStatusEnum.values()) {
             if (!assetStatusEnum.equals(AssetStatusEnum.RETIRE) && !assetStatusEnum.equals(AssetStatusEnum.NOT_REGSIST)
                 && !assetStatusEnum.equals(AssetStatusEnum.WATI_REGSIST)) {
                 statusList.add(assetStatusEnum.getCode());
             }
         }
+        return statusList;
     }
 
     private void addColumnarNewList(List<Integer> safetyDataList, List<ReportData> columnarList,
@@ -552,7 +555,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     private AssetReportResponse buildGroupCountByTime(ReportQueryRequest reportQueryRequest,
                                                       Map<String, String> timeMap) {
-
+        reportQueryRequest.setAssetStatusList(getStatusList());
         if (MapUtils.isEmpty(timeMap)) {
             // 如果没有时间参数，则返回即可。
             return null;
