@@ -2588,7 +2588,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("没有此使用者！");
+                builder.append("第").append(a).append("行").append("系统中没有此使用者，或已被注销！");
                 continue;
             }
 
@@ -2612,7 +2612,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("当前用户没有此所属区域！");
+                builder.append("第").append(a).append("行").append("当前用户没有此所属区域，或已被注销！");
                 continue;
             }
 
@@ -2945,7 +2945,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if ("".equals(checkUser(networkDeviceEntity.getUser()))) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("没有此使用者！");
+                builder.append("第").append(a).append("行").append("系统没有此使用者，或已被注销！");
                 continue;
             }
 
@@ -2962,7 +2962,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (!areasStrings.contains(networkDeviceEntity.getArea())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("当前用户没有此所属区域！");
+                builder.append("第").append(a).append("行").append("当前用户没有此所属区域，或已被注销！");
                 continue;
             }
 
@@ -3147,7 +3147,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("没有此使用者！");
+                builder.append("第").append(a).append("行").append("系统中没有此使用者，或已被注销！");
                 continue;
             }
             if (!checkOperatingSystem(entity.getOperationSystem())) {
@@ -3331,7 +3331,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("没有此使用者！");
+                builder.append("第").append(a).append("行").append("系统中没有此使用者，或已被注销！");
                 continue;
             }
 
@@ -3348,7 +3348,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("当前用户没有此所属区域！");
+                builder.append("第").append(a).append("行").append("当前用户没有此所属区域，或已被注销！");
                 continue;
             }
 
@@ -3513,7 +3513,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("没有此使用者！");
+                builder.append("第").append(a).append("行").append("系统中没有此使用者！，或已被注销");
                 continue;
             }
 
@@ -3529,7 +3529,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("当前用户没有此所属区域！");
+                builder.append("第").append(a).append("行").append("当前用户没有此所属区域，或已被注销！");
                 continue;
             }
 
