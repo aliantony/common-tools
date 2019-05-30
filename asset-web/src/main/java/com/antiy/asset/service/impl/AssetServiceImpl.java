@@ -3226,6 +3226,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetSafetyEquipment.setIp(entity.getIp());
                 assetSafetyEquipment.setMemo(entity.getMemo());
+                assetSafetyEquipment.setMac(entity.getMac());
                 assetSafetyEquipments.add(assetSafetyEquipment);
             }
             a++;
