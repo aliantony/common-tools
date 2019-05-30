@@ -187,6 +187,18 @@ public class AssetSoftwareResponse extends BaseResponse {
 
     @ApiModelProperty(value = "安装说明书名字")
     private String             manualDocName;
+    /**
+     * 操作系统(WINDOWS7-32-64,WINDOWS8-64)
+     */
+    private String             operationSystem;
+
+    public String getOperationSystem() {
+        return operationSystem;
+    }
+
+    public void setOperationSystem(String operationSystem) {
+        this.operationSystem = operationSystem;
+    }
 
     public String getManualDocUrl() {
         return manualDocUrl;
