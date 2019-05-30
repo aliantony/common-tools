@@ -1201,7 +1201,7 @@
             </otherwise>
         </choose>
         <if test=" ids != null and ids.length > 0">
-            ,FIELD(`asset.id`,
+            ,FIELD(asset.`id`,
             <foreach index="index" item="item" collection="ids" separator=",">
                 #{item}
             </foreach>
