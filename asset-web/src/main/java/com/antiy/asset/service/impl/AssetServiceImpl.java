@@ -2504,7 +2504,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ImportResult<ComputeDeviceEntity> result = ExcelUtils.importExcelFromClient(ComputeDeviceEntity.class, file, 5,
             0);
         if (Objects.isNull(result.getDataList())) {
-            return "导入失败，" + result.getMsg();
+            return result.getMsg();
         }
         List<ComputeDeviceEntity> dataList = result.getDataList();
         if (dataList.size() == 0 && StringUtils.isBlank(result.getMsg())) {
@@ -2857,7 +2857,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ImportResult<NetworkDeviceEntity> result = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class, file, 5,
             0);
         if (Objects.isNull(result.getDataList())) {
-            return "导入失败，" + result.getMsg();
+            return result.getMsg();
         }
         List<NetworkDeviceEntity> entities = result.getDataList();
         if (entities.size() == 0 && StringUtils.isBlank(result.getMsg())) {
@@ -3068,7 +3068,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         StringBuilder builder = new StringBuilder();
         if (Objects.isNull(result.getDataList())) {
-            return "导入失败，" + result.getMsg();
+            return result.getMsg();
         }
         List<SafetyEquipmentEntiy> resultDataList = result.getDataList();
         if (resultDataList.size() == 0 && StringUtils.isBlank(result.getMsg())) {
@@ -3263,7 +3263,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ImportResult<StorageDeviceEntity> result = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 5,
             0);
         if (Objects.isNull(result.getDataList())) {
-            return "导入失败，" + result.getMsg();
+            return result.getMsg();
         }
 
         List<StorageDeviceEntity> resultDataList = result.getDataList();
@@ -3448,7 +3448,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 5, 0);
         if (Objects.isNull(result.getDataList())) {
-            return "导入失败，" + result.getMsg();
+            return result.getMsg();
         }
         List<OtherDeviceEntity> resultDataList = result.getDataList();
         if (resultDataList.size() == 0 && StringUtils.isBlank(result.getMsg())) {
