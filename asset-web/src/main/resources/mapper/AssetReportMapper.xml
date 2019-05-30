@@ -224,6 +224,7 @@
         asset
         WHERE
         asset.gmt_create &lt;= #{beginTime}
+        and asset.gmt_create >= #{endTime}
         AND asset.status =1
         AND asset.category_model IS NOT NULL
         and asset.category_model = #{categoryModel}
@@ -246,11 +247,11 @@
             resultMap="AssetGroupResultMap">
         SELECT
         agr.asset_group_id,ag.`NAME` as assetGroupName,count(agr.asset_group_id) as countNum,
-	    case
-	    when length(replace(ltrim(replace(FROM_UNIXTIME(agr.gmt_create/1000,#{sqlTime}),'0',' ')),' ','0')) &lt; 1
-	    then 7
-	    else replace(ltrim(replace(FROM_UNIXTIME(agr.gmt_create/1000,#{sqlTime}),'0',' ')),' ','0')
-	    end AS date
+        case
+        when length(replace(ltrim(replace(FROM_UNIXTIME(agr.gmt_create/1000,#{sqlTime}),'0',' ')),' ','0')) &lt; 1
+        then 7
+        else replace(ltrim(replace(FROM_UNIXTIME(agr.gmt_create/1000,#{sqlTime}),'0',' ')),' ','0')
+        end AS date
         FROM
         asset_group_relation agr
         LEFT JOIN asset_group ag ON agr.asset_group_id = ag.id
