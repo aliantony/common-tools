@@ -70,11 +70,11 @@ public class SafetyEquipmentEntiy {
     private String houseLocation;
 
 
-    /**
-     * 固件版本
-     */
-    @ExcelField(value = "firmwareVersion", align = 1, title = "固件版本")
-    private String firmwareVersion;
+    // /**
+    // * 固件版本
+    // */
+    // @ExcelField(value = "firmwareVersion", align = 1, title = "固件版本")
+    // private String firmwareVersion;
 
     /**
      * ip地址
@@ -172,14 +172,6 @@ public class SafetyEquipmentEntiy {
 
     public void setHouseLocation(String houseLocation) {
         this.houseLocation = houseLocation;
-    }
-
-    public String getFirmwareVersion() {
-        return firmwareVersion;
-    }
-
-    public void setFirmwareVersion(String firmwareVersion) {
-        this.firmwareVersion = firmwareVersion;
     }
 
     public String getIp() {
