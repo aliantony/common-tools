@@ -1481,8 +1481,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
                 .getSoftByAssetId(DataTypeUtils.stringToInteger(condition.getPrimaryKey()));
             if (CollectionUtils.isNotEmpty(assetSoftwareList)) {
-                List<AssetSoftwareResponse> assetSoftware = BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class);
-                assetSoftware.stream().forEach(as->{
+                List<AssetSoftwareResponse> assetSoftware = BeanConvert.convert(assetSoftwareList,
+                    AssetSoftwareResponse.class);
+                assetSoftware.stream().forEach(as -> {
                     if (StringUtils.isNotBlank(as.getOperationSystem())) {
                         as.setOperationSystems(Arrays.asList(as.getOperationSystem().split(",")));
                     }
@@ -2616,35 +2617,31 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (Objects.isNull(entity.getMemoryNum()) || entity.getMemoryNum() < 1
-                || Objects.isNull(entity.getMemoryCapacity())) {
+            if (entity.getMemoryNum() < 1) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("内存数量默认1，内存容量不为空！");
+                builder.append("第").append(a).append("行").append("内存数量需大于等于1  ！");
                 continue;
             }
 
-            if (Objects.isNull(entity.getHardDisCapacityl()) || Objects.isNull(entity.getHardDiskType())
-                || Objects.isNull(entity.getHardDiskNum()) || entity.getHardDiskNum() < 1) {
+            if (entity.getHardDiskNum() < 1) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("硬盘数量默认1，硬盘容量不为空，硬盘磁盘类型不为空！");
+                builder.append("第").append(a).append("行").append("硬盘数量需大于等于1  ！");
                 continue;
             }
 
-            if (Objects.isNull(entity.getMainboradNum()) || entity.getMainboradNum() < 1
-                || StringUtils.isBlank(entity.getMainboradBrand())) {
+            if (entity.getMainboradNum() < 1) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("主板数量默认1，主板品牌不为空！");
+                builder.append("第").append(a).append("行").append("主板数量需大于等于1  ！");
                 continue;
             }
 
-            if (Objects.isNull(entity.getCpuNum()) || entity.getCpuNum() < 1
-                || Objects.isNull(entity.getCpuMainFrequency())) {
+            if (entity.getCpuNum() < 1) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("CPU数量默认1，CPU主频不为空！");
+                builder.append("第").append(a).append("行").append("CPU数量需大于等于1  ！");
                 continue;
             }
 
