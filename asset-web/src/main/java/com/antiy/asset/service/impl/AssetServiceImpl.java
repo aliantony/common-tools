@@ -901,7 +901,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 待办资产id
             Set<String> activitiIds = processMap.keySet();
             if (CollectionUtils.isNotEmpty(query.getAssetStatusList()) && query.getEnterControl()) {
-                query.setAssetStatus(query.getAssetStatusList().get(0));
                 List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getAssetStatus());
                 if (CollectionUtils.isNotEmpty(sortedIds)) {
                     query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
