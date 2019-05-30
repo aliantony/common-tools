@@ -208,10 +208,11 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         List<AssetUser> resultUser = assetUserDao.findListAssetUser(assetUserQuery);
         BusinessExceptionUtils.isTrue(resultUser.size() <= 0, "部门下存在关联用户，不能删除");
         int result = assetDepartmentDao.delete(list);
+        AssetDepartment assetDepartmentLog = assetDepartmentDao.getById(id);
         // 写入业务日志
         LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
             AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), 0, "删除部门", null,
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), assetDepartmentLog.getId(), assetDepartmentLog.getName(), assetDepartmentLog,
             BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
         return ActionResponse.success(result >= 1 ? 1 : 0);
@@ -244,11 +245,12 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         list.add(assetDepartment);
         BusinessExceptionUtils.isEmpty(list, "该部门不存在");
         Integer result = assetDepartmentDao.delete(list);
+        AssetDepartment assetDepartmentLog = assetDepartmentDao.getById(id);
         if (!Objects.equals(result, 0)) {
             // 写入业务日志
             LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
                 AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), 0, "删除部门", null,
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), (Integer)id, assetDepartmentLog.getName(), assetDepartmentLog,
                 BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
         }

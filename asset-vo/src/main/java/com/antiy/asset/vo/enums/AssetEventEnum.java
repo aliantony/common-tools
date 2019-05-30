@@ -22,9 +22,9 @@ public enum AssetEventEnum {
     ASSET_CPU_INSERT(14,"硬件资产CPU新增"),
     ASSET_CPU_UPDATE(15,"硬件资产CPU修改"),
     ASSET_CPU_DELETE(16,"硬件资产CPU删除"),
-    ASSET_DEPARTMENT_INSERT(17,"资产部门新增"),
-    ASSET_DEPAETMENT_UPDATE(18,"资产部门修改"),
-    ASSET_DEPAETMENT_DELETE(19,"资产部门删除"),
+    ASSET_DEPARTMENT_INSERT(17,"登记组织结构"),
+    ASSET_DEPAETMENT_UPDATE(18,"编辑组织结构"),
+    ASSET_DEPAETMENT_DELETE(19,"删除组织结构"),
                             ASSET_GROUP_DELETE(20,
                                                "注销资产组信息"), ASSET_GROUP_INSERT(21,
                                                                               "登记资产组信息"), ASSET_GROUP_UPDATE(22,
@@ -113,7 +113,8 @@ public enum AssetEventEnum {
     SETTING_REGISTER(105,
             "硬件配置待再登记"), SOFT_NO_REGISTER(106,
             "软件不予登记"),
-    HARD_EXPORT(109,"硬件资产导出");
+    HARD_EXPORT(109,"硬件资产导出"),
+    HARD_WAITTING_REGISTER(110,"硬件待登记再登记");
 
 
     private Integer status;
