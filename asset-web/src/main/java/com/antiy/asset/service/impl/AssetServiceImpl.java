@@ -171,6 +171,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
 
         AssetRequest requestAsset = request.getAsset();
+
+        // 判断物理位置是否为空，因为其它设备没有物理位置所以需要单独校验
+        checkLocationNotBlank(requestAsset);
+
         AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
         AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
@@ -616,6 +620,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
         }
 
+    }
+
+    private void checkLocationNotBlank(AssetRequest request) throws Exception {
+        Map<String, String> map = iAssetCategoryModelService.getSecondCategoryMap();
+        String secondCategory = iAssetCategoryModelService.recursionSearchParentCategory(request.getCategoryModel(),
+            assetCategoryModelDao.getAll(), map.keySet());
+        AssetCategoryModel assetCategoryModel = assetCategoryModelDao
+            .getByName(AssetSecondCategoryEnum.OTHER_DEVICE.getMsg());
+        if (!Objects.equals(assetCategoryModel.getStringId(), secondCategory)) {
+            ParamterExceptionUtils.isBlank(request.getLocation(), "物理位置不能为空");
+        }
     }
 
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
