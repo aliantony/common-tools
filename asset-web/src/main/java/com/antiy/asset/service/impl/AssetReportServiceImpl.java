@@ -6,6 +6,7 @@ import java.util.*;
 import javax.annotation.Resource;
 
 import com.antiy.asset.controller.AssetAdmittanceController;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.common.utils.DateUtils;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
@@ -52,8 +53,6 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 @Service
 public class AssetReportServiceImpl implements IAssetReportService {
     private Logger              logger = LogUtils.get(this.getClass());
-    @Resource
-    IAssetCategoryModelService  iAssetCategoryModelService;
 
     private final static String DAY    = "%w";
     private final static String WEEK   = "%U";
@@ -112,6 +111,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
     private Map<String, Object> buildCategoryCountByTime(AssetReportCategoryCountQuery query,
                                                          Map<String, String> weekMap) throws Exception {
         Map<String, Object> map = new HashMap<>();
+        List<Integer> statusList = new ArrayList<>();
+        getStatusList(statusList);
+        query.setAssetStatusList(statusList);
         List<AssetCategoryModel> categoryModels = categoryModelDao.findAllCategory();
         // 构造柱状图所需的source
         Iterator<Map.Entry<String, String>> iterator = weekMap.entrySet().iterator();
@@ -150,11 +152,29 @@ public class AssetReportServiceImpl implements IAssetReportService {
         Map<String, Object> filterMap = new HashMap<>();
         filterMap.put("beginTime", query.getBeginTime());
         filterMap.put("areaIds", query.getAreaIds());
+        List<AssetCategoryEntity> previousCategoryEntity = assetReportDao.findCategoryCountPrevious(query);
         int computerAmountSum = 0;
         int networkAmountSum = 0;
         int storageAmountSum = 0;
         int safetyAmountSum = 0;
         int otherAmountSum = 0;
+        for (AssetCategoryEntity assetCategoryEntity : previousCategoryEntity) {
+            assetCategoryModel.setId(assetCategoryEntity.getCategoryModel());
+            assetCategoryModel.setParentId(assetCategoryEntity.getParentId());
+            assetCategoryModel.setName(assetCategoryEntity.getCategoryName());
+            String secondCategoryName = this.getParentCategory(assetCategoryModel, categoryModels).getName();
+            if (AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg().equals(secondCategoryName)) {
+                computerAmountSum = assetCategoryEntity.getCategoryCount();
+            } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)) {
+                otherAmountSum = assetCategoryEntity.getCategoryCount();
+            } else if (AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg().equals(secondCategoryName)) {
+                safetyAmountSum = assetCategoryEntity.getCategoryCount();
+            } else if (AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg().equals(secondCategoryName)) {
+                storageAmountSum = assetCategoryEntity.getCategoryCount();
+            } else if (AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg().equals(secondCategoryName)) {
+                networkAmountSum = assetCategoryEntity.getCategoryCount();
+            }
+        }
         boolean first = true;
         // 表格数据
         while (iterator.hasNext()) {
@@ -295,6 +315,15 @@ public class AssetReportServiceImpl implements IAssetReportService {
             map.put("columnarList", columnarList);
         }
         return map;
+    }
+
+    private void getStatusList(List<Integer> statusList) {
+        for (AssetStatusEnum assetStatusEnum : AssetStatusEnum.values()) {
+            if (!assetStatusEnum.equals(AssetStatusEnum.RETIRE) && !assetStatusEnum.equals(AssetStatusEnum.NOT_REGSIST)
+                && !assetStatusEnum.equals(AssetStatusEnum.WATI_REGSIST)) {
+                statusList.add(assetStatusEnum.getCode());
+            }
+        }
     }
 
     private void addColumnarNewList(List<Integer> safetyDataList, List<ReportData> columnarList,

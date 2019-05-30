@@ -378,12 +378,11 @@
         select
             asoft.id,
             asoft.size,
-            asoft.operation_system as operationsystem,
-            asoft.category_model as categorymodel,
-            a.name as categorymodelname,
-            asoft.category_model as categorymodel,
+            asoft.operation_system as operationSystem,
+            asoft.category_model as categoryModel,
+            a.name as categoryModelName,
             asoft.name,
-            asoft.upload_software_name as uploadsoftwarename,
+            asoft.upload_software_name as uploadSoftwareName,
             asoft.path,
             asoft.version,
             asoft.manufacturer,
@@ -391,24 +390,26 @@
             asoft.software_label as softwarelabel,
             asoft.software_status as softwarestatus,
             asoft.authorization,
-            asoft.report_source as reportsource,
+            asoft.report_source as reportSource,
             asoft.language,
-            asoft.release_time as releasetime,
+            asoft.release_time as releaseTime,
             asoft.publisher,
-            asoft.gmt_create as gmtcreate,
+            asoft.gmt_create as gmtCreate,
             asoft.memo,
-            asoft.gmt_modified as gmtmodified,
+            asoft.gmt_modified as gmtModified,
             asl.license_secret_key as licenseSecretKey,
             asoft.status
         from
-            asset_software_relation asoftrel
-            left join asset_software_license asl on asoftrel.id = asl.software_id
-            left join asset_software asoft on asoftrel.software_id = asoft.id
-            left join asset_category_model a on asoft.category_model = a.id
+        asset_software_relation asoftrel
+        left join asset_software_license asl on asoftrel.id = asl.software_id
+        left join asset_software asoft on asoftrel.software_id = asoft.id
+        left join asset_category_model a on asoft.category_model = a.id
         where
-            asset_id = #{assetid}
-            and asoft.id is not null
-            and asoftrel.status = 1
+        asset_id = #{assetid}
+        and asoft.id is not null
+        and asoftrel.status = 1
+        and asoftrel.install_status = 5
+        order by install_time desc
     </select>
 
     <select id="getSimpleSoftwareByAssetId" resultMap="BaseResultMap"
@@ -429,6 +430,7 @@
         and asoftrel.status = 1
         and asoft.status = 1
         and asoftrel.install_status = 5
+        order by asoftrel.install_time desc
         <if test="pageSize != -1">
             limit #{pageSize} offset #{pageOffset}
         </if>
@@ -436,7 +438,7 @@
 
     <select id="countSoftwareByAssetId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
         select
-          count(1) count
+        count(1) count
         from
         asset_software_relation asoftrel
         left join asset_software asoft on asoftrel.software_id = asoft.id
@@ -582,21 +584,22 @@
     <select id="getReleationByAssetId" resultType="com.antiy.asset.entity.AssetSoftwareRelation"
             parameterType="java.lang.Integer">
         select
-            a.id,
-            a.asset_id as assetId,
-            a.software_id as softwareId,
-            a.port,
-            a.protocol,
-            a.software_status as softwarestatus,
-            b.license_secret_key as licenseSecretKey,
-            a.install_type as installType,
-            a.install_status as installStatus,
-            a.memo
+        a.id,
+        a.asset_id as assetId,
+        a.software_id as softwareId,
+        a.port,
+        a.protocol,
+        a.software_status as softwarestatus,
+        b.license_secret_key as licenseSecretKey,
+        a.install_type as installType,
+        a.install_status as installStatus,
+        a.memo
         from
-            asset_software_relation a left join asset_software_license b on a.id = b.software_id and b.status = 1
+        asset_software_relation a left join asset_software_license b on a.id = b.software_id and b.status = 1
         where
-	        a.asset_id = #{id}
-	        and a.status = 1
+        a.asset_id = #{id}
+        and a.status = 1
+        order by id desc
     </select>
 
     <select id="queryInstallList" resultMap="InstallResultMap" parameterType="com.antiy.asset.vo.query.InstallQuery">

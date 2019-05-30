@@ -58,6 +58,8 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
     private List<Integer>                areaIds;
     @ApiModelProperty(value = "资产组ids 不用传")
     private List<Integer>                groupIds;
+    @ApiModelProperty(value = "状态列表 不用传")
+    private List<String>                 statusList;
     /**
      * 导出报表文件名
      */
@@ -134,6 +136,14 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
 
     public void setAreaIds(List<Integer> areaIds) {
         this.areaIds = areaIds;
+    }
+
+    public List<String> getStatusList() {
+        return statusList;
+    }
+
+    public void setStatusList(List<String> statusList) {
+        this.statusList = statusList;
     }
 
     @Override
