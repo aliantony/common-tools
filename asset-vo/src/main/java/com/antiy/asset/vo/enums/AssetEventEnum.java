@@ -7,7 +7,8 @@ package com.antiy.asset.vo.enums;
  */
 public enum AssetEventEnum {
     ASSET_INSERT(1,"硬件资产登记"),
-    ASSET_MODIFY(2,"硬件资产修改"),
+                            ASSET_MODIFY(2,
+                                         "资产变更"),
     ASSET_STATUS_CHANGE(3,"硬件资产状态修改"),
     ASSET_CATEGORY_DELETE(4,"删除品类型号"),
     ASSET_CATEGORY_INSERT(5,"登记品类型号"),
@@ -109,7 +110,7 @@ public enum AssetEventEnum {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            "登记资产"), GET_USER_INOF(102,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "获取登录用户"), ASSET_STATUS_SCHEDULE_TASK(103,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "执行资产状态定时任务"), NO_REGISTER(104,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "登记资产"),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "资产不予登记"),
     SETTING_REGISTER(105,
                                              "登记资产"), SOFT_NO_REGISTER(106,
             "软件不予登记"),
