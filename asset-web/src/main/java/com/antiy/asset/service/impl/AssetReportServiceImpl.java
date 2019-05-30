@@ -111,8 +111,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
     private Map<String, Object> buildCategoryCountByTime(AssetReportCategoryCountQuery query,
                                                          Map<String, String> weekMap) throws Exception {
         Map<String, Object> map = new HashMap<>();
-        List<Integer> statusList = new ArrayList<>();
-        getStatusList(statusList);
+        List<Integer> statusList = getStatusList();
+
         query.setAssetStatusList(statusList);
         List<AssetCategoryModel> categoryModels = categoryModelDao.findAllCategory();
         // 构造柱状图所需的source
@@ -318,13 +318,15 @@ public class AssetReportServiceImpl implements IAssetReportService {
         return map;
     }
 
-    private void getStatusList(List<Integer> statusList) {
+    private List<Integer> getStatusList() {
+        List<Integer> statusList = new ArrayList<>();
         for (AssetStatusEnum assetStatusEnum : AssetStatusEnum.values()) {
             if (!assetStatusEnum.equals(AssetStatusEnum.RETIRE) && !assetStatusEnum.equals(AssetStatusEnum.NOT_REGSIST)
                 && !assetStatusEnum.equals(AssetStatusEnum.WATI_REGSIST)) {
                 statusList.add(assetStatusEnum.getCode());
             }
         }
+        return statusList;
     }
 
     private void addColumnarNewList(List<Integer> safetyDataList, List<ReportData> columnarList,
@@ -553,7 +555,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     private AssetReportResponse buildGroupCountByTime(ReportQueryRequest reportQueryRequest,
                                                       Map<String, String> timeMap) {
-
+        reportQueryRequest.setAssetStatusList(getStatusList());
         if (MapUtils.isEmpty(timeMap)) {
             // 如果没有时间参数，则返回即可。
             return null;
