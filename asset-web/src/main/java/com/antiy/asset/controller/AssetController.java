@@ -302,7 +302,7 @@ public class AssetController {
                                    AssetImportRequest importRequest) throws Exception {
         if (file == null) {
 
-            throw new BusinessException("文件为空，没有选择文件！");
+            throw new BusinessException("导入失败，文件为空，没有选择文件！");
         }
 
         return ActionResponse.success(iAssetService.importPc(file, importRequest));
@@ -321,7 +321,7 @@ public class AssetController {
                                     AssetImportRequest importRequest) throws Exception {
         if (file == null) {
 
-            throw new BusinessException("文件为空，没有选择文件！");
+            throw new BusinessException("导入失败，文件为空，没有选择文件！");
         }
 
         return ActionResponse.success(iAssetService.importNet(file, importRequest));
@@ -340,7 +340,7 @@ public class AssetController {
                                        AssetImportRequest importRequest) throws Exception {
         if (file == null) {
 
-            throw new BusinessException("文件为空，没有选择文件！");
+            throw new BusinessException("导入失败，文件为空，没有选择文件！");
         }
 
         return ActionResponse.success(iAssetService.importSecurity(file, importRequest));
@@ -359,7 +359,7 @@ public class AssetController {
                                         AssetImportRequest importRequest) throws Exception {
         if (file == null) {
 
-            throw new BusinessException("文件为空，没有选择文件！");
+            throw new BusinessException("导入失败，文件为空，没有选择文件！");
         }
 
         return ActionResponse.success(iAssetService.importStory(file, importRequest));
@@ -378,7 +378,7 @@ public class AssetController {
                                        AssetImportRequest importRequest) throws Exception {
         if (file == null) {
 
-            throw new BusinessException("文件为空，没有选择文件！");
+            throw new BusinessException("导入失败，文件为空，没有选择文件！");
         }
 
         return ActionResponse.success(iAssetService.importOhters(file, importRequest));
