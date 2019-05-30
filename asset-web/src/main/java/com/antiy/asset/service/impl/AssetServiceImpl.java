@@ -1480,13 +1480,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (condition.getIsNeedSoftware()) {
             List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
                 .getSoftByAssetId(DataTypeUtils.stringToInteger(condition.getPrimaryKey()));
-            assetOuterResponse.setAssetSoftware(BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class));
-
-            // 资产软件关系列表
-            List<AssetSoftwareRelation> assetSoftwareRelationList = assetSoftwareRelationDao
-                .getReleationByAssetId(asset.getId());
-            assetOuterResponse.setAssetSoftwareRelationList(
-                BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class));
+            if (CollectionUtils.isNotEmpty(assetSoftwareList)) {
+                List<AssetSoftwareResponse> assetSoftware = BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class);
+                assetSoftware.stream().forEach(as->{
+                    if (StringUtils.isNotBlank(as.getOperationSystem())) {
+                        as.setOperationSystems(Arrays.asList(as.getOperationSystem().split(",")));
+                    }
+                });
+                assetOuterResponse.setAssetSoftware(assetSoftware);
+            }
         }
         return assetOuterResponse;
     }

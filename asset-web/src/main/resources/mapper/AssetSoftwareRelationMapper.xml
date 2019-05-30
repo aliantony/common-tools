@@ -38,8 +38,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, software_id, software_status, port, configure_status, install_type, install_status, install_time,
-        protocol, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_id, software_id, software_status, port, configure_status, install_type, install_status, install_time, protocol, gmt_create, gmt_modified, memo, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -377,30 +376,29 @@
     <!-- 根据资产主键查询软件信息 -->
     <select id="getSoftByAssetId" resultType="com.antiy.asset.entity.AssetSoftware" parameterType="java.lang.Integer">
         select
-        asoft.id,
-        asoft.size,
-        asoft.operation_system as operationsystem,
-        asoft.category_model as categorymodel,
-        a.name as categorymodelname,
-        asoft.category_model as categorymodel,
-        asoft.name,
-        asoft.upload_software_name as uploadsoftwarename,
-        asoft.path,
-        asoft.version,
-        asoft.manufacturer,
-        asoft.description,
-        asoft.software_label as softwarelabel,
-        asoft.software_status as softwarestatus,
-        asoft.authorization,
-        asoft.report_source as reportsource,
-        asoft.language,
-        asoft.release_time as releasetime,
-        asoft.publisher,
-        asoft.gmt_create as gmtcreate,
-        asoft.memo,
-        asoft.gmt_modified as gmtmodified,
-        asl.license_secret_key as licenseSecretKey,
-        asoft.status
+            asoft.id,
+            asoft.size,
+            asoft.operation_system as operationSystem,
+            asoft.category_model as categoryModel,
+            a.name as categoryModelName,
+            asoft.name,
+            asoft.upload_software_name as uploadSoftwareName,
+            asoft.path,
+            asoft.version,
+            asoft.manufacturer,
+            asoft.description,
+            asoft.software_label as softwarelabel,
+            asoft.software_status as softwarestatus,
+            asoft.authorization,
+            asoft.report_source as reportSource,
+            asoft.language,
+            asoft.release_time as releaseTime,
+            asoft.publisher,
+            asoft.gmt_create as gmtCreate,
+            asoft.memo,
+            asoft.gmt_modified as gmtModified,
+            asl.license_secret_key as licenseSecretKey,
+            asoft.status
         from
         asset_software_relation asoftrel
         left join asset_software_license asl on asoftrel.id = asl.software_id
