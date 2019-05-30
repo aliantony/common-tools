@@ -35,6 +35,17 @@ public class AssetReportCategoryCountQuery extends ObjectQuery implements Object
     @ApiModelProperty(value = "报表类型 分别为总数统计/新增趋势统计", example = "ALL,NEW,TABLE")
     private ReportFormType reportFormType;
 
+    @ApiModelProperty(value = "查询状态 不用传")
+    private List<Integer>   statusList;
+
+    public List<Integer> getStatusList() {
+        return statusList;
+    }
+
+    public void setStatusList(List<Integer> statusList) {
+        this.statusList = statusList;
+    }
+
     @Override
     public void validate() throws RequestParamValidateException {
 

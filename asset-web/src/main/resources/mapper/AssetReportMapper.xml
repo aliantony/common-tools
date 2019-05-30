@@ -224,6 +224,13 @@
                 #{areaId}
             </foreach>
         </if>
+        <if test="assetStatusList!=null and assetStatusList.size()>0">
+            and asset.status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+
     </select>
 
     <select id="getNewAssetWithGroup" parameterType="com.antiy.asset.vo.request.ReportQueryRequest"
