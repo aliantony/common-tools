@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -299,14 +298,13 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/computer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importPc')")
-    public ActionResponse importPc(@NotNull @ApiParam(value = "file") MultipartFile file,
+    public ActionResponse importPc(@ApiParam(value = "file") MultipartFile file,
                                    AssetImportRequest importRequest) throws Exception {
         if (file == null) {
 
-            throw new BusinessException ("文件为空");
-        } else {
-            System.out.println ("-----------why--------值=" + file + "," + "当前类=.()");
+            throw new BusinessException("导入失败，文件为空，没有选择文件！");
         }
+
         return ActionResponse.success(iAssetService.importPc(file, importRequest));
     }
 
@@ -321,6 +319,10 @@ public class AssetController {
     @PreAuthorize(value = "hasAuthority('asset:asset:importNet')")
     public ActionResponse importNet(@ApiParam(value = "file") MultipartFile file,
                                     AssetImportRequest importRequest) throws Exception {
+        if (file == null) {
+
+            throw new BusinessException("导入失败，文件为空，没有选择文件！");
+        }
 
         return ActionResponse.success(iAssetService.importNet(file, importRequest));
     }
@@ -336,6 +338,11 @@ public class AssetController {
     @PreAuthorize(value = "hasAuthority('asset:asset:importSafety')")
     public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file,
                                        AssetImportRequest importRequest) throws Exception {
+        if (file == null) {
+
+            throw new BusinessException("导入失败，文件为空，没有选择文件！");
+        }
+
         return ActionResponse.success(iAssetService.importSecurity(file, importRequest));
     }
 
@@ -350,6 +357,10 @@ public class AssetController {
     @PreAuthorize(value = "hasAuthority('asset:asset:importStorage')")
     public ActionResponse importStorage(@ApiParam(value = "file") MultipartFile file,
                                         AssetImportRequest importRequest) throws Exception {
+        if (file == null) {
+
+            throw new BusinessException("导入失败，文件为空，没有选择文件！");
+        }
 
         return ActionResponse.success(iAssetService.importStory(file, importRequest));
     }
@@ -365,6 +376,10 @@ public class AssetController {
     @PreAuthorize(value = "hasAuthority('asset:asset:importOhters')")
     public ActionResponse importOhters(@ApiParam(value = "file") MultipartFile file,
                                        AssetImportRequest importRequest) throws Exception {
+        if (file == null) {
+
+            throw new BusinessException("导入失败，文件为空，没有选择文件！");
+        }
 
         return ActionResponse.success(iAssetService.importOhters(file, importRequest));
     }

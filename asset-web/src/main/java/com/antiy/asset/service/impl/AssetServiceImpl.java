@@ -171,6 +171,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
 
         AssetRequest requestAsset = request.getAsset();
+
+        // 判断物理位置是否为空，因为其它设备没有物理位置所以需要单独校验
+        checkLocationNotBlank(requestAsset);
+
         AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
         AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
@@ -231,12 +235,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetRequest.setId(DataTypeUtils.integerToString(asset.getId()));
                         assetOuterRequestToChangeRecord.setAsset(assetRequest);
 
-                        // LogHandle.log(requestAsset, AssetEventEnum.ASSET_INSERT.getName(),
-                        // AssetEventEnum.ASSET_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                         // 记录操作日志和运行日志
-                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), asset.getId(),
+                        LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(),
+                            asset.getId(),
                             asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
-                        LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", requestAsset.toString());
+                        LogUtils.info(logger, AssetOperateLogEnum.REGISTER_ASSET.getName() + " {}",
+                            requestAsset.toString());
 
                         insertBatchAssetGroupRelation(asset, assetGroup);
 
@@ -265,48 +269,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetStorageMedium.setId(String.valueOf(id));
                             assetOuterRequestToChangeRecord.setAssetStorageMedium(assetStorageMedium);
                         }
-                        // 软件关联表
-                        // List<AssetSoftwareRelationRequest> computerReques = request.getAssetSoftwareRelationList();
-                        // List<AssetSoftwareRelationRequest> softwareRelationRequestListToChangeRecord = new
-                        // ArrayList<>();
-                        // assetOuterRequestToChangeRecord.setAssetSoftwareRelationList(computerReques);
-                        // if (CollectionUtils.isNotEmpty(computerReques)) {
-                        // for (AssetSoftwareRelationRequest computerReque : computerReques) {
-                        // AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-                        // assetSoftwareRelation.setAssetId(aid);
-                        // assetSoftwareRelation.setSoftwareId(computerReque.getSoftwareId());
-                        // assetSoftwareRelation.setPort(computerReque.getPort());
-                        // assetSoftwareRelation.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
-                        // assetSoftwareRelation.setLicenseSecretKey(computerReque.getLicenseSecretKey());
-                        // assetSoftwareRelation.setMemo(computerReque.getMemo());
-                        // assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
-                        // assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                        // // assetSoftwareRelation.setInstallType(computerReque.getInstallType());
-                        // // assetSoftwareRelation.setProtocol(computerReque.getProtocol());
-                        // assetSoftwareRelationDao.insert(assetSoftwareRelation);
-                        // AssetSoftwareRelationRequest assetSoftwareRelationRequest = softRelationToRequestConverter
-                        // .convert(assetSoftwareRelation, AssetSoftwareRelationRequest.class);
-                        // assetSoftwareRelationRequest
-                        // .setId(DataTypeUtils.integerToString(assetSoftwareRelation.getId()));
-                        //
-                        // softwareRelationRequestListToChangeRecord.add(assetSoftwareRelationRequest);
-                        // // if (StringUtils.isNotBlank(computerReque.getLicenseSecretKey())) {
-                        // // AssetSoftwareLicense license = new AssetSoftwareLicense();
-                        // // license.setSoftwareId(assetSoftwareRelation.getId());
-                        // // license.setLicenseSecretKey(computerReque.getLicenseSecretKey());
-                        // // license.setGmtCreate(System.currentTimeMillis());
-                        // // license.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                        // // }
-                        // }
-                        // assetOuterRequestToChangeRecord
-                        // .setAssetSoftwareRelationList(softwareRelationRequestListToChangeRecord);
-                        // }
 
                         List<AssetNetworkCardRequest> networkCardRequestList = request.getNetworkCard();
                         List<AssetNetworkCardRequest> networkRequestListToChangeRecord = new ArrayList<>();
                         // 网卡
                         if (CollectionUtils.isNotEmpty(networkCardRequestList)) {
-                            // List<AssetNetworkCard> network = new ArrayList<>();
                             List<AssetNetworkCard> networkCardList = BeanConvert.convert(networkCardRequestList,
                                 AssetNetworkCard.class);
                             for (AssetNetworkCard assetNetworkCard : networkCardList) {
@@ -317,28 +284,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
                                 assetNetworkCardDao.insert(assetNetworkCard);
-                                // LogHandle.log(assetNetworkCard, AssetEventEnum.ASSET_NETWORK_INSERT.getName(),
-                                // AssetEventEnum.ASSET_NETWORK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                                // LogUtils.recordOperLog(new
-                                // BusinessData(AssetEventEnum.ASSET_NETWORK_INSERT.getName(),
-                                // assetNetworkCard.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                                // BusinessPhaseEnum.WAIT_REGISTER));
-                                // LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_INSERT.getName() + " {}",
-                                // assetNetworkCard.toString());
-                                // network.add(assetNetworkCard);
                                 AssetNetworkCardRequest assetNetworkCardRequest = networkCardToRequestConverter
                                     .convert(assetNetworkCard, AssetNetworkCardRequest.class);
                                 assetNetworkCardRequest.setId(assetNetworkCard.getStringId());
                                 networkRequestListToChangeRecord.add(assetNetworkCardRequest);
                             }
-                            // assetNetworkCardDao.insertBatch(network);
                             assetOuterRequestToChangeRecord.setNetworkCard(networkRequestListToChangeRecord);
                         }
                         // 主板
                         List<AssetMainboradRequest> mainboradRequestList = request.getMainboard();
                         List<AssetMainboradRequest> mainboardRequestListToChangeRecord = new ArrayList<>();
                         if (CollectionUtils.isNotEmpty(mainboradRequestList)) {
-                            // List<AssetMainborad> mainboard = new ArrayList<>();
                             List<AssetMainborad> mainboradList = BeanConvert.convert(mainboradRequestList,
                                 AssetMainborad.class);
                             for (AssetMainborad assetMainborad : mainboradList) {
@@ -346,22 +302,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 assetMainborad.setAssetId(aid);
                                 assetMainborad.setGmtCreate(System.currentTimeMillis());
                                 assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                                // LogHandle.log(assetMainborad, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(),
-                                // AssetEventEnum.ASSET_MAINBORAD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                                // LogUtils.recordOperLog(new
-                                // BusinessData(AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(),
-                                // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                                // BusinessPhaseEnum.WAIT_REGISTER));
-                                // LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName() + " {}",
-                                // assetMainborad.toString());
-                                // mainboard.add(assetMainborad);
                                 assetMainboradDao.insert(assetMainborad);
                                 AssetMainboradRequest assetMainboradRequest = mainboradToRequestConverter
                                     .convert(assetMainborad, AssetMainboradRequest.class);
                                 assetMainboradRequest.setId(assetMainborad.getStringId());
                                 mainboardRequestListToChangeRecord.add(assetMainboradRequest);
                             }
-                            // assetMainboradDao.insertBatch(mainboard);
                             assetOuterRequestToChangeRecord.setMainboard(mainboardRequestListToChangeRecord);
                         }
                         // 内存
@@ -371,27 +317,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             List<AssetMemory> memoryList = BeanConvert.convert(memoryRequestList, AssetMemory.class);
                             // List<AssetMemory> memory = new ArrayList<>();
                             for (AssetMemory assetMemory : memoryList) {
-                                // ParamterExceptionUtils.isBlank(assetMemory.getBrand(), "内存品牌为空");
-                                // ParamterExceptionUtils.isNull(assetMemory.getFrequency(), "内存主频为空");
-                                // ParamterExceptionUtils.isNull(assetMemory.getCapacity(), "内存容量为空");
                                 assetMemory.setAssetId(aid);
                                 assetMemory.setGmtCreate(System.currentTimeMillis());
                                 assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                                // LogHandle.log(assetMemory, AssetEventEnum.ASSET_MEMORY_INSERT.getName(),
-                                // AssetEventEnum.ASSET_MEMORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                                // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MEMORY_INSERT.getName(),
-                                // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                                // BusinessPhaseEnum.WAIT_REGISTER));
-                                // LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_INSERT.getName() + " {}",
-                                // assetMemory.toString());
-                                // memory.add(assetMemory);
                                 assetMemoryDao.insert(assetMemory);
                                 AssetMemoryRequest assetMemoryRequest = memoryToRequestConverter.convert(assetMemory,
                                     AssetMemoryRequest.class);
                                 assetMemoryRequest.setId(assetMemory.getStringId());
                                 memoryRequestListToChangeRecord.add(assetMemoryRequest);
                             }
-                            // assetMemoryDao.insertBatch(memory);
                             assetOuterRequestToChangeRecord.setMemory(memoryRequestListToChangeRecord);
                         }
                         // CPU
@@ -401,60 +335,36 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             List<AssetCpu> assetCpuList = BeanConvert.convert(cpuRequestList, AssetCpu.class);
                             // List<AssetCpu> cpu = new ArrayList<>();
                             for (AssetCpu assetCpu : assetCpuList) {
-                                // ParamterExceptionUtils.isBlank(assetCpu.getBrand(), "CPU品牌为空");
-                                // ParamterExceptionUtils.isNull(assetCpu.getMainFrequency(), "CPU主频为空");
                                 assetCpu.setAssetId(aid);
                                 assetCpu.setGmtCreate(System.currentTimeMillis());
                                 assetCpu.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                                // LogHandle.log(assetCpu, AssetEventEnum.ASSET_CPU_INSERT.getName(),
-                                // AssetEventEnum.ASSET_CPU_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                                // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CPU_INSERT.getName(),
-                                // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                                // BusinessPhaseEnum.WAIT_REGISTER));
-                                // LogUtils.info(logger, AssetEventEnum.ASSET_CPU_INSERT.getName() + " {}",
-                                // assetCpu.toString());
                                 assetCpuDao.insert(assetCpu);
-                                // cpu.add(assetCpu);
                                 AssetCpuRequest assetCpuRequest = cpuToRequestConverter.convert(assetCpu,
                                     AssetCpuRequest.class);
                                 assetCpuRequest.setId(assetCpu.getStringId());
                                 cpuRequestListToChangeRecord.add(assetCpuRequest);
                             }
-                            // assetCpuDao.insertBatch(cpu);
                             assetOuterRequestToChangeRecord.setCpu(cpuRequestListToChangeRecord);
                         }
                         // 硬盘
                         List<AssetHardDiskRequest> hardDisk = request.getHardDisk();
                         List<AssetHardDiskRequest> hardDiskRequestListToChangeRecord = new ArrayList<>();
                         if (CollectionUtils.isNotEmpty(hardDisk)) {
-                            // List<AssetHardDisk> assetHardDisks = new ArrayList<>();
                             List<AssetHardDisk> hardDisks = BeanConvert.convert(hardDisk, AssetHardDisk.class);
                             for (AssetHardDisk assetHardDisk : hardDisks) {
-                                // ParamterExceptionUtils.isBlank(assetHardDisk.getBrand(), "硬盘品牌为空");
-                                // ParamterExceptionUtils.isNull(assetHardDisk.getCapacity(), "硬盘容量空");
                                 assetHardDisk.setAssetId(aid);
                                 assetHardDisk.setGmtCreate(System.currentTimeMillis());
                                 assetHardDisk.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                                // LogHandle.log(assetHardDisk, AssetEventEnum.ASSET_DISK_INSERT.getName(),
-                                // AssetEventEnum.ASSET_DISK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                                // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DISK_INSERT.getName(),
-                                // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                                // BusinessPhaseEnum.WAIT_REGISTER));
-                                // LogUtils.info(logger, AssetEventEnum.ASSET_DISK_INSERT.getName() + " {}",
-                                // assetHardDisk.toString());
-                                // assetHardDisks.add(assetHardDisk);
                                 assetHardDiskDao.insert(assetHardDisk);
                                 AssetHardDiskRequest assetHardDiskRequest = hardDiskToRequestConverter
                                     .convert(assetHardDisk, AssetHardDiskRequest.class);
                                 assetHardDiskRequest.setId(assetHardDisk.getStringId());
                                 hardDiskRequestListToChangeRecord.add(assetHardDiskRequest);
                             }
-                            // assetHardDiskDao.insertBatch(assetHardDisks);
                             assetOuterRequestToChangeRecord.setHardDisk(hardDiskRequestListToChangeRecord);
                         }
                     } else {
                         // 保存其他资产
-
                         if (StringUtils.isNotBlank(assetOthersRequest.getNumber())) {
 
                             ParamterExceptionUtils.isTrue(!CheckRepeat(assetOthersRequest.getNumber()), "编号重复");
@@ -504,9 +414,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         LogHandle.log(assetOthersRequest, AssetEventEnum.ASSET_INSERT.getName(),
                             AssetEventEnum.ASSET_OTHERS_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
                         LogUtils.recordOperLog(
-                            new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), asset1.getId(), asset1.getNumber(),
+                            new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(), asset1.getId(),
+                                asset1.getNumber(),
                                 asset1, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
-                        LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
+                        LogUtils.info(logger, AssetOperateLogEnum.REGISTER_ASSET.getName() + " {}",
                             assetOthersRequest.toString());
                     }
                     // 将资产副本存入变更记录表
@@ -602,10 +513,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 currentTimeMillis);
             if (null == actionResponseAsset
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), id, null,
-                    configRegisterRequest, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-                // 记录操作日志和运行日志
-                LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", configRegisterRequest);
                 // 调用失败，逻辑删登记的资产
                 assetDao.deleteById(id);
                 return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
@@ -616,6 +523,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
         }
 
+    }
+
+    private void checkLocationNotBlank(AssetRequest request) throws Exception {
+        Map<String, String> map = iAssetCategoryModelService.getSecondCategoryMap();
+        String secondCategory = iAssetCategoryModelService.recursionSearchParentCategory(request.getCategoryModel(),
+            assetCategoryModelDao.getAll(), map.keySet());
+        AssetCategoryModel assetCategoryModel = assetCategoryModelDao
+            .getByName(AssetSecondCategoryEnum.OTHER_DEVICE.getMsg());
+        if (!Objects.equals(assetCategoryModel.getStringId(), secondCategory)) {
+            ParamterExceptionUtils.isBlank(request.getLocation(), "物理位置不能为空");
+        }
     }
 
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
@@ -1481,8 +1399,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
                 .getSoftByAssetId(DataTypeUtils.stringToInteger(condition.getPrimaryKey()));
             if (CollectionUtils.isNotEmpty(assetSoftwareList)) {
-                List<AssetSoftwareResponse> assetSoftware = BeanConvert.convert(assetSoftwareList, AssetSoftwareResponse.class);
-                assetSoftware.stream().forEach(as->{
+                List<AssetSoftwareResponse> assetSoftware = BeanConvert.convert(assetSoftwareList,
+                    AssetSoftwareResponse.class);
+                assetSoftware.stream().forEach(as -> {
                     if (StringUtils.isNotBlank(as.getOperationSystem())) {
                         as.setOperationSystems(Arrays.asList(as.getOperationSystem().split(",")));
                     }
@@ -1546,8 +1465,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
                     // 1. 更新资产主表
-                    LogHandle.log(asset, AssetEventEnum.ASSET_MODIFY.getName(), AssetEventEnum.ASSET_MODIFY.getStatus(),
-                        ModuleEnum.ASSET.getCode());
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
                         asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
@@ -1555,11 +1472,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                     // 2. 更新cpu信息
                     // 先删除再新增
-                    // LogHandle.log(asset.getId(), AssetEventEnum.ASSET_CPU_DELETE.getName(),
-                    // AssetEventEnum.ASSET_CPU_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                    // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CPU_DELETE.getName(), asset.getId(),
-                    // asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
-                    // LogUtils.info(logger, AssetEventEnum.ASSET_CPU_DELETE.getName() + " {}", asset.getStringId());
                     assetCpuDao.deleteByAssetId(asset.getId());
                     List<AssetCpuRequest> assetCpuRequestList = assetOuterRequest.getCpu();
                     if (CollectionUtils.isNotEmpty(assetCpuRequestList)) {
@@ -1583,23 +1495,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             }
                         }
                         if (CollectionUtils.isNotEmpty(insertCpuList)) {
-                            // LogHandle.log(assetCpuList, AssetEventEnum.ASSET_CPU_INSERT.getName(),
-                            // AssetEventEnum.ASSET_CPU_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                            // LogUtils.info(logger, AssetEventEnum.ASSET_CPU_INSERT.getName() + " {}",
-                            // assetCpuList.toString());
-                            // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CPU_INSERT.getName(),
-                            // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                            // BusinessPhaseEnum.WAIT_SETTING));
                             assetCpuDao.insertBatch(insertCpuList);
                         }
                         if (CollectionUtils.isNotEmpty(updateCpuList)) {
-                            // LogHandle.log(assetCpuList, AssetEventEnum.ASSET_CPU_UPDATE.getName(),
-                            // AssetEventEnum.ASSET_CPU_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-                            // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CPU_UPDATE.getName(),
-                            // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                            // BusinessPhaseEnum.WAIT_SETTING));
-                            // LogUtils.info(logger, AssetEventEnum.ASSET_CPU_UPDATE.getName() + " {}",
-                            // assetCpuList.toString());
                             assetCpuDao.updateBatch(updateCpuList);
                         }
                         insertCpuList.addAll(updateCpuList);
@@ -1660,33 +1558,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             }
                         }
                         // 3. 更新网卡信息
-                        // 先删除再新增
-                        // LogHandle.log(asset.getId(), AssetEventEnum.ASSET_NETWORK_DELETE.getName(),
-                        // AssetEventEnum.ASSET_NETWORK_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                        // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_DELETE.getName(),
-                        // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                        // BusinessPhaseEnum.WAIT_SETTING));
-                        // LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DELETE.getName() + " {}",
-                        // asset.getStringId());
                         assetNetworkCardDao.deleteByAssetId(asset.getId());
                         if (CollectionUtils.isNotEmpty(insertNetworkList)) {
-                            // LogHandle.log(insertNetworkList, AssetEventEnum.ASSET_NETWORK_INSERT.getName(),
-                            // AssetEventEnum.ASSET_NETWORK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                            // LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_INSERT.getName() + " {}",
-                            // insertNetworkList.toString());
-                            // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_INSERT.getName(),
-                            // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                            // BusinessPhaseEnum.WAIT_SETTING));
                             assetNetworkCardDao.insertBatch(insertNetworkList);
                         }
                         if (CollectionUtils.isNotEmpty(updateNetworkList)) {
-                            // LogHandle.log(updateNetworkList, AssetEventEnum.ASSET_NETWORK_UPDATE.getName(),
-                            // AssetEventEnum.ASSET_NETWORK_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-                            // LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_UPDATE.getName() + " {}",
-                            // updateNetworkList.toString());
-                            // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_UPDATE.getName(),
-                            // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                            // BusinessPhaseEnum.WAIT_SETTING));
                             assetNetworkCardDao.updateBatch(updateNetworkList);
                         }
                         insertNetworkList.addAll(updateNetworkList);
@@ -1694,14 +1570,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             .setNetworkCard(BeanConvert.convert(insertNetworkList, AssetNetworkCardRequest.class));
                     }
                     // 4. 更新主板信息
-                    // 先删除再新增
-                    // LogHandle.log(asset.getId(), AssetEventEnum.ASSET_MAINBORAD_DELETE.getName(),
-                    // AssetEventEnum.ASSET_MAINBORAD_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                    // LogUtils
-                    // .recordOperLog(new BusinessData(AssetEventEnum.ASSET_MAINBORAD_DELETE.getName(), asset.getId(),
-                    // asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
-                    // LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_DELETE.getName() + " {}",
-                    // asset.getStringId());
                     assetMainboradDao.deleteByAssetId(asset.getId());
                     List<AssetMainboradRequest> assetMainboradRequest = assetOuterRequest.getMainboard();
                     if (CollectionUtils.isNotEmpty(assetMainboradRequest)) {
@@ -1726,23 +1594,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             }
                         }
                         if (CollectionUtils.isNotEmpty(insertMainboradList)) {
-                            // LogHandle.log(insertMainboradList, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(),
-                            // AssetEventEnum.ASSET_MAINBORAD_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                            // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MAINBORAD_INSERT.getName(),
-                            // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                            // BusinessPhaseEnum.WAIT_SETTING));
-                            // LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_INSERT.getName() + " {}",
-                            // insertMainboradList.toString());
                             assetMainboradDao.insertBatch(insertMainboradList);
                         }
                         if (CollectionUtils.isNotEmpty(updateMainboradList)) {
-                            // LogHandle.log(updateMainboradList, AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName(),
-                            // AssetEventEnum.ASSET_MAINBORAD_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-                            // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName(),
-                            // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                            // BusinessPhaseEnum.WAIT_SETTING));
-                            // LogUtils.info(logger, AssetEventEnum.ASSET_MAINBORAD_UPDATE.getName() + " {}",
-                            // updateMainboradList.toString());
                             assetMainboradDao.updateBatch(updateMainboradList);
                         }
                         insertMainboradList.addAll(updateMainboradList);
@@ -1752,12 +1606,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 5. 更新内存信息
                     List<AssetMemoryRequest> assetMemoryRequestList = assetOuterRequest.getMemory();
                     // 先删除再新增
-                    // LogHandle.log(asset.getId(), AssetEventEnum.ASSET_MEMORY_DELETE.getName(),
-                    // AssetEventEnum.ASSET_MEMORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                    // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MEMORY_DELETE.getName(),
-                    // asset.getId(),
-                    // asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
-                    // LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_DELETE.getName() + " {}", asset.getStringId());
                     assetMemoryDao.deleteByAssetId(asset.getId());
                     if (CollectionUtils.isNotEmpty(assetMemoryRequestList)) {
                         List<AssetMemory> assetMemoryList = BeanConvert.convert(assetMemoryRequestList,
@@ -1781,23 +1629,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             }
                         }
                         if (CollectionUtils.isNotEmpty(insertMemoryList)) {
-                            // LogHandle.log(insertMemoryList, AssetEventEnum.ASSET_MEMORY_INSERT.getName(),
-                            // AssetEventEnum.ASSET_MEMORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                            // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MEMORY_INSERT.getName(),
-                            // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                            // BusinessPhaseEnum.WAIT_SETTING));
-                            // LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_INSERT.getName() + " {}",
-                            // insertMemoryList.toString());
                             assetMemoryDao.insertBatch(insertMemoryList);
                         }
                         if (CollectionUtils.isNotEmpty(updateMemoryList)) {
-                            // LogHandle.log(updateMemoryList, AssetEventEnum.ASSET_MEMORY_UPDATE.getName(),
-                            // AssetEventEnum.ASSET_MEMORY_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-                            // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MEMORY_UPDATE.getName(),
-                            // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                            // BusinessPhaseEnum.WAIT_SETTING));
-                            // LogUtils.info(logger, AssetEventEnum.ASSET_MEMORY_UPDATE.getName() + " {}",
-                            // updateMemoryList.toString());
                             assetMemoryDao.updateBatch(updateMemoryList);
                         }
                         insertMemoryList.addAll(updateMemoryList);
@@ -1805,12 +1639,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     // 6. 更新硬盘信息
                     // 先删除再新增
-                    // LogHandle.log(asset.getId(), AssetEventEnum.ASSET_DISK_DELETE.getName(),
-                    // AssetEventEnum.ASSET_DISK_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                    // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DISK_DELETE.getName(),
-                    // asset.getId(),
-                    // asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
-                    // LogUtils.info(logger, AssetEventEnum.ASSET_DISK_DELETE.getName() + " {}", asset.getStringId());
                     assetHardDiskDao.deleteByAssetId(asset.getId());
                     List<AssetHardDiskRequest> assetHardDiskRequestList = assetOuterRequest.getHardDisk();
                     if (CollectionUtils.isNotEmpty(assetHardDiskRequestList)) {
@@ -1836,23 +1664,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         }
                         if (CollectionUtils.isNotEmpty(insertHardDiskList)) {
-                            // LogHandle.log(insertHardDiskList, AssetEventEnum.ASSET_DISK_INSERT.getName(),
-                            // AssetEventEnum.ASSET_DISK_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-                            // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DISK_INSERT.getName(),
-                            // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                            // BusinessPhaseEnum.WAIT_SETTING));
-                            // LogUtils.info(logger, AssetEventEnum.ASSET_DISK_INSERT.getName() + " {}",
-                            // insertHardDiskList.toString());
                             assetHardDiskDao.insertBatch(insertHardDiskList);
                         }
                         if (CollectionUtils.isNotEmpty(updateHardDiskList)) {
-                            // LogHandle.log(updateHardDiskList, AssetEventEnum.ASSET_DISK_UPDATE.getName(),
-                            // AssetEventEnum.ASSET_DISK_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-                            // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DISK_UPDATE.getName(),
-                            // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                            // BusinessPhaseEnum.WAIT_SETTING));
-                            // LogUtils.info(logger, AssetEventEnum.ASSET_DISK_UPDATE.getName() + " {}",
-                            // updateHardDiskList.toString());
                             assetHardDiskDao.updateBatch(updateHardDiskList);
                         }
                         insertHardDiskList.addAll(updateHardDiskList);
@@ -1860,13 +1674,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             .setHardDisk(BeanConvert.convert(insertHardDiskList, AssetHardDiskRequest.class));
                     }
                     // 7. 更新网络设备信息
-                    // LogHandle.log(asset.getId(), AssetEventEnum.ASSET_NETWORK_DETAIL_DELETE.getName(),
-                    // AssetEventEnum.ASSET_NETWORK_DETAIL_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-                    // LogUtils.recordOperLog(
-                    // new BusinessData(AssetEventEnum.ASSET_NETWORK_DETAIL_DELETE.getName(), asset.getId(),
-                    // asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
-                    // LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DETAIL_DELETE.getName() + " {}",
-                    // asset.getStringId());
                     AssetNetworkEquipmentRequest networkEquipment = assetOuterRequest.getNetworkEquipment();
                     if (networkEquipment != null && StringUtils.isNotBlank(networkEquipment.getId())) {
                         AssetNetworkEquipment assetNetworkEquipment = BeanConvert.convertBean(networkEquipment,
@@ -1890,13 +1697,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
                         assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
                         assetNetworkEquipment.setGmtModified(System.currentTimeMillis());
-                        // LogHandle.log(assetNetworkEquipment, AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getName(),
-                        // AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-                        // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getName(),
-                        // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                        // BusinessPhaseEnum.WAIT_SETTING));
-                        // LogUtils.info(logger, AssetEventEnum.ASSET_NETWORK_DETAIL_UPDATE.getName() + " {}",
-                        // assetNetworkEquipment.toString());
                         assetNetworkEquipmentDao.update(assetNetworkEquipment);
                     }
                     // 8. 更新安全设备信息
@@ -1916,13 +1716,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
                         assetSafetyEquipment.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         assetSafetyEquipment.setGmtModified(System.currentTimeMillis());
-                        // LogHandle.log(assetSafetyEquipment, AssetEventEnum.ASSET_SAFE_DETAIL_UPDATE.getName(),
-                        // AssetEventEnum.ASSET_SAFE_DETAIL_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-                        // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SAFE_DETAIL_UPDATE.getName(),
-                        // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                        // BusinessPhaseEnum.WAIT_SETTING));
-                        // LogUtils.info(logger, AssetEventEnum.ASSET_SAFE_DETAIL_UPDATE.getName() + " {}",
-                        // assetSafetyEquipment.toString());
                         assetSafetyEquipmentDao.update(assetSafetyEquipment);
                     }
                     // 9. 更新存储介质信息
@@ -1934,41 +1727,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetStorageMedium.setGmtCreate(System.currentTimeMillis());
                         assetStorageMedium.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         assetStorageMedium.setGmtModified(System.currentTimeMillis());
-                        // LogHandle.log(assetStorageMedium, AssetEventEnum.ASSET_STORAGE_UPDATE.getName(),
-                        // AssetEventEnum.ASSET_STORAGE_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-                        // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_STORAGE_UPDATE.getName(),
-                        // asset.getId(), asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET,
-                        // BusinessPhaseEnum.WAIT_SETTING));
-                        // LogUtils.info(logger, AssetEventEnum.ASSET_STORAGE_UPDATE.getName() + " {}",
-                        // assetStorageMedium.toString());
                         assetStorageMediumDao.update(assetStorageMedium);
                     }
                     // 10. 更新资产软件关系信息
-                    // 删除已有资产软件关系
-                    // assetSoftwareRelationDao.deleteByAssetId(asset.getId());
-                    // // 删除软件许可
-                    // assetSoftwareLicenseDao.deleteByAssetId(asset.getId());
-                    // if (CollectionUtils.isNotEmpty(assetOuterRequest.getAssetSoftwareRelationList())) {
-                    // List<AssetSoftwareRelation> assetSoftwareRelationList = BeanConvert
-                    // .convert(assetOuterRequest.getAssetSoftwareRelationList(), AssetSoftwareRelation.class);
-                    // assetSoftwareRelationList.stream().forEach(relation -> {
-                    // relation.setAssetId(asset.getStringId());
-                    // relation.setGmtCreate(System.currentTimeMillis());
-                    // // relation.setSoftwareStatus();
-                    // relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                    // try {
-                    // // 插入资产软件关系
-                    // assetSoftwareRelationDao.insert(relation);
-                    // AssetSoftwareLicense assetSoftwareLicense = new AssetSoftwareLicense();
-                    // assetSoftwareLicense.setLicenseSecretKey(relation.getLicenseSecretKey());
-                    // assetSoftwareLicense.setSoftwareId(relation.getStringId());
-                    // // 插入资产软件许可
-                    // assetSoftwareLicenseDao.insert(assetSoftwareLicense);
-                    // } catch (Exception e) {
-                    // logger.error(e.getMessage());
-                    // }
-                    // });
-                    // }
                     // 记录资产变更记录
                     AssetChangeRecord assetChangeRecord = new AssetChangeRecord();
                     assetChangeRecord.setType(1);
@@ -2034,10 +1795,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SETTING_REGISTER.getName(),
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.HARD_WAITTING_REGISTER.getName(),
                     Integer.valueOf(assetId), assetDao.getById(assetId).getNumber(), assetOuterRequest,
                     BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
-                LogUtils.info(logger, AssetEventEnum.SETTING_REGISTER.getName() + " {}",
+                LogUtils.info(logger, AssetEventEnum.HARD_WAITTING_REGISTER.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             }
 
@@ -2255,7 +2016,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         safetyEquipmentEntiy.setBuyDate(System.currentTimeMillis());
         safetyEquipmentEntiy.setDueDate(System.currentTimeMillis());
         safetyEquipmentEntiy.setEmail("32535694@163.com");
-        safetyEquipmentEntiy.setFirmwareVersion("2.0");
+        // safetyEquipmentEntiy.setFirmwareVersion("2.0");
         safetyEquipmentEntiy.setWarranty("2年");
         safetyEquipmentEntiy.setManufacturer("安天");
         safetyEquipmentEntiy.setName("安天镇关威胁阻断系统   ");
@@ -2492,6 +2253,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
+    @Transactional
     public String importPc(MultipartFile file, AssetImportRequest importRequest) throws Exception {
 
         AssetCategoryModel categoryModel = assetCategoryModelDao
@@ -2503,7 +2265,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ImportResult<ComputeDeviceEntity> result = ExcelUtils.importExcelFromClient(ComputeDeviceEntity.class, file, 5,
             0);
         if (Objects.isNull(result.getDataList())) {
-            return "导入失败，" + result.getMsg();
+            return result.getMsg();
         }
         List<ComputeDeviceEntity> dataList = result.getDataList();
         if (dataList.size() == 0 && StringUtils.isBlank(result.getMsg())) {
@@ -2578,6 +2340,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
 
+
             if (isDataBig(entity.getDueTime())) {
                 error++;
                 a++;
@@ -2588,7 +2351,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("没有此使用者！");
+                builder.append("第").append(a).append("行").append("系统中没有此使用者，或已被注销！");
                 continue;
             }
 
@@ -2612,39 +2375,45 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("当前用户没有此所属区域！");
+                builder.append("第").append(a).append("行").append("当前用户没有此所属区域，或已被注销！");
                 continue;
             }
 
-            if (Objects.isNull(entity.getMemoryNum()) || entity.getMemoryNum() < 1
-                || Objects.isNull(entity.getMemoryCapacity())) {
+            if (entity.getMemoryNum() < 1) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("内存数量默认1，内存容量不为空！");
+                builder.append("第").append(a).append("行").append("内存数量需大于等于1  ！");
                 continue;
             }
 
-            if (Objects.isNull(entity.getHardDisCapacityl()) || Objects.isNull(entity.getHardDiskType())
-                || Objects.isNull(entity.getHardDiskNum()) || entity.getHardDiskNum() < 1) {
+            if (entity.getHardDiskNum() < 1) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("硬盘数量默认1，硬盘容量不为空，硬盘磁盘类型不为空！");
+                builder.append("第").append(a).append("行").append("硬盘数量需大于等于1  ！");
                 continue;
             }
 
-            if (Objects.isNull(entity.getMainboradNum()) || entity.getMainboradNum() < 1
-                || StringUtils.isBlank(entity.getMainboradBrand())) {
+            if (entity.getHardDiskBuyDate() != null) {
+
+                if (isBuyDataBig(entity.getHardDiskBuyDate())) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("硬盘购买时间需小于等于今天！");
+                    continue;
+                }
+            }
+
+            if (entity.getMainboradNum() < 1) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("主板数量默认1，主板品牌不为空！");
+                builder.append("第").append(a).append("行").append("主板数量需大于等于1  ！");
                 continue;
             }
 
-            if (Objects.isNull(entity.getCpuNum()) || entity.getCpuNum() < 1
-                || Objects.isNull(entity.getCpuMainFrequency())) {
+            if (entity.getCpuNum() < 1) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("CPU数量默认1，CPU主频不为空！");
+                builder.append("第").append(a).append("行").append("CPU数量需大于等于1  ！");
                 continue;
             }
 
@@ -2851,6 +2620,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
+    @Transactional
     public String importNet(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         AssetCategoryModel categoryModel = assetCategoryModelDao
             .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
@@ -2860,7 +2630,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ImportResult<NetworkDeviceEntity> result = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class, file, 5,
             0);
         if (Objects.isNull(result.getDataList())) {
-            return "导入失败，" + result.getMsg();
+            return result.getMsg();
         }
         List<NetworkDeviceEntity> entities = result.getDataList();
         if (entities.size() == 0 && StringUtils.isBlank(result.getMsg())) {
@@ -2945,7 +2715,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if ("".equals(checkUser(networkDeviceEntity.getUser()))) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("没有此使用者！");
+                builder.append("第").append(a).append("行").append("系统没有此使用者，或已被注销！");
                 continue;
             }
 
@@ -2962,7 +2732,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (!areasStrings.contains(networkDeviceEntity.getArea())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("当前用户没有此所属区域！");
+                builder.append("第").append(a).append("行").append("当前用户没有此所属区域，或已被注销！");
                 continue;
             }
 
@@ -2990,10 +2760,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setBuyDate(networkDeviceEntity.getButDate());
                 asset.setServiceLife(networkDeviceEntity.getDueDate());
                 asset.setWarranty(networkDeviceEntity.getWarranty());
-                asset.setMemo(networkDeviceEntity.getMemo());
                 asset.setContactTel(networkDeviceEntity.getTelephone());
                 asset.setEmail(networkDeviceEntity.getEmail());
                 asset.setCategoryModel(importRequest.getCategory());
+                asset.setDescrible(networkDeviceEntity.getMemo());
                 asset.setImportanceDegree(DataTypeUtils.stringToInteger(networkDeviceEntity.getImportanceDegree()));
                 assets.add(asset);
                 assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
@@ -3007,7 +2777,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetNetworkEquipment.setCpuVersion(networkDeviceEntity.getCpuVersion());
                 assetNetworkEquipment.setSubnetMask(networkDeviceEntity.getSubnetMask());
                 assetNetworkEquipment.setExpectBandwidth(networkDeviceEntity.getExpectBandwidth());
-                assetNetworkEquipment.setMemo(networkDeviceEntity.getMemo());
                 assetNetworkEquipment.setNcrmSize(networkDeviceEntity.getNcrmSize());
                 assetNetworkEquipment.setCpuSize(networkDeviceEntity.getCpuSize());
                 assetNetworkEquipment.setDramSize(networkDeviceEntity.getDramSize());
@@ -3060,6 +2829,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
+    @Transactional
     public String importSecurity(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         AssetCategoryModel categoryModel = assetCategoryModelDao
             .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
@@ -3071,7 +2841,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         StringBuilder builder = new StringBuilder();
         if (Objects.isNull(result.getDataList())) {
-            return "导入失败，" + result.getMsg();
+            return result.getMsg();
         }
         List<SafetyEquipmentEntiy> resultDataList = result.getDataList();
         if (resultDataList.size() == 0 && StringUtils.isBlank(result.getMsg())) {
@@ -3147,7 +2917,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("没有此使用者！");
+                builder.append("第").append(a).append("行").append("系统中没有此使用者，或已被注销！");
                 continue;
             }
             if (!checkOperatingSystem(entity.getOperationSystem())) {
@@ -3196,7 +2966,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setNumber(entity.getNumber());
                 asset.setName(entity.getName());
                 asset.setManufacturer(entity.getManufacturer());
-                asset.setFirmwareVersion(entity.getFirmwareVersion());
+                // asset.setFirmwareVersion(entity.getFirmwareVersion());
                 asset.setSerial(entity.getSerial());
                 asset.setContactTel(entity.getTelephone());
                 asset.setLocation(entity.getLocation());
@@ -3213,7 +2983,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
                 assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetSafetyEquipment.setIp(entity.getIp());
-                assetSafetyEquipment.setMemo(entity.getMemo());
+                assetSafetyEquipment.setMac(entity.getMac());
                 assetSafetyEquipments.add(assetSafetyEquipment);
             }
             a++;
@@ -3257,6 +3027,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
+    @Transactional
     public String importStory(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         AssetCategoryModel categoryModel = assetCategoryModelDao
             .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
@@ -3266,7 +3037,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ImportResult<StorageDeviceEntity> result = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 5,
             0);
         if (Objects.isNull(result.getDataList())) {
-            return "导入失败，" + result.getMsg();
+            return result.getMsg();
         }
 
         List<StorageDeviceEntity> resultDataList = result.getDataList();
@@ -3331,7 +3102,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("没有此使用者！");
+                builder.append("第").append(a).append("行").append("系统中没有此使用者，或已被注销！");
                 continue;
             }
 
@@ -3348,7 +3119,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("当前用户没有此所属区域！");
+                builder.append("第").append(a).append("行").append("当前用户没有此所属区域，或已被注销！");
                 continue;
             }
 
@@ -3376,10 +3147,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setBuyDate(entity.getBuyDate());
                 asset.setServiceLife(entity.getDueDate());
                 asset.setWarranty(entity.getWarranty());
-                asset.setMemo(entity.getMemo());
                 asset.setContactTel(entity.getTelephone());
                 asset.setEmail(entity.getEmail());
                 asset.setCategoryModel(importRequest.getCategory());
+                asset.setDescrible(entity.getMemo());
                 assets.add(asset);
                 assetStorageMedium.setGmtCreate(System.currentTimeMillis());
                 assetStorageMedium.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3387,11 +3158,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetStorageMedium.setDiskNumber(entity.getHardDiskNum());
                 assetStorageMedium.setDriverNumber(entity.getDriveNum());
                 assetStorageMedium.setMaximumStorage(entity.getCapacity());
-                assetStorageMedium.setMemo(entity.getMemo());
                 assetStorageMedium.setHighCache(entity.getHighCache());
-                if (entity.getRaidSupport() == null) {
-                    assetStorageMedium.setRaidSupport("否");
-                } else {
+                // if (entity.getRaidSupport() == null) {
+                // assetStorageMedium.setRaidSupport("否");
+                // } else {
+                //
+                // }
+                if (entity.getRaidSupport() != null) {
 
                     assetStorageMedium.setRaidSupport(entity.getRaidSupport().equals("0") ? "否" : "是");
                 }
@@ -3443,6 +3216,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
+    @Transactional
     public String importOhters(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         AssetCategoryModel categoryModel = assetCategoryModelDao
             .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
@@ -3451,7 +3225,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 5, 0);
         if (Objects.isNull(result.getDataList())) {
-            return "导入失败，" + result.getMsg();
+            return result.getMsg();
         }
         List<OtherDeviceEntity> resultDataList = result.getDataList();
         if (resultDataList.size() == 0 && StringUtils.isBlank(result.getMsg())) {
@@ -3513,7 +3287,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("没有此使用者！");
+                builder.append("第").append(a).append("行").append("系统中没有此使用者！，或已被注销");
                 continue;
             }
 
@@ -3529,7 +3303,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("当前用户没有此所属区域！");
+                builder.append("第").append(a).append("行").append("当前用户没有此所属区域，或已被注销！");
                 continue;
             }
 
@@ -3553,7 +3327,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setBuyDate(entity.getBuyDate());
                 asset.setServiceLife(entity.getDueDate());
                 asset.setWarranty(entity.getWarranty());
-                asset.setMemo(entity.getMemo());
+                asset.setDescrible(entity.getMemo());
                 asset.setContactTel(entity.getTelephone());
                 asset.setEmail(entity.getEmail());
                 asset.setCategoryModel(importRequest.getCategory());
@@ -3603,7 +3377,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuilder stringBuilder = new StringBuilder();
 
         if (CollectionUtils.isEmpty(mapList)) {
-            throw new BusinessException("系统中没有资产管理员！");
+
+            throw new BusinessException("该用户下没有资产管理员！");
         }
 
         for (LinkedHashMap linkedHashMap : mapList) {

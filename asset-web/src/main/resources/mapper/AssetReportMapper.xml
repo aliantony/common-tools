@@ -115,7 +115,6 @@
         LEFT JOIN asset ON asset.id = agr.asset_id
 
         WHERE agr.gmt_create &lt;=#{endTime}
-        AND asset.asset_status != '9'
         AND agr. STATUS = 1
         AND asset. STATUS = 1
         <if test="areaIds != null and areaIds.size() > 0">
@@ -124,6 +123,13 @@
                 #{item}
             </foreach>
         </if>
+        <if test="assetStatusList!=null and assetStatusList.size()>0">
+            and asset.asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+
         GROUP BY
         groupId,
         name
@@ -172,8 +178,13 @@
                 #{areaId}
             </foreach>
         </if>
+        <if test="assetStatusList!=null and assetStatusList.size()>0">
+            and asset.asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
         AND asset.gmt_create > #{beginTime}
-        AND asset.asset_status &lt;&gt; 9
         AND asset.status =1
         AND asset.category_model IS NOT NULL
         GROUP BY
@@ -199,9 +210,14 @@
                 #{areaId}
             </foreach>
         </if>
-        AND asset.asset_status &lt;&gt; 9
         AND asset.status =1
         AND asset.category_model IS NOT NULL
+        <if test="assetStatusList!=null and assetStatusList.size()>0">
+            and asset.asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
         GROUP BY
         asset.category_model
     </select>
@@ -214,7 +230,7 @@
         asset
         WHERE
         asset.gmt_create &lt;= #{beginTime}
-        AND asset.asset_status &lt;&gt; 9
+        and asset.gmt_create >= #{endTime}
         AND asset.status =1
         AND asset.category_model IS NOT NULL
         and asset.category_model = #{categoryModel}
@@ -225,7 +241,7 @@
             </foreach>
         </if>
         <if test="assetStatusList!=null and assetStatusList.size()>0">
-            and asset.status in
+            and asset.asset_status in
             <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
                 #{assetStatus}
             </foreach>
@@ -237,11 +253,11 @@
             resultMap="AssetGroupResultMap">
         SELECT
         agr.asset_group_id,ag.`NAME` as assetGroupName,count(agr.asset_group_id) as countNum,
-	    case
-	    when length(replace(ltrim(replace(FROM_UNIXTIME(agr.gmt_create/1000,#{sqlTime}),'0',' ')),' ','0')) &lt; 1
-	    then 7
-	    else replace(ltrim(replace(FROM_UNIXTIME(agr.gmt_create/1000,#{sqlTime}),'0',' ')),' ','0')
-	    end AS date
+        case
+        when length(replace(ltrim(replace(FROM_UNIXTIME(agr.gmt_create/1000,#{sqlTime}),'0',' ')),' ','0')) &lt; 1
+        then 7
+        else replace(ltrim(replace(FROM_UNIXTIME(agr.gmt_create/1000,#{sqlTime}),'0',' ')),' ','0')
+        end AS date
         FROM
         asset_group_relation agr
         LEFT JOIN asset_group ag ON agr.asset_group_id = ag.id
@@ -265,8 +281,13 @@
                     #{item}
                 </foreach>
             </if>
+            <if test="assetStatusList!=null and assetStatusList.size()>0">
+                and asset.asset_status in
+                <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                    #{assetStatus}
+                </foreach>
+            </if>
             AND asset.status = 1
-            AND asset.asset_status != 9
         </where>
         GROUP BY
         agr.asset_group_id,

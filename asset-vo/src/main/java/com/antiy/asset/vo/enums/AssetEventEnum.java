@@ -7,7 +7,8 @@ package com.antiy.asset.vo.enums;
  */
 public enum AssetEventEnum {
     ASSET_INSERT(1,"硬件资产登记"),
-    ASSET_MODIFY(2,"硬件资产修改"),
+                            ASSET_MODIFY(2,
+                                         "资产变更"),
     ASSET_STATUS_CHANGE(3,"硬件资产状态修改"),
     ASSET_CATEGORY_DELETE(4,"删除品类型号"),
     ASSET_CATEGORY_INSERT(5,"登记品类型号"),
@@ -22,9 +23,9 @@ public enum AssetEventEnum {
     ASSET_CPU_INSERT(14,"硬件资产CPU新增"),
     ASSET_CPU_UPDATE(15,"硬件资产CPU修改"),
     ASSET_CPU_DELETE(16,"硬件资产CPU删除"),
-    ASSET_DEPARTMENT_INSERT(17,"资产部门新增"),
-    ASSET_DEPAETMENT_UPDATE(18,"资产部门修改"),
-    ASSET_DEPAETMENT_DELETE(19,"资产部门删除"),
+    ASSET_DEPARTMENT_INSERT(17,"登记组织结构"),
+    ASSET_DEPAETMENT_UPDATE(18,"编辑组织结构"),
+    ASSET_DEPAETMENT_DELETE(19,"删除组织结构"),
                             ASSET_GROUP_DELETE(20,
                                                "注销资产组信息"), ASSET_GROUP_INSERT(21,
                                                                               "登记资产组信息"), ASSET_GROUP_UPDATE(22,
@@ -106,14 +107,18 @@ public enum AssetEventEnum {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                       "硬件资产配置"), ASSET_ADMITTANCE_EXPORT(101,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          "资产准入管理导出"), SOFT_CONFIG(100,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "软件配置"), RETIRE_REGISTER(101,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "硬件退役再登记"), GET_USER_INOF(102,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           "登记资产"), GET_USER_INOF(102,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "获取登录用户"), ASSET_STATUS_SCHEDULE_TASK(103,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "执行资产状态定时任务"), NO_REGISTER(104,
-            "硬件不予登记再登记"),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "资产不予登记"),
     SETTING_REGISTER(105,
-            "硬件配置待再登记"), SOFT_NO_REGISTER(106,
+                                             "登记资产"), SOFT_NO_REGISTER(106,
             "软件不予登记"),
-    HARD_EXPORT(109,"硬件资产导出");
+    HARD_EXPORT(109,"硬件资产导出"),
+                            HARD_WAITTING_REGISTER(110,
+                                                   "登记资产"), ASSET_RETIRE_START(111,
+                                                                                   "资产发起退役"), ASSET_RETIRE_IMPL(112,
+                                                                                                                "资产实施退役");
 
 
     private Integer status;
