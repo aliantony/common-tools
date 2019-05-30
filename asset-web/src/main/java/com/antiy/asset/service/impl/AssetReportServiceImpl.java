@@ -152,6 +152,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         Map<String, Object> filterMap = new HashMap<>();
         filterMap.put("beginTime", query.getBeginTime());
         filterMap.put("areaIds", query.getAreaIds());
+        filterMap.put("assetStatusList", statusList);
         List<AssetCategoryEntity> previousCategoryEntity = assetReportDao.findCategoryCountPrevious(query);
         int computerAmountSum = 0;
         int networkAmountSum = 0;
