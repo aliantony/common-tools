@@ -2271,7 +2271,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         safetyEquipmentEntiy.setBuyDate(System.currentTimeMillis());
         safetyEquipmentEntiy.setDueDate(System.currentTimeMillis());
         safetyEquipmentEntiy.setEmail("32535694@163.com");
-        safetyEquipmentEntiy.setFirmwareVersion("2.0");
+        // safetyEquipmentEntiy.setFirmwareVersion("2.0");
         safetyEquipmentEntiy.setWarranty("2年");
         safetyEquipmentEntiy.setManufacturer("安天");
         safetyEquipmentEntiy.setName("安天镇关威胁阻断系统   ");
@@ -3002,10 +3002,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setBuyDate(networkDeviceEntity.getButDate());
                 asset.setServiceLife(networkDeviceEntity.getDueDate());
                 asset.setWarranty(networkDeviceEntity.getWarranty());
-                asset.setMemo(networkDeviceEntity.getMemo());
                 asset.setContactTel(networkDeviceEntity.getTelephone());
                 asset.setEmail(networkDeviceEntity.getEmail());
                 asset.setCategoryModel(importRequest.getCategory());
+                asset.setDescrible(networkDeviceEntity.getMemo());
                 asset.setImportanceDegree(DataTypeUtils.stringToInteger(networkDeviceEntity.getImportanceDegree()));
                 assets.add(asset);
                 assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
@@ -3019,7 +3019,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetNetworkEquipment.setCpuVersion(networkDeviceEntity.getCpuVersion());
                 assetNetworkEquipment.setSubnetMask(networkDeviceEntity.getSubnetMask());
                 assetNetworkEquipment.setExpectBandwidth(networkDeviceEntity.getExpectBandwidth());
-                assetNetworkEquipment.setMemo(networkDeviceEntity.getMemo());
                 assetNetworkEquipment.setNcrmSize(networkDeviceEntity.getNcrmSize());
                 assetNetworkEquipment.setCpuSize(networkDeviceEntity.getCpuSize());
                 assetNetworkEquipment.setDramSize(networkDeviceEntity.getDramSize());
@@ -3208,7 +3207,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setNumber(entity.getNumber());
                 asset.setName(entity.getName());
                 asset.setManufacturer(entity.getManufacturer());
-                asset.setFirmwareVersion(entity.getFirmwareVersion());
+                // asset.setFirmwareVersion(entity.getFirmwareVersion());
                 asset.setSerial(entity.getSerial());
                 asset.setContactTel(entity.getTelephone());
                 asset.setLocation(entity.getLocation());
@@ -3225,7 +3224,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
                 assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetSafetyEquipment.setIp(entity.getIp());
-                assetSafetyEquipment.setMemo(entity.getMemo());
                 assetSafetyEquipment.setMac(entity.getMac());
                 assetSafetyEquipments.add(assetSafetyEquipment);
             }
@@ -3389,10 +3387,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setBuyDate(entity.getBuyDate());
                 asset.setServiceLife(entity.getDueDate());
                 asset.setWarranty(entity.getWarranty());
-                asset.setMemo(entity.getMemo());
                 asset.setContactTel(entity.getTelephone());
                 asset.setEmail(entity.getEmail());
                 asset.setCategoryModel(importRequest.getCategory());
+                asset.setDescrible(entity.getMemo());
                 assets.add(asset);
                 assetStorageMedium.setGmtCreate(System.currentTimeMillis());
                 assetStorageMedium.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3400,7 +3398,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetStorageMedium.setDiskNumber(entity.getHardDiskNum());
                 assetStorageMedium.setDriverNumber(entity.getDriveNum());
                 assetStorageMedium.setMaximumStorage(entity.getCapacity());
-                assetStorageMedium.setMemo(entity.getMemo());
                 assetStorageMedium.setHighCache(entity.getHighCache());
                 // if (entity.getRaidSupport() == null) {
                 // assetStorageMedium.setRaidSupport("否");
@@ -3569,7 +3566,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setBuyDate(entity.getBuyDate());
                 asset.setServiceLife(entity.getDueDate());
                 asset.setWarranty(entity.getWarranty());
-                asset.setMemo(entity.getMemo());
+                asset.setDescrible(entity.getMemo());
                 asset.setContactTel(entity.getTelephone());
                 asset.setEmail(entity.getEmail());
                 asset.setCategoryModel(importRequest.getCategory());

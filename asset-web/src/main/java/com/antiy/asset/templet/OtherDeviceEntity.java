@@ -73,7 +73,7 @@ public class OtherDeviceEntity {
     /**
      * 描述
      */
-    @ExcelField(value = "memo", align = 1, title = "描述")
+    @ExcelField(value = "memo", align = 1, title = "描述", length = 300)
     private String memo;
 
     public String getName() {
