@@ -439,9 +439,27 @@ public class ImportExcel {
                             log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
                         }
                     } else if (valType == Double.class) {
-                        val = Double.valueOf(val.toString());
+                        try {
+                            val = Double.valueOf(val.toString());
+                        } catch (Exception e) {
+                            failNums++;
+                            flag = false;
+                            sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
+                                    .append(ef.title()).append(":").append(val).append(",");
+                            log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
+                            break;
+                        }
                     } else if (valType == Float.class) {
-                        val = Float.valueOf(val.toString());
+                        try {
+                            val = Float.valueOf(val.toString());
+                        } catch (Exception e) {
+                            failNums++;
+                            flag = false;
+                            sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
+                                    .append(ef.title()).append(":").append(val).append(",");
+                            log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
+                            break;
+                        }
                     } else if (valType == Date.class) {
                         val = DateUtil.getJavaDate((Double) val);
                     }
