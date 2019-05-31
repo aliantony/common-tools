@@ -519,7 +519,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getDayOfWeek());
 
             case "2":
-                reportQueryRequest.setSqlTime("%U");
+                reportQueryRequest.setSqlTime("%u");
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getWeekOfMonth());
 
             case "3":
@@ -537,7 +537,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 Long mouth = ReportDateUtils.monthDiff(reportQueryRequest.getStartTime(),
                     reportQueryRequest.getEndTime());
                 if (mouth == 0) {
-                    reportQueryRequest.setSqlTime("%U");
+                    reportQueryRequest.setSqlTime("%u");
                 }
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils
                     .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
@@ -649,7 +649,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 reportQueryRequest.setSqlTime("%w");
                 return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getDayOfWeek());
             case "2":
-                reportQueryRequest.setSqlTime("%U");
+                reportQueryRequest.setSqlTime("%u");
                 return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getWeekOfMonth());
             case "3":
                 reportQueryRequest.setSqlTime("%Y-%m");
@@ -807,7 +807,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 reportQueryRequest.setSqlTime("%w");
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getDayOfWeek(), "本周");
             case "2":
-                reportQueryRequest.setSqlTime("%U");
+                reportQueryRequest.setSqlTime("%u");
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getWeekOfMonth(), "本月");
             case "3":
                 reportQueryRequest.setSqlTime("%Y-%m");
@@ -821,7 +821,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 Long mouth = ReportDateUtils.monthDiff(reportQueryRequest.getStartTime(),
                     reportQueryRequest.getEndTime());
                 if (mouth == 0) {
-                    reportQueryRequest.setSqlTime("%U");
+                    reportQueryRequest.setSqlTime("%u");
                 }
 
                 return buildAssetReportTable(reportQueryRequest,
