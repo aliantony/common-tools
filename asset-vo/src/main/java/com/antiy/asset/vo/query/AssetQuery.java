@@ -263,6 +263,20 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("是否全查询")
     private boolean       all;
 
+    /**
+     * 是否来自资产组的查找资产弹窗查询
+     */
+    @ApiModelProperty("是否全查询")
+    private boolean       assetGroupQuery;
+
+    public boolean getAssetGroupQuery() {
+        return assetGroupQuery;
+    }
+
+    public void setAssetGroupQuery(boolean assetGroupQuery) {
+        this.assetGroupQuery = assetGroupQuery;
+    }
+
     public boolean getAll() {
         return all;
     }
