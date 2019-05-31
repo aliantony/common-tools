@@ -627,9 +627,6 @@
                 #{item}
             </foreach>
         </if>
-        <if test="all">
-            and asset_status in (3,4,5,6,7,8)
-        </if>
         <if test=" areaIds != null and areaIds.length > 0 and ids == null">
             and area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
@@ -686,18 +683,35 @@
                 or asset_network_equipment.mac_address like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             )
         </if>
-        <if test="assetStatusList != null and assetStatusList.size() > 0">
-            and asset.asset_status in
-            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
-                #{assetStatus}
-            </foreach>
-        </if>
         <if test="name != null">
             and asset.name like binary CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
         </if>
         <if test="assetName != null">
             and asset.name =#{assetName}
         </if>
+        <choose>
+            <when test="assetGroupQuery">
+                <choose>
+                    <when test="assetStatusList != null and assetStatusList.size() > 0">
+                        and asset.asset_status in
+                        <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                            #{assetStatus}
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        and asset_status in (3,4,5,6,7,8)
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                <if test="assetStatusList != null and assetStatusList.size() > 0">
+                    and asset.asset_status in
+                    <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                        #{assetStatus}
+                    </foreach>
+                </if>
+            </otherwise>
+        </choose>
         <if test="assetStatus != null">
             and asset.asset_status = #{assetStatus}
         </if>
