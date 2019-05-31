@@ -467,8 +467,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
             List dataList = reportData.getData();
             data[i] = ArrayTypeUtil.objectArrayToStringArray(dataList.toArray());
         }
-        columnList.add("总数");
-        columnList.add("新增");
         int[] total = new int[headerList.size()];
         List<ReportData> reportList = assetReportResponse.getList();
         int[] add = new int[headerList.size()];
@@ -482,8 +480,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 total[i] += Integer.parseInt(data[j][i]);
             }
         }
-        data[reportDataList.size()] = ArrayTypeUtil.integerArrayToStringArray(total);
-        data[reportDataList.size() + 1] = ArrayTypeUtil.integerArrayToStringArray(add);
+        columnList.add("新增");
+        data[reportDataList.size()] = ArrayTypeUtil.integerArrayToStringArray(add);
+        columnList.add("总数");
+        data[reportDataList.size() + 1] = ArrayTypeUtil.integerArrayToStringArray(total);
         reportForm.setHeaderList(headerList);
         reportForm.setData(data);
         reportForm.setColumnList(columnList);
