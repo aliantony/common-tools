@@ -574,6 +574,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportQuery.setSqlTime(reportQueryRequest.getSqlTime());
         reportQuery.setEndTime(reportQueryRequest.getStartTime());
         reportQuery.setAreaIds(reportQueryRequest.getAreaIds());
+        reportQuery.setAssetStatusList(getStatusList());
         List<AssetGroupEntity> oldAssetGroupEntities = assetReportDao.getAssetConutWithGroup(reportQuery);
 
         // 4.初始化返回对象
@@ -917,8 +918,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
         ReportQueryRequest initReportQueryRequest = new ReportQueryRequest();
         initReportQueryRequest.setEndTime(reportQueryRequest.getStartTime());
         initReportQueryRequest.setAreaIds(reportQueryRequest.getAreaIds());
+        initReportQueryRequest.setAssetStatusList(getStatusList());
         List<AssetGroupEntity> initAssetGroupEntities = assetReportDao.getAssetConutWithGroup(initReportQueryRequest);
         // 2.本时间段新增的数据
+        reportQueryRequest.setAssetStatusList(getStatusList());
         List<AssetGroupEntity> assetGroupEntities = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
         // 3.添加资产组名字
         List<String> initNameList = new ArrayList<>();
