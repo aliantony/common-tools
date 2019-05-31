@@ -676,9 +676,14 @@
 
         <if test=" multipleQuery != null and multipleQuery != ''">
             and (asset.name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or asset.number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or ip like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or mac like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or asset.number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or asset_network_card.ip_address like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or asset_safety_equipment.ip like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or asset_network_equipment.inner_ip like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or asset_network_equipment.outer_ip like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or asset_network_card.mac_address like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or asset_safety_equipment.mac like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or asset_network_equipment.mac_address like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             )
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
@@ -1013,7 +1018,7 @@
             asset.buy_date,
             asset.warranty,
             asset.gmt_create,
-            concat(ifnull(group_concat(asset_network_card.ip_address),''), ifnull(asset_network_equipment.outer_ip,''), ifnull(asset_safety_equipment.ip,'') ) AS ip,
+            concat(ifnull(group_concat(asset_network_card.ip_address),''), ifnull(asset_network_equipment.outer_ip,''),ifnull( asset_network_equipment.inner_ip, '' ), ifnull(asset_safety_equipment.ip,'') ) AS ip,
             concat(ifnull(group_concat( asset_network_card.mac_address ),''), ifnull(asset_network_equipment.mac_address,''), ifnull(asset_safety_equipment.mac,'') ) AS mac
         from asset asset
         left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and asset_network_card.status = 1
