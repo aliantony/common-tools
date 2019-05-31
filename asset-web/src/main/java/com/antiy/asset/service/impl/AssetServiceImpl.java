@@ -886,6 +886,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         if (count <= 0) {
+            if (query.getEnterControl()) {
+                //如果是工作台进来的但是有没有存在当前状态的待办任务，则把当前状态的资产全部查询出来
+                query.setEnterControl(false);
+                return new PageResult<>(query.getPageSize(), this.findCountAsset(query), query.getCurrentPage(),
+                        this.findListAsset(query, processMap));
+            }
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
         }
 
@@ -951,11 +957,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryModels));
         }
         // 进行查询
-        Integer count = assetDao.findUnconnectedCount(query);
+        Integer count = assetLinkRelationDao.findUnconnectedCount(query);
         if (count == 0) {
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
         } else {
-            List<AssetResponse> assetResponseList = responseConverter.convert(assetDao.findListUnconnectedAsset(query),
+            List<AssetResponse> assetResponseList = responseConverter.convert(assetLinkRelationDao.findListUnconnectedAsset(query),
                 AssetResponse.class);
             processCategoryToSecondCategory(assetResponseList, categoryMap);
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
@@ -3477,7 +3483,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         query.setPrimaryKey(primaryKey);
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-        return assetDao.pulldownUnconnectedManufacturer(query);
+        return assetLinkRelationDao.pulldownUnconnectedManufacturer(query);
     }
 
     /**

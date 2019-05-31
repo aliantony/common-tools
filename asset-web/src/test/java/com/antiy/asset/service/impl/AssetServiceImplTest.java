@@ -412,8 +412,8 @@ public class AssetServiceImplTest {
 
     @Test
     public void testFindUnconnectedAsset() throws Exception {
-        when(assetDao.findUnconnectedCount(any())).thenReturn(0);
-        when(assetDao.findListUnconnectedAsset(any())).thenReturn(Arrays.asList(new Asset()));
+        when(assetLinkRelationDao.findUnconnectedCount(any())).thenReturn(0);
+        when(assetLinkRelationDao.findListUnconnectedAsset(any())).thenReturn(Arrays.asList(new Asset()));
         when(iAssetCategoryModelService.findAssetCategoryModelIdsById(anyInt())).thenReturn(Arrays.asList(0));
         when(iAssetCategoryModelService.findAssetCategoryModelIdsById(anyInt(), any())).thenReturn(Arrays.asList(0));
         when(iAssetCategoryModelService.recursionSearchParentCategory(anyString(), any(), any())).thenReturn("recursionSearchParentCategoryResponse");
@@ -903,7 +903,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testPulldownUnconnectedManufacturer() throws Exception {
-        when(assetDao.pulldownUnconnectedManufacturer(any())).thenReturn(Arrays.asList("String"));
+        when(assetLinkRelationDao.pulldownUnconnectedManufacturer(any())).thenReturn(Arrays.asList("String"));
         when(iAssetCategoryModelService.findAssetCategoryModelIdsById(anyInt(), any())).thenReturn(Arrays.asList(0));
         when(iAssetCategoryModelService.getSecondCategoryMap()).thenReturn(new HashMap<String, String>() {{
             put("String", "String");

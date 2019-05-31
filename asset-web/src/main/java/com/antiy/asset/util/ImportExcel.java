@@ -157,6 +157,8 @@ public class ImportExcel {
                 this.wb = new XSSFWorkbook(is);
             } catch (NotOfficeXmlFileException e) {
                 throw new BusinessException("导入失败，文档格式不正确!");
+            } catch (OutOfMemoryError e) {
+                throw new BusinessException("导入失败，文档超大!");
             }
         } else {
             throw new BusinessException("导入失败，文档格式不正确!");

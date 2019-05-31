@@ -207,8 +207,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         assetUserQuery.setDepartmentIds(departmentIds);
         List<AssetUser> resultUser = assetUserDao.findListAssetUser(assetUserQuery);
         BusinessExceptionUtils.isTrue(resultUser.size() <= 0, "部门下存在关联用户，不能删除");
-        int result = assetDepartmentDao.delete(list);
         AssetDepartment assetDepartmentLog = assetDepartmentDao.getById(id);
+        int result = assetDepartmentDao.delete(list);
         // 写入业务日志
         LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
             AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
