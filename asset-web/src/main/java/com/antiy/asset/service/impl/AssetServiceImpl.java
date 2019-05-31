@@ -1,38 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
@@ -64,6 +31,37 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -2386,21 +2384,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (entity.getMemoryNum() < 1) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("内存数量需大于等于1  ！");
-                continue;
-            }
 
-            if (entity.getHardDiskNum() < 1) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("硬盘数量需大于等于1  ！");
-                continue;
-            }
-
-            if (entity.getHardDiskBuyDate() != null) {
+            if (entity.getHardDiskBuyDate() != null && entity.getHardDisCapacityl() != null
+                && entity.getHardDiskType() != null) {
 
                 if (isBuyDataBig(entity.getHardDiskBuyDate())) {
                     error++;
@@ -2410,19 +2396,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
 
-            if (entity.getMainboradNum() < 1) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("主板数量需大于等于1  ！");
-                continue;
-            }
 
-            if (entity.getCpuNum() < 1) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("CPU数量需大于等于1  ！");
-                continue;
-            }
 
             if (repeat + error == 0) {
                 assetNames.add(entity.getName());
@@ -2461,6 +2435,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
                 computerVo.setAsset(asset);
 
+                if (!Objects.isNull(entity.getMemoryCapacity())
+                    && (Objects.isNull(entity.getMemoryNum()) || entity.getMemoryNum() < 1)) {
+                    entity.setMemoryNum(1);
+                }
+
                 if (!Objects.isNull(entity.getMemoryCapacity()) && !Objects.isNull(entity.getMemoryNum())
                     && entity.getMemoryNum() > 0) {
                     AssetMemory assetMemory = new AssetMemory();
@@ -2484,6 +2463,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     computerVo.setAssetMemoryList(assetMemoryList);
                     // assetMemoryDao.insertBatch(assetMemoryList);
                 }
+
                 // else {
                 // builder.append("序号").append(a).append("行").append ("没有添加内存：内存品牌，内存容量，内存主频，内存数量>0")
                 // }
@@ -3379,7 +3359,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private void importActivity(List<ManualStartActivityRequest> manualStartActivityRequests,
                                 String stringId, String areaId) throws Exception {
-        ActionResponse actionResponse = areaClient.queryByArea(ImportTypeEnum.HARDWARE.getName(), areaId);
+        ActionResponse actionResponse = areaClient.queryByArea(ImportTypeEnum.HARDWARE.getName(),
+            aesEncoder.encode(areaId, LoginUserUtil.getLoginUser().getUsername()));
 
         List<LinkedHashMap> mapList = (List<LinkedHashMap>) actionResponse.getBody();
         StringBuilder stringBuilder = new StringBuilder();
