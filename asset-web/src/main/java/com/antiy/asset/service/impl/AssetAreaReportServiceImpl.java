@@ -238,6 +238,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             }
             rows.add(map);
         }
+        // 数据
         Map add = new HashMap();
         add.put("classifyName", "新增数量");
         index = 1;
@@ -245,7 +246,6 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             add.put(String.valueOf(index++), String.valueOf(addData));
         }
         rows.add(add);
-        // 数据
         Map total = new HashMap();
         total.put("classifyName", "总数");
         index = 1;
