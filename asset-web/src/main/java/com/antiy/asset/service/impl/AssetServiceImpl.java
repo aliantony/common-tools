@@ -951,11 +951,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryModels));
         }
         // 进行查询
-        Integer count = assetDao.findUnconnectedCount(query);
+        Integer count = assetLinkRelationDao.findUnconnectedCount(query);
         if (count == 0) {
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
         } else {
-            List<AssetResponse> assetResponseList = responseConverter.convert(assetDao.findListUnconnectedAsset(query),
+            List<AssetResponse> assetResponseList = responseConverter.convert(assetLinkRelationDao.findListUnconnectedAsset(query),
                 AssetResponse.class);
             processCategoryToSecondCategory(assetResponseList, categoryMap);
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
@@ -3477,7 +3477,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         query.setPrimaryKey(primaryKey);
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-        return assetDao.pulldownUnconnectedManufacturer(query);
+        return assetLinkRelationDao.pulldownUnconnectedManufacturer(query);
     }
 
     /**

@@ -146,4 +146,25 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      */
     List<AssetGroup> queryGroupList(AssetTopologyQuery query);
 
+    /**
+     * 查询通联设置的资产数(即除去未进行通联的资产)
+     * @param assetQuery
+     * @return
+     */
+    Integer findUnconnectedCount(AssetQuery assetQuery);
+
+    /**
+     * 查询通联设置的资产(即除去未进行通联的资产)
+     * @param assetQuery
+     * @return
+     */
+    List<Asset> findListUnconnectedAsset(AssetQuery assetQuery);
+
+    /**
+     * 查询通联设置页面资产下拉的厂商信息
+     * @param assetQuery
+     * @return
+     */
+    List<String> pulldownUnconnectedManufacturer(AssetQuery assetQuery);
+
 }
