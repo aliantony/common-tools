@@ -3404,7 +3404,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
         manualStartActivityRequest.setBusinessId(stringId);
-        manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+        manualStartActivityRequest.setFormData(formData);
         manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
         manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
         manualStartActivityRequests.add(manualStartActivityRequest);
