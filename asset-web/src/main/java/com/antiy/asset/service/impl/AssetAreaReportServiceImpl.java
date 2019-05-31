@@ -239,13 +239,6 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             rows.add(map);
         }
         // 数据
-        Map total = new HashMap();
-        total.put("classifyName", "总数");
-        index = 1;
-        for (Integer allData : assetReportResponse.getAlldata()) {
-            total.put(String.valueOf(index++), String.valueOf(allData));
-        }
-        rows.add(total);
         Map add = new HashMap();
         add.put("classifyName", "新增数量");
         index = 1;
@@ -253,6 +246,13 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             add.put(String.valueOf(index++), String.valueOf(addData));
         }
         rows.add(add);
+        Map total = new HashMap();
+        total.put("classifyName", "总数");
+        index = 1;
+        for (Integer allData : assetReportResponse.getAlldata()) {
+            total.put(String.valueOf(index++), String.valueOf(allData));
+        }
+        rows.add(total);
         assetReportTableResponse.setRows(rows);
         return assetReportTableResponse;
     }
@@ -305,16 +305,16 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         // 表格列头
         List columnList = assetReportResponse.getList().stream().map(ReportData::getClassify)
             .collect(Collectors.toList());
-        columnList.add("总数");
-        columnList.add("新增数量");
         List<List<Integer>> dataList = Lists.newArrayList();
         reportForm.setColumnList(columnList);
         List<ReportData> list = assetReportResponse.getList();
         list.stream().forEach(reportData -> {
             dataList.add(reportData.getData());
         });
-        dataList.add(assetReportResponse.getAlldata());
+        columnList.add("新增数量");
         dataList.add(assetReportResponse.getAllAdd());
+        columnList.add("总数");
+        dataList.add(assetReportResponse.getAlldata());
         String[][] datas = new String[columnList.size()][assetReportResponse.getDate().size()];
         for (int i = 0; i < dataList.size(); i++) {
             List<Integer> data = dataList.get(i);
