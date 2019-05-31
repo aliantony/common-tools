@@ -1472,9 +1472,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
                     // 1. 更新资产主表
-                    LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
-                        asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
                     int count = assetDao.update(asset);
 
                     // 2. 更新cpu信息
@@ -1807,6 +1804,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
                 LogUtils.info(logger, AssetEventEnum.HARD_WAITTING_REGISTER.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
+            } else if (AssetStatusEnum.NET_IN.getCode().equals(currentAsset.getAssetStatus())) {
+                LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
+                    asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
             }
 
             if (AssetStatusEnum.RETIRE.getCode().equals(currentAsset.getAssetStatus())
