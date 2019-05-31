@@ -736,8 +736,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
         rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg()));
         rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg()));
         rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.OTHER_DEVICE.getMsg()));
-        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.AMOUNT.getMsg()));
         rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.NEW_ADD.getMsg()));
+        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.AMOUNT.getMsg()));
 
         reportTableResponse.setRows(rows);
         reportTableResponse.setChildren(children);
@@ -1031,33 +1031,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
                     .compareTo(DataTypeUtils.stringToInteger(o1.get(timeMapLastKey)));
             }
         });
-        Map<String, String> countMap = new LinkedHashMap<>(timeMap.size() + 1);
-        countMap.put("classifyName", "总数");
-        // 根据时间节点遍历设置数据
-        for (Map.Entry<String, String> entry : timeMap.entrySet()) {
-            Integer Num = 0;
-            for (Map<String, String> map : rows) {
-                Num += DataTypeUtils.stringToInteger(map.get(entry.getKey()));
-            }
-            countMap.put(entry.getKey(), Num.toString());
-        }
-        rows.add(countMap);
-        // 最后一行新增的数据
-        Map<String, String> addMap = new LinkedHashMap<>(timeMap.size() + 1);
-        addMap.put("classifyName", "新增数量");
-        // 根据时间节点遍历设置数据
-        for (Map.Entry<String, String> entry : timeMap.entrySet()) {
-            Integer addNum = 0;
-            for (AssetGroupEntity assetGroupEntity : assetGroupEntities) {
-                // 当前时间节点下的数量(不考虑类型)全部相加
-                if (assetGroupEntity.getDate().equals(entry.getKey())) {
-                    addMap.put(entry.getKey(), assetGroupEntity.getGroupCount().toString());
-                    addNum += assetGroupEntity.getGroupCount();
-                }
-            }
-            addMap.put(entry.getKey(), addNum.toString());
-        }
-        rows.add(addMap);
 
         assetReportTableResponse.setRows(rows);
         return assetReportTableResponse;
