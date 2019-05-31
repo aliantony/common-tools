@@ -5,8 +5,6 @@ import javax.validation.constraints.NotBlank;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Map;
-
 /**
  * @auther: zhangbing
  * @date: 2019/1/17 15:51
@@ -15,16 +13,16 @@ import java.util.Map;
 @ApiModel(value = "流程处理请求")
 public class ActivityHandleRequest {
     @ApiModelProperty(value = "流程表单数据,JSON串")
-    private Map formData;
+    private String formData;
 
     @ApiModelProperty(value = "任务Id")
     private String taskId;
 
-    public Map getFormData() {
+    public String getFormData() {
         return formData;
     }
 
-    public void setFormData(Map formData) {
+    public void setFormData(String formData) {
         this.formData = formData;
     }
 

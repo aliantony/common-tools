@@ -1067,7 +1067,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                 ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
                 manualStartActivityRequest.setBusinessId(assetSoftware.getStringId());
-                manualStartActivityRequest.setFormData(formData);
+                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
                 manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
                 manualStartActivityRequest
                     .setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE_ATUO.getCode());

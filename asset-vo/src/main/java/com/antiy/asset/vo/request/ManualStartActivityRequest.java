@@ -1,7 +1,6 @@
 package com.antiy.asset.vo.request;
 
 import java.util.List;
-import java.util.Map;
 
 import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModel;
@@ -33,7 +32,7 @@ public class ManualStartActivityRequest {
      */
     @ApiModelProperty(value = "流程表单数据,JSON串")
     // @NotBlank(message = "流程处理数据不能为空")
-    private Map formData;
+    private String formData;
 
     @ApiModelProperty(value = "配置人员")
     private List<String> configUserIds;
@@ -80,11 +79,11 @@ public class ManualStartActivityRequest {
         this.businessId = businessId;
     }
 
-    public Map getFormData() {
+    public String getFormData() {
         return formData;
     }
 
-    public void setFormData(Map formData) {
+    public void setFormData(String formData) {
         this.formData = formData;
     }
 
