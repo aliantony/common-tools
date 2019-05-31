@@ -2563,7 +2563,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
             for (ComputerVo computerVo : computerVos) {
                 Asset asset = computerVo.getAsset();
-                assetDao.insert(asset);
+
+                Integer insert = assetDao.insert(asset);
+                if (insert == 0) {
+                    throw new BusinessException("重复提交模板！");
+                }
+
                 if (CollectionUtils.isNotEmpty(computerVo.getAssetCpus())) {
 
                     assetCpuDao.insertBatchWithId(computerVo.getAssetCpus(), asset.getId());
