@@ -24,6 +24,8 @@ public class AreaClientImpl implements AreaClient {
     private String     areaUrl;
     @Value("${cdeAndAreaId}")
     private String     cdeAndAreaId;
+    @Value("${TypeAreaId}")
+    private String     TypeAreaId;
 
 
     @Override
@@ -42,6 +44,14 @@ public class AreaClientImpl implements AreaClient {
         }, cdeAndAreaId);
     }
 
+    @Override
+    public ActionResponse queryByArea(String type, String areaId) {
+        JSONObject object = new JSONObject();
+        object.put("tag", type);
+        object.put("areaId", areaId);
+        return (ActionResponse) baseClient.post(object, new ParameterizedTypeReference<ActionResponse>() {
+        }, TypeAreaId);
+    }
 
     @Override
     public Object getInvokeResult(String id) {

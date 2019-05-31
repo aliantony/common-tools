@@ -2594,7 +2594,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 记录资产操作流程
                 assetRecord(asset.getStringId());
                 // 流程
-                importActivity(manualStartActivityRequests, asset.getStringId());
+                importActivity(manualStartActivityRequests, asset.getStringId(), asset.getAreaId());
                 success++;
             }
             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
@@ -2804,7 +2804,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetNetworkEquipmentDao.insert(networkEquipments.get(i));
                 assetRecord(stringId);
                 // 流程
-                importActivity(manualStartActivityRequests, stringId);
+                importActivity(manualStartActivityRequests, stringId, assets.get(i).getAreaId());
 
                 success++;
             }
@@ -3002,7 +3002,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetSafetyEquipmentDao.insert(assetSafetyEquipments.get(i));
                 assetRecord(stringId);
                 // 流程
-                importActivity(manualStartActivityRequests, stringId);
+                importActivity(manualStartActivityRequests, stringId, assets.get(i).getAreaId());
                 success++;
             }
             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
@@ -3190,7 +3190,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetStorageMediumDao.insert(assetStorageMedia.get(i));
                 assetRecord(assets.get(i).getStringId());
                 // 流程
-                importActivity(manualStartActivityRequests, stringId);
+                importActivity(manualStartActivityRequests, stringId, assets.get(i).getAreaId());
                 success++;
             }
             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
@@ -3304,6 +3304,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     areaId = area.getStringId();
                 }
             }
+
             if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
@@ -3346,7 +3347,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (Asset asset : assets) {
                 assetDao.insert(asset);
                 assetRecord(asset.getStringId());
-                importActivity(manualStartActivityRequests, asset.getStringId());
+                importActivity(manualStartActivityRequests, asset.getStringId(), asset.getAreaId());
                 success++;
             }
             activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
@@ -3374,8 +3375,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     private void importActivity(List<ManualStartActivityRequest> manualStartActivityRequests,
-                                String stringId) throws Exception {
-        ActionResponse actionResponse = areaClient.queryCdeAndAreaId("zichanguanliyuan");
+                                String stringId, String areaId) throws Exception {
+        ActionResponse actionResponse = areaClient.queryByArea(ImportTypeEnum.HARDWARE.getName(), areaId);
 
         List<LinkedHashMap> mapList = (List<LinkedHashMap>) actionResponse.getBody();
         StringBuilder stringBuilder = new StringBuilder();
@@ -3385,11 +3386,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             throw new BusinessException("该用户下没有资产管理员！");
         }
 
+
         for (LinkedHashMap linkedHashMap : mapList) {
             stringBuilder.append(
                 aesEncoder.decode(linkedHashMap.get("stringId").toString(), LoginUserUtil.getLoginUser().getUsername()))
                 .append(",");
         }
+
         String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
 
         Map<String, Object> formData = new HashMap<>();
