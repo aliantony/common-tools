@@ -305,16 +305,16 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         // 表格列头
         List columnList = assetReportResponse.getList().stream().map(ReportData::getClassify)
             .collect(Collectors.toList());
-        columnList.add("总数");
-        columnList.add("新增数量");
         List<List<Integer>> dataList = Lists.newArrayList();
         reportForm.setColumnList(columnList);
         List<ReportData> list = assetReportResponse.getList();
         list.stream().forEach(reportData -> {
             dataList.add(reportData.getData());
         });
-        dataList.add(assetReportResponse.getAlldata());
+        columnList.add("新增数量");
         dataList.add(assetReportResponse.getAllAdd());
+        columnList.add("总数");
+        dataList.add(assetReportResponse.getAlldata());
         String[][] datas = new String[columnList.size()][assetReportResponse.getDate().size()];
         for (int i = 0; i < dataList.size(); i++) {
             List<Integer> data = dataList.get(i);
