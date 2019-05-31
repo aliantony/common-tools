@@ -200,9 +200,7 @@ public class AssetStatusJumpController {
             .setOperateUserId(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
         operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         operationRecord.setProcessResult(0);
-        operationRecordDao.insert(operationRecord);
-        LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
-            operationRecord.toString());
+
 
         // 记录验证拒绝的原因
         Scheme scheme = new Scheme();
@@ -215,6 +213,11 @@ public class AssetStatusJumpController {
         scheme.setAssetNextStatus(AssetStatusEnum.WATI_REGSIST.getCode());
         schemeDao.insert(scheme);
         LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme.toString());
+
+        operationRecord.setSchemeId(scheme.getId());
+        operationRecordDao.insert(operationRecord);
+        LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
+            operationRecord.toString());
         return ActionResponse.success(assetDao.updateStatus(asset));
     }
 }
