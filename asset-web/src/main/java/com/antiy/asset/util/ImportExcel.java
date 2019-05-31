@@ -315,7 +315,7 @@ public class ImportExcel {
             return null;
         }
 
-        if (lastRowNum > 112) {
+        if (lastRowNum > 111) {
             sb.append("导入失败，一次最多只能导入100条数据！");
             return null;
         }
