@@ -1987,7 +1987,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 初始化其它设备示例数据
         List<OtherDeviceEntity> dataList = initOtherData();
         ExcelUtils.exportTemplateToFile(OtherDeviceEntity.class, "其它设备信息模板.xlsx", "其它设备",
-            "备注：时间填写规范统一为XXXX/XX/XX(不用补0)，必填项必须填写，否则会插入失败", dictionary + "/", dataList);
+            "备注：时间填写规范统一为XXXX/XX/XX(不用补0)，必填项必须填写，否则会插入失败，请不要删除示例，保持模版原样从第七行开始填写。", dictionary + "/", dataList);
     }
 
     private List<OtherDeviceEntity> initOtherData() {
@@ -2014,7 +2014,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 初始化安全设备示例数据
         List<SafetyEquipmentEntiy> dataList = initSafetyData();
         ExcelUtils.exportTemplateToFile(SafetyEquipmentEntiy.class, "安全设备信息模板.xlsx", "安全设备",
-            "备注：时间填写规范统一为XXXX/XX/XX(不用补0)，必填项必须填写，否则会插入失败", dictionary + "/", dataList);
+            "备注：时间填写规范统一为XXXX/XX/XX(不用补0)，必填项必须填写，否则会插入失败，请不要删除示例，保持模版原样从第七行开始填写。", dictionary + "/", dataList);
     }
 
     private List<SafetyEquipmentEntiy> initSafetyData() {
@@ -2048,7 +2048,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 初始化存储设备示例数据
         List<StorageDeviceEntity> dataList = initStorageData();
         ExcelUtils.exportTemplateToFile(StorageDeviceEntity.class, "存储设备信息模板.xlsx", "存储设备",
-            "备注：时间填写规范统一为XXXX/XX/XX，必填项必须填写，否则会插入失败", dictionary + "/", dataList);
+            "备注：时间填写规范统一为XXXX/XX/XX，必填项必须填写，否则会插入失败，请不要删除示例，保持模版原样从第七行开始填写。", dictionary + "/", dataList);
     }
 
     private List<StorageDeviceEntity> initStorageData() {
@@ -2087,7 +2087,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 初始化网络设备示例数据
         List<NetworkDeviceEntity> dataList = initNetworkData();
         ExcelUtils.exportTemplateToFile(NetworkDeviceEntity.class, "网络设备信息模板.xlsx", "网络设备",
-            "备注：时间填写规范统一为XXXX/XX/XX(不用补0)，必填项必须填写，否则会插入失败", dictionary + "/", dataList);
+            "备注：时间填写规范统一为XXXX/XX/XX(不用补0)，必填项必须填写，否则会插入失败，请不要删除示例，保持模版原样从第七行开始填写。", dictionary + "/", dataList);
     }
 
     private List<NetworkDeviceEntity> initNetworkData() {
@@ -2134,7 +2134,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 初始化计算设备示例数据
         List<ComputeDeviceEntity> dataList = initComputeData();
         ExcelUtils.exportTemplateToFile(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备",
-            "备注：时间填写规范统一为XXXX/XX/XX(不用补0)，必填项必须填写，否则会插入失败,部件信息选填,但若填写了某一部件，则必须填写该部件的必填项", dictionary + "/", dataList);
+            "备注：时间填写规范统一为XXXX/XX/XX(不用补0)，必填项必须填写，否则会插入失败,部件信息选填,但若填写了某一部件，则必须填写该部件的必填项，请不要删除示例，保持模版原样从第七行开始填写。", dictionary + "/", dataList);
     }
 
     private List<ComputeDeviceEntity> initComputeData() {
