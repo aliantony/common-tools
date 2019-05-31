@@ -1209,10 +1209,10 @@
     </select>
     <select id="pulldownUnconnectedManufacturer" resultType="string"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select distinct manufacturer from
-        <include refid="Table_Name"></include>
+        select distinct manufacturer from asset
         where
         <trim prefixOverrides="and">
+            <include refid="All_Condition"></include>
             <if test="primaryKey !=null">
                 and asset.id != #{primaryKey}
             </if>
