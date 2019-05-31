@@ -116,7 +116,7 @@ public class AssetStatusChangeFlowProcessImplTest {
     public void changeStatus2() throws Exception{
         AssetStatusReqeust assetStatusReqeust=new AssetStatusReqeust();
         ActivityHandleRequest activityHandleRequest=new ActivityHandleRequest();
-        activityHandleRequest.setFormData("{\"resultCheckUserId\":\"110\",\"result\":\"1\"}");
+        //activityHandleRequest.setFormData("{\"resultCheckUserId\":\"110\",\"result\":\"1\"}");
         activityHandleRequest.setTaskId("222");
         assetStatusReqeust.setActivityHandleRequest(activityHandleRequest);
         assetStatusReqeust.setAssetId("13");
