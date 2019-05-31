@@ -169,7 +169,7 @@ public class AssetStatusJumpController {
     }
 
     /**
-     * 资产配置验证拒绝变更资产状态
+     * 资产配置验证拒绝变更资产状态(配置模块中对资产验证拒绝时才调用此接口)
      *
      * @param baseRequest
      * @return actionResponse
@@ -199,6 +199,8 @@ public class AssetStatusJumpController {
             .setOperateUserId(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
         operationRecord.setProcessResult(0);
         operationRecordDao.insert(operationRecord);
+        LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
+            operationRecord.toString());
 
         // 记录验证拒绝的原因
         Scheme scheme = new Scheme();
@@ -210,6 +212,7 @@ public class AssetStatusJumpController {
         scheme.setSchemeSource(AssetTypeEnum.HARDWARE.getCode());
         scheme.setAssetNextStatus(AssetStatusEnum.WATI_REGSIST.getCode());
         schemeDao.insert(scheme);
+        LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme.toString());
         return ActionResponse.success(assetDao.updateStatus(asset));
     }
 }
