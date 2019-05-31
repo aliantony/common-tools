@@ -367,29 +367,29 @@
     <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetLinkRelation">
         insert into
         <include refid="Table_Name"></include>
-            (
-            asset_id,
-            asset_ip,
-            asset_port,
-            parent_asset_id,
-            parent_asset_ip,
-            parent_asset_port,
-            gmt_create,
-            memo,
-            create_user
-            )
+        (
+        asset_id,
+        asset_ip,
+        asset_port,
+        parent_asset_id,
+        parent_asset_ip,
+        parent_asset_port,
+        gmt_create,
+        memo,
+        create_user
+        )
         values
         <foreach collection="list" item="item" separator=",">
             (
-                #{item.assetId},
-                #{item.assetIp},
-                #{item.assetPort},
-                #{item.parentAssetId},
-                #{item.parentAssetIp},
-                #{item.parentAssetPort},
-                #{item.gmtCreate},
-                #{item.memo},
-                #{item.createUser}
+            #{item.assetId},
+            #{item.assetIp},
+            #{item.assetPort},
+            #{item.parentAssetId},
+            #{item.parentAssetIp},
+            #{item.parentAssetPort},
+            #{item.gmtCreate},
+            #{item.memo},
+            #{item.createUser}
             )
         </foreach>
     </insert>
@@ -468,10 +468,12 @@
         case
         when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
         replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
-        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment where asset_id = a.id and status = 1) is
+        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        where asset_id = a.id and status = 1) is
         not
         null then
-        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment where asset_id = a.id and status = 1)
+        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        where asset_id = a.id and status = 1)
         else '' end as ip,
         case
         when replace(rtrim(replace(group_concat( b.mac_address ),',',' ')),' ',',') is not null then
@@ -600,12 +602,12 @@
         <where>
             <if test="assetIds!= null and assetIds.size() > 0">
                 (asset_id, asset_ip) in (
-                <foreach item="k" collection="assetIds.keys" separator=","  index="index">
+                <foreach item="k" collection="assetIds.keys" separator="," index="index">
                     (${k},#{assetIds[${k}]})
                 </foreach>
                 )
                 or (parent_asset_id, parent_asset_ip) in (
-                <foreach item="k" collection="assetIds.keys" separator=","  index="index">
+                <foreach item="k" collection="assetIds.keys" separator="," index="index">
                     (${k},#{assetIds[${k}]})
                 </foreach>
                 )
@@ -646,7 +648,8 @@
         asset a
         LEFT JOIN asset_category_model t ON a.category_model = t.id
         LEFT JOIN asset_network_card b ON ( a.id = b.asset_id AND b.STATUS = 1 )
-        LEFT JOIN asset_link_relation c ON ( (a.id = c.asset_id AND b.ip_address = c.asset_ip) or (a.id = c.parent_asset_id AND b.ip_address = c.parent_asset_ip) AND c.STATUS = 1 )
+        LEFT JOIN asset_link_relation c ON ( (a.id = c.asset_id AND b.ip_address = c.asset_ip) or (a.id =
+        c.parent_asset_id AND b.ip_address = c.parent_asset_ip) AND c.STATUS = 1 )
         WHERE 1 = 1
         and b.asset_id IS NOT NULL
         <if test="areaIds != null and areaIds.size() > 0">
@@ -694,7 +697,7 @@
         asset a
         LEFT JOIN asset_category_model t ON a.category_model = t.id
         LEFT JOIN asset_network_equipment b ON a.id = b.asset_id
-        LEFT JOIN asset_link_relation c ON ( a.id = c.asset_id or a.id = c.parent_asset_id  AND c.STATUS = 1 )
+        LEFT JOIN asset_link_relation c ON ( a.id = c.asset_id or a.id = c.parent_asset_id AND c.STATUS = 1 )
         WHERE 1 = 1
         and b.asset_id IS NOT NULL
         <if test="areaIds != null and areaIds.size() > 0">
@@ -765,7 +768,8 @@
         LEFT JOIN asset_link_relation c ON ( b.asset_id = c.asset_id AND b.ip_address = c.asset_ip and c.status = 1)
         WHERE
         a.id = #{primaryKey}
-        and not EXISTS (select 1 from asset_link_relation d where d.parent_asset_ip = b.ip_address and d.parent_asset_id = b.asset_id)
+        and not EXISTS (select 1 from asset_link_relation d where d.parent_asset_ip = b.ip_address and d.parent_asset_id
+        = b.asset_id)
         and b.ip_address is not null
         <if test="portCount != null and portCount.size() > 0">
             UNION ALL
@@ -820,7 +824,8 @@
             AND t.port = alr.asset_port
             where t.id is not null
             and not EXISTS(select 1 from asset_link_relation where asset_id = t.id and asset_port = t.port)
-            and not EXISTS(select 1 from asset_link_relation where parent_asset_id = t.id and parent_asset_port = t.port)
+            and not EXISTS(select 1 from asset_link_relation where parent_asset_id = t.id and parent_asset_port =
+            t.port)
         </if>
         union all
         SELECT
@@ -854,7 +859,8 @@
         a.asset_ip AS assetIp,
         a.parent_asset_id AS parentAssetId,
         ( SELECT NAME FROM asset WHERE id = a.parent_asset_id ) AS parentAssetName,
-        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id ) ) AS parentCategoryModelName,
+        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id
+        ) ) AS parentCategoryModelName,
         a.parent_asset_ip AS parentAssetIp,
         a.parent_asset_port AS parentAssetPort,
         a.gmt_create
@@ -968,7 +974,8 @@
         </if>
         GROUP BY a.id) t
     </select>
-    <select id="queryLinkedCountAssetByAssetId" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
+    <select id="queryLinkedCountAssetByAssetId" resultType="java.lang.Integer"
+            parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
         select count(1) count from(select distinct t.* from (SELECT
         c.id,
         a.id as assetId,
@@ -1042,7 +1049,8 @@
             AND t.port = alr.asset_port
             where t.id is not null
             and not EXISTS(select 1 from asset_link_relation where asset_id = t.id and asset_port = t.port)
-            and not EXISTS(select 1 from asset_link_relation where parent_asset_id = t.id and parent_asset_port = t.port)
+            and not EXISTS(select 1 from asset_link_relation where parent_asset_id = t.id and parent_asset_port =
+            t.port)
         </if>
         union all
         SELECT
@@ -1075,7 +1083,8 @@
         a.asset_ip AS assetIp,
         a.parent_asset_id AS parentAssetId,
         ( SELECT NAME FROM asset WHERE id = a.parent_asset_id ) AS parentAssetName,
-        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id ) ) AS parentCategoryModelName,
+        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id
+        ) ) AS parentCategoryModelName,
         a.parent_asset_ip AS parentAssetIp,
         a.parent_asset_port AS parentAssetPort
         FROM
@@ -1138,7 +1147,8 @@
                 select inner_ip as ip_address from asset_network_equipment WHERE asset_id=#{assetId} and status=1
             </when>
             <when test="type == 'isPc'">
-                select ip_address from asset_network_card where asset_id = #{assetId} and status = 1 and ip_address not in
+                select ip_address from asset_network_card where asset_id = #{assetId} and status = 1 and ip_address not
+                in
                 (select asset_ip from asset_link_relation where asset_id = #{assetId} and status = 1 union all
                 select parent_asset_ip from asset_link_relation where parent_asset_id = #{assetId} and status = 1)
             </when>
@@ -1154,7 +1164,6 @@
         <include refid="Table_Name"></include>
         where
         <trim prefixOverrides="and">
-            <include refid="All_Condition"></include>
             <if test="primaryKey !=null">
                 and asset.id != #{primaryKey}
             </if>
@@ -1293,7 +1302,70 @@
     <select id="findUnconnectedCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
         select count(1) count
         from
-        <include refid="Table_Name"></include>
+        (select
+        a.id,
+        a.area_id,
+        a.asset_group,
+        a.category_model,
+        a.admittance_status,
+        a.number,
+        a.name,
+        a.install_type,
+        a.serial,
+        c.name as category_model_name,
+        a.manufacturer, asset_status,
+        a.operation_system,
+        a.system_bit,
+        a.location,
+        a.house_location,
+        a.latitude,
+        a.longitude,
+        a.firmware_version,
+        a.uuid,
+        a.responsible_user_id,
+        a.contact_tel,
+        a.email,
+        a.asset_source,
+        a.importance_degree,
+        a.describle,
+        a.parent_id,
+        a.tags,
+        a.first_enter_nett,
+        a.service_life,
+        a. buy_date,
+        a.warranty,
+        a.gmt_create,
+        a.status,
+        case
+        when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
+        replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
+        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        where asset_id = a.id and status = 1) is
+        not
+        null then
+        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        where asset_id = a.id and status = 1)
+        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as ip,
+        case
+        when replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',') is not null then
+        replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',')
+        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
+        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
+        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
+        else '' end as mac
+        from
+        asset a
+        left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
+        left join asset_category_model c on a.category_model = c.id
+        where a.status = 1
+        <if test="primaryKey !=null">
+            and a.id != #{primaryKey}
+        </if>
+        group by a.id
+        ) asset
         <where>
             <trim prefixOverrides="and">
                 <include refid="All_Condition"></include>
