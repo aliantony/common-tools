@@ -38,6 +38,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
@@ -408,7 +409,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         AssetRequest assetRequest = assetToRequestConverter.convert(asset1, AssetRequest.class);
                         assetRequest.setId(asset1.getStringId());
                         assetOuterRequestToChangeRecord.setAsset(assetRequest);
-
 
                         LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(),
                             asset1.getId(), asset1.getNumber(), asset1, BusinessModuleEnum.HARD_ASSET,
@@ -887,10 +887,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         if (count <= 0) {
             if (query.getEnterControl()) {
-                //如果是工作台进来的但是有没有存在当前状态的待办任务，则把当前状态的资产全部查询出来
+                // 如果是工作台进来的但是有没有存在当前状态的待办任务，则把当前状态的资产全部查询出来
                 query.setEnterControl(false);
                 return new PageResult<>(query.getPageSize(), this.findCountAsset(query), query.getCurrentPage(),
-                        this.findListAsset(query, processMap));
+                    this.findListAsset(query, processMap));
             }
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
         }
@@ -961,8 +961,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (count == 0) {
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
         } else {
-            List<AssetResponse> assetResponseList = responseConverter.convert(assetLinkRelationDao.findListUnconnectedAsset(query),
-                AssetResponse.class);
+            List<AssetResponse> assetResponseList = responseConverter
+                .convert(assetLinkRelationDao.findListUnconnectedAsset(query), AssetResponse.class);
             processCategoryToSecondCategory(assetResponseList, categoryMap);
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
         }
@@ -2564,9 +2564,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (ComputerVo computerVo : computerVos) {
                 Asset asset = computerVo.getAsset();
 
-                Integer insert = assetDao.insert(asset);
-                if (insert == 0) {
-                    throw new BusinessException("重复提交模板！");
+                try {
+                    assetDao.insert(asset);
+                } catch (DuplicateKeyException exception) {
+                    throw new BusinessException("重复提交插入模板");
                 }
 
                 if (CollectionUtils.isNotEmpty(computerVo.getAssetCpus())) {
@@ -3373,8 +3374,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return stringBuilder.append(builder).append(sb).toString();
     }
 
-    private void importActivity(List<ManualStartActivityRequest> manualStartActivityRequests,
-                                String stringId, String areaId) throws Exception {
+    private void importActivity(List<ManualStartActivityRequest> manualStartActivityRequests, String stringId,
+                                String areaId) throws Exception {
         ActionResponse actionResponse = areaClient.queryByArea(ImportTypeEnum.HARDWARE.getName(),
             aesEncoder.encode(areaId, LoginUserUtil.getLoginUser().getUsername()));
 
@@ -3385,7 +3386,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             throw new BusinessException("请先在角色权限管理，配置登记权限！");
         }
-
 
         for (LinkedHashMap linkedHashMap : mapList) {
             stringBuilder.append(
