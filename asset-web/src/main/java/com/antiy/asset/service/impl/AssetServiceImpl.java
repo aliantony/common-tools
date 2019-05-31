@@ -886,6 +886,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         if (count <= 0) {
+            if (query.getEnterControl()) {
+                //如果是工作台进来的但是有没有存在当前状态的待办任务，则把当前状态的资产全部查询出来
+                query.setEnterControl(false);
+                return new PageResult<>(query.getPageSize(), this.findCountAsset(query), query.getCurrentPage(),
+                        this.findListAsset(query, processMap));
+            }
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
         }
 

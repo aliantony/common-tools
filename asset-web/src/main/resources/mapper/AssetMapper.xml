@@ -827,7 +827,9 @@
 
     <select id="findCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
         select
-        count(1) count
+        count(1) count from
+        (
+        select asset.id
         from
         asset asset
         left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and asset_network_card.status = 1
@@ -840,6 +842,7 @@
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
+        group by asset.id) t
     </select>
 
     <select id="findUnconnectedCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
