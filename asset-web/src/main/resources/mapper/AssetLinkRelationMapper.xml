@@ -123,6 +123,12 @@
             </foreach>
         </if>
 
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
 
         <if test=" assetGroup != null and assetGroup != ''">
             and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id =
