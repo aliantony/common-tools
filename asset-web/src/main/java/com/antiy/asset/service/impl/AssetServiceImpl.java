@@ -2567,7 +2567,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 try {
                     assetDao.insert(asset);
                 } catch (DuplicateKeyException exception) {
-                    throw new BusinessException("重复提交插入模板");
+                    throw new BusinessException("请勿重复提交！");
                 }
 
                 if (CollectionUtils.isNotEmpty(computerVo.getAssetCpus())) {
@@ -2797,7 +2797,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (repeat + error == 0) {
             List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
             for (int i = 0; i < assets.size(); i++) {
-                assetDao.insert(assets.get(i));
+
+                try {
+                    assetDao.insert(assets.get(i));
+                } catch (DuplicateKeyException exception) {
+                    throw new BusinessException("请勿重复提交！");
+                }
 
                 String stringId = assets.get(i).getStringId();
                 networkEquipments.get(i).setAssetId(stringId);
@@ -2996,7 +3001,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (repeat + error == 0) {
             List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
             for (int i = 0; i < assets.size(); i++) {
-                assetDao.insert(assets.get(i));
+
+                try {
+                    assetDao.insert(assets.get(i));
+                } catch (DuplicateKeyException exception) {
+                    throw new BusinessException("请勿重复提交！");
+                }
                 String stringId = assets.get(i).getStringId();
                 assetSafetyEquipments.get(i).setAssetId(stringId);
                 assetSafetyEquipmentDao.insert(assetSafetyEquipments.get(i));
@@ -3184,7 +3194,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (repeat + error == 0) {
             List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
             for (int i = 0; i < assets.size(); i++) {
-                assetDao.insert(assets.get(i));
+
+                try {
+                    assetDao.insert(assets.get(i));
+                } catch (DuplicateKeyException exception) {
+                    throw new BusinessException("请勿重复提交！");
+                }
                 String stringId = assets.get(i).getStringId();
                 assetStorageMedia.get(i).setAssetId(stringId);
                 assetStorageMediumDao.insert(assetStorageMedia.get(i));
@@ -3345,7 +3360,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (repeat + error == 0) {
             List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
             for (Asset asset : assets) {
-                assetDao.insert(asset);
+                try {
+                    assetDao.insert(asset);
+                } catch (DuplicateKeyException exception) {
+                    throw new BusinessException("请勿重复提交！");
+                }
                 assetRecord(asset.getStringId());
                 importActivity(manualStartActivityRequests, asset.getStringId(), asset.getAreaId());
                 success++;
