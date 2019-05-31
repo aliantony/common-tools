@@ -188,6 +188,7 @@ public class AssetStatusJumpController {
         // 记录操作记录
         AssetOperationRecord operationRecord = new AssetOperationRecord();
         operationRecord.setAreaId(assetDao.getAreaIdById(baseRequest.getStringId()));
+        operationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         operationRecord.setTargetObjectId(baseRequest.getStringId());
         operationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
         operationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
