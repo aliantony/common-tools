@@ -2464,9 +2464,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // assetMemoryDao.insertBatch(assetMemoryList);
                 }
 
-                // else {
-                // builder.append("序号").append(a).append("行").append ("没有添加内存：内存品牌，内存容量，内存主频，内存数量>0")
-                // }
+                if (!Objects.isNull(entity.getHardDisCapacityl()) && !Objects.isNull(entity.getHardDiskType())
+                    && (Objects.isNull(entity.getHardDiskNum()) || entity.getHardDiskNum() < 1)) {
+                    entity.setHardDiskNum(1);
+                }
 
                 if (!Objects.isNull(entity.getHardDisCapacityl()) && !Objects.isNull(entity.getHardDiskType())
                     && !Objects.isNull(entity.getHardDiskNum()) && entity.getHardDiskNum() > 0) {
@@ -2491,10 +2492,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                 }
 
-                if (!Objects.isNull(entity.getMainboradNum()) && entity.getMainboradNum() > 0
-                    && StringUtils.isNotBlank(entity.getMainboradBrand())) {
 
+                if (!Objects.isNull(entity.getMainboradBrand()) || !Objects.isNull(entity.getMainboradBiosDate())
+                    || !Objects.isNull(entity.getMainboradBiosVersion()) || !Objects.isNull(entity.getMainboradModel())
+                    || !Objects.isNull(entity.getMainboradSerial())) {
                     AssetMainborad assetMainborad = new AssetMainborad();
+                    if (Objects.isNull(entity.getMainboradNum()) || entity.getMainboradNum() < 0) {
+                        entity.setMainboradNum(1);
+                    }
                     // assetMainborad.setAssetId(id);
                     assetMainborad.setGmtCreate(System.currentTimeMillis());
                     assetMainborad.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -2508,8 +2513,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetMainborads.add(assetMainborad);
                     }
                     computerVo.setAssetMainborads(assetMainborads);
-                    // assetMainboradDao.insertBatch(assetMainborads);
                 }
+
+                if (!Objects.isNull(entity.getCpuMainFrequency())
+                    && (Objects.isNull(entity.getCpuNum()) || entity.getCpuNum() < 1)) {
+                    entity.setCpuNum(1);
+                }
+
                 if (!Objects.isNull(entity.getCpuNum()) && entity.getCpuNum() > 0
                     && !Objects.isNull(entity.getCpuMainFrequency())) {
                     AssetCpu assetCpu = new AssetCpu();
