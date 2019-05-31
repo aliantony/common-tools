@@ -198,6 +198,7 @@ public class AssetStatusJumpController {
             .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
         operationRecord
             .setOperateUserId(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
+        operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         operationRecord.setProcessResult(0);
         operationRecordDao.insert(operationRecord);
         LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
