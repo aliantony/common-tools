@@ -3383,7 +3383,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         if (CollectionUtils.isEmpty(mapList)) {
 
-            throw new BusinessException("该用户下没有资产管理员！");
+            throw new BusinessException("请先在角色权限管理，配置登记权限！");
         }
 
 
