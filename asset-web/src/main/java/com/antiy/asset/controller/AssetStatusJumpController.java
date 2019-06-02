@@ -138,7 +138,7 @@ public class AssetStatusJumpController {
             if (!(AssetStatusEnum.WATI_REGSIST.getCode().equals(currentStatus)
                   || AssetStatusEnum.NOT_REGSIST.getCode().equals(currentStatus)
                   || AssetStatusEnum.RETIRE.getCode().equals(currentStatus))) {
-                throw new BusinessException("资产:" + currentAsset.getName() + "已为"
+                throw new BusinessException("资产" + currentAsset.getName() + "已为"
                                             + AssetStatusEnum.getAssetByCode(currentStatus).getMsg() + "状态");
             }
             Asset asset = new Asset();
