@@ -29,6 +29,7 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
@@ -124,14 +125,22 @@ public class AssetStatusJumpController {
             }
             assetSoftware.setSoftwareStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
             operationRecord(assetStatusChangeRequest, assetId);
-            LogUtils.recordOperLog(
-                new BusinessData(AssetEventEnum.SOFT_NO_REGISTER.getName(), DataTypeUtils.stringToInteger(assetId),
-                    softwareDao.getById(assetId).getName(), assetStatusChangeRequest, BusinessModuleEnum.SOFTWARE_ASSET,
-                    BusinessPhaseEnum.NOT_REGISTER));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_NO_REGISTER.getName(),
+                DataTypeUtils.stringToInteger(assetId), softwareDao.getById(assetId).getName(),
+                assetStatusChangeRequest, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NOT_REGISTER));
             LogUtils.info(logger, AssetEventEnum.SOFT_NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
 
             return ActionResponse.success(softwareDao.update(assetSoftware));
         } else {
+            // 查询资产当前状态
+            Asset currentAsset = assetDao.getById(assetId);
+            Integer currentStatus = assetDao.getById(assetId).getAssetStatus();
+            if (!(AssetStatusEnum.WATI_REGSIST.getCode().equals(currentStatus)
+                  || AssetStatusEnum.NOT_REGSIST.getCode().equals(currentStatus)
+                  || AssetStatusEnum.RETIRE.getCode().equals(currentStatus))) {
+                throw new BusinessException("资产:" + currentAsset.getName() + "已为"
+                                            + AssetStatusEnum.getAssetByCode(currentStatus).getMsg() + "状态");
+            }
             Asset asset = new Asset();
             asset.setId(DataTypeUtils.stringToInteger(assetId));
             asset.setAssetStatus(AssetStatusEnum.NOT_REGSIST.getCode());
@@ -200,7 +209,6 @@ public class AssetStatusJumpController {
             .setOperateUserId(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
         operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         operationRecord.setProcessResult(0);
-
 
         // 记录验证拒绝的原因
         Scheme scheme = new Scheme();
