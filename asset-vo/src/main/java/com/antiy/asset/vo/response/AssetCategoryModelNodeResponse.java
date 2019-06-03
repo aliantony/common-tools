@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetCategoryModelNodeResponse extends AssetCategoryModelResponse {
     @ApiModelProperty(value = "级次")
-    private Integer                              level;
+    private Integer                              levelType;
     @ApiModelProperty(value = "是否可编辑")
     private boolean                              readOnly;
     @ApiModelProperty(value = "子节点")
@@ -28,17 +28,17 @@ public class AssetCategoryModelNodeResponse extends AssetCategoryModelResponse {
         this.childrenNode = childrenNode;
     }
 
-    public Integer getLevel() {
-        return level;
+    public Integer getLevelType() {
+        return levelType;
     }
 
-    public void setLevel(Integer level) {
-        this.level = level;
+    public void setLevelType(Integer levelType) {
+        this.levelType = levelType;
     }
 
     @Override
     public String toString() {
-        return "AssetCategoryModelNodeResponse{" + "level=" + level + ", readOnly=" + readOnly + ", childrenNode="
-               + childrenNode + '}';
+        return "AssetCategoryModelNodeResponse{" + "levelType=" + levelType + ", readOnly=" + readOnly
+               + ", childrenNode=" + childrenNode + '}';
     }
 }

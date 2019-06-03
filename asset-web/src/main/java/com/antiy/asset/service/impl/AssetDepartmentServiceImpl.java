@@ -198,11 +198,11 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         if (CollectionUtils.isNotEmpty(assetDepartmentNodeResponses)) {
             for (AssetDepartmentNodeResponse assetDepartmentNodeResponse : assetDepartmentNodeResponses) {
                 if (!parentMap.containsKey(assetDepartmentNodeResponse.getParentId())) {
-                    assetDepartmentNodeResponse.setLevel(1);
+                    assetDepartmentNodeResponse.setLevelType(1);
                     parentMap.put(assetDepartmentNodeResponse.getStringId(), 1);
                 } else {
                     parentMap.put(assetDepartmentNodeResponse.getStringId(), parentMap.get(assetDepartmentNodeResponse.getParentId())+1);
-                    assetDepartmentNodeResponse.setLevel(parentMap.get(assetDepartmentNodeResponse.getParentId())+1);
+                    assetDepartmentNodeResponse.setLevelType(parentMap.get(assetDepartmentNodeResponse.getParentId())+1);
                 }
                 dealLevel(assetDepartmentNodeResponse.getChildrenNode());
             }

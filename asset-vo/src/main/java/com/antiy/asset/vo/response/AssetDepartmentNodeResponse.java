@@ -13,18 +13,18 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "资产组织树型显示")
 public class AssetDepartmentNodeResponse extends AssetDepartmentResponse {
     @ApiModelProperty(value = "级次")
-    private Integer                           level;
+    private Integer                           levelType;
     @ApiModelProperty(value = "是否可编辑")
     private boolean                           readOnly;
     @ApiModelProperty(value = "子节点")
     private List<AssetDepartmentNodeResponse> childrenNode;
 
-    public Integer getLevel() {
-        return level;
+    public Integer getLevelType() {
+        return levelType;
     }
 
-    public void setLevel(Integer level) {
-        this.level = level;
+    public void setLevelType(Integer levelType) {
+        this.levelType = levelType;
     }
 
     public boolean isReadOnly() {
@@ -45,7 +45,7 @@ public class AssetDepartmentNodeResponse extends AssetDepartmentResponse {
 
     @Override
     public String toString() {
-        return "AssetDepartmentNodeResponse{" + "level=" + level + ", readOnly=" + readOnly + ", childrenNode="
+        return "AssetDepartmentNodeResponse{" + "levelType=" + levelType + ", readOnly=" + readOnly + ", childrenNode="
                + childrenNode + '}';
     }
 }
