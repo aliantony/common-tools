@@ -32,9 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.antiy.biz.file.FileHelper.logger;
 
@@ -57,7 +55,11 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     private AesEncoder                                              aesEncoder;
     @Resource
     private AssetUserDao                                            assetUserDao;
-
+    private static Map<String, Integer> parentMap            = new HashMap() {
+        {
+            put("0", 0);
+        }
+    };
     @Override
     @Transactional
     public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
@@ -188,7 +190,23 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         NodeUtilsConverter nodeConverter = new NodeUtilsConverter();
         List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(assetDepartment,
             AssetDepartmentNodeResponse.class);
+        dealLevel(assetDepartmentNodeResponses);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
+    }
+
+    private void dealLevel(List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses) {
+        if (CollectionUtils.isNotEmpty(assetDepartmentNodeResponses)) {
+            for (AssetDepartmentNodeResponse assetDepartmentNodeResponse : assetDepartmentNodeResponses) {
+                if (!parentMap.containsKey(assetDepartmentNodeResponse.getParentId())) {
+                    assetDepartmentNodeResponse.setLevel(1);
+                    parentMap.put(assetDepartmentNodeResponse.getStringId(), 1);
+                } else {
+                    parentMap.put(assetDepartmentNodeResponse.getStringId(), parentMap.get(assetDepartmentNodeResponse.getParentId())+1);
+                    assetDepartmentNodeResponse.setLevel(parentMap.get(assetDepartmentNodeResponse.getParentId())+1);
+                }
+                dealLevel(assetDepartmentNodeResponse.getChildrenNode());
+            }
+        }
     }
 
     /**

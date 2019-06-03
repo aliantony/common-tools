@@ -8,6 +8,7 @@ import java.util.*;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -64,6 +65,18 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     private AesEncoder              aesEncoder;
     @Resource
     private AssetSoftwareDao        assetSoftwareDao;
+    private static List<String>     readOnly = new ArrayList() {
+                                                 {
+                                                     add("智甲");
+                                                     add("追影");
+                                                     add("探海");
+                                                 }
+                                             };
+    private static Map<String, Integer> parentMap            = new HashMap() {
+        {
+            put("0", 0);
+        }
+    };
 
     /**
      *
@@ -396,9 +409,26 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         NodeUtilsConverter<AssetCategoryModel, AssetCategoryModelNodeResponse> nodeConverter = new NodeUtilsConverter<>();
         List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter
             .columnToNode(assetCategoryModels, AssetCategoryModelNodeResponse.class);
+        dealLevel(assetDepartmentNodeResponses);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
-
+    private void dealLevel(List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses) {
+        if (CollectionUtils.isNotEmpty(assetDepartmentNodeResponses)) {
+            for (AssetCategoryModelNodeResponse assetCategoryModelNodeResponse : assetDepartmentNodeResponses) {
+                if (!parentMap.containsKey(assetCategoryModelNodeResponse.getParentId())) {
+                    assetCategoryModelNodeResponse.setLevel(1);
+                    parentMap.put(assetCategoryModelNodeResponse.getStringId(), 1);
+                } else {
+                    parentMap.put(assetCategoryModelNodeResponse.getStringId(), parentMap.get(assetCategoryModelNodeResponse.getParentId())+1);
+                    assetCategoryModelNodeResponse.setLevel(parentMap.get(assetCategoryModelNodeResponse.getParentId())+1);
+                }
+                if (assetCategoryModelNodeResponse.getLevel() <=3 || readOnly.contains(assetCategoryModelNodeResponse.getName())) {
+                    assetCategoryModelNodeResponse.setReadOnly(true);
+                }
+                dealLevel(assetCategoryModelNodeResponse.getChildrenNode());
+            }
+        }
+    }
     /**
      * 递归查询该品类所属的二级id
      * @param categoryId 品类id
