@@ -12,7 +12,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -179,12 +178,12 @@ public class FileController {
 
         if (RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
             FileRespVO fileRespVO = fileResponse.getData();
-            if (StringUtils.isNotEmpty(md5)) {
-                if (!fileRespVO.getMd5().equals(md5.toLowerCase())) {
-                    fileUtils.delete(defaultHDFSUrl + fileRespVO.getFileUrl());
-                    throw new BusinessException("MD5校验失败");
-                }
-            }
+            // if (StringUtils.isNotEmpty(md5)) {
+            // if (!fileRespVO.getMd5().equals(md5.toLowerCase())) {
+            // fileUtils.delete(defaultHDFSUrl + fileRespVO.getFileUrl());
+            // throw new BusinessException("MD5校验失败");
+            // }
+            // }
             fileRespVOS.add(fileRespVO);
         } else {
             // 记录运行日志

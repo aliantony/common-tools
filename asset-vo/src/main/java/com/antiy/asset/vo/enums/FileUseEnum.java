@@ -9,7 +9,9 @@ import java.util.List;
  * @create 2019-04-28 15:07
  **/
 public enum FileUseEnum {
-                         INSTALL_PACKAGE("INSTALL_PACKAGE", Arrays.asList("zip", "rar", "7z", "tar", "tgz", "gz"),
+                         INSTALL_PACKAGE("INSTALL_PACKAGE",
+                                         Arrays.asList("zip", "rar", "7z", "tar", "tgz", "gz", "deb", "rpm", "bin",
+                                             "dpkg", "bz"),
                                          5368709120L), INSTALL_INTRODUCE_MANUAL("INSTALL_INTRODUCE_MANUAL",
                                                                                 Arrays.asList("rar", "zip", "pdf",
                                                                                     "doc", "docx", "txt", "7z", "png",
