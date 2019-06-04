@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -147,7 +148,7 @@ public class FileController {
             }
 
             if (!FileUseEnum.INSTALL_PACKAGE.getFormat()
-                .contains(FileUtil.getExtensionName(tmpFile.getOriginalFilename()))) {
+                .contains(FileUtil.getExtensionName(StringUtils.swapCase(tmpFile.getOriginalFilename())))) {
                 throw new BusinessException("文件格式错误");
             }
         } else if (FileUseEnum.INSTALL_INTRODUCE_MANUAL.getCode().equals(fileUseEnum.getCode())) {
@@ -156,7 +157,7 @@ public class FileController {
             }
 
             if (!FileUseEnum.INSTALL_INTRODUCE_MANUAL.getFormat()
-                .contains(FileUtil.getExtensionName(tmpFile.getOriginalFilename()))) {
+                .contains(FileUtil.getExtensionName(StringUtils.swapCase(tmpFile.getOriginalFilename())))) {
                 throw new BusinessException("文件格式错误");
             }
         } else if (FileUseEnum.SCHEME_FILE.getCode().equals(fileUseEnum.getCode())) {
@@ -165,7 +166,7 @@ public class FileController {
             }
 
             if (!FileUseEnum.SCHEME_FILE.getFormat()
-                .contains(FileUtil.getExtensionName(tmpFile.getOriginalFilename()))) {
+                .contains(FileUtil.getExtensionName(StringUtils.swapCase(tmpFile.getOriginalFilename())))) {
                 throw new BusinessException("文件格式错误");
             }
         }
