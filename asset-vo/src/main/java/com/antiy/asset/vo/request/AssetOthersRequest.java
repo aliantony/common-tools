@@ -34,7 +34,7 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      */
     @ApiModelProperty("联系电话")
     @Size(message = "联系电话必须为11位", max = 11, min = 11)
-    @Pattern(regexp = "^1(3|4|5|7|8|9)\\d{9}$", message = "联系电话错误")
+    @Pattern(regexp = "^1(3|4|5|6|7|8|9)\\d{9}$", message = "联系电话错误")
     private String                  contactTel;
     /**
      * 邮箱
