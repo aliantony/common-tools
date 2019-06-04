@@ -62,7 +62,7 @@ public class AssetExternalRequest extends BasicRequest implements ObjectValidato
     /**
      * 资产上的软件
      */
-    private List<AssetSoftwareRequest>    assetSoftwareRequestList;
+    private List<AssetSoftwareRequest>    software;
 
     public AssetRequest getAsset() {
         return asset;
@@ -112,12 +112,12 @@ public class AssetExternalRequest extends BasicRequest implements ObjectValidato
         this.networkCard = networkCard;
     }
 
-    public List<AssetSoftwareRequest> getAssetSoftwareRequestList() {
-        return assetSoftwareRequestList;
+    public List<AssetSoftwareRequest> getSoftware() {
+        return software;
     }
 
-    public void setAssetSoftwareRequestList(List<AssetSoftwareRequest> assetSoftwareRequestList) {
-        this.assetSoftwareRequestList = assetSoftwareRequestList;
+    public void setSoftware(List<AssetSoftwareRequest> software) {
+        this.software = software;
     }
 
     @Override

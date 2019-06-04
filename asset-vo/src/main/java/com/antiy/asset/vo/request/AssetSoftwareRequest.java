@@ -60,7 +60,12 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty(value = "软件大小")
     private Long                        size;
-
+    /**
+     * 操作系统(WINDOWS7-32-64,WINDOWS8-64)
+     */
+    @ApiModelProperty(value = "操作系统,用于下发")
+    @Encode
+    private String                      operationSystem;
     /**
      * 操作系统(WINDOWS7-32-64,WINDOWS8-64)
      */
@@ -125,7 +130,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 到期时间
      */
     @ApiModelProperty(value = "到期时间")
-    @Max(message = "时间超出范围",value = 9999999999999L)
+    @Max(message = "时间超出范围", value = 9999999999999L)
     private Long                        serviceLife;
 
     /**
@@ -162,7 +167,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 发布时间
      */
     @ApiModelProperty(value = "发布时间")
-    @Max(message = "时间超出范围",value = 9999999999999L)
+    @Max(message = "时间超出范围", value = 9999999999999L)
     private Long                        releaseTime;
 
     /**
@@ -194,6 +199,14 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         return manualDocUrl;
     }
 
+    public String getOperationSystem() {
+        return operationSystem;
+    }
+
+    public void setOperationSystem(String operationSystem) {
+        this.operationSystem = operationSystem;
+    }
+
     public void setManualDocUrl(String manualDocUrl) {
         this.manualDocUrl = manualDocUrl;
     }
@@ -213,8 +226,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     public void setBuyDate(Long buyDate) {
         this.buyDate = buyDate;
     }
-
-
 
     public String getAssetSoftwareRelationId() {
         return assetSoftwareRelationId;
@@ -247,7 +258,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     public void setSize(Long size) {
         this.size = size;
     }
-
 
     public String getName() {
         return name;
@@ -373,8 +383,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
     public void validate() throws RequestParamValidateException {
     }
 
-
-
     public AssetSoftwareLicenseRequest getSoftwareLicenseRequest() {
         return softwareLicenseRequest;
     }
@@ -407,7 +415,6 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         this.serial = serial;
     }
 
-
     public Long getServiceLife() {
         return serviceLife;
     }
@@ -437,14 +444,15 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
         return "AssetSoftwareRequest{" + "softwareLicenseRequest=" + softwareLicenseRequest
                + ", assetPortProtocolRequest=" + assetPortProtocolRequest + ", assetIds=" + Arrays.toString(assetIds)
                + ", checkType='" + checkType + '\'' + ", md5Code='" + md5Code + '\'' + ", id='" + id + '\'' + ", size="
-               + size + ", operationSystems=" + Arrays.toString(operationSystems) + ", categoryModel='" + categoryModel
-               + '\'' + ", name='" + name + '\'' + ", uploadSoftwareName='" + uploadSoftwareName + '\'' + ", path='"
-               + path + '\'' + ", version='" + version + '\'' + ", manufacturer='" + manufacturer + '\''
-               + ", description='" + description + '\'' + ", serial='" + serial + '\'' + ", serviceLife=" + serviceLife
-               + ", softwareStatus=" + softwareStatus + ", authorization=" + authorization + ", reportSource="
-               + reportSource + ", protocol='" + protocol + '\'' + ", language='" + language + '\'' + ", releaseTime="
-               + releaseTime + ", publisher='" + publisher + '\'' + ", memo='" + memo + '\''
-               + ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\'' + ", buyDate=" + buyDate
-               + ", manualDocUrl='" + manualDocUrl + '\'' + ", manualDocName='" + manualDocName + '\'' + '}';
+               + size + ", operationSystem='" + operationSystem + '\'' + ", operationSystems="
+               + Arrays.toString(operationSystems) + ", categoryModel='" + categoryModel + '\'' + ", name='" + name
+               + '\'' + ", uploadSoftwareName='" + uploadSoftwareName + '\'' + ", path='" + path + '\'' + ", version='"
+               + version + '\'' + ", manufacturer='" + manufacturer + '\'' + ", description='" + description + '\''
+               + ", serial='" + serial + '\'' + ", serviceLife=" + serviceLife + ", softwareStatus=" + softwareStatus
+               + ", authorization=" + authorization + ", reportSource=" + reportSource + ", protocol='" + protocol
+               + '\'' + ", language='" + language + '\'' + ", releaseTime=" + releaseTime + ", publisher='" + publisher
+               + '\'' + ", memo='" + memo + '\'' + ", assetSoftwareRelationId='" + assetSoftwareRelationId + '\''
+               + ", buyDate=" + buyDate + ", manualDocUrl='" + manualDocUrl + '\'' + ", manualDocName='" + manualDocName
+               + '\'' + '}';
     }
 }
