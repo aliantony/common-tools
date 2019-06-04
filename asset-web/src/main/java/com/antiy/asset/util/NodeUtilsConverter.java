@@ -79,6 +79,7 @@ public class NodeUtilsConverter<S, T> extends BaseConverter<S, T> {
             }
 
             // 3.递归转换为rootNode
+
             rootNode = convertNode(sourceList, clazz, rootNode, parentColumn, idColumn, childrenNodeColumn);
         } catch (Exception e) {
             logger.error("转换失败", e);
@@ -128,11 +129,11 @@ public class NodeUtilsConverter<S, T> extends BaseConverter<S, T> {
      */
     private void recursionNode(Iterator<S> iterator, S s, Class<T> clazz, List<T> rootNode, String parentColumn,
                                String idColumn, String childrenNodeColumn) throws Exception {
+
         if (CollectionUtils.isNotEmpty(rootNode)) {
             for (T t : rootNode) {
                 String id = objToString(ReflectionUtils.invokeGetterMethod(t, idColumn));
                 String partnerId = objToString(ReflectionUtils.invokeGetterMethod(s, parentColumn));
-
                 // 反射调用并且设置值。
                 List<T> source = (List<T>) ReflectionUtils.invokeGetterMethod(t, childrenNodeColumn);
                 if (StringUtils.isNotBlank(id) && id.equals(partnerId)) {
@@ -145,7 +146,6 @@ public class NodeUtilsConverter<S, T> extends BaseConverter<S, T> {
                     ReflectionUtils.setFieldValue(t, childrenNodeColumn, source);
                     iterator.remove();
                 } else if (CollectionUtils.isNotEmpty(source)) {
-                    // 递归调用
                     recursionNode(iterator, s, clazz, source, parentColumn, idColumn, childrenNodeColumn);
                 }
             }

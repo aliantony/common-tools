@@ -6,7 +6,6 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
 
@@ -29,7 +28,6 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      * 资产zu
      */
     @ApiModelProperty("资产组")
-    @Valid
     private List<AssetGroupRequest> assetGroups;
     /**
      * 联系电话
