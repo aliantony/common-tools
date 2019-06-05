@@ -1418,6 +1418,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
+        Asset currentAsset = assetDao.getById(assetOuterRequest.getAsset().getId());
+        // 幂等校验
+        if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
+            if (!(AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus())
+                  || AssetStatusEnum.RETIRE.getCode().equals(currentAsset.getAssetStatus())
+                  || AssetStatusEnum.NOT_REGSIST.getCode().equals(currentAsset.getAssetStatus()))) {
+                throw new BusinessException(
+                    "请勿重复提交，当前资产状态是：" + AssetStatusEnum.getAssetByCode(currentAsset.getAssetStatus()).getMsg());
+            }
+        }
         // 判断物理位置是否为空，因为其它设备没有物理位置所以需要单独校验
         checkLocationNotBlank(assetOuterRequest.getAsset());
 
@@ -1427,7 +1437,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息不能为空");
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
-        Asset currentAsset = assetDao.getById(assetOuterRequest.getAsset().getId());
         AssetQuery assetQuery = new AssetQuery();
         Long currentTimeMillis = System.currentTimeMillis();
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
