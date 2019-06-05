@@ -118,7 +118,8 @@ public enum AssetEventEnum {
                             HARD_WAITTING_REGISTER(110,
                                                    "登记资产"), ASSET_RETIRE_START(111,
                                                                                    "资产发起退役"), ASSET_RETIRE_IMPL(112,
-                                                                                                                "资产实施退役");
+                                                                                                            "资产实施退役"), HARD_NO_REGISTER(113,
+                                                                                                                                        "登记资产");
 
 
     private Integer status;
