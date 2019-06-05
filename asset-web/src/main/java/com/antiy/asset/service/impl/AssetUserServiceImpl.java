@@ -96,7 +96,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
                     String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                         DataTypeUtils.stringToInteger(a.getAddress()));
                     SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-                    a.setAddress(sysArea.getFullName());
+                    a.setAddressName(sysArea.getFullName());
                 } catch (Exception e) {
                     logger.warn("获取用户详细地址失败", e);
                 }

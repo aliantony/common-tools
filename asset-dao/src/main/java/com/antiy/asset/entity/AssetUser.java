@@ -50,6 +50,10 @@ public class AssetUser extends BaseEntity {
      */
     private String  address;
     /**
+     * 住址
+     */
+    private String  addressName;
+    /**
      * 详细地址
      */
     private String  detailAddress;
@@ -78,6 +82,13 @@ public class AssetUser extends BaseEntity {
      */
     private Integer status;
 
+    public String getAddressName() {
+        return addressName;
+    }
+
+    public void setAddressName(String addressName) {
+        this.addressName = addressName;
+    }
 
     public String getDetailAddress() {
         return detailAddress;
@@ -207,28 +218,13 @@ public class AssetUser extends BaseEntity {
         this.memo = memo;
     }
 
-
-
-
     @Override
     public String toString() {
-        return "AssetUser{" +
-                "name='" + name + '\'' +
-                ", memo='" + memo + '\'' +
-                ", departmentId='" + departmentId + '\'' +
-                ", departmentName='" + departmentName + '\'' +
-                ", email='" + email + '\'' +
-                ", qq='" + qq + '\'' +
-                ", weixin='" + weixin + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", address='" + address + '\'' +
-                ", detailAddress='" + detailAddress + '\'' +
-                ", position='" + position + '\'' +
-                ", createUser=" + createUser +
-                ", modifyUser=" + modifyUser +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", status=" + status +
-                '}';
+        return "AssetUser{" + "name='" + name + '\'' + ", memo='" + memo + '\'' + ", departmentId='" + departmentId
+               + '\'' + ", departmentName='" + departmentName + '\'' + ", email='" + email + '\'' + ", qq='" + qq + '\''
+               + ", weixin='" + weixin + '\'' + ", mobile='" + mobile + '\'' + ", address='" + address + '\''
+               + ", addressName='" + addressName + '\'' + ", detailAddress='" + detailAddress + '\'' + ", position='"
+               + position + '\'' + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", gmtCreate="
+               + gmtCreate + ", gmtModified=" + gmtModified + ", status=" + status + '}';
     }
 }
