@@ -732,6 +732,7 @@
             parameterType="java.lang.String">
         select
         b.id,
+        b.size,
         b.name,
         b.manufacturer,
         b.version,
@@ -743,7 +744,9 @@
         b.serial,
         b.path,
         b.md5_code as md5Code,
-        b.check_type as checkType
+        b.check_type as checkType,
+        b.manual_doc_url as manualDocUrl,
+        b.manual_doc_name as manualDocName
         from
         asset_software_relation a
         left join asset_software b on a.software_id = b.id

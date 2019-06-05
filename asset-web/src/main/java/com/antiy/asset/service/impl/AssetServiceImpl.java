@@ -1883,18 +1883,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
             .findInstalledSoft(assetOuterRequest.getAsset().getId());
         assetExternalRequest
-            .setAssetSoftwareRequestList(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
+            .setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
         List<AssetExternalRequest> assetExternalRequests = new ArrayList() {
             {
                 add(assetExternalRequest);
             }
         };
         // 暂时注释
-        /* ActionResponse actionResponse = assetClient.issueAssetData(assetExternalRequests); if (actionResponse == null
-         * || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-         * LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), 0, "", null,
-         * BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN)); LogUtils.error(logger,
-         * AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetExternalRequests.toString()); } */
+        /*ActionResponse actionResponse = assetClient.issueAssetData(assetExternalRequests);
+        if (actionResponse == null
+            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), 0, "", null,
+                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
+            LogUtils.error(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetExternalRequests.toString());
+        }*/
         return assetCount;
     }
 
@@ -2391,7 +2393,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-
             if (entity.getHardDiskBuyDate() != null && entity.getHardDisCapacityl() != null
                 && entity.getHardDiskType() != null) {
 
@@ -2402,8 +2403,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     continue;
                 }
             }
-
-
 
             if (repeat + error == 0) {
                 assetNames.add(entity.getName());
@@ -2498,7 +2497,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // assetHardDiskDao.insertBatch(assetHardDisks);
 
                 }
-
 
                 if (!Objects.isNull(entity.getMainboradBrand()) || !Objects.isNull(entity.getMainboradBiosDate())
                     || !Objects.isNull(entity.getMainboradBiosVersion()) || !Objects.isNull(entity.getMainboradModel())
