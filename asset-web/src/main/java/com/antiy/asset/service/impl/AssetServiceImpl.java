@@ -1523,7 +1523,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         Map<String, String> deleteRelation = nowIp.entrySet().stream()
                             .filter(e -> !existIp.containsKey(e.getKey()))
                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-                        assetLinkRelationDao.deleteRelationByAssetId(deleteRelation);
+                        if (MapUtils.isNotEmpty(deleteRelation)) {
+                            assetLinkRelationDao.deleteRelationByAssetId(deleteRelation);
+                        }
                     }
 
                     if (CollectionUtils.isNotEmpty(assetNetworkCardRequestList)) {
