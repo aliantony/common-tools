@@ -58,6 +58,7 @@ public class AssetUserResponse extends BaseResponse {
      * 住址
      */
     @ApiModelProperty("住址")
+    @Encode
     private String  address;
     /**
      * 住址
