@@ -17,6 +17,7 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.Scheme;
+import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.impl.AssetStatusChangeFactory;
@@ -27,6 +28,7 @@ import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.request.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
+import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
@@ -56,6 +58,8 @@ public class AssetStatusJumpController {
     AssetOperationRecordDao               operationRecordDao;
     @Resource
     SchemeDao                             schemeDao;
+    @Resource
+    private ActivityClient                activityClient;
 
     @Resource
     private IAssetSoftwareRelationService softwareRelationService;
@@ -145,6 +149,18 @@ public class AssetStatusJumpController {
             asset.setId(DataTypeUtils.stringToInteger(assetId));
             asset.setAssetStatus(AssetStatusEnum.NOT_REGSIST.getCode());
             operationRecord(assetStatusChangeRequest, assetId);
+
+            // 硬件完成流程
+            if (assetStatusChangeRequest.getActivityHandleRequest() != null) {
+                ActionResponse actionResponse = activityClient
+                    .completeTask(assetStatusChangeRequest.getActivityHandleRequest());
+                // 流程调用失败不更改资产状态
+                if (null == actionResponse
+                    || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                    return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
+                        : actionResponse;
+                }
+            }
 
             // 记录日志
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
