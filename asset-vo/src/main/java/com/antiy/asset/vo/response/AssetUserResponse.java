@@ -33,7 +33,7 @@ public class AssetUserResponse extends BaseResponse {
      * 部门名
      */
     @ApiModelProperty("部门名")
-    private String departmentName;
+    private String  departmentName;
     /**
      * 电子邮箱
      */
@@ -60,15 +60,20 @@ public class AssetUserResponse extends BaseResponse {
     @ApiModelProperty("住址")
     private String  address;
     /**
+     * 住址
+     */
+    @ApiModelProperty("住址")
+    private String  addressName;
+    /**
      * 详细地址
      */
     @ApiModelProperty("详细地址")
-    private String detailAddress;
+    private String  detailAddress;
     /**
      * 职位
      */
     @ApiModelProperty("职位")
-    private String position;
+    private String  position;
     /**
      * 创建人
      */
@@ -94,6 +99,14 @@ public class AssetUserResponse extends BaseResponse {
      */
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
+
+    public String getAddressName() {
+        return addressName;
+    }
+
+    public void setAddressName(String addressName) {
+        this.addressName = addressName;
+    }
 
     public String getDetailAddress() {
         return detailAddress;
@@ -226,9 +239,10 @@ public class AssetUserResponse extends BaseResponse {
     @Override
     public String toString() {
         return "AssetUserResponse{" + "name='" + name + '\'' + ", memo='" + memo + '\'' + ", departmentId='"
-               + departmentId + '\'' + ", email='" + email + '\'' + ", qq='" + qq + '\'' + ", weixin='" + weixin + '\''
-               + ", mobile='" + mobile + '\'' + ", address='" + address + '\'' + ", createUser=" + createUser
-               + ", modifyUser=" + modifyUser + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified
-               + ", status=" + status + '}';
+               + departmentId + '\'' + ", departmentName='" + departmentName + '\'' + ", email='" + email + '\''
+               + ", qq='" + qq + '\'' + ", weixin='" + weixin + '\'' + ", mobile='" + mobile + '\'' + ", address='"
+               + address + '\'' + ", addressName='" + addressName + '\'' + ", detailAddress='" + detailAddress + '\''
+               + ", position='" + position + '\'' + ", createUser=" + createUser + ", modifyUser=" + modifyUser
+               + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", status=" + status + '}';
     }
 }
