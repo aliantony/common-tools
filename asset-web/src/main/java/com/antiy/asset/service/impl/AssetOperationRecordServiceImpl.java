@@ -3,6 +3,7 @@ package com.antiy.asset.service.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
@@ -156,6 +157,9 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
                                                 Integer total) {
 
         assetOperationRecordBarPOList.forEach(operationRecordBarPo -> {
+            if (Objects.isNull(operationRecordBarPo.getMemo())) {
+                operationRecordBarPo.setMemo(operationRecordBarPo.getContent());
+            }
             // 获取操作人员角色信息
             // List<LinkedHashMap> linkedHashMapList =
             // (List<LinkedHashMap>)roleClient.getInvokeResult(operationRecordBarPo.getOperateUserId().toString());
