@@ -1,17 +1,11 @@
 package com.antiy.asset.vo.response;
 
-import com.antiy.asset.vo.enums.ConfigureStatusEnum;
-import com.antiy.asset.vo.enums.InstallStatus;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.asset.vo.enums.SoftInstallStatus;
 import com.antiy.common.encoder.Encode;
-
-import com.antiy.common.utils.DataTypeUtils;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Objects;
-
-public class AssetSoftwareInstallResponse {
+public class AssetSoftwareInstallResponse extends BaseResponse {
     /**
      * 主键
      */
