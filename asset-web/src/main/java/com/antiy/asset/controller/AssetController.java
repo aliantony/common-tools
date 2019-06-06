@@ -423,4 +423,11 @@ public class AssetController {
     public ActionResponse findAssetIds() throws Exception {
         return ActionResponse.success(iAssetService.findAssetIds());
     }
+
+    @ApiOperation(value = "工作台硬件登记数量", notes = "获取资产id列表")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/waitRegistCount", method = RequestMethod.POST)
+    public ActionResponse queryWaitRegistCount() throws Exception {
+        return ActionResponse.success(iAssetService.queryWaitRegistCount());
+    }
 }

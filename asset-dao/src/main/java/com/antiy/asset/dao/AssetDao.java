@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.Asset;
@@ -111,7 +112,6 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     Integer updateAssetGroupNameWithAssetId(Map<String, Object> map);
 
-
     /**
      * 更新资产的区域id
      * @param
@@ -198,4 +198,13 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer updateStatus(Asset asset) throws Exception;
 
     List<String> findAssetIds(@Param("areaIds") List<Integer> areaIds);
+
+    /**
+     * 工作台待登记数量
+     * @param assetStatus
+     * @param areaIds
+     * @return
+     */
+    Integer queryWaitRegistCount(@Param(value = "assetStatus") Integer assetStatus,
+                                 @Param(value = "areaIds") List<Integer> areaIds);
 }
