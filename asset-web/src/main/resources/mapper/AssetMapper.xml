@@ -634,7 +634,7 @@
             </foreach>
             <choose>
                 <!--enterControl 为true表示从工作台进入-->
-                <when test="enterControl and assetStatusList[0] != 7">
+                <when test="enterControl and assetStatusList[0] != 7 and assetStatusList[0] != 1">
                     and
                 </when>
                 <otherwise>
