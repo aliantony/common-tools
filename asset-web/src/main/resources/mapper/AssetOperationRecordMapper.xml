@@ -60,6 +60,32 @@
             origin_status
         </if>
     </sql>
+    <sql id="IF_Base_Column_List_ForBatch">
+
+            target_object_id,
+
+            target_type,
+
+            target_status,
+
+            content,
+
+            operate_user_id,
+
+            operate_user_name,
+
+            scheme_id,
+
+            gmt_create,
+
+            process_result,
+
+            area_id,
+
+            origin_status
+
+    </sql>
+
 
     <sql id="IF_Value_Column_List">
         <if test=" targetObjectId != null">
@@ -95,6 +121,31 @@
         <if test=" originStatus != null">
             #{originStatus }
         </if>
+    </sql>
+    <sql id="IF_Value_Column_List_ForBatch">
+
+            #{entity.targetObjectId },
+
+            #{entity.targetType },
+
+            #{entity.targetStatus },
+
+            #{entity.content },
+
+            #{entity.operateUserId },
+
+            #{entity.operateUserName },
+
+            #{entity.schemeId },
+
+            #{entity.gmtCreate },
+
+            #{entity.processResult },
+
+            #{entity.areaId },
+
+            #{entity.originStatus }
+
     </sql>
 
     <sql id="Set_Column_List">
@@ -178,6 +229,28 @@
         </trim>
     </insert>
 
+    <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List_ForBatch"></include>
+        </trim>
+
+
+        values
+
+        <foreach collection="list" item="entity" separator=",">
+            (
+            <include refid="IF_Value_Column_List_ForBatch"></include>
+
+            )
+
+
+        </foreach>
+    </insert>
+
+
     <update id="update" parameterType="com.antiy.asset.entity.AssetOperationRecord">
         update
         <include refid="Table_Name"></include>
@@ -250,19 +323,19 @@
 
     <select id="findAssetOperationRecordBarByAssetId" parameterType="com.antiy.asset.vo.query.AssetOperationRecordQuery"
             resultType="AssetOperationRecordBarPO">
-       SELECT
-            aor.gmt_create as gmtCreate,
-            aor.operate_user_name AS userName,
-            aor.process_result AS processResult,
-            aor.target_object_id AS id,
-            aor.origin_status AS originStatus,
+        SELECT
+        aor.gmt_create as gmtCreate,
+        aor.operate_user_name AS userName,
+        aor.process_result AS processResult,
+        aor.target_object_id AS id,
+        aor.origin_status AS originStatus,
         aor.operate_user_id as operateUserId,
         aor.content,
         aor.process_result as processResult,
-            c.file_info as fileInfo,
-            c.memo
+        c.file_info as fileInfo,
+        c.memo
         FROM
-            asset_operation_record aor
+        asset_operation_record aor
         LEFT JOIN scheme c ON c.id = aor.scheme_id
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" targetObjectId != null">
