@@ -3880,6 +3880,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return idResponse;
     }
 
+    @Override
+    public Integer queryWaitRegistCount() {
+        return assetDao.queryWaitRegistCount(AssetStatusEnum.WATI_REGSIST.getCode(), LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+    }
+
     @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
     public void listen(String data, Acknowledgment ack) {
         AreaOperationRequest areaOperationRequest = JsonUtil.json2Object(data, AreaOperationRequest.class);

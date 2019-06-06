@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
 /**
  * <p> 资产主表 Mapper 接口 </p>
  *
@@ -110,7 +111,6 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     Integer updateAssetGroupNameWithAssetId(Map<String, Object> map);
 
-
     /**
      * 更新资产的区域id
      * @param
@@ -199,4 +199,13 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<String> findAssetIds(@Param("areaIds") List<Integer> areaIds);
 
     Integer insertBatch(List<Asset> assets);
+
+    /**
+     * 工作台待登记数量
+     * @param assetStatus
+     * @param areaIds
+     * @return
+     */
+    Integer queryWaitRegistCount(@Param(value = "assetStatus") Integer assetStatus,
+                                 @Param(value = "areaIds") List<Integer> areaIds);
 }

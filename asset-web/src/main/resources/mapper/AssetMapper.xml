@@ -1508,4 +1508,15 @@
             </foreach>
         </if>
     </select>
+    <select id="queryWaitRegistCount" resultType="java.lang.Integer">
+        select count(1) from asset
+        where asset_status = #{assetStatus}
+        and status = 1
+        <if test="areaIds != null and areaIds.size() > 0">
+            and area_id in
+            <foreach collection="areaIds" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
 </mapper>
