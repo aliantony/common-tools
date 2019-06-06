@@ -345,7 +345,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             // 进行分页
             /* List<AssetSoftwareInstall> pageResult = processPage(queryInstallList, query.getPageSize(),
              * query.getPageOffset()); */
-            return new PageResult<AssetSoftwareInstallResponse>(query.getPageSize(), count, query.getCurrentPage(),
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
                 responseInstallConverter.convert(queryInstallList, AssetSoftwareInstallResponse.class));
         }
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
