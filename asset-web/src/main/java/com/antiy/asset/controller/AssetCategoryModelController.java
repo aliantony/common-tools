@@ -170,7 +170,7 @@ public class AssetCategoryModelController {
      */
     @ApiOperation(value = "查询品类树(去掉根节点)", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/whihoutnode", method = RequestMethod.POST)
+    @RequestMapping(value = "/query/withoutnode", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryCategoryNode')")
     public ActionResponse queryCategoryNodeWhihoutNode() throws Exception {
         iAssetCategoryModelService.queryCategoryNode(1);
