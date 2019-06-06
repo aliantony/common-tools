@@ -181,9 +181,8 @@ public class AssetStatusJumpController {
         operationRecord.setGmtCreate(System.currentTimeMillis());
         if (!assetStatusChangeRequest.getSoftware()) {
             operationRecord.setAreaId(assetDao.getAreaIdById(id));
-            operationRecord.setContent(AssetEventEnum.SOFT_UPDATE.getName());
         }
-        operationRecord.setContent(AssetEventEnum.ASSET_MODIFY.getName());
+        operationRecord.setContent(AssetEventEnum.NO_REGISTER.getName());
         if (LoginUserUtil.getLoginUser() == null) {
             LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
         } else {
