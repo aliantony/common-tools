@@ -349,12 +349,12 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<Integer> categoryModelIdsById = iAssetCategoryModelService
             .findAssetCategoryModelIdsById(assetCategoryModel.getId());
         query.setCategoryModels(DataTypeUtils.integerListToStringList(categoryModelIdsById));
-        Integer count = assetSoftwareRelationDao.queryInstallCount(query);
         //获取软件列表
         AssetSoftware assetSoftware = assetSoftwareDao.getById(query.getSoftwareId());
         String operationSystem = assetSoftware.getOperationSystem();
         List<String> operationSystemList = Arrays.asList(operationSystem.split(","));
         query.setOperationSystems(operationSystemList);
+        Integer count = assetSoftwareRelationDao.queryInstallCount(query);
         if (count != 0) {
             List<AssetSoftwareInstall> queryInstallList = assetSoftwareRelationDao.queryInstallList(query);
             // 处理安装状态和配置状态
