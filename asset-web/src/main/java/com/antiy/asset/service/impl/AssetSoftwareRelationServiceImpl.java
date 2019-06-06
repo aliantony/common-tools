@@ -344,24 +344,28 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         // 已入网
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         query.setAssetStatusList(statusList);
-        Integer count = assetSoftwareRelationDao.queryInstallCount(query);
         AssetCategoryModel assetCategoryModel = assetCategoryModelDao
             .getByName(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
         List<Integer> categoryModelIdsById = iAssetCategoryModelService
             .findAssetCategoryModelIdsById(assetCategoryModel.getId());
         query.setCategoryModels(DataTypeUtils.integerListToStringList(categoryModelIdsById));
+        //获取软件列表
+        AssetSoftware assetSoftware = assetSoftwareDao.getById(query.getSoftwareId());
+        String operationSystem = assetSoftware.getOperationSystem();
+        List<String> operationSystemList = Arrays.asList(operationSystem.split(","));
+        query.setOperationSystems(operationSystemList);
+        Integer count = assetSoftwareRelationDao.queryInstallCount(query);
         if (count != 0) {
             List<AssetSoftwareInstall> queryInstallList = assetSoftwareRelationDao.queryInstallList(query);
             // 处理安装状态和配置状态
-            processStatusData(queryInstallList);
+            //processStatusData(queryInstallList);
             // 处理操作系统，排除操作系统不满足的列表
-            List<AssetSoftwareInstall> adaptationResult = processOperationAdaptation(queryInstallList,
-                query.getSoftwareId());
+            /*List<AssetSoftwareInstall> adaptationResult = processOperationAdaptation(queryInstallList,
+                query.getSoftwareId());*/
             // 进行分页
-            List<AssetSoftwareInstall> pageResult = processPage(adaptationResult, query.getPageSize(),
-                query.getPageOffset());
-            return new PageResult<>(query.getPageSize(), adaptationResult.size(), query.getCurrentPage(),
-                responseInstallConverter.convert(pageResult, AssetSoftwareInstallResponse.class));
+            /*List<AssetSoftwareInstall> pageResult = processPage(queryInstallList, query.getPageSize(),
+                query.getPageOffset());*/
+            return new PageResult(query.getPageSize(), count, query.getCurrentPage(),queryInstallList);
         }
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
     }

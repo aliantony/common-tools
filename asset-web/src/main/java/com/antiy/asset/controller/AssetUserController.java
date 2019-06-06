@@ -5,6 +5,10 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.enums.ModuleEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,6 +48,8 @@ public class AssetUserController {
     public IAssetUserService       iAssetUserService;
     @Resource
     public IAssetDepartmentService iAssetDepartmentService;
+    @Resource
+    private RedisUtil              redisUtil;
 
     /**
      * 保存
@@ -173,8 +179,15 @@ public class AssetUserController {
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     public ActionResponse queryById(@ApiParam(value = "id") @RequestBody QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "Id不能为空");
-        return ActionResponse
-            .success(iAssetUserService.getById(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey())));
+        AssetUser assetUser = iAssetUserService.getById(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey()));
+        AssetUserResponse assetUserResponse = BeanConvert.convertBean(assetUser, AssetUserResponse.class);
+        if (StringUtils.isNotBlank(assetUserResponse.getAddress())) {
+            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                    com.antiy.common.utils.DataTypeUtils.stringToInteger(assetUserResponse.getAddress()));
+            SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+            assetUserResponse.setAddressName(sysArea.getFullName());
+        }
+        return ActionResponse.success(assetUserResponse);
     }
 
     /**

@@ -52,6 +52,16 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
     @Encode
     private List<String>  categoryModels;
 
+    private List<String> operationSystems;
+
+    public List<String> getOperationSystems() {
+        return operationSystems;
+    }
+
+    public void setOperationSystems(List<String> operationSystems) {
+        this.operationSystems = operationSystems;
+    }
+
     public String getMultipleQuery() {
         return multipleQuery;
     }
