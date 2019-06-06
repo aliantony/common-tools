@@ -1,6 +1,7 @@
 package com.antiy.asset.service.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -8,7 +9,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1043,27 +1043,15 @@ public class AssetReportServiceImpl implements IAssetReportService {
      */
     public String encodeChineseDownloadFileName(HttpServletRequest request,
                                                 String pFileName) throws UnsupportedEncodingException {
-
-        String filename = null;
-        String agent = request.getHeader("USER-AGENT");
-        if (null != agent) {
-            // Firefox
-            if (-1 != agent.indexOf("Firefox")) {
-                filename = "=?UTF-8?B?"
-                           + (new String(
-                               org.apache.commons.codec.binary.Base64.encodeBase64(pFileName.getBytes("UTF-8"))))
-                           + "?=";
-            } else if (-1 != agent.indexOf("Chrome")) {
-                // Chrome
-                filename = new String(pFileName.getBytes(), "ISO8859-1");
-            } else {// IE7+
-                filename = java.net.URLEncoder.encode(pFileName, "UTF-8");
-                filename = StringUtils.replace(filename, "+", "%20");// 替换空格
-            }
+        String userAgent = request.getHeader("user-agent").toLowerCase();
+        if (userAgent.contains("msie") || userAgent.contains("like gecko")) {
+            // win10 ie edge 浏览器 和其他系统的ie
+            pFileName = URLEncoder.encode(pFileName, "UTF-8");
         } else {
-            filename = pFileName;
+            // fe
+            pFileName = new String(pFileName.getBytes("utf-8"), "iso-8859-1");
         }
-        return filename;
+        return pFileName;
     }
 
 }
