@@ -157,9 +157,6 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
                                                 Integer total) {
 
         assetOperationRecordBarPOList.forEach(operationRecordBarPo -> {
-            if (Objects.isNull(operationRecordBarPo.getMemo())) {
-                operationRecordBarPo.setMemo(operationRecordBarPo.getContent());
-            }
             // 获取操作人员角色信息
             // List<LinkedHashMap> linkedHashMapList =
             // (List<LinkedHashMap>)roleClient.getInvokeResult(operationRecordBarPo.getOperateUserId().toString());
@@ -176,6 +173,10 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
                 AssetOperationRecordBarResponse assetOperationRecordBarResponse = operationRecordBarPOToResponseConverter
                     .convert(assetOperationRecordBarPO, AssetOperationRecordBarResponse.class);
+
+                if (Objects.isNull(assetOperationRecordBarResponse.getMemo())) {
+                    assetOperationRecordBarResponse.setMemo(assetOperationRecordBarResponse.getContent());
+                }
 
                 assetOperationRecordBarResponse.setTotal(total);
 
