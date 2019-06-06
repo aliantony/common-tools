@@ -409,6 +409,7 @@
     <select id="getSimpleSoftwareByAssetId" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareRelationQuery">
         select
+        asoftrel.id as id,
         asoft.id as software_id,
         asoft.name,
         asoft.manufacturer,
