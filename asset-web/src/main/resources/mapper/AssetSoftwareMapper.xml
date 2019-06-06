@@ -884,7 +884,7 @@
 
     <select id="pulldownManufacturer" resultType="java.lang.String">
         select distinct manufacturer from asset_software
-        where status = 1
+        where status = 1 and manufacturer != '' and manufacturer is not null 
     </select>
 
     <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetSoftware" useGeneratedKeys="true"
