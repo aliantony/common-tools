@@ -1,39 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
@@ -65,6 +31,38 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -2183,7 +2181,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         computeDeviceEntity.setCpuBrand("英特尔酷睿");
         computeDeviceEntity.setCpuCoreSize(4);
-        computeDeviceEntity.setCpuMainFrequency(1.34f);
+        computeDeviceEntity.setCpuMainFrequency(1.3f);
         computeDeviceEntity.setCpuModel("i7");
         computeDeviceEntity.setCpuSerial("WERD-fw2F-r3R2-Qee2");
         computeDeviceEntity.setCpuThreadSize(1);
@@ -2298,6 +2296,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return "导入失败，模板中无数据！" + result.getMsg();
         }
 
+
         int success = 0;
         int repeat = 0;
         int error = 0;
@@ -2309,6 +2308,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<String> assetNumbers = new ArrayList<>();
         List<String> assetIps = new ArrayList<>();
         for (ComputeDeviceEntity entity : dataList) {
+
 
             if (assetNames.contains(entity.getName())) {
                 repeat++;
@@ -2457,8 +2457,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     entity.setMemoryNum(1);
                 }
 
-                if (!Objects.isNull(entity.getMemoryCapacity()) && !Objects.isNull(entity.getMemoryNum())
-                    && entity.getMemoryNum() > 0) {
+                if (!Objects.isNull(entity.getMemoryCapacity())) {
                     AssetMemory assetMemory = new AssetMemory();
                     // assetMemory.setAssetId(id);
                     assetMemory.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -2486,8 +2485,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     entity.setHardDiskNum(1);
                 }
 
-                if (!Objects.isNull(entity.getHardDisCapacityl()) && !Objects.isNull(entity.getHardDiskType())
-                    && !Objects.isNull(entity.getHardDiskNum()) && entity.getHardDiskNum() > 0) {
+                if (!Objects.isNull(entity.getHardDisCapacityl()) && !Objects.isNull(entity.getHardDiskType())) {
                     AssetHardDisk assetHardDisk = new AssetHardDisk();
                     // assetHardDisk.setAssetId(id);
                     assetHardDisk.setGmtCreate(System.currentTimeMillis());
@@ -2536,8 +2534,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     entity.setCpuNum(1);
                 }
 
-                if (!Objects.isNull(entity.getCpuNum()) && entity.getCpuNum() > 0
-                    && !Objects.isNull(entity.getCpuMainFrequency())) {
+                if (!Objects.isNull(entity.getCpuMainFrequency())) {
                     AssetCpu assetCpu = new AssetCpu();
                     // assetCpu.setAssetId(id);
                     assetCpu.setGmtCreate(System.currentTimeMillis());
@@ -2575,7 +2572,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         if (repeat + error == 0) {
-            List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
+            // assetDao.insertBatch (computerVos);
             for (ComputerVo computerVo : computerVos) {
                 Asset asset = computerVo.getAsset();
 
@@ -2607,12 +2604,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetNetworkCardDao.insert(assetNetworkCard);
                 }
                 // 记录资产操作流程
-                assetRecord(asset.getStringId());
-                // 流程
-                importActivity(manualStartActivityRequests, asset.getStringId(), asset.getAreaId());
+                assetRecord(asset.getStringId(), asset.getAreaId());
+
                 success++;
             }
-            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+
         }
 
         String res = "导入成功" + success + "条";
@@ -2654,6 +2650,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<NetworkDeviceEntity> entities = result.getDataList();
         if (entities.size() == 0 && StringUtils.isBlank(result.getMsg())) {
             return "导入失败，模板中无数据！" + result.getMsg();
+        }
+        StringBuilder sb = new StringBuilder(result.getMsg());
+        if (result.getMsg().contains("导入失败")) {
+            return sb.toString();
         }
         int success = 0;
         int repeat = 0;
@@ -2770,7 +2770,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setNumber(networkDeviceEntity.getNumber());
                 asset.setName(networkDeviceEntity.getName());
                 asset.setManufacturer(networkDeviceEntity.getManufacturer());
-                asset.setFirmwareVersion(networkDeviceEntity.getFirmwareVersion());
                 asset.setSerial(networkDeviceEntity.getSerial());
                 asset.setContactTel(networkDeviceEntity.getTelephone());
                 asset.setLocation(networkDeviceEntity.getLocation());
@@ -2786,6 +2785,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setImportanceDegree(DataTypeUtils.stringToInteger(networkDeviceEntity.getImportanceDegree()));
                 assets.add(asset);
                 assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
+                assetNetworkEquipment.setFirmwareVersion(networkDeviceEntity.getFirmwareVersion());
                 assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetNetworkEquipment.setInterfaceSize(networkDeviceEntity.getInterfaceSize());
                 assetNetworkEquipment.setPortSize(networkDeviceEntity.getPortSize());
@@ -2802,6 +2802,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetNetworkEquipment.setFlashSize(networkDeviceEntity.getFlashSize());
                 assetNetworkEquipment.setRegister(networkDeviceEntity.getRegister());
                 assetNetworkEquipment.setIsWireless(networkDeviceEntity.getIsWireless());
+                assetNetworkEquipment.setStatus(1);
                 networkEquipments.add(assetNetworkEquipment);
             }
 
@@ -2809,27 +2810,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         }
 
+
         if (repeat + error == 0) {
-            List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
+            try {
+                assetDao.insertBatch(assets);
+            } catch (DuplicateKeyException exception) {
+                throw new BusinessException("请勿重复提交！");
+            }
+
+            List<AssetOperationRecord> recordList = new ArrayList<>();
             for (int i = 0; i < assets.size(); i++) {
-
-                try {
-                    assetDao.insert(assets.get(i));
-                } catch (DuplicateKeyException exception) {
-                    throw new BusinessException("请勿重复提交！");
-                }
-
                 String stringId = assets.get(i).getStringId();
                 networkEquipments.get(i).setAssetId(stringId);
-                assetNetworkEquipmentDao.insert(networkEquipments.get(i));
-                assetRecord(stringId);
-                // 流程
-                importActivity(manualStartActivityRequests, stringId, assets.get(i).getAreaId());
-
+                recordList.add(assetRecord(stringId, assets.get(i).getAreaId()));
                 success++;
             }
-            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+            assetNetworkEquipmentDao.insertBatch(networkEquipments);
+            assetOperationRecordDao.insertBatch(recordList);
         }
+
 
         String res = "导入成功" + success + "条";
         if (repeat + error > 0) {
@@ -2838,11 +2837,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         StringBuilder stringBuilder = new StringBuilder(res);
 
-        StringBuilder sb = new StringBuilder(result.getMsg());
 
-        if (result.getMsg().contains("导入失败")) {
-            return sb.toString();
-        }
+
         // 写入业务日志
         LogHandle.log(networkEquipments.toString(), AssetEventEnum.ASSET_EXPORT_NET.getName(),
             AssetEventEnum.ASSET_EXPORT_NET.getStatus(), ModuleEnum.ASSET.getCode());
@@ -2990,7 +2986,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setNumber(entity.getNumber());
                 asset.setName(entity.getName());
                 asset.setManufacturer(entity.getManufacturer());
-                // asset.setFirmwareVersion(entity.getFirmwareVersion());
                 asset.setSerial(entity.getSerial());
                 asset.setContactTel(entity.getTelephone());
                 asset.setLocation(entity.getLocation());
@@ -3008,30 +3003,31 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetSafetyEquipment.setIp(entity.getIp());
                 assetSafetyEquipment.setMac(entity.getMac());
+                assetSafetyEquipment.setStatus(1);
                 assetSafetyEquipments.add(assetSafetyEquipment);
             }
             a++;
         }
 
-        if (repeat + error == 0) {
-            List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
-            for (int i = 0; i < assets.size(); i++) {
 
-                try {
-                    assetDao.insert(assets.get(i));
-                } catch (DuplicateKeyException exception) {
-                    throw new BusinessException("请勿重复提交！");
-                }
+        if (repeat + error == 0) {
+            try {
+                assetDao.insertBatch(assets);
+            } catch (DuplicateKeyException exception) {
+                throw new BusinessException("请勿重复提交！");
+            }
+
+            List<AssetOperationRecord> recordList = new ArrayList<>();
+            for (int i = 0; i < assets.size(); i++) {
                 String stringId = assets.get(i).getStringId();
                 assetSafetyEquipments.get(i).setAssetId(stringId);
-                assetSafetyEquipmentDao.insert(assetSafetyEquipments.get(i));
-                assetRecord(stringId);
-                // 流程
-                importActivity(manualStartActivityRequests, stringId, assets.get(i).getAreaId());
+                recordList.add(assetRecord(stringId, assets.get(i).getAreaId()));
                 success++;
             }
-            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+            assetSafetyEquipmentDao.insertBatch(assetSafetyEquipments);
+            assetOperationRecordDao.insertBatch(recordList);
         }
+
 
         String res = "导入成功" + success + "条";
         if (repeat + error > 0) {
@@ -3188,6 +3184,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetStorageMedium.setDriverNumber(entity.getDriveNum());
                 assetStorageMedium.setMaximumStorage(entity.getCapacity());
                 assetStorageMedium.setHighCache(entity.getHighCache());
+                assetStorageMedium.setStatus(1);
                 // if (entity.getRaidSupport() == null) {
                 // assetStorageMedium.setRaidSupport("否");
                 // } else {
@@ -3206,24 +3203,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             a++;
         }
 
-        if (repeat + error == 0) {
-            List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
-            for (int i = 0; i < assets.size(); i++) {
 
-                try {
-                    assetDao.insert(assets.get(i));
-                } catch (DuplicateKeyException exception) {
-                    throw new BusinessException("请勿重复提交！");
-                }
+        if (repeat + error == 0) {
+            try {
+                assetDao.insertBatch(assets);
+            } catch (DuplicateKeyException exception) {
+                throw new BusinessException("请勿重复提交！");
+            }
+
+            List<AssetOperationRecord> recordList = new ArrayList<>();
+            for (int i = 0; i < assets.size(); i++) {
                 String stringId = assets.get(i).getStringId();
                 assetStorageMedia.get(i).setAssetId(stringId);
-                assetStorageMediumDao.insert(assetStorageMedia.get(i));
-                assetRecord(assets.get(i).getStringId());
-                // 流程
-                importActivity(manualStartActivityRequests, stringId, assets.get(i).getAreaId());
+                recordList.add(assetRecord(stringId, assets.get(i).getAreaId()));
                 success++;
             }
-            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+            assetStorageMediumDao.insertBatch(assetStorageMedia);
+            assetOperationRecordDao.insertBatch(recordList);
         }
 
         String res = "导入成功" + success + "条";
@@ -3265,6 +3261,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (resultDataList.size() == 0 && StringUtils.isBlank(result.getMsg())) {
             return "导入失败，模板中无数据！" + result.getMsg();
         }
+
+        StringBuilder sb = new StringBuilder(result.getMsg());
+
+        if (result.getMsg().contains("导入失败")) {
+            return sb.toString();
+        }
+
         int success = 0;
         int repeat = 0;
         int error = 0;
@@ -3373,18 +3376,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         if (repeat + error == 0) {
-            List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
-            for (Asset asset : assets) {
-                try {
-                    assetDao.insert(asset);
+            try {
+                assetDao.insertBatch(assets);
                 } catch (DuplicateKeyException exception) {
                     throw new BusinessException("请勿重复提交！");
                 }
-                assetRecord(asset.getStringId());
-                importActivity(manualStartActivityRequests, asset.getStringId(), asset.getAreaId());
+
+            List<AssetOperationRecord> recordList = new ArrayList<>();
+            for (Asset asset : assets) {
+                recordList.add(assetRecord(asset.getStringId(), asset.getAreaId()));
                 success++;
             }
-            activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+            assetOperationRecordDao.insertBatch(recordList);
         }
 
         String res = "导入成功" + success + "条";
@@ -3394,11 +3397,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         StringBuilder stringBuilder = new StringBuilder(res);
 
-        StringBuilder sb = new StringBuilder(result.getMsg());
 
-        if (result.getMsg().contains("导入失败")) {
-            return sb.toString();
-        }
         // 写入业务日志
         LogHandle.log(assets.toString(), AssetEventEnum.ASSET_EXPORT_OTHERS.getName(),
             AssetEventEnum.ASSET_EXPORT_OTHERS.getStatus(), ModuleEnum.ASSET.getCode());
@@ -3407,6 +3406,211 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_OTHERS.getName() + " {}", assets.toString());
         return stringBuilder.append(builder).append(sb).toString();
     }
+
+    // @Override
+    // @Transactional
+    // public String importOhters1(MultipartFile file, AssetImportRequest importRequest) throws Exception {
+    // AssetCategoryModel categoryModel = assetCategoryModelDao
+    // .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
+    // if (Objects.isNull(categoryModel)) {
+    // return "导入失败，选择品类型号不存在，或已被注销！";
+    // }
+    // ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 5, 0);
+    // if (Objects.isNull(result.getDataList())) {
+    // return result.getMsg();
+    // }
+    // List<OtherDeviceEntity> otherDeviceEntities = Collections.synchronizedList (result.getDataList ());
+    // if (otherDeviceEntities.size() == 0 && StringUtils.isBlank(result.getMsg())) {
+    // return "导入失败，模板中无数据！" + result.getMsg();
+    // }
+    // StringBuilder sb = new StringBuilder(result.getMsg());
+    // if (result.getMsg().contains("导入失败")) {
+    // return sb.toString ();
+    //
+    // }
+    //
+    // ExecutorService executorService = Executors.newFixedThreadPool(10);
+    // CountDownLatch countDownLatch = new CountDownLatch(otherDeviceEntities.size ());
+    // StringBuffer msg = new StringBuffer ();
+    //
+    // for (int i = 0; i < 10; i++) {
+    // executorService.submit (new Runnable () {
+    // @Override
+    // public void run() {
+    // int success = 0;
+    // int repeat = 0;
+    // int error = 0;
+    // int a = 6;
+    // StringBuffer builder = new StringBuffer();
+    // List<Asset> assets = new ArrayList<>();
+    // List<String> assetNames = new ArrayList<>();
+    // List<String> assetNumbers = new ArrayList<>();
+    // try {
+    //
+    // for (OtherDeviceEntity entity : otherDeviceEntities) {
+    //
+    // if (assetNames.contains(entity.getName())) {
+    // repeat++;
+    // a++;
+    // builder.append("第").append(a).append("行").append("资产名称重复！");
+    // countDownLatch.countDown ();
+    // continue;
+    // }
+    // if (assetNumbers.contains(entity.getNumber())) {
+    // repeat++;
+    // a++;
+    // builder.append("第").append(a).append("行").append("资产编号重复！");
+    // countDownLatch.countDown ();
+    // continue;
+    // }
+    //
+    // if (checkRepeatName(entity.getName())) {
+    // repeat++;
+    // a++;
+    // builder.append("第").append(a).append("行").append("资产名称重复！");
+    // countDownLatch.countDown ();
+    //
+    // continue;
+    // }
+    //
+    // if (CheckRepeat(entity.getNumber())) {
+    // repeat++;
+    // a++;
+    // builder.append("第").append(a).append("行").append("资产编号重复！");
+    // countDownLatch.countDown ();
+    // continue;
+    // }
+    // if (entity.getBuyDate() != null) {
+    //
+    // if (isBuyDataBig(entity.getBuyDate())) {
+    // error++;
+    // a++;
+    // builder.append("第").append(a).append("行").append("购买时间需小于等于今天！");
+    // countDownLatch.countDown ();
+    // continue;
+    // }
+    // }
+    //
+    // if (isDataBig(entity.getDueDate())) {
+    // error++;
+    // a++;
+    // builder.append("第").append(a).append("行").append("到期时间需大于等于今天！");
+    // countDownLatch.countDown ();
+    // continue;
+    // }
+    //
+    // if ("".equals(checkUser(entity.getUser()))) {
+    // error++;
+    // a++;
+    // builder.append("第").append(a).append("行").append("系统中没有此使用者！，或已被注销");
+    //
+    // countDownLatch.countDown ();
+    // continue;
+    // }
+    //
+    //// String areaId = null;
+    //// List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
+    //// List<String> areasStrings = new ArrayList<>();
+    //// for (SysArea area : areas) {
+    //// areasStrings.add(area.getFullName());
+    //// if (area.getFullName().equals(entity.getArea())) {
+    //// areaId = area.getStringId();
+    //// }
+    //// }
+    ////
+    //// if (!areasStrings.contains(entity.getArea())) {
+    //// error++;
+    //// a++;
+    //// builder.append("第").append(a).append("行").append("当前用户没有此所属区域，或已被注销！");
+    //// continue;
+    //// }
+    //
+    // if (repeat + error == 0) {
+    // assetNames.add(entity.getName());
+    // assetNumbers.add(entity.getNumber());
+    // Asset asset = new Asset();
+    // asset.setResponsibleUserId(checkUser(entity.getUser()));
+    // asset.setGmtCreate(System.currentTimeMillis());
+    //// asset.setAreaId(areaId);
+    // asset.setAreaId("1");
+    // asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
+    // asset.setCreateUser(1);
+    //// asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+    // asset.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
+    // asset.setAssetSource(ReportType.AUTOMATIC.getCode());
+    // asset.setNumber(entity.getNumber());
+    // asset.setName(entity.getName());
+    // asset.setManufacturer(entity.getManufacturer());
+    // asset.setSerial(entity.getSerial());
+    // asset.setContactTel(entity.getTelephone());
+    // asset.setEmail(entity.getEmail());
+    // asset.setBuyDate(entity.getBuyDate());
+    // asset.setServiceLife(entity.getDueDate());
+    // asset.setWarranty(entity.getWarranty());
+    // asset.setDescrible(entity.getMemo());
+    // asset.setContactTel(entity.getTelephone());
+    // asset.setEmail(entity.getEmail());
+    // asset.setCategoryModel(importRequest.getCategory());
+    // assets.add(asset);
+    // }
+    //
+    // a++;
+    // }
+    //
+    // if (repeat + error == 0) {
+    //// List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
+    // for (Asset asset : assets) {
+    //
+    // assetDao.insert(asset);
+    //
+    // assetRecord(asset.getStringId());
+    //// importActivity(manualStartActivityRequests, asset.getStringId(), asset.getAreaId());
+    // success++;
+    // }
+    //// activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
+    // }
+    //
+    // }catch (DuplicateKeyException e){
+    // countDownLatch.countDown ();
+    // throw new BusinessException("请勿重复提交！");
+    // } catch ( Exception e) {
+    // countDownLatch.countDown ();
+    // e.printStackTrace ();
+    // logger.error ("导入失败");
+    // }
+    //
+    // String res = "导入成功" + success + "条";
+    // if (repeat + error > 0) {
+    // res = "导入失败，";
+    // }
+    //
+    // StringBuilder stringBuilder = new StringBuilder(res);
+    //
+    // msg.append (stringBuilder).append (builder);
+    //
+    // countDownLatch.countDown ();
+    //// System.out.println (countDownLatch.getCount ());
+    //
+    // }
+    // });
+    // }
+    // countDownLatch.await ();
+    //
+    // executorService.shutdown();
+    //
+    // // 写入业务日志
+    //
+    // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_OTHERS.getName(), 0, "", null,
+    // BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
+    // LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_OTHERS.getName() + " {}", "导入其他设备");
+    //
+    //
+    //
+    // return msg.append(sb).toString();
+    //
+    //
+    //
+    // }
 
     private void importActivity(List<ManualStartActivityRequest> manualStartActivityRequests, String stringId,
                                 String areaId) throws Exception {
@@ -3441,7 +3645,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         manualStartActivityRequests.add(manualStartActivityRequest);
     }
 
-    private void assetRecord(String id) throws Exception {
+    private AssetOperationRecord assetRecord(String id, String areaId) throws Exception {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetObjectId(id);
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
@@ -3451,10 +3655,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOperationRecord.setOriginStatus(AssetStatusEnum.WATI_REGSIST.getCode());
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+        assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
-        String areaId = assetDao.getById(id).getAreaId();
         assetOperationRecord.setAreaId(areaId);
-        assetOperationRecordDao.insert(assetOperationRecord);
+        return assetOperationRecord;
+        // assetOperationRecordDao.insert(assetOperationRecord);
     }
 
     @Override
@@ -3673,6 +3878,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         idResponse.setResult(StringUtils.join(assetDao.findAssetIds(list).toArray(), ","));
         return idResponse;
+    }
+
+    @Override
+    public Integer queryWaitRegistCount() {
+        return assetDao.queryWaitRegistCount(AssetStatusEnum.WATI_REGSIST.getCode(), LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
     }
 
     @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
