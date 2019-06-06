@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.CategoryNodeRequest;
+import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -158,7 +160,23 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/query/node", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryCategoryNode')")
     public ActionResponse queryCategoryNode() throws Exception {
+        iAssetCategoryModelService.queryCategoryNode();
         return ActionResponse.success(iAssetCategoryModelService.queryCategoryNode());
+    }
+    /**
+     * 品类树(去掉根节点)查询
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "查询品类树(去掉根节点)", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/whihoutnode", method = RequestMethod.POST)
+    // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryCategoryNode')")
+    public ActionResponse queryCategoryNodeWhihoutNode() throws Exception {
+        iAssetCategoryModelService.queryCategoryNode(1);
+        iAssetCategoryModelService.queryCategoryNode(2);
+        List<AssetCategoryModelNodeResponse> assetCategoryModelNodeResponses = new ArrayList(){{add(iAssetCategoryModelService.queryCategoryNode(1));add(iAssetCategoryModelService.queryCategoryNode(2));}};
+        return ActionResponse.success(assetCategoryModelNodeResponses);
     }
 
     /**
