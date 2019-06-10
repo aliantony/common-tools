@@ -1893,21 +1893,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 获取资产上安装的软件信息
         List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
             .findInstalledSoft(assetOuterRequest.getAsset().getId());
-        assetExternalRequest
-            .setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
+        assetExternalRequest.setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
         List<AssetExternalRequest> assetExternalRequests = new ArrayList() {
             {
                 add(assetExternalRequest);
             }
         };
-        // 暂时注释
-        /*ActionResponse actionResponse = assetClient.issueAssetData(assetExternalRequests);
+        ActionResponse actionResponse = assetClient.issueAssetData(assetExternalRequests);
         if (actionResponse == null
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), 0, "", null,
                 BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
             LogUtils.error(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetExternalRequests.toString());
-        }*/
+        }
         return assetCount;
     }
 
@@ -3677,7 +3675,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer queryWaitRegistCount() {
-        return assetDao.queryWaitRegistCount(AssetStatusEnum.WATI_REGSIST.getCode(), LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        return assetDao.queryWaitRegistCount(AssetStatusEnum.WATI_REGSIST.getCode(),
+            LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
     }
 
     @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
