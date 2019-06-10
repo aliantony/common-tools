@@ -60,6 +60,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -2228,9 +2229,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             byte[] buffer = new byte[1024];
             HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getResponse();
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest();
             response.reset();
-            response.addHeader("Content-Disposition",
-                "attachment;filename=" + new String(file.getName().getBytes("UTF-8"), "ISO-8859-1"));
+            String fileName = file.getName();
+            Boolean flag = request.getHeader("User-Agent").indexOf("like Gecko") > 0;
+            if (request.getHeader("User-Agent").toLowerCase().indexOf("msie") > 0 || flag) {
+                fileName = URLEncoder.encode(fileName, "UTF-8");// IE浏览器
+            } else {
+                // 先去掉文件名称中的空格,然后转换编码格式为utf-8,保证不出现乱码,
+                // 这个文件名称用于浏览器的下载框中自动显示的文件名
+                fileName = new String(fileName.replaceAll(" ", "").getBytes("UTF-8"), "ISO8859-1");
+                // firefox浏览器
+                // firefox浏览器User-Agent字符串:
+                // Mozilla/5.0 (Windows NT 6.1; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0
+            }
+            response.addHeader("Content-Disposition", "attachment;filename=" + fileName);
             response.addHeader("Content-Length", "" + file.length());
             response.setContentType("application/octet-stream");
             ous = new BufferedOutputStream(response.getOutputStream());
@@ -2294,7 +2308,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return "导入失败，模板中无数据！" + result.getMsg();
         }
 
-
         int success = 0;
         int repeat = 0;
         int error = 0;
@@ -2306,7 +2319,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<String> assetNumbers = new ArrayList<>();
         List<String> assetIps = new ArrayList<>();
         for (ComputeDeviceEntity entity : dataList) {
-
 
             if (assetNames.contains(entity.getName())) {
                 repeat++;
@@ -2808,7 +2820,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         }
 
-
         if (repeat + error == 0) {
             try {
                 assetDao.insertBatch(assets);
@@ -2827,15 +2838,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecordDao.insertBatch(recordList);
         }
 
-
         String res = "导入成功" + success + "条";
         if (repeat + error > 0) {
             res = "导入失败，";
         }
 
         StringBuilder stringBuilder = new StringBuilder(res);
-
-
 
         // 写入业务日志
         LogHandle.log(networkEquipments.toString(), AssetEventEnum.ASSET_EXPORT_NET.getName(),
@@ -3007,7 +3015,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             a++;
         }
 
-
         if (repeat + error == 0) {
             try {
                 assetDao.insertBatch(assets);
@@ -3025,7 +3032,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetSafetyEquipmentDao.insertBatch(assetSafetyEquipments);
             assetOperationRecordDao.insertBatch(recordList);
         }
-
 
         String res = "导入成功" + success + "条";
         if (repeat + error > 0) {
@@ -3201,7 +3207,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             a++;
         }
 
-
         if (repeat + error == 0) {
             try {
                 assetDao.insertBatch(assets);
@@ -3376,9 +3381,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (repeat + error == 0) {
             try {
                 assetDao.insertBatch(assets);
-                } catch (DuplicateKeyException exception) {
-                    throw new BusinessException("请勿重复提交！");
-                }
+            } catch (DuplicateKeyException exception) {
+                throw new BusinessException("请勿重复提交！");
+            }
 
             List<AssetOperationRecord> recordList = new ArrayList<>();
             for (Asset asset : assets) {
@@ -3394,7 +3399,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         StringBuilder stringBuilder = new StringBuilder(res);
-
 
         // 写入业务日志
         LogHandle.log(assets.toString(), AssetEventEnum.ASSET_EXPORT_OTHERS.getName(),
