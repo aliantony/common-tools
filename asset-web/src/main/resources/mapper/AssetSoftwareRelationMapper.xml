@@ -268,7 +268,14 @@
             and (asset.install_type =#{installType} or asset_software_relation.install_type =#{installType})
         </if>
         <if test="installStatus != null">
-            and asset_software_relation.install_status =#{installStatus}
+            <choose>
+                <when test="installStatus == 1">
+                    and asset_software_relation.install_status is null
+                </when>
+                <otherwise>
+                    and asset_software_relation.install_status =#{installStatus}
+                </otherwise>
+            </choose>
         </if>
         and asset.status = 1
     </sql>
