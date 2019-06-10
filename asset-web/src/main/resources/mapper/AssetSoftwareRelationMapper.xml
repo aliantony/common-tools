@@ -620,8 +620,8 @@
         asset.asset_status,
         asset.gmt_modified,
         asset_software_relation.install_time,
-        group_concat(asset_network_card.ip_address) as ip,
-        group_concat( asset_network_card.mac_address )as mac,
+        (select group_concat(ip_address) from asset_network_card where asset_id = asset.id and status = 1) as ip,
+        (select group_concat(mac_address) from asset_network_card where asset_id = asset.id and status = 1) as mac,
         case
         when asset_software_relation.install_type is not null
         then asset_software_relation.install_type
