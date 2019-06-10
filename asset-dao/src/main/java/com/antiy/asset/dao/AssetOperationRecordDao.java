@@ -6,6 +6,9 @@ import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.AssetOperationRecordBarPO;
 import com.antiy.asset.vo.query.AssetOperationRecordQuery;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
+
+import javax.validation.constraints.Pattern;
 
 /**
  * <p> 资产操作记录表 Mapper 接口 </p>
@@ -25,4 +28,6 @@ public interface AssetOperationRecordDao extends IBaseDao<AssetOperationRecord> 
      * @return
      */
     Long getTimeByAssetId(String assetId);
+
+    Integer insertBatch(List<AssetOperationRecord> recordList);
 }

@@ -1,18 +1,17 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import org.apache.ibatis.annotations.Param;
-
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.entity.Topology;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -198,6 +197,8 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer updateStatus(Asset asset) throws Exception;
 
     List<String> findAssetIds(@Param("areaIds") List<Integer> areaIds);
+
+    Integer insertBatch(List<Asset> assets);
 
     /**
      * 工作台待登记数量

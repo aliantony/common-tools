@@ -141,6 +141,12 @@ public class FileController {
     private void uploadToHdfs(MultipartFile tmpFile, List<FileRespVO> fileRespVOS, String md5,
                               FileUseEnum fileUseEnum) throws Exception {
         long fileSize = tmpFile.getSize();
+        if (fileSize == 0) {
+            throw new BusinessException("上传文件不能为空，请重新选择");
+        }
+        if (tmpFile.getOriginalFilename() != null && tmpFile.getOriginalFilename().length() > 200) {
+            throw new BusinessException("文件名长度非法");
+        }
         // 文件大小校验
         if (FileUseEnum.INSTALL_PACKAGE.getCode().equals(fileUseEnum.getCode())) {
             if (fileSize > FileUseEnum.INSTALL_PACKAGE.getSize()) {

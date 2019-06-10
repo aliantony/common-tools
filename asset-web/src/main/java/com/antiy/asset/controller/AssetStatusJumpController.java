@@ -179,11 +179,15 @@ public class AssetStatusJumpController {
         operationRecord.setOriginStatus(assetStatusChangeRequest.getStatus());
         operationRecord.setTargetStatus(AssetStatusEnum.NOT_REGSIST.getCode());
         operationRecord.setGmtCreate(System.currentTimeMillis());
+
         if (!assetStatusChangeRequest.getSoftware()) {
+            operationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
             operationRecord.setAreaId(assetDao.getAreaIdById(id));
-            operationRecord.setContent(AssetEventEnum.SOFT_UPDATE.getName());
+        } else {
+            operationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
+            operationRecord.setContent(AssetEventEnum.NO_REGISTER.getName());
         }
-        operationRecord.setContent(AssetEventEnum.ASSET_MODIFY.getName());
+
         if (LoginUserUtil.getLoginUser() == null) {
             LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
         } else {

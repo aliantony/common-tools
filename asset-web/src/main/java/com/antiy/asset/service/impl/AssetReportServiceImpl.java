@@ -1,13 +1,13 @@
 package com.antiy.asset.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
-import com.antiy.asset.controller.AssetAdmittanceController;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.common.utils.DateUtils;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,6 @@ import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.entity.AssetCategoryEntity;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroupEntity;
-import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.util.ArrayTypeUtil;
@@ -27,6 +26,7 @@ import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.ShowCycleType;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
@@ -424,7 +424,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     @Override
-    public void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception {
+    public void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery,
+                                    HttpServletRequest request) throws Exception {
         ReportForm reportForm = new ReportForm();
         String titleStr;
         String fileNameStr;
@@ -488,7 +489,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setData(data);
         reportForm.setColumnList(columnList);
         String fileName = fileNameStr + ".xlsx";
-        ExcelUtils.exportFormToClient(reportForm, fileName);
+        ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, fileName));
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(fileNameStr, 0, "", assetReportCategoryCountQuery,
             BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
@@ -1034,6 +1035,23 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
         assetReportTableResponse.setRows(rows);
         return assetReportTableResponse;
+    }
+
+    /**
+     * 对文件流输出下载的中文文件名进行编码 屏蔽各种浏览器版本的差异性
+     * @throws UnsupportedEncodingException
+     */
+    public String encodeChineseDownloadFileName(HttpServletRequest request,
+                                                String pFileName) throws UnsupportedEncodingException {
+        String userAgent = request.getHeader("user-agent").toLowerCase();
+        if (userAgent.contains("msie") || userAgent.contains("like gecko")) {
+            // win10 ie edge 浏览器 和其他系统的ie
+            pFileName = URLEncoder.encode(pFileName, "UTF-8");
+        } else {
+            // fe
+            pFileName = new String(pFileName.getBytes("utf-8"), "iso-8859-1");
+        }
+        return pFileName;
     }
 
 }
