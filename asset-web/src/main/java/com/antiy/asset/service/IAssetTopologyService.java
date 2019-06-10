@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.response.AssetNodeInfoResponse;
-import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.PageResult;
 
 /**
@@ -45,5 +43,9 @@ public interface IAssetTopologyService {
      * @throws Exception
      */
     PageResult<AssetResponse> getTopologyList(AssetQuery query) throws Exception;
+
+    TopologyCategoryCountResponse countTopologyCategory() throws Exception;
+
+    TopologyOsCountResponse countTopologyOs() throws Exception;
 
 }

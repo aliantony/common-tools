@@ -72,4 +72,11 @@ public class Constants {
      * EXCEL 下拉框导出最大长度
      */
     public static final Integer MAX_EXCEL_SELECT_LENGTH            = 300;
+
+    public static final String  WINDOWS                            = "Windows";
+
+    public static final String  LINUX                              = "Linux";
+
+    public static final String  OTHER                              = "其它";
+
 }
