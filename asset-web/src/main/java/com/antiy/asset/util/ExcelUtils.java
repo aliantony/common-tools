@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
@@ -189,8 +190,11 @@ public class ExcelUtils {
         ParamterExceptionUtils.isBlank(filename, "文件名不能为空");
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
             .getResponse();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest();
+
         try {
-            new TemplateExcelExport(title, clazz, memo).exportToClient(response, filename, dataList);
+            new TemplateExcelExport(title, clazz, memo).exportToClient(request,response, filename, dataList);
         } catch (IOException e) {
             throw new BusinessException("模板导出异常");
         }
