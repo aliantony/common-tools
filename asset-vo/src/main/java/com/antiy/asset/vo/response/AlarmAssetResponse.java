@@ -19,6 +19,20 @@ public class AlarmAssetResponse {
     @ApiModelProperty(value = "资产编号")
     private String assetNumber;
 
+    /**
+     * 资产名称
+     */
+    @ApiModelProperty(value = "资产名字")
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getIp() {
         return ip;
     }
