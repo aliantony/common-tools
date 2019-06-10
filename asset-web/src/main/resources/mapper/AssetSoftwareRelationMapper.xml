@@ -233,50 +233,44 @@
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
-
+        <if test="operationSystems!=null and operationSystems.size()>0">
+            and asset.operation_system in
+            <foreach index="index" item="item" collection="operationSystems" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="areaIds!=null and areaIds.length>0">
-            and area_id in
+            and asset.area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
         <if test="categoryModels!=null and categoryModels.size()>0">
-            and category_model in
+            and asset.category_model in
             <foreach index="index" item="item" collection="categoryModels" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
         <if test=" multipleQuery != null and multipleQuery != ''">
-            and (name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or exists (select 1 from asset_network_card b where asset.asset_id = b.asset_id and ip_address like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_equipment b where asset.asset_id = b.asset_id and inner_ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_equipment b where asset.asset_id = b.asset_id and outer_ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_safety_equipment b where asset.asset_id = b.asset_id and ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_card b where asset.asset_id = b.asset_id and mac_address like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_equipment b where asset.asset_id = b.asset_id and mac_address like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_safety_equipment b where asset.asset_id = b.asset_id and mac like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            and (asset.name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or asset.number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or asset_network_card.ip_address like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or asset_network_card.mac_address like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             )
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
-            and asset_status in
+            and asset.asset_status in
             <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
                 #{assetStatus}
             </foreach>
         </if>
         <if test="installType != null ">
-            and install_type =#{installType}
+            and (asset.install_type =#{installType} or asset_software_relation.install_type =#{installType})
         </if>
         <if test="installStatus != null">
-            and install_status =#{installStatus}
+            and asset_software_relation.install_status =#{installStatus}
         </if>
+        and asset.status = 1
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetSoftwareRelation" useGeneratedKeys="true"
@@ -415,6 +409,7 @@
     <select id="getSimpleSoftwareByAssetId" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareRelationQuery">
         select
+        asoftrel.id as id,
         asoft.id as software_id,
         asoft.name,
         asoft.manufacturer,
@@ -603,115 +598,79 @@
     </select>
 
     <select id="queryInstallList" resultMap="InstallResultMap" parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select * from (select distinct
-        d.id,
-        a.id as asset_id,
-        a.asset_group,
-        a.category_model,
-        a.first_enter_nett,
-        a.number,
-        a.name,
-        a.area_id,
-        a.operation_system,
-        c.name as category_model_name,
-        a.manufacturer,
-        asset_status,
-        a.gmt_modified,
-        d.configure_status,
-        d.install_status,
-        d.install_time,
+        select distinct
+        asset_software_relation.id,
+        asset.id as asset_id,
+        asset.asset_group,
+        asset.category_model,
+        asset.first_enter_nett,
+        asset.number,
+        asset.name,
+        asset.area_id,
+        asset.operation_system,
+        asset_category_model.name as category_model_name,
+        asset.manufacturer,
+        asset.asset_status,
+        asset.gmt_modified,
+        asset_software_relation.install_time,
+        group_concat(asset_network_card.ip_address) as ip,
+        group_concat( asset_network_card.mac_address )as mac,
         case
-        when group_concat(b.ip_address) is not null then
-        group_concat(b.ip_address)
-        when (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is
-        not
-        null then
-        (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
-        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as ip,
+        when asset_software_relation.install_type is not null
+        then asset_software_relation.install_type
+        else asset.install_type end as
+        install_type,
         case
-        when group_concat( b.mac_address ) is not null then
-        group_concat( b.mac_address )
-        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
-        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as mac,
-        case
-        when d.install_type is not null then d.install_type
-        else a.install_type end as
-        install_type
+        when asset_software_relation.install_status is null
+        then 1
+        else asset_software_relation.install_status end as
+        install_status
         from
-        asset a
-        left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
-        left join asset_category_model c on a.category_model = c.id
-        left join asset_software_relation d on a.id=d.asset_id and d.software_id=#{softwareId} and d.status=1
-        group by a.id
-        order by a.first_enter_nett desc
-        ) asset
+        asset asset
+        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and asset_network_card.status = 1 and asset.status=1
+        left join asset_category_model asset_category_model on asset.category_model = asset_category_model.id
+        left join asset_software_relation asset_software_relation on asset.id=asset_software_relation.asset_id and asset_software_relation.software_id=#{softwareId} and asset_software_relation.status=1
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
+        group by asset.id
+        order by asset.first_enter_nett desc
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
     </select>
 
     <select id="queryInstallCount" resultType="java.lang.Integer"
             parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select count(*) from (select
-        distinct
-        d.id,
-        a.id as asset_id,
-        a.area_id,
-        a.asset_group,
-        a.category_model,
-        a.first_enter_nett,
-        a.number,
-        a.name,
-        a.operation_system,
-        c.name as category_model_name,
-        a.manufacturer,
-        asset_status,
-        a.gmt_modified,
-        d.configure_status,
-        d.install_status,
-        d.install_time,
-        case
-        when group_concat(b.ip_address) is not null then
-        group_concat(b.ip_address)
-        when (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1) is
-        not
-        null then
-        (select concat(inner_ip,',',outer_ip) from asset_network_equipment where asset_id = a.id and status = 1)
-        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as ip,
-        case
-        when group_concat( b.mac_address ) is not null then
-        group_concat( b.mac_address )
-        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
-        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as mac,
-        case
-        when d.install_type is not null then d.install_type
-        else a.install_type end as
-        install_type
-        from
-        asset a
-        left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
-        left join asset_category_model c on a.category_model = c.id
-        left join asset_software_relation d on a.id=d.asset_id and d.software_id=#{softwareId} and d.status=1
-        group by a.id
-        order by a.first_enter_nett desc
-        ) asset
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Multiple_Query"></include>
-            </trim>
-        </where>
+        SELECT
+        count( 1 )
+        FROM
+        (
+            SELECT DISTINCT
+            asset.id AS asset_id
+            FROM
+            asset asset
+            LEFT JOIN asset_network_card asset_network_card ON asset.id = asset_network_card.asset_id
+            AND asset_network_card.STATUS = 1
+            AND asset.STATUS = 1
+            LEFT JOIN asset_category_model asset_category_model ON asset.category_model = asset_category_model.id
+            LEFT JOIN asset_software_relation asset_software_relation ON asset.id = asset_software_relation.asset_id
+            AND asset_software_relation.software_id = #{softwareId}
+            AND asset_software_relation.STATUS = 1
+            <where>
+                <trim prefixOverrides="and">
+                    <include refid="Multiple_Query"></include>
+                </trim>
+            </where>
+            GROUP BY
+            asset.id
+            ORDER BY
+            asset.first_enter_nett DESC
+
+        ) t
+
     </select>
     <delete id="updateConfigStatusByAssetId" parameterType="com.antiy.asset.entity.AssetSoftwareRelation">
         update
@@ -732,6 +691,7 @@
             parameterType="java.lang.String">
         select
         b.id,
+        b.size,
         b.name,
         b.manufacturer,
         b.version,
@@ -743,7 +703,9 @@
         b.serial,
         b.path,
         b.md5_code as md5Code,
-        b.check_type as checkType
+        b.check_type as checkType,
+        b.manual_doc_url as manualDocUrl,
+        b.manual_doc_name as manualDocName
         from
         asset_software_relation a
         left join asset_software b on a.software_id = b.id

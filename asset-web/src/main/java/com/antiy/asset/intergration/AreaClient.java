@@ -12,5 +12,7 @@ public interface AreaClient {
 
     ActionResponse queryCdeAndAreaId(String code);
 
+    ActionResponse queryByArea(String type, String areaId);
+
     Object getInvokeResult(String id);
 }

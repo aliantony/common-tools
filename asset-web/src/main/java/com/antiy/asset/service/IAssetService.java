@@ -262,4 +262,10 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     IDResponse findAssetIds();
+
+    /**
+     * 工作台待登记数量
+     * @return
+     */
+    Integer queryWaitRegistCount();
 }

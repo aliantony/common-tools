@@ -1,20 +1,23 @@
 package com.antiy.asset.util;
 
-import com.antiy.asset.templet.ReportForm;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.*;
-import org.slf4j.Logger;
-
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+
+import com.antiy.asset.templet.ReportForm;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 public class ReportExcelExport {
     private static Logger          logger = LogUtils.get();
@@ -137,7 +140,7 @@ public class ReportExcelExport {
         response.reset();
         response.setContentType("application/octet-stream; charset=utf-8");
         response.setHeader("Content-Disposition",
-            "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
+            "attachment; filename=" + fileName);
         // 填充数据
         setData();
         write(response.getOutputStream());

@@ -23,6 +23,9 @@ public class AssetStatusChangeRequest extends BasicRequest implements ObjectVali
     @NotNull(message = "软件或者硬件判断条件不能为空")
     private Boolean software = false;
 
+    @ApiModelProperty(value = "执行流程参数对象", notes = "可选")
+    private ActivityHandleRequest activityHandleRequest;
+
     /**
      * 资产主键
      */
@@ -34,6 +37,14 @@ public class AssetStatusChangeRequest extends BasicRequest implements ObjectVali
     @ApiModelProperty("状态")
     @NotNull(message = "状态不能为空")
     private Integer status;
+
+    public ActivityHandleRequest getActivityHandleRequest() {
+        return activityHandleRequest;
+    }
+
+    public void setActivityHandleRequest(ActivityHandleRequest activityHandleRequest) {
+        this.activityHandleRequest = activityHandleRequest;
+    }
 
     public Integer getStatus() {
         return status;

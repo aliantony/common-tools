@@ -304,7 +304,10 @@ public class AssetController {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
         }
+        if (file.getSize() > 1048576 * 10) {
 
+            throw new BusinessException("导入失败，文件不超过10M！");
+        }
         return ActionResponse.success(iAssetService.importPc(file, importRequest));
     }
 
@@ -323,7 +326,10 @@ public class AssetController {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
         }
+        if (file.getSize() > 1048576 * 10) {
 
+            throw new BusinessException("导入失败，文件不超过10M！");
+        }
         return ActionResponse.success(iAssetService.importNet(file, importRequest));
     }
 
@@ -341,6 +347,10 @@ public class AssetController {
         if (file == null) {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
+        }
+        if (file.getSize() > 1048576 * 10) {
+
+            throw new BusinessException("导入失败，文件不超过10M！");
         }
 
         return ActionResponse.success(iAssetService.importSecurity(file, importRequest));
@@ -361,7 +371,10 @@ public class AssetController {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
         }
+        if (file.getSize() > 1048576 * 10) {
 
+            throw new BusinessException("导入失败，文件不超过10M！");
+        }
         return ActionResponse.success(iAssetService.importStory(file, importRequest));
     }
 
@@ -380,7 +393,10 @@ public class AssetController {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
         }
+        if (file.getSize() > 1048576 * 10) {
 
+            throw new BusinessException("导入失败，文件不超过10M！");
+        }
         return ActionResponse.success(iAssetService.importOhters(file, importRequest));
     }
 
@@ -406,5 +422,12 @@ public class AssetController {
     @RequestMapping(value = "/query/assetIds", method = RequestMethod.POST)
     public ActionResponse findAssetIds() throws Exception {
         return ActionResponse.success(iAssetService.findAssetIds());
+    }
+
+    @ApiOperation(value = "工作台硬件登记数量", notes = "获取资产id列表")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/waitRegistCount", method = RequestMethod.POST)
+    public ActionResponse queryWaitRegistCount() throws Exception {
+        return ActionResponse.success(iAssetService.queryWaitRegistCount());
     }
 }

@@ -7,11 +7,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -99,11 +101,25 @@ public class TemplateExcelExport {
      *
      * @param dataList
      */
-    public void exportToClient(HttpServletResponse response, String fileName, List<?> dataList) throws IOException {
+    public void exportToClient(HttpServletRequest request, HttpServletResponse response, String fileName,
+                               List<?> dataList) throws IOException {
         response.reset();
         response.setContentType("application/octet-stream; charset=utf-8");
-        response.setHeader("Content-Disposition",
-            "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
+
+        // 判断是否是IE11
+        Boolean flag = request.getHeader("User-Agent").indexOf("like Gecko") > 0;
+        if (request.getHeader("User-Agent").toLowerCase().indexOf("msie") > 0 || flag) {
+            fileName = URLEncoder.encode(fileName, "UTF-8");// IE浏览器
+        } else {
+            // 先去掉文件名称中的空格,然后转换编码格式为utf-8,保证不出现乱码,
+            // 这个文件名称用于浏览器的下载框中自动显示的文件名
+            fileName = new String(fileName.replaceAll(" ", "").getBytes("UTF-8"), "ISO8859-1");
+            // firefox浏览器
+            // firefox浏览器User-Agent字符串:
+            // Mozilla/5.0 (Windows NT 6.1; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0
+        }
+
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
         // 填充数据
         setDataList(dataList);
         write(response.getOutputStream());

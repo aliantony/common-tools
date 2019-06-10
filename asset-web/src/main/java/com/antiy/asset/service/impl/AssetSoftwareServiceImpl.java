@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.intergration.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -29,10 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.AreaClient;
-import com.antiy.asset.intergration.BaseLineClient;
-import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.*;
 import com.antiy.asset.templet.AssetSoftwareEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
@@ -127,6 +124,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     private IRedisService                                                    redisService;
     @Resource
     FileServiceImpl                                                          fileService;
+    @Resource
+    private AssetClient                                                      assetClient;
 
     @Override
     public ActionResponse saveAssetSoftware(AssetSoftwareRequest request) throws Exception {
@@ -259,7 +258,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
         // }
         // }
-
+        if (num > 0) {
+            ActionResponse result = assetClient.issueAssetData(new ArrayList(){{add(request);}});
+            if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
+                logger.info("下发软件数据完成：{}",request);
+            }
+        }
         return ActionResponse.success(num);
 
     }
@@ -1067,7 +1071,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                 ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
                 manualStartActivityRequest.setBusinessId(assetSoftware.getStringId());
-                manualStartActivityRequest.setFormData(JSONObject.toJSONString(formData));
+                manualStartActivityRequest.setFormData(formData);
                 manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
                 manualStartActivityRequest
                     .setProcessDefinitionKey(AssetActivityTypeEnum.SOFTWARE_ADMITTANCE_ATUO.getCode());
@@ -1106,8 +1110,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         downloadVO.setDownloadList(softwareEntities);
         if (Objects.nonNull(softwareEntities) && softwareEntities.size() > 0) {
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData(s, 0, "", assetSoftwareQuery,
-                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(s, 0, "", assetSoftwareQuery, BusinessModuleEnum.SOFTWARE_ASSET,
+                BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", downloadVO);
             excelDownloadUtil.excelDownload(request, response, s, downloadVO);
         } else {

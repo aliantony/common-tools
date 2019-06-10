@@ -25,7 +25,7 @@ public class SoftwareControllerManager {
         request.setSoftwareLicenseRequest(new AssetSoftwareLicenseRequest());
         request.setAssetPortProtocolRequest(new AssetPortProtocolRequest());
         handleRequest.setTaskId("1");
-        activityRequest.setFormData("123");
+        //activityRequest.setFormData("123");
         activityRequest.setBusinessId("1");
         activityRequest.setProcessDefinitionKey("2");
         request.setName(name);

@@ -1,6 +1,7 @@
 package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.service.IAssetReportService;
-import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
@@ -132,9 +132,10 @@ public class AssetReportController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/export/category/newAsset", method = RequestMethod.GET)
     // @PreAuthorize("hasAuthority('asset:report:exportCategoryCount')")
-    public void exportCategoryCount(@ApiParam("报表查询对象") AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception {
+    public void exportCategoryCount(@ApiParam("报表查询对象") AssetReportCategoryCountQuery assetReportCategoryCountQuery,
+                                    HttpServletRequest request) throws Exception {
         assetReportCategoryCountQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
-        iAssetReportService.exportCategoryCount(assetReportCategoryCountQuery);
+        iAssetReportService.exportCategoryCount(assetReportCategoryCountQuery, request);
     }
 
     /**

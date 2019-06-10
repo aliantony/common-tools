@@ -49,4 +49,29 @@ public class StringUtils {
         }
         return list;
     }
+
+    /**
+     * 将字符串转换成小写。
+     *
+     * <p> 如果字符串是<code>null</code>则返回<code>null</code>。
+     *
+     * <pre>
+     * StringUtil.toLowerCase(null)  = null
+     * StringUtil.toLowerCase("")    = ""
+     * StringUtil.toLowerCase("aBc") = "abc"
+     * </pre>
+     *
+     * </p>
+     *
+     * @param str 要转换的字符串
+     *
+     * @return 大写字符串，如果原字符串为<code>null</code>，则返回<code>null</code>
+     */
+    public static String toLowerCase(String str) {
+        if (str == null) {
+            return null;
+        }
+
+        return str.toLowerCase();
+    }
 }

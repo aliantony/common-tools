@@ -1,13 +1,13 @@
 package com.antiy.asset.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
-import com.antiy.asset.controller.AssetAdmittanceController;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.common.utils.DateUtils;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,6 @@ import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.entity.AssetCategoryEntity;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroupEntity;
-import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.util.ArrayTypeUtil;
@@ -27,6 +26,7 @@ import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.ShowCycleType;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
@@ -424,7 +424,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     @Override
-    public void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery) throws Exception {
+    public void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery,
+                                    HttpServletRequest request) throws Exception {
         ReportForm reportForm = new ReportForm();
         String titleStr;
         String fileNameStr;
@@ -467,8 +468,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
             List dataList = reportData.getData();
             data[i] = ArrayTypeUtil.objectArrayToStringArray(dataList.toArray());
         }
-        columnList.add("总数");
-        columnList.add("新增");
         int[] total = new int[headerList.size()];
         List<ReportData> reportList = assetReportResponse.getList();
         int[] add = new int[headerList.size()];
@@ -482,13 +481,15 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 total[i] += Integer.parseInt(data[j][i]);
             }
         }
-        data[reportDataList.size()] = ArrayTypeUtil.integerArrayToStringArray(total);
-        data[reportDataList.size() + 1] = ArrayTypeUtil.integerArrayToStringArray(add);
+        columnList.add("新增");
+        data[reportDataList.size()] = ArrayTypeUtil.integerArrayToStringArray(add);
+        columnList.add("总数");
+        data[reportDataList.size() + 1] = ArrayTypeUtil.integerArrayToStringArray(total);
         reportForm.setHeaderList(headerList);
         reportForm.setData(data);
         reportForm.setColumnList(columnList);
         String fileName = fileNameStr + ".xlsx";
-        ExcelUtils.exportFormToClient(reportForm, fileName);
+        ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, fileName));
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(fileNameStr, 0, "", assetReportCategoryCountQuery,
             BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
@@ -519,7 +520,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getDayOfWeek());
 
             case "2":
-                reportQueryRequest.setSqlTime("%U");
+                reportQueryRequest.setSqlTime("%u");
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils.getWeekOfMonth());
 
             case "3":
@@ -537,7 +538,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 Long mouth = ReportDateUtils.monthDiff(reportQueryRequest.getStartTime(),
                     reportQueryRequest.getEndTime());
                 if (mouth == 0) {
-                    reportQueryRequest.setSqlTime("%U");
+                    reportQueryRequest.setSqlTime("%u");
                 }
                 return buildGroupCountByTime(reportQueryRequest, ReportDateUtils
                     .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
@@ -574,6 +575,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportQuery.setSqlTime(reportQueryRequest.getSqlTime());
         reportQuery.setEndTime(reportQueryRequest.getStartTime());
         reportQuery.setAreaIds(reportQueryRequest.getAreaIds());
+        reportQuery.setAssetStatusList(getStatusList());
         List<AssetGroupEntity> oldAssetGroupEntities = assetReportDao.getAssetConutWithGroup(reportQuery);
 
         // 4.初始化返回对象
@@ -648,7 +650,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 reportQueryRequest.setSqlTime("%w");
                 return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getDayOfWeek());
             case "2":
-                reportQueryRequest.setSqlTime("%U");
+                reportQueryRequest.setSqlTime("%u");
                 return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getWeekOfMonth());
             case "3":
                 reportQueryRequest.setSqlTime("%Y-%m");
@@ -735,8 +737,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
         rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg()));
         rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg()));
         rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.OTHER_DEVICE.getMsg()));
-        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.AMOUNT.getMsg()));
         rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.NEW_ADD.getMsg()));
+        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.AMOUNT.getMsg()));
 
         reportTableResponse.setRows(rows);
         reportTableResponse.setChildren(children);
@@ -806,7 +808,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 reportQueryRequest.setSqlTime("%w");
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getDayOfWeek(), "本周");
             case "2":
-                reportQueryRequest.setSqlTime("%U");
+                reportQueryRequest.setSqlTime("%u");
                 return buildAssetReportTable(reportQueryRequest, ReportDateUtils.getWeekOfMonth(), "本月");
             case "3":
                 reportQueryRequest.setSqlTime("%Y-%m");
@@ -820,7 +822,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 Long mouth = ReportDateUtils.monthDiff(reportQueryRequest.getStartTime(),
                     reportQueryRequest.getEndTime());
                 if (mouth == 0) {
-                    reportQueryRequest.setSqlTime("%U");
+                    reportQueryRequest.setSqlTime("%u");
                 }
 
                 return buildAssetReportTable(reportQueryRequest,
@@ -917,8 +919,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
         ReportQueryRequest initReportQueryRequest = new ReportQueryRequest();
         initReportQueryRequest.setEndTime(reportQueryRequest.getStartTime());
         initReportQueryRequest.setAreaIds(reportQueryRequest.getAreaIds());
+        initReportQueryRequest.setAssetStatusList(getStatusList());
         List<AssetGroupEntity> initAssetGroupEntities = assetReportDao.getAssetConutWithGroup(initReportQueryRequest);
         // 2.本时间段新增的数据
+        reportQueryRequest.setAssetStatusList(getStatusList());
         List<AssetGroupEntity> assetGroupEntities = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
         // 3.添加资产组名字
         List<String> initNameList = new ArrayList<>();
@@ -1028,36 +1032,26 @@ public class AssetReportServiceImpl implements IAssetReportService {
                     .compareTo(DataTypeUtils.stringToInteger(o1.get(timeMapLastKey)));
             }
         });
-        Map<String, String> countMap = new LinkedHashMap<>(timeMap.size() + 1);
-        countMap.put("classifyName", "总数");
-        // 根据时间节点遍历设置数据
-        for (Map.Entry<String, String> entry : timeMap.entrySet()) {
-            Integer Num = 0;
-            for (Map<String, String> map : rows) {
-                Num += DataTypeUtils.stringToInteger(map.get(entry.getKey()));
-            }
-            countMap.put(entry.getKey(), Num.toString());
-        }
-        rows.add(countMap);
-        // 最后一行新增的数据
-        Map<String, String> addMap = new LinkedHashMap<>(timeMap.size() + 1);
-        addMap.put("classifyName", "新增数量");
-        // 根据时间节点遍历设置数据
-        for (Map.Entry<String, String> entry : timeMap.entrySet()) {
-            Integer addNum = 0;
-            for (AssetGroupEntity assetGroupEntity : assetGroupEntities) {
-                // 当前时间节点下的数量(不考虑类型)全部相加
-                if (assetGroupEntity.getDate().equals(entry.getKey())) {
-                    addMap.put(entry.getKey(), assetGroupEntity.getGroupCount().toString());
-                    addNum += assetGroupEntity.getGroupCount();
-                }
-            }
-            addMap.put(entry.getKey(), addNum.toString());
-        }
-        rows.add(addMap);
 
         assetReportTableResponse.setRows(rows);
         return assetReportTableResponse;
+    }
+
+    /**
+     * 对文件流输出下载的中文文件名进行编码 屏蔽各种浏览器版本的差异性
+     * @throws UnsupportedEncodingException
+     */
+    public String encodeChineseDownloadFileName(HttpServletRequest request,
+                                                String pFileName) throws UnsupportedEncodingException {
+        String userAgent = request.getHeader("user-agent").toLowerCase();
+        if (userAgent.contains("msie") || userAgent.contains("like gecko")) {
+            // win10 ie edge 浏览器 和其他系统的ie
+            pFileName = URLEncoder.encode(pFileName, "UTF-8");
+        } else {
+            // fe
+            pFileName = new String(pFileName.getBytes("utf-8"), "iso-8859-1");
+        }
+        return pFileName;
     }
 
 }

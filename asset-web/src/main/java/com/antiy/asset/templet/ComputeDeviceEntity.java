@@ -150,7 +150,7 @@ public class ComputeDeviceEntity {
     /**
      * 内存数量
      */
-    @ExcelField(value = "memoryNum", align = 1, title = "内存数量(必填)", required = true)
+    @ExcelField(value = "memoryNum", align = 1, title = "内存数量")
     private Integer memoryNum;
     /**
      * 内存品牌
@@ -166,7 +166,7 @@ public class ComputeDeviceEntity {
     /**
      * 内存容量
      */
-    @ExcelField(value = "memoryCapacity", align = 1, title = "内存容量(必填)", length = 7, required = true)
+    @ExcelField(value = "memoryCapacity", align = 1, title = "内存容量(必填)", length = 7)
     private Integer memoryCapacity;
 
     /**
@@ -199,7 +199,7 @@ public class ComputeDeviceEntity {
     /**
      * 硬盘数量
      */
-    @ExcelField(value = "hardDiskNum", align = 1, title = "硬盘数量(必填)", required = true)
+    @ExcelField(value = "hardDiskNum", align = 1, title = "硬盘数量", required = false)
     private Integer hardDiskNum;
     /**
      * 硬盘品牌
@@ -221,7 +221,7 @@ public class ComputeDeviceEntity {
     /**
      * 硬盘容量
      */
-    @ExcelField(value = "hardDisCapacityl", align = 1, title = "硬盘容量(必填)", length = 7, required = true)
+    @ExcelField(value = "hardDisCapacityl", align = 1, title = "硬盘容量(必填)", length = 7)
     private Integer hardDisCapacityl;
     /**
      * 硬盘接口类型
@@ -231,7 +231,7 @@ public class ComputeDeviceEntity {
     /**
      * 硬盘磁盘类型
      */
-    @ExcelField(value = "hardDiskType", align = 1, title = "硬盘磁盘类型(必填)", dictType = "disk_type", required = true)
+    @ExcelField(value = "hardDiskType", align = 1, title = "硬盘磁盘类型(必填)", dictType = "disk_type")
     private Integer hardDiskType;
     /**
      * 硬盘购买时间
@@ -241,12 +241,12 @@ public class ComputeDeviceEntity {
     /**
      * 主板数量
      */
-    @ExcelField(value = "mainboradNum", align = 1, title = "主板数量(必填)", required = true)
+    @ExcelField(value = "mainboradNum", align = 1, title = "主板数量")
     private Integer mainboradNum;
     /**
      * 主板品牌
      */
-    @ExcelField(value = "mainboradBrand", align = 1, title = "主板品牌(必填)", required = true)
+    @ExcelField(value = "mainboradBrand", align = 1, title = "主板品牌")
     private String  mainboradBrand;
     /**
      * 主板型号
@@ -271,7 +271,7 @@ public class ComputeDeviceEntity {
     /**
      * cpu数量
      */
-    @ExcelField(value = "cpuNum", align = 1, title = "cpu数量(必填)", required = true)
+    @ExcelField(value = "cpuNum", align = 1, title = "cpu数量")
     private Integer cpuNum;
     /**
      * cpu品牌
@@ -291,7 +291,7 @@ public class ComputeDeviceEntity {
     /**
      * cpu主频
      */
-    @ExcelField(value = "cpuMainFrequency", align = 1, title = "cpu主频(必填)", length = 7, required = true)
+    @ExcelField(value = "cpuMainFrequency", align = 1, title = "cpu主频", length = 7, required = false)
     private Float   cpuMainFrequency;
     /**
      * cpu线程数

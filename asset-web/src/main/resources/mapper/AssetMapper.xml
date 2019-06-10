@@ -193,6 +193,88 @@
             status,
         </if>
     </sql>
+    <sql id="IF_Base_Column_List_Batch">
+
+            asset_group,
+
+
+            number,
+
+            name,
+
+            ethernet_port,
+
+            serial_port,
+
+            install_type,
+
+            serial,
+
+            area_id,
+
+            category_model,
+
+            manufacturer,
+
+            asset_status,
+
+            admittance_status,
+
+            operation_system,
+
+            system_bit,
+
+            responsible_user_id,
+
+            location,
+
+            latitude,
+
+            longitude,
+
+            house_location,
+
+            firmware_version,
+
+            uuid,
+
+            contact_tel,
+
+            email,
+
+            asset_source,
+
+            importance_degree,
+
+            describle,
+
+            parent_id,
+
+            tags,
+
+            first_enter_nett,
+
+            first_discover_time,
+
+            service_life,
+
+            buy_date,
+
+            warranty,
+
+            gmt_create,
+
+            gmt_modified,
+
+            memo,
+
+            create_user,
+
+            modify_user
+
+
+
+    </sql>
 
     <sql id="IF_Value_Column_List">
         <if test=" assetGroup != null">
@@ -312,6 +394,89 @@
         <if test=" status != null">
             #{status },
         </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List_ForBatch">
+
+            #{entity.assetGroup },
+
+
+            #{entity.number },
+
+            #{entity.name },
+
+            #{entity.ethernetPort },
+
+            #{entity.serialPort },
+
+            #{entity.installType },
+
+            #{entity.serial },
+
+            #{entity.areaId },
+
+            #{entity.categoryModel },
+
+            #{entity.manufacturer },
+
+            #{entity.assetStatus },
+
+            #{entity.admittanceStatus },
+
+            #{entity.operationSystem },
+
+            #{entity.systemBit },
+
+            #{entity.responsibleUserId },
+
+            #{entity.location },
+
+            #{entity.latitude },
+
+            #{entity.longitude },
+
+            #{entity.houseLocation },
+
+            #{entity.firmwareVersion },
+
+            #{entity.uuid },
+
+            #{entity.contactTel },
+
+            #{entity.email },
+
+            #{entity.assetSource },
+
+            #{entity.importanceDegree },
+
+            #{entity.describle },
+
+            #{entity.parentId },
+
+            #{entity.tags },
+
+            #{entity.firstEnterNett },
+
+            #{entity.firstDiscoverTime },
+
+            #{entity.serviceLife },
+
+            #{entity.buyDate },
+
+            #{entity.warranty },
+
+            #{entity.gmtCreate },
+
+            #{entity.gmtModified },
+
+            #{entity.memo },
+
+            #{entity.createUser },
+
+            #{entity.modifyUser }
+
+
+
     </sql>
 
     <sql id="Set_Column_List">
@@ -627,15 +792,6 @@
                 #{item}
             </foreach>
         </if>
-        <if test="all">
-            and asset_status in (3,4,5,6,7,8)
-        </if>
-        <if test=" areaIds != null and areaIds.length > 0 and ids == null">
-            and area_id in
-            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
         <if test=" areaIds != null and areaIds.length > 0 and ids != null and ids.length > 0">
             and (asset.area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
@@ -643,7 +799,7 @@
             </foreach>
             <choose>
                 <!--enterControl 为true表示从工作台进入-->
-                <when test="enterControl">
+                <when test="enterControl and assetStatusList[0] != 7 and assetStatusList[0] != 1">
                     and
                 </when>
                 <otherwise>
@@ -677,15 +833,21 @@
         <if test=" multipleQuery != null and multipleQuery != ''">
             and (asset.name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or asset.number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or ip like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or mac like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or asset_network_card.ip_address like binary
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or asset_safety_equipment.ip like binary
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or asset_network_equipment.inner_ip like binary
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or asset_network_equipment.outer_ip like binary
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or asset_network_card.mac_address like binary
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or asset_safety_equipment.mac like binary
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or asset_network_equipment.mac_address like binary
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             )
-        </if>
-        <if test="assetStatusList != null and assetStatusList.size() > 0">
-            and asset.asset_status in
-            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
-                #{assetStatus}
-            </foreach>
         </if>
         <if test="name != null">
             and asset.name like binary CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
@@ -693,6 +855,29 @@
         <if test="assetName != null">
             and asset.name =#{assetName}
         </if>
+        <choose>
+            <when test="assetGroupQuery">
+                <choose>
+                    <when test="assetStatusList != null and assetStatusList.size() > 0">
+                        and asset.asset_status in
+                        <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                            #{assetStatus}
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        and asset_status in (3,4,5,6,7,8)
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                <if test="assetStatusList != null and assetStatusList.size() > 0">
+                    and asset.asset_status in
+                    <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                        #{assetStatus}
+                    </foreach>
+                </if>
+            </otherwise>
+        </choose>
         <if test="assetStatus != null">
             and asset.asset_status = #{assetStatus}
         </if>
@@ -787,6 +972,25 @@
         </trim>
     </insert>
 
+
+    <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List_Batch"></include>
+        </trim>
+        values
+
+        <foreach collection="list" item="entity" separator=",">
+            (
+            <include refid="IF_Value_Column_List_ForBatch"></include>
+            )
+
+        </foreach>
+    </insert>
+
+
     <update id="update" parameterType="com.antiy.asset.entity.Asset">
         update
         <include refid="Table_Name"></include>
@@ -836,10 +1040,13 @@
 
     <select id="findCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
         select
-        count(1) count
+        count(1) count from
+        (
+        select asset.id
         from
         asset asset
-        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and asset_network_card.status = 1
+        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and
+        asset_network_card.status = 1
         left join asset_category_model asset_category_model on asset.category_model = asset_category_model.id
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
@@ -849,6 +1056,7 @@
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
+        group by asset.id) t
     </select>
 
 
@@ -978,42 +1186,46 @@
     <select id="findListAsset" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
         select
-            asset.id,
-            asset.area_id,
-            asset.asset_group,
-            asset.category_model,
-            asset.admittance_status,
-            asset.number,
-            asset.name,
-            asset_user.name as responsible_user_name,
-            asset.install_type,
-            asset.serial,
-            asset_category_model.name as category_model_name,
-            asset.manufacturer, asset_status,
-            asset.operation_system,
-            asset.system_bit,
-            asset.location,
-            asset.house_location,
-            asset.latitude,
-            asset.longitude,
-            asset.firmware_version,
-            asset.uuid,
-            asset.responsible_user_id,
-            asset.contact_tel,
-            asset.email,
-            asset.asset_source,
-            asset.importance_degree,
-            asset.describle,
-            asset.parent_id,
-            asset.first_enter_nett,
-            asset.service_life,
-            asset.buy_date,
-            asset.warranty,
-            asset.gmt_create,
-            concat(ifnull(group_concat(asset_network_card.ip_address),''), ifnull(asset_network_equipment.outer_ip,''), ifnull(asset_safety_equipment.ip,'') ) AS ip,
-            concat(ifnull(group_concat( asset_network_card.mac_address ),''), ifnull(asset_network_equipment.mac_address,''), ifnull(asset_safety_equipment.mac,'') ) AS mac
+        asset.id,
+        asset.area_id,
+        asset.asset_group,
+        asset.category_model,
+        asset.admittance_status,
+        asset.number,
+        asset.name,
+        asset_user.name as responsible_user_name,
+        asset.install_type,
+        asset.serial,
+        asset_category_model.name as category_model_name,
+        asset.manufacturer, asset_status,
+        asset.operation_system,
+        asset.system_bit,
+        asset.location,
+        asset.house_location,
+        asset.latitude,
+        asset.longitude,
+        asset.firmware_version,
+        asset.uuid,
+        asset.responsible_user_id,
+        asset.contact_tel,
+        asset.email,
+        asset.asset_source,
+        asset.importance_degree,
+        asset.describle,
+        asset.parent_id,
+        asset.first_enter_nett,
+        asset.service_life,
+        asset.buy_date,
+        asset.warranty,
+        asset.gmt_create,
+        concat(ifnull(group_concat(asset_network_card.ip_address),''),
+        ifnull(asset_network_equipment.outer_ip,''),ifnull( asset_network_equipment.inner_ip, '' ),
+        ifnull(asset_safety_equipment.ip,'') ) AS ip,
+        concat(ifnull(group_concat( asset_network_card.mac_address ),''),
+        ifnull(asset_network_equipment.mac_address,''), ifnull(asset_safety_equipment.mac,'') ) AS mac
         from asset asset
-        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and asset_network_card.status = 1
+        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and
+        asset_network_card.status = 1
         left join asset_category_model asset_category_model on asset.category_model = asset_category_model.id
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
@@ -1292,6 +1504,17 @@
         <if test="areaIds != null and areaIds.size() > 0">
             where area_id in
             <foreach collection="areaIds" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="queryWaitRegistCount" resultType="java.lang.Integer">
+        select count(1) from asset
+        where asset_status = #{assetStatus}
+        and status = 1
+        <if test="areaIds != null and areaIds.size() > 0">
+            and area_id in
+            <foreach collection="areaIds" separator="," open="(" close=")" item="item">
                 #{item}
             </foreach>
         </if>
