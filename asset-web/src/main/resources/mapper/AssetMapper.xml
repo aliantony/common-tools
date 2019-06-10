@@ -1218,10 +1218,10 @@
         asset.buy_date,
         asset.warranty,
         asset.gmt_create,
-        concat(ifnull(group_concat(asset_network_card.ip_address),''),
+        concat(ifnull((select GROUP_CONCAT( ip_address ) from asset_network_card where asset_id = asset.id and status = 1),''),
         ifnull(asset_network_equipment.outer_ip,''),ifnull( asset_network_equipment.inner_ip, '' ),
         ifnull(asset_safety_equipment.ip,'') ) AS ip,
-        concat(ifnull(group_concat( asset_network_card.mac_address ),''),
+        concat(ifnull((select GROUP_CONCAT( mac_address ) from asset_network_card where asset_id = asset.id and status = 1),''),
         ifnull(asset_network_equipment.mac_address,''), ifnull(asset_safety_equipment.mac,'') ) AS mac
         from asset asset
         left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and

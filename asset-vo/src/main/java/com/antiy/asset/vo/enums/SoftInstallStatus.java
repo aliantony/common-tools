@@ -3,7 +3,7 @@ package com.antiy.asset.vo.enums;
 public enum SoftInstallStatus {
                                ALL(0,
                                    "全部"), WAIT_CONFIGURE(1,
-                                                         "未配置"), CONFIGURING(2,
+                                                         "待配置"), CONFIGURING(2,
                                                                              "配置中"), UNINSTALLED(3,
                                                                                                  "未安装"), FAIL(4,
                                                                                                               "失败"), SUCCESS(5,

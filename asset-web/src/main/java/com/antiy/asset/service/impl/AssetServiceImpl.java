@@ -2308,6 +2308,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return "导入失败，模板中无数据！" + result.getMsg();
         }
 
+        StringBuilder sb = new StringBuilder(result.getMsg());
+
+        if (result.getMsg().contains("导入失败")) {
+            return sb.toString();
+        }
         int success = 0;
         int repeat = 0;
         int error = 0;
@@ -2628,11 +2633,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         StringBuilder stringBuilder = new StringBuilder(res);
 
-        StringBuilder sb = new StringBuilder(result.getMsg());
 
-        if (result.getMsg().contains("导入失败")) {
-            return sb.toString();
-        }
         // 写入业务日志
         LogHandle.log(computerVos.toString(), AssetEventEnum.ASSET_EXPORT_COMPUTER.getName(),
             AssetEventEnum.ASSET_EXPORT_NET.getStatus(), ModuleEnum.ASSET.getCode());
@@ -2873,6 +2874,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (resultDataList.size() == 0 && StringUtils.isBlank(result.getMsg())) {
             return "导入失败，模板中无数据！" + result.getMsg();
         }
+        StringBuilder sb = new StringBuilder(result.getMsg());
+
+        if (result.getMsg().contains("导入失败")) {
+            return sb.toString();
+        }
         int success = 0;
         int repeat = 0;
         int error = 0;
@@ -3040,11 +3046,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         StringBuilder stringBuilder = new StringBuilder(res);
 
-        StringBuilder sb = new StringBuilder(result.getMsg());
 
-        if (result.getMsg().contains("导入失败")) {
-            return sb.toString();
-        }
         // 写入业务日志
         LogHandle.log(assetSafetyEquipments.toString(), AssetEventEnum.ASSET_EXPORT_SAFETY.getName(),
             AssetEventEnum.ASSET_EXPORT_SAFETY.getStatus(), ModuleEnum.ASSET.getCode());
@@ -3072,6 +3074,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<StorageDeviceEntity> resultDataList = result.getDataList();
         if (resultDataList.size() == 0 && StringUtils.isBlank(result.getMsg())) {
             return "导入失败，模板中无数据！" + result.getMsg();
+        }
+        StringBuilder sb = new StringBuilder(result.getMsg());
+
+        if (result.getMsg().contains("导入失败")) {
+            return sb.toString();
         }
         int success = 0;
         int repeat = 0;
@@ -3232,11 +3239,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         StringBuilder stringBuilder = new StringBuilder(res);
 
-        StringBuilder sb = new StringBuilder(result.getMsg());
 
-        if (result.getMsg().contains("导入失败")) {
-            return sb.toString();
-        }
         // 写入业务日志
         LogHandle.log(assetStorageMedia.toString(), AssetEventEnum.ASSET_EXPORT_STORAGE.getName(),
             AssetEventEnum.ASSET_EXPORT_STORAGE.getStatus(), ModuleEnum.ASSET.getCode());
