@@ -256,7 +256,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 是否是准入查询
      */
-    private boolean isAdmittance;
+    private boolean       isAdmittance;
     /**
      * 是否全查询
      */
@@ -268,6 +268,9 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty("是否全查询")
     private boolean       assetGroupQuery;
+
+    @ApiModelProperty("操作系统列表")
+    private List<String>  osList;
 
     public boolean getAssetGroupQuery() {
         return assetGroupQuery;
@@ -604,6 +607,14 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     public void setResponsibleUserName(String responsibleUserName) {
         this.responsibleUserName = responsibleUserName;
+    }
+
+    public List<String> getOsList() {
+        return osList;
+    }
+
+    public void setOsList(List<String> osList) {
+        this.osList = osList;
     }
 
     @Override

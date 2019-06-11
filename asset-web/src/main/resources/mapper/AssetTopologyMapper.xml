@@ -230,6 +230,64 @@
         </if>
     </select>
 
+    <select id="findTopologyCountByCategory" resultType="int"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select count(id) from asset a where exists (
+        select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or parent_asset_id=a.id)
+        )
+        <if test=" categoryModels != null and categoryModels.length >0 ">
+            and category_model in
+            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" assetStatusList != null">
+            and asset_status in
+            <foreach collection="assetStatusList" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" areaIds != null and areaIds.length >0 ">
+            and area_id in
+            <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" osList != null and osList.size() >0 ">
+            and operation_system in
+            <foreach collection="osList" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        and status=1
+    </select>
+
+    <select id="findOtherTopologyCountByCategory" resultType="int"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select count(id) from asset a where exists (
+        select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or parent_asset_id=a.id)
+        )
+        <if test=" assetStatusList != null">
+            and asset_status in
+            <foreach collection="assetStatusList" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" areaIds != null and areaIds.length >0 ">
+            and area_id in
+            <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" osList != null and osList.size() >0 ">
+            and operation_system not in
+            <foreach collection="osList" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        and status=1
+    </select>
+
     <select id="findTopologyListAsset" resultMap="assetResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
         select * from (select

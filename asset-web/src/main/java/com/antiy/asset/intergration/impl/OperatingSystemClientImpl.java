@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.response.BaselineCategoryModelResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -45,20 +46,26 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
      */
     @Override
     @AssetLog(description = "获取操作系统列表", operationType = AssetLogOperationType.QUERY)
-    public ActionResponse<List<LinkedHashMap>> getOperatingSystem() {
+    public ActionResponse<List<BaselineCategoryModelResponse>> getOperatingSystem() {
         return decode((ActionResponse) baseClient.post(null,
-            new ParameterizedTypeReference<ActionResponse<List<LinkedHashMap>>>() {
+            new ParameterizedTypeReference<ActionResponse<List<BaselineCategoryModelResponse>>>() {
             }, getOperatingSystemListUrl));
     }
 
-    private ActionResponse<List<LinkedHashMap>> decode(ActionResponse<List<LinkedHashMap>> oldValue) {
+    private ActionResponse<List<BaselineCategoryModelResponse>> decode(ActionResponse<List<BaselineCategoryModelResponse>> oldValue) {
         if (oldValue != null && oldValue.getBody() != null) {
-            List<LinkedHashMap> newList = new ArrayList<LinkedHashMap>();
-            for (LinkedHashMap linkedHashMap : oldValue.getBody()) {
-                LinkedHashMap newMap = linkedHashMap;
-                if (linkedHashMap.get("id") != null && StringUtils.isNotBlank(linkedHashMap.get("id").toString())) {
-                    newMap.put("id", aesEncoder.decode(linkedHashMap.get("id").toString(),
-                        LoginUserUtil.getLoginUser().getUsername()));
+            List<BaselineCategoryModelResponse> newList = new ArrayList<BaselineCategoryModelResponse>();
+            for (BaselineCategoryModelResponse linkedHashMap : oldValue.getBody()) {
+                BaselineCategoryModelResponse newMap = linkedHashMap;
+                if (linkedHashMap.getStringId() != null
+                    && StringUtils.isNotBlank(linkedHashMap.getStringId())) {
+                    newMap.setStringId(
+                        aesEncoder.decode(linkedHashMap.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+                }
+                if (linkedHashMap.getParentId() != null
+                        && StringUtils.isNotBlank(linkedHashMap.getParentId())) {
+                    newMap.setParentId(
+                            aesEncoder.decode(linkedHashMap.getParentId(), LoginUserUtil.getLoginUser().getUsername()));
                 }
                 newList.add(newMap);
             }
@@ -68,8 +75,8 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
 
     @Override
     @AssetLog(description = "获取操作系统列表", operationType = AssetLogOperationType.QUERY)
-    public List<LinkedHashMap> getInvokeOperatingSystem() {
-        ActionResponse<List<LinkedHashMap>> actionResponse = this.getOperatingSystem();
+    public List<BaselineCategoryModelResponse> getInvokeOperatingSystem() {
+        ActionResponse<List<BaselineCategoryModelResponse>> actionResponse = this.getOperatingSystem();
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             return null;

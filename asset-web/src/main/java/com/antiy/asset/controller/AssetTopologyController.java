@@ -89,4 +89,28 @@ public class AssetTopologyController {
         return ActionResponse.success(iAssetTopologyService.getTopologyList(query));
     }
 
+    /**
+     * 查询拓扑列表
+     * @return
+     */
+    @ApiOperation("品类统计")
+    @RequestMapping(value = "/count/category", method = RequestMethod.POST)
+    @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse")
+    // @PreAuthorize(value = "hasAuthority('asset:topology:countTopologyCategory')")
+    public ActionResponse countTopologyCategory() throws Exception {
+        return ActionResponse.success(iAssetTopologyService.countTopologyCategory());
+    }
+
+    /**
+     * 查询拓扑列表
+     * @return
+     */
+    @ApiOperation("品类统计")
+    @RequestMapping(value = "/count/os", method = RequestMethod.POST)
+    @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse")
+    // @PreAuthorize(value = "hasAuthority('asset:topology:countTopologyOs')")
+    public ActionResponse countTopologyOs() throws Exception {
+        return ActionResponse.success(iAssetTopologyService.countTopologyOs());
+    }
+
 }

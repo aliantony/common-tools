@@ -268,19 +268,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     }
 
-    /**
-     * 判断操作系统是否存在
-     * @return
-     */
-    private Boolean checkOperatingSystem(String checkStr) {
-        List<LinkedHashMap> linkedHashMapList = operatingSystemClient.getInvokeOperatingSystem();
-        for (LinkedHashMap linkedHashMap : linkedHashMapList) {
-            if (Objects.equals(linkedHashMap.get("name"), checkStr)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * 通过ID判断操作系统是否存在且是叶子节点

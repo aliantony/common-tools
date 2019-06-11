@@ -3739,9 +3739,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @return
      */
     private Boolean checkOperatingSystem(String checkStr) {
-        List<LinkedHashMap> linkedHashMapList = operatingSystemClient.getInvokeOperatingSystem();
-        for (LinkedHashMap linkedHashMap : linkedHashMapList) {
-            if (Objects.equals(linkedHashMap.get("name"), checkStr)) {
+        List<BaselineCategoryModelResponse> linkedHashMapList = operatingSystemClient.getInvokeOperatingSystem();
+        for (BaselineCategoryModelResponse baselineCategoryModelResponse : linkedHashMapList) {
+            if (Objects.equals(baselineCategoryModelResponse.getName(), checkStr)) {
                 return true;
             }
         }
