@@ -425,8 +425,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                     assetCategoryModelNodeResponse
                         .setLevelType(parentMap.get(assetCategoryModelNodeResponse.getParentId()) + 1);
                 }
-                if (assetCategoryModelNodeResponse.getLevelType() <= 3
-                    || readOnly.contains(assetCategoryModelNodeResponse.getName())) {
+                if (assetCategoryModelNodeResponse.getIsDefault() == 0) {
                     assetCategoryModelNodeResponse.setReadOnly(true);
                 }
                 dealLevel(assetCategoryModelNodeResponse.getChildrenNode());

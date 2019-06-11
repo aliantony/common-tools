@@ -17,7 +17,7 @@ public class AssetCategoryModelResponse extends BaseResponse {
      * 名称
      */
     @ApiModelProperty("名称")
-    private String  name;
+    private String name;
     /**
      * 类型:1-品类，2-型号
      */
@@ -27,13 +27,17 @@ public class AssetCategoryModelResponse extends BaseResponse {
      */
     @ApiModelProperty("父ID")
     @Encode
-    private String  parentId;
+    private String parentId;
+    /**
+     * 父ID
+     */
+    @ApiModelProperty("是否系统默认")
+    private Integer isDefault;
     /**
      * 描述
      */
     @ApiModelProperty("备注")
-    private String  memo;
-
+    private String memo;
 
     public String getName() {
         return name;
@@ -43,7 +47,13 @@ public class AssetCategoryModelResponse extends BaseResponse {
         this.name = name;
     }
 
+    public Integer getIsDefault() {
+        return isDefault;
+    }
 
+    public void setIsDefault(Integer isDefault) {
+        this.isDefault = isDefault;
+    }
 
     public String getParentId() {
         return parentId;
@@ -61,13 +71,9 @@ public class AssetCategoryModelResponse extends BaseResponse {
         this.memo = memo;
     }
 
-
     @Override
     public String toString() {
-        return "AssetCategoryModelResponse{" +
-                "name='" + name + '\'' +
-                ", parentId='" + parentId + '\'' +
-                ", memo='" + memo + '\'' +
-                '}';
+        return "AssetCategoryModelResponse{" + "name='" + name + '\'' + ", parentId='" + parentId + '\''
+               + ", isDefault='" + isDefault + '\'' + ", memo='" + memo + '\'' + '}';
     }
 }
