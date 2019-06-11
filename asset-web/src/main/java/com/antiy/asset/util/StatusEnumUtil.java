@@ -47,9 +47,10 @@ public class StatusEnumUtil {
     public static List<Integer> getAssetUseableStatus() {
         List<Integer> status = new ArrayList<>();
         AssetStatusEnum[] assetStatusEnums = AssetStatusEnum.values();
-        for (int i = 0; i < assetStatusEnums.length; i++) {
-            if (!assetStatusEnums[i].equals(AssetStatusEnum.RETIRE)||!assetStatusEnums[i].equals(AssetStatusEnum.NOT_REGSIST)) {
-                status.add(assetStatusEnums[i].getCode());
+        for (AssetStatusEnum assetStatusEnum : assetStatusEnums) {
+            if (!assetStatusEnum.equals(AssetStatusEnum.RETIRE)
+                && !assetStatusEnum.equals(AssetStatusEnum.NOT_REGSIST)) {
+                status.add(assetStatusEnum.getCode());
             }
         }
         return status;
