@@ -33,6 +33,8 @@ public class AssetTopologyQuery extends ObjectQuery {
      */
     private List<Integer> userAreaIds;
 
+    private List<Integer> assetStatusList;
+
     public String getAssetId() {
         return assetId;
     }
@@ -55,5 +57,13 @@ public class AssetTopologyQuery extends ObjectQuery {
 
     public void setUserAreaIds(List<Integer> userAreaIds) {
         this.userAreaIds = userAreaIds;
+    }
+
+    public List<Integer> getAssetStatusList() {
+        return assetStatusList;
+    }
+
+    public void setAssetStatusList(List<Integer> assetStatusList) {
+        this.assetStatusList = assetStatusList;
     }
 }
