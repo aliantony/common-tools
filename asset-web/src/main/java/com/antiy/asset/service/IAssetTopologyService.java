@@ -28,7 +28,7 @@ public interface IAssetTopologyService {
      * @return
      * @throws Exception 查询异常
      */
-    Map<String, Integer> countAssetTopology() throws Exception;
+    CountTopologyResponse countAssetTopology() throws Exception;
 
     /**
      * 已管控拓扑管理的资产的资产组信息(下拉)
