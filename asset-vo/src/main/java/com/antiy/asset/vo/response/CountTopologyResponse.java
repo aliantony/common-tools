@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class CountTopologyResponse {
     String                    status;
-    List<Map<String, String>> list;
+    List<Map<String, String>> data;
 
     public String getStatus() {
         return status;
@@ -16,10 +16,10 @@ public class CountTopologyResponse {
     }
 
     public List<Map<String, String>> getList() {
-        return list;
+        return data;
     }
 
     public void setList(List<Map<String, String>> list) {
-        this.list = list;
+        this.data = list;
     }
 }
