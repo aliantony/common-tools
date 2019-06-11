@@ -128,6 +128,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             newIdCount.setId(aesEncoder.decode(idCount.getId(), LoginUserUtil.getLoginUser().getUsername()));
             decodeCounts.add(newIdCount);
         }
+        // 查询已管控的产生告警的资产
         int warningNum = 0;
         warningNum = getWarningNum(assetIdList, decodeCounts, warningNum);
         resultMap.put("warning", Integer.toString(warningNum));
