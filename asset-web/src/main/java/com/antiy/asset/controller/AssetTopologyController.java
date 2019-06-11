@@ -82,7 +82,11 @@ public class AssetTopologyController {
      * 查询拓扑列表
      * @return
      */
-    @ApiOperation("查询拓扑列表")
+    @ApiOperation(value = "查询拓扑列表",notes = "     * 查询拓扑列表 查询参数传 \" +\n" +
+            "     *             \"查品类参数 categoryModels Array[string]\" +\n" +
+            "     *             \"查资产组参数 assetGroup \" +\n" +
+            "     *             \"查区域参数 areaIds  Array[string]\" +\n" +
+            "     *             \"查用户参数 responsibleUserName \n")
     @RequestMapping(value = "/get/topologyList", method = RequestMethod.POST)
     @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse")
     // @PreAuthorize(value = "hasAuthority('asset:topology:getTopologyList')")
@@ -106,7 +110,7 @@ public class AssetTopologyController {
      * 查询拓扑列表
      * @return
      */
-    @ApiOperation("品类统计")
+    @ApiOperation("操作系统统计")
     @RequestMapping(value = "/count/os", method = RequestMethod.POST)
     @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse")
     // @PreAuthorize(value = "hasAuthority('asset:topology:countTopologyOs')")

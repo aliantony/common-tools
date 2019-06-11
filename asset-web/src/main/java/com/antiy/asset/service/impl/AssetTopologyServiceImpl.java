@@ -176,6 +176,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
+        setCategoryQuery(query);
         Integer count = assetTopologyDao.findTopologyListAssetCount(query);
         if (count != null && count > 0) {
             List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
@@ -190,6 +191,17 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
         }
         return null;
+    }
+
+    private void setCategoryQuery(AssetQuery query) throws Exception {
+        if (query.getCategoryModels() != null && query.getCategoryModels().length > 0) {
+            List<Integer> assetCategory = new ArrayList<>();
+            for (String id : query.getCategoryModels()) {
+                assetCategory.addAll(iAssetCategoryModelService.findAssetCategoryModelIdsById(Integer.valueOf(id),
+                    assetCategoryModelDao.getAll()));
+            }
+            query.setCategoryModels(ArrayTypeUtil.objectArrayToStringArray(assetCategory.toArray()));
+        }
     }
 
     private void setListAreaName(List<AssetResponse> assetResponseList) throws Exception {
