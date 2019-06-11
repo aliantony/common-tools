@@ -42,7 +42,7 @@ public interface IAssetTopologyService {
      * @return
      * @throws Exception
      */
-    PageResult<AssetResponse> getTopologyList(AssetQuery query) throws Exception;
+    TopologyListResponse getTopologyList(AssetQuery query) throws Exception;
 
     TopologyCategoryCountResponse countTopologyCategory() throws Exception;
 

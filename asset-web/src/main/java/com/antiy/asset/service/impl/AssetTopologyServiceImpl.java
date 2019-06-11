@@ -171,7 +171,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     }
 
     @Override
-    public PageResult<AssetResponse> getTopologyList(AssetQuery query) throws Exception {
+    public TopologyListResponse getTopologyList(AssetQuery query) throws Exception {
         if (query.getAreaIds() == null) {
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
@@ -188,7 +188,28 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             setListAreaName(assetResponseList);
             setAlarmCount(assetResponseList, idCounts);
             assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
-            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
+            PageResult pageResult = new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
+                assetResponseList);
+            TopologyListResponse topologyListResponse = new TopologyListResponse();
+            List<TopologyListResponse.TopologyNode> topologyNodes = new ArrayList<>();
+            for (AssetResponse assetResponse : assetResponseList) {
+                TopologyListResponse.TopologyNode topologyNode = topologyListResponse.new TopologyNode();
+                topologyNode.setAsset_area(assetResponse.getAreaName());
+                topologyNode.setAsset_ip(assetResponse.getIp());
+                topologyNode.setAsset_group(assetResponse.getAssetGroup());
+                topologyNode.setAsset_type(assetResponse.getCategoryModelName());
+                topologyNode.setPerson_name(assetResponse.getResponsibleUserName());
+                topologyNode.setAsset_unrepair(assetResponse.getVulCount());
+                topologyNode.setAsset_untreated_warning(assetResponse.getAlarmCount());
+                topologyNode.setSystem_uninstall(assetResponse.getPatchCount());
+                topologyNodes.add(topologyNode);
+            }
+            topologyListResponse.setData(topologyNodes);
+            topologyListResponse.setPageSize(pageResult.getPageSize());
+            topologyListResponse.setCurrentPage(pageResult.getCurrentPage());
+            topologyListResponse.setStatus("success");
+            topologyListResponse.setTotal(pageResult.getTotalRecords());
+            return topologyListResponse;
         }
         return null;
     }
