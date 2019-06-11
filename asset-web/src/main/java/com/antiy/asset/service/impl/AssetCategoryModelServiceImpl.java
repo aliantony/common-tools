@@ -65,13 +65,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     private AesEncoder                  aesEncoder;
     @Resource
     private AssetSoftwareDao            assetSoftwareDao;
-    private static List<String>         readOnly  = new ArrayList() {
-                                                      {
-                                                          add("智甲");
-                                                          add("追影");
-                                                          add("探海");
-                                                      }
-                                                  };
     private static Map<String, Integer> parentMap = new HashMap() {
                                                       {
                                                           put("0", 0);
