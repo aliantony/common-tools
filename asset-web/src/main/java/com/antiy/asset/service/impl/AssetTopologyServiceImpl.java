@@ -77,11 +77,25 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     }
 
     @Override
-    public AssetNodeInfoResponse queryAssetNodeInfo(String assetId) {
+    public TopologyAssetResponse queryAssetNodeInfo(String assetId) {
         AssetNodeInfoResponse assetNodeInfoResponse = assetLinkRelationDao.queryAssetNodeInfo(assetId);
         assetNodeInfoResponse
             .setInstallTypeName(InstallType.getInstallTypeByCode(assetNodeInfoResponse.getInstallType()).getStatus());
-        return assetNodeInfoResponse;
+        TopologyAssetResponse topologyAssetResponse = new TopologyAssetResponse();
+        TopologyAssetResponse.TopologyNodeAsset topologyNodeAsset = topologyAssetResponse.new TopologyNodeAsset();
+        topologyNodeAsset.setAsset_id(assetNodeInfoResponse.getStringId());
+        topologyNodeAsset.setAssetGroup(assetNodeInfoResponse.getAssetGroup());
+        topologyNodeAsset.setHouseLocation(assetNodeInfoResponse.getHouseLocation());
+        topologyNodeAsset.setIp(assetNodeInfoResponse.getIp());
+        topologyNodeAsset.setInstallType(assetNodeInfoResponse.getInstallTypeName());
+        topologyNodeAsset.setOs(assetNodeInfoResponse.getOperationSystemName());
+        topologyNodeAsset.setTelephone(assetNodeInfoResponse.getContactTel());
+        topologyAssetResponse.setStatus("success");
+        topologyAssetResponse.setVersion(assetNodeInfoResponse.getNumber());
+        List<TopologyAssetResponse.TopologyNodeAsset> topologyNodeAssets = new ArrayList<>();
+        topologyNodeAssets.add(topologyNodeAsset);
+        topologyAssetResponse.setData(topologyNodeAssets);
+        return topologyAssetResponse;
     }
 
     @Override

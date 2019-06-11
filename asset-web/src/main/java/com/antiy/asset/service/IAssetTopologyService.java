@@ -21,7 +21,7 @@ public interface IAssetTopologyService {
      * @param assetId
      * @return
      */
-    AssetNodeInfoResponse queryAssetNodeInfo(String assetId);
+    TopologyAssetResponse queryAssetNodeInfo(String assetId);
 
     /**
      * 统计总资产/已管控拓扑管理的资产数量 (totalNum,2),(inControlNum,3)
