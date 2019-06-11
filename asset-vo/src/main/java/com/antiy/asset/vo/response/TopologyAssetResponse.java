@@ -28,6 +28,8 @@ public class TopologyAssetResponse {
         private String installType;
         @ApiModelProperty("资产组")
         private String assetGroup;
+        @ApiModelProperty("物理位置")
+        private String location;
 
         public String getIp() {
             return ip;
@@ -92,6 +94,14 @@ public class TopologyAssetResponse {
 
         public void setAssetGroup(String assetGroup) {
             this.assetGroup = assetGroup;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
         }
     }
 

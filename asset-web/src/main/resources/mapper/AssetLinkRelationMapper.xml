@@ -1152,7 +1152,7 @@
     </select>
 
     <select id="queryAssetNodeInfo" parameterType="java.lang.String" resultMap="AssetNodeInfoResultMap">
-        select a.id as id, a.number,  bcm.name, a.location, a.house_location, a.contact_tel, a.install_type, a.asset_group,
+        select a.id as id, a.number,  bcm.name, a.location,a.location, a.house_location, a.contact_tel, a.install_type, a.asset_group,
            concat(ifnull((select GROUP_CONCAT( ip_address ) from asset_network_card where asset_id = a.id and status = 1),''),' ',
         ifnull(asset_network_equipment.outer_ip,''),' ',ifnull( asset_network_equipment.inner_ip, '' ),' ',
         ifnull(asset_safety_equipment.ip,'') ) AS asset_ip

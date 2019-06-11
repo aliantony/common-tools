@@ -90,6 +90,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         topologyNodeAsset.setInstallType(assetNodeInfoResponse.getInstallTypeName());
         topologyNodeAsset.setOs(assetNodeInfoResponse.getOperationSystemName());
         topologyNodeAsset.setTelephone(assetNodeInfoResponse.getContactTel());
+        topologyNodeAsset.setLocation(assetNodeInfoResponse.getLocation());
         topologyAssetResponse.setStatus("success");
         topologyAssetResponse.setVersion(assetNodeInfoResponse.getNumber());
         List<TopologyAssetResponse.TopologyNodeAsset> topologyNodeAssets = new ArrayList<>();

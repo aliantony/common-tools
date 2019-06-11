@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.base.BaseRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,12 +46,12 @@ public class AssetTopologyController {
         return ActionResponse.success(iAssetTopologyService.queryCategoryModels());
     }
 
-    @ApiOperation(value = "查询节点信息", notes = "主键封装对象")
+    @ApiOperation(value = "查询节点信息", notes = "传stringId参数")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetNodeInfoResponse.class), })
     @RequestMapping(value = "/query/assetNodeInfo", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:topology:queryAssetNodeInfo')")
-    public ActionResponse queryAssetNodeInfo(@ApiParam("条件") @RequestBody AssetTopologyQuery assetTopologyQuery) throws Exception {
-        return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(assetTopologyQuery.getAssetId()));
+    public ActionResponse queryAssetNodeInfo(@ApiParam("条件") @RequestBody BaseRequest baseRequest) throws Exception {
+        return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(baseRequest.getStringId()));
     }
 
     /**
