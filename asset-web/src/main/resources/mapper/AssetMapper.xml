@@ -594,6 +594,9 @@
         <if test=" status != null">
             status = #{status },
         </if>
+        <if test=" serviceLife != null">
+            service_life = #{serviceLife }
+        </if>
     </sql>
 
 
