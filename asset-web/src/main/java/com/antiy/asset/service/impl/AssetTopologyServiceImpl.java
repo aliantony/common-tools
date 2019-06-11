@@ -176,6 +176,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
+        setStatusQuery(query);
         setCategoryQuery(query);
         Integer count = assetTopologyDao.findTopologyListAssetCount(query);
         if (count != null && count > 0) {
@@ -212,6 +213,13 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             return topologyListResponse;
         }
         return null;
+    }
+
+    private void setStatusQuery(AssetQuery query) {
+        List<Integer> statusList = new ArrayList<>();
+        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
+        statusList.add(AssetStatusEnum.NET_IN.getCode());
+        query.setAssetStatusList(statusList);
     }
 
     private void setCategoryQuery(AssetQuery query) throws Exception {
