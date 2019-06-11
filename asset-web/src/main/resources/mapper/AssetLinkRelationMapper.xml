@@ -1152,21 +1152,15 @@
     </select>
 
     <select id="queryAssetNodeInfo" parameterType="java.lang.String" resultMap="AssetNodeInfoResultMap">
-        select
-        #{assetId} as id,
-        a.number,
-        alr.asset_ip,
-        bcm.name,
-        a.location,
-        a.house_location,
-        a.contact_tel,
-        a.install_type,
-        a.asset_group
-        from asset_link_relation alr
-        left join asset a on a.id = alr.asset_id
-        left join baseline_category_model bcm on bcm.id = a.operation_system
-        where
-        alr.asset_id = #{assetId}
+        select a.id as id, a.number,  bcm.name, a.location,a.location, a.house_location, a.contact_tel, a.install_type, a.asset_group,
+           concat(ifnull((select GROUP_CONCAT( ip_address ) from asset_network_card where asset_id = a.id and status = 1),''),' ',
+        ifnull(asset_network_equipment.outer_ip,''),' ',ifnull( asset_network_equipment.inner_ip, '' ),' ',
+        ifnull(asset_safety_equipment.ip,'') ) AS asset_ip
+        from asset a
+        left join asset_link_relation alr on a.id = alr.asset_id
+        LEFT JOIN asset_safety_equipment asset_safety_equipment ON a.id = asset_safety_equipment.asset_id
+        LEFT JOIN asset_network_equipment asset_network_equipment ON a.id = asset_network_equipment.asset_id
+        left join baseline_category_model bcm on bcm.id = a.operation_system where a.id = #{assetId}
     </select>
 
     <select id="queryCategoryModes" resultType="java.lang.String">
@@ -1459,21 +1453,10 @@
         FROM asset_group
         WHERE id IN (
         SELECT asset_group_id
-        FROM asset_group_relation
-        WHERE asset_id IN (
-        SELECT DISTINCT arl.asset_id
-        FROM asset_link_relation arl
-        LEFT JOIN asset ON arl.asset_id = asset.id
-        WHERE asset.asset_status BETWEEN 7 AND 8
-        <if test="userAreaIds != null and userAreaIds.size() > 0">
-            AND asset.area_id in
-            <foreach collection="userAreaIds" separator="," open="(" close=")" item="areaId">
-                #{areaId}
-            </foreach>
-        </if>
-        AND arl.status = 1
-        AND asset.status = 1
-        )
+        FROM asset_group_relation grou
+        where exists (
+        select * from asset_link_relation relation where relation.status=1 and (asset_id =grou.asset_id or parent_asset_id=grou.asset_id)
+        ) and status=1
         )
         AND status = 1
     </select>

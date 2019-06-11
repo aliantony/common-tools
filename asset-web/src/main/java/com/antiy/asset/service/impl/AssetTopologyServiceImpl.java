@@ -77,11 +77,26 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     }
 
     @Override
-    public AssetNodeInfoResponse queryAssetNodeInfo(String assetId) {
+    public TopologyAssetResponse queryAssetNodeInfo(String assetId) {
         AssetNodeInfoResponse assetNodeInfoResponse = assetLinkRelationDao.queryAssetNodeInfo(assetId);
         assetNodeInfoResponse
             .setInstallTypeName(InstallType.getInstallTypeByCode(assetNodeInfoResponse.getInstallType()).getStatus());
-        return assetNodeInfoResponse;
+        TopologyAssetResponse topologyAssetResponse = new TopologyAssetResponse();
+        TopologyAssetResponse.TopologyNodeAsset topologyNodeAsset = topologyAssetResponse.new TopologyNodeAsset();
+        topologyNodeAsset.setAsset_id(assetNodeInfoResponse.getStringId());
+        topologyNodeAsset.setAssetGroup(assetNodeInfoResponse.getAssetGroup());
+        topologyNodeAsset.setHouseLocation(assetNodeInfoResponse.getHouseLocation());
+        topologyNodeAsset.setIp(assetNodeInfoResponse.getIp());
+        topologyNodeAsset.setInstallType(assetNodeInfoResponse.getInstallTypeName());
+        topologyNodeAsset.setOs(assetNodeInfoResponse.getOperationSystemName());
+        topologyNodeAsset.setTelephone(assetNodeInfoResponse.getContactTel());
+        topologyNodeAsset.setLocation(assetNodeInfoResponse.getLocation());
+        topologyAssetResponse.setStatus("success");
+        topologyAssetResponse.setVersion(assetNodeInfoResponse.getNumber());
+        List<TopologyAssetResponse.TopologyNodeAsset> topologyNodeAssets = new ArrayList<>();
+        topologyNodeAssets.add(topologyNodeAsset);
+        topologyAssetResponse.setData(topologyNodeAssets);
+        return topologyAssetResponse;
     }
 
     @Override
@@ -114,6 +129,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             newIdCount.setId(aesEncoder.decode(idCount.getId(), LoginUserUtil.getLoginUser().getUsername()));
             decodeCounts.add(newIdCount);
         }
+        // 查询已管控的产生告警的资产
         int warningNum = 0;
         warningNum = getWarningNum(assetIdList, decodeCounts, warningNum);
         resultMap.put("warning", Integer.toString(warningNum));
