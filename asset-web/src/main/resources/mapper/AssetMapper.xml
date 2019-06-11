@@ -1164,6 +1164,12 @@
                 #{item}
             </foreach>
         </if>
+        <if test=" osList != null and osList.size() >0 ">
+            and operation_system in
+            <foreach collection="osList" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
         and status=1
     </select>
 

@@ -6,11 +6,13 @@ import javax.annotation.Resource;
 
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.intergration.OperatingSystemClient;
+import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.Constants;
-import com.antiy.asset.util.StatusEnumUtil;
 import com.antiy.asset.vo.response.*;
+import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.exception.BusinessException;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -30,13 +32,12 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetTopologyQuery;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.ObjectQuery;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.SysArea;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LoginUserUtil;
+
+import static com.antiy.asset.util.StatusEnumUtil.getAssetUseableStatus;
+import static com.antiy.asset.util.StatusEnumUtil.getSoftwareNotRetireStatusList;
 
 /**
  * 资产拓扑管理
@@ -67,6 +68,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private AesEncoder                          aesEncoder;
     @Resource
     private OperatingSystemClient               operatingSystemClient;
+    @Resource
+    private IAssetService                       iAssetService;
 
     @Override
     public List<String> queryCategoryModels() {
@@ -82,28 +85,58 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     }
 
     @Override
-    public Map<String, Integer> countAssetTopology() throws Exception {
-        Map<String, Integer> resultMap = new HashMap<>(2);
+    public CountTopologyResponse countAssetTopology() throws Exception {
+        Map<String, String> resultMap = new HashMap<>(2);
         // 1.查询资产总数
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-        // 1.1资产状态为已入网和待退役
-        List<Integer> assetStatusList = new ArrayList<>(2);
-        assetStatusList.add(AssetStatusEnum.NET_IN.getCode());
-        assetStatusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
+        // 1.1资产状态出去不予登记和登记
+        List<Integer> assetStatusList = getAssetUseableStatus();
         assetQuery.setAssetStatusList(assetStatusList);
-        // 1.2资产品类型号为计算设备和网络设备
-        List<AssetCategoryModel> categoryModelList = iAssetCategoryModelService.getAll();
-        List<Integer> categoryIdList = iAssetCategoryModelService.findAssetCategoryModelIdsById(4, categoryModelList);
-        categoryIdList.addAll(iAssetCategoryModelService.findAssetCategoryModelIdsById(5, categoryModelList));
-        assetQuery.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryIdList));
-        resultMap.put("totalNum", assetDao.findCountByCategoryModel(assetQuery));
+        // 1.2所有资产
+        resultMap.put("total", assetDao.findCountByCategoryModel(assetQuery).toString());
         // 2.查询已管控的数量(已建立关联关系的资产数量)
-        AssetTopologyQuery assetTopologyQuery = new AssetTopologyQuery();
-        assetTopologyQuery.setUserAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
-        resultMap.put("inControlNum", assetLinkRelationDao.countAssetTopology(assetTopologyQuery));
-        return resultMap;
+        assetQuery = new AssetQuery();
+        assetQuery.setAreaIds(
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        assetQuery.setAssetStatusList(assetStatusList);
+        List<String> assetIdList = assetTopologyDao.findTopologyIdByCategory(assetQuery);
+        resultMap.put("control", assetIdList == null ? "0" : assetIdList.size() + "");
+        ObjectQuery objectQuery = new ObjectQuery();
+        objectQuery.setPageSize(-1);
+        PageResult<IdCount> idCountPageResult = emergencyClient.queryInvokeEmergencyCount(objectQuery);
+        List<IdCount> idCounts = idCountPageResult.getItems();
+        List<IdCount> decodeCounts = new ArrayList<>();
+        for (IdCount idCount : idCounts) {
+            IdCount newIdCount = new IdCount();
+            newIdCount.setCount(idCount.getCount());
+            newIdCount.setId(aesEncoder.decode(idCount.getId(), LoginUserUtil.getLoginUser().getUsername()));
+            decodeCounts.add(newIdCount);
+        }
+        int warningNum = 0;
+        warningNum = getWarningNum(assetIdList, decodeCounts, warningNum);
+        resultMap.put("warning", Integer.toString(warningNum));
+        CountTopologyResponse countTopologyResponse = new CountTopologyResponse();
+        List<Map<String, String>> list = new ArrayList<>();
+        list.add(resultMap);
+        countTopologyResponse.setList(list);
+        countTopologyResponse.setStatus("success");
+        return countTopologyResponse;
+    }
+
+    private int getWarningNum(List<String> assetIdList, List<IdCount> decodeCounts, int warningNum) {
+        if (assetIdList == null) {
+            return 0;
+        }
+        for (IdCount idCount : decodeCounts) {
+            for (String id : assetIdList) {
+                if (Objects.equals(idCount.getId(), id)) {
+                    warningNum++;
+                }
+            }
+        }
+        return warningNum;
     }
 
     @Override
@@ -150,30 +183,20 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     }
 
     public TopologyCategoryCountResponse countTopologyCategory() throws Exception {
-        List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         // 查询第二级分类id
-        List<AssetCategoryModel> secondCategoryModelList = assetCategoryModelDao.getNextLevelCategoryByName("硬件");
-        List<AssetCategoryModel> categoryModelDaoAll = assetCategoryModelDao.getAll();
-        if (CollectionUtils.isNotEmpty(secondCategoryModelList)) {
-            TopologyCategoryCountResponse topologyCategoryCountResponse = new TopologyCategoryCountResponse();
-            List<TopologyCategoryCountResponse.CategoryResponse> categoryResponseList = new ArrayList<>();
-            for (AssetCategoryModel secondCategoryModel : secondCategoryModelList) {
-                // 查询第二级每个分类下所有的分类id，并添加至list集合
-                List<AssetCategoryModel> search = iAssetCategoryModelService.recursionSearch(categoryModelDaoAll,
-                    secondCategoryModel.getId());
-                // 设置查询资产条件参数，包括区域id，状态，资产品类型号
-                AssetQuery assetQuery = setAssetQueryParam(areaIds, search, null);
-                // 将查询结果放置结果集
-                TopologyCategoryCountResponse.CategoryResponse categoryResponse = topologyCategoryCountResponse.new CategoryResponse();
-                categoryResponse.setAsset_name(secondCategoryModel.getName());
-                categoryResponse.setNum(assetTopologyDao.findTopologyCountByCategory(assetQuery));
-                categoryResponseList.add(categoryResponse);
-            }
-            topologyCategoryCountResponse.setData(categoryResponseList);
-            topologyCategoryCountResponse.setStatus("success");
-            return topologyCategoryCountResponse;
+        TopologyCategoryCountResponse topologyCategoryCountResponse = new TopologyCategoryCountResponse();
+        List<TopologyCategoryCountResponse.CategoryResponse> categoryResponseList = new ArrayList<>();
+        List<EnumCountResponse> enumCountResponses = iAssetService.countCategoryByStatus(getAssetUseableStatus());
+        for (EnumCountResponse enumCountResponse : enumCountResponses) {
+            TopologyCategoryCountResponse.CategoryResponse categoryResponse = topologyCategoryCountResponse.new CategoryResponse();
+            categoryResponse.setNum(Integer.valueOf(enumCountResponse.getNumber() + ""));
+            categoryResponse.setAsset_name(enumCountResponse.getMsg());
+            categoryResponseList.add(categoryResponse);
         }
-        return null;
+        topologyCategoryCountResponse.setData(categoryResponseList);
+        topologyCategoryCountResponse.setStatus("success");
+        return topologyCategoryCountResponse;
+
     }
 
     private AssetQuery setAssetQueryParam(List<Integer> areaIds, List<AssetCategoryModel> search, List<String> osList) {
@@ -189,9 +212,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         if (areaIds != null) {
             assetQuery.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
         }
-        // 需要排除已退役资产
-        List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
-        assetQuery.setAssetStatusList(status);
+        // 只统计已入网待退役
+        List<Integer> statusList = getAssetUseableStatus();
+        assetQuery.setAssetStatusList(statusList);
         return assetQuery;
     }
 
@@ -220,7 +243,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                     }
                     recursionSearchOsSystem(idList, osTreeList, osId);
                     otherId.addAll(idList);
-                    osResponse.setNum(assetTopologyDao.findTopologyCountByCategory(assetQuery));
+                    osResponse.setNum(assetDao.findCountByCategoryModel(assetQuery));
                     osResponseList.add(osResponse);
                 }
             }
@@ -269,7 +292,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         for (AssetResponse assetResponse : assetResponseList) {
             assetResponse.setAlarmCount("0");
             for (IdCount idCount : idCounts) {
-                if (idCount.getId().equals(assetResponse.getStringId())) {
+                if (Objects.equals(aesEncoder.decode(idCount.getId(), LoginUserUtil.getLoginUser().getUsername()),
+                    assetResponse.getStringId())) {
                     assetResponse.setAlarmCount(idCount.getCount());
                 }
             }
