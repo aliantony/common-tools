@@ -2715,6 +2715,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+            if (networkDeviceEntity.getPortSize() <= 0 || networkDeviceEntity.getPortSize() > 99) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("网口数目范围为1-99！");
+                continue;
+            }
+
             if (networkDeviceEntity.getButDate() != null) {
 
                 if (isBuyDataBig(networkDeviceEntity.getButDate())) {
