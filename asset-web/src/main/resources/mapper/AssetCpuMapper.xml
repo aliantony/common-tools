@@ -279,7 +279,8 @@
                     core_size = #{item.coreSize },
                     gmt_modified = #{item.gmtModified },
                     memo = #{item.memo },
-                    modify_user = #{item.modifyUser }
+                    modify_user = #{item.modifyUser },
+
             </trim>
             where id = #{item.id}
         </foreach>
