@@ -297,7 +297,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
             ParamterExceptionUtils.isTrue(matcher.matches(), "ip地址错误");
         }
         if (StringUtils.isNotBlank(outerIp)) {
-            if (outerIp.length() > 6 && outerIp.length() < 16) {
+            if (!(outerIp.length() > 6 && outerIp.length() < 16)) {
                 ParamterExceptionUtils.isTrue(false, "外网IP 7-15位");
             }
             String reg = "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$";
