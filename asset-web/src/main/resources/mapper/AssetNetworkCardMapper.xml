@@ -307,7 +307,6 @@
                     default_gateway = #{item.defaultGateway },
                     network_address = #{item.networkAddress },
                     subnet_mask = #{item.subnetMask },
-                    gmt_create = #{item.gmtCreate },
                     gmt_modified = #{item.gmtModified },
                     memo = #{item.memo },
                     modify_user = #{item.modifyUser }
