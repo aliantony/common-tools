@@ -202,7 +202,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 TopologyListResponse.TopologyNode topologyNode = topologyListResponse.new TopologyNode();
                 topologyNode.setAsset_area(assetResponse.getAreaName());
                 topologyNode.setAsset_ip(assetResponse.getIp());
-                topologyNode.setAsset_id(assetResponse.getStringId());
+                topologyNode.setAsset_id(
+                    aesEncoder.encode(assetResponse.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
                 topologyNode.setAsset_group(assetResponse.getAssetGroup());
                 topologyNode.setAsset_type(assetResponse.getCategoryModelName());
                 topologyNode.setPerson_name(assetResponse.getResponsibleUserName());
