@@ -21,14 +21,14 @@ public interface IAssetTopologyService {
      * @param assetId
      * @return
      */
-    AssetNodeInfoResponse queryAssetNodeInfo(String assetId);
+    TopologyAssetResponse queryAssetNodeInfo(String assetId);
 
     /**
      * 统计总资产/已管控拓扑管理的资产数量 (totalNum,2),(inControlNum,3)
      * @return
      * @throws Exception 查询异常
      */
-    Map<String, Integer> countAssetTopology() throws Exception;
+    CountTopologyResponse countAssetTopology() throws Exception;
 
     /**
      * 已管控拓扑管理的资产的资产组信息(下拉)
@@ -42,7 +42,7 @@ public interface IAssetTopologyService {
      * @return
      * @throws Exception
      */
-    PageResult<AssetResponse> getTopologyList(AssetQuery query) throws Exception;
+    TopologyListResponse getTopologyList(AssetQuery query) throws Exception;
 
     TopologyCategoryCountResponse countTopologyCategory() throws Exception;
 

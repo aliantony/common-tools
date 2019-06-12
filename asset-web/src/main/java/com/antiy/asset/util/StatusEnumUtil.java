@@ -39,4 +39,21 @@ public class StatusEnumUtil {
         }
         return status;
     }
+
+    /**
+     * 获取硬件未退役的状态code list
+     * @return
+     */
+    public static List<Integer> getAssetUseableStatus() {
+        List<Integer> status = new ArrayList<>();
+        AssetStatusEnum[] assetStatusEnums = AssetStatusEnum.values();
+        for (AssetStatusEnum assetStatusEnum : assetStatusEnums) {
+            if (!assetStatusEnum.equals(AssetStatusEnum.RETIRE)
+                && !assetStatusEnum.equals(AssetStatusEnum.NOT_REGSIST)) {
+                status.add(assetStatusEnum.getCode());
+            }
+        }
+        return status;
+    }
+
 }

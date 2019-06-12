@@ -594,6 +594,9 @@
         <if test=" status != null">
             status = #{status },
         </if>
+        <if test=" serviceLife != null">
+            service_life = #{serviceLife }
+        </if>
     </sql>
 
 
@@ -1161,6 +1164,12 @@
         <if test=" areaIds != null and areaIds.length >0 ">
             and area_id in
             <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" osList != null and osList.size() >0 ">
+            and operation_system in
+            <foreach collection="osList" open="(" close=")" separator="," index="index" item="item">
                 #{item}
             </foreach>
         </if>

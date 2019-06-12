@@ -265,7 +265,7 @@
             </foreach>
         </if>
         <if test="installType != null ">
-            and (asset.install_type =#{installType} or asset_software_relation.install_type =#{installType})
+            and if (asset_software_relation.install_type is null ,asset.install_type = #{installType}, asset_software_relation.install_type = #{installType})
         </if>
         <if test="installStatus != null">
             <choose>

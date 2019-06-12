@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.base.BaseRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,12 +46,12 @@ public class AssetTopologyController {
         return ActionResponse.success(iAssetTopologyService.queryCategoryModels());
     }
 
-    @ApiOperation(value = "查询节点信息", notes = "主键封装对象")
+    @ApiOperation(value = "查询节点信息", notes = "传stringId参数")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetNodeInfoResponse.class), })
     @RequestMapping(value = "/query/assetNodeInfo", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:topology:queryAssetNodeInfo')")
-    public ActionResponse queryAssetNodeInfo(@ApiParam("条件") @RequestBody AssetTopologyQuery assetTopologyQuery) throws Exception {
-        return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(assetTopologyQuery.getAssetId()));
+    public ActionResponse queryAssetNodeInfo(@ApiParam("条件") @RequestBody BaseRequest baseRequest) throws Exception {
+        return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(baseRequest.getStringId()));
     }
 
     /**
@@ -81,7 +82,11 @@ public class AssetTopologyController {
      * 查询拓扑列表
      * @return
      */
-    @ApiOperation("查询拓扑列表")
+    @ApiOperation(value = "查询拓扑列表",notes = "     * 查询拓扑列表 查询参数传 \" +\n" +
+            "     *             \"查品类参数 categoryModels Array[string]\" +\n" +
+            "     *             \"查资产组参数 assetGroup \" +\n" +
+            "     *             \"查区域参数 areaIds  Array[string]\" +\n" +
+            "     *             \"查用户参数 responsibleUserName \n")
     @RequestMapping(value = "/get/topologyList", method = RequestMethod.POST)
     @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse")
     // @PreAuthorize(value = "hasAuthority('asset:topology:getTopologyList')")
@@ -105,7 +110,7 @@ public class AssetTopologyController {
      * 查询拓扑列表
      * @return
      */
-    @ApiOperation("品类统计")
+    @ApiOperation("操作系统统计")
     @RequestMapping(value = "/count/os", method = RequestMethod.POST)
     @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse")
     // @PreAuthorize(value = "hasAuthority('asset:topology:countTopologyOs')")

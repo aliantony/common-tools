@@ -150,6 +150,14 @@ public interface IAssetService extends IBaseService<Asset> {
     List<EnumCountResponse> countCategory() throws Exception;
 
     /**
+     * 按第二级品类统计数量
+     *
+     * @return
+     * @throws Exception
+     */
+    List<EnumCountResponse> countCategoryByStatus(List<Integer> assetStatusList) throws Exception;
+
+    /**
      * 通过ID列表查询资产列表
      *
      * @param ids
