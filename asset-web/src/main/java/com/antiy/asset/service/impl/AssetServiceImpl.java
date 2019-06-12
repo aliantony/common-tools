@@ -1266,6 +1266,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<EnumCountResponse> countCategory() throws Exception {
+        List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
+        return countCategoryByStatus(status);
+    }
+
+    @Override
+    public List<EnumCountResponse> countCategoryByStatus(List<Integer> assetStatusList) throws Exception {
         List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         // 查询第二级分类id
         List<AssetCategoryModel> secondCategoryModelList = assetCategoryModelDao.getNextLevelCategoryByName("硬件");
@@ -1282,7 +1288,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     aesEncoder.encode(secondCategoryModel.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
                 enumCountResponse.setCode(categoryList);
                 // 设置查询资产条件参数，包括区域id，状态，资产品类型号
-                AssetQuery assetQuery = setAssetQueryParam(enumCountResponse, areaIds, search);
+                AssetQuery assetQuery = setAssetQueryParam(enumCountResponse, areaIds, search, assetStatusList);
                 // 将查询结果放置结果集
                 enumCountResponse.setNumber((long) assetDao.findCountByCategoryModel(assetQuery));
                 enumCountResponse.setMsg(secondCategoryModel.getName());
@@ -1294,16 +1300,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     private AssetQuery setAssetQueryParam(EnumCountResponse enumCountResponse, List<Integer> areaIds,
-                                          List<AssetCategoryModel> search) {
+                                          List<AssetCategoryModel> search, List<Integer> assetStatusList) {
         List<Integer> list = new ArrayList<>();
         search.stream().forEach(x -> list.add(x.getId()));
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setCategoryModels(ArrayTypeUtil.objectArrayToStringArray(list.toArray()));
         assetQuery.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
         // 需要排除已退役资产
-        List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
-        enumCountResponse.setStatus(status);
-        assetQuery.setAssetStatusList(status);
+        enumCountResponse.setStatus(assetStatusList);
+        assetQuery.setAssetStatusList(assetStatusList);
         return assetQuery;
     }
 
@@ -2633,7 +2638,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         StringBuilder stringBuilder = new StringBuilder(res);
 
-
         // 写入业务日志
         LogHandle.log(computerVos.toString(), AssetEventEnum.ASSET_EXPORT_COMPUTER.getName(),
             AssetEventEnum.ASSET_EXPORT_NET.getStatus(), ModuleEnum.ASSET.getCode());
@@ -2708,6 +2712,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产名称重复！");
+                continue;
+            }
+
+            if (networkDeviceEntity.getPortSize() <= 0 || networkDeviceEntity.getPortSize() > 99) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("网口数目范围为1-99！");
                 continue;
             }
 
@@ -3046,7 +3057,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         StringBuilder stringBuilder = new StringBuilder(res);
 
-
         // 写入业务日志
         LogHandle.log(assetSafetyEquipments.toString(), AssetEventEnum.ASSET_EXPORT_SAFETY.getName(),
             AssetEventEnum.ASSET_EXPORT_SAFETY.getStatus(), ModuleEnum.ASSET.getCode());
@@ -3238,7 +3248,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         StringBuilder stringBuilder = new StringBuilder(res);
-
 
         // 写入业务日志
         LogHandle.log(assetStorageMedia.toString(), AssetEventEnum.ASSET_EXPORT_STORAGE.getName(),

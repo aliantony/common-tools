@@ -185,8 +185,8 @@ public class AssetStatusJumpController {
             operationRecord.setAreaId(assetDao.getAreaIdById(id));
         } else {
             operationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
-            operationRecord.setContent(AssetEventEnum.NO_REGISTER.getName());
         }
+        operationRecord.setContent(AssetEventEnum.NO_REGISTER.getName());
 
         if (LoginUserUtil.getLoginUser() == null) {
             LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");

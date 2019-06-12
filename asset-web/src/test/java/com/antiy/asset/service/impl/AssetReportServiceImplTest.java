@@ -161,8 +161,8 @@ public class AssetReportServiceImplTest {
         Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
                 .thenReturn(assetReportServiceManager.initCategoryEntityList("1"));
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
-        iAssetReportService.exportCategoryCount(assetReportServiceManager.initCategoryCountQuery(
-                        ShowCycleType.THIS_WEEK,1551422114000L,1551423114000L));
+//        iAssetReportService.exportCategoryCount(assetReportServiceManager.initCategoryCountQuery(
+//                        ShowCycleType.THIS_WEEK,1551422114000L,1551423114000L));
         Mockito.verify(categoryModelDao).findAllCategory();
         Mockito.verify(assetReportDao).findCategoryCountByTime(Mockito.any());
     }
@@ -180,8 +180,8 @@ public class AssetReportServiceImplTest {
         Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
                 .thenReturn(assetReportServiceManager.initCategoryEntityList("13"));
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
-        iAssetReportService.exportCategoryCount(assetReportServiceManager.initCategoryCountQuery(
-                        ShowCycleType.THIS_MONTH,1551422114000L,1551422114000L));
+//        iAssetReportService.exportCategoryCount(assetReportServiceManager.initCategoryCountQuery(
+//                        ShowCycleType.THIS_MONTH,1551422114000L,1551422114000L));
         Mockito.verify(categoryModelDao).findAllCategory();
         Mockito.verify(assetReportDao).findCategoryCountByTime(Mockito.any());
     }
@@ -199,8 +199,8 @@ public class AssetReportServiceImplTest {
         Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
                 .thenReturn(assetReportServiceManager.initCategoryEntityList("2019-04"));
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
-        iAssetReportService.exportCategoryCount(assetReportServiceManager.initCategoryCountQuery(
-                        ShowCycleType.THIS_QUARTER,1551422114000L,1551422114000L));
+//        iAssetReportService.exportCategoryCount(assetReportServiceManager.initCategoryCountQuery(
+//                        ShowCycleType.THIS_QUARTER,1551422114000L,1551422114000L));
         Mockito.verify(categoryModelDao).findAllCategory();
         Mockito.verify(assetReportDao).findCategoryCountByTime(Mockito.any());
     }
@@ -218,8 +218,8 @@ public class AssetReportServiceImplTest {
         Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
                 .thenReturn(assetReportServiceManager.initCategoryEntityList("2019-03"));
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
-        iAssetReportService.exportCategoryCount(assetReportServiceManager.initCategoryCountQuery(
-                        ShowCycleType.THIS_YEAR,1551422114000L,1551422114000L));
+//        iAssetReportService.exportCategoryCount(assetReportServiceManager.initCategoryCountQuery(
+//                        ShowCycleType.THIS_YEAR,1551422114000L,1551422114000L));
         Mockito.verify(categoryModelDao).findAllCategory();
         Mockito.verify(assetReportDao).findCategoryCountByTime(Mockito.any());
     }
@@ -237,8 +237,8 @@ public class AssetReportServiceImplTest {
         Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
                 .thenReturn(assetReportServiceManager.initCategoryEntityList("2019-03"));
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
-        iAssetReportService.exportCategoryCount(assetReportServiceManager.initCategoryCountQuery(
-                ShowCycleType.ASSIGN_TIME,1551422114000L,1551423114000L));
+//        iAssetReportService.exportCategoryCount(assetReportServiceManager.initCategoryCountQuery(
+//                ShowCycleType.ASSIGN_TIME,1551422114000L,1551423114000L));
         Mockito.verify(categoryModelDao).findAllCategory();
         Mockito.verify(assetReportDao).findCategoryCountByTime(Mockito.any());
     }

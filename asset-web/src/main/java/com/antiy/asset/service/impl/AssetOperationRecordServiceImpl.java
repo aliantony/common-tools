@@ -3,7 +3,6 @@ package com.antiy.asset.service.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.Resource;
 
@@ -174,9 +173,9 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
                 AssetOperationRecordBarResponse assetOperationRecordBarResponse = operationRecordBarPOToResponseConverter
                     .convert(assetOperationRecordBarPO, AssetOperationRecordBarResponse.class);
 
-                if (Objects.isNull(assetOperationRecordBarResponse.getMemo())) {
-                    assetOperationRecordBarResponse.setMemo(assetOperationRecordBarResponse.getContent());
-                }
+                // if (Objects.isNull(assetOperationRecordBarResponse.getMemo())) {
+                // assetOperationRecordBarResponse.setMemo(assetOperationRecordBarResponse.getContent());
+                // }
 
                 assetOperationRecordBarResponse.setTotal(total);
 

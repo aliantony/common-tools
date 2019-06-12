@@ -11,7 +11,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.antiy.asset.intergration.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -27,9 +26,9 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.*;
 import com.antiy.asset.service.*;
 import com.antiy.asset.templet.AssetSoftwareEntity;
 import com.antiy.asset.templet.ExportSoftwareEntity;
@@ -196,7 +195,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
                     assetOperationRecord.setOriginStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
                     assetOperationRecord.setTargetStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
-                    assetOperationRecord.setContent("登记软件资产");
+                    assetOperationRecord.setContent("登记资产");
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
                     assetOperationRecord.setGmtCreate(System.currentTimeMillis());
