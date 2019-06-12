@@ -1528,4 +1528,36 @@
             </foreach>
         </if>
     </select>
+
+    <update id="changeAsset" parameterType="com.antiy.asset.entity.Asset">
+        update
+        <include refid="Table_Name"></include>
+        set
+            asset_group = #{assetGroup },
+            number = #{number },
+            name = #{name },
+            ethernet_port = #{ethernetPort },
+            serial_port = #{serialPort },
+            install_type = #{installType },
+            serial = #{serial },
+            area_id = #{areaId },
+            category_model = #{categoryModel },
+            manufacturer = #{manufacturer },
+            operation_system = #{operationSystem },
+            responsible_user_id = #{responsibleUserId },
+            location = #{location },
+            house_location = #{houseLocation },
+            firmware_version = #{firmwareVersion },
+            contact_tel = #{contactTel },
+            email = #{email },
+            asset_source = #{assetSource },
+            importance_degree = #{importanceDegree },
+            describle = #{describle },
+            buy_date = #{buyDate },
+            warranty = #{warranty },
+            gmt_modified = #{gmtModified },
+            memo = #{memo },
+            modify_user = #{modifyUser }
+        where id = #{id}
+    </update>
 </mapper>
