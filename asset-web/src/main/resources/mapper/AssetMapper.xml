@@ -1457,7 +1457,7 @@
 
     <select id="queryAlarmAssetList" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.request.AlarmAssetRequest">
-        select t2.id,t1.ip_address as ip, t2.number as number FROM asset_network_card t1 inner join asset t2
+        select t2.id,t1.ip_address as ip, t2.number as number,t2.name FROM asset_network_card t1 inner join asset t2
         on t1.asset_id = t2.id
         <where>
             and t1.status=1
