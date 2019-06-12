@@ -347,60 +347,20 @@
             update
             <include refid="Table_Name"></include>
             <trim prefix="SET" suffixOverrides=",">
-                <if test=" item.assetId != null">
-                    asset_id = #{item.assetId },
-                </if>
-                <if test=" item.capacity != null">
                     capacity = #{item.capacity },
-                </if>
-                <if test=" item.brand != null">
                     brand = #{item.brand },
-                </if>
-                <if test=" item.serial != null">
                     serial = #{item.serial },
-                </if>
-                <if test=" item.frequency != null">
                     frequency = #{item.frequency },
-                </if>
-                <if test=" item.slotType != null">
                     slot_type = #{item.slotType },
-                </if>
-                <if test=" item.heatsink != null">
                     is_heatsink = #{item.heatsink },
-                </if>
-                <if test=" item.stitch != null">
                     stitch = #{item.stitch },
-                </if>
-                <if test=" item.buyDate != null">
                     buy_date = #{item.buyDate },
-                </if>
-                <if test=" item.warrantyDate != null">
                     warranty_date = #{item.warrantyDate },
-                </if>
-                <if test=" item.transferType != null">
                     transfer_type = #{item.transferType },
-                </if>
-                <if test=" item.telephone != null">
                     telephone = #{item.telephone },
-                </if>
-                <if test=" item.gmtCreate != null">
-                    gmt_create = #{item.gmtCreate },
-                </if>
-                <if test=" item.gmtModified != null">
                     gmt_modified = #{item.gmtModified },
-                </if>
-                <if test=" item.memo != null">
                     memo = #{item.memo },
-                </if>
-                <if test=" item.createUser != null">
-                    create_user = #{item.createUser },
-                </if>
-                <if test=" item.modifyUser != null">
-                    modify_user = #{item.modifyUser },
-                </if>
-                <if test=" item.status != null">
-                    status = #{item.status },
-                </if>
+                    modify_user = #{item.modifyUser }
             </trim>
             where id = #{item.id}
         </foreach>
