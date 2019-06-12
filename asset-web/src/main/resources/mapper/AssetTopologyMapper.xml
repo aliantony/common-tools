@@ -389,9 +389,6 @@
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
     </select>
 
     <select id="findTopologyListAssetCount" resultType="int"

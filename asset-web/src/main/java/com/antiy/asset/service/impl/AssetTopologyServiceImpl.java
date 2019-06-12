@@ -1,21 +1,15 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.asset.util.StatusEnumUtil.getAssetUseableStatus;
+
 import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.dao.AssetCategoryModelDao;
-import com.antiy.asset.intergration.OperatingSystemClient;
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.util.ArrayTypeUtil;
-import com.antiy.asset.util.Constants;
-import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.*;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.exception.BusinessException;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetTopologyDao;
@@ -24,20 +18,27 @@ import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.intergration.EmergencyClient;
+import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetTopologyService;
+import com.antiy.asset.util.ArrayTypeUtil;
+import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetTopologyQuery;
+import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.base.PageResult;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LoginUserUtil;
-
-import static com.antiy.asset.util.StatusEnumUtil.getAssetUseableStatus;
-import static com.antiy.asset.util.StatusEnumUtil.getSoftwareNotRetireStatusList;
 
 /**
  * 资产拓扑管理
@@ -201,6 +202,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 TopologyListResponse.TopologyNode topologyNode = topologyListResponse.new TopologyNode();
                 topologyNode.setAsset_area(assetResponse.getAreaName());
                 topologyNode.setAsset_ip(assetResponse.getIp());
+                topologyNode.setAsset_id(assetResponse.getStringId());
                 topologyNode.setAsset_group(assetResponse.getAssetGroup());
                 topologyNode.setAsset_type(assetResponse.getCategoryModelName());
                 topologyNode.setPerson_name(assetResponse.getResponsibleUserName());
@@ -210,10 +212,10 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 topologyNodes.add(topologyNode);
             }
             topologyListResponse.setData(topologyNodes);
-            topologyListResponse.setPageSize(pageResult.getPageSize());
-            topologyListResponse.setCurrentPage(pageResult.getCurrentPage());
+            // topologyListResponse.setPageSize(pageResult.getPageSize());
+            // topologyListResponse.setCurrentPage(pageResult.getCurrentPage());
             topologyListResponse.setStatus("success");
-            topologyListResponse.setTotal(pageResult.getTotalRecords());
+            // topologyListResponse.setTotal(pageResult.getTotalRecords());
             return topologyListResponse;
         }
         return null;

@@ -51,6 +51,7 @@ public class TopologyListResponse {
 
     public class TopologyNode {
         private String asset_ip;
+        private String asset_id;
         private String person_name;
         private String asset_type;
         private String asset_group;
@@ -58,6 +59,14 @@ public class TopologyListResponse {
         private String asset_untreated_warning;
         private String asset_unrepair;
         private String system_uninstall;
+
+        public String getAsset_id() {
+            return asset_id;
+        }
+
+        public void setAsset_id(String asset_id) {
+            this.asset_id = asset_id;
+        }
 
         public String getAsset_ip() {
             return asset_ip;
