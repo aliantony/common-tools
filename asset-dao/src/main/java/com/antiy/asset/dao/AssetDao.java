@@ -98,6 +98,7 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 通过区域Id列表查询当前区域是否存在资产
+     *
      * @param areaIds
      * @return
      */
@@ -113,6 +114,7 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 更新资产的区域id
+     *
      * @param
      * @return
      */
@@ -120,6 +122,7 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 查询资产漏洞数
+     *
      * @param areaIds
      * @return
      */
@@ -128,6 +131,7 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 查询资产补丁数
+     *
      * @param areaIds
      * @return
      */
@@ -136,25 +140,27 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 查询补丁的资产总数
+     *
      * @return
      */
     Integer queryAllAssetPatchCount(@Param(value = "areaIds") List<Integer> areaIds);
 
     /**
      * 查询漏洞的资产总数
+     *
      * @return
      */
     Integer queryAllAssetVulCount(@Param(value = "areaIds") List<Integer> areaIds);
 
     /**
      * 流程引擎返回的的id排序
+     *
      * @param activitiIds
      * @return
      */
     List<String> sortAssetIds(@Param("ids") Set<String> activitiIds, @Param("assetStatus") Integer assetStatus);
 
     /**
-     * 
      * @param alarmAssetRequest
      * @return
      */
@@ -162,6 +168,7 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 通过资产ID获取UUID
+     *
      * @param assetId
      * @return
      */
@@ -169,6 +176,7 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 通过资产ID获取资产编号
+     *
      * @param assetId
      * @return
      */
@@ -176,6 +184,7 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 通过资产ID获取区域ID
+     *
      * @param assetId
      * @return
      */
@@ -183,6 +192,7 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 判断当前品类下是否有资产
+     *
      * @param categoryModeId
      * @return
      */
@@ -190,6 +200,7 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 修改资产状态
+     *
      * @param asset
      * @return
      * @throws Exception
@@ -202,10 +213,13 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 工作台待登记数量
+     *
      * @param assetStatus
      * @param areaIds
      * @return
      */
     Integer queryWaitRegistCount(@Param(value = "assetStatus") Integer assetStatus,
                                  @Param(value = "areaIds") List<Integer> areaIds);
+
+    Integer changeAsset(Asset asset);
 }

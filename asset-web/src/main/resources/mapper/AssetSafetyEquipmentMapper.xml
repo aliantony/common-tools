@@ -195,9 +195,6 @@
     </sql>
 
     <sql id="Set_Column_List">
-        <if test=" assetId != null">
-            asset_id = #{assetId },
-        </if>
         <if test=" avlxVersion != null">
             avlx_version = #{avlxVersion },
         </if>

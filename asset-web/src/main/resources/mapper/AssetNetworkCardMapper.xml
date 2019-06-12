@@ -128,51 +128,17 @@
     </sql>
 
     <sql id="Set_Column_List">
-        <if test=" assetId != null">
-            asset_id = #{assetId },
-        </if>
-        <if test=" brand != null">
             brand = #{brand },
-        </if>
-        <if test=" model != null">
             model = #{model },
-        </if>
-        <if test=" serial != null">
             serial = #{serial },
-        </if>
-        <if test=" ipAddress != null">
             ip_address = #{ipAddress },
-        </if>
-        <if test=" macAddress != null">
             mac_address = #{macAddress },
-        </if>
-        <if test=" defaultGateway != null">
             default_gateway = #{defaultGateway },
-        </if>
-        <if test=" networkAddress != null">
             network_address = #{networkAddress },
-        </if>
-        <if test=" subnetMask != null">
             subnet_mask = #{subnetMask },
-        </if>
-        <if test=" gmtCreate != null">
-            gmt_create = #{gmtCreate },
-        </if>
-        <if test=" gmtModified != null">
             gmt_modified = #{gmtModified },
-        </if>
-        <if test=" memo != null">
             memo = #{memo },
-        </if>
-        <if test=" createUser != null">
-            create_user = #{createUser },
-        </if>
-        <if test=" modifyUser != null">
-            modify_user = #{modifyUser },
-        </if>
-        <if test=" status != null">
-            status = #{status },
-        </if>
+            modify_user = #{modifyUser }
     </sql>
 
     <sql id="Where_Column_List">
@@ -333,51 +299,18 @@
             update
             <include refid="Table_Name"></include>
             <trim prefix="SET" suffixOverrides=",">
-                <if test=" item.assetId != null">
-                    asset_id = #{item.assetId },
-                </if>
-                <if test=" item.brand != null">
                     brand = #{item.brand },
-                </if>
-                <if test=" item.model != null">
                     model = #{item.model },
-                </if>
-                <if test=" item.serial != null">
                     serial = #{item.serial },
-                </if>
-                <if test=" item.ipAddress != null">
                     ip_address = #{item.ipAddress },
-                </if>
-                <if test=" item.macAddress != null">
                     mac_address = #{item.macAddress },
-                </if>
-                <if test=" item.defaultGateway != null">
                     default_gateway = #{item.defaultGateway },
-                </if>
-                <if test=" item.networkAddress != null">
                     network_address = #{item.networkAddress },
-                </if>
-                <if test=" item.subnetMask != null">
                     subnet_mask = #{item.subnetMask },
-                </if>
-                <if test=" item.gmtCreate != null">
-                    gmt_create = #{item.gmtCreate },
-                </if>
-                <if test=" item.gmtModified != null">
                     gmt_modified = #{item.gmtModified },
-                </if>
-                <if test=" item.memo != null">
                     memo = #{item.memo },
-                </if>
-                <if test=" item.createUser != null">
-                    create_user = #{item.createUser },
-                </if>
-                <if test=" item.modifyUser != null">
                     modify_user = #{item.modifyUser },
-                </if>
-                <if test=" item.status != null">
-                    status = #{item.status },
-                </if>
+                    status = #{item.status }
             </trim>
             where id = #{item.id}
         </foreach>

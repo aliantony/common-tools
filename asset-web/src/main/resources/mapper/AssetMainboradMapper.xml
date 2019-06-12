@@ -107,42 +107,15 @@
     </sql>
 
     <sql id="Set_Column_List">
-        <if test=" assetId != null">
-            asset_id = #{assetId },
-        </if>
-        <if test=" brand != null">
             brand = #{brand },
-        </if>
-        <if test=" model != null">
             model = #{model },
-        </if>
-        <if test=" serial != null">
             serial = #{serial },
-        </if>
-        <if test=" biosVersion != null">
             bios_version = #{biosVersion },
-        </if>
-        <if test=" biosDate != null">
             bios_date = #{biosDate },
-        </if>
-        <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
-        </if>
-        <if test=" gmtModified != null">
             gmt_modified = #{gmtModified },
-        </if>
-        <if test=" memo != null">
             memo = #{memo },
-        </if>
-        <if test=" createUser != null">
-            create_user = #{createUser },
-        </if>
-        <if test=" modifyUser != null">
-            modify_user = #{modifyUser },
-        </if>
-        <if test=" status != null">
-            status = #{status },
-        </if>
+            modify_user = #{modifyUser }
     </sql>
 
     <sql id="Where_Column_List">
@@ -360,42 +333,15 @@
             update
             <include refid="Table_Name"></include>
             <trim prefix="SET" suffixOverrides=",">
-                <if test=" item.assetId != null">
-                    asset_id = #{item.assetId },
-                </if>
-                <if test=" item.brand != null">
                     brand = #{item.brand },
-                </if>
-                <if test=" item.model != null">
                     model = #{item.model },
-                </if>
-                <if test=" item.serial != null">
                     serial = #{item.serial },
-                </if>
-                <if test=" item.biosVersion != null">
                     bios_version = #{item.biosVersion },
-                </if>
-                <if test=" item.biosDate != null">
                     bios_date = #{item.biosDate },
-                </if>
-                <if test=" item.gmtCreate != null">
-                    gmt_create = #{item.gmtCreate },
-                </if>
-                <if test=" item.gmtModified != null">
                     gmt_modified = #{item.gmtModified },
-                </if>
-                <if test=" item.memo != null">
                     memo = #{item.memo },
-                </if>
-                <if test=" item.createUser != null">
-                    create_user = #{item.createUser },
-                </if>
-                <if test=" item.modifyUser != null">
                     modify_user = #{item.modifyUser },
-                </if>
-                <if test=" item.status != null">
-                    status = #{item.status },
-                </if>
+                    status = #{item.status }
             </trim>
             where id = #{item.id}
         </foreach>
