@@ -3,8 +3,10 @@ package com.antiy.asset.vo.request;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang.StringUtils;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -40,8 +42,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      * 联系电话
      */
     @ApiModelProperty("联系电话")
-    @Size(message = "联系电话必须为11位", max = 11, min = 11)
-    @Pattern(regexp = "^1[0-9]{10}$", message = "联系电话错误")
     private String                  contactTel;
     /**
      * 邮箱
@@ -451,6 +451,14 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
 
     @Override
     public void validate() throws RequestParamValidateException {
+        if (StringUtils.isNotBlank(contactTel)) {
+            if (contactTel.length() != 11) {
+                ParamterExceptionUtils.isTrue(false, "联系电话必须为11位");
+            }
+            if (!contactTel.matches("^1[0-9]{10}$")) {
+                ParamterExceptionUtils.isTrue(false, "联系电话错误");
+            }
+        }
     }
 
     public Integer getInstallType() {

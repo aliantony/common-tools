@@ -61,21 +61,18 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      */
     @ApiModelProperty("内网IP")
     @NotBlank(message = "内网IP不能为空")
-    @Pattern(regexp = "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$", message = "ip地址错误")
     @Size(message = "内网IP长度应该在7-15位", min = 7, max = 15)
     private String  innerIp;
     /**
      * 外网IP
      */
     @ApiModelProperty("外网IP")
-    @Size(message = "外网IP应该在7-15位", min = 7, max = 15)
     // @NotBlank(message = "外网IP不能为空")
     private String  outerIp;
     /**
      * MAC地址
      */
     @ApiModelProperty("MAC地址")
-    @Size(message = "MAC地址长度应该为17位", max = 17, min = 17)
     private String  macAddress;
     /**
      * 子网掩码
@@ -299,7 +296,11 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
             Matcher matcher = pattern.matcher(innerIp);
             ParamterExceptionUtils.isTrue(matcher.matches(), "ip地址错误");
         }
-        if (StringUtils.isNotBlank(macAddress)) {
+        if (StringUtils.isNotBlank(outerIp) && (outerIp.length() > 6 && outerIp.length() < 16)) {
+            String reg = "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$";
+            ParamterExceptionUtils.isTrue(outerIp.matches(reg), "ip地址错误");
+        }
+        if (StringUtils.isNotBlank(macAddress) || macAddress.length() == 17) {
             java.util.regex.Pattern pattern = java.util.regex.Pattern
                 .compile("(([a-f0-9A-F]{2}:)|([a-f0-9A-F]{2}-)){5}[a-f0-9A-F]{2}");
             Matcher matcher = pattern.matcher(macAddress);
