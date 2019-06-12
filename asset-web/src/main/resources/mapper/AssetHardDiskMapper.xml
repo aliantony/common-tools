@@ -135,54 +135,18 @@
     </sql>
 
     <sql id="Set_Column_List">
-        <if test=" assetId != null">
-            asset_id = #{assetId },
-        </if>
-        <if test=" brand != null">
             brand = #{brand },
-        </if>
-        <if test=" model != null">
             model = #{model },
-        </if>
-        <if test=" serial != null">
             serial = #{serial },
-        </if>
-        <if test=" interfaceType != null">
             interface_type = #{interfaceType },
-        </if>
-        <if test=" capacity != null">
             capacity = #{capacity },
-        </if>
-        <if test=" diskType != null">
             disk_type = #{diskType },
-        </if>
-        <if test=" buyDate != null">
             buy_date = #{buyDate },
-        </if>
-        <if test=" useTimes != null">
             use_times = #{useTimes },
-        </if>
-        <if test=" cumulativeHour != null">
             cumulative_hour = #{cumulativeHour },
-        </if>
-        <if test=" gmtCreate != null">
-            gmt_create = #{gmtCreate },
-        </if>
-        <if test=" gmtModified != null">
             gmt_modified = #{gmtModified },
-        </if>
-        <if test=" memo != null">
             memo = #{memo },
-        </if>
-        <if test=" createUser != null">
-            create_user = #{createUser },
-        </if>
-        <if test=" modifyUser != null">
-            modify_user = #{modifyUser },
-        </if>
-        <if test=" status != null">
-            status = #{status },
-        </if>
+            modify_user = #{modifyUser }
     </sql>
 
     <sql id="Where_Column_List">
@@ -382,7 +346,8 @@
         set status = 0
         where asset_id = #{assetId}
     </update>
-    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetHardDisk" useGeneratedKeys="true" keyProperty="id"
+    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetHardDisk" useGeneratedKeys="true"
+            keyProperty="id"
             keyColumn="id">
         insert into
         <include refid="Table_Name"></include>
@@ -416,7 +381,7 @@
             )
         </foreach>
     </insert>
-    <insert id="insertBatchWithId"  useGeneratedKeys="true" keyProperty="id"
+    <insert id="insertBatchWithId" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
         insert into
         <include refid="Table_Name"></include>
