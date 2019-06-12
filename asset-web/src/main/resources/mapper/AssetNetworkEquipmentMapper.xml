@@ -301,8 +301,7 @@
             ncrm_size = #{ncrmSize },
             create_user = #{createUser },
             memo = #{memo },
-            gmt_modified = #{gmtModified },
-            status = #{status }
+            gmt_modified = #{gmtModified }
     </sql>
 
     <sql id="Where_Column_List">
