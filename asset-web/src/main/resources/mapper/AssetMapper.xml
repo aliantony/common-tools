@@ -1227,10 +1227,12 @@
         asset.buy_date,
         asset.warranty,
         asset.gmt_create,
-        concat(ifnull((select GROUP_CONCAT( ip_address ) from asset_network_card where asset_id = asset.id and status = 1),''),
+        concat(ifnull((select GROUP_CONCAT( ip_address ) from asset_network_card where asset_id = asset.id and status =
+        1),''),
         ifnull(asset_network_equipment.outer_ip,''),ifnull( asset_network_equipment.inner_ip, '' ),
         ifnull(asset_safety_equipment.ip,'') ) AS ip,
-        concat(ifnull((select GROUP_CONCAT( mac_address ) from asset_network_card where asset_id = asset.id and status = 1),''),
+        concat(ifnull((select GROUP_CONCAT( mac_address ) from asset_network_card where asset_id = asset.id and status =
+        1),''),
         ifnull(asset_network_equipment.mac_address,''), ifnull(asset_safety_equipment.mac,'') ) AS mac
         from asset asset
         left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and
@@ -1533,31 +1535,35 @@
         update
         <include refid="Table_Name"></include>
         set
-            asset_group = #{assetGroup },
-            number = #{number },
-            name = #{name },
-            ethernet_port = #{ethernetPort },
-            serial_port = #{serialPort },
-            install_type = #{installType },
-            serial = #{serial },
-            area_id = #{areaId },
-            category_model = #{categoryModel },
-            manufacturer = #{manufacturer },
-            operation_system = #{operationSystem },
-            responsible_user_id = #{responsibleUserId },
-            location = #{location },
-            house_location = #{houseLocation },
-            firmware_version = #{firmwareVersion },
-            contact_tel = #{contactTel },
-            email = #{email },
-            asset_source = #{assetSource },
-            importance_degree = #{importanceDegree },
-            describle = #{describle },
-            buy_date = #{buyDate },
-            warranty = #{warranty },
-            gmt_modified = #{gmtModified },
-            memo = #{memo },
-            modify_user = #{modifyUser }
+        asset_group = #{assetGroup },
+        number = #{number },
+        name = #{name },
+        ethernet_port = #{ethernetPort },
+        serial_port = #{serialPort },
+        install_type = #{installType },
+        serial = #{serial },
+        area_id = #{areaId },
+        category_model = #{categoryModel },
+        manufacturer = #{manufacturer },
+        operation_system = #{operationSystem },
+        responsible_user_id = #{responsibleUserId },
+        location = #{location },
+        house_location = #{houseLocation },
+        firmware_version = #{firmwareVersion },
+        contact_tel = #{contactTel },
+        email = #{email },
+        asset_source = #{assetSource },
+        importance_degree = #{importanceDegree },
+        describle = #{describle },
+        buy_date = #{buyDate },
+        warranty = #{warranty },
+        gmt_modified = #{gmtModified },
+        memo = #{memo },
+        modify_user = #{modifyUser }
         where id = #{id}
     </update>
+
+    <select id="selectRepeatNumber" resultType="int">
+        select count(id) from asset where id!=#{id} and number=#{number}
+    </select>
 </mapper>
