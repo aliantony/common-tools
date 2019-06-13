@@ -1905,12 +1905,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         };
         ActionResponse actionResponse = assetClient.issueAssetData(assetExternalRequests);
-        if (actionResponse == null
-            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), 0, "", null,
-                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
-            LogUtils.error(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetExternalRequests.toString());
-        }
         return assetCount;
     }
 
