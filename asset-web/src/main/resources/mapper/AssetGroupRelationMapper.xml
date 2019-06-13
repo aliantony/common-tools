@@ -202,7 +202,8 @@
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1)
         from
-        <include refid="Table_Name"></include> agrelation
+        <include refid="Table_Name"></include>
+        agrelation
         LEFT JOIN asset_group agroup ON agroup.id = agrelation.asset_group_id
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" name != null and name != '' ">
@@ -221,7 +222,8 @@
             parameterType="com.antiy.common.base.ObjectQuery">
         select agroup.name,agroup.memo,agroup.gmt_create
         from
-        <include refid="Table_Name"></include> agrelation
+        <include refid="Table_Name"></include>
+        agrelation
         LEFT JOIN asset_group agroup ON agroup.id = agrelation.asset_group_id
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test=" name != null and name != '' ">
@@ -315,9 +317,11 @@
     </insert>
     <select id="findAssetDetailByAssetGroupId" resultMap="BaseResultMap"
             parameterType="com.antiy.asset.vo.query.AssetGroupRelationQuery">
-        select asset.id,asset.number,asset.asset_status as assetStatus, asset.name,asset.manufacturer,asset.gmt_modified as gmtModified, agroup.name as assetGroupName
+        select asset.id,asset.number,asset.asset_status as assetStatus, asset.name,asset.manufacturer,asset.gmt_modified
+        as gmtModified, agroup.name as assetGroupName
         from
-        <include refid="Table_Name"></include> agrelation
+        <include refid="Table_Name"></include>
+        agrelation
         LEFT JOIN asset ON asset.id = agrelation.asset_id
         LEFT JOIN asset_group agroup ON agroup.id = agrelation.asset_group_id
         LEFT JOIN asset_network_equipment anequip ON anequip.id = asset.id
@@ -327,7 +331,8 @@
     <select id="findCountDetailByGroupId" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1)
         from
-        <include refid="Table_Name"></include> agrelation
+        <include refid="Table_Name"></include>
+        agrelation
         LEFT JOIN asset ON asset.id = agrelation.asset_id
         LEFT JOIN asset_group agroup ON agroup.id = agrelation.asset_group_id
         LEFT JOIN asset_network_equipment anequip ON anequip.id = asset.id
@@ -336,14 +341,16 @@
     <select id="findAssetNameByAssetGroupId" resultType="string" parameterType="int">
         select asset.name
         from
-        <include refid="Table_Name"></include> agrelation
+        <include refid="Table_Name"></include>
+        agrelation
         LEFT JOIN asset ON asset.id = agrelation.asset_id
         where agrelation.asset_group_id = #{assetGroupId}
     </select>
     <select id="findAssetGroupNameByAssetId" resultType="java.lang.String" parameterType="string">
         select agroup.name
         from
-        <include refid="Table_Name"></include> agrelation
+        <include refid="Table_Name"></include>
+        agrelation
         LEFT JOIN asset_group agroup
         ON agroup.id = agrelation.asset_group_id
         where agrelation.asset_id = #{assetId}
@@ -375,5 +382,8 @@
         agr.asset_group_id = #{groupId}
         and asset.status = 1
         and agr.status = 1
+    </select>
+    <select id="hasRealtionAsset" resultType="java.lang.Integer">
+        select count(1) from asset_group_relation where asset_group_id = #{primaryKey} and status =1
     </select>
 </mapper>

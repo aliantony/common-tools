@@ -70,4 +70,11 @@ public interface IAssetGroupRelationService extends IBaseService<AssetGroupRelat
      * @return
      */
     Integer findCountDetailByGroupId(AssetGroupRelationQuery query) throws Exception;
+
+    /**
+     * 资产组是否存在绑定资产
+     * @param primaryKey
+     * @return
+     */
+    Integer hasRealtionAsset(String primaryKey);
 }

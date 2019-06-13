@@ -122,4 +122,9 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
     public Integer findCountDetailByGroupId(AssetGroupRelationQuery query) throws Exception {
         return assetGroupRelationDao.findCountDetailByGroupId(DataTypeUtils.stringToInteger(query.getAssetGroupId()));
     }
+
+    @Override
+    public Integer hasRealtionAsset(String primaryKey) {
+        return assetGroupRelationDao.hasRealtionAsset(primaryKey);
+    }
 }
