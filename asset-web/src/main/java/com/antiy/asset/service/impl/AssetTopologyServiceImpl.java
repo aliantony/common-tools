@@ -6,6 +6,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.query.AssetDetialCondition;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -78,22 +79,23 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     }
 
     @Override
-    public TopologyAssetResponse queryAssetNodeInfo(String assetId) {
-        AssetNodeInfoResponse assetNodeInfoResponse = assetLinkRelationDao.queryAssetNodeInfo(assetId);
-        assetNodeInfoResponse
-            .setInstallTypeName(InstallType.getInstallTypeByCode(assetNodeInfoResponse.getInstallType()).getStatus());
+    public TopologyAssetResponse queryAssetNodeInfo(String assetId) throws Exception {
+        AssetDetialCondition assetDetialCondition=new AssetDetialCondition();
+        assetDetialCondition.setPrimaryKey(assetId);
+        AssetOuterResponse assetOuterResponse=iAssetService.getByAssetId(assetDetialCondition);
+        AssetResponse assetResponse=assetOuterResponse.getAsset();
         TopologyAssetResponse topologyAssetResponse = new TopologyAssetResponse();
         TopologyAssetResponse.TopologyNodeAsset topologyNodeAsset = topologyAssetResponse.new TopologyNodeAsset();
-        topologyNodeAsset.setAsset_id(assetNodeInfoResponse.getStringId());
-        topologyNodeAsset.setAssetGroup(assetNodeInfoResponse.getAssetGroup());
-        topologyNodeAsset.setHouseLocation(assetNodeInfoResponse.getHouseLocation());
-        topologyNodeAsset.setIp(assetNodeInfoResponse.getIp());
-        topologyNodeAsset.setInstallType(assetNodeInfoResponse.getInstallTypeName());
-        topologyNodeAsset.setOs(assetNodeInfoResponse.getOperationSystemName());
-        topologyNodeAsset.setTelephone(assetNodeInfoResponse.getContactTel());
-        topologyNodeAsset.setLocation(assetNodeInfoResponse.getLocation());
+        topologyNodeAsset.setAsset_id(assetResponse.getStringId());
+        topologyNodeAsset.setAssetGroup(assetResponse.getAssetGroup());
+        topologyNodeAsset.setHouseLocation(assetResponse.getHouseLocation());
+        topologyNodeAsset.setIp(assetResponse.getIp());
+        topologyNodeAsset.setInstallType(assetResponse.getInstallTypeName());
+        topologyNodeAsset.setOs(assetResponse.getOperationSystemName());
+        topologyNodeAsset.setTelephone(assetResponse.getContactTel());
+        topologyNodeAsset.setLocation(assetResponse.getLocation());
         topologyAssetResponse.setStatus("success");
-        topologyAssetResponse.setVersion(assetNodeInfoResponse.getNumber());
+        topologyAssetResponse.setVersion(assetResponse.getNumber());
         List<TopologyAssetResponse.TopologyNodeAsset> topologyNodeAssets = new ArrayList<>();
         topologyNodeAssets.add(topologyNodeAsset);
         topologyAssetResponse.setData(topologyNodeAssets);

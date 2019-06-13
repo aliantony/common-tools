@@ -47,12 +47,12 @@ public class AssetTopologyController {
     }
 
     @ApiOperation(value = "查询节点信息", notes = "传stringId参数")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetNodeInfoResponse.class), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = BaseRequest.class), })
     @RequestMapping(value = "/query/assetNodeInfo", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:topology:queryAssetNodeInfo')")
     public ActionResponse queryAssetNodeInfo(@ApiParam("条件") @RequestBody BaseRequest baseRequest) throws Exception {
-        return ActionResponse.success();
-        // return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(baseRequest.getStringId()));
+//        return ActionResponse.success();
+         return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(baseRequest.getStringId()));
     }
 
     /**
