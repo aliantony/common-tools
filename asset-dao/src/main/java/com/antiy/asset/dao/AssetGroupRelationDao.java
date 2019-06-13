@@ -8,11 +8,10 @@ import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.vo.query.AssetGroupRelationQuery;
 import com.antiy.asset.vo.request.RemoveAssociateAssetRequest;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 /**
- * <p>
- * 资产与资产组关系表 Mapper 接口
- * </p>
+ * <p> 资产与资产组关系表 Mapper 接口 </p>
  *
  * @author zhangyajun
  * @since 2019-01-02
@@ -27,18 +26,21 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @return
      */
     List<AssetGroup> queryByAssetId(Integer id);
+
     /**
      * 通过资产组ID查询资产组详情
      * @param query
      * @return
      */
     List<AssetGroupRelation> findAssetDetailByAssetGroupId(AssetGroupRelationQuery query);
+
     /**
      * 删除资产的资产组关系
      * @param id
      * @return
      */
     Integer deleteByAssetId(Integer id);
+
     /**
      * 通过资产组ID删除关系
      * @param id
@@ -52,6 +54,7 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @return
      */
     Integer insertBatch(List<AssetGroupRelation> assetGroupRelations);
+
     /**
      * 通过资产组ID查询资产组详情
      * @param id
@@ -89,4 +92,11 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @throws Exception
      */
     Integer existRelateAssetInGroup(Serializable groupId) throws Exception;
+
+    /**
+     * 资产组是否存在绑定资产
+     * @param primaryKey
+     * @return
+     */
+    Integer hasRealtionAsset(@Param("primaryKey") String primaryKey);
 }

@@ -1807,22 +1807,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             Asset assetObj = assetDao.getById(assetId);
             if (AssetStatusEnum.RETIRE.getCode().equals(currentAsset.getAssetStatus())) {
                 // 记录操作日志和运行日志
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.RETIRE_REGISTER.getName(),
-                    Integer.valueOf(assetId), assetObj.getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
+                    assetObj.getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
                     BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
-                LogUtils.info(logger, AssetEventEnum.RETIRE_REGISTER.getName() + " {}",
+                LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.NOT_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(), Integer.valueOf(assetId),
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
                     assetDao.getById(assetId).getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
                     BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
-                LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}",
+                LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.HARD_WAITTING_REGISTER.getName(),
-                    Integer.valueOf(assetId), assetDao.getById(assetId).getNumber(), assetOuterRequest,
-                    BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
-                LogUtils.info(logger, AssetEventEnum.HARD_WAITTING_REGISTER.getName() + " {}",
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
+                    assetDao.getById(assetId).getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
+                    BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
+                LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.NET_IN.getCode().equals(currentAsset.getAssetStatus())) {
                 LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
@@ -1905,12 +1905,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         };
         ActionResponse actionResponse = assetClient.issueAssetData(assetExternalRequests);
-        if (actionResponse == null
-            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), 0, "", null,
-                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
-            LogUtils.error(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetExternalRequests.toString());
-        }
         return assetCount;
     }
 
