@@ -1837,7 +1837,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 || AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
                 ManualStartActivityRequest manualStartActivityRequest = assetOuterRequest
                     .getManualStartActivityRequest();
-                ParamterExceptionUtils.isNull(manualStartActivityRequest, "配置建议不能为空");
+                ParamterExceptionUtils.isNull(manualStartActivityRequest, "配置信息不能为空");
                 // ------------------启动工作流------------------start
                 manualStartActivityRequest.setBusinessId(assetId);
                 manualStartActivityRequest.setAssignee(String.valueOf(LoginUserUtil.getLoginUser().getId()));
