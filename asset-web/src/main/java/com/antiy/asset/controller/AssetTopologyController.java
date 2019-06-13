@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.common.base.BaseRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +15,7 @@ import com.antiy.asset.vo.query.AssetTopologyQuery;
 import com.antiy.asset.vo.response.AssetNodeInfoResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseRequest;
 
 import io.swagger.annotations.*;
 
@@ -47,11 +47,12 @@ public class AssetTopologyController {
     }
 
     @ApiOperation(value = "查询节点信息", notes = "传stringId参数")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetNodeInfoResponse.class), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = BaseRequest.class), })
     @RequestMapping(value = "/query/assetNodeInfo", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:topology:queryAssetNodeInfo')")
     public ActionResponse queryAssetNodeInfo(@ApiParam("条件") @RequestBody BaseRequest baseRequest) throws Exception {
-        return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(baseRequest.getStringId()));
+//        return ActionResponse.success();
+         return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(baseRequest.getStringId()));
     }
 
     /**
@@ -116,6 +117,42 @@ public class AssetTopologyController {
     // @PreAuthorize(value = "hasAuthority('asset:topology:countTopologyOs')")
     public ActionResponse countTopologyOs() throws Exception {
         return ActionResponse.success(iAssetTopologyService.countTopologyOs());
+    }
+
+    /**
+     * 告警资产拓扑
+     * @return
+     */
+    @ApiOperation("告警资产")
+    @RequestMapping(value = "/alarm", method = RequestMethod.POST)
+    @ApiResponse(code = 200, message = "OK", response = Object.class, responseContainer = "actionResponse")
+    // @PreAuthorize(value = "hasAuthority('asset:topology:alarm')")
+    public ActionResponse alarmTopology() throws Exception {
+        return ActionResponse.success();
+    }
+
+    /**
+     * 拓扑管理
+     * @return
+     */
+    @ApiOperation("告警资产")
+    @RequestMapping(value = "/home", method = RequestMethod.POST)
+    @ApiResponse(code = 200, message = "OK", response = Object.class, responseContainer = "actionResponse")
+    // @PreAuthorize(value = "hasAuthority('asset:topology:home')")
+    public ActionResponse homeTopology() throws Exception {
+        return ActionResponse.success();
+    }
+
+    /**
+     * 列表查询
+     * @return
+     */
+    @ApiOperation("列表查询")
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
+    @ApiResponse(code = 200, message = "OK", response = Object.class, responseContainer = "actionResponse")
+    // @PreAuthorize(value = "hasAuthority('asset:topology:queryList')")
+    public ActionResponse queryList(@RequestBody AssetTopologyQuery topologyQuery) throws Exception {
+        return ActionResponse.success();
     }
 
 }
