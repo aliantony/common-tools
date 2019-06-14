@@ -184,7 +184,8 @@ public class AssetStatusJumpController {
         operationRecord.setOriginStatus(assetStatusChangeRequest.getStatus());
         operationRecord.setTargetStatus(AssetStatusEnum.NOT_REGSIST.getCode());
         operationRecord.setGmtCreate(System.currentTimeMillis());
-
+        operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
+        operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         if (!assetStatusChangeRequest.getSoftware()) {
             operationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
             operationRecord.setAreaId(assetDao.getAreaIdById(id));
