@@ -43,6 +43,7 @@ public class ManualStartActivityRequest {
      * 配置建议(退役再登记时使用)
      */
     @ApiModelProperty(value = "置建议(退役再登记时使用)")
+    @NotBlank(message = "配置建议不能为空")
     private String       suggest;
 
     public String getSuggest() {

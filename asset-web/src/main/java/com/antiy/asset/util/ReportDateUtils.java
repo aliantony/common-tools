@@ -114,6 +114,41 @@ public class ReportDateUtils {
         }
         return resultMap;
     }
+    /**
+     * 获取指定月有多少周
+     * @return
+     */
+    public static Map<String, String> getWeekOfMonthForSingleMonth(Long startTime, Long endTime) {
+        LocalDate start = Instant.ofEpochMilli(startTime).atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate end = Instant.ofEpochMilli(endTime).atZone(ZoneId.systemDefault()).toLocalDate();
+        // 获取本月第一天
+        LocalDate firstday = start.with(TemporalAdjusters.firstDayOfMonth());
+
+        WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 4);
+        int firstWeek = firstday.get(weekFields.weekOfYear());
+        int currentWeek = end.get(weekFields.weekOfYear());
+        TreeMap<String, String> resultMap = new TreeMap<String, String>(new Comparator<String>() {
+            @Override
+            public int compare(String a, String b) {
+                return DataTypeUtils.stringToInteger(a) - DataTypeUtils.stringToInteger(b);
+            }
+        });
+
+        Map<Integer, String> weeksMap = new HashMap<>();
+        weeksMap.put(1, "第一周");
+        weeksMap.put(2, "第二周");
+        weeksMap.put(3, "第三周");
+        weeksMap.put(4, "第四周");
+        weeksMap.put(5, "第五周");
+        weeksMap.put(6, "第六周");
+        // 过滤掉未到的周数
+        int weekCount = currentWeek - firstWeek + 1;
+        for (int i = 1; i <= weekCount; i++) {
+            // 由于java周是1到53，mysql是1到52，所以此处-1
+            resultMap.put((firstWeek + i - 1) + "", weeksMap.get(i));
+        }
+        return resultMap;
+    }
 
     /**
      * 获取本年的月份信息,如果当月直接返回当前时间
@@ -164,7 +199,7 @@ public class ReportDateUtils {
 
         // 如果是当前月，则需要显示周
         if (months == 0) {
-            return getWeekOfMonth();
+            return getWeekOfMonthForSingleMonth(startTime,endTime);
         }
         ParamterExceptionUtils.isTrue(months < 12, "月份不能超过12个月");
 
