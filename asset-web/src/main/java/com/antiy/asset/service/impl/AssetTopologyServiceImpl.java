@@ -417,6 +417,10 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         AssetTopologyJsonData assetTopologyJsonData = new AssetTopologyJsonData();
         Map<String, List<List<Object>>> jsonData = new HashMap<>();
         List<AssetLink> assetLinks = assetLinkRelationDao.findLinkRelation();
+        for (AssetLink assetLink : assetLinks) {
+            assetLink.setAssetId(aesEncoder.encode(assetLink.getAssetId(),LoginUserUtil.getLoginUser().getUsername()));
+            assetLink.setParentAssetId(aesEncoder.encode(assetLink.getParentAssetId(),LoginUserUtil.getLoginUser().getUsername()));
+        }
         Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
         processLinkCount(assetLinks, secondCategoryMap);
         // 找到各个的层级节点
@@ -463,7 +467,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         // 构造第二层坐标数据
         simTopoRouter.addAll(settingSecondLevelCoordinates(secondMap, secondCoordinates));
         jsonData.put("sim_topo-router", simTopoRouter);
-        List<List<Object>> simTopoHost = new ArrayList<>(settingThirdLevelCoordinates(secondThirdMap, secondCoordinates));
+        List<List<Object>> simTopoHost = new ArrayList<>(
+            settingThirdLevelCoordinates(secondThirdMap, secondCoordinates));
         jsonData.put("sim_topo-host", simTopoHost);
         assetTopologyJsonData.setJson_data0(jsonData);
         assetTopologyRelation.setJson_data(assetTopologyJsonData);
