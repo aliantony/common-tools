@@ -418,8 +418,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         Map<String, List<List<Object>>> jsonData = new HashMap<>();
         List<AssetLink> assetLinks = assetLinkRelationDao.findLinkRelation();
         for (AssetLink assetLink : assetLinks) {
-            assetLink.setAssetId(aesEncoder.encode(assetLink.getAssetId(),LoginUserUtil.getLoginUser().getUsername()));
-            assetLink.setParentAssetId(aesEncoder.encode(assetLink.getParentAssetId(),LoginUserUtil.getLoginUser().getUsername()));
+            assetLink.setAssetId(aesEncoder.encode(assetLink.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
+            assetLink.setParentAssetId(
+                aesEncoder.encode(assetLink.getParentAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         }
         Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
         processLinkCount(assetLinks, secondCategoryMap);
@@ -530,7 +531,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
         Map<String, List<String>> result = new LinkedHashMap<>();
         Stream<Map.Entry<String, List<String>>> st = map.entrySet().stream();
-        st.sorted(Comparator.comparing(e -> e.getValue().size())).forEach(e -> result.put(e.getKey(), e.getValue()));
+        st.sorted(Comparator.comparing(e -> -e.getValue().size())).forEach(e -> result.put(e.getKey(), e.getValue()));
 
         Map<String, Integer> cache = new HashMap<>();
         for (Map.Entry<String, List<String>> entry : result.entrySet()) {
