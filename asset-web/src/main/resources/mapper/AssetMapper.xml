@@ -1411,7 +1411,8 @@
         select count(distinct (t1.asset_id)) from asset_patch_rel t1
         inner join patch p ON t1.patch_id = p.id
         inner join asset t2
-        on t1.asset_id = t2.id where t1.patch_status != 5
+        on t1.asset_id = t2.id
+        where t1.patch_status != 5
         <if test="areaIds != null and areaIds.size() > 0">
             and t2.area_id IN
             <foreach collection="areaIds" open="(" close=")" separator="," item="item">
@@ -1428,7 +1429,8 @@
     <select id="queryAllAssetVulCount" resultType="java.lang.Integer">
         select count(distinct (t1.asset_id)) from asset_vul_rel t1
         inner JOIN vul v ON t1.vul_id = v.id
-        inner join asset t2 on t1.asset_id = t2.id where t1.vul_status != 5
+        inner join asset t2 on t1.asset_id = t2.id
+        where t1.vul_status != 5
         <if test="areaIds != null and areaIds.size() > 0">
             and t2.area_id IN
             <foreach collection="areaIds" open="(" close=")" separator="," item="item">
@@ -1555,6 +1557,7 @@
         asset_source = #{assetSource },
         importance_degree = #{importanceDegree },
         describle = #{describle },
+        service_life = #{serviceLife}
         buy_date = #{buyDate },
         warranty = #{warranty },
         gmt_modified = #{gmtModified },
@@ -1565,5 +1568,8 @@
 
     <select id="selectRepeatNumber" resultType="int">
         select count(id) from asset where id!=#{id} and number=#{number}
+    </select>
+    <select id="selectRepeatName" resultType="int">
+        select count(id) from asset where id!=#{id} and name=#{name}
     </select>
 </mapper>
