@@ -148,6 +148,11 @@ public class AssetStatusJumpController {
             Asset asset = new Asset();
             asset.setId(DataTypeUtils.stringToInteger(assetId));
             asset.setAssetStatus(AssetStatusEnum.NOT_REGSIST.getCode());
+            if (LoginUserUtil.getLoginUser() == null) {
+                LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
+            } else {
+                asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
+            }
             operationRecord(assetStatusChangeRequest, assetId);
 
             // 硬件完成流程
@@ -179,7 +184,8 @@ public class AssetStatusJumpController {
         operationRecord.setOriginStatus(assetStatusChangeRequest.getStatus());
         operationRecord.setTargetStatus(AssetStatusEnum.NOT_REGSIST.getCode());
         operationRecord.setGmtCreate(System.currentTimeMillis());
-
+        operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
+        operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         if (!assetStatusChangeRequest.getSoftware()) {
             operationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
             operationRecord.setAreaId(assetDao.getAreaIdById(id));
