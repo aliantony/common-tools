@@ -400,6 +400,11 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         return result;
     }
 
+    /**
+     * 获取拓扑图
+     * @return
+     * @throws Exception
+     */
     public AssetTopologyNodeResponse getTopologyGraph() throws Exception {
         AssetTopologyNodeResponse assetTopologyNodeResponse = new AssetTopologyNodeResponse();
         assetTopologyNodeResponse.setStatus("success");
@@ -414,9 +419,11 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         assetTopologyViewAngle.setCameraPos(cameraPos);
         assetTopologyViewAngle.setTargetPos(targetPos);
         assetTopologyRelation.setView_angle(assetTopologyViewAngle);
+
         AssetTopologyJsonData assetTopologyJsonData = new AssetTopologyJsonData();
         Map<String, List<List<Object>>> jsonData = new HashMap<>();
         List<AssetLink> assetLinks = assetLinkRelationDao.findLinkRelation();
+        // id加密
         for (AssetLink assetLink : assetLinks) {
             assetLink.setAssetId(aesEncoder.encode(assetLink.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
             assetLink.setParentAssetId(
@@ -438,11 +445,11 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         for (AssetLink assetLink : assetLinks) {
             if (Objects.equals(String.valueOf(assetLink.getCategoryModal()), networkDeviceId)
                 && Objects.equals(String.valueOf(assetLink.getParentCategoryModal()), networkDeviceId)) {
-                // 构造第一级层级节点
+                // 构造第一，二级层级节点关系
                 flushMap(firstMap, assetLink);
                 flushParentMap(firstMap, assetLink);
             } else {
-                // 构造第二，三级层级节点
+                // 构造第二，三级层级节点关系
                 if (Objects.equals(String.valueOf(assetLink.getCategoryModal()), networkDeviceId)) {
                     flushMap(secondMap, assetLink);
                 } else {
@@ -468,6 +475,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         // 构造第二层坐标数据
         simTopoRouter.addAll(settingSecondLevelCoordinates(secondMap, secondCoordinates));
         jsonData.put("sim_topo-router", simTopoRouter);
+        // 构造第三层坐标数据
         List<List<Object>> simTopoHost = new ArrayList<>(
             settingThirdLevelCoordinates(secondThirdMap, secondCoordinates));
         jsonData.put("sim_topo-host", simTopoHost);
@@ -480,6 +488,11 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         return assetTopologyNodeResponse;
     }
 
+    /**
+     * 设置第一层坐标数据
+     * @param map
+     * @return
+     */
     private List<List<Object>> settingFirstLevelCoordinates(Map<String, List<String>> map) {
         int size = getSize(map.size());
         List<List<Object>> dataList = new ArrayList<>();
@@ -494,6 +507,12 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         return dataList;
     }
 
+    /**
+     * 获取第二层数据信息
+     * @param map
+     * @param secondCoordinates
+     * @return
+     */
     private List<List<Object>> settingSecondLevelCoordinates(Map<String, List<String>> map,
                                                              Map<String, List<Integer>> secondCoordinates) {
         int size = getSize(map.size());
@@ -512,6 +531,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private List<Integer> getDataList(int size, List<List<Object>> dataList, int space, int height, int i,
                                       Map.Entry<String, List<String>> entry) {
         List<Integer> coordinateList = getCoordinate(size, i, space, height);
+        // 设置坐标数据
         List<Object> point = new ArrayList<>();
         point.add(entry.getKey());
         point.addAll(coordinateList);
@@ -523,16 +543,26 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         return coordinateList;
     }
 
+    /**
+     * 获取第三层数据信息
+     * @param map
+     * @param secondCoordinates
+     * @return
+     */
     private List<List<Object>> settingThirdLevelCoordinates(Map<String, List<String>> map,
                                                             Map<String, List<Integer>> secondCoordinates) {
         List<List<Object>> dataList = new ArrayList<>();
+        // 间隔
         int space = thirdLevelSpacing;
+        // 高度
         int height = thirdLevelHeight;
 
+        // 排序
         Map<String, List<String>> result = new LinkedHashMap<>();
         Stream<Map.Entry<String, List<String>>> st = map.entrySet().stream();
         st.sorted(Comparator.comparing(e -> -e.getValue().size())).forEach(e -> result.put(e.getKey(), e.getValue()));
 
+        // 缓存id和index的关系
         Map<String, Integer> cache = new HashMap<>();
         for (Map.Entry<String, List<String>> entry : result.entrySet()) {
             int i = 0;
@@ -565,6 +595,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         return dataList;
     }
 
+    /**
+     * 获取自身坐标
+     */
     private List<Integer> getCoordinate(int size, int i, int space, int height) {
         int x = (int) ((i / size - ((size - 1) / 2f)) * space);
         int y = (int) (((size - 1) / 2f - (i % size)) * space);
@@ -575,6 +608,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         return coordinate;
     }
 
+    /**
+     * 根据上级坐标获取本身坐标
+     */
     private List<Integer> getCoordinateByParent(int size, int i, int space, int height, int xx, int yy) {
         int x = (int) (((i / size - ((size - 1) / 2f)) * space) + xx);
         int y = (int) ((((size - 1) / 2f - (i % size)) * space) + yy);
@@ -599,6 +635,12 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         return ((long) d) + 0.0 == d;
     }
 
+    /**
+     * 设置层级关系
+     * @param secondMap
+     * @param assetLink
+     */
+
     private void flushParentMap(Map<String, List<String>> secondMap, AssetLink assetLink) {
         List<String> idList = secondMap.get(assetLink.getParentAssetId());
         if (idList != null) {
@@ -610,6 +652,11 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         }
     }
 
+    /**
+     * 设置层级关系
+     * @param secondMap
+     * @param assetLink
+     */
     private void flushMap(Map<String, List<String>> secondMap, AssetLink assetLink) {
         List<String> idList = secondMap.get(assetLink.getAssetId());
         if (idList != null) {
