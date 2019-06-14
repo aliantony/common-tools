@@ -155,4 +155,16 @@ public class AssetTopologyController {
         return ActionResponse.success();
     }
 
+    /**
+     * 获取拓扑
+     * @return
+     */
+    @ApiOperation("获取拓扑图")
+    @RequestMapping(value = "/query/graph", method = RequestMethod.POST)
+    @ApiResponse(code = 200, message = "OK", response = Object.class, responseContainer = "actionResponse")
+    // @PreAuthorize(value = "hasAuthority('asset:topology:queryList')")
+    public ActionResponse getTopologyGraph() throws Exception {
+        return ActionResponse.success(iAssetTopologyService.getTopologyGraph());
+    }
+
 }

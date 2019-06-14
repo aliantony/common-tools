@@ -3,12 +3,9 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.antiy.asset.entity.*;
 import org.apache.ibatis.annotations.Param;
 
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetGroup;
-import com.antiy.asset.entity.AssetLinkRelation;
-import com.antiy.asset.entity.AssetLinkedCount;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetTopologyQuery;
@@ -139,6 +136,7 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @return
      */
     List<String> queryUseableIp(@Param("assetId") String assetId, @Param("type") String type);
+
     /**
      * 已管控拓扑管理的资产的资产组信息(下拉) queryGroupList
      * @param query
@@ -166,5 +164,10 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @return
      */
     List<String> pulldownUnconnectedManufacturer(AssetQuery assetQuery);
+
+    /**
+     * 查询通联关系及对应品类
+     */
+    List<AssetLink> findLinkRelation();
 
 }
