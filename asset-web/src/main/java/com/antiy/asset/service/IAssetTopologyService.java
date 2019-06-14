@@ -48,4 +48,5 @@ public interface IAssetTopologyService {
 
     TopologyOsCountResponse countTopologyOs() throws Exception;
 
+    AssetTopologyNodeResponse getTopologyGraph() throws Exception;
 }
