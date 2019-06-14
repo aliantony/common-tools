@@ -148,6 +148,11 @@ public class AssetStatusJumpController {
             Asset asset = new Asset();
             asset.setId(DataTypeUtils.stringToInteger(assetId));
             asset.setAssetStatus(AssetStatusEnum.NOT_REGSIST.getCode());
+            if (LoginUserUtil.getLoginUser() == null) {
+                LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
+            } else {
+                asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
+            }
             operationRecord(assetStatusChangeRequest, assetId);
 
             // 硬件完成流程
