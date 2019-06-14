@@ -3,21 +3,21 @@ package com.antiy.asset.service.impl;
 import static com.antiy.asset.util.StatusEnumUtil.getAssetUseableStatus;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.entity.*;
+import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetTopologyDao;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.entity.AssetGroup;
-import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.intergration.EmergencyClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
@@ -72,6 +72,24 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private OperatingSystemClient               operatingSystemClient;
     @Resource
     private IAssetService                       iAssetService;
+    @Value("#{'${topology.middlePoint}'.split(',')}")
+    private List<Integer>                       middlePoint;
+    @Value("#{'${topology.cameraPos}'.split(',')}")
+    private List<Integer>                       cameraPos;
+    @Value("#{'${topology.targetPos}'.split(',')}")
+    private List<Integer>                       targetPos;
+    @Value("${topology.first.level.space}")
+    private Integer                             firstLevelSpacing;
+    @Value("${topology.first.level.height}")
+    private Integer                             firstLevelHeight;
+    @Value("${topology.second.level.space}")
+    private Integer                             secondLevelSpacing;
+    @Value("${topology.second.level.height}")
+    private Integer                             secondLevelHeight;
+    @Value("${topology.third.level.space}")
+    private Integer                             thirdLevelSpacing;
+    @Value("${topology.third.level.height}")
+    private Integer                             thirdLevelHeight;
 
     @Override
     public List<String> queryCategoryModels() {
@@ -80,10 +98,10 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
     @Override
     public TopologyAssetResponse queryAssetNodeInfo(String assetId) throws Exception {
-        AssetDetialCondition assetDetialCondition=new AssetDetialCondition();
+        AssetDetialCondition assetDetialCondition = new AssetDetialCondition();
         assetDetialCondition.setPrimaryKey(assetId);
-        AssetOuterResponse assetOuterResponse=iAssetService.getByAssetId(assetDetialCondition);
-        AssetResponse assetResponse=assetOuterResponse.getAsset();
+        AssetOuterResponse assetOuterResponse = iAssetService.getByAssetId(assetDetialCondition);
+        AssetResponse assetResponse = assetOuterResponse.getAsset();
         TopologyAssetResponse topologyAssetResponse = new TopologyAssetResponse();
         TopologyAssetResponse.TopologyNodeAsset topologyNodeAsset = topologyAssetResponse.new TopologyNodeAsset();
         topologyNodeAsset.setAsset_id(assetResponse.getStringId());
@@ -371,6 +389,263 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             Integer.parseInt(response.getAreaId()));
         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
         response.setAreaName(sysArea != null ? sysArea.getFullName() : null);
+    }
+
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+        Map<K, V> result = new LinkedHashMap<>();
+        Stream<Map.Entry<K, V>> st = map.entrySet().stream();
+
+        st.sorted(Comparator.comparing(e -> e.getValue())).forEach(e -> result.put(e.getKey(), e.getValue()));
+
+        return result;
+    }
+
+    public AssetTopologyNodeResponse getTopologyGraph() throws Exception {
+        AssetTopologyNodeResponse assetTopologyNodeResponse = new AssetTopologyNodeResponse();
+        assetTopologyNodeResponse.setStatus("success");
+        List<Map<String, AssetTopologyRelation>> dataList = new ArrayList<>();
+        AssetTopologyRelation assetTopologyRelation = new AssetTopologyRelation();
+        // 设置拓扑图信息
+        assetTopologyRelation.setInfo("");
+        // 设置中心点
+        assetTopologyRelation.setMiddlePoint(middlePoint);
+        // 设置角度
+        AssetTopologyViewAngle assetTopologyViewAngle = new AssetTopologyViewAngle();
+        assetTopologyViewAngle.setCameraPos(cameraPos);
+        assetTopologyViewAngle.setTargetPos(targetPos);
+        assetTopologyRelation.setView_angle(assetTopologyViewAngle);
+        AssetTopologyJsonData assetTopologyJsonData = new AssetTopologyJsonData();
+        Map<String, List<List<Object>>> jsonData = new HashMap<>();
+        List<AssetLink> assetLinks = assetLinkRelationDao.findLinkRelation();
+        Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
+        processLinkCount(assetLinks, secondCategoryMap);
+        // 找到各个的层级节点
+        Map<String, List<String>> firstMap = new HashMap<>();
+        Map<String, List<String>> secondMap = new HashMap<>();
+        Map<String, List<String>> thirdMap = new HashMap<>();
+        Map<String, List<String>> secondThirdMap = new LinkedHashMap<>();
+        String networkDeviceId = "";
+        for (Map.Entry<String, String> entry : secondCategoryMap.entrySet()) {
+            if (Objects.equals(entry.getValue(), AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
+                networkDeviceId = entry.getKey();
+            }
+        }
+        for (AssetLink assetLink : assetLinks) {
+            if (Objects.equals(String.valueOf(assetLink.getCategoryModal()), networkDeviceId)
+                && Objects.equals(String.valueOf(assetLink.getParentCategoryModal()), networkDeviceId)) {
+                // 构造第一级层级节点
+                flushMap(firstMap, assetLink);
+                flushParentMap(firstMap, assetLink);
+            } else {
+                // 构造第二，三级层级节点
+                if (Objects.equals(String.valueOf(assetLink.getCategoryModal()), networkDeviceId)) {
+                    flushMap(secondMap, assetLink);
+                } else {
+                    flushParentMap(secondThirdMap, assetLink);
+                    flushMap(thirdMap, assetLink);
+                }
+                if (Objects.equals(String.valueOf(assetLink.getParentCategoryModal()), networkDeviceId)) {
+                    flushParentMap(secondMap, assetLink);
+                } else {
+                    flushMap(secondThirdMap, assetLink);
+                    flushParentMap(thirdMap, assetLink);
+                }
+            }
+        }
+        // 去掉第一层中不符合要求的数据
+        for (Map.Entry<String, List<String>> entry : secondMap.entrySet()) {
+            firstMap.remove(entry.getKey());
+        }
+        // 构造第一层坐标数据
+        List<List<Object>> simTopoRouter = new ArrayList<>();
+        simTopoRouter.addAll(settingFirstLevelCoordinates(firstMap));
+        Map<String, List<Integer>> secondCoordinates = new HashMap<>();
+        // 构造第二层坐标数据
+        simTopoRouter.addAll(settingSecondLevelCoordinates(secondMap, secondCoordinates));
+        jsonData.put("sim_topo-router", simTopoRouter);
+        List<List<Object>> simTopoHost = new ArrayList<>(settingThirdLevelCoordinates(secondThirdMap, secondCoordinates));
+        jsonData.put("sim_topo-host", simTopoHost);
+        assetTopologyJsonData.setJson_data0(jsonData);
+        assetTopologyRelation.setJson_data(assetTopologyJsonData);
+        Map<String, AssetTopologyRelation> dataMap = new HashMap<>(2);
+        dataMap.put("relationship", assetTopologyRelation);
+        dataList.add(dataMap);
+        assetTopologyNodeResponse.setData(dataList);
+        return assetTopologyNodeResponse;
+    }
+
+    private List<List<Object>> settingFirstLevelCoordinates(Map<String, List<String>> map) {
+        int size = getSize(map.size());
+        List<List<Object>> dataList = new ArrayList<>();
+        int space = firstLevelSpacing;
+        int height = firstLevelHeight;
+        int i = 0;
+        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+            getDataList(size, dataList, space, height, i, entry);
+            i++;
+
+        }
+        return dataList;
+    }
+
+    private List<List<Object>> settingSecondLevelCoordinates(Map<String, List<String>> map,
+                                                             Map<String, List<Integer>> secondCoordinates) {
+        int size = getSize(map.size());
+        List<List<Object>> dataList = new ArrayList<>();
+        int space = secondLevelSpacing;
+        int height = secondLevelHeight;
+        int i = 0;
+        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+            List<Integer> coordinateList = getDataList(size, dataList, space, height, i, entry);
+            secondCoordinates.put(entry.getKey(), coordinateList);
+            i++;
+        }
+        return dataList;
+    }
+
+    private List<Integer> getDataList(int size, List<List<Object>> dataList, int space, int height, int i,
+                                      Map.Entry<String, List<String>> entry) {
+        List<Integer> coordinateList = getCoordinate(size, i, space, height);
+        List<Object> point = new ArrayList<>();
+        point.add(entry.getKey());
+        point.addAll(coordinateList);
+        point.add(entry.getValue());
+        point.add(coordinateList.get(0));
+        point.add(coordinateList.get(2));
+        point.add("");
+        dataList.add(point);
+        return coordinateList;
+    }
+
+    private List<List<Object>> settingThirdLevelCoordinates(Map<String, List<String>> map,
+                                                            Map<String, List<Integer>> secondCoordinates) {
+        int size = getSize(map.size());
+        List<List<Object>> dataList = new ArrayList<>();
+        int space = thirdLevelSpacing;
+        int height = thirdLevelHeight;
+
+        Map<String, List<String>> result = new LinkedHashMap<>();
+        Stream<Map.Entry<String, List<String>>> st = map.entrySet().stream();
+        st.sorted(Comparator.comparing(e -> e.getValue().size())).forEach(e -> result.put(e.getKey(), e.getValue()));
+
+        Map<String, Integer> cache = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : result.entrySet()) {
+            int i = 0;
+            for (String s : entry.getValue()) {
+                Integer index = cache.get(s);
+                if (index != null) {
+                    List<Object> point = dataList.get(index);
+                    List<String> pointParent = (List<String>) point.get(4);
+                    pointParent.add(entry.getKey());
+                } else {
+                    List<Integer> coordinates = secondCoordinates.get(entry.getKey());
+                    List<Object> point = new ArrayList<>();
+                    List<Integer> coordinateByParent = getCoordinateByParent(size, i, space, height, coordinates.get(0),
+                        coordinates.get(2));
+                    point.add(s);
+                    point.addAll(coordinateByParent);
+                    List<String> parent = new ArrayList<>();
+                    parent.add(entry.getKey());
+                    point.add(parent);
+                    point.add(coordinateByParent.get(0));
+                    point.add(coordinateByParent.get(2));
+                    point.add("");
+                    dataList.add(point);
+                    cache.put(s, dataList.size() - 1);
+                    i++;
+                }
+            }
+        }
+        return dataList;
+    }
+
+    private List<Integer> getCoordinate(int size, int i, int space, int height) {
+        int x = (int) ((i / size - ((size - 1) / 2f)) * space);
+        int y = (int) (((size - 1) / 2f - (i % size)) * space);
+        List<Integer> coordinate = new ArrayList<>();
+        coordinate.add(x);
+        coordinate.add(height);
+        coordinate.add(y);
+        return coordinate;
+    }
+
+    private List<Integer> getCoordinateByParent(int size, int i, int space, int height, int xx, int yy) {
+        int x = (int) (((i / size - ((size - 1) / 2f)) * space) + xx);
+        int y = (int) ((((size - 1) / 2f - (i % size)) * space) + yy);
+        List<Integer> coordinate = new ArrayList<>();
+        coordinate.add(x);
+        coordinate.add(height);
+        coordinate.add(y);
+        return coordinate;
+    }
+
+    private int getSize(int size) {
+        double d = Math.sqrt((double) size);
+        if (isIntegerValue(d)) {
+            return (int) d;
+        } else {
+            return (int) (d + 1);
+        }
+
+    }
+
+    private static boolean isIntegerValue(double d) {
+        return ((long) d) + 0.0 == d;
+    }
+
+    private void flushParentMap(Map<String, List<String>> secondMap, AssetLink assetLink) {
+        List<String> idList = secondMap.get(assetLink.getParentAssetId());
+        if (idList != null) {
+            idList.add(assetLink.getAssetId());
+        } else {
+            idList = new ArrayList<>();
+            idList.add(assetLink.getAssetId());
+            secondMap.put(assetLink.getParentAssetId(), idList);
+        }
+    }
+
+    private void flushMap(Map<String, List<String>> secondMap, AssetLink assetLink) {
+        List<String> idList = secondMap.get(assetLink.getAssetId());
+        if (idList != null) {
+            idList.add(assetLink.getParentAssetId());
+        } else {
+            idList = new ArrayList<>();
+            idList.add(assetLink.getParentAssetId());
+            secondMap.put(assetLink.getAssetId(), idList);
+        }
+    }
+
+    // 处理品类型号使其均为二级品类型号
+    private void processLinkCount(List<AssetLink> assetLinks, Map<String, String> categoryMap) throws Exception {
+        // 作为缓存使用，提高效率
+        Map<String, String> cache = new HashMap<>();
+        List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
+        for (AssetLink assetLink : assetLinks) {
+            String categoryModel = assetLink.getCategoryModal().toString();
+            String cacheId = cache.get(categoryModel);
+            if (Objects.nonNull(cacheId)) {
+                assetLink.setCategoryModal(Integer.valueOf(cacheId));
+            } else {
+                String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
+                    categoryMap.keySet());
+                if (Objects.nonNull(second)) {
+                    assetLink.setCategoryModal(Integer.valueOf(second));
+                    cache.put(categoryModel, second);
+                }
+            }
+            categoryModel = assetLink.getParentCategoryModal().toString();
+            cacheId = cache.get(categoryModel);
+            if (Objects.nonNull(cacheId)) {
+                assetLink.setParentCategoryModal(Integer.valueOf(cacheId));
+            } else {
+                String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
+                    categoryMap.keySet());
+                if (Objects.nonNull(second)) {
+                    assetLink.setParentCategoryModal(Integer.valueOf(second));
+                    cache.put(categoryModel, second);
+                }
+            }
+        }
     }
 
 }
