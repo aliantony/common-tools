@@ -519,7 +519,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
     private List<List<Object>> settingThirdLevelCoordinates(Map<String, List<String>> map,
                                                             Map<String, List<Integer>> secondCoordinates) {
-        int size = getSize(map.size());
         List<List<Object>> dataList = new ArrayList<>();
         int space = thirdLevelSpacing;
         int height = thirdLevelHeight;
@@ -540,6 +539,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 } else {
                     List<Integer> coordinates = secondCoordinates.get(entry.getKey());
                     List<Object> point = new ArrayList<>();
+                    int size = getSize(entry.getValue().size());
                     List<Integer> coordinateByParent = getCoordinateByParent(size, i, space, height, coordinates.get(0),
                         coordinates.get(2));
                     point.add(s);
