@@ -1,16 +1,17 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.entity.Topology;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.common.base.IBaseDao;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -223,4 +224,10 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer changeAsset(Asset asset);
 
     Integer selectRepeatNumber(@Param("number") String number, @Param("id") String id);
+
+    /**
+     * 统计资产数量
+     * @return
+     */
+    Integer countAsset();
 }
