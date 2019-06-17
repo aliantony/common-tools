@@ -212,8 +212,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             setListAreaName(assetResponseList);
             setAlarmCount(assetResponseList, idCounts);
             assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
-            PageResult pageResult = new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
-                assetResponseList);
+            // PageResult pageResult = new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
+            // assetResponseList);
             TopologyListResponse topologyListResponse = new TopologyListResponse();
             List<TopologyListResponse.TopologyNode> topologyNodes = new ArrayList<>();
             for (AssetResponse assetResponse : assetResponseList) {
@@ -246,7 +246,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         query.setAssetStatusList(statusList);
     }
-
 
     private void setListAreaName(List<AssetResponse> assetResponseList) throws Exception {
         for (AssetResponse assetResponse : assetResponseList) {
@@ -752,25 +751,41 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             AssetTopologyAlarmResponse assetTopologyAlarmResponse = new AssetTopologyAlarmResponse();
             assetTopologyAlarmResponse.setStatus("status");
             assetTopologyAlarmResponse.setVersion("");
-            List<AssetTopologyAlarmResponse.TopologyAlarm> topologyAlarms = transferAssetToAlarms(assetResponseList);
+            List<Map> topologyAlarms = transferAssetToMap(assetResponseList);
             assetTopologyAlarmResponse.setData(topologyAlarms);
             return assetTopologyAlarmResponse;
         }
         return null;
     }
 
-    private List<AssetTopologyAlarmResponse.TopologyAlarm> transferAssetToAlarms(List<AssetResponse> assetResponseList) {
-        List<AssetTopologyAlarmResponse.TopologyAlarm> topologyAlarms = new ArrayList<>();
+    private List<Map> transferAssetToMap(List<AssetResponse> assetResponseList) {
+        List<Map> topologyAlarms = new ArrayList<>();
         for (AssetResponse assetResponse : assetResponseList) {
-            AssetTopologyAlarmResponse.TopologyAlarm topologyAlarm = new AssetTopologyAlarmResponse().new TopologyAlarm();
-            topologyAlarm.setIp(assetResponse.getIp());
-            topologyAlarm.setOs(assetResponse.getOperationSystemName());
-            topologyAlarm.setPerson_name(assetResponse.getResponsibleUserName());
-            topologyAlarm.setAlert(Integer.parseInt(assetResponse.getAlarmCount()));
-            topologyAlarm.setAsset_id(
-                aesEncoder.encode(assetResponse.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
-            topologyAlarm.setAsset_name(assetResponse.getName());
-            topologyAlarms.add(topologyAlarm);
+            Map<String,Object> map=new HashMap();
+            map.put("ip",assetResponse.getIp());
+            map.put("os",assetResponse.getOperationSystemName());
+            map.put("person_name",assetResponse.getResponsibleUserName());
+            map.put("alert",assetResponse.getAlarmCount());
+            map.put("asset_id",  aesEncoder.encode(assetResponse.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+            map.put("asset_name", assetResponse.getName());
+            map.put("firewall",null);
+            map.put("rank",null);
+            map.put("web",null);
+            map.put("malware",null);
+            map.put("iep",null);
+            map.put("access",null);
+            map.put("mail",null);
+            map.put("loophole",null);
+            map.put("infosystem",null);
+            map.put("communicate",null);
+            map.put("outreach",null);
+            map.put("c2",null);
+            map.put("database",null);
+            map.put("oa",null);
+            map.put("invade",null);
+            map.put("credit",null);
+            map.put("protected",null);
+            topologyAlarms.add(map);
         }
         return topologyAlarms;
     }
