@@ -198,6 +198,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     @Override
     public TopologyListResponse getTopologyList(AssetQuery query) throws Exception {
         initQuery(query);
+        query.setQueryDepartmentName(false);
+        query.setQueryPatchCount(true);
+        query.setQueryVulCount(true);
         Integer count = assetTopologyDao.findTopologyListAssetCount(query);
         if (count != null && count > 0) {
             List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
@@ -244,16 +247,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         query.setAssetStatusList(statusList);
     }
 
-    private void setCategoryQuery(AssetQuery query) throws Exception {
-        if (query.getCategoryModels() != null && query.getCategoryModels().length > 0) {
-            List<Integer> assetCategory = new ArrayList<>();
-            for (String id : query.getCategoryModels()) {
-                assetCategory.addAll(iAssetCategoryModelService.findAssetCategoryModelIdsById(Integer.valueOf(id),
-                    assetCategoryModelDao.getAll()));
-            }
-            query.setCategoryModels(ArrayTypeUtil.objectArrayToStringArray(assetCategory.toArray()));
-        }
-    }
 
     private void setListAreaName(List<AssetResponse> assetResponseList) throws Exception {
         for (AssetResponse assetResponse : assetResponseList) {
@@ -502,6 +495,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
     @Override
     public AssetTopologyIpSearchResposne queryListByIp(AssetQuery query) throws Exception {
+        query.setQueryDepartmentName(true);
+        query.setQueryVulCount(false);
+        query.setQueryPatchCount(false);
         List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
         AssetTopologyIpSearchResposne assetTopologyIpSearchResposne = new AssetTopologyIpSearchResposne();
         assetTopologyIpSearchResposne.setStatus("success");
@@ -739,6 +735,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     public AssetTopologyAlarmResponse getAlarmTopology() throws Exception {
         AssetQuery query = new AssetQuery();
         initQuery(query);
+        query.setQueryDepartmentName(true);
+        query.setQueryVulCount(false);
+        query.setQueryPatchCount(false);
         Integer count = assetTopologyDao.findTopologyListAssetCount(query);
         if (count != null && count > 0) {
             List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
@@ -770,6 +769,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             topologyAlarm.setAlert(Integer.parseInt(assetResponse.getAlarmCount()));
             topologyAlarm.setAsset_id(
                 aesEncoder.encode(assetResponse.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+            topologyAlarm.setAsset_name(assetResponse.getName());
             topologyAlarms.add(topologyAlarm);
         }
         return topologyAlarms;
@@ -781,6 +781,5 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         setStatusQuery(query);
-        setCategoryQuery(query);
     }
 }

@@ -228,6 +228,9 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty(value = "是否资产组关联资产查询，true表示查询，false表示不查询", allowableValues = "true,false")
     private Boolean       associateGroup;
 
+    @ApiModelProperty(value = "是否部门名", allowableValues = "true,false")
+    private Boolean       queryDepartmentName;
+
     @ApiModelProperty(value = "资产组ID")
     @Encode(message = "资产组ID解密失败")
     private String        groupId;
@@ -615,6 +618,14 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     public void setOsList(List<String> osList) {
         this.osList = osList;
+    }
+
+    public Boolean getQueryDepartmentName() {
+        return queryDepartmentName;
+    }
+
+    public void setQueryDepartmentName(Boolean queryDepartmentName) {
+        this.queryDepartmentName = queryDepartmentName;
     }
 
     @Override

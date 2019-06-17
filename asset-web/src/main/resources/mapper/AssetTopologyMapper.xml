@@ -326,9 +326,15 @@
         a.manufacturer, asset_status,
         a.responsible_user_id,
         a.first_enter_nett,
-        IFNULL(asset_patch_rel_1.patch_count,0) as patch_count,
-        IFNULL(asset_vul_rel_1.vul_count,0) as vul_count,
-        e.name as department_name,
+        <if test="queryVulCount == true">
+            IFNULL(asset_vul_rel_1.vul_count,0) as vul_count,
+        </if>
+        <if test="queryPatchCount == true">
+            IFNULL(asset_patch_rel_1.patch_count,0) as patch_count,
+        </if>
+        <if test="queryDepartmentName == true">
+            e.name as department_name,
+        </if>
         case
         when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
         replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
@@ -340,41 +346,40 @@
         where asset_id = a.id and status = 1)
         when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as ip,
-        case
-        when replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',') is not null then
-        replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',')
-        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
-        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as mac
+        else '' end as ip
         from
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1
         left join asset_category_model c on a.category_model = c.id
         left join asset_user d on a.responsible_user_id = d.id
-        left join asset_department e on d.department_id=e.id
-        left join (
-        select
-        apr.asset_id,
-        count(apr.patch_status != 5 or null) patch_count
-        from
-        asset_patch_rel apr inner join patch p on p.id = apr.patch_id where p.status = 1 and p.patch_status = 3
-        group by
-        asset_id
-        ) asset_patch_rel_1 on asset_patch_rel_1.asset_id = a.id
-        left join (
-        select
-        avr.asset_id,
-        count(avr.vul_status != 5 or null) vul_count
-        from
-        asset_vul_rel avr inner join vul v on v.id = avr.vul_id where v.vul_status = 4 and v. status = 1
-        group by
-        asset_id
-        ) asset_vul_rel_1 on asset_vul_rel_1.asset_id = a.id
+        <if test="queryDepartmentName == true">
+            left join asset_department e on d.department_id=e.id
+        </if>
+        <if test="queryVulCount == true">
+            left join (
+            select
+            avr.asset_id,
+            count(avr.vul_status != 5 or null) vul_count
+            from
+            asset_vul_rel avr inner join vul v on v.id = avr.vul_id where v.vul_status = 4 and v. status = 1
+            group by
+            asset_id
+            ) asset_vul_rel_1 on asset_vul_rel_1.asset_id = a.id
+        </if>
+        <if test="queryPatchCount == true">
+            left join (
+            select
+            apr.asset_id,
+            count(apr.patch_status != 5 or null) patch_count
+            from
+            asset_patch_rel apr inner join patch p on p.id = apr.patch_id where p.status = 1 and p.patch_status = 3
+            group by
+            asset_id
+            ) asset_patch_rel_1 on asset_patch_rel_1.asset_id = a.id
+        </if>
         where a.status = 1 and exists (
-        select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or parent_asset_id=a.id)
+        select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or
+        parent_asset_id=a.id)
         )
         group by a.id
         ) asset
@@ -392,15 +397,8 @@
         a.area_id,
         a.asset_group,
         a.category_model,
-        a.number,
-        a.name,
+        asset_status,
         d.name as responsible_user_name,
-        c.name as category_model_name,
-        a.manufacturer, asset_status,
-        a.responsible_user_id,
-        a.first_enter_nett,
-        IFNULL(asset_patch_rel_1.patch_count,0) as patch_count,
-        IFNULL(asset_vul_rel_1.vul_count,0) as vul_count,
         case
         when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
         replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
@@ -412,38 +410,12 @@
         where asset_id = a.id and status = 1)
         when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as ip,
-        case
-        when replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',') is not null then
-        replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',')
-        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
-        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as mac
+        else '' end as ip
         from
         asset a
         left join asset_network_card b on a.id = b.asset_id and b.status = 1
         left join asset_category_model c on a.category_model = c.id
         left join asset_user d on a.responsible_user_id = d.id
-        left join (
-        select
-        apr.asset_id,
-        count(apr.patch_status != 5 or null) patch_count
-        from
-        asset_patch_rel apr inner join patch p on p.id = apr.patch_id where p.status = 1 and p.patch_status = 3
-        group by
-        asset_id
-        ) asset_patch_rel_1 on asset_patch_rel_1.asset_id = a.id
-        left join (
-        select
-        avr.asset_id,
-        count(avr.vul_status != 5 or null) vul_count
-        from
-        asset_vul_rel avr inner join vul v on v.id = avr.vul_id where v.vul_status = 4 and v. status = 1
-        group by
-        asset_id
-        ) asset_vul_rel_1 on asset_vul_rel_1.asset_id = a.id
         where a.status = 1 and exists (
         select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or parent_asset_id=a.id)
         )
