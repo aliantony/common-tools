@@ -894,7 +894,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setData(data);
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
             .getRequest();
-        ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, title));
+        ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, title + ".xlsx"));
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(
             new BusinessData(title, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
