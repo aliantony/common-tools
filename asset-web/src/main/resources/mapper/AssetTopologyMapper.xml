@@ -28,7 +28,7 @@
         <result column="house_location" property="houseLocation"/>
         <result column="vul_count" property="vulCount"/>
         <result column="patch_count" property="patchCount"/>
-
+        <result column="department_name" property="departmentName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -104,24 +104,16 @@
             and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id =
             #{assetGroup} and b.status = 1)
         </if>
-        <if test=" multipleQuery != null">
-            and (name LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or number LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or serial LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+        <if test=" ip != null">
+            and (
+            exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
+            CONCAT('%',replace(replace(#{ip},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and inner_ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            CONCAT('%',replace(replace(#{ip},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and outer_ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            CONCAT('%',replace(replace(#{ip},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_card b where asset.id = b.asset_id and mac_address like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and mac_address like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and mac like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
+            CONCAT('%',replace(replace(#{ip},'%','\%'),'_','\_'),'%') and b.status = 1)
             )
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
@@ -336,6 +328,7 @@
         a.first_enter_nett,
         IFNULL(asset_patch_rel_1.patch_count,0) as patch_count,
         IFNULL(asset_vul_rel_1.vul_count,0) as vul_count,
+        e.name as department_name,
         case
         when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
         replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
@@ -361,6 +354,7 @@
         left join asset_network_card b on a.id = b.asset_id and b.status = 1
         left join asset_category_model c on a.category_model = c.id
         left join asset_user d on a.responsible_user_id = d.id
+        left join asset_department e on d.department_id=e.id
         left join (
         select
         apr.asset_id,

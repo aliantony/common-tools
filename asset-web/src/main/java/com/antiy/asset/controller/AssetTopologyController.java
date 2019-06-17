@@ -51,8 +51,8 @@ public class AssetTopologyController {
     @RequestMapping(value = "/query/assetNodeInfo", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:topology:queryAssetNodeInfo')")
     public ActionResponse queryAssetNodeInfo(@ApiParam("条件") @RequestBody BaseRequest baseRequest) throws Exception {
-//        return ActionResponse.success();
-         return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(baseRequest.getStringId()));
+        // return ActionResponse.success();
+        return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(baseRequest.getStringId()));
     }
 
     /**
@@ -83,11 +83,11 @@ public class AssetTopologyController {
      * 查询拓扑列表
      * @return
      */
-    @ApiOperation(value = "查询拓扑列表",notes = "     * 查询拓扑列表 查询参数传 \" +\n" +
-            "     *             \"查品类参数 categoryModels Array[string]\" +\n" +
-            "     *             \"查资产组参数 assetGroup \" +\n" +
-            "     *             \"查区域参数 areaIds  Array[string]\" +\n" +
-            "     *             \"查用户参数 responsibleUserName \n")
+    @ApiOperation(value = "查询拓扑列表", notes = "     * 查询拓扑列表 查询参数传 \" +\n"
+                                            + "     *             \"查品类参数 categoryModels Array[string]\" +\n"
+                                            + "     *             \"查资产组参数 assetGroup \" +\n"
+                                            + "     *             \"查区域参数 areaIds  Array[string]\" +\n"
+                                            + "     *             \"查用户参数 responsibleUserName \n")
     @RequestMapping(value = "/get/topologyList", method = RequestMethod.POST)
     @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse")
     // @PreAuthorize(value = "hasAuthority('asset:topology:getTopologyList')")
@@ -132,30 +132,6 @@ public class AssetTopologyController {
     }
 
     /**
-     * 拓扑管理
-     * @return
-     */
-    @ApiOperation("告警资产")
-    @RequestMapping(value = "/home", method = RequestMethod.POST)
-    @ApiResponse(code = 200, message = "OK", response = Object.class, responseContainer = "actionResponse")
-    // @PreAuthorize(value = "hasAuthority('asset:topology:home')")
-    public ActionResponse homeTopology() throws Exception {
-        return ActionResponse.success();
-    }
-
-    /**
-     * 列表查询
-     * @return
-     */
-    @ApiOperation("列表查询")
-    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
-    @ApiResponse(code = 200, message = "OK", response = Object.class, responseContainer = "actionResponse")
-    // @PreAuthorize(value = "hasAuthority('asset:topology:queryList')")
-    public ActionResponse queryList(@RequestBody AssetTopologyQuery topologyQuery) throws Exception {
-        return ActionResponse.success();
-    }
-
-    /**
      * 获取拓扑
      * @return
      */
@@ -165,6 +141,18 @@ public class AssetTopologyController {
     // @PreAuthorize(value = "hasAuthority('asset:topology:queryList')")
     public ActionResponse getTopologyGraph() throws Exception {
         return ActionResponse.success(iAssetTopologyService.getTopologyGraph());
+    }
+
+    /**
+     * 列表查询
+     * @return
+     */
+    @ApiOperation("ip模糊查询")
+    @RequestMapping(value = "/query/list/ip", method = RequestMethod.POST)
+    @ApiResponse(code = 200, message = "OK", response = Object.class, responseContainer = "actionResponse")
+    // @PreAuthorize(value = "hasAuthority('asset:topology:queryList')")
+    public ActionResponse queryListByIp(@ApiParam("查询条件") @RequestBody AssetQuery query) throws Exception {
+        return ActionResponse.success(iAssetTopologyService.queryListByIp(query));
     }
 
 }

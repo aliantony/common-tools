@@ -488,6 +488,29 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         return assetTopologyNodeResponse;
     }
 
+    @Override
+    public AssetTopologyIpSearchResposne queryListByIp(AssetQuery query) throws Exception {
+        List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
+        AssetTopologyIpSearchResposne assetTopologyIpSearchResposne = new AssetTopologyIpSearchResposne();
+        assetTopologyIpSearchResposne.setStatus("success");
+        List<AssetTopologyIpSearchResposne.IpSearch> ipSearchList = transferAssetToIpSearch(assetList);
+        assetTopologyIpSearchResposne.setData(ipSearchList);
+        return assetTopologyIpSearchResposne;
+    }
+
+    private List<AssetTopologyIpSearchResposne.IpSearch> transferAssetToIpSearch(List<Asset> assetList) {
+        List<AssetTopologyIpSearchResposne.IpSearch> ipSearchList = new ArrayList<>();
+        for (Asset asset : assetList) {
+            AssetTopologyIpSearchResposne.IpSearch ipSearch = new AssetTopologyIpSearchResposne().new IpSearch();
+            ipSearch.setAsset_id(aesEncoder.encode(asset.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+            ipSearch.setDepartment_name(asset.getDepartmentName());
+            ipSearch.setIp(asset.getIp());
+            ipSearch.setPerson_name(asset.getResponsibleUserName());
+            ipSearchList.add(ipSearch);
+        }
+        return ipSearchList;
+    }
+
     /**
      * 设置第一层坐标数据
      * @param map
