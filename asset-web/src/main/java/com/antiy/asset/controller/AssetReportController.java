@@ -101,10 +101,10 @@ public class AssetReportController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/exportAreaTable", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('asset:report:exportAreaTable')")
-    public void exportAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) {
+    public void exportAreaTable(@ApiParam(value = "查询条件") @RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
         ParamterExceptionUtils.isEmpty(reportQueryRequest.getAssetAreaIds(), "请指定要统计的区域");
         reportQueryRequest.setTopFive(false);
-      iAssetAreaReportService.exportAreaTable(reportQueryRequest);
+        iAssetAreaReportService.exportAreaTable(reportQueryRequest);
     }
 
     /**
