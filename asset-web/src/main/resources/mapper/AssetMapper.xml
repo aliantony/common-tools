@@ -1572,7 +1572,7 @@
         select count(id) from asset where id!=#{id} and name=#{name}
     </select>
 
-    <select id="countAsset" resultType="java.lang.Integer" parameterType=".lang.String">
+    <select id="countAsset" resultType="java.lang.Integer" parameterType="java.lang.String">
         select count(1)
         from
         <include refid="Table_Name"></include>
