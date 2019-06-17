@@ -430,33 +430,26 @@ public class AssetReportServiceImpl implements IAssetReportService {
                                     HttpServletRequest request) throws Exception {
         ReportForm reportForm = new ReportForm();
         String titleStr;
-        String fileNameStr;
         switch (assetReportCategoryCountQuery.getShowCycleType()) {
             case THIS_WEEK:
                 titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
-                fileNameStr = titleStr;
                 break;
             case THIS_MONTH:
                 titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
-                fileNameStr = titleStr;
                 break;
             case THIS_QUARTER:
                 titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
-                fileNameStr = titleStr;
                 break;
             case THIS_YEAR:
                 titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
-                fileNameStr = titleStr;
                 break;
             case ASSIGN_TIME:
                 titleStr = getTitleStr(assetReportCategoryCountQuery);
-                fileNameStr = getFileName(assetReportCategoryCountQuery);
                 break;
             default:
                 throw new BusinessException("timeType参数异常");
         }
-        fileNameStr = "资产" + fileNameStr + "品类型号总数";
-        String title = "资产" + titleStr + "品类型号总数";
+        String title = titleStr + "资产品类型号总数";
         reportForm.setTitle(title);
         AssetReportResponse assetReportResponse = this.queryCategoryCountByTime(assetReportCategoryCountQuery);
         List<String> headerList = assetReportResponse.getDate();
@@ -490,11 +483,11 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setHeaderList(headerList);
         reportForm.setData(data);
         reportForm.setColumnList(columnList);
-        String fileName = fileNameStr + ".xlsx";
+        String fileName = title + ".xlsx";
         ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, fileName));
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(fileNameStr, 0, "", assetReportCategoryCountQuery,
-            BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(new BusinessData(title, 0, "", assetReportCategoryCountQuery, BusinessModuleEnum.REPORT,
+            BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
             assetReportCategoryCountQuery.toString());
     }
@@ -845,19 +838,15 @@ public class AssetReportServiceImpl implements IAssetReportService {
         switch (reportQueryRequest.getTimeType()) {
             case "1":
                 titleStr = "本周";
-                fileNameStr = titleStr;
                 break;
             case "2":
                 titleStr = "本月";
-                fileNameStr = titleStr;
                 break;
             case "3":
                 titleStr = "本季度";
-                fileNameStr = titleStr;
                 break;
             case "4":
                 titleStr = "本年";
-                fileNameStr = titleStr;
                 break;
             case "5":
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
@@ -865,7 +854,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 Date startTime = new Date(reportQueryRequest.getStartTime());
                 Date endTime = new Date(reportQueryRequest.getEndTime());
                 titleStr = simpleDateFormat.format(startTime) + "~" + simpleDateFormat.format(endTime);
-                fileNameStr = simpleDateFormatTwo.format(startTime) + "-" + simpleDateFormatTwo.format(endTime);
                 break;
             default:
                 throw new BusinessException("timeType参数异常");
@@ -899,19 +887,17 @@ public class AssetReportServiceImpl implements IAssetReportService {
             }
             i++;
         }
-        String title = "资产组" + titleStr + "总数";
-        fileNameStr = "资产组" + fileNameStr + "总数";
+        String title = titleStr + "资产组资产总数";
         reportForm.setTitle(title);
         reportForm.setHeaderList(headerList);
         reportForm.setColumnList(columnList);
         reportForm.setData(data);
-        String fileName = fileNameStr + ".xlsx";
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
             .getRequest();
-        ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, fileName));
+        ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, title));
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(fileNameStr, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT,
-            BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(
+            new BusinessData(title, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
             reportQueryRequest.toString());
 
