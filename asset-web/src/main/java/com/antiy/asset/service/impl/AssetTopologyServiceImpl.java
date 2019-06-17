@@ -749,7 +749,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             assetResponseList = getAlarmList(assetResponseList, idCounts);
             assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
             AssetTopologyAlarmResponse assetTopologyAlarmResponse = new AssetTopologyAlarmResponse();
-            assetTopologyAlarmResponse.setStatus("status");
+            assetTopologyAlarmResponse.setStatus("success");
             assetTopologyAlarmResponse.setVersion("");
             List<Map> topologyAlarms = transferAssetToMap(assetResponseList);
             assetTopologyAlarmResponse.setData(topologyAlarms);
