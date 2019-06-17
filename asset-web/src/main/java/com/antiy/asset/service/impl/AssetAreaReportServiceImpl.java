@@ -1,10 +1,13 @@
 package com.antiy.asset.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.enums.AssetEventEnum;
@@ -38,6 +41,8 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * @author: zhangbing
@@ -239,12 +244,14 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             rows.add(map);
         }
         if (CollectionUtils.isNotEmpty(children)) {
-            String key = children.get(children.size()-1).getKey();
+            String key = children.get(children.size() - 1).getKey();
             if (CollectionUtils.isNotEmpty(rows)) {
                 rows.sort(new Comparator<Map<String, String>>() {
                     @Override
                     public int compare(Map<String, String> o1, Map<String, String> o2) {
-                        return DataTypeUtils.stringToInteger(o1.get(key)) <= DataTypeUtils.stringToInteger(o2.get(key)) ? 1 : -1;
+                        return DataTypeUtils.stringToInteger(o1.get(key)) <= DataTypeUtils.stringToInteger(o2.get(key))
+                            ? 1
+                            : -1;
                     }
                 });
             }
@@ -274,7 +281,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
      * @returnK
      */
     @Override
-    public void exportAreaTable(ReportQueryRequest reportQueryRequest) {
+    public void exportAreaTable(ReportQueryRequest reportQueryRequest) throws Exception{
         String titleStr;
         String fileNameStr;
         switch (reportQueryRequest.getTimeType()) {
@@ -335,7 +342,9 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         }
         reportForm.setData(datas);
         String fileName = fileNameStr + ".xlsx";
-        ExcelUtils.exportFormToClient(reportForm, fileName);
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+            .getRequest();
+        ExcelUtils.exportFormToClient(reportForm, encodeChineseDownloadFileName(request, fileName));
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(fileNameStr, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT,
             BusinessPhaseEnum.NONE));
@@ -440,6 +449,23 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             }
         }
         return statusList;
+    }
+
+    /**
+     * 对文件流输出下载的中文文件名进行编码 屏蔽各种浏览器版本的差异性
+     * @throws UnsupportedEncodingException
+     */
+    public String encodeChineseDownloadFileName(HttpServletRequest request,
+                                                String pFileName) throws UnsupportedEncodingException {
+        String userAgent = request.getHeader("user-agent").toLowerCase();
+        if (userAgent.contains("msie") || userAgent.contains("like gecko")) {
+            // win10 ie edge 浏览器 和其他系统的ie
+            pFileName = URLEncoder.encode(pFileName, "UTF-8");
+        } else {
+            // fe
+            pFileName = new String(pFileName.getBytes("utf-8"), "iso-8859-1");
+        }
+        return pFileName;
     }
 
 }
