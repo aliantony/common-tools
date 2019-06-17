@@ -59,4 +59,6 @@ public interface IAssetTopologyService {
      * 
      */
     AssetTopologyIpSearchResposne queryListByIp(AssetQuery query) throws Exception;
+
+    AssetTopologyAlarmResponse getAlarmTopology() throws Exception;
 }
