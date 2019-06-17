@@ -21,7 +21,7 @@ public interface IAssetTopologyService {
      * @param assetId
      * @return
      */
-    TopologyAssetResponse queryAssetNodeInfo(String assetId);
+    TopologyAssetResponse queryAssetNodeInfo(String assetId) throws Exception;
 
     /**
      * 统计总资产/已管控拓扑管理的资产数量 (totalNum,2),(inControlNum,3)
@@ -48,4 +48,10 @@ public interface IAssetTopologyService {
 
     TopologyOsCountResponse countTopologyOs() throws Exception;
 
+    /**
+     * 获取拓扑图
+     * @return
+     * @throws Exception
+     */
+    AssetTopologyNodeResponse getTopologyGraph() throws Exception;
 }

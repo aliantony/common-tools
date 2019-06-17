@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.CategoryNodeRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
@@ -134,7 +135,7 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/query/second", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:getAssetCategoryByName')")
     public ActionResponse getAssetCategoryByName() throws Exception {
-        return ActionResponse.success(iAssetCategoryModelService.getNextLevelCategoryByName("硬件"));
+        return ActionResponse.success(iAssetCategoryModelService.getNextLevelCategoryByName(Constants.FIRST_LEVEL_ASSET_CATEGORY_NAME));
     }
 
     /**
@@ -147,7 +148,7 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/query/software", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:getSoftwareCategoryByName')")
     public ActionResponse getSoftwareCategoryByName() throws Exception {
-        return ActionResponse.success(iAssetCategoryModelService.getNextLevelCategoryByName("软件"));
+        return ActionResponse.success(iAssetCategoryModelService.getNextLevelCategoryByName(Constants.FIRST_LEVEL_SOFTWARE_CATEGORY_NAME));
     }
 
     /**

@@ -1,9 +1,5 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
@@ -12,9 +8,12 @@ import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @auther: zhangbing
@@ -36,7 +35,7 @@ public class AssetStatusReqeust extends BasicRequest implements ObjectValidator 
     private ActivityHandleRequest      activityHandleRequest;
 
     @ApiModelProperty(value = "资产变更流程信息")
-    @Valid
+    // @Valid
     private ManualStartActivityRequest manualStartActivityRequest;
 
     /**

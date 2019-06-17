@@ -376,7 +376,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         Integer amount = assetGroupRelationDao.existRelateAssetInGroup(id);
 
         if (amount > 0) {
-            throw new BusinessException("不允许删除有关联资产的资产组");
+            throw new BusinessException("您已关联对应资产，无法进行注销");
         } else {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_DELETE.getName(),
                 DataTypeUtils.stringToInteger(id.toString()), assetGroupDao.getNameById(id), id,

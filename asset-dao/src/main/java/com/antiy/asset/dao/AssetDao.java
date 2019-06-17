@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 /**
  * <p> 资产主表 Mapper 接口 </p>
  *
@@ -222,4 +221,6 @@ public interface AssetDao extends IBaseDao<Asset> {
                                  @Param(value = "areaIds") List<Integer> areaIds);
 
     Integer changeAsset(Asset asset);
+
+    Integer selectRepeatNumber(@Param("number") String number, @Param("id") String id);
 }

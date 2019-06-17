@@ -100,4 +100,19 @@ public class                       AssetGroupRelationController {
         ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetGroupRelationService.deleteById(query.getPrimaryKey()));
     }
+
+    /**
+     * 判断资产组是否存在关联资产
+     *
+     * @param query 主键封装对象
+     * @return actionResponse
+     */
+    @ApiOperation(value = "判断资产组是否存在关联资产", notes = "判断资产组是否存在关联资产")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/hasRealtionAsset", method = RequestMethod.POST)
+    @PreAuthorize(value="hasAuthority('asset:grouprelation:queryById')")
+    public ActionResponse hasRealtionAsset(@RequestBody @ApiParam(value = "assetGroupRelation") QueryCondition query) throws Exception {
+        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "资产组ID不能为空");
+        return ActionResponse.success(iAssetGroupRelationService.hasRealtionAsset(query.getPrimaryKey()) > 0 ? true : false);
+    }
 }

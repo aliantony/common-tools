@@ -238,6 +238,17 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             }
             rows.add(map);
         }
+        if (CollectionUtils.isNotEmpty(children)) {
+            String key = children.get(children.size()-1).getKey();
+            if (CollectionUtils.isNotEmpty(rows)) {
+                rows.sort(new Comparator<Map<String, String>>() {
+                    @Override
+                    public int compare(Map<String, String> o1, Map<String, String> o2) {
+                        return DataTypeUtils.stringToInteger(o1.get(key)) <= DataTypeUtils.stringToInteger(o2.get(key)) ? 1 : -1;
+                    }
+                });
+            }
+        }
         // 数据
         Map add = new HashMap();
         add.put("classifyName", "新增数量");
