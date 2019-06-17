@@ -1012,7 +1012,6 @@
         where id = #{id}
     </select>
 
-
     <update id="deleteById" parameterType="java.lang.Integer">
         update
         <include refid="Table_Name"></include>
@@ -1571,5 +1570,12 @@
     </select>
     <select id="selectRepeatName" resultType="int">
         select count(id) from asset where id!=#{id} and name=#{name}
+    </select>
+
+    <select id="countAsset" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select count(1)
+        from
+        <include refid="Table_Name"></include>
+        where status = 1
     </select>
 </mapper>

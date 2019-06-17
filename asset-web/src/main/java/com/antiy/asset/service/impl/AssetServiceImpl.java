@@ -173,6 +173,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
+        // 授权数量校验
+        Integer authNum = LicenseUtil.getLicense().getAssetNum();
+        if (!Objects.isNull(authNum)) {
+            Integer num = assetDao.countAsset();
+            if (authNum < num) {
+                throw new BusinessException("已超过授权登记的最大资产数");
+            }
+        } else {
+            throw new BusinessException("未授权，不能进行登记操作");
+        }
+
         if (request.getAsset() != null) {
             ParamterExceptionUtils.isBlank(request.getAsset().getLocation().trim(), "物理位置不能为空");
         }
