@@ -42,6 +42,8 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * 资产报表实现类
@@ -904,7 +906,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportForm.setColumnList(columnList);
         reportForm.setData(data);
         String fileName = fileNameStr + ".xlsx";
-        ExcelUtils.exportFormToClient(reportForm, fileName);
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+            .getRequest();
+        ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, fileName));
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(fileNameStr, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT,
             BusinessPhaseEnum.NONE));
