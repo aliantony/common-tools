@@ -380,6 +380,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                     assetResponse.getStringId())) {
                     assetResponse.setAlarmCount(idCount.getCount());
                     result.add(assetResponse);
+                } else {
+                    assetResponse.setAlarmCount("0");
+                    result.add(assetResponse);
                 }
 
             }
@@ -427,7 +430,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         Map<String, List<List<Object>>> jsonData = new HashMap<>();
 
         AssetQuery query = new AssetQuery();
-        query.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        query.setAreaIds(
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         List<AssetLink> assetLinks = assetLinkRelationDao.findLinkRelation(query);
         // id加密
         for (AssetLink assetLink : assetLinks) {
