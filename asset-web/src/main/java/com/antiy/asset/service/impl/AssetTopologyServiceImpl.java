@@ -372,24 +372,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         }
     }
 
-    private List<AssetResponse> getAlarmList(List<AssetResponse> assetResponseList, List<IdCount> idCounts) {
-        List<AssetResponse> result = new ArrayList<>();
-        for (AssetResponse assetResponse : assetResponseList) {
-            for (IdCount idCount : idCounts) {
-                if (Objects.equals(aesEncoder.decode(idCount.getId(), LoginUserUtil.getLoginUser().getUsername()),
-                    assetResponse.getStringId())) {
-                    assetResponse.setAlarmCount(idCount.getCount());
-                    result.add(assetResponse);
-                } else {
-                    assetResponse.setAlarmCount("0");
-                    result.add(assetResponse);
-                }
-
-            }
-        }
-        return result;
-    }
-
     private void setAreaName(AssetResponse response) throws Exception {
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
             Integer.parseInt(response.getAreaId()));
@@ -753,7 +735,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             PageResult<IdCount> idCountPageResult = emergencyClient.queryInvokeEmergencyCount(objectQuery);
             List<IdCount> idCounts = idCountPageResult.getItems();
             setListAreaName(assetResponseList);
-            assetResponseList = getAlarmList(assetResponseList, idCounts);
+            setAlarmCount(assetResponseList, idCounts);
             assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
             AssetTopologyAlarmResponse assetTopologyAlarmResponse = new AssetTopologyAlarmResponse();
             assetTopologyAlarmResponse.setStatus("success");
