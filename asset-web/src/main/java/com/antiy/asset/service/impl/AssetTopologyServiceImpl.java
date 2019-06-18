@@ -427,7 +427,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         Map<String, List<List<Object>>> jsonData = new HashMap<>();
 
         AssetQuery query = new AssetQuery();
-        query.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreas()));
+        query.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         List<AssetLink> assetLinks = assetLinkRelationDao.findLinkRelation(query);
         // id加密
         for (AssetLink assetLink : assetLinks) {
