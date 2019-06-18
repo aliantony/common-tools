@@ -782,7 +782,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     }
 
     private void initQuery(AssetQuery query) throws Exception {
-        if (query.getAreaIds() != null && query.getAreaIds().length > 0) {
+        if (query.getAreaIds() != null && query.getAreaIds().length == 0) {
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
