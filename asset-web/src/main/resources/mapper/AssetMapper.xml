@@ -842,8 +842,6 @@
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or asset_network_equipment.inner_ip like binary
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or asset_network_equipment.outer_ip like binary
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or asset_network_card.mac_address like binary
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or asset_safety_equipment.mac like binary
@@ -1228,8 +1226,7 @@
         asset.warranty,
         asset.gmt_create,
         concat(ifnull((select GROUP_CONCAT( ip_address ) from asset_network_card where asset_id = asset.id and status =
-        1),''),
-        ifnull(asset_network_equipment.outer_ip,''),ifnull( asset_network_equipment.inner_ip, '' ),
+        1),''),ifnull( asset_network_equipment.inner_ip, '' ),
         ifnull(asset_safety_equipment.ip,'') ) AS ip,
         concat(ifnull((select GROUP_CONCAT( mac_address ) from asset_network_card where asset_id = asset.id and status =
         1),''),
