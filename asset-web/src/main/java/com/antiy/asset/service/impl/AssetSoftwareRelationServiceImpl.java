@@ -5,8 +5,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.request.*;
-import com.antiy.common.utils.BusinessExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -35,6 +33,7 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
+import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
@@ -42,6 +41,7 @@ import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.*;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -269,26 +269,41 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             }
         });
 
-        /* List<String> uuidList = new ArrayList<>(); if (CollectionUtils.isNotEmpty(autoInstallList)) {
-         * autoInstallList.forEach( assetSoftwareRelation ->
-         * uuidList.add(assetDao.getUUIDByAssetId(assetSoftwareRelation.getAssetId()))); List<String> noList = new
-         * ArrayList<>(); noList.add(assetSoftwareRelationList.getSoftwareId()); CommandRequest commandRequest = new
-         * CommandRequest(); commandRequest.setCommandType(ApiCommandType.softwareInstall);
-         * commandRequest.setNoList(noList); // 获取软件安装路径 commandRequest.setUuidList(uuidList); // 远程调用安装指令
-         * ActionResponse actionResponse = commandClient.executeCommand(commandRequest); if (null == actionResponse ||
-         * !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) { LogUtils.info(logger,
-         * "远程调用安装指令" + " {}", relationList); return actionResponse == null ?
-         * ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse; } // 更新安装状态 AssetSoftwareRelation
-         * condition = new AssetSoftwareRelation(); condition.setSoftwareId(assetSoftwareRelationList.getSoftwareId());
-         * for (AssetSoftwareRelation softwareRelation : autoInstallList) {
-         * condition.setAssetId(softwareRelation.getAssetId());
-         * condition.setInstallStatus(SoftInstallStatus.INSTALLING.getCode());
-         * condition.setGmtModified(System.currentTimeMillis()); if (LoginUserUtil.getLoginUser() != null) {
-         * condition.setModifyUser(LoginUserUtil.getLoginUser().getId()); } else { LogUtils.info(logger,
-         * AssetEventEnum.GET_USER_INOF.getName() + " {}", "失败"); }
-         * assetSoftwareRelationDao.updateConfigStatusByAssetId(condition); //记录操作日志 LogUtils.recordOperLog( new
-         * BusinessData(AssetEventEnum.SOFT_INSTALL.getName(), condition.getId(), "", condition,
-         * BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE)); } } */
+        List<String> uuidList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(autoInstallList)) {
+            autoInstallList.forEach(
+                assetSoftwareRelation -> uuidList.add(assetDao.getUUIDByAssetId(assetSoftwareRelation.getAssetId())));
+            List<String> noList = new ArrayList<>();
+            noList.add(assetSoftwareRelationList.getSoftwareId());
+            CommandRequest commandRequest = new CommandRequest();
+            commandRequest.setCommandType(ApiCommandType.softwareInstall);
+            commandRequest.setNoList(noList);
+            // 获取软件安装路径
+            commandRequest.setUuidList(uuidList);
+            // 远程调用安装指令
+            ActionResponse actionResponse = commandClient.executeCommand(commandRequest);
+            if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                LogUtils.info(logger, "远程调用安装指令" + " {}", relationList);
+                return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+            } // 更新安装状态 AssetSoftwareRelation
+            AssetSoftwareRelation condition = new AssetSoftwareRelation();
+            condition.setSoftwareId(assetSoftwareRelationList.getSoftwareId());
+            for (AssetSoftwareRelation softwareRelation : autoInstallList) {
+                condition.setAssetId(softwareRelation.getAssetId());
+                condition.setInstallStatus(SoftInstallStatus.INSTALLING.getCode());
+                condition.setGmtModified(System.currentTimeMillis());
+                if (LoginUserUtil.getLoginUser() != null) {
+                    condition.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                } else {
+                    LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "失败");
+                }
+                assetSoftwareRelationDao.updateConfigStatusByAssetId(condition);
+                // 记录操作日志
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSTALL.getName(), condition.getId(), "",
+                    condition, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+            }
+        }
         return ActionResponse.success();
     }
 
