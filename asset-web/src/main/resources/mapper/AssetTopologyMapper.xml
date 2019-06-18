@@ -288,9 +288,8 @@
 
     <select id="findOtherTopologyCountByCategory" resultType="int"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select count(id) from asset a where exists (
-        select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or parent_asset_id=a.id)
-        )
+        select count(id) from asset a where
+        1=1
         <if test=" assetStatusList != null">
             and asset_status in
             <foreach collection="assetStatusList" open="(" close=")" separator="," index="index" item="item">
