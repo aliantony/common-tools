@@ -1469,7 +1469,25 @@
         AND status = 1
     </select>
 
-    <select id="findLinkRelation" resultType="com.antiy.asset.entity.AssetLink" >
-        select asset_id as assetId,asset1.category_model as categoryModal,parent_asset_id as parentAssetId,asset2.category_model as parentCategoryModal from asset_link_relation left join asset asset1  on asset_id = asset1.id LEFT JOIN asset asset2 on parent_asset_id = asset2.id
+    <select id="findLinkRelation" resultType="com.antiy.asset.entity.AssetLink">
+        select asset_id
+        as
+        assetId,
+        asset1.category_model as categoryModal,parent_asset_id as parentAssetId,asset2.category_model as
+        parentCategoryModal from asset_link_relation left join asset asset1 on asset_id = asset1.id LEFT JOIN asset
+        asset2 on parent_asset_id = asset2.id
+        where 1=1
+        <if test=" areaIds != null and areaIds.length > 0 ">
+            and asset1.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" areaIds != null and areaIds.length > 0 ">
+            and asset2.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
     </select>
 </mapper>
