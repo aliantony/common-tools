@@ -236,6 +236,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
                         Asset asset = requestConverter.convert(requestAsset, Asset.class);
+                        // asset.setId(Integer.valueOf(requestAsset.getId()));
                         if (CollectionUtils.isNotEmpty(assetGroup)) {
                             assembleAssetGroupName(assetGroup, asset);
                         }

@@ -147,8 +147,6 @@
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and inner_ip like
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and outer_ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and ip like
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_card b where asset.id = b.asset_id and mac_address like
@@ -372,8 +370,6 @@
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and inner_ip like
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and outer_ip like
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_card b where asset.id = b.asset_id and mac_address like
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%') and b.status = 1)
             or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and mac_address like
@@ -523,11 +519,11 @@
         case
         when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
         replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
-        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        when (select inner_ip from asset_network_equipment
         where asset_id = a.id and status = 1) is
         not
         null then
-        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        (select inner_ip from asset_network_equipment
         where asset_id = a.id and status = 1)
         else '' end as ip,
         case
@@ -1280,11 +1276,11 @@
         case
         when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
         replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
-        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        when (select inner_ip from asset_network_equipment
         where asset_id = a.id and status = 1) is
         not
         null then
-        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        (select inner_ip from asset_network_equipment
         where asset_id = a.id and status = 1)
         when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
@@ -1388,11 +1384,11 @@
         case
         when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
         replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
-        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        when (select inner_ip from asset_network_equipment
         where asset_id = a.id and status = 1) is
         not
         null then
-        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
+        (select inner_ip from asset_network_equipment
         where asset_id = a.id and status = 1)
         when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
         (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
@@ -1469,7 +1465,25 @@
         AND status = 1
     </select>
 
-    <select id="findLinkRelation" resultType="com.antiy.asset.entity.AssetLink" >
-        select asset_id as assetId,asset1.category_model as categoryModal,parent_asset_id as parentAssetId,asset2.category_model as parentCategoryModal from asset_link_relation left join asset asset1  on asset_id = asset1.id LEFT JOIN asset asset2 on parent_asset_id = asset2.id
+    <select id="findLinkRelation" resultType="com.antiy.asset.entity.AssetLink">
+        select asset_id
+        as
+        assetId,
+        asset1.category_model as categoryModal,parent_asset_id as parentAssetId,asset2.category_model as
+        parentCategoryModal from asset_link_relation left join asset asset1 on asset_id = asset1.id LEFT JOIN asset
+        asset2 on parent_asset_id = asset2.id
+        where 1=1
+        <if test=" areaIds != null and areaIds.length > 0 ">
+            and asset1.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" areaIds != null and areaIds.length > 0 ">
+            and asset2.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
     </select>
 </mapper>

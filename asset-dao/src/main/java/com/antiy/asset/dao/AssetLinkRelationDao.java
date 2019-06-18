@@ -168,6 +168,6 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
     /**
      * 查询通联关系及对应品类
      */
-    List<AssetLink> findLinkRelation();
+    List<AssetLink> findLinkRelation(AssetQuery query);
 
 }

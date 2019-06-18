@@ -59,6 +59,7 @@ public class TopologyListResponse {
         private String asset_untreated_warning;
         private String asset_unrepair;
         private String system_uninstall;
+        private String asset_name;
 
         public String getAsset_id() {
             return asset_id;
@@ -130,6 +131,14 @@ public class TopologyListResponse {
 
         public void setSystem_uninstall(String system_uninstall) {
             this.system_uninstall = system_uninstall;
+        }
+
+        public String getAsset_name() {
+            return asset_name;
+        }
+
+        public void setAsset_name(String asset_name) {
+            this.asset_name = asset_name;
         }
     }
 }
