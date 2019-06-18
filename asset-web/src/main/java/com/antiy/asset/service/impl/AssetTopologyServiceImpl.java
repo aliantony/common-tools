@@ -228,6 +228,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 topologyNode.setAsset_unrepair(assetResponse.getVulCount());
                 topologyNode.setAsset_untreated_warning(assetResponse.getAlarmCount());
                 topologyNode.setSystem_uninstall(assetResponse.getPatchCount());
+                topologyNode.setAsset_name(assetResponse.getName());
                 topologyNodes.add(topologyNode);
             }
             topologyListResponse.setData(topologyNodes);
@@ -375,10 +376,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         List<AssetResponse> result = new ArrayList<>();
         for (AssetResponse assetResponse : assetResponseList) {
             for (IdCount idCount : idCounts) {
-                Integer count = Integer.valueOf(idCount.getCount());
-                if (count > 0
-                    && Objects.equals(aesEncoder.decode(idCount.getId(), LoginUserUtil.getLoginUser().getUsername()),
-                        assetResponse.getStringId())) {
+                if (Objects.equals(aesEncoder.decode(idCount.getId(), LoginUserUtil.getLoginUser().getUsername()),
+                    assetResponse.getStringId())) {
                     assetResponse.setAlarmCount(idCount.getCount());
                     result.add(assetResponse);
                 }
