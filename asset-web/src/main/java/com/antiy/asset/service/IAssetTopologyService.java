@@ -54,4 +54,11 @@ public interface IAssetTopologyService {
      * @throws Exception
      */
     AssetTopologyNodeResponse getTopologyGraph() throws Exception;
+
+    /**
+     * 
+     */
+    AssetTopologyIpSearchResposne queryListByIp(AssetQuery query) throws Exception;
+
+    AssetTopologyAlarmResponse getAlarmTopology() throws Exception;
 }

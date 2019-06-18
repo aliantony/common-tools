@@ -197,12 +197,10 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
     @Override
     public TopologyListResponse getTopologyList(AssetQuery query) throws Exception {
-        if (query.getAreaIds() == null) {
-            query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-        }
-        setStatusQuery(query);
-        setCategoryQuery(query);
+        initQuery(query);
+        query.setQueryDepartmentName(false);
+        query.setQueryPatchCount(true);
+        query.setQueryVulCount(true);
         Integer count = assetTopologyDao.findTopologyListAssetCount(query);
         if (count != null && count > 0) {
             List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
@@ -214,8 +212,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             setListAreaName(assetResponseList);
             setAlarmCount(assetResponseList, idCounts);
             assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
-            PageResult pageResult = new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
-                assetResponseList);
+            // PageResult pageResult = new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
+            // assetResponseList);
             TopologyListResponse topologyListResponse = new TopologyListResponse();
             List<TopologyListResponse.TopologyNode> topologyNodes = new ArrayList<>();
             for (AssetResponse assetResponse : assetResponseList) {
@@ -247,17 +245,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         query.setAssetStatusList(statusList);
-    }
-
-    private void setCategoryQuery(AssetQuery query) throws Exception {
-        if (query.getCategoryModels() != null && query.getCategoryModels().length > 0) {
-            List<Integer> assetCategory = new ArrayList<>();
-            for (String id : query.getCategoryModels()) {
-                assetCategory.addAll(iAssetCategoryModelService.findAssetCategoryModelIdsById(Integer.valueOf(id),
-                    assetCategoryModelDao.getAll()));
-            }
-            query.setCategoryModels(ArrayTypeUtil.objectArrayToStringArray(assetCategory.toArray()));
-        }
     }
 
     private void setListAreaName(List<AssetResponse> assetResponseList) throws Exception {
@@ -384,6 +371,23 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         }
     }
 
+    private List<AssetResponse> getAlarmList(List<AssetResponse> assetResponseList, List<IdCount> idCounts) {
+        List<AssetResponse> result = new ArrayList<>();
+        for (AssetResponse assetResponse : assetResponseList) {
+            for (IdCount idCount : idCounts) {
+                Integer count = Integer.valueOf(idCount.getCount());
+                if (count > 0
+                    && Objects.equals(aesEncoder.decode(idCount.getId(), LoginUserUtil.getLoginUser().getUsername()),
+                        assetResponse.getStringId())) {
+                    assetResponse.setAlarmCount(idCount.getCount());
+                    result.add(assetResponse);
+                }
+
+            }
+        }
+        return result;
+    }
+
     private void setAreaName(AssetResponse response) throws Exception {
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
             Integer.parseInt(response.getAreaId()));
@@ -486,6 +490,32 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         dataList.add(dataMap);
         assetTopologyNodeResponse.setData(dataList);
         return assetTopologyNodeResponse;
+    }
+
+    @Override
+    public AssetTopologyIpSearchResposne queryListByIp(AssetQuery query) throws Exception {
+        query.setQueryDepartmentName(true);
+        query.setQueryVulCount(false);
+        query.setQueryPatchCount(false);
+        List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
+        AssetTopologyIpSearchResposne assetTopologyIpSearchResposne = new AssetTopologyIpSearchResposne();
+        assetTopologyIpSearchResposne.setStatus("success");
+        List<AssetTopologyIpSearchResposne.IpSearch> ipSearchList = transferAssetToIpSearch(assetList);
+        assetTopologyIpSearchResposne.setData(ipSearchList);
+        return assetTopologyIpSearchResposne;
+    }
+
+    private List<AssetTopologyIpSearchResposne.IpSearch> transferAssetToIpSearch(List<Asset> assetList) {
+        List<AssetTopologyIpSearchResposne.IpSearch> ipSearchList = new ArrayList<>();
+        for (Asset asset : assetList) {
+            AssetTopologyIpSearchResposne.IpSearch ipSearch = new AssetTopologyIpSearchResposne().new IpSearch();
+            ipSearch.setAsset_id(aesEncoder.encode(asset.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+            ipSearch.setDepartment_name(asset.getDepartmentName());
+            ipSearch.setIp(asset.getIp());
+            ipSearch.setPerson_name(asset.getResponsibleUserName());
+            ipSearchList.add(ipSearch);
+        }
+        return ipSearchList;
     }
 
     /**
@@ -701,4 +731,70 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         }
     }
 
+    public AssetTopologyAlarmResponse getAlarmTopology() throws Exception {
+        AssetQuery query = new AssetQuery();
+        initQuery(query);
+        query.setQueryDepartmentName(true);
+        query.setQueryVulCount(false);
+        query.setQueryPatchCount(false);
+        Integer count = assetTopologyDao.findTopologyListAssetCount(query);
+        if (count != null && count > 0) {
+            List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
+            List<AssetResponse> assetResponseList = converter.convert(assetList, AssetResponse.class);
+            ObjectQuery objectQuery = new ObjectQuery();
+            objectQuery.setPageSize(-1);
+            PageResult<IdCount> idCountPageResult = emergencyClient.queryInvokeEmergencyCount(objectQuery);
+            List<IdCount> idCounts = idCountPageResult.getItems();
+            setListAreaName(assetResponseList);
+            assetResponseList = getAlarmList(assetResponseList, idCounts);
+            assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
+            AssetTopologyAlarmResponse assetTopologyAlarmResponse = new AssetTopologyAlarmResponse();
+            assetTopologyAlarmResponse.setStatus("success");
+            assetTopologyAlarmResponse.setVersion("");
+            List<Map> topologyAlarms = transferAssetToMap(assetResponseList);
+            assetTopologyAlarmResponse.setData(topologyAlarms);
+            return assetTopologyAlarmResponse;
+        }
+        return null;
+    }
+
+    private List<Map> transferAssetToMap(List<AssetResponse> assetResponseList) {
+        List<Map> topologyAlarms = new ArrayList<>();
+        for (AssetResponse assetResponse : assetResponseList) {
+            Map<String,Object> map=new HashMap();
+            map.put("ip",assetResponse.getIp());
+            map.put("os",assetResponse.getOperationSystemName());
+            map.put("person_name",assetResponse.getResponsibleUserName());
+            map.put("alert",assetResponse.getAlarmCount());
+            map.put("asset_id",  aesEncoder.encode(assetResponse.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+            map.put("asset_name", assetResponse.getName());
+            map.put("firewall",null);
+            map.put("rank",null);
+            map.put("web",null);
+            map.put("malware",null);
+            map.put("iep",null);
+            map.put("access",null);
+            map.put("mail",null);
+            map.put("loophole",null);
+            map.put("infosystem",null);
+            map.put("communicate",null);
+            map.put("outreach",null);
+            map.put("c2",null);
+            map.put("database",null);
+            map.put("oa",null);
+            map.put("invade",null);
+            map.put("credit",null);
+            map.put("protected",null);
+            topologyAlarms.add(map);
+        }
+        return topologyAlarms;
+    }
+
+    private void initQuery(AssetQuery query) throws Exception {
+        if (query.getAreaIds() == null) {
+            query.setAreaIds(
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        }
+        setStatusQuery(query);
+    }
 }

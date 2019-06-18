@@ -30,5 +30,5 @@ public interface IAssetAreaReportService {
      * @param reportQueryRequest
      * @return
      */
-    void exportAreaTable(ReportQueryRequest reportQueryRequest);
+    void exportAreaTable(ReportQueryRequest reportQueryRequest) throws Exception;
 }

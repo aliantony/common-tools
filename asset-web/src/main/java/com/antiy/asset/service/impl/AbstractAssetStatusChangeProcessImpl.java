@@ -104,13 +104,13 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
                 .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
                 switch (getNextAssetStatus(assetStatusReqeust).getCode()) {
                     case 6:
-                        LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.ASSET_NET_IN_CHECK.getName(),
+                        LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.ASSET_NET_IN.getName(),
                             DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
                             assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
                             BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
                         break;
                     case 7:
-                        LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.ASSET_NET_IN.getName(),
+                        LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.ASSET_NET_IN_CHECK.getName(),
                             DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
                             assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
                             BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
