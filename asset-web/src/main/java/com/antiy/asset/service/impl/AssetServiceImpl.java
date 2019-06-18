@@ -430,16 +430,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         LogUtils.info(logger, AssetOperateLogEnum.REGISTER_ASSET.getName() + " {}",
                             assetOthersRequest.toString());
                     }
-                    // 将资产副本存入变更记录表
-                    AssetChangeRecord assetChangeRecord = new AssetChangeRecord();
-                    assetChangeRecord.setBusinessId(
-                        DataTypeUtils.stringToInteger(assetOuterRequestToChangeRecord.getAsset().getId()));
-                    assetChangeRecord.setChangeVal(JsonUtil.object2Json(assetOuterRequestToChangeRecord));
-                    assetChangeRecord.setGmtCreate(System.currentTimeMillis());
-                    assetChangeRecord.setGmtModified(System.currentTimeMillis());
-                    assetChangeRecord.setType(hardware);
-                    assetChangeRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                    assetChangeRecordDao.insert(assetChangeRecord);
 
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
