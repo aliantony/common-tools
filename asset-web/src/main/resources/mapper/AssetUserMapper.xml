@@ -140,7 +140,6 @@
             position = #{position},
             modify_user = #{modifyUser },
             gmt_modified = #{gmtModified},
-            status = #{status },
             memo = #{memo }
     </sql>
 
