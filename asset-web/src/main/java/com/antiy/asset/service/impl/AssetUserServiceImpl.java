@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,10 +94,14 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         if (CollectionUtils.isNotEmpty(assetUser)) {
             assetUser.stream().forEach(a -> {
                 try {
-                    String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                        DataTypeUtils.stringToInteger(a.getAddress()));
-                    SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-                    a.setAddressName(sysArea.getFullName());
+                    if (StringUtils.isNotBlank(a.getAddress())) {
+                        String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                                DataTypeUtils.stringToInteger(a.getAddress()));
+                        SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+                        a.setAddressName(sysArea.getFullName());
+                    } else {
+                        a.setAddress(null);
+                    }
                 } catch (Exception e) {
                     logger.warn("获取用户详细地址失败", e);
                 }
