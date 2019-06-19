@@ -1485,5 +1485,17 @@
                 #{item}
             </foreach>
         </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset1.asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset2.asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
     </select>
 </mapper>

@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import com.antiy.asset.entity.*;
 import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
+import com.antiy.asset.vo.enums.NetWorkDeviceEnum;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -415,19 +416,102 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         AssetQuery query = new AssetQuery();
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        List<Integer> statusList = new ArrayList<>();
+        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
+        statusList.add(AssetStatusEnum.NET_IN.getCode());
+        query.setAssetStatusList(statusList);
         List<AssetLink> assetLinks = assetLinkRelationDao.findLinkRelation(query);
-        // id加密
+        List<AssetCategoryModel> categoryModelList = iAssetCategoryModelService.getAll();
+
+        String computeDeviceId = "";
+        String routeId = "";
+        String switchId = "";
+        Set<String> querySet = new HashSet();
+        for (AssetCategoryModel assetCategoryModel : categoryModelList) {
+            if (Objects.equals(assetCategoryModel.getName(), AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+                querySet.add(assetCategoryModel.getStringId());
+                computeDeviceId = assetCategoryModel.getStringId();
+            }
+            if (Objects.equals(assetCategoryModel.getName(), NetWorkDeviceEnum.Router.getMsg())) {
+                querySet.add(assetCategoryModel.getStringId());
+                routeId = assetCategoryModel.getStringId();
+            }
+            if (Objects.equals(assetCategoryModel.getName(), NetWorkDeviceEnum.Switch.getMsg())) {
+                querySet.add(assetCategoryModel.getStringId());
+                switchId = assetCategoryModel.getStringId();
+            }
+
+        }
+
+        Map<String, String> idCategory = new HashMap<>();
+        Map<String, String> cache = new HashMap<>();
         for (AssetLink assetLink : assetLinks) {
+            // id加密
             assetLink.setAssetId(aesEncoder.encode(assetLink.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
             assetLink.setParentAssetId(
                 aesEncoder.encode(assetLink.getParentAssetId(), LoginUserUtil.getLoginUser().getUsername()));
+        }
+
+        for (AssetLink assetLink : assetLinks) {
+
+            String categoryId = idCategory.get(assetLink.getAssetId());
+            String cacheId = cache.get(assetLink.getCategoryModal().toString());
+            if (categoryId == null) {
+                if (cacheId == null) {
+                    String result = iAssetCategoryModelService.recursionSearchParentCategory(
+                        assetLink.getCategoryModal().toString(), categoryModelList, querySet);
+                    String resultCategory = "";
+                    if (result == null) {
+                        resultCategory = "sim_topo-network";
+                    }
+                    if (Objects.equals(result, routeId)) {
+                        resultCategory = "sim_topo-router";
+                    }
+                    if (Objects.equals(result, switchId)) {
+                        resultCategory = "sim_topo-switch";
+                    }
+                    if (Objects.equals(result, computeDeviceId)) {
+                        resultCategory = "sim_topo-host";
+                    }
+                    idCategory.put(assetLink.getAssetId(), resultCategory);
+                    cache.put(assetLink.getCategoryModal() + "", resultCategory);
+                } else {
+                    idCategory.put(assetLink.getAssetId(), cacheId);
+                }
+            }
+
+            cacheId = cache.get(assetLink.getParentCategoryModal().toString());
+            String parentCategoryId = idCategory.get(assetLink.getParentAssetId());
+            if (parentCategoryId == null) {
+                if (cacheId == null) {
+                    String result = iAssetCategoryModelService.recursionSearchParentCategory(
+                        assetLink.getParentCategoryModal().toString(), categoryModelList, querySet);
+                    String resultCategory = "";
+                    if (result == null) {
+                        resultCategory = "sim_topo-network";
+                    }
+                    if (Objects.equals(result, routeId)) {
+                        resultCategory = "sim_topo-router";
+                    }
+                    if (Objects.equals(result, switchId)) {
+                        resultCategory = "sim_topo-switch";
+                    }
+                    if (Objects.equals(result, computeDeviceId)) {
+                        resultCategory = "sim_topo-host";
+                    }
+                    idCategory.put(assetLink.getParentAssetId(), resultCategory);
+                    cache.put(assetLink.getParentCategoryModal() + "", resultCategory);
+                } else {
+                    idCategory.put(assetLink.getParentAssetId(), cacheId);
+                }
+            }
+
         }
         Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
         processLinkCount(assetLinks, secondCategoryMap);
         // 找到各个的层级节点
         Map<String, List<String>> firstMap = new HashMap<>();
         Map<String, List<String>> secondMap = new HashMap<>();
-        Map<String, List<String>> thirdMap = new HashMap<>();
         Map<String, List<String>> secondThirdMap = new LinkedHashMap<>();
         String networkDeviceId = "";
         for (Map.Entry<String, String> entry : secondCategoryMap.entrySet()) {
@@ -441,37 +525,38 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 // 构造第一，二级层级节点关系
                 flushMap(firstMap, assetLink);
                 flushParentMap(firstMap, assetLink);
+
             } else {
                 // 构造第二，三级层级节点关系
                 if (Objects.equals(String.valueOf(assetLink.getCategoryModal()), networkDeviceId)) {
                     flushMap(secondMap, assetLink);
                 } else {
                     flushParentMap(secondThirdMap, assetLink);
-                    flushMap(thirdMap, assetLink);
                 }
                 if (Objects.equals(String.valueOf(assetLink.getParentCategoryModal()), networkDeviceId)) {
                     flushParentMap(secondMap, assetLink);
                 } else {
                     flushMap(secondThirdMap, assetLink);
-                    flushParentMap(thirdMap, assetLink);
                 }
             }
         }
         // 去掉第一层中不符合要求的数据
         for (Map.Entry<String, List<String>> entry : secondMap.entrySet()) {
-            firstMap.remove(entry.getKey());
+            List<String> first = entry.getValue();
+            List<String> result = firstMap.remove(entry.getKey());
+            if (result != null) {
+                first.addAll(result);
+                secondMap.put(entry.getKey(), first);
+            }
         }
+
         // 构造第一层坐标数据
-        List<List<Object>> simTopoRouter = new ArrayList<>();
-        simTopoRouter.addAll(settingFirstLevelCoordinates(firstMap));
+        settingFirstLevelCoordinates(firstMap, jsonData, idCategory);
         Map<String, List<Integer>> secondCoordinates = new HashMap<>();
         // 构造第二层坐标数据
-        simTopoRouter.addAll(settingSecondLevelCoordinates(secondMap, secondCoordinates));
-        jsonData.put("sim_topo-router", simTopoRouter);
+        settingSecondLevelCoordinates(secondMap, jsonData, idCategory, secondCoordinates);
         // 构造第三层坐标数据
-        List<List<Object>> simTopoHost = new ArrayList<>(
-            settingThirdLevelCoordinates(secondThirdMap, secondCoordinates));
-        jsonData.put("sim_topo-host", simTopoHost);
+        settingThirdLevelCoordinates(secondThirdMap,jsonData,idCategory, secondCoordinates);
         assetTopologyJsonData.setJson_data0(jsonData);
         assetTopologyRelation.setJson_data(assetTopologyJsonData);
         Map<String, AssetTopologyRelation> dataMap = new HashMap<>(2);
@@ -513,18 +598,17 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
      * @param map
      * @return
      */
-    private List<List<Object>> settingFirstLevelCoordinates(Map<String, List<String>> map) {
+    private void settingFirstLevelCoordinates(Map<String, List<String>> map, Map<String, List<List<Object>>> jsonData,
+                                              Map<String, String> idCategory) {
         int size = getSize(map.size());
-        List<List<Object>> dataList = new ArrayList<>();
         int space = firstLevelSpacing;
         int height = firstLevelHeight;
         int i = 0;
         for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-            getDataList(size, dataList, space, height, i, entry);
+            getDataList(size, space, height, i, entry, jsonData, idCategory);
             i++;
 
         }
-        return dataList;
     }
 
     /**
@@ -534,6 +618,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
      * @return
      */
     private List<List<Object>> settingSecondLevelCoordinates(Map<String, List<String>> map,
+                                                             Map<String, List<List<Object>>> jsonData,
+                                                             Map<String, String> idCategory,
                                                              Map<String, List<Integer>> secondCoordinates) {
         int size = getSize(map.size());
         List<List<Object>> dataList = new ArrayList<>();
@@ -541,15 +627,15 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         int height = secondLevelHeight;
         int i = 0;
         for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-            List<Integer> coordinateList = getDataList(size, dataList, space, height, i, entry);
+            List<Integer> coordinateList = getDataList(size, space, height, i, entry, jsonData, idCategory);
             secondCoordinates.put(entry.getKey(), coordinateList);
             i++;
         }
         return dataList;
     }
 
-    private List<Integer> getDataList(int size, List<List<Object>> dataList, int space, int height, int i,
-                                      Map.Entry<String, List<String>> entry) {
+    private List<Integer> getDataList(int size, int space, int height, int i, Map.Entry<String, List<String>> entry,
+                                      Map<String, List<List<Object>>> jsonData, Map<String, String> idCategory) {
         List<Integer> coordinateList = getCoordinate(size, i, space, height);
         // 设置坐标数据
         List<Object> point = new ArrayList<>();
@@ -559,7 +645,12 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         point.add(coordinateList.get(0));
         point.add(coordinateList.get(2));
         point.add("");
-        dataList.add(point);
+        List<List<Object>> points = jsonData.get(idCategory.get(entry.getKey()));
+        if (points == null) {
+            points = new ArrayList<>();
+        }
+        points.add(point);
+        jsonData.put(idCategory.get(entry.getKey()), points);
         return coordinateList;
     }
 
@@ -569,7 +660,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
      * @param secondCoordinates
      * @return
      */
-    private List<List<Object>> settingThirdLevelCoordinates(Map<String, List<String>> map,
+    private void settingThirdLevelCoordinates(Map<String, List<String>> map,
+                                                            Map<String, List<List<Object>>> jsonData,
+                                                            Map<String, String> idCategory,
                                                             Map<String, List<Integer>> secondCoordinates) {
         List<List<Object>> dataList = new ArrayList<>();
         // 间隔
@@ -606,13 +699,18 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                     point.add(coordinateByParent.get(0));
                     point.add(coordinateByParent.get(2));
                     point.add("");
+                    List<List<Object>> points = jsonData.get(idCategory.get(s));
+                    if (points == null) {
+                        points = new ArrayList<>();
+                    }
+                    points.add(point);
                     dataList.add(point);
+                    jsonData.put(idCategory.get(s), points);
                     cache.put(s, dataList.size() - 1);
                     i++;
                 }
             }
         }
-        return dataList;
     }
 
     /**
