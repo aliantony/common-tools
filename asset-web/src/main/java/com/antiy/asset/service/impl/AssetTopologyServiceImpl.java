@@ -469,6 +469,11 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         for (Map.Entry<String, List<String>> entry : secondMap.entrySet()) {
             firstMap.remove(entry.getKey());
         }
+        // 去掉第二层中不符合要求的数据
+        for (Map.Entry<String, List<String>> entry : firstMap.entrySet()) {
+            secondMap.remove(entry.getKey());
+        }
+
         // 构造第一层坐标数据
         List<List<Object>> simTopoRouter = new ArrayList<>();
         simTopoRouter.addAll(settingFirstLevelCoordinates(firstMap));
