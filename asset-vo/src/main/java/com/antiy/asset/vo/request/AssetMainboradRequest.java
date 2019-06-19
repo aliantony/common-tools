@@ -43,7 +43,7 @@ public class AssetMainboradRequest extends BasicRequest implements ObjectValidat
      * 型号
      */
     @ApiModelProperty("型号")
-    @Size(message = "主板型号长度不能超过30位", max = 30)
+    @Size(message = "主板型号长度不能超过30位", max = 60)
     private String model;
     /**
      * 序列号
