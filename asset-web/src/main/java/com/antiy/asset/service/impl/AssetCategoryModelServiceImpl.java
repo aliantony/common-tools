@@ -435,9 +435,12 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      */
     public String recursionSearchParentCategory(String categoryId, List<AssetCategoryModel> all,
                                                 Set<String> secondCategorys) {
-        int id = Integer.parseInt(categoryId);
+        if (categoryId == null) {
+            return null;
+        }
+        int id = Integer.valueOf(categoryId);
         // 若id不符合要求
-        if (id <= Constants.FIRST_LEVEL_ASSET_CATEGORY_ID) {
+        if (id <= 0) {
             return null;
         }
         if (secondCategorys.contains(categoryId)) {
