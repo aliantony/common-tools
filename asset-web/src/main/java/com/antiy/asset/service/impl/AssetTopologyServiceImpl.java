@@ -445,9 +445,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 // 构造第一，二级层级节点关系
                 flushMap(firstMap, assetLink);
                 flushParentMap(firstMap, assetLink);
-                // 构造第二级节点关系
-                flushMap(secondMap, assetLink);
-                flushParentMap(secondMap, assetLink);
 
             } else {
                 // 构造第二，三级层级节点关系
@@ -468,10 +465,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         // 去掉第一层中不符合要求的数据
         for (Map.Entry<String, List<String>> entry : secondMap.entrySet()) {
             firstMap.remove(entry.getKey());
-        }
-        // 去掉第二层中不符合要求的数据
-        for (Map.Entry<String, List<String>> entry : firstMap.entrySet()) {
-            secondMap.remove(entry.getKey());
+            secondMap.put(entry.getKey(), entry.getValue());
         }
 
         // 构造第一层坐标数据
