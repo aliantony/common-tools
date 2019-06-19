@@ -415,6 +415,10 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         AssetQuery query = new AssetQuery();
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        List<Integer> statusList = new ArrayList<>();
+        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
+        statusList.add(AssetStatusEnum.NET_IN.getCode());
+        query.setAssetStatusList(statusList);
         List<AssetLink> assetLinks = assetLinkRelationDao.findLinkRelation(query);
         // id加密
         for (AssetLink assetLink : assetLinks) {
@@ -441,6 +445,10 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 // 构造第一，二级层级节点关系
                 flushMap(firstMap, assetLink);
                 flushParentMap(firstMap, assetLink);
+                // 构造第二级节点关系
+                flushMap(secondMap, assetLink);
+                flushParentMap(secondMap, assetLink);
+
             } else {
                 // 构造第二，三级层级节点关系
                 if (Objects.equals(String.valueOf(assetLink.getCategoryModal()), networkDeviceId)) {
