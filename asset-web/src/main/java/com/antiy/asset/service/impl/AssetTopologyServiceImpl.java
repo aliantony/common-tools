@@ -465,8 +465,11 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         // 去掉第一层中不符合要求的数据
         for (Map.Entry<String, List<String>> entry : secondMap.entrySet()) {
             List<String> first = entry.getValue();
-            first.addAll(firstMap.remove(entry.getKey()));
-            secondMap.put(entry.getKey(), first);
+            List<String> result = firstMap.remove(entry.getKey());
+            if (result != null) {
+                first.addAll(result);
+                secondMap.put(entry.getKey(), first);
+            }
         }
 
         // 构造第一层坐标数据
