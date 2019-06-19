@@ -1,14 +1,16 @@
 package com.antiy.asset.vo.request;
 
+import java.io.Serializable;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetMainboradRequest 请求对象 </p>
@@ -35,7 +37,7 @@ public class AssetMainboradRequest extends BasicRequest implements ObjectValidat
      */
     @ApiModelProperty("品牌")
     // @NotBlank(message = "主板品牌不能为空")
-    @Size(message = "主板品牌长度不能超过30位", max = 30)
+    @Size(message = "主板品牌长度不能超过30位", max = 60)
     private String brand;
     /**
      * 型号
