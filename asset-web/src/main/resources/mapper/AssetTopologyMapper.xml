@@ -288,6 +288,8 @@
             parameterType="com.antiy.asset.vo.query.AssetQuery">
         select count(id) from asset a where
         1=1
+        and operation_system is not null
+        and operation_system != ''
         <if test=" assetStatusList != null">
             and asset_status in
             <foreach collection="assetStatusList" open="(" close=")" separator="," index="index" item="item">
