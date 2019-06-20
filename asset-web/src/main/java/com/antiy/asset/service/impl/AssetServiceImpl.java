@@ -1533,7 +1533,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         Map<String, String> nowIp = assetNetworkCards.stream()
                             .collect(Collectors.toMap(AssetNetworkCard::getStringId, AssetNetworkCard::getIpAddress));
                         // 页面传过来的网卡
-                        Map<String, String> existIp = assetNetworkCardRequestList.stream().collect(
+                        Map<String, String> existIp = assetNetworkCardRequestList.stream().filter(a->StringUtils.isNotBlank(a.getId())).collect(
                             Collectors.toMap(AssetNetworkCardRequest::getId, AssetNetworkCardRequest::getIpAddress));
                         // 需要删除通联关系的网卡信息
                         Map<String, String> deleteRelation = nowIp.entrySet().stream()
@@ -1569,7 +1569,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 updateNetworkList.add(assetNetworkCard);
                             } else {// 新增的
                                 assetQuery.setIp(assetNetworkCard.getIpAddress());
-                                int a = assetDao.findCountIp(assetQuery);
                                 BusinessExceptionUtils.isTrue(assetDao.findCountIp(assetQuery) <= 0, "IP不能重复");
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(
@@ -3712,6 +3711,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public Integer queryWaitRegistCount() {
         return assetDao.queryWaitRegistCount(AssetStatusEnum.WATI_REGSIST.getCode(),
             LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+    }
+
+    @Override
+    public Integer queryNormalCount() {
+        AssetQuery query = new AssetQuery();
+        //已入网、待退役资产
+        query.setAssetStatusList(new ArrayList(){{add(7);add(8);}});
+        //当前用户所在区域
+        query.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        return assetDao.queryNormalCount(query);
     }
 
     @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
