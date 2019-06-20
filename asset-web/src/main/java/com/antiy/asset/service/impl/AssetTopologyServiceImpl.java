@@ -138,9 +138,21 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         assetQuery = new AssetQuery();
         assetQuery.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-        assetQuery.setAssetStatusList(assetStatusList);
-        List<String> assetIdList = assetTopologyDao.findTopologyIdByCategory(assetQuery);
-        resultMap.put("control", assetIdList == null ? "0" : assetIdList.size() + "");
+        List<Integer> statusList = new ArrayList<>();
+        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
+        statusList.add(AssetStatusEnum.NET_IN.getCode());
+        assetQuery.setAssetStatusList(statusList);
+        List<AssetLink> assetLinks = assetLinkRelationDao.findLinkRelation(assetQuery);
+        List<String> assetIdList = new ArrayList<>();
+        for (AssetLink assetLink : assetLinks) {
+            if (!assetIdList.contains(assetLink.getAssetId())) {
+                assetIdList.add(assetLink.getAssetId());
+            }
+            if (!assetIdList.contains(assetLink.getParentAssetId())) {
+                assetIdList.add(assetLink.getParentAssetId());
+            }
+        }
+        resultMap.put("control", assetIdList.size() + "");
         ObjectQuery objectQuery = new ObjectQuery();
         objectQuery.setPageSize(-1);
         PageResult<IdCount> idCountPageResult = emergencyClient.queryInvokeEmergencyCount(objectQuery);
@@ -203,6 +215,25 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         query.setQueryDepartmentName(false);
         query.setQueryPatchCount(true);
         query.setQueryVulCount(true);
+
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setAreaIds(
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        List<Integer> statusList = new ArrayList<>();
+        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
+        statusList.add(AssetStatusEnum.NET_IN.getCode());
+        assetQuery.setAssetStatusList(statusList);
+        List<AssetLink> assetLinks = assetLinkRelationDao.findLinkRelation(assetQuery);
+        List<String> assetIdList = new ArrayList<>();
+        for (AssetLink assetLink : assetLinks) {
+            if (!assetIdList.contains(assetLink.getAssetId())) {
+                assetIdList.add(assetLink.getAssetId());
+            }
+            if (!assetIdList.contains(assetLink.getParentAssetId())) {
+                assetIdList.add(assetLink.getParentAssetId());
+            }
+        }
+        query.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
         Integer count = assetTopologyDao.findTopologyListAssetCount(query);
         if (count != null && count > 0) {
             List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
@@ -556,7 +587,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         // 构造第二层坐标数据
         settingSecondLevelCoordinates(secondMap, jsonData, idCategory, secondCoordinates);
         // 构造第三层坐标数据
-        settingThirdLevelCoordinates(secondThirdMap,jsonData,idCategory, secondCoordinates);
+        settingThirdLevelCoordinates(secondThirdMap, jsonData, idCategory, secondCoordinates);
         assetTopologyJsonData.setJson_data0(jsonData);
         assetTopologyRelation.setJson_data(assetTopologyJsonData);
         Map<String, AssetTopologyRelation> dataMap = new HashMap<>(2);
@@ -660,10 +691,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
      * @param secondCoordinates
      * @return
      */
-    private void settingThirdLevelCoordinates(Map<String, List<String>> map,
-                                                            Map<String, List<List<Object>>> jsonData,
-                                                            Map<String, String> idCategory,
-                                                            Map<String, List<Integer>> secondCoordinates) {
+    private void settingThirdLevelCoordinates(Map<String, List<String>> map, Map<String, List<List<Object>>> jsonData,
+                                              Map<String, String> idCategory,
+                                              Map<String, List<Integer>> secondCoordinates) {
         List<List<Object>> dataList = new ArrayList<>();
         // 间隔
         int space = thirdLevelSpacing;
