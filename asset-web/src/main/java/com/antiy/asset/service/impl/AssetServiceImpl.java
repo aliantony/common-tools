@@ -3713,6 +3713,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
     }
 
+    @Override
+    public Integer queryNormalCount() {
+        AssetQuery query = new AssetQuery();
+        //已入网、待退役资产
+        query.setAssetStatusList(new ArrayList(){{add(7);add(8);}});
+        //当前用户所在区域
+        query.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        return assetDao.queryNormalCount(query);
+    }
+
     @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
     public void listen(String data, Acknowledgment ack) {
         AreaOperationRequest areaOperationRequest = JsonUtil.json2Object(data, AreaOperationRequest.class);
