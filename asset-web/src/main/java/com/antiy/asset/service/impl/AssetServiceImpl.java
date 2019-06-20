@@ -2305,7 +2305,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     @Transactional
     public String importPc(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-
+        // 授权数量限制校验
+        anthNumValidate();
         AssetCategoryModel categoryModel = assetCategoryModelDao
             .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
         if (Objects.isNull(categoryModel)) {
@@ -2661,6 +2662,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     @Transactional
     public String importNet(MultipartFile file, AssetImportRequest importRequest) throws Exception {
+        // 授权数量限制校验
+        anthNumValidate();
         AssetCategoryModel categoryModel = assetCategoryModelDao
             .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
         if (Objects.isNull(categoryModel)) {
@@ -2878,6 +2881,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     @Transactional
     public String importSecurity(MultipartFile file, AssetImportRequest importRequest) throws Exception {
+        // 授权数量限制校验
+        anthNumValidate();
         AssetCategoryModel categoryModel = assetCategoryModelDao
             .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
         if (Objects.isNull(categoryModel)) {
@@ -3079,6 +3084,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     @Transactional
     public String importStory(MultipartFile file, AssetImportRequest importRequest) throws Exception {
+        // 授权数量限制校验
+        anthNumValidate();
         AssetCategoryModel categoryModel = assetCategoryModelDao
             .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
         if (Objects.isNull(categoryModel)) {
@@ -3272,6 +3279,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     @Transactional
     public String importOhters(MultipartFile file, AssetImportRequest importRequest) throws Exception {
+        // 授权数量限制校验
+        anthNumValidate();
         AssetCategoryModel categoryModel = assetCategoryModelDao
             .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
         if (Objects.isNull(categoryModel)) {
@@ -3430,210 +3439,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return stringBuilder.append(builder).append(sb).toString();
     }
 
-    // @Override
-    // @Transactional
-    // public String importOhters1(MultipartFile file, AssetImportRequest importRequest) throws Exception {
-    // AssetCategoryModel categoryModel = assetCategoryModelDao
-    // .getById(DataTypeUtils.stringToInteger(importRequest.getCategory()));
-    // if (Objects.isNull(categoryModel)) {
-    // return "导入失败，选择品类型号不存在，或已被注销！";
-    // }
-    // ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 5, 0);
-    // if (Objects.isNull(result.getDataList())) {
-    // return result.getMsg();
-    // }
-    // List<OtherDeviceEntity> otherDeviceEntities = Collections.synchronizedList (result.getDataList ());
-    // if (otherDeviceEntities.size() == 0 && StringUtils.isBlank(result.getMsg())) {
-    // return "导入失败，模板中无数据！" + result.getMsg();
-    // }
-    // StringBuilder sb = new StringBuilder(result.getMsg());
-    // if (result.getMsg().contains("导入失败")) {
-    // return sb.toString ();
-    //
-    // }
-    //
-    // ExecutorService executorService = Executors.newFixedThreadPool(10);
-    // CountDownLatch countDownLatch = new CountDownLatch(otherDeviceEntities.size ());
-    // StringBuffer msg = new StringBuffer ();
-    //
-    // for (int i = 0; i < 10; i++) {
-    // executorService.submit (new Runnable () {
-    // @Override
-    // public void run() {
-    // int success = 0;
-    // int repeat = 0;
-    // int error = 0;
-    // int a = 6;
-    // StringBuffer builder = new StringBuffer();
-    // List<Asset> assets = new ArrayList<>();
-    // List<String> assetNames = new ArrayList<>();
-    // List<String> assetNumbers = new ArrayList<>();
-    // try {
-    //
-    // for (OtherDeviceEntity entity : otherDeviceEntities) {
-    //
-    // if (assetNames.contains(entity.getName())) {
-    // repeat++;
-    // a++;
-    // builder.append("第").append(a).append("行").append("资产名称重复！");
-    // countDownLatch.countDown ();
-    // continue;
-    // }
-    // if (assetNumbers.contains(entity.getNumber())) {
-    // repeat++;
-    // a++;
-    // builder.append("第").append(a).append("行").append("资产编号重复！");
-    // countDownLatch.countDown ();
-    // continue;
-    // }
-    //
-    // if (checkRepeatName(entity.getName())) {
-    // repeat++;
-    // a++;
-    // builder.append("第").append(a).append("行").append("资产名称重复！");
-    // countDownLatch.countDown ();
-    //
-    // continue;
-    // }
-    //
-    // if (CheckRepeat(entity.getNumber())) {
-    // repeat++;
-    // a++;
-    // builder.append("第").append(a).append("行").append("资产编号重复！");
-    // countDownLatch.countDown ();
-    // continue;
-    // }
-    // if (entity.getBuyDate() != null) {
-    //
-    // if (isBuyDataBig(entity.getBuyDate())) {
-    // error++;
-    // a++;
-    // builder.append("第").append(a).append("行").append("购买时间需小于等于今天！");
-    // countDownLatch.countDown ();
-    // continue;
-    // }
-    // }
-    //
-    // if (isDataBig(entity.getDueDate())) {
-    // error++;
-    // a++;
-    // builder.append("第").append(a).append("行").append("到期时间需大于等于今天！");
-    // countDownLatch.countDown ();
-    // continue;
-    // }
-    //
-    // if ("".equals(checkUser(entity.getUser()))) {
-    // error++;
-    // a++;
-    // builder.append("第").append(a).append("行").append("系统中没有此使用者！，或已被注销");
-    //
-    // countDownLatch.countDown ();
-    // continue;
-    // }
-    //
-    //// String areaId = null;
-    //// List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
-    //// List<String> areasStrings = new ArrayList<>();
-    //// for (SysArea area : areas) {
-    //// areasStrings.add(area.getFullName());
-    //// if (area.getFullName().equals(entity.getArea())) {
-    //// areaId = area.getStringId();
-    //// }
-    //// }
-    ////
-    //// if (!areasStrings.contains(entity.getArea())) {
-    //// error++;
-    //// a++;
-    //// builder.append("第").append(a).append("行").append("当前用户没有此所属区域，或已被注销！");
-    //// continue;
-    //// }
-    //
-    // if (repeat + error == 0) {
-    // assetNames.add(entity.getName());
-    // assetNumbers.add(entity.getNumber());
-    // Asset asset = new Asset();
-    // asset.setResponsibleUserId(checkUser(entity.getUser()));
-    // asset.setGmtCreate(System.currentTimeMillis());
-    //// asset.setAreaId(areaId);
-    // asset.setAreaId("1");
-    // asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
-    // asset.setCreateUser(1);
-    //// asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-    // asset.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
-    // asset.setAssetSource(ReportType.AUTOMATIC.getCode());
-    // asset.setNumber(entity.getNumber());
-    // asset.setName(entity.getName());
-    // asset.setManufacturer(entity.getManufacturer());
-    // asset.setSerial(entity.getSerial());
-    // asset.setContactTel(entity.getTelephone());
-    // asset.setEmail(entity.getEmail());
-    // asset.setBuyDate(entity.getBuyDate());
-    // asset.setServiceLife(entity.getDueDate());
-    // asset.setWarranty(entity.getWarranty());
-    // asset.setDescrible(entity.getMemo());
-    // asset.setContactTel(entity.getTelephone());
-    // asset.setEmail(entity.getEmail());
-    // asset.setCategoryModel(importRequest.getCategory());
-    // assets.add(asset);
-    // }
-    //
-    // a++;
-    // }
-    //
-    // if (repeat + error == 0) {
-    //// List<ManualStartActivityRequest> manualStartActivityRequests = new ArrayList<>();
-    // for (Asset asset : assets) {
-    //
-    // assetDao.insert(asset);
-    //
-    // assetRecord(asset.getStringId());
-    //// importActivity(manualStartActivityRequests, asset.getStringId(), asset.getAreaId());
-    // success++;
-    // }
-    //// activityClient.startProcessWithoutFormBatch(manualStartActivityRequests);
-    // }
-    //
-    // }catch (DuplicateKeyException e){
-    // countDownLatch.countDown ();
-    // throw new BusinessException("请勿重复提交！");
-    // } catch ( Exception e) {
-    // countDownLatch.countDown ();
-    // e.printStackTrace ();
-    // logger.error ("导入失败");
-    // }
-    //
-    // String res = "导入成功" + success + "条";
-    // if (repeat + error > 0) {
-    // res = "导入失败，";
-    // }
-    //
-    // StringBuilder stringBuilder = new StringBuilder(res);
-    //
-    // msg.append (stringBuilder).append (builder);
-    //
-    // countDownLatch.countDown ();
-    //// System.out.println (countDownLatch.getCount ());
-    //
-    // }
-    // });
-    // }
-    // countDownLatch.await ();
-    //
-    // executorService.shutdown();
-    //
-    // // 写入业务日志
-    //
-    // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_OTHERS.getName(), 0, "", null,
-    // BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_REGISTER));
-    // LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_OTHERS.getName() + " {}", "导入其他设备");
-    //
-    //
-    //
-    // return msg.append(sb).toString();
-    //
-    //
-    //
-    // }
 
     private void importActivity(List<ManualStartActivityRequest> manualStartActivityRequests, String stringId,
                                 String areaId) throws Exception {
