@@ -135,6 +135,12 @@
         <if test=" responsibleUserName != null and responsibleUserName != ''">
             and responsible_user_name like CONCAT('%',replace(replace(#{responsibleUserName},'%','\%'),'_','\_'),'%')
         </if>
+        <if test=" ids != null and ids.length >0">
+            and id in
+            <foreach index="index" item="id" collection="ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
 
     </sql>
 
@@ -376,10 +382,7 @@
             asset_id
             ) asset_patch_rel_1 on asset_patch_rel_1.asset_id = a.id
         </if>
-        where a.status = 1 and exists (
-        select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or
-        parent_asset_id=a.id)
-        )
+        where a.status = 1
         group by a.id
         ) asset
         <where>
@@ -415,9 +418,7 @@
         left join asset_network_card b on a.id = b.asset_id and b.status = 1
         left join asset_category_model c on a.category_model = c.id
         left join asset_user d on a.responsible_user_id = d.id
-        where a.status = 1 and exists (
-        select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or parent_asset_id=a.id)
-        )
+        where a.status = 1
         group by a.id
         ) asset
         <where>
