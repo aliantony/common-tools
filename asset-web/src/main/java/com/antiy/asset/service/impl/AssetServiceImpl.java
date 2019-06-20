@@ -171,19 +171,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private EmergencyClient                                                    emergencyClient;
 
+
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
         // 授权数量校验
-        Integer authNum = LicenseUtil.getLicense().getAssetNum();
-        if (!Objects.isNull(authNum)) {
-            Integer num = assetDao.countAsset();
-            if (authNum < num) {
-                throw new BusinessException("已超过授权登记的最大资产数");
-            }
-        } else {
-            throw new BusinessException("未授权，不能进行登记操作");
-        }
-
+        anthNumValidate();
         if (request.getAsset() != null) {
             ParamterExceptionUtils.isBlank(request.getAsset().getLocation().trim(), "物理位置不能为空");
         }
@@ -1815,6 +1807,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String assetId = assetOuterRequest.getAsset().getId();
             Asset assetObj = assetDao.getById(assetId);
             if (AssetStatusEnum.RETIRE.getCode().equals(currentAsset.getAssetStatus())) {
+                // 授权数量校验
+                anthNumValidate();
                 // 记录操作日志和运行日志
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
                     assetObj.getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
@@ -1822,12 +1816,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.NOT_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
+                // 授权数量校验
+                anthNumValidate();
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
                     assetDao.getById(assetId).getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
                     BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
                 LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
+                // 授权数量校验
+                anthNumValidate();
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
                     assetDao.getById(assetId).getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
                     BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
@@ -3923,6 +3921,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             } catch (Exception e) {
                 LogUtils.error(logger, e, "消息消费失败");
             }
+        }
+    }
+
+    /**
+     * 授权数量校验
+     */
+    private void anthNumValidate() {
+        Integer authNum = LicenseUtil.getLicense().getAssetNum();
+        if (!Objects.isNull(authNum)) {
+            Integer num = assetDao.countAsset();
+            if (authNum < num) {
+                throw new BusinessException("已超过授权登记的最大资产数");
+            }
+        } else {
+            throw new BusinessException("未授权，不能进行登记操作");
         }
     }
 }
