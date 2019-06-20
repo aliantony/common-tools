@@ -1573,6 +1573,6 @@
         select count(1)
         from
         <include refid="Table_Name"></include>
-        where status = 1
+        where status = 1 and (asset_status != 1 and asset_status != 2 or asset_status != 9)
     </select>
 </mapper>
