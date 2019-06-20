@@ -276,4 +276,10 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     Integer queryWaitRegistCount();
+
+    /**
+     * 统计正常资产数量
+     * @return
+     */
+    Integer queryNormalCount();
 }

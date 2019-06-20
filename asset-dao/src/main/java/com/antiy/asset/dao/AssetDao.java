@@ -225,9 +225,17 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     Integer selectRepeatNumber(@Param("number") String number, @Param("id") String id);
 
+    Integer selectRepeatName(@Param("name") String name, @Param("id") String id);
+
     /**
      * 统计资产数量
      * @return
      */
     Integer countAsset();
+
+    /**
+     * 统计正常资产数量
+     * @return
+     */
+    Integer queryNormalCount(AssetQuery query);
 }
