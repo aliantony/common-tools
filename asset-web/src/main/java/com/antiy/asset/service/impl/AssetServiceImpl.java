@@ -3737,10 +3737,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (!Objects.isNull(authNum)) {
             Integer num = assetDao.countAsset();
             if (authNum < num) {
-                throw new BusinessException("已超过授权登记的最大资产数");
+                throw new BusinessException("资产数量已超过授权数量，请联系客服人员！");
             }
         } else {
-            throw new BusinessException("未授权，不能进行登记操作");
+            throw new BusinessException("license异常，请联系客服人员！");
         }
     }
 }
