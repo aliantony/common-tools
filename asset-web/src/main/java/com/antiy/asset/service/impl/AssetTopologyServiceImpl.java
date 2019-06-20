@@ -603,6 +603,24 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         query.setQueryDepartmentName(true);
         query.setQueryVulCount(false);
         query.setQueryPatchCount(false);
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setAreaIds(
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        List<Integer> statusList = new ArrayList<>();
+        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
+        statusList.add(AssetStatusEnum.NET_IN.getCode());
+        assetQuery.setAssetStatusList(statusList);
+        List<AssetLink> assetLinks = assetLinkRelationDao.findLinkRelation(assetQuery);
+        List<String> assetIdList = new ArrayList<>();
+        for (AssetLink assetLink : assetLinks) {
+            if (!assetIdList.contains(assetLink.getAssetId())) {
+                assetIdList.add(assetLink.getAssetId());
+            }
+            if (!assetIdList.contains(assetLink.getParentAssetId())) {
+                assetIdList.add(assetLink.getParentAssetId());
+            }
+        }
+        query.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
         List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
         AssetTopologyIpSearchResposne assetTopologyIpSearchResposne = new AssetTopologyIpSearchResposne();
         assetTopologyIpSearchResposne.setStatus("success");
