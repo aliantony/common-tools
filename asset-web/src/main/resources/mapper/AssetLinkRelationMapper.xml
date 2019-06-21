@@ -468,6 +468,9 @@
         <include refid="Table_Name"></include>
         where id = #{id}
     </delete>
+    <delete id="deleteByAssetId">
+      delete from asset_link_relation where asset_id = #{assetId} or parent_asset_id = #{assetId}
+    </delete>
 
     <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
         select

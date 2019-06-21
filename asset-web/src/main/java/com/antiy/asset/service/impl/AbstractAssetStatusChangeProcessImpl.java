@@ -60,6 +60,9 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     private AesEncoder                           aesEncoder;
     @Resource
     AssetStatusTaskDao                           statusTaskDao;
+    @Resource
+    AssetLinkRelationDao                         assetLinkRelationDao;
+
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
         Long gmtCreateTime = System.currentTimeMillis();
@@ -99,6 +102,11 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())
                    || AssetFlowCategoryEnum.HARDWARE_IMPL_RETIRE.getCode()
                        .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+            // 退役删除通联关系
+            if (AssetFlowCategoryEnum.HARDWARE_IMPL_RETIRE.getCode()
+                .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
+                assetLinkRelationDao.deleteByAssetId(assetStatusReqeust.getAssetId());
+            }
             // 记录日志
             if (AssetFlowCategoryEnum.HARDWARE_REGISTER.getCode()
                 .equals(assetStatusReqeust.getAssetFlowCategoryEnum().getCode())) {
@@ -131,7 +139,6 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             // 软件完成流程
             actionResponse = activityClient.completeTask(assetStatusReqeust.getActivityHandleRequest());
         }
-
 
         // 如果流程引擎为空,直接返回错误信息
         if (null == actionResponse
