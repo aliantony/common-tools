@@ -1577,16 +1577,27 @@
     </select>
     <!--获取用户所在区域正常资产的数量-->
     <select id="queryNormalCount" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.AssetQuery">
-      select count(1) from asset
-      where asset_status in
-      <foreach collection="assetStatusList" item="item" index="index" open="(" close=")" separator=",">
-          #{item}
-      </foreach>
-      <if test="areaIds != null and areaIds.length > 0">
-          and area_id in
-          <foreach collection="areaIds" item="item" index="index" open="(" close=")" separator=",">
-              #{item}
-          </foreach>
-      </if>
+        select count(1) from asset
+        where asset_status in
+        <foreach collection="assetStatusList" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        <if test="areaIds != null and areaIds.length > 0">
+            and area_id in
+            <foreach collection="areaIds" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
     </select>
+
+    <select id="queryAlarmCountByAssetIds" resultType="com.antiy.asset.entity.IdCount">
+        select asset_id as id, count(asset_id) as count from
+        alarm_current_records
+        WHERE asset_id IN
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        group by asset_id
+    </select>
+
 </mapper>
