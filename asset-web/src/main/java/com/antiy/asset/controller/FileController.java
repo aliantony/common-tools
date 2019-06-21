@@ -172,10 +172,11 @@ public class FileController {
                 throw new BusinessException("文件过大");
             }
 
-            if (!FileUseEnum.SCHEME_FILE.getFormat()
-                .contains(FileUtil.getExtensionName(StringUtils.toLowerCase(tmpFile.getOriginalFilename())))) {
-                throw new BusinessException("文件格式错误");
-            }
+            // TODO 临时注释，方便测试
+            // if (!FileUseEnum.SCHEME_FILE.getFormat()
+            // .contains(FileUtil.getExtensionName(StringUtils.toLowerCase(tmpFile.getOriginalFilename())))) {
+            // throw new BusinessException("文件格式错误");
+            // }
         }
 
         logger.info("单个文件上传开始");
