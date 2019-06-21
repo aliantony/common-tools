@@ -1573,7 +1573,7 @@
         select count(1)
         from
         <include refid="Table_Name"></include>
-        where status = 1 and (asset_status != 1 and asset_status != 2 or asset_status != 9)
+        where status = 1 and asset_status in (3,4,5,6,7,8)
     </select>
     <!--获取用户所在区域正常资产的数量-->
     <select id="queryNormalCount" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.AssetQuery">
