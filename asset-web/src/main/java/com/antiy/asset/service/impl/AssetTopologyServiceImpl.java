@@ -153,10 +153,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             }
         }
         resultMap.put("control", assetIdList.size() + "");
-        ObjectQuery objectQuery = new ObjectQuery();
-        objectQuery.setPageSize(-1);
-        PageResult<IdCount> idCountPageResult = emergencyClient.queryInvokeEmergencyCount(objectQuery);
-        List<IdCount> idCounts = idCountPageResult.getItems();
+        AssetQuery alarmQuery = new AssetQuery();
+        alarmQuery.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
+        List<IdCount> idCounts = assetDao.queryAlarmCountByAssetIds(alarmQuery);
         List<IdCount> decodeCounts = new ArrayList<>();
         for (IdCount idCount : idCounts) {
             IdCount newIdCount = new IdCount();
@@ -238,10 +237,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         if (count != null && count > 0) {
             List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
             List<AssetResponse> assetResponseList = converter.convert(assetList, AssetResponse.class);
-            ObjectQuery objectQuery = new ObjectQuery();
-            objectQuery.setPageSize(-1);
-            PageResult<IdCount> idCountPageResult = emergencyClient.queryInvokeEmergencyCount(objectQuery);
-            List<IdCount> idCounts = idCountPageResult.getItems();
+            AssetQuery alarmQuery = new AssetQuery();
+            alarmQuery.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
+            List<IdCount> idCounts = assetDao.queryAlarmCountByAssetIds(alarmQuery);
             setListAreaName(assetResponseList);
             setAlarmCount(assetResponseList, idCounts);
             assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
@@ -397,7 +395,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         for (AssetResponse assetResponse : assetResponseList) {
             assetResponse.setAlarmCount("0");
             for (IdCount idCount : idCounts) {
-                if (Objects.equals(aesEncoder.decode(idCount.getId(), LoginUserUtil.getLoginUser().getUsername()),
+                if (Objects.equals(idCount.getId(),
                     assetResponse.getStringId())) {
                     assetResponse.setAlarmCount(idCount.getCount());
                 }
@@ -605,7 +603,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         query.setQueryPatchCount(false);
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         statusList.add(AssetStatusEnum.NET_IN.getCode());
@@ -875,7 +873,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         query.setQueryPatchCount(false);
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         statusList.add(AssetStatusEnum.NET_IN.getCode());
@@ -895,10 +893,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         if (count != null && count > 0) {
             List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
             List<AssetResponse> assetResponseList = converter.convert(assetList, AssetResponse.class);
-            ObjectQuery objectQuery = new ObjectQuery();
-            objectQuery.setPageSize(-1);
-            PageResult<IdCount> idCountPageResult = emergencyClient.queryInvokeEmergencyCount(objectQuery);
-            List<IdCount> idCounts = idCountPageResult.getItems();
+            AssetQuery alarmQuery = new AssetQuery();
+            alarmQuery.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
+            List<IdCount> idCounts = assetDao.queryAlarmCountByAssetIds(alarmQuery);
             setListAreaName(assetResponseList);
             setAlarmCount(assetResponseList, idCounts);
             assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
