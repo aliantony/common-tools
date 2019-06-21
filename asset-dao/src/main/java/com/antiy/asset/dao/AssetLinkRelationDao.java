@@ -170,4 +170,10 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      */
     List<AssetLink> findLinkRelation(AssetQuery query);
 
+    /**
+     * 退役删除通联
+     * @param assetId
+     * @return
+     */
+    void deleteByAssetId(@Param("assetId") String assetId);
 }
