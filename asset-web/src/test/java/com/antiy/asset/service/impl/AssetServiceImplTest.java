@@ -971,7 +971,11 @@ public class AssetServiceImplTest {
         assetOuterRequest.setMemory(assetMemoryRequestList);
         assetOuterRequest.setMainboard(assetMainboradRequestList);
         assetOuterRequest.setManualStartActivityRequest(null);
-        assetServiceImpl.changeAsset(assetOuterRequest);
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("配置信息不能为空", e.getMessage());
+        }
 
         assetOuterRequest = new AssetOuterRequest();
         assetOuterRequest.setAsset(assetRequest);
@@ -985,7 +989,11 @@ public class AssetServiceImplTest {
         assetOuterRequest.setMemory(assetMemoryRequestList);
         assetOuterRequest.setMainboard(assetMainboradRequestList);
         assetOuterRequest.setManualStartActivityRequest(null);
-        assetServiceImpl.changeAsset(assetOuterRequest);
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("配置信息不能为空", e.getMessage());
+        }
 
         assetOuterRequest = new AssetOuterRequest();
         assetOuterRequest.setAsset(assetRequest);
@@ -998,13 +1006,12 @@ public class AssetServiceImplTest {
         assetOuterRequest.setMemory(assetMemoryRequestList);
         assetOuterRequest.setMainboard(assetMainboradRequestList);
         assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
-        try{
+        try {
             assetServiceImpl.changeAsset(assetOuterRequest);
-        }catch (Exception e){
+        } catch (Exception e) {
             Assert.assertEquals("请勿重复提交，当前资产状态是：已入网", e.getMessage());
 
         }
-
 
         // 存储设备变更
         when(assetNetworkCardDao.findListAssetNetworkCard(any())).thenThrow(new Exception("资产变更失败"));
@@ -1022,8 +1029,6 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
             Assert.assertEquals("资产变更失败", e.getMessage());
         }
-
-
 
     }
 
