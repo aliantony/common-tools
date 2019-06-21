@@ -1590,13 +1590,15 @@
         </if>
     </select>
 
-    <select id="queryAlarmCountByAssetIds" resultType="com.antiy.asset.entity.IdCount">
+    <select id="queryAlarmCountByAssetIds" resultType="com.antiy.asset.entity.IdCount" parameterType="com.antiy.asset.vo.query.AssetQuery">
         select asset_id as id, count(asset_id) as count from
         alarm_current_records
-        WHERE asset_id IN
-        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+        <if test="ids!=null and ids.length>0">
+            WHERE asset_id IN
+            <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         group by asset_id
     </select>
 
