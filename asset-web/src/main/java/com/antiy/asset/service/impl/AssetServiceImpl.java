@@ -3757,7 +3757,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Integer authNum = LicenseUtil.getLicense().getAssetNum();
         if (!Objects.isNull(authNum)) {
             Integer num = assetDao.countAsset();
-            if (authNum < num) {
+            if (authNum <= num) {
                 throw new BusinessException("资产数量已超过授权数量，请联系客服人员！");
             }
         } else {
