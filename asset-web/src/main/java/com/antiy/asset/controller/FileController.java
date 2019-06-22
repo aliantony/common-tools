@@ -162,7 +162,6 @@ public class FileController {
             if (fileSize > FileUseEnum.INSTALL_INTRODUCE_MANUAL.getSize()) {
                 throw new BusinessException("文件过大");
             }
-
             if (!FileUseEnum.INSTALL_INTRODUCE_MANUAL.getFormat()
                 .contains(FileUtil.getExtensionName(StringUtils.toLowerCase(tmpFile.getOriginalFilename())))) {
                 throw new BusinessException("文件格式错误");
@@ -182,7 +181,6 @@ public class FileController {
 
         // 调用上传接口
         FileResponse<FileRespVO> fileResponse = fileUtils.uploadFileFromLocal(tmpFile, modelName);
-
 
         if (RespBasicCode.SUCCESS.getResultCode().equals(fileResponse.getCode())) {
             FileRespVO fileRespVO = fileResponse.getData();

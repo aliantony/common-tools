@@ -86,7 +86,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      *
      * @return
      */
-    List<Map<String, Long>> countStatus(@Param("areaIds") List<Integer> areaIds);
+    List<Map<String, Object>> countStatus(@Param("areaIds") List<Integer> areaIds);
 
     /**
      * 通过ID列表查询资产列表
@@ -238,4 +238,6 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer queryNormalCount(AssetQuery query);
+
+    List<IdCount> queryAlarmCountByAssetIds(AssetQuery query);
 }

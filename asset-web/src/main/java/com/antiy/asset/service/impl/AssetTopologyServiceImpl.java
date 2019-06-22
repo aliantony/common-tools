@@ -153,15 +153,14 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             }
         }
         resultMap.put("control", assetIdList.size() + "");
-        ObjectQuery objectQuery = new ObjectQuery();
-        objectQuery.setPageSize(-1);
-        PageResult<IdCount> idCountPageResult = emergencyClient.queryInvokeEmergencyCount(objectQuery);
-        List<IdCount> idCounts = idCountPageResult.getItems();
+        AssetQuery alarmQuery = new AssetQuery();
+        alarmQuery.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
+        List<IdCount> idCounts = assetDao.queryAlarmCountByAssetIds(alarmQuery);
         List<IdCount> decodeCounts = new ArrayList<>();
         for (IdCount idCount : idCounts) {
             IdCount newIdCount = new IdCount();
             newIdCount.setCount(idCount.getCount());
-            newIdCount.setId(aesEncoder.decode(idCount.getId(), LoginUserUtil.getLoginUser().getUsername()));
+            newIdCount.setId(idCount.getId());
             decodeCounts.add(newIdCount);
         }
         // 查询已管控的产生告警的资产
@@ -233,15 +232,20 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 assetIdList.add(assetLink.getParentAssetId());
             }
         }
+        if (CollectionUtils.isEmpty(assetIdList)) {
+            TopologyListResponse topologyListResponse = new TopologyListResponse();
+            topologyListResponse.setStatus("success");
+            topologyListResponse.setData(null);
+            return topologyListResponse;
+        }
         query.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
         Integer count = assetTopologyDao.findTopologyListAssetCount(query);
         if (count != null && count > 0) {
             List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
             List<AssetResponse> assetResponseList = converter.convert(assetList, AssetResponse.class);
-            ObjectQuery objectQuery = new ObjectQuery();
-            objectQuery.setPageSize(-1);
-            PageResult<IdCount> idCountPageResult = emergencyClient.queryInvokeEmergencyCount(objectQuery);
-            List<IdCount> idCounts = idCountPageResult.getItems();
+            AssetQuery alarmQuery = new AssetQuery();
+            alarmQuery.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
+            List<IdCount> idCounts = assetDao.queryAlarmCountByAssetIds(alarmQuery);
             setListAreaName(assetResponseList);
             setAlarmCount(assetResponseList, idCounts);
             assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
@@ -397,8 +401,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         for (AssetResponse assetResponse : assetResponseList) {
             assetResponse.setAlarmCount("0");
             for (IdCount idCount : idCounts) {
-                if (Objects.equals(aesEncoder.decode(idCount.getId(), LoginUserUtil.getLoginUser().getUsername()),
-                    assetResponse.getStringId())) {
+                if (Objects.equals(idCount.getId(), assetResponse.getStringId())) {
                     assetResponse.setAlarmCount(idCount.getCount());
                 }
             }
@@ -605,7 +608,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         query.setQueryPatchCount(false);
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         statusList.add(AssetStatusEnum.NET_IN.getCode());
@@ -620,10 +623,14 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 assetIdList.add(assetLink.getParentAssetId());
             }
         }
-        query.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
-        List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
         AssetTopologyIpSearchResposne assetTopologyIpSearchResposne = new AssetTopologyIpSearchResposne();
         assetTopologyIpSearchResposne.setStatus("success");
+        query.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
+        if (CollectionUtils.isEmpty(assetIdList)) {
+            assetTopologyIpSearchResposne.setData(null);
+            return assetTopologyIpSearchResposne;
+        }
+        List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
         List<AssetTopologyIpSearchResposne.IpSearch> ipSearchList = transferAssetToIpSearch(assetList);
         assetTopologyIpSearchResposne.setData(ipSearchList);
         return assetTopologyIpSearchResposne;
@@ -875,7 +882,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         query.setQueryPatchCount(false);
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         statusList.add(AssetStatusEnum.NET_IN.getCode());
@@ -890,15 +897,21 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 assetIdList.add(assetLink.getParentAssetId());
             }
         }
+        if (CollectionUtils.isEmpty(assetIdList)) {
+            AssetTopologyAlarmResponse assetTopologyAlarmResponse = new AssetTopologyAlarmResponse();
+            assetTopologyAlarmResponse.setStatus("success");
+            assetTopologyAlarmResponse.setVersion("");
+            assetTopologyAlarmResponse.setData(null);
+            return assetTopologyAlarmResponse;
+        }
         query.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
         Integer count = assetTopologyDao.findTopologyListAssetCount(query);
         if (count != null && count > 0) {
             List<Asset> assetList = assetTopologyDao.findTopologyListAsset(query);
             List<AssetResponse> assetResponseList = converter.convert(assetList, AssetResponse.class);
-            ObjectQuery objectQuery = new ObjectQuery();
-            objectQuery.setPageSize(-1);
-            PageResult<IdCount> idCountPageResult = emergencyClient.queryInvokeEmergencyCount(objectQuery);
-            List<IdCount> idCounts = idCountPageResult.getItems();
+            AssetQuery alarmQuery = new AssetQuery();
+            alarmQuery.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
+            List<IdCount> idCounts = assetDao.queryAlarmCountByAssetIds(alarmQuery);
             setListAreaName(assetResponseList);
             setAlarmCount(assetResponseList, idCounts);
             assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));

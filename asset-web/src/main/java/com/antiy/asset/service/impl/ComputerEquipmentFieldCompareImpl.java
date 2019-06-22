@@ -395,11 +395,11 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                 changeValList.addAll(getMaps(assetNetworkCompareResult, InfoLabelEnum.NETWORKCARD.getMsg()));
             }
             // 关联软件
-            if (CollectionUtils.isNotEmpty(relateSoftewareCompareResult)) {
-                for (List<Map<String, Object>> listMap : relateSoftewareCompareResult) {
-                    changeValList.addAll(listMap);
-                }
-            }
+//            if (CollectionUtils.isNotEmpty(relateSoftewareCompareResult)) {
+//                for (List<Map<String, Object>> listMap : relateSoftewareCompareResult) {
+//                    changeValList.addAll(listMap);
+//                }
+//            }
             return changeValList;
         }
         return null;
@@ -509,26 +509,26 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
 
     }
 
-    /**
-     * 处理新增的关联软件部件
-     * @param assetRelateSoftwareCompareResult
-     * @param newRelateSoftware
-     * @param oldRelateSoftware
-     * @param newRelateSoftwareMap
-     * @throws Exception
-     */
-    private void processRelateSofwareComponent(List<List<Map<String, Object>>> assetRelateSoftwareCompareResult,
-                                               RelateSoftware newRelateSoftware, RelateSoftware oldRelateSoftware,
-                                               Map<String, AssetSoftwareRelationRequest> newRelateSoftwareMap) throws Exception {
-        if (newRelateSoftwareMap.size() > 0) {
-            Set<Map.Entry<String, AssetSoftwareRelationRequest>> mapEntrySet = newRelateSoftwareMap.entrySet();
-            for (Map.Entry<String, AssetSoftwareRelationRequest> mapEntry : mapEntrySet) {
-                buildSoftwareRelationCompareData(newRelateSoftware, mapEntry.getValue());
-                assetRelateSoftwareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
-                    InfoLabelEnum.RELATESOFTWARE.getMsg()));
-            }
-        }
-    }
+    // /**
+    // * 处理新增的关联软件部件
+    // * @param assetRelateSoftwareCompareResult
+    // * @param newRelateSoftware
+    // * @param oldRelateSoftware
+    // * @param newRelateSoftwareMap
+    // * @throws Exception
+    // */
+    //  private void processRelateSofwareComponent(List<List<Map<String, Object>>> assetRelateSoftwareCompareResult,
+    //  RelateSoftware newRelateSoftware, RelateSoftware oldRelateSoftware,
+    // Map<String, AssetSoftwareRelationRequest> newRelateSoftwareMap) throws Exception {
+    // if (newRelateSoftwareMap.size() > 0) {
+    // Set<Map.Entry<String, AssetSoftwareRelationRequest>> mapEntrySet = newRelateSoftwareMap.entrySet();
+    // for (Map.Entry<String, AssetSoftwareRelationRequest> mapEntry : mapEntrySet) {
+    // buildSoftwareRelationCompareData(newRelateSoftware, mapEntry.getValue());
+    // assetRelateSoftwareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
+    // InfoLabelEnum.RELATESOFTWARE.getMsg()));
+    // }
+    // }
+    // }
 
     /**
      * 构建内存比较数据
@@ -610,19 +610,19 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
         mainboard.setBiosDate(request.getBiosDate());
     }
 
-    /**
-     * 构关联软件比较数据
-     * @param relateSoftware
-     * @param request
-     */
-    private void buildSoftwareRelationCompareData(RelateSoftware relateSoftware,
-                                                  AssetSoftwareRelationRequest request) throws Exception {
-        relateSoftware.setSoftName(softwareDao.getById(request.getSoftwareId()).getName());
-        relateSoftware.setLicenseSecretKey(request.getLicenseSecretKey());
-        relateSoftware.setMulPort(request.getPort());
-        relateSoftware.setDescription(
-            org.apache.commons.lang.StringUtils.isNotEmpty(request.getMemo()) ? request.getMemo().trim() : null);
-    }
+    // /**
+    // * 构关联软件比较数据
+    // * @param relateSoftware
+    // * @param request
+    // */
+    // private void buildSoftwareRelationCompareData(RelateSoftware relateSoftware,
+    // AssetSoftwareRelationRequest request) throws Exception {
+    // relateSoftware.setSoftName(softwareDao.getById(request.getSoftwareId()).getName());
+    // relateSoftware.setLicenseSecretKey(request.getLicenseSecretKey());
+    // relateSoftware.setMulPort(request.getPort());
+    // relateSoftware.setDescription(
+    // org.apache.commons.lang.StringUtils.isNotEmpty(request.getMemo()) ? request.getMemo().trim() : null);
+    // }
 
     private List<Map<String, Object>> getMaps(List<List<Map<String, Object>>> assetMemoryCompareResult, String msg) {
         Map<String, Object> map = new HashMap<>();
@@ -663,10 +663,11 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
         return list.stream().collect(Collectors.toMap(AssetMainboradRequest::getId, mainboard -> mainboard));
     }
 
-    private Map<String, AssetSoftwareRelationRequest> getRelationSoftwareByIdMap(List<AssetSoftwareRelationRequest> list) {
-        return list.stream()
-            .collect(Collectors.toMap(AssetSoftwareRelationRequest::getId, softwareRelation -> softwareRelation));
-    }
+    // private Map<String, AssetSoftwareRelationRequest> getRelationSoftwareByIdMap(List<AssetSoftwareRelationRequest>
+    // list) {
+    // return list.stream()
+    // .collect(Collectors.toMap(AssetSoftwareRelationRequest::getId, softwareRelation -> softwareRelation));
+    // }
 
     @Override
     protected List<? extends BaseRequest> compareComponentInfo() {
