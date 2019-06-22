@@ -1440,7 +1440,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ParamterExceptionUtils.isTrue(
             !checkNumber(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAsset().getNumber()), "资产编号重复");
         ParamterExceptionUtils.isTrue(
-                !checkNumber(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAsset().getName()), "资产名称重复");
+                !checkName(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAsset().getName()), "资产名称重复");
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
         AssetQuery assetQuery = new AssetQuery();
         Long currentTimeMillis = System.currentTimeMillis();
@@ -1918,7 +1918,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetDao.selectRepeatNumber(number, id) > 0;
     }
     private boolean checkName(String id, String name) {
-        return assetDao.selectRepeatNumber(name, id) > 0;
+        return assetDao.selectRepeatName(name, id) > 0;
     }
 
     private void updateAssetStatus(Integer assetStatus, Long currentTimeMillis, String assetId) throws Exception {
