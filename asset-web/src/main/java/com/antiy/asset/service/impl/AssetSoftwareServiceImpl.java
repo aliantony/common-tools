@@ -60,7 +60,7 @@ import com.antiy.common.utils.*;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> implements IAssetSoftwareService {
-    private Logger                                                           logger = LogUtils
+    private static Logger                                                    logger = LogUtils
         .get(AssetSoftwareServiceImpl.class);
 
     @Resource
@@ -208,11 +208,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     LogUtils.info(logger, AssetEventEnum.SOFT_INSERT.getName() + " {}", assetSoftware);
                     return DataTypeUtils.stringToInteger(sid);
                 } catch (RequestParamValidateException e) {
+
                     transactionStatus.setRollbackOnly();
                     ParamterExceptionUtils.isTrue(false, "资产名称重复");
                     logger.error("录入失败", e);
 
                 } catch (Exception e) {
+
                     transactionStatus.setRollbackOnly();
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("品类型号不存在，或已经注销", e.getMessage()),
                         "品类型号不存在，或已经注销");
@@ -258,41 +260,44 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // }
         // }
         if (num > 0) {
-            ActionResponse result = assetClient.issueAssetData(new ArrayList(){{add(request);}});
+            ActionResponse result = assetClient.issueAssetData(new ArrayList() {
+                {
+                    add(request);
+                }
+            });
             if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
-                logger.info("下发软件数据完成：{}",request);
+                logger.info("下发软件数据完成：{}", request);
             }
         }
         return ActionResponse.success(num);
 
     }
 
+    // /**
+    // * 通过ID判断操作系统是否存在且是叶子节点
+    // * @return
+    // */
+    // private Boolean checkOperatingSystemById(String id) {
+    // List<BaselineCategoryModelNodeResponse> baselineCategoryModelNodeResponse = operatingSystemClient
+    // .getInvokeOperatingSystemTree();
+    // Set<String> result = new HashSet<>();
+    // if (CollectionUtils.isNotEmpty(baselineCategoryModelNodeResponse)) {
+    // operatingSystemRecursion(result, baselineCategoryModelNodeResponse.get(0));
+    // }
+    // return result.contains(id);
+    // }
 
-    /**
-     * 通过ID判断操作系统是否存在且是叶子节点
-     * @return
-     */
-    private Boolean checkOperatingSystemById(String id) {
-        List<BaselineCategoryModelNodeResponse> baselineCategoryModelNodeResponse = operatingSystemClient
-            .getInvokeOperatingSystemTree();
-        Set<String> result = new HashSet<>();
-        if (CollectionUtils.isNotEmpty(baselineCategoryModelNodeResponse)) {
-            operatingSystemRecursion(result, baselineCategoryModelNodeResponse.get(0));
-        }
-        return result.contains(id);
-    }
-
-    private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
-        if (response != null) {
-            if (CollectionUtils.isEmpty(response.getChildrenNode())) {
-                result.add(response.getStringId());
-            } else {
-                for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse : response.getChildrenNode()) {
-                    operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
-                }
-            }
-        }
-    }
+    // private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
+    // if (response != null) {
+    // if (CollectionUtils.isEmpty(response.getChildrenNode())) {
+    // result.add(response.getStringId());
+    // } else {
+    // for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse : response.getChildrenNode()) {
+    // operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
+    // }
+    // }
+    // }
+    // }
 
     @Override
     @Transactional
@@ -398,6 +403,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
                     return assetSoftwareCount;
                 } catch (Exception e) {
+
                     logger.error("修改软件信息失败", e);
                 }
                 return 0;
@@ -437,20 +443,20 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return assetOperationRecord;
     }
 
-    /**
-     * 更新lincense
-     * @param request
-     */
-    private void updateLicense(AssetSoftwareRequest request) throws Exception {
-        AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter
-            .convert(request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
-        assetSoftwareLicense.setSoftwareId(request.getId());
-        // 写入业务日志
-        LogHandle.log(assetSoftwareLicense.toString(), AssetEventEnum.SOFT_INSERT.getName(),
-            AssetEventEnum.SOFT_LICENSE_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.info(logger, AssetEventEnum.SOFT_LICENSE_UPDATE.getName() + " {}", assetSoftwareLicense.toString());
-        assetSoftwareLicenseDao.update(assetSoftwareLicense);
-    }
+    // /**
+    // * 更新lincense
+    // * @param request
+    // */
+    // private void updateLicense(AssetSoftwareRequest request) throws Exception {
+    // AssetSoftwareLicense assetSoftwareLicense = assetSoftwareLicenseBaseConverter
+    // .convert(request.getSoftwareLicenseRequest(), AssetSoftwareLicense.class);
+    // assetSoftwareLicense.setSoftwareId(request.getId());
+    // // 写入业务日志
+    // LogHandle.log(assetSoftwareLicense.toString(), AssetEventEnum.SOFT_INSERT.getName(),
+    // AssetEventEnum.SOFT_LICENSE_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
+    // LogUtils.info(logger, AssetEventEnum.SOFT_LICENSE_UPDATE.getName() + " {}", assetSoftwareLicense.toString());
+    // assetSoftwareLicenseDao.update(assetSoftwareLicense);
+    // }
 
     private Map<Integer, Long> handleSoftCount(List<Map<String, Object>> softObjectList) {
         Map<Integer, Long> map = new HashMap<>();
@@ -642,12 +648,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
     }
 
-    private void processList(List<EnumCountResponse> resultList, Map<SoftwareStatusEnum, EnumCountResponse> resultMap,
-                             Map map, SoftwareStatusEnum softwareStatusEnum) {
-        EnumCountResponse e = resultMap.get(softwareStatusEnum);
-        Long waitAnalyzeNum = e.getNumber();
-        e.setNumber(waitAnalyzeNum == null ? (Long) map.get("value") : (waitAnalyzeNum + (Long) map.get("value")));
-    }
+    // private void processList(List<EnumCountResponse> resultList, Map<SoftwareStatusEnum, EnumCountResponse>
+    // resultMap,
+    // Map map, SoftwareStatusEnum softwareStatusEnum) {
+    // EnumCountResponse e = resultMap.get(softwareStatusEnum);
+    // Long waitAnalyzeNum = e.getNumber();
+    // e.setNumber(waitAnalyzeNum == null ? (Long) map.get("value") : (waitAnalyzeNum + (Long) map.get("value")));
+    // }
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -878,7 +885,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     try {
                         softwareId = assetSoftwareDao.insert(assetSoftware);
                     } catch (Exception e) {
-                        e.printStackTrace();
+
                     }
                 }
                 // 保存资产软件关系
@@ -1148,14 +1155,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetSoftwareEntities.add(assetSoftwareEntity);
     }
 
-    private int getNextPage(PageResult pageResult) {
-        int currentPage = pageResult.getCurrentPage() + 1;
-        int pages = pageResult.getTotalPages();
-        if (pages > 0) {
-            return currentPage > pages ? pages : currentPage < 1 ? 1 : currentPage;
-        }
-        return 0;
-    }
+    // private int getNextPage(PageResult pageResult) {
+    // int currentPage = pageResult.getCurrentPage() + 1;
+    // int pages = pageResult.getTotalPages();
+    // if (pages > 0) {
+    // return currentPage > pages ? pages : currentPage < 1 ? 1 : currentPage;
+    // }
+    // return 0;
+    // }
 
     /**
      * 查询软件端口信息
