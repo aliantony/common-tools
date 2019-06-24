@@ -74,6 +74,14 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer findCountIp(AssetQuery query) throws Exception;
 
     /**
+     * mac查重复
+     *
+     * @param mac
+     * @return
+     */
+    Integer findCountMac(@Param("mac") String mac) throws Exception;
+
+    /**
      * 统计厂商数量
      *
      * @return
