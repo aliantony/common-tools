@@ -461,6 +461,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         String routeId = "";
         String switchId = "";
         Set<String> querySet = new HashSet();
+        //找到对应品类id
         for (AssetCategoryModel assetCategoryModel : categoryModelList) {
             if (Objects.equals(assetCategoryModel.getName(), AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
                 querySet.add(assetCategoryModel.getStringId());
@@ -486,6 +487,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 aesEncoder.encode(assetLink.getParentAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         }
 
+        // 设置品类id与返回格式的映射
         for (AssetLink assetLink : assetLinks) {
 
             String categoryId = idCategory.get(assetLink.getAssetId());

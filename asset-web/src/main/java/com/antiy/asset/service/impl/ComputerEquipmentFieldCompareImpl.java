@@ -325,46 +325,33 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
 
             // 提取关联软件变更信息
             List<List<Map<String, Object>>> relateSoftewareCompareResult = new ArrayList<>();
-            /*List<AssetSoftwareRelationRequest> oldSoftwareRelationList = oldAssetOuterRequest
-                .getAssetSoftwareRelationList();
-            List<AssetSoftwareRelationRequest> newSoftwareRelationList = newAssetOuterRequest
-                .getAssetSoftwareRelationList();*/
+            /* List<AssetSoftwareRelationRequest> oldSoftwareRelationList = oldAssetOuterRequest
+             * .getAssetSoftwareRelationList(); List<AssetSoftwareRelationRequest> newSoftwareRelationList =
+             * newAssetOuterRequest .getAssetSoftwareRelationList(); */
             RelateSoftware oldRelateSoftware = new RelateSoftware();
             RelateSoftware newRelateSoftware = new RelateSoftware();
-            /*if (newSoftwareRelationList == null && oldSoftwareRelationList != null) {
-                for (AssetSoftwareRelationRequest assetSoftwareRelationRequest : oldSoftwareRelationList) {
-                    buildSoftwareRelationCompareData(oldRelateSoftware, assetSoftwareRelationRequest);
-                    relateSoftewareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
-                        InfoLabelEnum.RELATESOFTWARE.getMsg() + "-" + oldRelateSoftware.getSoftName()));
-                }
-            } else if (newSoftwareRelationList != null && oldSoftwareRelationList == null) {
-                for (AssetSoftwareRelationRequest softwareRelationRequest : newSoftwareRelationList) {
-                    buildSoftwareRelationCompareData(newRelateSoftware, softwareRelationRequest);
-                    relateSoftewareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
-                        InfoLabelEnum.RELATESOFTWARE.getMsg() + "-" + oldRelateSoftware.getSoftName()));
-                }
-            } else if (CollectionUtils.isNotEmpty(newSoftwareRelationList)) {
-                Map<String, AssetSoftwareRelationRequest> newSoftwareRelationMap = null;
-                for (AssetSoftwareRelationRequest softwareRelationRequest : oldSoftwareRelationList) {
-                    buildSoftwareRelationCompareData(oldRelateSoftware, softwareRelationRequest);
-                    newSoftwareRelationMap = this.getRelationSoftwareByIdMap(newSoftwareRelationList);
-                    if (newSoftwareRelationMap.containsKey(softwareRelationRequest.getId())) {
-                        AssetSoftwareRelationRequest comparedSoftwareRelationRequest = newSoftwareRelationMap
-                            .get(softwareRelationRequest.getId());
-                        buildSoftwareRelationCompareData(newRelateSoftware, comparedSoftwareRelationRequest);
-                        List<Map<String, Object>> mapList = CompareUtils.compareClass(oldRelateSoftware,
-                            newRelateSoftware,
-                            InfoLabelEnum.RELATESOFTWARE.getMsg() + "-" + oldRelateSoftware.getSoftName());
-                        if (mapList != null) {
-                            relateSoftewareCompareResult.add(mapList);
-                        }
-                        newSoftwareRelationMap.remove(softwareRelationRequest.getId());
-                    }
-                }
-                // 处理新增的部件
-                processRelateSofwareComponent(relateSoftewareCompareResult, newRelateSoftware, oldRelateSoftware,
-                    newSoftwareRelationMap);
-            }*/
+            /* if (newSoftwareRelationList == null && oldSoftwareRelationList != null) { for
+             * (AssetSoftwareRelationRequest assetSoftwareRelationRequest : oldSoftwareRelationList) {
+             * buildSoftwareRelationCompareData(oldRelateSoftware, assetSoftwareRelationRequest);
+             * relateSoftewareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
+             * InfoLabelEnum.RELATESOFTWARE.getMsg() + "-" + oldRelateSoftware.getSoftName())); } } else if
+             * (newSoftwareRelationList != null && oldSoftwareRelationList == null) { for (AssetSoftwareRelationRequest
+             * softwareRelationRequest : newSoftwareRelationList) { buildSoftwareRelationCompareData(newRelateSoftware,
+             * softwareRelationRequest); relateSoftewareCompareResult.add(CompareUtils.compareClass(oldRelateSoftware,
+             * newRelateSoftware, InfoLabelEnum.RELATESOFTWARE.getMsg() + "-" + oldRelateSoftware.getSoftName())); } }
+             * else if (CollectionUtils.isNotEmpty(newSoftwareRelationList)) { Map<String, AssetSoftwareRelationRequest>
+             * newSoftwareRelationMap = null; for (AssetSoftwareRelationRequest softwareRelationRequest :
+             * oldSoftwareRelationList) { buildSoftwareRelationCompareData(oldRelateSoftware, softwareRelationRequest);
+             * newSoftwareRelationMap = this.getRelationSoftwareByIdMap(newSoftwareRelationList); if
+             * (newSoftwareRelationMap.containsKey(softwareRelationRequest.getId())) { AssetSoftwareRelationRequest
+             * comparedSoftwareRelationRequest = newSoftwareRelationMap .get(softwareRelationRequest.getId());
+             * buildSoftwareRelationCompareData(newRelateSoftware, comparedSoftwareRelationRequest); List<Map<String,
+             * Object>> mapList = CompareUtils.compareClass(oldRelateSoftware, newRelateSoftware,
+             * InfoLabelEnum.RELATESOFTWARE.getMsg() + "-" + oldRelateSoftware.getSoftName()); if (mapList != null) {
+             * relateSoftewareCompareResult.add(mapList); }
+             * newSoftwareRelationMap.remove(softwareRelationRequest.getId()); } } // 处理新增的部件
+             * processRelateSofwareComponent(relateSoftewareCompareResult, newRelateSoftware, oldRelateSoftware,
+             * newSoftwareRelationMap); } */
 
             // 合并集合
             if (CollectionUtils.isNotEmpty(assetCommonInoCompareResult)) {
@@ -395,11 +382,11 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                 changeValList.addAll(getMaps(assetNetworkCompareResult, InfoLabelEnum.NETWORKCARD.getMsg()));
             }
             // 关联软件
-//            if (CollectionUtils.isNotEmpty(relateSoftewareCompareResult)) {
-//                for (List<Map<String, Object>> listMap : relateSoftewareCompareResult) {
-//                    changeValList.addAll(listMap);
-//                }
-//            }
+            // if (CollectionUtils.isNotEmpty(relateSoftewareCompareResult)) {
+            // for (List<Map<String, Object>> listMap : relateSoftewareCompareResult) {
+            // changeValList.addAll(listMap);
+            // }
+            // }
             return changeValList;
         }
         return null;
@@ -517,8 +504,8 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
     // * @param newRelateSoftwareMap
     // * @throws Exception
     // */
-    //  private void processRelateSofwareComponent(List<List<Map<String, Object>>> assetRelateSoftwareCompareResult,
-    //  RelateSoftware newRelateSoftware, RelateSoftware oldRelateSoftware,
+    // private void processRelateSofwareComponent(List<List<Map<String, Object>>> assetRelateSoftwareCompareResult,
+    // RelateSoftware newRelateSoftware, RelateSoftware oldRelateSoftware,
     // Map<String, AssetSoftwareRelationRequest> newRelateSoftwareMap) throws Exception {
     // if (newRelateSoftwareMap.size() > 0) {
     // Set<Map.Entry<String, AssetSoftwareRelationRequest>> mapEntrySet = newRelateSoftwareMap.entrySet();
@@ -674,58 +661,59 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
         return null;
     }
 
-    /**
-     * 关联软件信息
-     */
-    class RelateSoftware {
-        private String softwareId;
-        @ApiModelProperty("名称")
-        private String softName;
-        @ApiModelProperty("许可秘钥")
-        private String licenseSecretKey;
-        @ApiModelProperty("端口")
-        private String mulPort;
-        @ApiModelProperty("描述")
-        private String description;
+}
 
-        public String getSoftwareId() {
-            return softwareId;
-        }
+/**
+ * 关联软件信息
+ */
+class RelateSoftware {
+    private String softwareId;
+    @ApiModelProperty("名称")
+    private String softName;
+    @ApiModelProperty("许可秘钥")
+    private String licenseSecretKey;
+    @ApiModelProperty("端口")
+    private String mulPort;
+    @ApiModelProperty("描述")
+    private String description;
 
-        public void setSoftwareId(String softwareId) {
-            this.softwareId = softwareId;
-        }
+    public String getSoftwareId() {
+        return softwareId;
+    }
 
-        public String getSoftName() {
-            return softName;
-        }
+    public void setSoftwareId(String softwareId) {
+        this.softwareId = softwareId;
+    }
 
-        public void setSoftName(String softName) {
-            this.softName = softName;
-        }
+    public String getSoftName() {
+        return softName;
+    }
 
-        public String getLicenseSecretKey() {
-            return licenseSecretKey;
-        }
+    public void setSoftName(String softName) {
+        this.softName = softName;
+    }
 
-        public void setLicenseSecretKey(String licenseSecretKey) {
-            this.licenseSecretKey = licenseSecretKey;
-        }
+    public String getLicenseSecretKey() {
+        return licenseSecretKey;
+    }
 
-        public String getMulPort() {
-            return mulPort;
-        }
+    public void setLicenseSecretKey(String licenseSecretKey) {
+        this.licenseSecretKey = licenseSecretKey;
+    }
 
-        public void setMulPort(String mulPort) {
-            this.mulPort = mulPort;
-        }
+    public String getMulPort() {
+        return mulPort;
+    }
 
-        public String getDescription() {
-            return description;
-        }
+    public void setMulPort(String mulPort) {
+        this.mulPort = mulPort;
+    }
 
-        public void setDescription(String description) {
-            this.description = description;
-        }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

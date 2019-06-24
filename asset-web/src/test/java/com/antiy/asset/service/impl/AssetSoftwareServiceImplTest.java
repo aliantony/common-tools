@@ -61,6 +61,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 
 @RunWith(PowerMockRunner.class)
@@ -147,12 +148,12 @@ public class AssetSoftwareServiceImplTest {
         Mockito.when(loginUser.getAreaIdsOfCurrentUser()).thenReturn(lists);
         PowerMockito.mockStatic(LogHandle.class);
         PowerMockito.mockStatic(ExcelUtils.class);
-        PowerMockito.doNothing().when(LogHandle.class, "log", Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt());
+        PowerMockito.doNothing().when(LogHandle.class, "log", any(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt());
         PowerMockito.mockStatic(LoginUserUtil.class);
         PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
         PowerMockito.spy(LogUtils.class);
-        PowerMockito.doNothing().when(LogUtils.class, "recordOperLog", Mockito.any());
-        PowerMockito.doNothing().when(LogUtils.class, "info", Mockito.any(), Mockito.anyString(), Mockito.any());
+        PowerMockito.doNothing().when(LogUtils.class, "recordOperLog", any());
+        PowerMockito.doNothing().when(LogUtils.class, "info", any(), Mockito.anyString(), any());
         PowerMockito.mockStatic(BeanConvert.class);
         PowerMockito.doReturn(logger).when(LogUtils.class,"get",AssetSoftwareServiceImpl.class);
 //        PowerMockito.when(LogUtils.get(AssetSoftwareServiceImpl.class)).thenReturn(logger);
@@ -183,8 +184,8 @@ public class AssetSoftwareServiceImplTest {
         Mockito.when(requestConverter.convert(request, AssetSoftware.class)).thenReturn(assetSoftware);
         Mockito.when(operatingSystemClient.getInvokeOperatingSystemTree()).thenReturn(baselineCategoryModelNodeResponse);
         Mockito.when(assetCategoryModelDao.getById(Mockito.anyInt())).thenReturn(assetCategoryModel);
-        Mockito.when(assetSoftwareDao.insert(Mockito.any())).thenReturn(expect);
-        Mockito.when(assetOperationRecordDao.insert(Mockito.any())).thenReturn(expect);
+        Mockito.when(assetSoftwareDao.insert(any())).thenReturn(expect);
+        Mockito.when(assetOperationRecordDao.insert(any())).thenReturn(expect);
         Assert.assertEquals(expect, assetSoftwareService.saveAssetSoftware(request).getBody());
     }
 
@@ -214,8 +215,8 @@ public class AssetSoftwareServiceImplTest {
         Mockito.when(requestConverter.convert(request, AssetSoftware.class)).thenReturn(assetSoftware);
         Mockito.when(operatingSystemClient.getInvokeOperatingSystemTree()).thenReturn(baselineCategoryModelNodeResponse);
         Mockito.when(assetCategoryModelDao.getById(Mockito.anyInt())).thenReturn(assetCategoryModel);
-        Mockito.when(assetSoftwareDao.insert(Mockito.any())).thenReturn(expect);
-        Mockito.when(assetOperationRecordDao.insert(Mockito.any())).thenReturn(expect);
+        Mockito.when(assetSoftwareDao.insert(any())).thenReturn(expect);
+        Mockito.when(assetOperationRecordDao.insert(any())).thenReturn(expect);
         Assert.assertEquals(expect, assetSoftwareService.saveAssetSoftware(request).getBody());
     }
 
@@ -231,7 +232,7 @@ public class AssetSoftwareServiceImplTest {
         AssetSoftware assetSoftware = new AssetSoftware();
         Integer expect = 2;
         assetSoftwareList.add(assetSoftware);
-        Mockito.when(assetSoftwareDao.insert(Mockito.any())).thenReturn(1);
+        Mockito.when(assetSoftwareDao.insert(any())).thenReturn(1);
         Assert.assertEquals(expect, assetSoftwareService.batchSave(assetSoftwareList));
     }
 
@@ -246,11 +247,11 @@ public class AssetSoftwareServiceImplTest {
         ActionResponse response = ActionResponse.success();
         Integer expect = 1;
         Mockito.when(assetSoftwareDao.getById(Mockito.anyString())).thenReturn(software);
-        Mockito.when(activityClient.manualStartProcess(Mockito.any())).thenReturn(response);
+        Mockito.when(activityClient.manualStartProcess(any())).thenReturn(response);
         Mockito.when(requestConverter.convert(request, AssetSoftware.class)).thenReturn(software);
-        Mockito.when(assetSoftwareDao.update(Mockito.any())).thenReturn(expect);
-        Mockito.when(assetSoftwareDao.insert(Mockito.any())).thenReturn(expect);
-        Mockito.when(assetOperationRecordDao.insert(Mockito.any())).thenReturn(1);
+        Mockito.when(assetSoftwareDao.update(any())).thenReturn(expect);
+        Mockito.when(assetSoftwareDao.insert(any())).thenReturn(expect);
+        Mockito.when(assetOperationRecordDao.insert(any())).thenReturn(1);
         Assert.assertEquals(expect, assetSoftwareService.updateAssetSoftware(request));
     }
 
@@ -265,11 +266,11 @@ public class AssetSoftwareServiceImplTest {
         ActionResponse response = ActionResponse.success();
         Integer expect = 1;
         Mockito.when(assetSoftwareDao.getById(Mockito.anyString())).thenReturn(software);
-        Mockito.when(activityClient.manualStartProcess(Mockito.any())).thenReturn(response);
+        Mockito.when(activityClient.manualStartProcess(any())).thenReturn(response);
         Mockito.when(requestConverter.convert(request, AssetSoftware.class)).thenReturn(software);
-        Mockito.when(assetSoftwareDao.update(Mockito.any())).thenReturn(expect);
-        Mockito.when(assetSoftwareDao.insert(Mockito.any())).thenReturn(expect);
-        Mockito.when(assetOperationRecordDao.insert(Mockito.any())).thenReturn(1);
+        Mockito.when(assetSoftwareDao.update(any())).thenReturn(expect);
+        Mockito.when(assetSoftwareDao.insert(any())).thenReturn(expect);
+        Mockito.when(assetOperationRecordDao.insert(any())).thenReturn(1);
         Assert.assertEquals(expect, assetSoftwareService.updateAssetSoftware(request));
     }
 
@@ -360,7 +361,7 @@ public class AssetSoftwareServiceImplTest {
         EnumCountResponse expect = new EnumCountResponse(assetCategoryModel.getName(), idList, 1);
         Mockito.when(assetCategoryModelDao.getNextLevelCategoryByName(Mockito.anyString())).thenReturn(secondCategoryModelList);
         Mockito.when(assetCategoryModelDao.getAll()).thenReturn(secondCategoryModelList);
-        Mockito.when(assetSoftwareDao.findCountByCategoryModel(Mockito.any())).thenReturn(1L);
+        Mockito.when(assetSoftwareDao.findCountByCategoryModel(any())).thenReturn(1L);
         Mockito.when(iAssetCategoryModelService.recursionSearch(Mockito.anyList(), Mockito.anyInt())).thenReturn(secondCategoryModelList);
         Mockito.when(iAssetCategoryModelService.getCategoryIdList(Mockito.anyList())).thenReturn(idList);
         PowerMockito.doReturn(assetSoftwareQuery).when(assetSoftwareService, "setAssetSoftwareQueryParam", Mockito.anyList());
@@ -399,9 +400,9 @@ public class AssetSoftwareServiceImplTest {
         PowerMockito.doReturn(assetSoftware).when(assetSoftwareService).getById(Mockito.anyString());
         Mockito.when(assetSoftwareDetailConverter.convert(assetSoftware, AssetSoftwareDetailResponse.class)).thenReturn(expect);
         List<AssetPortProtocolResponse> assetPortProtocolResponses = new ArrayList<>();
-        Mockito.when(iAssetPortProtocolService.findListAssetPortProtocol(Mockito.any())).thenReturn(assetPortProtocolResponses);
+        Mockito.when(iAssetPortProtocolService.findListAssetPortProtocol(any())).thenReturn(assetPortProtocolResponses);
         List<AssetSoftwareLicenseResponse> assetSoftwareLicenseResponses = new ArrayList<>();
-        Mockito.when(iAssetSoftwareLicenseService.findListAssetSoftwareLicense(Mockito.any())).thenReturn(assetSoftwareLicenseResponses);
+        Mockito.when(iAssetSoftwareLicenseService.findListAssetSoftwareLicense(any())).thenReturn(assetSoftwareLicenseResponses);
         Assert.assertEquals(expect, assetSoftwareService.querySoftWareDetail(softwareQuery));
     }
 
@@ -415,12 +416,12 @@ public class AssetSoftwareServiceImplTest {
         PageResult<AssetSoftwareResponse> pageResult = Mockito.mock(PageResult.class);
         DownloadVO downloadVO = new DownloadVO();
         PowerMockito.whenNew(DownloadVO.class).withNoArguments().thenReturn(downloadVO);
-        PowerMockito.doReturn(pageResult).when(assetSoftwareService, "findPageAssetSoftware", Mockito.any());
+        PowerMockito.doReturn(pageResult).when(assetSoftwareService, "findPageAssetSoftware", any());
         Mockito.when(pageResult.getItems()).thenReturn(list);
         Mockito.when(softwareEntityConvert.convert(list, ExportSoftwareEntity.class)).thenReturn(softwareEntities);
-        Mockito.doNothing().when(excelDownloadUtil).excelDownload(Mockito.any(), Mockito.anyString(), Mockito.eq(downloadVO));
+        Mockito.doNothing().when(excelDownloadUtil).excelDownload(any(), Mockito.anyString(), Mockito.eq(downloadVO));
 //        assetSoftwareService.exportData(query, response);
-        Mockito.verify(excelDownloadUtil).excelDownload(Mockito.any(), Mockito.anyString(), Mockito.eq(downloadVO));
+        Mockito.verify(excelDownloadUtil).excelDownload(any(), Mockito.anyString(), Mockito.eq(downloadVO));
     }
 
     @Test
@@ -432,7 +433,7 @@ public class AssetSoftwareServiceImplTest {
         PageResult<AssetSoftwareResponse> pageResult = Mockito.mock(PageResult.class);
         DownloadVO downloadVO = new DownloadVO();
         PowerMockito.whenNew(DownloadVO.class).withNoArguments().thenReturn(downloadVO);
-        PowerMockito.doReturn(pageResult).when(assetSoftwareService, "findPageAssetSoftware", Mockito.any());
+        PowerMockito.doReturn(pageResult).when(assetSoftwareService, "findPageAssetSoftware", any());
         Mockito.when(pageResult.getItems()).thenReturn(list);
         Mockito.when(softwareEntityConvert.convert(list, ExportSoftwareEntity.class)).thenReturn(softwareEntities);
         try {
@@ -456,8 +457,8 @@ public class AssetSoftwareServiceImplTest {
     public void findPageInstallTest() throws Exception {
         int expect = 1;
         List<AssetSoftwareResponse> expectList = new ArrayList<>();
-        PowerMockito.doReturn(expect).when(assetSoftwareService).findCountInstall(Mockito.any());
-        PowerMockito.doReturn(expectList).when(assetSoftwareService).findInstallList(Mockito.any());
+        PowerMockito.doReturn(expect).when(assetSoftwareService).findCountInstall(any());
+        PowerMockito.doReturn(expectList).when(assetSoftwareService).findInstallList(any());
         Assert.assertEquals(expect, assetSoftwareService.findPageInstall(new AssetSoftwareQuery()).getTotalRecords());
         Assert.assertEquals(expectList, assetSoftwareService.findPageInstall(new AssetSoftwareQuery()).getItems());
     }
@@ -467,7 +468,7 @@ public class AssetSoftwareServiceImplTest {
         List<AssetSoftwareInstallResponse> expect = new ArrayList<>();
         List<AssetSoftwareInstall> list = new ArrayList<>();
         PowerMockito.when(BeanConvert.convert(list, AssetSoftwareInstallResponse.class)).thenReturn(expect);
-        Mockito.when(assetSoftwareDao.findAssetInstallList(Mockito.any())).thenReturn(list);
+        Mockito.when(assetSoftwareDao.findAssetInstallList(any())).thenReturn(list);
         Assert.assertEquals(expect, assetSoftwareService.findAssetInstallList(new AssetSoftwareQuery()));
     }
 
@@ -476,7 +477,7 @@ public class AssetSoftwareServiceImplTest {
     public void findPageAssetInstallTest() throws Exception {
         int expect = 0;
         List<AssetSoftwareInstallResponse> expectList = new ArrayList<>();
-        PowerMockito.doReturn(expectList).when(assetSoftwareService).findAssetInstallList(Mockito.any());
+        PowerMockito.doReturn(expectList).when(assetSoftwareService).findAssetInstallList(any());
         Assert.assertEquals(expect, assetSoftwareService.findPageAssetInstall(new AssetSoftwareQuery()).getTotalRecords());
         Assert.assertEquals(expect, assetSoftwareService.findPageAssetInstall(new AssetSoftwareQuery()).getItems().size());
     }
@@ -486,8 +487,8 @@ public class AssetSoftwareServiceImplTest {
         int expect = 1;
         List<AssetSoftwareInstallResponse> expectList = new ArrayList<>();
         expectList.add(new AssetSoftwareInstallResponse());
-        PowerMockito.doReturn(expectList).when(assetSoftwareService).findAssetInstallList(Mockito.any());
-        Mockito.when(assetSoftwareDao.findAssetInstallCount(Mockito.any())).thenReturn(expect);
+        PowerMockito.doReturn(expectList).when(assetSoftwareService).findAssetInstallList(any());
+        Mockito.when(assetSoftwareDao.findAssetInstallCount(any())).thenReturn(expect);
         Assert.assertEquals(expect, assetSoftwareService.findPageAssetInstall(new AssetSoftwareQuery()).getTotalRecords());
         Assert.assertEquals(expectList, assetSoftwareService.findPageAssetInstall(new AssetSoftwareQuery()).getItems());
     }
@@ -496,7 +497,7 @@ public class AssetSoftwareServiceImplTest {
     @Test
     public void findCountInstallTest() throws Exception {
         Integer expect = 1;
-        Mockito.when(assetSoftwareDao.findCount(Mockito.any())).thenReturn(expect);
+        Mockito.when(assetSoftwareDao.findCount(any())).thenReturn(expect);
         Assert.assertEquals(expect, assetSoftwareService.findCountInstall(new AssetSoftwareQuery()));
     }
 
@@ -504,8 +505,8 @@ public class AssetSoftwareServiceImplTest {
     public void findPageInstallListTest() throws Exception {
         int expect = 1;
         List<AssetSoftwareResponse> expectList = new ArrayList<>();
-        PowerMockito.doReturn(expect).when(assetSoftwareService).findCountInstall(Mockito.any());
-        PowerMockito.doReturn(expectList).when(assetSoftwareService).findInstallList(Mockito.any());
+        PowerMockito.doReturn(expect).when(assetSoftwareService).findCountInstall(any());
+        PowerMockito.doReturn(expectList).when(assetSoftwareService).findInstallList(any());
         Assert.assertEquals(expect, assetSoftwareService.findPageInstallList(new AssetSoftwareQuery()).getTotalRecords());
         Assert.assertEquals(expectList, assetSoftwareService.findPageInstallList(new AssetSoftwareQuery()).getItems());
     }
@@ -516,10 +517,12 @@ public class AssetSoftwareServiceImplTest {
         request.setSource("2");
         Integer expect = 1;
         ActionResponse actionResponse = ActionResponse.success();
-        Mockito.when(schemeDao.insert(Mockito.any())).thenReturn(1);
-        Mockito.when(assetOperationRecordDao.insert(Mockito.any())).thenReturn(expect);
-        Mockito.when(assetSoftwareRelationDao.insert(Mockito.any())).thenReturn(expect);
+        Mockito.when(schemeDao.insert(any())).thenReturn(1);
+        Mockito.when(assetOperationRecordDao.insert(any())).thenReturn(expect);
+        Mockito.when(assetSoftwareRelationDao.insert(any())).thenReturn(expect);
         Mockito.when(baseLineClient.configRegister(Mockito.anyList())).thenReturn(actionResponse);
+        Mockito.when(aesEncoder.decode(any(),any())).thenReturn("asdsad");
+
         assertThat(assetSoftwareService.softwareInstallConfig(request).getBody()).isEqualTo(expect);
     }
 
@@ -542,9 +545,9 @@ public class AssetSoftwareServiceImplTest {
         request.setSource("1");
         Integer expect = 1;
         ActionResponse actionResponse = ActionResponse.fail(RespBasicCode.BAD_REQUEST);
-        Mockito.when(schemeDao.insert(Mockito.any())).thenReturn(1);
-        Mockito.when(assetOperationRecordDao.insert(Mockito.any())).thenReturn(expect);
-        Mockito.when(assetSoftwareRelationDao.insert(Mockito.any())).thenReturn(expect);
+        Mockito.when(schemeDao.insert(any())).thenReturn(1);
+        Mockito.when(assetOperationRecordDao.insert(any())).thenReturn(expect);
+        Mockito.when(assetSoftwareRelationDao.insert(any())).thenReturn(expect);
         Mockito.when(baseLineClient.configRegister(Mockito.anyList())).thenReturn(actionResponse);
         assertThat(assetSoftwareService.softwareInstallConfig(request)).isEqualTo(actionResponse);
 
@@ -559,8 +562,8 @@ public class AssetSoftwareServiceImplTest {
         softwareReportRequestList.add(reportRequest);
         AssetSoftware assetSoftware = new AssetSoftware();
         Mockito.when(assetSoftwareDao.isExsit(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-        Mockito.when(assetSoftwareDao.insert(Mockito.any())).thenReturn(1);
-        Mockito.when(BeanConvert.convertBean(Mockito.any(), Mockito.eq(AssetSoftware.class))).thenReturn(assetSoftware);
+        Mockito.when(assetSoftwareDao.insert(any())).thenReturn(1);
+        Mockito.when(BeanConvert.convertBean(any(), Mockito.eq(AssetSoftware.class))).thenReturn(assetSoftware);
         Mockito.when(assetSoftwareRelationDao.insertBatch(Mockito.anyList())).thenReturn(1);
         assetSoftwareService.reportData(1, softwareReportRequestList);
         Mockito.verify(assetSoftwareRelationDao).insertBatch(Mockito.anyList());
@@ -579,11 +582,11 @@ public class AssetSoftwareServiceImplTest {
         map.put("stringId", "2");
         mapList.add(map);
         String expect = "导入成功1条。导入.";
-        PowerMockito.when(ExcelUtils.importExcelFromClient(Mockito.any(), Mockito.any(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(importResult);
+        PowerMockito.when(ExcelUtils.importExcelFromClient(any(), any(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(importResult);
         Mockito.when(assetCategoryModelDao.getById(Mockito.anyInt())).thenReturn(new AssetCategoryModel());
-        Mockito.when(assetSoftwareDao.findCountCheck(Mockito.any())).thenReturn(0);
-        Mockito.when(assetSoftwareDao.insert(Mockito.any())).thenReturn(1);
-        Mockito.when(assetOperationRecordDao.insert(Mockito.any())).thenReturn(1);
+        Mockito.when(assetSoftwareDao.findCountCheck(any())).thenReturn(0);
+        Mockito.when(assetSoftwareDao.insert(any())).thenReturn(1);
+        Mockito.when(assetOperationRecordDao.insert(any())).thenReturn(1);
         Mockito.when(areaClient.queryCdeAndAreaId(Mockito.anyString())).thenReturn(ActionResponse.success(mapList));
         Mockito.when(activityClient.startProcessWithoutFormBatch(Mockito.anyList())).thenReturn(ActionResponse.success());
         Assert.assertEquals(expect, assetSoftwareService.importExcel(new MockMultipartFile("abc", "abc".getBytes()), new AssetImportRequest()));
@@ -598,9 +601,9 @@ public class AssetSoftwareServiceImplTest {
         list.add(entity);
         ImportResult<AssetSoftwareEntity> importResult = new ImportResult<>("导入成功..", list);
         String expect = "导入成功0条。第7行选择的品类型号不存在，或已经注销！，导入.";
-        PowerMockito.when(ExcelUtils.importExcelFromClient(Mockito.any(), Mockito.any(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(importResult);
+        PowerMockito.when(ExcelUtils.importExcelFromClient(any(), any(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(importResult);
         Mockito.when(assetCategoryModelDao.getById(Mockito.anyInt())).thenReturn(null);
-        Mockito.when(assetSoftwareDao.findCountCheck(Mockito.any())).thenReturn(1);
+        Mockito.when(assetSoftwareDao.findCountCheck(any())).thenReturn(1);
         Assert.assertEquals(expect, assetSoftwareService.importExcel(new MockMultipartFile("abc", "abc".getBytes()), new AssetImportRequest()));
     }
 
@@ -613,9 +616,9 @@ public class AssetSoftwareServiceImplTest {
         list.add(entity);
         ImportResult<AssetSoftwareEntity> importResult = new ImportResult<>("导入成功..", list);
         String expect = "导入成功0条。第7行软件名称重复，导入.";
-        PowerMockito.when(ExcelUtils.importExcelFromClient(Mockito.any(), Mockito.any(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(importResult);
+        PowerMockito.when(ExcelUtils.importExcelFromClient(any(), any(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(importResult);
         Mockito.when(assetCategoryModelDao.getById(Mockito.anyInt())).thenReturn(new AssetCategoryModel());
-        Mockito.when(assetSoftwareDao.findCountCheck(Mockito.any())).thenReturn(1);
+        Mockito.when(assetSoftwareDao.findCountCheck(any())).thenReturn(1);
         Assert.assertEquals(expect, assetSoftwareService.importExcel(new MockMultipartFile("abc", "abc".getBytes()), new AssetImportRequest()));
     }
 
@@ -623,7 +626,7 @@ public class AssetSoftwareServiceImplTest {
     public void importExcelTest3() throws Exception {
         String expect = "数据为空";
         ImportResult<AssetSoftwareEntity> importResult = new ImportResult<>(expect, null);
-        PowerMockito.when(ExcelUtils.importExcelFromClient(Mockito.any(), Mockito.any(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(importResult);
+        PowerMockito.when(ExcelUtils.importExcelFromClient(any(), any(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(importResult);
         Assert.assertEquals(expect, assetSoftwareService.importExcel(new MockMultipartFile("abc", "abc".getBytes()), new AssetImportRequest()));
     }
 
@@ -632,7 +635,7 @@ public class AssetSoftwareServiceImplTest {
         List<AssetSoftwareEntity> resultDataList = new ArrayList<>();
         String expect = "数据为空";
         ImportResult<AssetSoftwareEntity> importResult = new ImportResult<>(expect, resultDataList);
-        PowerMockito.when(ExcelUtils.importExcelFromClient(Mockito.any(), Mockito.any(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(importResult);
+        PowerMockito.when(ExcelUtils.importExcelFromClient(any(), any(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(importResult);
         Assert.assertEquals(expect, assetSoftwareService.importExcel(new MockMultipartFile("abc", "abc".getBytes()), new AssetImportRequest()));
     }
 
@@ -648,9 +651,9 @@ public class AssetSoftwareServiceImplTest {
 
     @Test
     public void exportTemplateTest() throws Exception {
-        PowerMockito.doNothing().when(assetSoftwareService, "exportToClient", Mockito.any(), Mockito.anyString(), Mockito.anyString());
+        PowerMockito.doNothing().when(assetSoftwareService, "exportToClient", any(), Mockito.anyString(), Mockito.anyString());
         Whitebox.invokeMethod(assetSoftwareService, "exportTemplate");
-        PowerMockito.verifyPrivate(assetSoftwareService).invoke("exportToClient", Mockito.any(), Mockito.anyString(), Mockito.anyString());
+        PowerMockito.verifyPrivate(assetSoftwareService).invoke("exportToClient", any(), Mockito.anyString(), Mockito.anyString());
 
     }
 
@@ -665,17 +668,17 @@ public class AssetSoftwareServiceImplTest {
     @Test
     public void exportToClientTest() throws Exception {
         PowerMockito.doNothing().when(assetSoftwareService, "initExampleData", Mockito.anyList());
-        PowerMockito.doNothing().when(ExcelUtils.class, "exportTemplateToClient", Mockito.any(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyList());
+        PowerMockito.doNothing().when(ExcelUtils.class, "exportTemplateToClient", any(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyList());
         Whitebox.invokeMethod(assetSoftwareService, "exportToClient", AssetSoftwareEntity.class, "软件信息模板.xlsx", "软件信息");
         PowerMockito.verifyStatic(ExcelUtils.class, Mockito.atMost(1));
-        ExcelUtils.exportTemplateToClient(Mockito.any(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyList());
+        ExcelUtils.exportTemplateToClient(any(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyList());
     }
 
     @Test
     public void initExampleDataTest() throws Exception {
         List<AssetSoftwareEntity> assetSoftwareEntities = Mockito.mock(ArrayList.class);
         Whitebox.invokeMethod(assetSoftwareService, "initExampleData", assetSoftwareEntities);
-        Mockito.verify(assetSoftwareEntities).add(Mockito.any());
+        Mockito.verify(assetSoftwareEntities).add(any());
     }
 
 
@@ -695,7 +698,7 @@ public class AssetSoftwareServiceImplTest {
         SoftwareEntityConvert convert = PowerMockito.spy(new SoftwareEntityConvert());
         PowerMockito.mockStatic(DateUtils.class);
         String expect = "测试";
-        PowerMockito.when(DateUtils.getDataString(Mockito.any(), Mockito.anyString())).thenReturn(expect);
+        PowerMockito.when(DateUtils.getDataString(any(), Mockito.anyString())).thenReturn(expect);
         String actual = Whitebox.invokeMethod(convert, "LongToDateString", 1L);
         Assert.assertEquals(expect, actual);
     }
