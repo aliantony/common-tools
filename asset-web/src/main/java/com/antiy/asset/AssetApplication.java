@@ -3,6 +3,7 @@ package com.antiy.asset;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -17,8 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @MapperScan({ "com.antiy.asset.dao" })
 @ComponentScan(basePackages = { "com.antiy.biz.util", "com.antiy.asset", "com.antiy.common", "com.antiy.biz.file" })// TODO
-// @ServletComponentScan(basePackages={"com.antiy.common.filter"}) 临时注释
-                                                                                                                    // 测试
+@ServletComponentScan(basePackages = { "com.antiy.common.filter" })
 public class AssetApplication {
 
     public static void main(String[] args) {
