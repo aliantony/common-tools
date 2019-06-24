@@ -280,7 +280,7 @@
                     gmt_modified = #{item.gmtModified },
                     memo = #{item.memo },
                     modify_user = #{item.modifyUser },
-
+                    status = #{item.status},
             </trim>
             where id = #{item.id}
         </foreach>
