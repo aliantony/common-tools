@@ -2348,7 +2348,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         List<String> assetNames = new ArrayList<>();
         List<String> assetNumbers = new ArrayList<>();
-        List<String> assetIps = new ArrayList<>();
+        List<String> assetMac = new ArrayList<>();
         for (ComputeDeviceEntity entity : dataList) {
 
             if (assetNames.contains(entity.getName())) {
@@ -2363,12 +2363,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
-            if (StringUtils.isNotBlank(entity.getNetworkIpAddress())) {
+            if (StringUtils.isNotBlank(entity.getNetworkMacAddress())) {
 
-                if (assetIps.contains(entity.getNetworkIpAddress())) {
+                if (assetMac.contains(entity.getNetworkMacAddress())) {
                     repeat++;
                     a++;
-                    builder.append("第").append(a).append("行").append("资产网卡IP地址重复！");
+                    builder.append("第").append(a).append("行").append("资产网卡MAC地址重复！");
                     continue;
                 }
 
@@ -2388,11 +2388,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (StringUtils.isNotBlank(entity.getNetworkIpAddress())) {
-                if (CheckRepeatIp(entity.getNetworkIpAddress(), null, null)) {
+            if (StringUtils.isNotBlank(entity.getNetworkMacAddress())) {
+                if (CheckRepeatMAC(entity.getNetworkMacAddress())) {
                     repeat++;
                     a++;
-                    builder.append("第").append(a).append("行").append("资产网卡IP地址重复！");
+                    builder.append("第").append(a).append("行").append("资产网卡MAC地址重复！");
                     continue;
                 }
             }
@@ -2459,7 +2459,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (repeat + error == 0) {
                 assetNames.add(entity.getName());
                 assetNumbers.add(entity.getNumber());
-                assetIps.add(entity.getNetworkIpAddress());
+                assetMac.add(entity.getNetworkMacAddress());
                 ComputerVo computerVo = new ComputerVo();
                 Asset asset = new Asset();
                 List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
@@ -2701,7 +2701,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<Asset> assets = new ArrayList<>();
         List<String> assetNames = new ArrayList<>();
         List<String> assetNumbers = new ArrayList<>();
-        List<String> assetIps = new ArrayList<>();
+        List<String> assetMac = new ArrayList<>();
         List<AssetNetworkEquipment> networkEquipments = new ArrayList<>();
 
         for (NetworkDeviceEntity networkDeviceEntity : entities) {
@@ -2718,10 +2718,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
-            if (assetIps.contains(networkDeviceEntity.getInnerIp())) {
+            if (StringUtils.isNotBlank(networkDeviceEntity.getMac())
+                && assetMac.contains(networkDeviceEntity.getMac())) {
                 repeat++;
                 a++;
-                builder.append("第").append(a).append("行").append("资产内网IP地址重复！");
+                builder.append("第").append(a).append("行").append("资产MAC地址重复！");
                 continue;
             }
 
@@ -2769,10 +2770,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatIp(networkDeviceEntity.getInnerIp(), 1, null)) {
+            if (StringUtils.isNotBlank(networkDeviceEntity.getMac()) && CheckRepeatMAC(networkDeviceEntity.getMac())) {
                 repeat++;
                 a++;
-                builder.append("第").append(a).append("行").append("资产内网IP地址重复！");
+                builder.append("第").append(a).append("行").append("资产MAC地址重复！");
                 continue;
             }
 
@@ -2803,7 +2804,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (repeat + error == 0) {
                 assetNames.add(networkDeviceEntity.getName());
                 assetNumbers.add(networkDeviceEntity.getNumber());
-                assetIps.add(networkDeviceEntity.getInnerIp());
+                assetMac.add(networkDeviceEntity.getMac());
                 Asset asset = new Asset();
                 AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
                 asset.setResponsibleUserId(checkUser(networkDeviceEntity.getUser()));
@@ -2921,7 +2922,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int a = 6;
         List<String> assetNames = new ArrayList<>();
         List<String> assetNumbers = new ArrayList<>();
-        List<String> assetIps = new ArrayList<>();
+        List<String> assetMac = new ArrayList<>();
         List<Asset> assets = new ArrayList<>();
         List<AssetSafetyEquipment> assetSafetyEquipments = new ArrayList<>();
         for (SafetyEquipmentEntiy entity : resultDataList) {
@@ -2938,10 +2939,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
-            if (assetIps.contains(entity.getIp())) {
+            if (assetMac.contains(entity.getMac())) {
                 repeat++;
                 a++;
-                builder.append("第").append(a).append("行").append("资产IP地址重复！");
+                builder.append("第").append(a).append("行").append("资产MAC地址重复！");
                 continue;
             }
 
@@ -2958,10 +2959,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
-            if (CheckRepeatIp(entity.getIp(), null, 1)) {
+            if (CheckRepeatMAC(entity.getMac())) {
                 repeat++;
                 a++;
-                builder.append("第").append(a).append("行").append("资产IP地址重复！");
+                builder.append("第").append(a).append("行").append("资产MAC地址重复！");
                 continue;
             }
 
@@ -3015,7 +3016,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (repeat + error == 0) {
                 assetNames.add(entity.getName());
                 assetNumbers.add(entity.getNumber());
-                assetIps.add(entity.getIp());
+                assetMac.add(entity.getMac());
                 Asset asset = new Asset();
                 AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
                 List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
