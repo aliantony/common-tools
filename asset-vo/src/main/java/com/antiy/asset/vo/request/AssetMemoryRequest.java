@@ -75,11 +75,9 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator,
     @Min(message = "内存类型不能小于1", value = 1)
     private Integer slotType;
     /**
-     * 是否带散热片:0-不带，1-带
+     * 是否带散热片:2-不带，1-带
      */
-    @ApiModelProperty("是否带散热片:0-不带，1-带")
-    @Max(message = "是否带散热片不能大于1", value = 1)
-    @Min(message = "是否带散热片不能小于0", value = 0)
+    @ApiModelProperty("是否带散热片:2-不带，1-带")
     private Integer heatsink;
     /**
      * 针脚数
