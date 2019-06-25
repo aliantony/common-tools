@@ -35,7 +35,7 @@ public class AssetBusinessController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/uuidByAreaId", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:query:uuidByAreaId')")
-    public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "areaIdRequest") AreaIdRequest areaIdRequest) throws Exception {
+    public ActionResponse queryUuidByAreaId(@RequestBody(required = false) @ApiParam(value = "areaIdRequest") AreaIdRequest areaIdRequest) throws Exception {
         return ActionResponse.success(iAssetService.queryUuidByAreaIds(areaIdRequest));
     }
 

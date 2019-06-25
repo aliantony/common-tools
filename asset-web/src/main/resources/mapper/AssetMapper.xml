@@ -1625,12 +1625,10 @@
     <select id="findUuidByAreaIds" resultType="java.lang.String"
             parameterType="java.util.List">
         select uuid from asset
-        <if test="areaIds != null and areaIds.size > 0">
             WHERE area_id IN
-            <foreach item="item" index="index" collection="areaIds" open="(" separator="," close=")">
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
                 #{item}
             </foreach>
-        </if>
         group by id
     </select>
 </mapper>
