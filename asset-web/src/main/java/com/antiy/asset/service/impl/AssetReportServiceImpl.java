@@ -326,21 +326,21 @@ public class AssetReportServiceImpl implements IAssetReportService {
         return statusList;
     }
 
-    private void addColumnarNewList(List<Integer> safetyDataList, List<ReportData> columnarList,
-                                    AssetSecondCategoryEnum assetSecondCategoryEnum) {
-        ReportData reportData = new ReportData();
-        reportData.setClassify(assetSecondCategoryEnum.getMsg());
-        reportData.setAdd(safetyDataList);
-        columnarList.add(reportData);
-    }
-
-    private void addColumnarList(List<Integer> safetyDataList, List<ReportData> columnarList,
-                                 AssetSecondCategoryEnum assetSecondCategoryEnum) {
-        ReportData reportData = new ReportData();
-        reportData.setClassify(assetSecondCategoryEnum.getMsg());
-        reportData.setData(safetyDataList);
-        columnarList.add(reportData);
-    }
+    // private void addColumnarNewList(List<Integer> safetyDataList, List<ReportData> columnarList,
+    // AssetSecondCategoryEnum assetSecondCategoryEnum) {
+    // ReportData reportData = new ReportData();
+    // reportData.setClassify(assetSecondCategoryEnum.getMsg());
+    // reportData.setAdd(safetyDataList);
+    // columnarList.add(reportData);
+    // }
+    //
+    // private void addColumnarList(List<Integer> safetyDataList, List<ReportData> columnarList,
+    // AssetSecondCategoryEnum assetSecondCategoryEnum) {
+    // ReportData reportData = new ReportData();
+    // reportData.setClassify(assetSecondCategoryEnum.getMsg());
+    // reportData.setData(safetyDataList);
+    // columnarList.add(reportData);
+    // }
 
     /**
      * 时间参数校验
@@ -402,28 +402,28 @@ public class AssetReportServiceImpl implements IAssetReportService {
         throw new BusinessException("二级品类型号不存在");
     }
 
-    private void setFormat(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
-        switch (assetReportCategoryCountQuery.getShowCycleType()) {
-            case THIS_WEEK:
-                assetReportCategoryCountQuery.setFormat("%w");
-                break;
-            case THIS_MONTH:
-                assetReportCategoryCountQuery.setFormat("%U");
-                break;
-
-            case THIS_QUARTER:
-                assetReportCategoryCountQuery.setFormat("%Y-%m");
-                break;
-
-            case THIS_YEAR:
-                assetReportCategoryCountQuery.setFormat("%Y-%m");
-                break;
-
-            case ASSIGN_TIME:
-                assetReportCategoryCountQuery.setFormat("%Y-%m");
-                break;
-        }
-    }
+    // private void setFormat(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
+    // switch (assetReportCategoryCountQuery.getShowCycleType()) {
+    // case THIS_WEEK:
+    // assetReportCategoryCountQuery.setFormat("%w");
+    // break;
+    // case THIS_MONTH:
+    // assetReportCategoryCountQuery.setFormat("%U");
+    // break;
+    //
+    // case THIS_QUARTER:
+    // assetReportCategoryCountQuery.setFormat("%Y-%m");
+    // break;
+    //
+    // case THIS_YEAR:
+    // assetReportCategoryCountQuery.setFormat("%Y-%m");
+    // break;
+    //
+    // case ASSIGN_TIME:
+    // assetReportCategoryCountQuery.setFormat("%Y-%m");
+    // break;
+    // }
+    // }
 
     @Override
     public void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery,
@@ -499,12 +499,12 @@ public class AssetReportServiceImpl implements IAssetReportService {
         return new StringBuffer(beginTime).append("~").append(endTime).toString();
     }
 
-    private String getFileName(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM");
-        String beginTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getBeginTime()));
-        String endTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getEndTime()));
-        return new StringBuffer(beginTime).append("-").append(endTime).toString();
-    }
+    // private String getFileName(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
+    // SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM");
+    // String beginTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getBeginTime()));
+    // String endTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getEndTime()));
+    // return new StringBuffer(beginTime).append("-").append(endTime).toString();
+    // }
 
     @Override
     public AssetReportResponse getAssetConutWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
@@ -632,35 +632,35 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     }
 
-    /**
-     * 根据资产组查询资产新增数量
-     *
-     * @param reportQueryRequest
-     * @return
-     */
-    public AssetReportResponse getNewAssetWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
-        // 1-本周,2-本月,3-本季度,4-本年,5-时间范围
-        switch (reportQueryRequest.getTimeType()) {
-            case "1":
-                reportQueryRequest.setSqlTime("%w");
-                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getDayOfWeek());
-            case "2":
-                reportQueryRequest.setSqlTime("%u");
-                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getWeekOfMonth());
-            case "3":
-                reportQueryRequest.setSqlTime("%Y-%m");
-                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getSeason());
-            case "4":
-                reportQueryRequest.setSqlTime("%Y-%m");
-                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear());
-            case "5":
-                reportQueryRequest.setSqlTime("%Y-%m");
-                return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils
-                    .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
-            default:
-                throw new RequestParamValidateException("查询时间类型不正确");
-        }
-    }
+    // /**
+    // * 根据资产组查询资产新增数量
+    // *
+    // * @param reportQueryRequest
+    // * @return
+    // */
+    // public AssetReportResponse getNewAssetWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
+    // // 1-本周,2-本月,3-本季度,4-本年,5-时间范围
+    // switch (reportQueryRequest.getTimeType()) {
+    // case "1":
+    // reportQueryRequest.setSqlTime("%w");
+    // return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getDayOfWeek());
+    // case "2":
+    // reportQueryRequest.setSqlTime("%u");
+    // return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getWeekOfMonth());
+    // case "3":
+    // reportQueryRequest.setSqlTime("%Y-%m");
+    // return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getSeason());
+    // case "4":
+    // reportQueryRequest.setSqlTime("%Y-%m");
+    // return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils.getCurrentMonthOfYear());
+    // case "5":
+    // reportQueryRequest.setSqlTime("%Y-%m");
+    // return queryNewAssetWithGroup(reportQueryRequest, ReportDateUtils
+    // .getMonthWithDate(reportQueryRequest.getStartTime(), reportQueryRequest.getEndTime()));
+    // default:
+    // throw new RequestParamValidateException("查询时间类型不正确");
+    // }
+    // }
 
     /**
      * 按时间分类统计返回表格数据
@@ -740,60 +740,60 @@ public class AssetReportServiceImpl implements IAssetReportService {
         return reportTableResponse;
     }
 
-    /**
-     * 根据资产组类别查新增资产情况-封装数据
-     * @param reportQueryRequest
-     * @return
-     */
-    public AssetReportResponse queryNewAssetWithGroup(ReportQueryRequest reportQueryRequest,
-                                                      Map<String, String> timeMap) {
-        if (MapUtils.isEmpty(timeMap)) {
-            return null;
-        }
-        List<AssetGroupEntity> groupReportEntityList = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
-        // 1.初始化返回对象
-        AssetReportResponse assetReportResponse = new AssetReportResponse();
-        List<ReportData> reportDataList = new ArrayList<>();
-
-        // 2.添加日期信息到dateList,
-        List<String> dateKeyList = new ArrayList<>(timeMap.size());
-        List<String> dateValueList = new ArrayList<>(timeMap.size());
-        for (Map.Entry<String, String> entry : timeMap.entrySet()) {
-            dateKeyList.add(entry.getKey());
-            dateValueList.add(entry.getValue());
-        }
-        // 3.TOP5资产组名字信息
-        reportQueryRequest.setTopFive(true);
-        List<AssetGroupEntity> topAssetGroupEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
-        List<String> groupNameList = new ArrayList<>(5);
-        topAssetGroupEntityList.forEach(groupReportEntity -> {
-            if (!groupNameList.contains(groupReportEntity.getName())) {
-                groupNameList.add(groupReportEntity.getName());
-            }
-        });
-        // 4.根据资产组信息封装
-        groupNameList.forEach(groupName -> {
-            ReportData reportData = new ReportData();
-            reportData.setClassify(groupName);
-            List<Integer> addNumList = new ArrayList<>(timeMap.size());
-
-            dateKeyList.forEach(date -> {
-                Integer num = 0;
-                for (AssetGroupEntity groupReportEntity : groupReportEntityList) {
-                    // 资产组别且对应周数匹配
-                    if (groupReportEntity.getName().equals(groupName) && groupReportEntity.getDate().equals(date)) {
-                        num = groupReportEntity.getGroupCount();
-                    }
-                }
-                addNumList.add(num);
-            });
-            reportData.setData(addNumList);
-            reportDataList.add(reportData);
-        });
-        assetReportResponse.setDate(dateValueList);
-        assetReportResponse.setList(reportDataList);
-        return assetReportResponse;
-    }
+    // /**
+    // * 根据资产组类别查新增资产情况-封装数据
+    // * @param reportQueryRequest
+    // * @return
+    // */
+    // public AssetReportResponse queryNewAssetWithGroup(ReportQueryRequest reportQueryRequest,
+    // Map<String, String> timeMap) {
+    // if (MapUtils.isEmpty(timeMap)) {
+    // return null;
+    // }
+    // List<AssetGroupEntity> groupReportEntityList = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
+    // // 1.初始化返回对象
+    // AssetReportResponse assetReportResponse = new AssetReportResponse();
+    // List<ReportData> reportDataList = new ArrayList<>();
+    //
+    // // 2.添加日期信息到dateList,
+    // List<String> dateKeyList = new ArrayList<>(timeMap.size());
+    // List<String> dateValueList = new ArrayList<>(timeMap.size());
+    // for (Map.Entry<String, String> entry : timeMap.entrySet()) {
+    // dateKeyList.add(entry.getKey());
+    // dateValueList.add(entry.getValue());
+    // }
+    // // 3.TOP5资产组名字信息
+    // reportQueryRequest.setTopFive(true);
+    // List<AssetGroupEntity> topAssetGroupEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
+    // List<String> groupNameList = new ArrayList<>(5);
+    // topAssetGroupEntityList.forEach(groupReportEntity -> {
+    // if (!groupNameList.contains(groupReportEntity.getName())) {
+    // groupNameList.add(groupReportEntity.getName());
+    // }
+    // });
+    // // 4.根据资产组信息封装
+    // groupNameList.forEach(groupName -> {
+    // ReportData reportData = new ReportData();
+    // reportData.setClassify(groupName);
+    // List<Integer> addNumList = new ArrayList<>(timeMap.size());
+    //
+    // dateKeyList.forEach(date -> {
+    // Integer num = 0;
+    // for (AssetGroupEntity groupReportEntity : groupReportEntityList) {
+    // // 资产组别且对应周数匹配
+    // if (groupReportEntity.getName().equals(groupName) && groupReportEntity.getDate().equals(date)) {
+    // num = groupReportEntity.getGroupCount();
+    // }
+    // }
+    // addNumList.add(num);
+    // });
+    // reportData.setData(addNumList);
+    // reportDataList.add(reportData);
+    // });
+    // assetReportResponse.setDate(dateValueList);
+    // assetReportResponse.setList(reportDataList);
+    // return assetReportResponse;
+    // }
 
     @Override
     public AssetReportTableResponse getAssetGroupReportTable(ReportQueryRequest reportQueryRequest) throws Exception {
