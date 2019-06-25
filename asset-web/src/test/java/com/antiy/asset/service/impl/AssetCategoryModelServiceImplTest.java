@@ -5,6 +5,7 @@ import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.util.NodeUtilsConverter;
@@ -12,6 +13,7 @@ import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.asset.vo.response.AssetCategoryModelResponse;
+import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.LoginUser;
 import com.antiy.common.encoder.AesEncoder;
@@ -55,6 +57,9 @@ public class AssetCategoryModelServiceImplTest {
     private AssetCategoryModelServiceImpl                                 assetCategoryModelServiceImpl;
     @Mock
     private AssetSoftwareDao                                              assetSoftwareDao;
+    @Mock
+    private BaseConverter<AssetSoftwareInstall, AssetSoftwareInstallResponse>   responseInstallConverter;
+
 
     @Before
     public void setUp() throws Exception {

@@ -2,20 +2,30 @@ package com.antiy.asset.service.impl;
 
 import java.util.*;
 
+import com.antiy.asset.dao.AssetCategoryModelDao;
+import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.intergration.CommandClient;
+import com.antiy.asset.intergration.impl.CommandClientImpl;
+import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.common.base.ActionResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.antiy.asset.dao.AssetSoftwareDao;
@@ -40,31 +50,45 @@ import com.antiy.common.base.LoginUser;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import org.springframework.web.context.request.RequestContextHolder;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({LoginUserUtil.class, AssetSoftwareRelationServiceImpl.class, LogUtils.class, BeanConvert.class, BeanUtils.class})
+@PowerMockRunnerDelegate(SpringRunner.class)
+@SpringBootTest
+@PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
+@PrepareForTest({ LoginUserUtil.class, AssetSoftwareRelationServiceImpl.class, LogUtils.class, BeanConvert.class,
+                  BeanUtils.class })
 public class AssetSoftwareRelationServiceImplTest {
     @Mock
-    private BaseConverter<AssetSoftware, AssetSoftwareResponse> responseSoftConverter;
+    private BaseConverter<AssetSoftware, AssetSoftwareResponse>                 responseSoftConverter;
     @Mock
     private BaseConverter<AssetSoftwareRelation, AssetSoftwareRelationResponse> responseConverter;
     @Mock
-    private AssetSoftwareRelationDao assetSoftwareRelationDao;
+    private AssetSoftwareRelationDao                                            assetSoftwareRelationDao;
     @Mock
-    private TransactionTemplate transactionTemplate;
+    private IRedisService                                                       redisService;
     @Mock
-    private IRedisService redisService;
+    private AssetSoftwareDao                                                    assetSoftwareDao;
+    // @Mock
+    // private SoftwareInstallResponseConvert responseInstallConverter;
     @Mock
-    private AssetSoftwareDao assetSoftwareDao;
-//    @Mock
-//    private SoftwareInstallResponseConvert responseInstallConverter;
+    private Logger                                                              logger;
     @Mock
-    private Logger logger;
-    @Mock
-    private BaseConverter<AssetSoftwareRelationRequest, AssetSoftwareRelation> requestConverter;
+    private BaseConverter<AssetSoftwareRelationRequest, AssetSoftwareRelation>  requestConverter;
     @InjectMocks
-    private AssetSoftwareRelationServiceImpl assetSoftwareRelationService;
-
+    private AssetSoftwareRelationServiceImpl                                    assetSoftwareRelationService;
+    @Mock
+    private AssetCategoryModelDao                                               assetCategoryModelDao;
+    @Mock
+    private BaseConverter<AssetSoftwareInstall, AssetSoftwareInstallResponse>   responseInstallConverter;
+    @Mock
+    private AssetDao                                                            assetDao;
+    @Mock
+    private IAssetCategoryModelService                                          assetCategoryModelService;
+    @Mock
+    private CommandClientImpl                                                   commandClient;
+    @SpyBean
+    TransactionTemplate                                                         transactionTemplate;
 
     @Before
     public void setUp() throws Exception {
@@ -93,6 +117,8 @@ public class AssetSoftwareRelationServiceImplTest {
         Mockito.when(requestConverter.convert(request, AssetSoftwareRelation.class)).thenReturn(assetSoftwareRelation);
         Mockito.when(assetSoftwareRelationDao.insert(assetSoftwareRelation)).thenReturn(1);
         Assert.assertEquals(expect, assetSoftwareRelationService.saveAssetSoftwareRelation(request));
+
+
     }
 
     @Test
@@ -111,7 +137,8 @@ public class AssetSoftwareRelationServiceImplTest {
         List<AssetSoftwareRelation> assetSoftwareRelationList = new ArrayList<>();
         List<AssetSoftwareRelationResponse> expect = new ArrayList<>();
         Mockito.when(assetSoftwareRelationDao.findQuery(query)).thenReturn(assetSoftwareRelationList);
-        Mockito.when(responseConverter.convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class)).thenReturn(expect);
+        Mockito.when(responseConverter.convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class))
+            .thenReturn(expect);
         Assert.assertEquals(expect, assetSoftwareRelationService.findListAssetSoftwareRelation(query));
     }
 
@@ -122,8 +149,10 @@ public class AssetSoftwareRelationServiceImplTest {
         List<AssetSoftwareRelationResponse> expectList = new ArrayList<>();
 
         PowerMockito.doReturn(expect).when(assetSoftwareRelationService).findCount(Mockito.any());
-        PowerMockito.doReturn(expectList).when(assetSoftwareRelationService).findListAssetSoftwareRelation(Mockito.any());
-        Assert.assertEquals(expect.intValue(), assetSoftwareRelationService.findPageAssetSoftwareRelation(query).getTotalRecords());
+        PowerMockito.doReturn(expectList).when(assetSoftwareRelationService)
+            .findListAssetSoftwareRelation(Mockito.any());
+        Assert.assertEquals(expect.intValue(),
+            assetSoftwareRelationService.findPageAssetSoftwareRelation(query).getTotalRecords());
         Assert.assertEquals(expectList, assetSoftwareRelationService.findPageAssetSoftwareRelation(query).getItems());
     }
 
@@ -132,7 +161,8 @@ public class AssetSoftwareRelationServiceImplTest {
         List<AssetSoftware> assetSoftwareRelationList = new ArrayList<>();
         List<AssetSoftwareResponse> expect = new ArrayList<>();
         Mockito.when(assetSoftwareRelationDao.getSoftByAssetId(Mockito.anyInt())).thenReturn(assetSoftwareRelationList);
-        Mockito.when(responseSoftConverter.convert(assetSoftwareRelationList, AssetSoftwareResponse.class)).thenReturn(expect);
+        Mockito.when(responseSoftConverter.convert(assetSoftwareRelationList, AssetSoftwareResponse.class))
+            .thenReturn(expect);
         Assert.assertEquals(expect, assetSoftwareRelationService.getSoftByAssetId(1));
     }
 
@@ -142,7 +172,8 @@ public class AssetSoftwareRelationServiceImplTest {
         query.setAssetId("1");
         Integer expect = 0;
         PowerMockito.doReturn(expect).when(assetSoftwareRelationService, "countByAssetId", Mockito.anyInt());
-        Assert.assertEquals(expect.intValue(), assetSoftwareRelationService.getSimpleSoftwarePageByAssetId(query).getTotalRecords());
+        Assert.assertEquals(expect.intValue(),
+            assetSoftwareRelationService.getSimpleSoftwarePageByAssetId(query).getTotalRecords());
         Assert.assertNull(assetSoftwareRelationService.getSimpleSoftwarePageByAssetId(query).getItems());
     }
 
@@ -162,10 +193,13 @@ public class AssetSoftwareRelationServiceImplTest {
         map.put("stringId", "4");
         map.put("name", "计算设备");
         categoryOsResponseList.add(map);
-        Mockito.when(assetSoftwareRelationDao.getSimpleSoftwareByAssetId(Mockito.any())).thenReturn(assetSoftwareRelationList);
-        Mockito.when(responseConverter.convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class)).thenReturn(expectList);
+        Mockito.when(assetSoftwareRelationDao.getSimpleSoftwareByAssetId(Mockito.any()))
+            .thenReturn(assetSoftwareRelationList);
+        Mockito.when(responseConverter.convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class))
+            .thenReturn(expectList);
         Mockito.when(redisService.getAllSystemOs()).thenReturn(categoryOsResponseList);
-        Assert.assertEquals(expect.intValue(), assetSoftwareRelationService.getSimpleSoftwarePageByAssetId(query).getTotalRecords());
+        Assert.assertEquals(expect.intValue(),
+            assetSoftwareRelationService.getSimpleSoftwarePageByAssetId(query).getTotalRecords());
         Assert.assertEquals(expectList, assetSoftwareRelationService.getSimpleSoftwarePageByAssetId(query).getItems());
     }
 
@@ -226,6 +260,7 @@ public class AssetSoftwareRelationServiceImplTest {
     @Test
     public void installSoftwareTest1() throws Exception {
         AssetSoftwareRelationList assetSoftwareRelationList = new AssetSoftwareRelationList();
+        assetSoftwareRelationList.setSoftwareId("1");
         AssetInstallRequest request = new AssetInstallRequest();
         // request.setConfigureStatus(3);
         request.setAssetId("1");
@@ -233,10 +268,18 @@ public class AssetSoftwareRelationServiceImplTest {
         list.add(request);
         assetSoftwareRelationList.setAssetInstallRequestList(list);
         assetSoftwareRelationList.setInstallType(0);
-        Mockito.when(transactionTemplate.execute(Mockito.any())).thenReturn(1);
         Mockito.when(assetSoftwareRelationDao.installSoftware(Mockito.anyList())).thenReturn(1);
-        assetSoftwareRelationService.installSoftware(assetSoftwareRelationList);
-        Mockito.verify(transactionTemplate).execute(Mockito.any());
+        Mockito.when(assetDao.getUUIDByAssetId(Mockito.anyString())).thenReturn("uuid");
+        Mockito.when(commandClient.executeCommand(Mockito.any())).thenReturn(ActionResponse.success());
+        Assert.assertEquals("200",
+            assetSoftwareRelationService.installSoftware(assetSoftwareRelationList).getHead().getCode());
+
+        AssetSoftware assetSoftware = new AssetSoftware();
+        assetSoftware.setName("ass");
+        Mockito.when(assetSoftwareDao.getById(Mockito.any())).thenReturn(assetSoftware);
+        Assert.assertEquals("200",
+                assetSoftwareRelationService.installSoftware(assetSoftwareRelationList).getHead().getCode());
+
     }
 
     @Test
@@ -249,10 +292,10 @@ public class AssetSoftwareRelationServiceImplTest {
         list.add(request);
         assetSoftwareRelationList.setAssetInstallRequestList(list);
         assetSoftwareRelationList.setInstallType(1);
-        Mockito.when(transactionTemplate.execute(Mockito.any())).thenReturn(1);
         Mockito.when(assetSoftwareRelationDao.installSoftware(Mockito.anyList())).thenReturn(1);
         assetSoftwareRelationService.installSoftware(assetSoftwareRelationList);
-        Mockito.verify(transactionTemplate).execute(Mockito.any());
+        Assert.assertEquals("200",
+            assetSoftwareRelationService.installSoftware(assetSoftwareRelationList).getHead().getCode());
     }
 
     @Test
@@ -268,6 +311,8 @@ public class AssetSoftwareRelationServiceImplTest {
 
         InstallQuery query = new InstallQuery();
         query.setSoftwareId("18");
+        query.setPageSize(1);
+        query.setCurrentPage(1);
         ArrayList<AssetSoftwareInstall> queryInstallList = new ArrayList<>();
         AssetSoftwareInstall install = new AssetSoftwareInstall();
         install.setOperationSystem("WINDOWS8-64");
@@ -278,8 +323,21 @@ public class AssetSoftwareRelationServiceImplTest {
         Mockito.when(assetSoftwareRelationDao.queryInstallCount(query)).thenReturn(1);
         Mockito.when(assetSoftwareRelationDao.queryInstallList(Mockito.any())).thenReturn(queryInstallList);
         Mockito.when(assetSoftwareDao.getById(Mockito.anyString())).thenReturn(software);
-//        Mockito.when(responseInstallConverter.convert(Mockito.anyList(), Mockito.eq(AssetSoftwareInstallResponse.class))).thenReturn(expect);
+        Mockito.when(assetCategoryModelDao.getByName(Mockito.any())).thenReturn(getCategoryModal());
+        Mockito.when(assetCategoryModelService.findAssetCategoryModelIdsById(Mockito.any()))
+            .thenReturn(Arrays.asList(1, 2));
+        Mockito.when(responseInstallConverter.convert(Mockito.anyList(), Mockito.any())).thenReturn(new ArrayList<>());
+        // Mockito.eq(AssetSoftwareInstallResponse.class))).thenReturn(expect);
         Assert.assertEquals(expect, assetSoftwareRelationService.queryInstallList(query).getItems());
+    }
+
+    public AssetCategoryModel getCategoryModal() {
+        AssetCategoryModel assetCategoryModel = new AssetCategoryModel();
+        assetCategoryModel.setId(1);
+        assetCategoryModel.setType(1);
+        assetCategoryModel.setName("a");
+        assetCategoryModel.setParentId("1");
+        return assetCategoryModel;
     }
 
     @Test
@@ -298,11 +356,11 @@ public class AssetSoftwareRelationServiceImplTest {
         assetSoftwareInstall.setInstallType(1);
         assetSoftwareInstall.setInstallStatus(4);
         PowerMockito.mockStatic(BeanUtils.class);
-        PowerMockito.doNothing().when(BeanUtils.class, "copyProperties", assetSoftwareInstall, assetSoftwareInstallResponse);
-//        responseInstallConverter = new SoftwareInstallResponseConvert();
-//        responseInstallConverter.convert(assetSoftwareInstall, assetSoftwareInstallResponse);
+        PowerMockito.doNothing().when(BeanUtils.class, "copyProperties", assetSoftwareInstall,
+            assetSoftwareInstallResponse);
+        // responseInstallConverter = new SoftwareInstallResponseConvert();
+        // responseInstallConverter.convert(assetSoftwareInstall, assetSoftwareInstallResponse);
 
     }
-
 
 }
