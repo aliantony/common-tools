@@ -82,9 +82,6 @@ public class AssetReportServiceImplTest {
         loginUser.setUsername("routine_admin");
         loginUser.setPassword("123456");
         loginUser.setAreas(sysAreaList);
-        // mock 当前登陆用户信息
-        PowerMockito.mockStatic(ExcelUtils.class);
-        PowerMockito.mockStatic(RequestContextHolder.class);
 
     }
 
@@ -414,32 +411,36 @@ public class AssetReportServiceImplTest {
             assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_YEAR, 1551422114000L, 1551423114000L));
         Assert.assertThat(result, Matchers.notNullValue());
     }
+
     @Test
     public void queryCategoryCountByTimeToTableSeason() throws Exception {
         mockLoginUser(loginUser);
-        AssetReportTableResponse result = iAssetReportService.queryCategoryCountByTimeToTable(
-                assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_QUARTER, 1551422114000L, 1551423114000L));
+        AssetReportTableResponse result = iAssetReportService.queryCategoryCountByTimeToTable(assetReportServiceManager
+            .initCategoryCountQuery(ShowCycleType.THIS_QUARTER, 1551422114000L, 1551423114000L));
         Assert.assertThat(result, Matchers.notNullValue());
     }
+
     @Test
     public void queryCategoryCountByTimeToTableMonth() throws Exception {
         mockLoginUser(loginUser);
         AssetReportTableResponse result = iAssetReportService.queryCategoryCountByTimeToTable(
-                assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_MONTH, 1551422114000L, 1551423114000L));
+            assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_MONTH, 1551422114000L, 1551423114000L));
         Assert.assertThat(result, Matchers.notNullValue());
     }
+
     @Test
     public void queryCategoryCountByTimeToTableWeek() throws Exception {
         mockLoginUser(loginUser);
         AssetReportTableResponse result = iAssetReportService.queryCategoryCountByTimeToTable(
-                assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_WEEK, 1551422114000L, 1551423114000L));
+            assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_WEEK, 1551422114000L, 1551423114000L));
         Assert.assertThat(result, Matchers.notNullValue());
     }
+
     @Test
     public void queryCategoryCountByTimeToTableAssTime() throws Exception {
         mockLoginUser(loginUser);
-        AssetReportTableResponse result = iAssetReportService.queryCategoryCountByTimeToTable(
-                assetReportServiceManager.initCategoryCountQuery(ShowCycleType.ASSIGN_TIME, 1551422114000L, 1551423114000L));
+        AssetReportTableResponse result = iAssetReportService.queryCategoryCountByTimeToTable(assetReportServiceManager
+            .initCategoryCountQuery(ShowCycleType.ASSIGN_TIME, 1551422114000L, 1551423114000L));
         Assert.assertThat(result, Matchers.notNullValue());
     }
 
@@ -532,7 +533,7 @@ public class AssetReportServiceImplTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("user-agent", "   ");
         when(RequestContextHolder.getRequestAttributes())
-                .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
+            .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
         iAssetReportService.exportAssetGroupTable(assetReportServiceManager.initReportQueryRequest("1"));
         Mockito.verify(assetReportDao).getNewAssetWithGroup(Mockito.any());
     }
