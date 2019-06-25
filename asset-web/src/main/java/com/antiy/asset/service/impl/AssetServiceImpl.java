@@ -2645,8 +2645,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetNetworkCardDao.insert(assetNetworkCard);
                 }
                 // 记录资产操作流程
-                assetRecord(asset.getStringId(), asset.getAreaId());
-
+                AssetOperationRecord assetOperationRecord = assetRecord(asset.getStringId(), asset.getAreaId());
+                assetOperationRecordDao.insert(assetOperationRecord);
                 success++;
             }
 
