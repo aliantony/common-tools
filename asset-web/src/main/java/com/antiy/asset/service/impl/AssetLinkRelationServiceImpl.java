@@ -360,10 +360,6 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     @Override
     public List<AssetLinkedCountResponse> queryAssetLinkedCountList(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
-        assetLinkRelationQuery.setAreaIds(LoginUserUtil.getLoginUser() != null
-            ? Arrays
-                .asList(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()))
-            : Lists.newArrayList());
         List<AssetLinkedCount> assetResponseList = assetLinkRelationDao
             .queryAssetLinkedCountList(assetLinkRelationQuery);
         if (CollectionUtils.isEmpty(assetResponseList)) {
