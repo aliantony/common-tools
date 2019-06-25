@@ -69,7 +69,8 @@ public class AssetLinkRelationQuery extends ObjectQuery {
     /**
      * 资产区域
      */
-    @ApiModelProperty("资产区域,不传")
+    @ApiModelProperty("资产区域")
+    @Encode
     private List<Integer> areaIds;
     /**
      * 关联资产综合查询

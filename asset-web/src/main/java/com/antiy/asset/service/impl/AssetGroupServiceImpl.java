@@ -7,6 +7,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.convert.SelectConvert;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -148,10 +149,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
         if (!Objects.equals(0, assetRelationResult)) {
             // 写入业务日志(删除关联资产)
-            LogUtils.recordOperLog(
-                new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(), assetGroup.getId(),
-                    assetGroup.getName(), assetGroup, BusinessModuleEnum.ASSET_GROUP_MANAGEMENT,
-                    BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(),
+                assetGroup.getId(), assetGroup.getName(), assetGroup, BusinessModuleEnum.ASSET_GROUP_MANAGEMENT,
+                BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}", assetGroup);
         }
 
@@ -380,20 +380,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         } else {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_DELETE.getName(),
                 DataTypeUtils.stringToInteger(id.toString()), assetGroupDao.getNameById(id), id,
-                BusinessModuleEnum.ASSET_GROUP_MANAGEMENT,
-                BusinessPhaseEnum.NONE));
+                BusinessModuleEnum.ASSET_GROUP_MANAGEMENT, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_DELETE.getName() + " {}", id);
             return assetGroupDao.deleteById(Integer.valueOf((String) id));
         }
-    }
-}
-
-@Component
-class SelectConvert extends BaseConverter<AssetGroup, SelectResponse> {
-    @Override
-    protected void convert(AssetGroup assetGroup, SelectResponse selectResponse) {
-        selectResponse.setValue(assetGroup.getName());
-        selectResponse.setId(Objects.toString(assetGroup.getId()));
-        super.convert(assetGroup, selectResponse);
     }
 }

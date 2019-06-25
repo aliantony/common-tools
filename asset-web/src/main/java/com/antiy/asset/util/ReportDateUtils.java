@@ -308,7 +308,7 @@ public class ReportDateUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(ReportDateUtils.getWeekOfMonth());
+        System.out.println(ReportDateUtils.getSeason());
         // System.out.println(getMonthWithDate(1542468106000L,1558468106000L));
 
         // System.out.println(getDayOfWeek());
