@@ -1629,6 +1629,7 @@
         <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
                 #{item}
             </foreach>
+        and status = 1 and uuid is not null
         group by id
     </select>
 </mapper>
