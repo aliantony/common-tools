@@ -15,11 +15,15 @@ import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
+import com.antiy.asset.vo.request.SysArea;
 import com.antiy.asset.vo.request.UseableIpRequest;
 import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
@@ -65,6 +69,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Resource
     private AssetCategoryModelDao                                       assetCategoryDao;
     private CategoryValiEntity                                          categoryVali;
+    @Resource
+    private RedisUtil                                                   redisUtil;
 
     private CategoryValiEntity func(CategoryValiEntity category) {
         categoryVali = assetCategoryDao.getNameByCtegoryId(category.getParentId());
@@ -363,6 +369,18 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         if (CollectionUtils.isEmpty(assetResponseList)) {
             return Lists.newArrayList();
         }
+        assetResponseList.stream().forEach(assetLinkedCount -> {
+            String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(),
+                SysArea.class, DataTypeUtils.stringToInteger(assetLinkedCount.getAreaId()));
+            try {
+                SysArea sysArea = redisUtil.getObject(newAreaKey, SysArea.class);
+                if (!Objects.isNull(sysArea)) {
+                    assetLinkedCount.setAreaName(sysArea.getFullName());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
         processLinkCount(assetResponseList, categoryMap);
         return BeanConvert.convert(assetResponseList, AssetLinkedCountResponse.class);

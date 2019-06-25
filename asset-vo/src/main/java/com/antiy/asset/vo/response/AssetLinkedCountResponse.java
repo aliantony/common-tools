@@ -53,6 +53,32 @@ public class AssetLinkedCountResponse extends BaseResponse {
      */
     @ApiModelProperty("设备类型")
     private CategoryType categoryType;
+    /**
+     * 区域名称
+     */
+    @ApiModelProperty("区域名称")
+    private String       areaName;
+    /**
+     * 区域id
+     */
+    @ApiModelProperty("区域id")
+    private String       areaId;
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
+    }
+
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
+    }
 
     public CategoryType getCategoryType() {
         return categoryType;
