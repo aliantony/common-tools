@@ -386,47 +386,47 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         return assetSoftwareRelationDao.updateByAssetId(assetSoftwareRelation);
     }
 
-    private List<AssetSoftwareInstall> processPage(List<AssetSoftwareInstall> adaptationResult, int pageSize,
-                                                   int pageOffset) {
-        if (pageOffset >= adaptationResult.size()) {
-            return new ArrayList<>();
-        }
-        if (pageSize == -1) {
-            return adaptationResult;
-        }
-        int max = Math.min((pageOffset + pageSize), adaptationResult.size());
-        List<AssetSoftwareInstall> assetSoftwareInstallList = new ArrayList<>();
-        for (int i = pageOffset; i < max; i++) {
-            assetSoftwareInstallList.add(adaptationResult.get(i));
-        }
-        return assetSoftwareInstallList;
-    }
+    // private List<AssetSoftwareInstall> processPage(List<AssetSoftwareInstall> adaptationResult, int pageSize,
+    // int pageOffset) {
+    // if (pageOffset >= adaptationResult.size()) {
+    // return new ArrayList<>();
+    // }
+    // if (pageSize == -1) {
+    // return adaptationResult;
+    // }
+    // int max = Math.min((pageOffset + pageSize), adaptationResult.size());
+    // List<AssetSoftwareInstall> assetSoftwareInstallList = new ArrayList<>();
+    // for (int i = pageOffset; i < max; i++) {
+    // assetSoftwareInstallList.add(adaptationResult.get(i));
+    // }
+    // return assetSoftwareInstallList;
+    // }
 
-    private List<AssetSoftwareInstall> processOperationAdaptation(List<AssetSoftwareInstall> queryInstallList,
-                                                                  String id) throws Exception {
-        AssetSoftware assetSoftware = assetSoftwareDao.getById(id);
-        String operationSystem = assetSoftware.getOperationSystem();
-        String[] operationSystemArray = operationSystem.split(",");
-        List<String> operationSystemList = Arrays.asList(operationSystemArray);
-        List<AssetSoftwareInstall> result = new ArrayList<>();
-        for (AssetSoftwareInstall assetSoftwareInstall : queryInstallList) {
-            if (operationSystemList.contains(assetSoftwareInstall.getOperationSystem())) {
-                result.add(assetSoftwareInstall);
-            }
-        }
-        return result;
-    }
+    // private List<AssetSoftwareInstall> processOperationAdaptation(List<AssetSoftwareInstall> queryInstallList,
+    // String id) throws Exception {
+    // AssetSoftware assetSoftware = assetSoftwareDao.getById(id);
+    // String operationSystem = assetSoftware.getOperationSystem();
+    // String[] operationSystemArray = operationSystem.split(",");
+    // List<String> operationSystemList = Arrays.asList(operationSystemArray);
+    // List<AssetSoftwareInstall> result = new ArrayList<>();
+    // for (AssetSoftwareInstall assetSoftwareInstall : queryInstallList) {
+    // if (operationSystemList.contains(assetSoftwareInstall.getOperationSystem())) {
+    // result.add(assetSoftwareInstall);
+    // }
+    // }
+    // return result;
+    // }
 
-    /**
-     * 安装方式为null时 为未安装状态 配置方式为null时 为未配置状态 进行处理方便前端进行展示
-     * @param queryInstallList
-     */
-    private void processStatusData(List<AssetSoftwareInstall> queryInstallList) {
-        for (AssetSoftwareInstall assetSoftwareInstall : queryInstallList) {
-            if (assetSoftwareInstall.getInstallStatus() == null) {
-                assetSoftwareInstall.setInstallStatus(SoftInstallStatus.WAIT_CONFIGURE.getCode());
-            }
-        }
-    }
+    // /**
+    // * 安装方式为null时 为未安装状态 配置方式为null时 为未配置状态 进行处理方便前端进行展示
+    // * @param queryInstallList
+    // */
+    // private void processStatusData(List<AssetSoftwareInstall> queryInstallList) {
+    // for (AssetSoftwareInstall assetSoftwareInstall : queryInstallList) {
+    // if (assetSoftwareInstall.getInstallStatus() == null) {
+    // assetSoftwareInstall.setInstallStatus(SoftInstallStatus.WAIT_CONFIGURE.getCode());
+    // }
+    // }
+    // }
 
 }
