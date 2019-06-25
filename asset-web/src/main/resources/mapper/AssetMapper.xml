@@ -1590,7 +1590,8 @@
         </if>
     </select>
 
-    <select id="queryAlarmCountByAssetIds" resultType="com.antiy.asset.entity.IdCount" parameterType="com.antiy.asset.vo.query.AssetQuery">
+    <select id="queryAlarmCountByAssetIds" resultType="com.antiy.asset.entity.IdCount"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
         select asset_id as id, count(asset_id) as count from
         alarm_current_records
         <if test="ids!=null and ids.length>0">
@@ -1600,6 +1601,26 @@
             </foreach>
         </if>
         group by asset_id
+    </select>
+    <select id="findCountMac" resultType="java.lang.Integer">
+        SELECT
+            count( 1 ) count
+        FROM
+            asset a
+            LEFT JOIN asset_network_equipment b ON a.id = b.asset_id
+            AND b.`status` = 1
+            LEFT JOIN asset_safety_equipment d ON a.id = d.asset_id
+            AND d.`status` = 1
+            LEFT JOIN asset_network_card c ON a.id = c.asset_id
+            AND c.`status` = 1
+        WHERE
+            (
+                upper( ( REPLACE ( REPLACE ( b.mac_address, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-', '' ) )
+                OR upper( ( REPLACE ( REPLACE ( c.mac_address, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-', '' ) )
+                OR upper( ( REPLACE ( REPLACE ( d.mac, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-', '' ) )
+            )
+            AND a.`status` = 1
+            AND a.STATUS != 9;
     </select>
 
 </mapper>
