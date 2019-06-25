@@ -17,7 +17,7 @@ import io.swagger.annotations.*;
  * @author zhangyajun
  * @since 2019-01-02
  */
-@Api(value = "Asset", description = "资产主表")
+@Api(value = "", description = "根据区域ID返回资产UUID")
 @RestController
 @RequestMapping("/api/v1/asset")
 public class AssetBusinessController {
@@ -34,7 +34,7 @@ public class AssetBusinessController {
     @ApiOperation(value = "根据区域ID返回资产UUID", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/uuidByAreaId", method = RequestMethod.POST)
-    // @PreAuthorize(value = "hasAuthority('asset:asset:saveSingle')")
+    // @PreAuthorize(value = "hasAuthority('asset:query:uuidByAreaId')")
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "areaIdRequest") AreaIdRequest areaIdRequest) throws Exception {
         return ActionResponse.success(iAssetService.queryUuidByAreaIds(areaIdRequest));
     }
