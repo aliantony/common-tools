@@ -44,6 +44,30 @@ public class AssetLinkedCount extends BaseEntity {
      * 设备类型
      */
     private CategoryType categoryType;
+    /**
+     * 区域id
+     */
+    private String       areaId;
+    /**
+     * 区域名称
+     */
+    private String       areaName;
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
+    }
+
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
+    }
 
     public CategoryType getCategoryType() {
         return categoryType;
@@ -111,15 +135,8 @@ public class AssetLinkedCount extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetLinkedCount{" +
-                "assetId='" + assetId + '\'' +
-                ", name='" + name + '\'' +
-                ", number='" + number + '\'' +
-                ", categoryModel='" + categoryModel + '\'' +
-                ", categoryModelName='" + categoryModelName + '\'' +
-                ", canBind=" + canBind +
-                ", noBind=" + noBind +
-                ", categoryType=" + categoryType +
-                '}';
+        return "AssetLinkedCount{" + "assetId='" + assetId + '\'' + ", name='" + name + '\'' + ", number='" + number
+               + '\'' + ", categoryModel='" + categoryModel + '\'' + ", categoryModelName='" + categoryModelName + '\''
+               + ", canBind=" + canBind + ", noBind=" + noBind + ", categoryType=" + categoryType + '}';
     }
 }

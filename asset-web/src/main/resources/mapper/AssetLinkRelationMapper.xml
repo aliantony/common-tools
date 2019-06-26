@@ -691,6 +691,7 @@
             parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
         SELECT
         a.id as assetId,
+        a.area_id as areaId,
         a.name,
         a.number,
         a.category_model as categoryModel,
@@ -740,6 +741,7 @@
         UNION ALL
         SELECT
         a.id as assetId,
+        a.area_id as areaId,
         a.name,
         a.number,
         a.category_model as categoryModel,

@@ -71,7 +71,7 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      */
     @ApiModelProperty("资产区域")
     @Encode
-    private List<Integer> areaIds;
+    private List<String> areaIds;
     /**
      * 关联资产综合查询
      */
@@ -162,11 +162,11 @@ public class AssetLinkRelationQuery extends ObjectQuery {
         this.parentAssetId = parentAssetId;
     }
 
-    public List<Integer> getAreaIds() {
+    public List<String> getAreaIds() {
         return areaIds;
     }
 
-    public void setAreaIds(List<Integer> areaIds) {
+    public void setAreaIds(List<String> areaIds) {
         this.areaIds = areaIds;
     }
 

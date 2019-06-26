@@ -6,14 +6,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
-import com.antiy.asset.vo.response.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -282,4 +281,11 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     Integer queryNormalCount();
+
+    /**
+     * 根据区域ID返回资产UUID
+     * @return
+     * @throws Exception
+     */
+    List<String> queryUuidByAreaIds(AreaIdRequest request) throws Exception;
 }
