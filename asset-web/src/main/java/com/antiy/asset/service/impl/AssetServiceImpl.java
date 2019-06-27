@@ -971,6 +971,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         } else {
             List<AssetResponse> assetResponseList = responseConverter
                 .convert(assetLinkRelationDao.findListUnconnectedAsset(query), AssetResponse.class);
+            assetResponseList.stream().forEach(assetLinkedCount -> {
+                String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(),
+                    com.antiy.asset.vo.request.SysArea.class,
+                    DataTypeUtils.stringToInteger(assetLinkedCount.getAreaId()));
+                try {
+                    com.antiy.asset.vo.request.SysArea sysArea = redisUtil.getObject(newAreaKey,
+                        com.antiy.asset.vo.request.SysArea.class);
+                    if (!Objects.isNull(sysArea)) {
+                        assetLinkedCount.setAreaName(sysArea.getFullName());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
             processCategoryToSecondCategory(assetResponseList, categoryMap);
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
         }
