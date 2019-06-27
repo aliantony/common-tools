@@ -1783,6 +1783,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetOperationRecord.setContent(AssetEventEnum.RETIRE_REGISTER.getName());
                     } else if (currentAsset.getAssetStatus().equals(AssetStatusEnum.NOT_REGSIST.getCode())) {
                         assetOperationRecord.setContent(AssetEventEnum.HARD_NO_REGISTER.getName());
+                    } else if (currentAsset.getAssetStatus().equals(AssetStatusEnum.WATI_REGSIST.getCode())
+                               && currentAsset.getAssetSource().equals(ReportType.AUTOMATIC.getCode())) {
+                        assetOperationRecord.setContent(AssetEventEnum.HARD_WAITTING_REGISTER.getName());
                     } else if (currentAsset.getAssetStatus().equals(AssetStatusEnum.WATI_REGSIST.getCode())) {
                         assetOperationRecord.setContent(AssetEventEnum.HARD_WAITTING_REGISTER.getName());
                     } else {
