@@ -385,10 +385,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
     private AssetCategoryModel getParentCategory(AssetCategoryModel categoryModel,
                                                  List<AssetCategoryModel> allCategory) throws Exception {
         if (null != categoryModel) {
-            if (categoryModel.getParentId().equals(getHardwareCategoryId())) {
+            if (Objects.equals(categoryModel.getParentId(), getHardwareCategoryId())) {
                 return categoryModel;
             }
-
             Optional<AssetCategoryModel> categoryModelOptional = allCategory.stream()
                 .filter(x -> Objects.equals(x.getId(), DataTypeUtils.stringToInteger(categoryModel.getParentId())))
                 .findFirst();

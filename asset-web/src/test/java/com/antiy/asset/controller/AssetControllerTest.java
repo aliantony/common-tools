@@ -3,6 +3,7 @@ package com.antiy.asset.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.vo.enums.FileUseEnum;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
