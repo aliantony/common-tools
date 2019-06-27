@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
@@ -22,6 +23,7 @@ public class AreaIdRequest extends BaseRequest implements ObjectValidator {
     @ApiModelProperty("区域ID不能为空")
     @NotNull(message = "区域ID不能为空")
     @Valid
+    @Encode
     private List<String> areaIds;
 
     public List<String> getAreaIds() {
