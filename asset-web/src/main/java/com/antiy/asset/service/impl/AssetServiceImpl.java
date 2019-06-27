@@ -293,8 +293,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 AssetNetworkCard.class);
                             for (AssetNetworkCard assetNetworkCard : networkCardList) {
 
-                                ParamterExceptionUtils
-                                    .isTrue(!CheckRepeatMAC(assetNetworkCard.getMacAddress()), "MAC地址不能重复！");
+                                ParamterExceptionUtils.isTrue(!CheckRepeatMAC(assetNetworkCard.getMacAddress()),
+                                    "MAC地址不能重复！");
                                 assetNetworkCard.setAssetId(aid);
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -934,8 +934,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      */
     @Override
     public PageResult<AssetResponse> findUnconnectedAsset(AssetQuery query) throws Exception {
-        query.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        if (query.getAreaIds() == null || query.getAreaIds().length == 0) {
+            query.setAreaIds(
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        }
         // 只查已入网资产
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.NET_IN.getCode());
@@ -976,6 +978,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         } else {
             List<AssetResponse> assetResponseList = responseConverter
                 .convert(assetLinkRelationDao.findListUnconnectedAsset(query), AssetResponse.class);
+            assetResponseList.stream().forEach(assetLinkedCount -> {
+                String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(),
+                    com.antiy.asset.vo.request.SysArea.class,
+                    DataTypeUtils.stringToInteger(assetLinkedCount.getAreaId()));
+                try {
+                    com.antiy.asset.vo.request.SysArea sysArea = redisUtil.getObject(newAreaKey,
+                        com.antiy.asset.vo.request.SysArea.class);
+                    if (!Objects.isNull(sysArea)) {
+                        assetLinkedCount.setAreaName(sysArea.getFullName());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
             processCategoryToSecondCategory(assetResponseList, categoryMap);
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
         }
@@ -1576,8 +1592,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                     .getById(DataTypeUtils.stringToInteger(assetNetworkCard.getStringId()));
                                 if (byId != null && !byId.getIpAddress().equals(assetNetworkCard.getIpAddress())) {
                                     // 网卡mac地址判重
-                                    BusinessExceptionUtils
-                                            .isTrue(assetDao.findCountMac(assetNetworkCard.getMacAddress()) <= 0, "MAC不能重复");
+                                    BusinessExceptionUtils.isTrue(
+                                        assetDao.findCountMac(assetNetworkCard.getMacAddress()) <= 0, "MAC不能重复");
                                     Map<String, String> integers = new HashMap<>();
                                     integers.put(asset.getStringId(), byId.getIpAddress());
                                     assetLinkRelationDao.deleteRelationByAssetId(integers);
@@ -1722,7 +1738,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             .getById(DataTypeUtils.stringToInteger(networkEquipment.getId()));
                         if (byId != null && !byId.getInnerIp().equals(networkEquipment.getInnerIp())) {
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(networkEquipment.getId()));
-                            BusinessExceptionUtils.isTrue(assetDao.findCountMac(networkEquipment.getMacAddress()) <= 0, "网络设备MAC不能重复");
+                            BusinessExceptionUtils.isTrue(assetDao.findCountMac(networkEquipment.getMacAddress()) <= 0,
+                                "网络设备MAC不能重复");
                             Map<String, String> integers = new HashMap<>();
                             integers.put(asset.getStringId(), byId.getInnerIp());
                             assetLinkRelationDao.deleteRelationByAssetId(integers);
@@ -1746,7 +1763,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             .getById(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
                         if (byId != null && !byId.getIp().equals(safetyEquipment.getIp())) {
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
-                            BusinessExceptionUtils.isTrue(assetDao.findCountMac(safetyEquipment.getMac()) <= 0, "安全设备MAC不能重复");
+                            BusinessExceptionUtils.isTrue(assetDao.findCountMac(safetyEquipment.getMac()) <= 0,
+                                "安全设备MAC不能重复");
                         }
                         AssetSafetyEquipment assetSafetyEquipment = BeanConvert.convertBean(safetyEquipment,
                             AssetSafetyEquipment.class);
