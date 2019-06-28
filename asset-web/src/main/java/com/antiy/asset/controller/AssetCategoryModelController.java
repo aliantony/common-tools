@@ -174,10 +174,10 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/query/withoutnode", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryCategoryNode')")
     public ActionResponse queryCategoryNodeWhihoutNode() throws Exception {
-        iAssetCategoryModelService.queryCategoryNode(1);
-        iAssetCategoryModelService.queryCategoryNode(2);
-        List<AssetCategoryModelNodeResponse> assetCategoryModelNodeResponses = new ArrayList(){{add(iAssetCategoryModelService.queryCategoryNode(1));add(iAssetCategoryModelService.queryCategoryNode(2));}};
-        return ActionResponse.success(assetCategoryModelNodeResponses);
+//        iAssetCategoryModelService.queryCategoryNode(1);
+//        iAssetCategoryModelService.queryCategoryNode(2);
+//        List<AssetCategoryModelNodeResponse> assetCategoryModelNodeResponses = new ArrayList(){{add(iAssetCategoryModelService.queryCategoryNode(1));add(iAssetCategoryModelService.queryCategoryNode(2));}};
+        return ActionResponse.success(iAssetCategoryModelService.queryCategoryNodeCount());
     }
 
     /**
