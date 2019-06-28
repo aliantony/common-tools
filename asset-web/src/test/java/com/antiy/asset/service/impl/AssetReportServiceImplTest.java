@@ -82,6 +82,7 @@ public class AssetReportServiceImplTest {
         loginUser.setUsername("routine_admin");
         loginUser.setPassword("123456");
         loginUser.setAreas(sysAreaList);
+        PowerMockito.mockStatic(RequestContextHolder.class);
 
     }
 
@@ -218,6 +219,8 @@ public class AssetReportServiceImplTest {
             assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getDayOfWeek())));
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
         HttpServletRequest httpServletRequest = getRequest();
+        when(RequestContextHolder.getRequestAttributes())
+                .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
         iAssetReportService.exportCategoryCount(
             assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_WEEK, 1551422114000L, 1551423114000L),
             httpServletRequest);
@@ -247,6 +250,9 @@ public class AssetReportServiceImplTest {
         Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any())).thenReturn(
             assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getWeekOfMonth())));
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
+        when(RequestContextHolder.getRequestAttributes())
+                .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
+
         iAssetReportService.exportCategoryCount(
             assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_MONTH, 1551422114000L, 1551422114000L),
             getRequest());
@@ -267,6 +273,9 @@ public class AssetReportServiceImplTest {
             .thenReturn(assetReportServiceManager.initCategoryModeList("其它设备", 2));
         Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
             .thenReturn(assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getSeason())));
+        when(RequestContextHolder.getRequestAttributes())
+                .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
+
         Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any()))
             .thenReturn(assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getSeason())));
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
@@ -291,6 +300,8 @@ public class AssetReportServiceImplTest {
             assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getCurrentMonthOfYear())));
         Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any())).thenReturn(
             assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getCurrentMonthOfYear())));
+        when(RequestContextHolder.getRequestAttributes())
+                .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
 
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
         iAssetReportService.exportCategoryCount(
@@ -315,6 +326,8 @@ public class AssetReportServiceImplTest {
             .initCategoryEntityList(getKeyFromMap(ReportDateUtils.getMonthWithDate(1551422114000L, 1551423114000L))));
         Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any())).thenReturn(assetReportServiceManager
             .initCategoryEntityList(getKeyFromMap(ReportDateUtils.getMonthWithDate(1551422114000L, 1551423114000L))));
+        when(RequestContextHolder.getRequestAttributes())
+                .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
 
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
         iAssetReportService.exportCategoryCount(

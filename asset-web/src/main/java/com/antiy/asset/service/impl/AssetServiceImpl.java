@@ -178,6 +178,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (request.getAsset() != null) {
             ParamterExceptionUtils.isBlank(request.getAsset().getLocation().trim(), "物理位置不能为空");
         }
+        // 品类型号判断，如果为计算设备，提示错误信息,配合资产上报
+
+        String category = request.getAsset().getCategoryModel();
+        if (!Objects.isNull(category) && "4".equals(category)) {
+            throw new BusinessException("请重新选择资产所属品类型号");
+        }
+
         AssetRequest requestAsset = request.getAsset();
         AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
@@ -927,8 +934,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      */
     @Override
     public PageResult<AssetResponse> findUnconnectedAsset(AssetQuery query) throws Exception {
-        query.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        if (query.getAreaIds() == null || query.getAreaIds().length == 0) {
+            query.setAreaIds(
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        }
         // 只查已入网资产
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.NET_IN.getCode());
@@ -969,6 +978,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         } else {
             List<AssetResponse> assetResponseList = responseConverter
                 .convert(assetLinkRelationDao.findListUnconnectedAsset(query), AssetResponse.class);
+            assetResponseList.stream().forEach(assetLinkedCount -> {
+                String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(),
+                    com.antiy.asset.vo.request.SysArea.class,
+                    DataTypeUtils.stringToInteger(assetLinkedCount.getAreaId()));
+                try {
+                    com.antiy.asset.vo.request.SysArea sysArea = redisUtil.getObject(newAreaKey,
+                        com.antiy.asset.vo.request.SysArea.class);
+                    if (!Objects.isNull(sysArea)) {
+                        assetLinkedCount.setAreaName(sysArea.getFullName());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
             processCategoryToSecondCategory(assetResponseList, categoryMap);
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
         }
@@ -1789,6 +1812,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetOperationRecord.setContent(AssetEventEnum.RETIRE_REGISTER.getName());
                     } else if (currentAsset.getAssetStatus().equals(AssetStatusEnum.NOT_REGSIST.getCode())) {
                         assetOperationRecord.setContent(AssetEventEnum.HARD_NO_REGISTER.getName());
+                    } else if (currentAsset.getAssetStatus().equals(AssetStatusEnum.WATI_REGSIST.getCode())
+                               && currentAsset.getAssetSource().equals(ReportType.AUTOMATIC.getCode())) {
+                        assetOperationRecord.setContent(AssetEventEnum.HARD_WAITTING_REGISTER.getName());
                     } else if (currentAsset.getAssetStatus().equals(AssetStatusEnum.WATI_REGSIST.getCode())) {
                         assetOperationRecord.setContent(AssetEventEnum.HARD_WAITTING_REGISTER.getName());
                     } else {

@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.vo.enums.FileUseEnum;
 import com.antiy.biz.file.FileRespVO;
 import com.antiy.biz.file.FileResponse;
 import com.antiy.biz.file.FileUtils;
@@ -44,9 +45,9 @@ public class FileControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
     @SpyBean
-    public FileUtils fileUtils;
-    private MockMvc mockMvc;
-    private static FileRespVO fileRespVOExpected = new FileRespVO();
+    public FileUtils              fileUtils;
+    private MockMvc               mockMvc;
+    private static FileRespVO     fileRespVOExpected = new FileRespVO();
     static {
         fileRespVOExpected.setOriginFileName("fileList");
         fileRespVOExpected.setFileSize(21);
@@ -55,38 +56,38 @@ public class FileControllerTest {
         fileRespVOExpected.setCurrFileName("test.doc");
     }
     private FileResponse<FileRespVO> fileResponseExpected = FileResponse.of(RespBasicCode.SUCCESS, fileRespVOExpected);
+
     @Before
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
+
     @Test
     public void upload() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile("fileList", "test.doc", "text/plain",
-                "test file 12312312312".getBytes());
+            "test file 12312312312".getBytes());
         doReturn(fileResponseExpected).when(fileUtils).upload(Mockito.anyString(), Mockito.any());
-        MvcResult mvcResult = mockMvc.perform(multipart("/api/v1/asset/file/upload").file(multipartFile))
-                .andExpect(status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+        MvcResult mvcResult = mockMvc
+            .perform(multipart("/api/v1/asset/file/upload").file(multipartFile).param("md5", "123e2e2e2e")
+                .param("fileUse", "INSTALL_INTRODUCE_MANUAL"))
+            .andExpect(status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
         System.out.println(mvcResult.getResponse().getContentAsString());
-        ActionResponse obj = JSONObject.parseObject(mvcResult.getResponse().getContentAsString(),
-                ActionResponse.class);
-        JSONObject object = (JSONObject)((JSONArray)obj.getBody()).get(0);
+        ActionResponse obj = JSONObject.parseObject(mvcResult.getResponse().getContentAsString(), ActionResponse.class);
+        JSONObject object = (JSONObject) ((JSONArray) obj.getBody()).get(0);
         Assert.assertThat(object.getString("currFileName"), Matchers.is("test.doc"));
     }
 
-    @Ignore
     @Test
     public void download() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile("files", "test.doc", "text/plain",
-                "test file 12312312312".getBytes());
+            "test file 12312312312".getBytes());
         FileResponse<FileRespVO> fileResponseExpected = FileResponse.of(RespBasicCode.SUCCESS, fileRespVOExpected);
         doReturn(FileResponse.of(RespBasicCode.SUCCESS, multipartFile.getInputStream())).when(fileUtils)
-                .download(Mockito.anyString());
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/asset/file/download")
-                .param("url", "/vul/20190307/c4e98fc6739545d3b9db8cca48b0e3eb.docx")
-                .param("fileName", "目录结构解析.docx")
-        )
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn();
+            .download(Mockito.anyString());
+        MvcResult mvcResult = mockMvc
+            .perform(MockMvcRequestBuilders.get("/api/v1/asset/file/download")
+                .param("url", "/vul/20190307/c4e98fc6739545d3b9db8cca48b0e3eb.docx").param("fileName", "目录结构解析.docx"))
+            .andDo(MockMvcResultHandlers.print()).andReturn();
         System.out.println(mvcResult.getClass());
         System.out.println(mvcResult);
         String object = mvcResult.getResponse().getContentAsString();
