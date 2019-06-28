@@ -2,10 +2,10 @@ package com.antiy.asset.dao;
 
 import java.util.List;
 
-import com.antiy.asset.entity.CategoryValiEntity;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.entity.CategoryValiEntity;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.common.base.IBaseDao;
 
@@ -40,4 +40,5 @@ public interface AssetCategoryModelDao extends IBaseDao<AssetCategoryModel> {
 
     CategoryValiEntity getNameByCtegoryId(int id);
 
+    Integer hasChild(@Param("id") String categoryModel);
 }

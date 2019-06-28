@@ -414,4 +414,8 @@
         WHERE
 	    acm.id = #{id}
     </select>
+    <!--判断是否还有子节点-->
+    <select id="hasChild" resultType="java.lang.Integer">
+        select count(1) from asset_category_model where parent_id = #{id} and status = 1
+    </select>
 </mapper>
