@@ -433,6 +433,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             assetOperationRecord.setOriginStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
             assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_CHANGE.getMsg());
         }
+        if (request.getSoftwareStatus().equals(SoftwareStatusEnum.WATI_REGSIST.getCode())) {
+            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_REGISTER.getMsg());
+        }
         assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
         assetOperationRecord.setTargetObjectId(request.getId());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
