@@ -989,7 +989,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetLinkedCount.setAreaName(sysArea.getFullName());
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.info(e.getMessage());
                 }
             });
             processCategoryToSecondCategory(assetResponseList, categoryMap);

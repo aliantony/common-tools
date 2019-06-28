@@ -34,7 +34,7 @@ import com.antiy.common.utils.JsonUtil;
 @Service
 public class SafetyEquipmentFieldCompareImpl extends AbstractChangeRecordCompareImpl {
     @Resource
-    AssetUserDao                               userDao;
+    private AssetUserDao                       userDao;
     @Resource
     private RedisUtil                          redisUtil;
     @Resource

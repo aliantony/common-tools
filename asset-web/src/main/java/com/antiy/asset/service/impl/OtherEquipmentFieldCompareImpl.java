@@ -35,7 +35,7 @@ public class OtherEquipmentFieldCompareImpl extends AbstractChangeRecordCompareI
     @Resource
     private RedisUtil                          redisUtil;
     @Resource
-    AssetUserDao                               userDao;
+    private AssetUserDao                       userDao;
     @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
 

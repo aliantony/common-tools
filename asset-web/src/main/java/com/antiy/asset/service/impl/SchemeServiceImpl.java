@@ -36,13 +36,13 @@ public class SchemeServiceImpl extends BaseServiceImpl<Scheme> implements ISchem
     private static final Logger                         logger = LogUtils.get(SchemeServiceImpl.class);
 
     @Resource
-    private SchemeDao                                     schemeDao;
+    private SchemeDao                                   schemeDao;
     @Resource
-    private AesEncoder                            aesEncoder;
+    private AesEncoder                                  aesEncoder;
     @Resource
-    private BaseConverter<Scheme, SchemeResponse> responseBaseConverter;
+    private BaseConverter<Scheme, SchemeResponse>       responseBaseConverter;
     @Resource
-    AssetOperationRecordDao                             operationRecordDao;
+    private AssetOperationRecordDao                     operationRecordDao;
     @Resource
     private BaseConverter<List<Scheme>, SchemeResponse> schemeListToResponseConverter;
 

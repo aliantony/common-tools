@@ -54,16 +54,16 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Transactional(rollbackFor = Exception.class)
 @Service
 public class AssetReportServiceImpl implements IAssetReportService {
-    private Logger              logger = LogUtils.get(this.getClass());
+    private Logger                logger = LogUtils.get(this.getClass());
 
-    private final static String DAY    = "%w";
-    private final static String WEEK   = "%u";
-    private final static String MONTH  = "%Y-%m";
+    private final static String   DAY    = "%w";
+    private final static String   WEEK   = "%u";
+    private final static String   MONTH  = "%Y-%m";
 
     @Resource
-    AssetReportDao              assetReportDao;
+    private AssetReportDao        assetReportDao;
     @Resource
-    AssetCategoryModelDao       categoryModelDao;
+    private AssetCategoryModelDao categoryModelDao;
 
     @Override
     public AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {

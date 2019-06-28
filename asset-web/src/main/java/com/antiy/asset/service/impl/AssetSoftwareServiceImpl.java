@@ -122,7 +122,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
     @Resource
     private IRedisService                                                    redisService;
     @Resource
-    FileServiceImpl                                                          fileService;
+    private FileServiceImpl                                                  fileService;
     @Resource
     private AssetClient                                                      assetClient;
 

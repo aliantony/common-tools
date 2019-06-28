@@ -421,7 +421,7 @@
     <select id="findAllCategoryCount" resultMap="BaseResultMap">
 SELECT
 	id,
-	NAME,
+	name,
 	type,
 	asset_type,
 	parent_id,
@@ -432,7 +432,7 @@ SELECT
 	memo,
 	create_user,
 	modify_user,
-	STATUS,
+	status,
 	sum(count) as count
 FROM
 	(

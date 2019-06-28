@@ -53,13 +53,13 @@ public class AssetStatusJumpController {
     @Resource
     private IAssetService                 assetService;
     @Resource
-    AssetDao                              assetDao;
+    private AssetDao                      assetDao;
     @Resource
-    AssetSoftwareDao                      softwareDao;
+    private AssetSoftwareDao              softwareDao;
     @Resource
-    AssetOperationRecordDao               operationRecordDao;
+    private AssetOperationRecordDao       operationRecordDao;
     @Resource
-    SchemeDao                             schemeDao;
+    private SchemeDao                     schemeDao;
     @Resource
     private ActivityClient                activityClient;
 

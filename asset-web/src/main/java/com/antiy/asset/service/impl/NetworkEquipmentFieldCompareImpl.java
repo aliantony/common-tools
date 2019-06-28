@@ -34,9 +34,9 @@ import com.antiy.common.utils.JsonUtil;
 @Service
 public class NetworkEquipmentFieldCompareImpl extends AbstractChangeRecordCompareImpl {
     @Resource
-    private RedisUtil                                  redisUtil;
+    private RedisUtil                          redisUtil;
     @Resource
-    AssetUserDao                               userDao;
+    private AssetUserDao                       userDao;
     @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
 

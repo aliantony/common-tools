@@ -53,7 +53,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Resource
     private AssetLinkRelationDao                                        assetLinkRelationDao;
     @Resource
-    AssetNetworkEquipmentDao                                            assetNetworkEquipmentDao;
+    private AssetNetworkEquipmentDao                                            assetNetworkEquipmentDao;
     @Resource
     private BaseConverter<AssetLinkRelationRequest, AssetLinkRelation>  requestConverter;
     @Resource
@@ -374,7 +374,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                     assetLinkedCount.setAreaName(sysArea.getFullName());
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LogUtils.info(logger, "{}  获取区域失败", RespBasicCode.BUSSINESS_EXCETION);
             }
         });
         Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
