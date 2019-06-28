@@ -11,7 +11,7 @@ public class AssetTopologyRelation {
     // 信息
     private String                 id;
     // 中心点
-    private List<Integer>          middlePoint;
+    private List<Double>          middlePoint;
     // 提示信息
     private List<String>           notices;
     // 展示角度
@@ -27,11 +27,11 @@ public class AssetTopologyRelation {
         this.info = info;
     }
 
-    public List<Integer> getMiddlePoint() {
+    public List<Double> getMiddlePoint() {
         return middlePoint;
     }
 
-    public void setMiddlePoint(List<Integer> middlePoint) {
+    public void setMiddlePoint(List<Double> middlePoint) {
         this.middlePoint = middlePoint;
     }
 

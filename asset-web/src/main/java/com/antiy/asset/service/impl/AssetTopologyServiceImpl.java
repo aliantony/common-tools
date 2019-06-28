@@ -74,23 +74,23 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     @Resource
     private IAssetService                       iAssetService;
     @Value("#{'${topology.middlePoint}'.split(',')}")
-    private List<Integer>                       middlePoint;
+    private List<Double>                        middlePoint;
     @Value("#{'${topology.cameraPos}'.split(',')}")
-    private List<Integer>                       cameraPos;
+    private List<Double>                        cameraPos;
     @Value("#{'${topology.targetPos}'.split(',')}")
-    private List<Integer>                       targetPos;
+    private List<Double>                        targetPos;
     @Value("${topology.first.level.space}")
-    private Integer                             firstLevelSpacing;
+    private Double                              firstLevelSpacing;
     @Value("${topology.first.level.height}")
-    private Integer                             firstLevelHeight;
+    private Double                              firstLevelHeight;
     @Value("${topology.second.level.space}")
-    private Integer                             secondLevelSpacing;
+    private Double                              secondLevelSpacing;
     @Value("${topology.second.level.height}")
-    private Integer                             secondLevelHeight;
+    private Double                              secondLevelHeight;
     @Value("${topology.third.level.space}")
-    private Integer                             thirdLevelSpacing;
+    private Double                              thirdLevelSpacing;
     @Value("${topology.third.level.height}")
-    private Integer                             thirdLevelHeight;
+    private Double                              thirdLevelHeight;
 
     @Override
     public List<String> queryCategoryModels() {
@@ -461,7 +461,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         String routeId = "";
         String switchId = "";
         Set<String> querySet = new HashSet();
-        //找到对应品类id
+        // 找到对应品类id
         for (AssetCategoryModel assetCategoryModel : categoryModelList) {
             if (Objects.equals(assetCategoryModel.getName(), AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
                 querySet.add(assetCategoryModel.getStringId());
@@ -588,7 +588,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
         // 构造第一层坐标数据
         settingFirstLevelCoordinates(firstMap, jsonData, idCategory);
-        Map<String, List<Integer>> secondCoordinates = new HashMap<>();
+        Map<String, List<Double>> secondCoordinates = new HashMap<>();
         // 构造第二层坐标数据
         settingSecondLevelCoordinates(secondMap, jsonData, idCategory, secondCoordinates);
         // 构造第三层坐标数据
@@ -658,9 +658,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
      */
     private void settingFirstLevelCoordinates(Map<String, List<String>> map, Map<String, List<List<Object>>> jsonData,
                                               Map<String, String> idCategory) {
-        int size = getSize(map.size());
-        int space = firstLevelSpacing;
-        int height = firstLevelHeight;
+        double size = getSize(map.size());
+        double space = firstLevelSpacing;
+        double height = firstLevelHeight;
         int i = 0;
         for (Map.Entry<String, List<String>> entry : map.entrySet()) {
             getDataList(size, space, height, i, entry, jsonData, idCategory);
@@ -678,23 +678,24 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private List<List<Object>> settingSecondLevelCoordinates(Map<String, List<String>> map,
                                                              Map<String, List<List<Object>>> jsonData,
                                                              Map<String, String> idCategory,
-                                                             Map<String, List<Integer>> secondCoordinates) {
-        int size = getSize(map.size());
+                                                             Map<String, List<Double>> secondCoordinates) {
+        double size = getSize(map.size());
         List<List<Object>> dataList = new ArrayList<>();
-        int space = secondLevelSpacing;
-        int height = secondLevelHeight;
+        double space = secondLevelSpacing;
+        double height = secondLevelHeight;
         int i = 0;
         for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-            List<Integer> coordinateList = getDataList(size, space, height, i, entry, jsonData, idCategory);
+            List<Double> coordinateList = getDataList(size, space, height, i, entry, jsonData, idCategory);
             secondCoordinates.put(entry.getKey(), coordinateList);
             i++;
         }
         return dataList;
     }
 
-    private List<Integer> getDataList(int size, int space, int height, int i, Map.Entry<String, List<String>> entry,
-                                      Map<String, List<List<Object>>> jsonData, Map<String, String> idCategory) {
-        List<Integer> coordinateList = getCoordinate(size, i, space, height);
+    private List<Double> getDataList(double size, double space, double height, double i,
+                                     Map.Entry<String, List<String>> entry, Map<String, List<List<Object>>> jsonData,
+                                     Map<String, String> idCategory) {
+        List<Double> coordinateList = getCoordinate(size, i, space, height);
         // 设置坐标数据
         List<Object> point = new ArrayList<>();
         point.add(entry.getKey());
@@ -720,12 +721,12 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
      */
     private void settingThirdLevelCoordinates(Map<String, List<String>> map, Map<String, List<List<Object>>> jsonData,
                                               Map<String, String> idCategory,
-                                              Map<String, List<Integer>> secondCoordinates) {
+                                              Map<String, List<Double>> secondCoordinates) {
         List<List<Object>> dataList = new ArrayList<>();
         // 间隔
-        int space = thirdLevelSpacing;
+        double space = thirdLevelSpacing;
         // 高度
-        int height = thirdLevelHeight;
+        double height = thirdLevelHeight;
 
         // 排序
         Map<String, List<String>> result = new LinkedHashMap<>();
@@ -743,10 +744,10 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                     List<String> pointParent = (List<String>) point.get(4);
                     pointParent.add(entry.getKey());
                 } else {
-                    List<Integer> coordinates = secondCoordinates.get(entry.getKey());
+                    List<Double> coordinates = secondCoordinates.get(entry.getKey());
                     List<Object> point = new ArrayList<>();
-                    int size = getSize(entry.getValue().size());
-                    List<Integer> coordinateByParent = getCoordinateByParent(size, i, space, height, coordinates.get(0),
+                    double size = getSize(entry.getValue().size());
+                    List<Double> coordinateByParent = getCoordinateByParent(size, i, space, height, coordinates.get(0),
                         coordinates.get(2));
                     point.add(s);
                     point.addAll(coordinateByParent);
@@ -773,10 +774,10 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     /**
      * 获取自身坐标
      */
-    private List<Integer> getCoordinate(int size, int i, int space, int height) {
-        int x = (int) ((i / size - ((size - 1) / 2f)) * space);
-        int y = (int) (((size - 1) / 2f - (i % size)) * space);
-        List<Integer> coordinate = new ArrayList<>();
+    private List<Double> getCoordinate(Double size, Double i, Double space, Double height) {
+        Double x = ((Math.floor(i / size) - ((size - 1) / 2d)) * space);
+        Double y = (((size - 1) / 2d - (i % size)) * space);
+        List<Double> coordinate = new ArrayList<>();
         coordinate.add(x);
         coordinate.add(height);
         coordinate.add(y);
@@ -786,28 +787,20 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     /**
      * 根据上级坐标获取本身坐标
      */
-    private List<Integer> getCoordinateByParent(int size, int i, int space, int height, int xx, int yy) {
-        int x = (int) (((i / size - ((size - 1) / 2f)) * space) + xx);
-        int y = (int) ((((size - 1) / 2f - (i % size)) * space) + yy);
-        List<Integer> coordinate = new ArrayList<>();
+    private List<Double> getCoordinateByParent(double size, double i, double space, double height, double xx,
+                                               double yy) {
+        double x = (((Math.floor(i / size) - ((size - 1) / 2d)) * space) + xx);
+        double y = ((((size - 1) / 2d - (i % size)) * space) + yy);
+        List<Double> coordinate = new ArrayList<>();
         coordinate.add(x);
         coordinate.add(height);
         coordinate.add(y);
         return coordinate;
     }
 
-    private int getSize(int size) {
+    private double getSize(int size) {
         double d = Math.sqrt((double) size);
-        if (isIntegerValue(d)) {
-            return (int) d;
-        } else {
-            return (int) (d + 1);
-        }
-
-    }
-
-    private static boolean isIntegerValue(double d) {
-        return ((long) d) + 0.0 == d;
+        return Math.ceil(d);
     }
 
     /**
