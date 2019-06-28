@@ -55,11 +55,11 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     private AesEncoder                                              aesEncoder;
     @Resource
     private AssetUserDao                                            assetUserDao;
-    private static Map<String, Integer> parentMap            = new HashMap() {
-        {
-            put("0", 0);
-        }
-    };
+    private static Map<String, Integer>                             parentMap = new HashMap<>();
+
+    static {
+        parentMap.put("0", 0);
+    }
     @Override
     @Transactional
     public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {

@@ -66,11 +66,10 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     private AesEncoder                  aesEncoder;
     @Resource
     private AssetSoftwareDao            assetSoftwareDao;
-    private static Map<String, Integer> parentMap = new HashMap() {
-                                                      {
-                                                          put("0", 0);
-                                                      }
-                                                  };
+    private static Map<String, Integer> parentMap = new HashMap<>();
+    static {
+        parentMap.put("0", 0);
+    }
 
     /**
      *

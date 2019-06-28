@@ -147,7 +147,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
                 // 第一列，初始值加上本区间增量
                 if (i == 0) {
                     for (Map<String, Integer> init : initData) {
-                        if (top.equals(init.get("areaId"))) {
+                        if (top.equals(init.get("areaId").toString())) {
                             totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.get("assetCount")))
                                           + Integer.valueOf(addList.get(i) + ""));
                             break;

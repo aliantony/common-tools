@@ -1921,7 +1921,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest,
                         currentTimeMillis);
                     if (null == actionResponseAsset
-                        && !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {
+                        || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {
                         throw new BusinessException("配置服务异常，登记失败");
                     }
                     // 更新资产状态为待配置
@@ -1949,11 +1949,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
             .findInstalledSoft(assetOuterRequest.getAsset().getId());
         assetExternalRequest.setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
-        List<AssetExternalRequest> assetExternalRequests = new ArrayList() {
-            {
-                add(assetExternalRequest);
-            }
-        };
+        List<AssetExternalRequest> assetExternalRequests = new ArrayList<>();
+        assetExternalRequests.add(assetExternalRequest);
         ActionResponse actionResponse = assetClient.issueAssetData(assetExternalRequests);
         return assetCount;
     }
@@ -3549,7 +3546,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public void exportData(AssetQuery assetQuery, HttpServletResponse response,
                            HttpServletRequest request) throws Exception {
-        if ((assetQuery.getStart() != null && assetQuery.getStart() != null)) {
+        if ((assetQuery.getStart() != null && assetQuery.getEnd() != null)) {
             assetQuery.setStart(assetQuery.getStart() - 1);
             assetQuery.setEnd(assetQuery.getEnd() - assetQuery.getStart());
         }
@@ -3763,12 +3760,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public Integer queryNormalCount() {
         AssetQuery query = new AssetQuery();
         // 已入网、待退役资产
-        query.setAssetStatusList(new ArrayList() {
-            {
-                add(7);
-                add(8);
-            }
-        });
+        query.setAssetStatusList(Arrays.asList(7,8));
+
         // 当前用户所在区域
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
