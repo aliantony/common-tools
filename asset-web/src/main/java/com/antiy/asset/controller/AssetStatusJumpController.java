@@ -37,6 +37,8 @@ import com.antiy.common.utils.LoginUserUtil;
 
 import io.swagger.annotations.*;
 
+import java.util.Objects;
+
 /**
  * 资产状态跃迁统一接口
  *
@@ -119,6 +121,10 @@ public class AssetStatusJumpController {
     public ActionResponse assetNoRegister(@ApiParam(value = "assetStatusChangeRequest") @RequestBody(required = false) AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
         String assetId = assetStatusChangeRequest.getAssetId();
         if (assetStatusChangeRequest.getSoftware()) {
+            AssetSoftware orginalAssetSoftware = softwareDao.getById(assetId);
+            if (!Objects.equals(orginalAssetSoftware.getSoftwareStatus(), SoftwareStatusEnum.WATI_REGSIST.getCode())) {
+                throw new BusinessException("软件状态已改变");
+            }
             AssetSoftware assetSoftware = new AssetSoftware();
             assetSoftware.setId(DataTypeUtils.stringToInteger(assetStatusChangeRequest.getAssetId()));
             assetSoftware.setGmtModified(System.currentTimeMillis());

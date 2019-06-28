@@ -320,6 +320,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // 如果软件已退役，修改资产状态为待分析，并启动登记流程
         AssetSoftware software = assetSoftwareDao.getById(request.getId());
         Integer softwareStatus = software.getSoftwareStatus();
+        if (Objects.equals(softwareStatus, request.getSoftwareStatus())) {
+            throw new BusinessException("软件状态已改变");
+        }
         // if (request.getActivityRequest() != null && softwareStatus.equals(SoftwareStatusEnum.RETIRE.getCode())
         // || softwareStatus.equals(SoftwareStatusEnum.NOT_REGSIST.getCode())) {
         // ParamterExceptionUtils.isNull(request.getActivityRequest(), "activityRequest参数不能为空");
@@ -432,6 +435,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         } else {
             assetOperationRecord.setOriginStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
             assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_CHANGE.getMsg());
+        }
+        if (request.getSoftwareStatus().equals(SoftwareStatusEnum.WATI_REGSIST.getCode())) {
+            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_REGISTER.getMsg());
         }
         assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
         assetOperationRecord.setTargetObjectId(request.getId());
