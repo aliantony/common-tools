@@ -420,56 +420,93 @@
 
     <select id="findAllCategoryCount" resultMap="BaseResultMap">
 SELECT
-	category.*, COUNT(category.id) AS count
+	id,
+	name,
+	type,
+	asset_type,
+	parent_id,
+	description,
+	is_default,
+	gmt_create,
+	gmt_modified,
+	memo,
+	create_user,
+	modify_user,
+	status,
+	sum(count) as count
 FROM
-	asset_category_model category
-LEFT JOIN asset ON asset.category_model = category.id
-WHERE
-	category. STATUS = 1
-AND asset. STATUS = 1
-AND asset_type = 2
-GROUP BY
-	category.id
-UNION
+	(
+		SELECT
+			category.*, COUNT(category.id) AS count
+		FROM
+			asset_category_model category
+		LEFT JOIN asset ON asset.category_model = category.id
+		WHERE
+			category. STATUS = 1
+		AND asset. STATUS = 1
+		AND asset_type = 2
+		GROUP BY
+			category.id
+		UNION
 			SELECT
 				category.*, 0 AS count
 			FROM
 				asset_category_model category
 			LEFT JOIN asset ON asset.category_model = category.id
 			WHERE
-				asset.id IS NULL
+				(
+					asset.id IS NULL
+					OR asset.`status` = 0
+				)
 			AND asset_type = 2
 			AND category. STATUS = 1
 			GROUP BY
 				category.id
-UNION
-SELECT
-		category.*, COUNT(category.id) AS count
-	FROM
-		asset_category_model category
-	LEFT JOIN asset_software ON asset_software.category_model = category.id
-	WHERE
-		category. STATUS = 1
-	AND asset_software. STATUS = 1
-	AND asset_type = 1
-	GROUP BY
-		category.id
-	UNION
-		SELECT
-			category.*, 0 AS count
-		FROM
-			asset_category_model category
-		LEFT JOIN asset_software ON asset_software.category_model = category.id
-		AND asset_software. STATUS = 1
-		WHERE
-			asset_software.id IS NULL
-		AND asset_type = 1
-		AND category. STATUS = 1
-		GROUP BY
-			category.id
-			ORDER BY
-				id
-    </select>
+			UNION
+				SELECT
+					category.*, COUNT(category.id) AS count
+				FROM
+					asset_category_model category
+				LEFT JOIN asset_software ON asset_software.category_model = category.id
+				WHERE
+					category. STATUS = 1
+				AND asset_software. STATUS = 1
+				AND asset_type = 1
+				GROUP BY
+					category.id
+				UNION
+					SELECT
+						category.*, 0 AS count
+					FROM
+						asset_category_model category
+					LEFT JOIN asset_software ON asset_software.category_model = category.id
+					WHERE
+						(
+							asset_software.id IS NULL
+							OR asset_software.`status` = 0
+						)
+					AND asset_type = 1
+					AND category. STATUS = 1
+					GROUP BY
+						category.id
+					ORDER BY
+						id
+	) category
+GROUP BY
+	id,
+	NAME,
+	type,
+	asset_type,
+	parent_id,
+	description,
+	is_default,
+	gmt_create,
+	gmt_modified,
+	memo,
+	create_user,
+	modify_user,
+	STATUS
+	    </select>
 
     <!--判断是否还有子节点-->
     <select id="hasChild" resultType="java.lang.Integer">

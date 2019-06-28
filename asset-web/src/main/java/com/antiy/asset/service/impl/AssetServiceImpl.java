@@ -989,7 +989,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetLinkedCount.setAreaName(sysArea.getFullName());
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.info(e.getMessage());
                 }
             });
             processCategoryToSecondCategory(assetResponseList, categoryMap);
@@ -1450,10 +1450,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
-        // 校验品类型号是否是系统默认
+        // 校验品类型号是否是叶子节点
         ParamterExceptionUtils.isTrue(
             assetCategoryModelDao.hasChild(assetOuterRequest.getAsset().getCategoryModel()) <= 0,
-            "当前品类型号不可选择,请重新选择品类型号");
+            "品类型号只能选择末级节点数据，请重新选择");
         Asset currentAsset = assetDao.getById(assetOuterRequest.getAsset().getId());
         // 幂等校验
         if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {

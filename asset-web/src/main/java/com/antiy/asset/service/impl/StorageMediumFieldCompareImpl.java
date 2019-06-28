@@ -36,7 +36,7 @@ public class StorageMediumFieldCompareImpl extends AbstractChangeRecordCompareIm
     @Resource
     private BaseConverter<AssetRequest, Asset> assetRequestToAssetConverter;
     @Resource
-    AssetUserDao                               userDao;
+    private AssetUserDao                       userDao;
     @Resource
     private RedisUtil                          redisUtil;
 

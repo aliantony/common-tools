@@ -42,7 +42,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
     @Resource
     private AssetSoftwareDao                   softwareDao;
     @Resource
-    AssetUserDao                               userDao;
+    private AssetUserDao                       userDao;
     @Resource
     private RedisUtil                          redisUtil;
     @Resource

@@ -59,9 +59,9 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     @Resource
     private AesEncoder                           aesEncoder;
     @Resource
-    AssetStatusTaskDao                           statusTaskDao;
+    private AssetStatusTaskDao                           statusTaskDao;
     @Resource
-    AssetLinkRelationDao                         assetLinkRelationDao;
+    private AssetLinkRelationDao                         assetLinkRelationDao;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {

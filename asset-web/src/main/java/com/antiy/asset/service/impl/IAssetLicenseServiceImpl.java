@@ -18,7 +18,7 @@ import com.antiy.common.utils.LicenseUtil;
 @Service
 public class IAssetLicenseServiceImpl implements IAssetLicenseService {
     @Resource
-    AssetDao assetDao;
+    private AssetDao assetDao;
 
     @Override
     public AssetLicenseResponse validateAuthNum() throws Exception {

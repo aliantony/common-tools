@@ -80,9 +80,9 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Resource
     private AssetSoftwareDao                                                    assetSoftwareDao;
     @Resource
-    AssetDao                                                                    assetDao;
+    private AssetDao                                                            assetDao;
     @Resource
-    CommandClientImpl                                                           commandClient;
+    private CommandClientImpl                                                   commandClient;
 
     @Override
     public Integer saveAssetSoftwareRelation(AssetSoftwareRelationRequest request) throws Exception {

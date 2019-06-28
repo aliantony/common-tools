@@ -53,7 +53,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
     @Resource
     private RedisUtil                                                                 redisUtil;
     @Resource
-    SysRoleClientImpl                                                                 roleClient;
+    private SysRoleClientImpl                                                         roleClient;
 
     @Override
     public List<NameValueVo> queryStatusBar(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
