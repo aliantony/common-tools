@@ -17,6 +17,7 @@
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
+        <result column="count" property="count"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -414,6 +415,62 @@
         WHERE
 	    acm.id = #{id}
     </select>
+
+
+
+    <select id="findAllCategoryCount" resultMap="BaseResultMap">
+SELECT
+	category.*, COUNT(category.id) AS count
+FROM
+	asset_category_model category
+LEFT JOIN asset ON asset.category_model = category.id
+WHERE
+	category. STATUS = 1
+AND asset. STATUS = 1
+AND asset_type = 2
+GROUP BY
+	category.id
+UNION
+			SELECT
+				category.*, 0 AS count
+			FROM
+				asset_category_model category
+			LEFT JOIN asset ON asset.category_model = category.id
+			WHERE
+				asset.id IS NULL
+			AND asset_type = 2
+			AND category. STATUS = 1
+			GROUP BY
+				category.id
+UNION
+SELECT
+		category.*, COUNT(category.id) AS count
+	FROM
+		asset_category_model category
+	LEFT JOIN asset_software ON asset_software.category_model = category.id
+	WHERE
+		category. STATUS = 1
+	AND asset_software. STATUS = 1
+	AND asset_type = 1
+	GROUP BY
+		category.id
+	UNION
+		SELECT
+			category.*, 0 AS count
+		FROM
+			asset_category_model category
+		LEFT JOIN asset_software ON asset_software.category_model = category.id
+		AND asset_software. STATUS = 1
+		WHERE
+			asset_software.id IS NULL
+		AND asset_type = 1
+		AND category. STATUS = 1
+		GROUP BY
+			category.id
+			ORDER BY
+				id
+    </select>
+
     <!--判断是否还有子节点-->
     <select id="hasChild" resultType="java.lang.Integer">
         select count(1) from asset_category_model where parent_id = #{id} and status = 1

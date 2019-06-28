@@ -2,6 +2,8 @@ package com.antiy.asset.dao;
 
 import java.util.List;
 
+import com.antiy.asset.entity.CategoryValiEntity;
+import com.antiy.asset.entity.IdCount;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.AssetCategoryModel;
@@ -41,4 +43,6 @@ public interface AssetCategoryModelDao extends IBaseDao<AssetCategoryModel> {
     CategoryValiEntity getNameByCtegoryId(int id);
 
     Integer hasChild(@Param("id") String categoryModel);
+    List<AssetCategoryModel> findAllCategoryCount();
+
 }

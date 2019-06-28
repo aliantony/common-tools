@@ -29,7 +29,7 @@ public class AssetCategoryModel extends BaseEntity {
     /**
      * 父ID
      */
-    private String           parentId;
+    private String            parentId;
     /**
      * 描述
      */
@@ -63,6 +63,12 @@ public class AssetCategoryModel extends BaseEntity {
      */
     private Integer           status;
 
+    /**
+     * 
+     * @return
+     */
+    private Long              count;
+
     public String getName() {
         return name;
     }
@@ -86,7 +92,6 @@ public class AssetCategoryModel extends BaseEntity {
     public void setAssetType(Integer assetType) {
         this.assetType = assetType;
     }
-
 
     public String getDescription() {
         return description;
@@ -160,21 +165,20 @@ public class AssetCategoryModel extends BaseEntity {
         this.gmtModified = gmtModified;
     }
 
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
+    }
+
     @Override
     public String toString() {
-        return "AssetCategoryModel{" +
-                "name='" + name + '\'' +
-                ", type=" + type +
-                ", assetType=" + assetType +
-                ", parentId='" + parentId + '\'' +
-                ", description='" + description + '\'' +
-                ", isDefault=" + isDefault +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", memo='" + memo + '\'' +
-                ", createUser='" + createUser + '\'' +
-                ", modifyUser='" + modifyUser + '\'' +
-                ", status=" + status +
-                '}';
+        return "AssetCategoryModel{" + "name='" + name + '\'' + ", type=" + type + ", assetType=" + assetType
+               + ", parentId='" + parentId + '\'' + ", description='" + description + '\'' + ", isDefault=" + isDefault
+               + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo='" + memo + '\''
+               + ", createUser='" + createUser + '\'' + ", modifyUser='" + modifyUser + '\'' + ", status=" + status
+               + '}';
     }
 }

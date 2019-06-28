@@ -7,6 +7,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.entity.IdCount;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -278,6 +279,22 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     /**
+     * 通过类型查询品类树
+     * @return
+     */
+    @Override
+    public List<AssetCategoryModelNodeResponse> queryCategoryNodeCount() throws Exception {
+        List<AssetCategoryModel> categoryCount = assetCategoryModelDao.findAllCategoryCount();
+        AssetCategoryModelNodeResponse categoryModelNodeResponses = getNextNodeResponse(categoryCount);
+        return categoryModelNodeResponses.getChildrenNode();
+    }
+
+    private AssetCategoryModelNodeResponse getNextNodeResponse(List<AssetCategoryModel> softWareCategoryCount) throws Exception {
+        softWareCategoryCount.add(getRootCategory());
+        return getAssetCategoryModelNodeResponse(softWareCategoryCount);
+    }
+
+    /**
      * 查询二级品类组合树 若参数为4和5 则结果为硬件(根节点)-(计算设备+网络设备) 树
      * @param types 4-计算设备 5-网络设备 6-存储设备 7-安全设备 8-其他设备
      * @return
@@ -420,6 +437,18 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                 }
                 if (assetCategoryModelNodeResponse.getIsDefault() == 0) {
                     assetCategoryModelNodeResponse.setReadOnly(true);
+                }
+                if (assetCategoryModelNodeResponse.getCount() != null) {
+                    if (assetCategoryModelNodeResponse.getCount() > 0) {
+                        assetCategoryModelNodeResponse.setAddOnly(false);
+                    } else {
+                        if (assetCategoryModelNodeResponse.getLevelType() <= 2) {
+                            assetCategoryModelNodeResponse.setAddOnly(false);
+                        } else {
+                            assetCategoryModelNodeResponse.setAddOnly(true);
+                        }
+                    }
+                    assetCategoryModelNodeResponse.setCount(null);
                 }
                 dealLevel(assetCategoryModelNodeResponse.getChildrenNode());
             }
