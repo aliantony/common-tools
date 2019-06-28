@@ -9,6 +9,11 @@ public class AssetCategoryModelNodeResponse extends AssetCategoryModelResponse {
     private Integer                              levelType;
     @ApiModelProperty(value = "是否可编辑")
     private boolean                              readOnly;
+    @ApiModelProperty(value = "是否可添加子节点")
+    private boolean                              addOnly;
+    @ApiModelProperty(value = "关联资产数")
+    private Long                                 count;
+
     @ApiModelProperty(value = "子节点")
     private List<AssetCategoryModelNodeResponse> childrenNode;
 
@@ -34,6 +39,22 @@ public class AssetCategoryModelNodeResponse extends AssetCategoryModelResponse {
 
     public void setLevelType(Integer levelType) {
         this.levelType = levelType;
+    }
+
+    public boolean getAddOnly() {
+        return addOnly;
+    }
+
+    public void setAddOnly(boolean addOnly) {
+        this.addOnly = addOnly;
+    }
+
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
     }
 
     @Override

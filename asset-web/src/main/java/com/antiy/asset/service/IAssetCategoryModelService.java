@@ -82,8 +82,8 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @param initMap 二级品类 id 和 name的映射 若没有这个参数 可直接调用getSecondCategoryMap方法作为传参
      * @return
      */
-    AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types, Map<String, String> initMap)
-                                                                                                       throws Exception;
+    AssetCategoryModelNodeResponse querySecondCategoryNode(String[] types,
+                                                           Map<String, String> initMap) throws Exception;
 
     /**
      * 通过名称查询下一级的品类
@@ -111,8 +111,8 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      *
      * @return
      */
-    List<Integer> findAssetCategoryModelIdsById(Integer id, List<AssetCategoryModel> assetCategoryModels)
-                                                                                                         throws Exception;
+    List<Integer> findAssetCategoryModelIdsById(Integer id,
+                                                List<AssetCategoryModel> assetCategoryModels) throws Exception;
 
     /**
      * 递归查询品类子节点
@@ -148,5 +148,10 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * 获取安全设备和网络设备树
      */
     AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode(Integer isNet) throws Exception;
+
+    /**
+     * 
+     */
+     List<AssetCategoryModelNodeResponse> queryCategoryNodeCount() throws Exception;
 
 }
