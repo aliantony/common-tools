@@ -420,6 +420,16 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             fileService.deleteRemoteFile(request, software.getManualDocUrl(), logger);
         }
 
+        // 下发软件数据
+        ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
+            {
+                add(request);
+            }
+        });
+        if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
+            logger.info("下发软件数据完成：{}", request);
+        }
+
         // TODO 调用工作流，给配置管理员
         // activityClient.completeTask(request.getRequest());
         return count;
