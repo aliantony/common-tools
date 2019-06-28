@@ -260,7 +260,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // }
         // }
         if (num > 0) {
-            ActionResponse result = assetClient.issueAssetData(new ArrayList() {
+            ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
                 {
                     add(request);
                 }
