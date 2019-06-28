@@ -178,6 +178,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (request.getAsset() != null) {
             ParamterExceptionUtils.isBlank(request.getAsset().getLocation().trim(), "物理位置不能为空");
         }
+        // 品类型号判断，如果为计算设备，提示错误信息,配合资产上报
+
+        String category = request.getAsset().getCategoryModel();
+        if (!Objects.isNull(category) && "4".equals(category)) {
+            throw new BusinessException("请重新选择资产所属品类型号");
+        }
+
         AssetRequest requestAsset = request.getAsset();
         AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
@@ -1443,6 +1450,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
+        // 校验品类型号是否是系统默认
+        ParamterExceptionUtils.isTrue(assetCategoryModelDao
+            .getById(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getCategoryModel()))
+            .getIsDefault() == 1, "当前品类型号不可选择,请重新选择品类型号");
         Asset currentAsset = assetDao.getById(assetOuterRequest.getAsset().getId());
         // 幂等校验
         if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
