@@ -286,8 +286,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 AssetNetworkCard.class);
                             for (AssetNetworkCard assetNetworkCard : networkCardList) {
 
-                                ParamterExceptionUtils
-                                    .isTrue(!CheckRepeatMAC(assetNetworkCard.getMacAddress()), "MAC地址不能重复！");
+                                ParamterExceptionUtils.isTrue(!CheckRepeatMAC(assetNetworkCard.getMacAddress()),
+                                    "MAC地址不能重复！");
                                 assetNetworkCard.setAssetId(aid);
                                 assetNetworkCard.setGmtCreate(System.currentTimeMillis());
                                 assetNetworkCard.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -1427,6 +1427,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
+        // 校验品类型号是否是系统默认
+        ParamterExceptionUtils.isTrue(assetCategoryModelDao
+            .getById(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getCategoryModel()))
+            .getIsDefault() == 1, "当前品类型号不可选择,请重新选择品类型号");
         Asset currentAsset = assetDao.getById(assetOuterRequest.getAsset().getId());
         // 幂等校验
         if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
@@ -1569,8 +1573,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                     .getById(DataTypeUtils.stringToInteger(assetNetworkCard.getStringId()));
                                 if (byId != null && !byId.getIpAddress().equals(assetNetworkCard.getIpAddress())) {
                                     // 网卡mac地址判重
-                                    BusinessExceptionUtils
-                                            .isTrue(assetDao.findCountMac(assetNetworkCard.getMacAddress()) <= 0, "MAC不能重复");
+                                    BusinessExceptionUtils.isTrue(
+                                        assetDao.findCountMac(assetNetworkCard.getMacAddress()) <= 0, "MAC不能重复");
                                     Map<String, String> integers = new HashMap<>();
                                     integers.put(asset.getStringId(), byId.getIpAddress());
                                     assetLinkRelationDao.deleteRelationByAssetId(integers);
@@ -1715,7 +1719,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             .getById(DataTypeUtils.stringToInteger(networkEquipment.getId()));
                         if (byId != null && !byId.getInnerIp().equals(networkEquipment.getInnerIp())) {
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(networkEquipment.getId()));
-                            BusinessExceptionUtils.isTrue(assetDao.findCountMac(networkEquipment.getMacAddress()) <= 0, "网络设备MAC不能重复");
+                            BusinessExceptionUtils.isTrue(assetDao.findCountMac(networkEquipment.getMacAddress()) <= 0,
+                                "网络设备MAC不能重复");
                             Map<String, String> integers = new HashMap<>();
                             integers.put(asset.getStringId(), byId.getInnerIp());
                             assetLinkRelationDao.deleteRelationByAssetId(integers);
@@ -1739,7 +1744,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             .getById(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
                         if (byId != null && !byId.getIp().equals(safetyEquipment.getIp())) {
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
-                            BusinessExceptionUtils.isTrue(assetDao.findCountMac(safetyEquipment.getMac()) <= 0, "安全设备MAC不能重复");
+                            BusinessExceptionUtils.isTrue(assetDao.findCountMac(safetyEquipment.getMac()) <= 0,
+                                "安全设备MAC不能重复");
                         }
                         AssetSafetyEquipment assetSafetyEquipment = BeanConvert.convertBean(safetyEquipment,
                             AssetSafetyEquipment.class);
