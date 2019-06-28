@@ -1550,7 +1550,6 @@
         firmware_version = #{firmwareVersion },
         contact_tel = #{contactTel },
         email = #{email },
-        asset_source = #{assetSource },
         importance_degree = #{importanceDegree },
         describle = #{describle },
         service_life = #{serviceLife},
