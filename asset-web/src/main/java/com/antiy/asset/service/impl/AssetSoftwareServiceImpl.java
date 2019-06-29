@@ -139,7 +139,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
                     // AssetPortProtocol.class);
 
-                    ParamterExceptionUtils.isTrue(checkRepeatName(assetSoftware.getName(), request.getVersion()),
+                    ParamterExceptionUtils.isTrue(!checkRepeatName(assetSoftware.getName(), request.getVersion()),
                         "资产名称和版本号重复");
 
                     Stream<String> stream = Arrays.stream(request.getOperationSystems());
@@ -211,7 +211,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 } catch (RequestParamValidateException e) {
 
                     transactionStatus.setRollbackOnly();
-                    ParamterExceptionUtils.isTrue(false, "资产名称重复");
+                    ParamterExceptionUtils.isTrue(false, "资产名称和版本号重复");
                     logger.error("录入失败", e);
 
                 } catch (Exception e) {
