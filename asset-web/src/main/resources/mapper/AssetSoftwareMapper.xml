@@ -699,8 +699,7 @@
         <include refid="Table_Name"></include>
         <where>
             <if test=" assetName != null">
-
-                asset_software.name =#{assetName}
+                asset_software.name =#{assetName} and version = #{version}
             </if>
 
         </where>

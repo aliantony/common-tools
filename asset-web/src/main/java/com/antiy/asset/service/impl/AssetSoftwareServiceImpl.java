@@ -139,7 +139,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
                     // AssetPortProtocol.class);
 
-                    ParamterExceptionUtils.isTrue(!checkRepeatName(assetSoftware.getName()), "资产名称重复");
+                    ParamterExceptionUtils.isTrue(!checkRepeatName(assetSoftware.getName(), request.getVersion()),
+                        "资产名称和版本号重复");
 
                     Stream<String> stream = Arrays.stream(request.getOperationSystems());
                     StringBuffer stringBuffer = new StringBuffer();
@@ -787,9 +788,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return assetSoftwareDao.findAssetInstallCount(query);
     }
 
-    private boolean checkRepeatName(String name) throws Exception {
+    private boolean checkRepeatName(String name, String version) throws Exception {
         AssetSoftwareQuery assetQuery = new AssetSoftwareQuery();
         assetQuery.setAssetName(name);
+        assetQuery.setVersion(version);
         Integer countAsset = assetSoftwareDao.findCountCheck(assetQuery);
         return countAsset >= 1;
     }
@@ -1018,7 +1020,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 continue;
             }
 
-            if (checkRepeatName(entity.getName())) {
+            if (checkRepeatName(entity.getName(), entity.getVersion())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("软件名称重复，");
