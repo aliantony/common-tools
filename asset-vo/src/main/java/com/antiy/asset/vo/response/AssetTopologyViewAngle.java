@@ -6,22 +6,22 @@ import java.util.List;
  * 展示角度类
  */
 public class AssetTopologyViewAngle {
-    private List<Integer> cameraPos;
-    private List<Integer> targetPos;
+    private List<Double> cameraPos;
+    private List<Double> targetPos;
 
-    public List<Integer> getCameraPos() {
+    public List<Double> getCameraPos() {
         return cameraPos;
     }
 
-    public void setCameraPos(List<Integer> cameraPos) {
+    public void setCameraPos(List<Double> cameraPos) {
         this.cameraPos = cameraPos;
     }
 
-    public List<Integer> getTargetPos() {
+    public List<Double> getTargetPos() {
         return targetPos;
     }
 
-    public void setTargetPos(List<Integer> targetPos) {
+    public void setTargetPos(List<Double> targetPos) {
         this.targetPos = targetPos;
     }
 }
