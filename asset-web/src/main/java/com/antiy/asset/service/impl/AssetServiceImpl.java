@@ -903,6 +903,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetQuery.setAreaIds(
                     DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
+        assetQuery.setAssetStatusList(StatusEnumUtil.getAssetNotRetireStatus());
         return assetDao.findAlarmAssetCount(assetQuery);
     }
 
