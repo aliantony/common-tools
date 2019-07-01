@@ -61,4 +61,8 @@ public class CommandRequest implements ObjectValidator {
     public void validate() throws RequestParamValidateException {
     }
 
+    @Override
+    public String toString() {
+        return "CommandRequest{" + "uuidList=" + uuidList + ", noList=" + noList + ", commandType=" + commandType + '}';
+    }
 }
