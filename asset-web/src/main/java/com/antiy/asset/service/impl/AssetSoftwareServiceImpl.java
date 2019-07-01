@@ -327,22 +327,6 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 throw new BusinessException("软件状态已改变");
             }
         }
-        if (!(Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.WATI_REGSIST.getCode())
-              && !(Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.NOT_REGSIST.getCode())))) {
-            throw new BusinessException("软件状态已改变");
-        }
-        // if (request.getActivityRequest() != null && softwareStatus.equals(SoftwareStatusEnum.RETIRE.getCode())
-        // || softwareStatus.equals(SoftwareStatusEnum.NOT_REGSIST.getCode())) {
-        // ParamterExceptionUtils.isNull(request.getActivityRequest(), "activityRequest参数不能为空");
-        // ActionResponse actionResponse = activityClient.manualStartProcess(request.getActivityRequest());
-        // // 如果流程引擎为空,直接返回-1
-        // if (null == actionResponse
-        // || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-        // return -1;
-        // }
-        // // 设置软件状态为待分析
-        // request.setSoftwareStatus(SoftwareStatusEnum.WAIT_ANALYZE.getCode());
-        // }
         Integer count = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
