@@ -438,18 +438,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     private AssetOperationRecord convertAssetOperationRecord(AssetSoftwareRequest request, Integer softwareStatus) {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        if (softwareStatus.equals(SoftwareFlowEnum.SOFTWARE_RETIRE_REGISTER.getCode())) {
-            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.RETIRE.getCode());
-            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_RETIRE_REGISTER.getMsg());
-        } else if (softwareStatus.equals(SoftwareFlowEnum.SOFTWARE_NOT_REGSIST_REGISTER.getCode())) {
-            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
-            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_NOT_REGSIST_REGISTER.getMsg());
-        } else {
-            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
-            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_CHANGE.getMsg());
-        }
-        if (request.getSoftwareStatus().equals(SoftwareStatusEnum.WATI_REGSIST.getCode())) {
+        if (request.getSoftwareStatus().equals(SoftwareStatusEnum.WATI_REGSIST.getCode())
+            || request.getSoftwareStatus().equals(SoftwareStatusEnum.NOT_REGSIST.getCode())) {
+            assetOperationRecord.setOriginStatus(softwareStatus);
             assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_REGISTER.getMsg());
+        } else {
+            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_CHANGE.getMsg());
         }
         assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
         assetOperationRecord.setTargetObjectId(request.getId());
