@@ -1624,11 +1624,41 @@
     <select id="findUuidByAreaIds" resultType="java.lang.String"
             parameterType="java.util.List">
         select uuid from asset
-            WHERE area_id IN
+        WHERE area_id IN
         <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-                #{item}
-            </foreach>
+            #{item}
+        </foreach>
         and status = 1 and uuid is not null
         group by id
+    </select>
+    <select id="findAlarmAssetCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        SELECT
+        count(*)
+        FROM
+        (
+        SELECT
+        asset_id
+        FROM
+        asset
+        LEFT JOIN alarm_current_records record ON record.asset_id = asset.id
+        WHERE
+        1 = 1
+        AND asset_id IS NOT NULL
+        AND asset. STATUS = 1
+        <if test=" areaIds != null and areaIds.length > 0 and ids == null">
+            and asset.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset.asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+        GROUP BY
+        asset_id
+        ) alarm_asset
     </select>
 </mapper>
