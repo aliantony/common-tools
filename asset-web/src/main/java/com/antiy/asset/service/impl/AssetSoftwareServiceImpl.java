@@ -322,8 +322,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         AssetSoftware software = assetSoftwareDao.getById(request.getId());
         Integer softwareStatus = software.getSoftwareStatus();
         Integer requestSoftwareStatusStatus = request.getSoftwareStatus();
-        if (requestSoftwareStatusStatus != null && !Objects.equals(softwareStatus, requestSoftwareStatusStatus)) {
-            throw new BusinessException("软件状态已改变");
+        if (!softwareStatus.equals(SoftwareStatusEnum.ALLOW_INSTALL.getCode())) {
+            if (requestSoftwareStatusStatus != null && !Objects.equals(softwareStatus, requestSoftwareStatusStatus)) {
+                throw new BusinessException("软件状态已改变");
+            }
         }
         // if (request.getActivityRequest() != null && softwareStatus.equals(SoftwareStatusEnum.RETIRE.getCode())
         // || softwareStatus.equals(SoftwareStatusEnum.NOT_REGSIST.getCode())) {
