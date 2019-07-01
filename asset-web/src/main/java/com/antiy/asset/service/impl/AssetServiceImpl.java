@@ -727,26 +727,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         Map<String, String> alarmCountMaps = null;
         if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
-            ObjectQuery objectQuery = new ObjectQuery();
-            BeanUtils.copyProperties(query, objectQuery);
-            ActionResponse<PageResult<IdCount>> actionResponse = emergencyClient.queryEmergencyCount(objectQuery);
-            if (actionResponse != null
-                && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())
-                && actionResponse.getBody() != null) {
-                List<IdCount> alarmCountList = actionResponse.getBody().getItems();
-                if (CollectionUtils.isEmpty(alarmCountList)) {
-                    return new ArrayList<AssetResponse>();
-                }
-                alarmCountMaps = alarmCountList.stream()
-                    .collect(Collectors.toMap(
-                        idcount -> aesEncoder.decode(idcount.getId(), LoginUserUtil.getLoginUser().getUsername()),
-                        IdCount::getCount));
-                String[] ids = new String[alarmCountMaps.size()];
-                query.setIds(alarmCountMaps.keySet().toArray(ids));
-                // 由于计算Id列表添加了区域，此处不用添加
-                query.setAreaIds(null);
-                query.setCurrentPage(1);
+            List<IdCount> alarmCountList = assetDao.queryAlarmCountByAssetIds(query);
+            if (CollectionUtils.isEmpty(alarmCountList)) {
+                return new ArrayList<AssetResponse>();
             }
+            alarmCountMaps = alarmCountList.stream()
+                .collect(Collectors.toMap(idcount -> idcount.getId(), IdCount::getCount));
+            String[] ids = new String[alarmCountMaps.size()];
+            query.setIds(alarmCountMaps.keySet().toArray(ids));
+            // 由于计算Id列表添加了区域，此处不用添加
+            query.setAreaIds(null);
+            query.setCurrentPage(1);
         }
 
         // 查询资产信息
@@ -877,18 +868,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
 
-        // 如果会查询告警数量
-        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
-            ActionResponse<AlarmAssetIdResponse> actionResponse = emergencyClient.queryEmergecyAllCount();
-            if (actionResponse != null
-                && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                count = actionResponse.getBody() != null ? actionResponse.getBody().getCurrentAlarmAssetIdNum() : 0;
-                if (count <= 0) {
-                    return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
-                }
-            }
-        }
-
         // 如果count为0 直接返回结果即可
         if (count <= 0) {
             if (query.getAreaIds() != null && query.getAreaIds().length <= 0) {
@@ -898,6 +877,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             count = this.findCountAsset(query);
         }
 
+        // 如果会查询告警数量
+        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
+            count = assetDao.findAlarmAssetCount(query);
+            if (count <= 0) {
+                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+            }
+        }
         if (count <= 0) {
             if (query.getEnterControl()) {
                 // 如果是工作台进来的但是有没有存在当前状态的待办任务，则把当前状态的资产全部查询出来
@@ -910,6 +896,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
             this.findListAsset(query, processMap));
+    }
+
+    public Map findAlarmAssetCount() {
+        AssetQuery assetQuery = new AssetQuery();
+        if (ArrayUtils.isEmpty(assetQuery.getAreaIds())) {
+            assetQuery.setAreaIds(
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        }
+        assetQuery.setAssetStatusList(StatusEnumUtil.getAssetNotRetireStatus());
+        Map map = new HashMap();
+        map.put("currentAlarmAssetIdNum", assetDao.findAlarmAssetCount(assetQuery));
+        return map;
     }
 
     /**
@@ -3761,7 +3759,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public Integer queryNormalCount() {
         AssetQuery query = new AssetQuery();
         // 已入网、待退役资产
-        query.setAssetStatusList(Arrays.asList(7,8));
+        query.setAssetStatusList(Arrays.asList(7, 8));
 
         // 当前用户所在区域
         query.setAreaIds(
