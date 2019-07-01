@@ -289,5 +289,5 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     List<String> queryUuidByAreaIds(AreaIdRequest request) throws Exception;
 
-    int findAlarmAssetCount();
+    Map findAlarmAssetCount();
 }
