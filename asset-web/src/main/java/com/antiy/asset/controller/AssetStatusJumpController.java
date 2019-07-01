@@ -147,7 +147,7 @@ public class AssetStatusJumpController {
             if (currentAsset == null) {
                 throw new BusinessException("资产不存在");
             }
-            if (!(AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getStatus()))) {
+            if (!(AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus()))) {
                 throw new BusinessException("资产状态已改变");
             }
             Asset asset = new Asset();
