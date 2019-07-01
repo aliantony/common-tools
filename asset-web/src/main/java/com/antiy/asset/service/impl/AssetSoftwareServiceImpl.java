@@ -139,7 +139,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     // AssetPortProtocol protocol = BeanConvert.convertBean(request.getAssetPortProtocolRequest(),
                     // AssetPortProtocol.class);
 
-                    ParamterExceptionUtils.isTrue(!checkRepeatName(assetSoftware.getName()), "资产名称重复");
+                    ParamterExceptionUtils.isTrue(!checkRepeatName(assetSoftware.getName(), request.getVersion()),
+                        "资产名称和版本号重复");
 
                     Stream<String> stream = Arrays.stream(request.getOperationSystems());
                     StringBuffer stringBuffer = new StringBuffer();
@@ -210,7 +211,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 } catch (RequestParamValidateException e) {
 
                     transactionStatus.setRollbackOnly();
-                    ParamterExceptionUtils.isTrue(false, "资产名称重复");
+                    ParamterExceptionUtils.isTrue(false, "资产名称和版本号重复");
                     logger.error("录入失败", e);
 
                 } catch (Exception e) {
@@ -260,7 +261,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // }
         // }
         if (num > 0) {
-            ActionResponse result = assetClient.issueAssetData(new ArrayList() {
+            ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
                 {
                     add(request);
                 }
@@ -424,6 +425,16 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             fileService.deleteRemoteFile(request, software.getManualDocUrl(), logger);
         }
 
+        // 下发软件数据
+        ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
+            {
+                add(request);
+            }
+        });
+        if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
+            logger.info("下发软件数据完成：{}", request);
+        }
+
         // TODO 调用工作流，给配置管理员
         // activityClient.completeTask(request.getRequest());
         return count;
@@ -431,18 +442,13 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     private AssetOperationRecord convertAssetOperationRecord(AssetSoftwareRequest request, Integer softwareStatus) {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        if (softwareStatus.equals(SoftwareFlowEnum.SOFTWARE_RETIRE_REGISTER.getCode())) {
-            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.RETIRE.getCode());
-            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_RETIRE_REGISTER.getMsg());
-        } else if (softwareStatus.equals(SoftwareFlowEnum.SOFTWARE_NOT_REGSIST_REGISTER.getCode())) {
-            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
-            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_NOT_REGSIST_REGISTER.getMsg());
-        } else {
-            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
-            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_CHANGE.getMsg());
-        }
-        if (request.getSoftwareStatus().equals(SoftwareStatusEnum.WATI_REGSIST.getCode())) {
+        if (request.getSoftwareStatus().equals(SoftwareStatusEnum.WATI_REGSIST.getCode())
+            || request.getSoftwareStatus().equals(SoftwareStatusEnum.NOT_REGSIST.getCode())) {
+            assetOperationRecord.setOriginStatus(softwareStatus);
             assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_REGISTER.getMsg());
+        } else {
+            assetOperationRecord.setOriginStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+            assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_CHANGE.getMsg());
         }
         assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
         assetOperationRecord.setTargetObjectId(request.getId());
@@ -781,9 +787,10 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         return assetSoftwareDao.findAssetInstallCount(query);
     }
 
-    private boolean checkRepeatName(String name) throws Exception {
+    private boolean checkRepeatName(String name, String version) throws Exception {
         AssetSoftwareQuery assetQuery = new AssetSoftwareQuery();
         assetQuery.setAssetName(name);
+        assetQuery.setVersion(version);
         Integer countAsset = assetSoftwareDao.findCountCheck(assetQuery);
         return countAsset >= 1;
     }
@@ -1012,7 +1019,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                 continue;
             }
 
-            if (checkRepeatName(entity.getName())) {
+            if (checkRepeatName(entity.getName(), entity.getVersion())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("软件名称重复，");

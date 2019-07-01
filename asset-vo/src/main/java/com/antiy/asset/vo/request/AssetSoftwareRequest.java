@@ -1,15 +1,20 @@
 package com.antiy.asset.vo.request;
 
+import java.util.Arrays;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.Arrays;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -83,7 +88,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 软件名称
      */
     @NotBlank(message = "软件名称不能为空")
-    @Size(message = "软件名称字段长度不能超过30位", max = 30, min = 1)
+    @Size(message = "软件名称字段长度不能超过30位", max = 80, min = 1)
     @ApiModelProperty(value = "软件名称")
     private String                      name;
     /**
