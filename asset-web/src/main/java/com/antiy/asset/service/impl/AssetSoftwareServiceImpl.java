@@ -323,10 +323,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         Integer softwareStatus = software.getSoftwareStatus();
         request.setSoftwareStatus(softwareStatus);
         Integer requestSoftwareStatusStatus = request.getSoftwareStatus();
-        if (!softwareStatus.equals(SoftwareStatusEnum.ALLOW_INSTALL.getCode())) {
-            if (requestSoftwareStatusStatus != null && !Objects.equals(softwareStatus, requestSoftwareStatusStatus)) {
-                throw new BusinessException("软件状态已改变");
-            }
+        if (requestSoftwareStatusStatus != null && !Objects.equals(softwareStatus, requestSoftwareStatusStatus)) {
+            throw new BusinessException("软件状态已改变");
+        }
+        if (!(Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.WATI_REGSIST.getCode())
+              || (Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.NOT_REGSIST.getCode())))) {
+            throw new BusinessException("软件状态已改变");
         }
         Integer count = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
