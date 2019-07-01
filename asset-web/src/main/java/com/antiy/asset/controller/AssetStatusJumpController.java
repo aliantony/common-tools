@@ -144,12 +144,11 @@ public class AssetStatusJumpController {
         } else {
             // 查询资产当前状态
             Asset currentAsset = assetDao.getById(assetId);
-            Integer currentStatus = assetDao.getById(assetId).getAssetStatus();
-            if (!(AssetStatusEnum.WATI_REGSIST.getCode().equals(currentStatus)
-                  || AssetStatusEnum.NOT_REGSIST.getCode().equals(currentStatus)
-                  || AssetStatusEnum.RETIRE.getCode().equals(currentStatus))) {
-                throw new BusinessException("资产" + currentAsset.getName() + "已为"
-                                            + AssetStatusEnum.getAssetByCode(currentStatus).getMsg() + "状态");
+            if (currentAsset == null) {
+                throw new BusinessException("资产不存在");
+            }
+            if (!(AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getStatus()))) {
+                throw new BusinessException("资产状态已改变");
             }
             Asset asset = new Asset();
             asset.setId(DataTypeUtils.stringToInteger(assetId));
