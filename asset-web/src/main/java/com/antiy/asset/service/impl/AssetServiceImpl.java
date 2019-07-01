@@ -898,7 +898,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             this.findListAsset(query, processMap));
     }
 
-    public int findAlarmAssetCount(AssetQuery assetQuery) {
+    public int findAlarmAssetCount() {
+        AssetQuery assetQuery=new AssetQuery();
         if (ArrayUtils.isEmpty(assetQuery.getAreaIds())) {
             assetQuery.setAreaIds(
                     DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));

@@ -441,7 +441,7 @@ public class AssetController {
     @ApiOperation(value = "告警资产数量统计", notes = "正常资产数量统计")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/alarm/count", method = RequestMethod.POST)
-    public ActionResponse findAlarmAssetCount(@RequestBody AssetQuery query) throws Exception {
-        return ActionResponse.success(iAssetService.findAlarmAssetCount(query));
+    public ActionResponse findAlarmAssetCount() throws Exception {
+        return ActionResponse.success(iAssetService.findAlarmAssetCount());
     }
 }
