@@ -321,13 +321,12 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // 如果软件已退役，修改资产状态为待分析，并启动登记流程
         AssetSoftware software = assetSoftwareDao.getById(request.getId());
         Integer softwareStatus = software.getSoftwareStatus();
-        request.setSoftwareStatus(softwareStatus);
         Integer requestSoftwareStatusStatus = request.getSoftwareStatus();
-        if (requestSoftwareStatusStatus != null && !Objects.equals(softwareStatus, requestSoftwareStatusStatus)) {
+        if (Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.WATI_REGSIST.getCode())
+            && softwareStatus.equals(SoftwareStatusEnum.ALLOW_INSTALL.getCode())) {
             throw new BusinessException("软件状态已改变");
-        }
-        if (!(Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.WATI_REGSIST.getCode())
-              || (Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.NOT_REGSIST.getCode())))) {
+        } else if (Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.NOT_REGSIST.getCode())
+                   && softwareStatus.equals(SoftwareStatusEnum.ALLOW_INSTALL.getCode())) {
             throw new BusinessException("软件状态已改变");
         }
         Integer count = transactionTemplate.execute(new TransactionCallback<Integer>() {
