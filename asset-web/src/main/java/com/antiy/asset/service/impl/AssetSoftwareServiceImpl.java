@@ -326,7 +326,7 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             throw new BusinessException("软件状态已改变");
         }
         if (!(Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.WATI_REGSIST.getCode())
-              && !(Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.NOT_REGSIST.getCode())))) {
+              || (Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.NOT_REGSIST.getCode())))) {
             throw new BusinessException("软件状态已改变");
         }
         // if (request.getActivityRequest() != null && softwareStatus.equals(SoftwareStatusEnum.RETIRE.getCode())
