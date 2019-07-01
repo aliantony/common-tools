@@ -9,13 +9,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
-import com.antiy.common.exception.BusinessException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -23,11 +16,16 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.templet.ReportForm;
+import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.util.ReportDateUtils;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.request.AssetAreaReportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
@@ -36,13 +34,15 @@ import com.antiy.asset.vo.response.ReportData;
 import com.antiy.asset.vo.response.ReportTableHead;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.SysArea;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * @author: zhangbing
@@ -68,7 +68,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         List<Integer> allDataList = Lists.newArrayList();
         // 总增量
         List<Integer> allAddList = Lists.newArrayList();
-        List<String> topAreaIds;
+        List<Integer> topAreaIds;
         // 是否需要top5
         if (BooleanUtils.isTrue(reportRequest.getTopFive())) {
             // 1.查询TOP5的区域信息
@@ -76,7 +76,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             reportRequest.setAssetAreaIds(reportRequest.getAssetAreaIds().stream()
                 .filter(report -> topAreaIds.contains(report.getParentAreaId())).collect(Collectors.toList()));
         } else {
-            topAreaIds = reportRequest.getAssetAreaIds().stream().map(AssetAreaReportRequest::getParentAreaId)
+            topAreaIds = reportRequest.getAssetAreaIds().stream().map(AssetAreaReportRequest::getParentAreaIdInteger)
                 .collect(Collectors.toList());
         }
         // 横坐标
@@ -339,14 +339,14 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             .getRequest();
         ExcelUtils.exportFormToClient(reportForm, encodeChineseDownloadFileName(request, fileName));
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(titleStr, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT,
-            BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(
+            new BusinessData(titleStr, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
             reportQueryRequest.toString());
 
     }
 
-    private String getAreaNameById(String id, List<AssetAreaReportRequest> assetAreaIds) {
+    private String getAreaNameById(Integer id, List<AssetAreaReportRequest> assetAreaIds) {
         for (AssetAreaReportRequest assetAreaReportRequest : assetAreaIds) {
             if (id.equals(assetAreaReportRequest.getParentAreaId())) {
                 return assetAreaReportRequest.getParentAreaName();
@@ -366,7 +366,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
 
     }
 
-    private List<String> getTopFive(ReportQueryRequest reportRequest) {
+    private List<Integer> getTopFive(ReportQueryRequest reportRequest) {
 
         // 1.查询当前条件所有的区域信息
         List<Map<String, Integer>> allAssetCount = assetReportDao.getAllAssetWithArea(reportRequest);
@@ -381,11 +381,11 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         if (areaTop.size() > 5) {
             areaTop = areaTop.subList(0, 5);
         }
-        List<String> areaId = new ArrayList<>();
+        List<Integer> areaId = new ArrayList<>();
         areaTop.stream().forEach(areaName -> {
             reportRequest.getAssetAreaIds().forEach(assetAreaReportRequest -> {
                 if (assetAreaReportRequest.getParentAreaName().equals(areaName)) {
-                    areaId.add(assetAreaReportRequest.getParentAreaId());
+                    areaId.add(DataTypeUtils.stringToInteger(assetAreaReportRequest.getParentAreaId()));
                 }
             });
         });
