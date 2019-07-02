@@ -324,11 +324,11 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         AssetSoftware software = assetSoftwareDao.getById(request.getId());
         Integer softwareStatus = software.getSoftwareStatus();
         Integer requestSoftwareStatusStatus = request.getSoftwareStatus();
-        if (Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.WATI_REGSIST.getCode())
-            && softwareStatus.equals(SoftwareStatusEnum.ALLOW_INSTALL.getCode())) {
+        if (requestSoftwareStatusStatus != null && !Objects.equals(softwareStatus, requestSoftwareStatusStatus)) {
             throw new BusinessException("软件状态已改变");
-        } else if (Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.NOT_REGSIST.getCode())
-                   && softwareStatus.equals(SoftwareStatusEnum.ALLOW_INSTALL.getCode())) {
+        }
+        if (!(Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.WATI_REGSIST.getCode())
+              || (Objects.equals(requestSoftwareStatusStatus, SoftwareStatusEnum.NOT_REGSIST.getCode())))) {
             throw new BusinessException("软件状态已改变");
         }
         Integer count = transactionTemplate.execute(new TransactionCallback<Integer>() {
@@ -432,8 +432,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     private AssetOperationRecord convertAssetOperationRecord(AssetSoftwareRequest request, Integer softwareStatus) {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        if (request.getSoftwareStatus().equals(SoftwareStatusEnum.WATI_REGSIST.getCode())
-            || request.getSoftwareStatus().equals(SoftwareStatusEnum.NOT_REGSIST.getCode())) {
+        if (Objects.equals(request.getSoftwareStatus(), SoftwareStatusEnum.WATI_REGSIST.getCode())
+            || Objects.equals(request.getSoftwareStatus(), SoftwareStatusEnum.NOT_REGSIST.getCode())) {
             assetOperationRecord.setOriginStatus(softwareStatus);
             assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_REGISTER.getMsg());
         } else {
