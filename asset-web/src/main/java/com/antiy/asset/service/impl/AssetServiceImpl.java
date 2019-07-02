@@ -3562,9 +3562,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (Objects.nonNull(assetEntities) && assetEntities.size() > 0) {
             excelDownloadUtil.excelDownload(request, response,
                 "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
-            LogUtils
-                .recordOperLog(new BusinessData("硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT),
-                    0, "", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(
+                new BusinessData("导出《硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0, "",
+                    assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         } else {
             throw new BusinessException("导出数据为空");
         }
