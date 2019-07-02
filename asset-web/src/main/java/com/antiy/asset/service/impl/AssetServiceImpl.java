@@ -19,7 +19,6 @@ import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -1938,19 +1937,29 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                 // ------------------启动工作流------------------end
             }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // 下发智甲
+                    AssetExternalRequest assetExternalRequest = BeanConvert.convertBean(assetOuterRequest,
+                        AssetExternalRequest.class);
+                    try {
+                        assetExternalRequest.setAsset(BeanConvert
+                            .convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    // 获取资产上安装的软件信息
+                    List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
+                        .findInstalledSoft(assetOuterRequest.getAsset().getId());
+                    assetExternalRequest
+                        .setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
+                    List<AssetExternalRequest> assetExternalRequests = new ArrayList<>();
+                    assetExternalRequests.add(assetExternalRequest);
+                    assetClient.issueAssetData(assetExternalRequests);
+                }
+            }).start();
         }
-        // 下发智甲
-        AssetExternalRequest assetExternalRequest = BeanConvert.convertBean(assetOuterRequest,
-            AssetExternalRequest.class);
-        assetExternalRequest.setAsset(
-            BeanConvert.convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class));
-        // 获取资产上安装的软件信息
-        List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
-            .findInstalledSoft(assetOuterRequest.getAsset().getId());
-        assetExternalRequest.setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
-        List<AssetExternalRequest> assetExternalRequests = new ArrayList<>();
-        assetExternalRequests.add(assetExternalRequest);
-        ActionResponse actionResponse = assetClient.issueAssetData(assetExternalRequests);
         return assetCount;
     }
 
