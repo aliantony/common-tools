@@ -115,7 +115,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         String timeType = ReportDateUtils.getTimeType(DataTypeUtils.stringToInteger(reportRequest.getTimeType()));
         // 如果为当前月，则显示为周
         Long mouth = ReportDateUtils.monthDiff(reportRequest.getStartTime(), reportRequest.getEndTime());
-        if (mouth == 0 && !"1".equals(reportRequest.getTimeType())) {
+        if (mouth == 0 && "5".equals(reportRequest.getTimeType())) {
             timeType = "%u";
         }
 
@@ -349,7 +349,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
 
     private String getAreaNameById(Integer id, List<AssetAreaReportRequest> assetAreaIds) {
         for (AssetAreaReportRequest assetAreaReportRequest : assetAreaIds) {
-            if (id.equals(assetAreaReportRequest.getParentAreaId())) {
+            if (id.equals(DataTypeUtils.stringToInteger(assetAreaReportRequest.getParentAreaId()))) {
                 return assetAreaReportRequest.getParentAreaName();
             }
         }
