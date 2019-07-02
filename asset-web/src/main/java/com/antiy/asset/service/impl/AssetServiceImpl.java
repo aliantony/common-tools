@@ -727,6 +727,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         Map<String, String> alarmCountMaps = null;
         if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
+            List<Integer> alarmAssetId = assetDao.findAlarmAssetId(query);
+            query.setIds(DataTypeUtils.integerArrayToStringArray(alarmAssetId));
+            // 由于计算Id列表添加了区域，此处不用添加
+            query.setAreaIds(null);
             List<IdCount> alarmCountList = assetDao.queryAlarmCountByAssetIds(query);
             if (CollectionUtils.isEmpty(alarmCountList)) {
                 return new ArrayList<AssetResponse>();
@@ -874,13 +878,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             count = this.findCountAsset(query);
         }
 
-        // 如果会查询告警数量
-        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
-            count = assetDao.findAlarmAssetCount(query);
-            if (count <= 0) {
-                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
-            }
-        }
         if (count <= 0) {
             if (query.getEnterControl()) {
                 // 如果是工作台进来的但是有没有存在当前状态的待办任务，则把当前状态的资产全部查询出来
@@ -903,7 +900,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         assetQuery.setAssetStatusList(StatusEnumUtil.getAssetNotRetireStatus());
         Map map = new HashMap();
-        map.put("currentAlarmAssetIdNum", assetDao.findAlarmAssetCount(assetQuery));
+        List<Integer> result = assetDao.findAlarmAssetId(assetQuery);
+        map.put("currentAlarmAssetIdNum", result == null ? 0 : result.size());
         return map;
     }
 

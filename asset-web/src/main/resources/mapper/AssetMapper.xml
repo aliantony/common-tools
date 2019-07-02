@@ -1631,11 +1631,7 @@
         and status = 1 and uuid is not null
         group by id
     </select>
-    <select id="findAlarmAssetCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
-        SELECT
-        count(*)
-        FROM
-        (
+    <select id="findAlarmAssetId" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
         asset_id
         FROM
@@ -1659,6 +1655,5 @@
         </if>
         GROUP BY
         asset_id
-        ) alarm_asset
     </select>
 </mapper>
