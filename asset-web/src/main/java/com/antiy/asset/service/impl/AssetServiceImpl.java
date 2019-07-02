@@ -737,7 +737,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setIds(alarmCountMaps.keySet().toArray(ids));
             // 由于计算Id列表添加了区域，此处不用添加
             query.setAreaIds(null);
-            query.setCurrentPage(1);
         }
 
         // 查询资产信息
