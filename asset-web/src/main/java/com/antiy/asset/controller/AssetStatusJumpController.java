@@ -1,5 +1,7 @@
 package com.antiy.asset.controller;
 
+import java.util.Objects;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -36,8 +38,6 @@ import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
 import io.swagger.annotations.*;
-
-import java.util.Objects;
 
 /**
  * 资产状态跃迁统一接口
@@ -173,9 +173,15 @@ public class AssetStatusJumpController {
             }
 
             // 记录日志
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
-                DataTypeUtils.stringToInteger(assetId), assetDao.getNumberById(assetId), assetStatusChangeRequest,
-                BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
+            if (assetDao.getNumberById(assetId) == null) {
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
+                    DataTypeUtils.stringToInteger(assetId), currentAsset.getName(), assetStatusChangeRequest,
+                    BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
+            } else {
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
+                    DataTypeUtils.stringToInteger(assetId), assetDao.getNumberById(assetId), assetStatusChangeRequest,
+                    BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
+            }
             LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
             return ActionResponse.success(assetService.update(asset));
         }
