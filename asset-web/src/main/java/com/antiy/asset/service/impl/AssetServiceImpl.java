@@ -735,8 +735,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .collect(Collectors.toMap(idcount -> idcount.getId(), IdCount::getCount));
             String[] ids = new String[alarmCountMaps.size()];
             query.setIds(alarmCountMaps.keySet().toArray(ids));
-            // 由于计算Id列表添加了区域，此处不用添加
-            query.setAreaIds(null);
         }
 
         // 查询资产信息
