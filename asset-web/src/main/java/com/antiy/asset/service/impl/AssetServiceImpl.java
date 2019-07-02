@@ -19,7 +19,6 @@ import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -727,6 +726,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         Map<String, String> alarmCountMaps = null;
         if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
+            List<Integer> alarmAssetId = assetDao.findAlarmAssetId(query);
+            query.setIds(DataTypeUtils.integerArrayToStringArray(alarmAssetId));
+            // 由于计算Id列表添加了区域，此处不用添加
+            query.setAreaIds(null);
             List<IdCount> alarmCountList = assetDao.queryAlarmCountByAssetIds(query);
             if (CollectionUtils.isEmpty(alarmCountList)) {
                 return new ArrayList<AssetResponse>();
@@ -735,8 +738,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .collect(Collectors.toMap(idcount -> idcount.getId(), IdCount::getCount));
             String[] ids = new String[alarmCountMaps.size()];
             query.setIds(alarmCountMaps.keySet().toArray(ids));
-            // 由于计算Id列表添加了区域，此处不用添加
-            query.setAreaIds(null);
         }
 
         // 查询资产信息
@@ -866,6 +867,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
             }
         }
+        // 如果会查询告警数量
+        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
+            count = assetDao.findAlarmAssetCount(query);
+            if (count <= 0) {
+                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+            }
+        }
 
         // 如果count为0 直接返回结果即可
         if (count <= 0) {
@@ -876,13 +884,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             count = this.findCountAsset(query);
         }
 
-        // 如果会查询告警数量
-        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
-            count = assetDao.findAlarmAssetCount(query);
-            if (count <= 0) {
-                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
-            }
-        }
         if (count <= 0) {
             if (query.getEnterControl()) {
                 // 如果是工作台进来的但是有没有存在当前状态的待办任务，则把当前状态的资产全部查询出来
@@ -897,6 +898,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             this.findListAsset(query, processMap));
     }
 
+    @Override
     public Map findAlarmAssetCount() {
         AssetQuery assetQuery = new AssetQuery();
         if (ArrayUtils.isEmpty(assetQuery.getAreaIds())) {
@@ -1937,19 +1939,29 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                 // ------------------启动工作流------------------end
             }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // 下发智甲
+                    AssetExternalRequest assetExternalRequest = BeanConvert.convertBean(assetOuterRequest,
+                        AssetExternalRequest.class);
+                    try {
+                        assetExternalRequest.setAsset(BeanConvert
+                            .convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    // 获取资产上安装的软件信息
+                    List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
+                        .findInstalledSoft(assetOuterRequest.getAsset().getId());
+                    assetExternalRequest
+                        .setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
+                    List<AssetExternalRequest> assetExternalRequests = new ArrayList<>();
+                    assetExternalRequests.add(assetExternalRequest);
+                    assetClient.issueAssetData(assetExternalRequests);
+                }
+            }).start();
         }
-        // 下发智甲
-        AssetExternalRequest assetExternalRequest = BeanConvert.convertBean(assetOuterRequest,
-            AssetExternalRequest.class);
-        assetExternalRequest.setAsset(
-            BeanConvert.convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class));
-        // 获取资产上安装的软件信息
-        List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
-            .findInstalledSoft(assetOuterRequest.getAsset().getId());
-        assetExternalRequest.setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
-        List<AssetExternalRequest> assetExternalRequests = new ArrayList<>();
-        assetExternalRequests.add(assetExternalRequest);
-        ActionResponse actionResponse = assetClient.issueAssetData(assetExternalRequests);
         return assetCount;
     }
 
@@ -3559,9 +3571,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (Objects.nonNull(assetEntities) && assetEntities.size() > 0) {
             excelDownloadUtil.excelDownload(request, response,
                 "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
-            LogUtils
-                .recordOperLog(new BusinessData("硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT),
-                    0, "", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(
+                new BusinessData("导出《硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0, "",
+                    assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         } else {
             throw new BusinessException("导出数据为空");
         }
