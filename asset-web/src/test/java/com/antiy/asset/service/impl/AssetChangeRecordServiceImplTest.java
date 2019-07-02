@@ -30,29 +30,26 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({LoginUserUtil.class, ComputerEquipmentFieldCompareImpl.class, AssetChangeRecordFactory.class, AssetChangeRecordServiceImpl.class})
+@PrepareForTest({ LoginUserUtil.class, ComputerEquipmentFieldCompareImpl.class, AssetChangeRecordFactory.class,
+                  AssetChangeRecordServiceImpl.class })
 @SpringBootTest
 public class AssetChangeRecordServiceImplTest {
 
     @Mock
-    private BaseConverter<AssetChangeRecordRequest, AssetChangeRecord> requestConverter;
+    private BaseConverter<AssetChangeRecordRequest, AssetChangeRecord>  requestConverter;
     @Mock
-    private AssetChangeRecordDao assetChangeRecordDao;
+    private AssetChangeRecordDao                                        assetChangeRecordDao;
     @Mock
-    private ActivityClient activityClient;
+    private ActivityClient                                              activityClient;
     @Mock
     private BaseConverter<AssetChangeRecord, AssetChangeRecordResponse> responseConverter;
     @Mock
-    private AssetCategoryModelDao categoryModelDao;
+    private AssetCategoryModelDao                                       categoryModelDao;
     @InjectMocks
-    private AssetChangeRecordServiceImpl assetChangeRecordService;
+    private AssetChangeRecordServiceImpl                                assetChangeRecordService;
 
     @Before
     public void setUp() {
@@ -73,7 +70,8 @@ public class AssetChangeRecordServiceImplTest {
         Mockito.when(requestConverter.convert(request, AssetChangeRecord.class)).thenReturn(assetChangeRecord);
         Mockito.when(activityClient.manualStartProcess(Mockito.any())).thenReturn(actionResponse);
         Mockito.when(assetChangeRecordDao.insert(assetChangeRecord)).thenReturn(1);
-        Assert.assertEquals(assetChangeRecord.getId(), assetChangeRecordService.saveAssetChangeRecord(request).getBody());
+        Assert.assertEquals(assetChangeRecord.getId(),
+            assetChangeRecordService.saveAssetChangeRecord(request).getBody());
     }
 
     @Test
@@ -93,7 +91,8 @@ public class AssetChangeRecordServiceImplTest {
         List<AssetChangeRecordResponse> expect = new ArrayList<>();
         PowerMockito.doReturn(1).when(assetChangeRecordService, "findCount", Mockito.any());
         Mockito.when(assetChangeRecordDao.findQuery(Mockito.any())).thenReturn(assetChangeRecordList);
-        Mockito.when(responseConverter.convert(assetChangeRecordList, AssetChangeRecordResponse.class)).thenReturn(expect);
+        Mockito.when(responseConverter.convert(assetChangeRecordList, AssetChangeRecordResponse.class))
+            .thenReturn(expect);
         Assert.assertEquals(1, assetChangeRecordService.findPageAssetChangeRecord(query).getTotalRecords());
         Assert.assertEquals(expect, assetChangeRecordService.findPageAssetChangeRecord(query).getItems());
 
@@ -102,8 +101,10 @@ public class AssetChangeRecordServiceImplTest {
     @Test
     public void queryNetworkEquipmentByIdTest() throws Exception {
         List<Map<String, Object>> expect = new ArrayList<>();
-        NetworkEquipmentFieldCompareImpl networkEquipmentFieldCompare = Mockito.mock(NetworkEquipmentFieldCompareImpl.class);
-        PowerMockito.when(AssetChangeRecordFactory.getAssetChangeRecordProcess(Mockito.any())).thenReturn(networkEquipmentFieldCompare);
+        NetworkEquipmentFieldCompareImpl networkEquipmentFieldCompare = Mockito
+            .mock(NetworkEquipmentFieldCompareImpl.class);
+        PowerMockito.when(AssetChangeRecordFactory.getAssetChangeRecordProcess(Mockito.any()))
+            .thenReturn(networkEquipmentFieldCompare);
         Mockito.when(networkEquipmentFieldCompare.compareCommonBusinessInfo(Mockito.anyInt())).thenReturn(expect);
         Assert.assertEquals(expect, assetChangeRecordService.queryNetworkEquipmentById(1));
     }
@@ -112,7 +113,8 @@ public class AssetChangeRecordServiceImplTest {
     public void queryStorageEquipmentByIdTest() throws Exception {
         List<Map<String, Object>> expect = new ArrayList<>();
         StorageMediumFieldCompareImpl storageMediumFieldCompare = Mockito.mock(StorageMediumFieldCompareImpl.class);
-        PowerMockito.when(AssetChangeRecordFactory.getAssetChangeRecordProcess(Mockito.any())).thenReturn(storageMediumFieldCompare);
+        PowerMockito.when(AssetChangeRecordFactory.getAssetChangeRecordProcess(Mockito.any()))
+            .thenReturn(storageMediumFieldCompare);
         Mockito.when(storageMediumFieldCompare.compareCommonBusinessInfo(Mockito.anyInt())).thenReturn(expect);
         Assert.assertEquals(expect, assetChangeRecordService.queryStorageEquipmentById(1));
     }
@@ -120,8 +122,10 @@ public class AssetChangeRecordServiceImplTest {
     @Test
     public void querySafetyEquipmentByIdTest() throws Exception {
         List<Map<String, Object>> expect = new ArrayList<>();
-        SafetyEquipmentFieldCompareImpl safetyEquipmentFieldCompare = Mockito.mock(SafetyEquipmentFieldCompareImpl.class);
-        PowerMockito.when(AssetChangeRecordFactory.getAssetChangeRecordProcess(Mockito.any())).thenReturn(safetyEquipmentFieldCompare);
+        SafetyEquipmentFieldCompareImpl safetyEquipmentFieldCompare = Mockito
+            .mock(SafetyEquipmentFieldCompareImpl.class);
+        PowerMockito.when(AssetChangeRecordFactory.getAssetChangeRecordProcess(Mockito.any()))
+            .thenReturn(safetyEquipmentFieldCompare);
         Mockito.when(safetyEquipmentFieldCompare.compareCommonBusinessInfo(Mockito.anyInt())).thenReturn(expect);
         Assert.assertEquals(expect, assetChangeRecordService.querySafetyEquipmentById(1));
     }
@@ -130,7 +134,8 @@ public class AssetChangeRecordServiceImplTest {
     public void queryOtherEquipmentByIdvTest() throws Exception {
         List<Map<String, Object>> expect = new ArrayList<>();
         OtherEquipmentFieldCompareImpl otherEquipmentFieldCompare = Mockito.mock(OtherEquipmentFieldCompareImpl.class);
-        PowerMockito.when(AssetChangeRecordFactory.getAssetChangeRecordProcess(Mockito.any())).thenReturn(otherEquipmentFieldCompare);
+        PowerMockito.when(AssetChangeRecordFactory.getAssetChangeRecordProcess(Mockito.any()))
+            .thenReturn(otherEquipmentFieldCompare);
         Mockito.when(otherEquipmentFieldCompare.compareCommonBusinessInfo(Mockito.anyInt())).thenReturn(expect);
         Assert.assertEquals(expect, assetChangeRecordService.queryOtherEquipmentById(1));
     }
@@ -138,16 +143,26 @@ public class AssetChangeRecordServiceImplTest {
     @Test
     public void queryUniformChangeInfoTest1() throws Exception {
         AssetCategoryModel assetCategoryModel = new AssetCategoryModel();
-        assetCategoryModel.setId(4);
-        assetCategoryModel.setParentId("2");
+        assetCategoryModel.setId(5);
+        assetCategoryModel.setParentId("4");
+        assetCategoryModel.setName("name");
         List<Map<String, Object>> expect = new ArrayList<>();
         Map m = new HashMap();
-        m.put("2", assetCategoryModel);
+        m.put("1", assetCategoryModel);
         expect.add(m);
         Mockito.when(categoryModelDao.getById(Mockito.anyInt())).thenReturn(assetCategoryModel);
-        PowerMockito.doReturn(assetCategoryModel).when(assetChangeRecordService, "getParentCategory", assetCategoryModel);
+        Mockito.when(categoryModelDao.findAllCategory())
+            .thenReturn(Arrays.asList(getAssetCategory(2, 0), getAssetCategory(4, 2), getAssetCategory(5, 4)));
         PowerMockito.doReturn(expect).when(assetChangeRecordService).queryComputerEquipmentById(Mockito.anyInt());
-        Assert.assertEquals(expect, assetChangeRecordService.queryUniformChangeInfo(1, 1));
+        Assert.assertEquals(expect, assetChangeRecordService.queryUniformChangeInfo(1, 4));
+    }
+
+    public AssetCategoryModel getAssetCategory(int id, int parentId) {
+        AssetCategoryModel assetCategoryModel = new AssetCategoryModel();
+        assetCategoryModel.setName("name");
+        assetCategoryModel.setId(id);
+        assetCategoryModel.setParentId(Objects.toString(parentId));
+        return assetCategoryModel;
     }
 
     @Test
@@ -160,7 +175,8 @@ public class AssetChangeRecordServiceImplTest {
         m.put("2", assetCategoryModel);
         expect.add(m);
         Mockito.when(categoryModelDao.getById(Mockito.anyInt())).thenReturn(assetCategoryModel);
-        PowerMockito.doReturn(assetCategoryModel).when(assetChangeRecordService, "getParentCategory", assetCategoryModel);
+        PowerMockito.doReturn(assetCategoryModel).when(assetChangeRecordService, "getParentCategory",
+            assetCategoryModel);
         PowerMockito.doReturn(expect).when(assetChangeRecordService).queryNetworkEquipmentById(Mockito.anyInt());
         Assert.assertEquals(expect, assetChangeRecordService.queryUniformChangeInfo(1, 1));
     }
@@ -175,7 +191,8 @@ public class AssetChangeRecordServiceImplTest {
         m.put("2", assetCategoryModel);
         expect.add(m);
         Mockito.when(categoryModelDao.getById(Mockito.anyInt())).thenReturn(assetCategoryModel);
-        PowerMockito.doReturn(assetCategoryModel).when(assetChangeRecordService, "getParentCategory", assetCategoryModel);
+        PowerMockito.doReturn(assetCategoryModel).when(assetChangeRecordService, "getParentCategory",
+            assetCategoryModel);
         PowerMockito.doReturn(expect).when(assetChangeRecordService).queryStorageEquipmentById(Mockito.anyInt());
         Assert.assertEquals(expect, assetChangeRecordService.queryUniformChangeInfo(1, 1));
     }
@@ -190,7 +207,8 @@ public class AssetChangeRecordServiceImplTest {
         m.put("2", assetCategoryModel);
         expect.add(m);
         Mockito.when(categoryModelDao.getById(Mockito.anyInt())).thenReturn(assetCategoryModel);
-        PowerMockito.doReturn(assetCategoryModel).when(assetChangeRecordService, "getParentCategory", assetCategoryModel);
+        PowerMockito.doReturn(assetCategoryModel).when(assetChangeRecordService, "getParentCategory",
+            assetCategoryModel);
         PowerMockito.doReturn(expect).when(assetChangeRecordService).querySafetyEquipmentById(Mockito.anyInt());
         Assert.assertEquals(expect, assetChangeRecordService.queryUniformChangeInfo(1, 1));
     }
@@ -205,7 +223,8 @@ public class AssetChangeRecordServiceImplTest {
         m.put("2", assetCategoryModel);
         expect.add(m);
         Mockito.when(categoryModelDao.getById(Mockito.anyInt())).thenReturn(assetCategoryModel);
-        PowerMockito.doReturn(assetCategoryModel).when(assetChangeRecordService, "getParentCategory", assetCategoryModel);
+        PowerMockito.doReturn(assetCategoryModel).when(assetChangeRecordService, "getParentCategory",
+            assetCategoryModel);
         PowerMockito.doReturn(expect).when(assetChangeRecordService).queryOtherEquipmentById(Mockito.anyInt());
         Assert.assertEquals(expect, assetChangeRecordService.queryUniformChangeInfo(1, 1));
     }
@@ -220,7 +239,8 @@ public class AssetChangeRecordServiceImplTest {
         m.put("2", assetCategoryModel);
         expect.add(m);
         Mockito.when(categoryModelDao.getById(Mockito.anyInt())).thenReturn(assetCategoryModel);
-        PowerMockito.doReturn(assetCategoryModel).when(assetChangeRecordService, "getParentCategory", assetCategoryModel);
+        PowerMockito.doReturn(assetCategoryModel).when(assetChangeRecordService, "getParentCategory",
+            assetCategoryModel);
         PowerMockito.doReturn(expect).when(assetChangeRecordService).queryOtherEquipmentById(Mockito.anyInt());
         Assert.assertNull(assetChangeRecordService.queryUniformChangeInfo(1, 1));
     }
@@ -228,8 +248,10 @@ public class AssetChangeRecordServiceImplTest {
     @Test
     public void queryComputerEquipmentByIdTest() throws Exception {
         List<Map<String, Object>> expect = new ArrayList<>();
-        ComputerEquipmentFieldCompareImpl computerEquipmentFieldCompare = Mockito.mock(ComputerEquipmentFieldCompareImpl.class);
-        PowerMockito.when(AssetChangeRecordFactory.getAssetChangeRecordProcess(Mockito.any())).thenReturn(computerEquipmentFieldCompare);
+        ComputerEquipmentFieldCompareImpl computerEquipmentFieldCompare = Mockito
+            .mock(ComputerEquipmentFieldCompareImpl.class);
+        PowerMockito.when(AssetChangeRecordFactory.getAssetChangeRecordProcess(Mockito.any()))
+            .thenReturn(computerEquipmentFieldCompare);
         Mockito.when(computerEquipmentFieldCompare.compareCommonBusinessInfo(Mockito.anyInt())).thenReturn(expect);
         Assert.assertEquals(expect, assetChangeRecordService.queryComputerEquipmentById(1));
     }
@@ -242,7 +264,8 @@ public class AssetChangeRecordServiceImplTest {
         AssetCategoryModel assetCategoryModel = new AssetCategoryModelServiceImplTest().getAssetCategoryModel();
         assetCategoryModel.setParentId("1");
         Mockito.when(categoryModelDao.findAllCategory()).thenReturn(allCategory);
-        AssetCategoryModel result = Whitebox.invokeMethod(assetChangeRecordService, "getParentCategory", assetCategoryModel);
+        AssetCategoryModel result = Whitebox.invokeMethod(assetChangeRecordService, "getParentCategory",
+            assetCategoryModel);
         AssetCategoryModel expect = allCategory.get(0);
         Assert.assertEquals(expect, result);
     }
