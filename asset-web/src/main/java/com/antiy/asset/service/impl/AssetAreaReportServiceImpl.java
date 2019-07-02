@@ -348,7 +348,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
 
     private String getAreaNameById(Integer id, List<AssetAreaReportRequest> assetAreaIds) {
         for (AssetAreaReportRequest assetAreaReportRequest : assetAreaIds) {
-            if (id.equals(assetAreaReportRequest.getParentAreaId())) {
+            if (id.equals(DataTypeUtils.stringToInteger(assetAreaReportRequest.getParentAreaId()))) {
                 return assetAreaReportRequest.getParentAreaName();
             }
         }
