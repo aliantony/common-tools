@@ -868,6 +868,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
             }
         }
+        // 如果会查询告警数量
+        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
+            count = assetDao.findAlarmAssetCount(query);
+            if (count <= 0) {
+                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+            }
+        }
 
         // 如果count为0 直接返回结果即可
         if (count <= 0) {
@@ -892,6 +899,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             this.findListAsset(query, processMap));
     }
 
+    @Override
     public Map findAlarmAssetCount() {
         AssetQuery assetQuery = new AssetQuery();
         if (ArrayUtils.isEmpty(assetQuery.getAreaIds())) {
@@ -900,8 +908,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         assetQuery.setAssetStatusList(StatusEnumUtil.getAssetNotRetireStatus());
         Map map = new HashMap();
-        List<Integer> result = assetDao.findAlarmAssetId(assetQuery);
-        map.put("currentAlarmAssetIdNum", result == null ? 0 : result.size());
+        map.put("currentAlarmAssetIdNum", assetDao.findAlarmAssetCount(assetQuery));
         return map;
     }
 
