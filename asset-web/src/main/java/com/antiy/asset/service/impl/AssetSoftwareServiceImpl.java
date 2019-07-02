@@ -347,56 +347,25 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     }
 
                     );
+
                     assetSoftware.setOperationSystem(stringBuffer.substring(0, stringBuffer.length() - 1));
 
-                    /**
-                     * // 2.更新license表 if (null != request.getSoftwareLicenseRequest() &&
-                     * StringUtils.isNotBlank(request.getSoftwareLicenseRequest().getId())) { updateLicense(request); }
-                     *
-                     * // 3.是否存在关联表Id和状态，如果存在，则更新关联表即可(更新某一个实例) if
-                     * (StringUtils.isNotBlank(request.getAssetSoftwareRelationId()) && request.getSoftwareStatus() !=
-                     * null) { AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-                     * assetSoftwareRelation.setId(DataTypeUtils.stringToInteger(request.getAssetSoftwareRelationId()));
-                     * assetSoftwareRelation.setSoftwareStatus(request.getSoftwareStatus());
-                     * assetSoftwareRelationDao.update(assetSoftwareRelation); } else if
-                     * (ArrayUtils.isNotEmpty(request.getAssetIds())) { // 更新一批实例 // 4.移除端口和关联表的关系 List<Integer>
-                     * releationIds = assetSoftwareRelationDao.getAllReleationId(null,
-                     * DataTypeUtils.stringToInteger(request.getId())); if (CollectionUtils.isNotEmpty(releationIds)) {
-                     * assetPortProtocolDao.deletePortProtocol(releationIds); }
-                     *
-                     * // 5.移除关系表 assetSoftwareRelationDao.deleteSoftwareRelAsset(null,
-                     * DataTypeUtils.stringToInteger(request.getId()));
-                     *
-                     * // 5.插入关系表，并且插入端口数据 for (String assetId : request.getAssetIds()) { AssetSoftwareRelation
-                     * assetSoftwareRelation = new AssetSoftwareRelation();
-                     * assetSoftwareRelation.setSoftwareId(request.getId()); assetSoftwareRelation.setAssetId(assetId);
-                     * assetSoftwareRelation.setSoftwareStatus(request.getSoftwareStatus());
-                     * assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
-                     * assetSoftwareRelationDao.insert(assetSoftwareRelation);
-                     * ParamterExceptionUtils.isNull(assetSoftwareRelation.getId(), "更新软件失败");
-                     *
-                     * // 批量插入端口信息 if (ArrayUtils.isNotEmpty(request.getAssetPortProtocolRequest().getPort())) {
-                     * AssetPortProtocol protocol = new BaseConverter<AssetPortProtocolRequest, AssetPortProtocol>()
-                     * .convert(request.getAssetPortProtocolRequest(), AssetPortProtocol.class);
-                     * protocol.setAssetSoftId(assetSoftwareRelation.getStringId()); for (Integer port :
-                     * request.getAssetPortProtocolRequest().getPort()) { protocol.setPort(port); // 插入端口信息
-                     * assetPortProtocolDao.insert(protocol); } }
-                     *
-                     * } }
-                     */
-                    if (SoftwareStatusEnum.NOT_REGSIST.getCode().equals(softwareStatus)
-                        || SoftwareStatusEnum.WATI_REGSIST.getCode().equals(softwareStatus)) {
-                        // 记录操作日志和运行日志
-                        assetSoftware.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
-                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(),
-                            assetSoftware.getId(), assetSoftware.getName(), assetSoftware,
-                            BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
-                    } else {
-                        // 记录操作日志和运行日志
-                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(),
-                            assetSoftware.getId(), assetSoftware.getName(), assetSoftware,
-                            BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
+                    if (requestSoftwareStatusStatus != null) {
+                        if (SoftwareStatusEnum.NOT_REGSIST.getCode().equals(requestSoftwareStatusStatus)
+                            || SoftwareStatusEnum.WATI_REGSIST.getCode().equals(requestSoftwareStatusStatus)) {
+                            // 记录操作日志和运行日志
+                            assetSoftware.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(),
+                                assetSoftware.getId(), assetSoftware.getName(), assetSoftware,
+                                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.INSTALLABLE));
+                        } else {
+                            // 记录操作日志和运行日志
+                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(),
+                                assetSoftware.getId(), assetSoftware.getName(), assetSoftware,
+                                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.INSTALLABLE));
+                        }
                     }
+
                     int assetSoftwareCount = assetSoftwareDao.update(assetSoftware);
                     // 记录更新操作
                     assetOperationRecordDao.insert(convertAssetOperationRecord(request, softwareStatus));
