@@ -261,17 +261,17 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // }
         // }
 
-        // TODO 软件数据待下发给智甲
-        if (num > 0) {
-            ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
-                {
-                    add(request);
-                }
-            });
-            if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
-                logger.info("下发软件数据完成：{}", request);
-            }
-        }
+        // TODO 软件数据待下发给智甲-子线程处理
+        // if (num > 0) {
+        // ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
+        // {
+        // add(request);
+        // }
+        // });
+        // if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
+        // logger.info("下发软件数据完成：{}", request);
+        // }
+        // }
         return ActionResponse.success(num);
 
     }
