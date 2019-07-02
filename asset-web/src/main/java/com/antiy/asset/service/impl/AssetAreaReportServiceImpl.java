@@ -340,7 +340,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             .getRequest();
         ExcelUtils.exportFormToClient(reportForm, encodeChineseDownloadFileName(request, fileName));
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData("导出《" + titleStr + "》", 0, "", reportQueryRequest,
+        LogUtils.recordOperLog(new BusinessData("导出《" + fileName + "资产区域总数》", 0, "", reportQueryRequest,
             BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
             reportQueryRequest.toString());
