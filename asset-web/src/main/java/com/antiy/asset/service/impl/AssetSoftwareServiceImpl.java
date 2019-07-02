@@ -351,19 +351,15 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetSoftware.setOperationSystem(stringBuffer.substring(0, stringBuffer.length() - 1));
 
                     if (requestSoftwareStatusStatus != null) {
-                        if (SoftwareStatusEnum.NOT_REGSIST.getCode().equals(requestSoftwareStatusStatus)
-                            || SoftwareStatusEnum.WATI_REGSIST.getCode().equals(requestSoftwareStatusStatus)) {
                             // 记录操作日志和运行日志
                             assetSoftware.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
                             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(),
                                 assetSoftware.getId(), assetSoftware.getName(), assetSoftware,
                                 BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.INSTALLABLE));
-                        } else {
-                            // 记录操作日志和运行日志
-                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(),
+                    } else {// 记录操作日志和运行日志
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(),
                                 assetSoftware.getId(), assetSoftware.getName(), assetSoftware,
-                                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.INSTALLABLE));
-                        }
+                            BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.INSTALLABLE));
                     }
 
                     int assetSoftwareCount = assetSoftwareDao.update(assetSoftware);
