@@ -25,4 +25,12 @@ public class IdCount {
     public void setCount(String count) {
         this.count = count;
     }
+
+    public IdCount() {
+    }
+
+    public IdCount(String id, String count) {
+        this.id = id;
+        this.count = count;
+    }
 }

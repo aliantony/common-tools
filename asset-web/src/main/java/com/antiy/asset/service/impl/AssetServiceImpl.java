@@ -726,6 +726,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         Map<String, String> alarmCountMaps = null;
         if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
+            List<Integer> alarmAssetId = assetDao.findAlarmAssetId(query);
+            query.setIds(DataTypeUtils.integerArrayToStringArray(alarmAssetId));
+            // 由于计算Id列表添加了区域，此处不用添加
+            query.setAreaIds(null);
             List<IdCount> alarmCountList = assetDao.queryAlarmCountByAssetIds(query);
             if (CollectionUtils.isEmpty(alarmCountList)) {
                 return new ArrayList<AssetResponse>();
@@ -734,9 +738,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .collect(Collectors.toMap(idcount -> idcount.getId(), IdCount::getCount));
             String[] ids = new String[alarmCountMaps.size()];
             query.setIds(alarmCountMaps.keySet().toArray(ids));
-            // 由于计算Id列表添加了区域，此处不用添加
-            query.setAreaIds(null);
-            query.setCurrentPage(1);
         }
 
         // 查询资产信息
@@ -866,6 +867,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
             }
         }
+        // 如果会查询告警数量
+        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
+            count = assetDao.findAlarmAssetCount(query);
+            if (count <= 0) {
+                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+            }
+        }
 
         // 如果count为0 直接返回结果即可
         if (count <= 0) {
@@ -876,13 +884,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             count = this.findCountAsset(query);
         }
 
-        // 如果会查询告警数量
-        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
-            count = assetDao.findAlarmAssetCount(query);
-            if (count <= 0) {
-                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
-            }
-        }
         if (count <= 0) {
             if (query.getEnterControl()) {
                 // 如果是工作台进来的但是有没有存在当前状态的待办任务，则把当前状态的资产全部查询出来
@@ -897,6 +898,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             this.findListAsset(query, processMap));
     }
 
+    @Override
     public Map findAlarmAssetCount() {
         AssetQuery assetQuery = new AssetQuery();
         if (ArrayUtils.isEmpty(assetQuery.getAreaIds())) {

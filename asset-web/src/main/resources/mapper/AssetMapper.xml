@@ -1631,11 +1631,34 @@
         and status = 1 and uuid is not null
         group by id
     </select>
-    <select id="findAlarmAssetCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
+    <select id="findAlarmAssetId" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
-        count(*)
+        asset_id
         FROM
-        (
+        asset
+        LEFT JOIN alarm_current_records record ON record.asset_id = asset.id
+        WHERE
+        1 = 1
+        AND asset_id IS NOT NULL
+        AND asset. STATUS = 1
+        <if test=" areaIds != null and areaIds.length > 0 and ids == null">
+            and asset.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset.asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+        GROUP BY
+        asset_id
+    </select>
+
+    <select id="findAlarmAssetCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select count(*) from(
         SELECT
         asset_id
         FROM
@@ -1661,4 +1684,5 @@
         asset_id
         ) alarm_asset
     </select>
+
 </mapper>
