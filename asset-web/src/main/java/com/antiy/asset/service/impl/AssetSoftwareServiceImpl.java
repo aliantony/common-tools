@@ -432,8 +432,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
 
     private AssetOperationRecord convertAssetOperationRecord(AssetSoftwareRequest request, Integer softwareStatus) {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        if (Objects.equals(request.getSoftwareStatus(), SoftwareStatusEnum.WATI_REGSIST.getCode())
-            || Objects.equals(request.getSoftwareStatus(), SoftwareStatusEnum.NOT_REGSIST.getCode())) {
+        if (SoftwareStatusEnum.WATI_REGSIST.getCode().equals(request.getSoftwareStatus())
+            || SoftwareStatusEnum.NOT_REGSIST.getCode().equals(request.getSoftwareStatus())) {
             assetOperationRecord.setOriginStatus(softwareStatus);
             assetOperationRecord.setContent(SoftwareFlowEnum.SOFTWARE_REGISTER.getMsg());
         } else {
