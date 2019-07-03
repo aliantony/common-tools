@@ -33,6 +33,8 @@ import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
+import java.util.Objects;
+
 /**
  * @auther: zhangbing
  * @date: 2019/1/22 15:06
@@ -68,7 +70,17 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         Long gmtCreateTime = System.currentTimeMillis();
         Scheme scheme = null;
         if (assetStatusReqeust.getSchemeRequest() != null) {
-            ParamterExceptionUtils.isBlank(assetStatusReqeust.getSchemeRequest().getMemo(), "备注信息不能为空");
+            // 判断
+            if ((Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_VALIDATE)
+                 || Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_NET)
+                 || Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_RETIRE))
+                && Objects.equals(assetStatusReqeust.getAgree(), false)) {
+                ParamterExceptionUtils.isBlank(assetStatusReqeust.getSchemeRequest().getContent(), "备注信息不能为空");
+            }
+            if (Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.NET_IN)) {
+                ParamterExceptionUtils.isBlank(assetStatusReqeust.getSchemeRequest().getMemo(), "退役方案信息不能为空");
+            }
+
             // 1.保存方案信息
             scheme = convertScheme(assetStatusReqeust, gmtCreateTime);
             schemeDao.insert(scheme);
