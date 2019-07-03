@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.exception.RequestParamValidateException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.web.util.HtmlUtils;
@@ -71,14 +72,17 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         Scheme scheme = null;
         if (assetStatusReqeust.getSchemeRequest() != null) {
             // 判断
-            if ((Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_VALIDATE)
-                 || Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_NET)
+            if ((Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_CHECK)
                  || Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_RETIRE))
                 && Objects.equals(assetStatusReqeust.getAgree(), false)) {
-                ParamterExceptionUtils.isBlank(assetStatusReqeust.getSchemeRequest().getContent(), "备注信息不能为空");
+                isBlank(assetStatusReqeust.getSchemeRequest().getContent(), "备注信息不能为空");
+            }
+            if (Objects.equals(assetStatusReqeust.getAgree(), false)
+                && Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_NET)) {
+                isBlank(assetStatusReqeust.getSchemeRequest().getMemo(), "备注信息不能为空");
             }
             if (Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.NET_IN)) {
-                ParamterExceptionUtils.isBlank(assetStatusReqeust.getSchemeRequest().getMemo(), "退役方案信息不能为空");
+                isBlank(assetStatusReqeust.getSchemeRequest().getMemo(), "退役方案信息不能为空");
             }
 
             // 1.保存方案信息
@@ -189,6 +193,12 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             }
         }
         return ActionResponse.success();
+    }
+
+    public static void isBlank(String txt, String msg) {
+        if (txt == null || txt.trim().equals("")) {
+            throw new RequestParamValidateException(msg);
+        }
     }
 
     /**
