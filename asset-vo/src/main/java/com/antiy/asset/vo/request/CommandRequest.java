@@ -49,6 +49,13 @@ public class CommandRequest implements ObjectValidator {
         this.noList = noList;
     }
 
+    public ApiCommandType getType() {
+        return type;
+    }
+
+    public void setType(ApiCommandType type) {
+        this.type = type;
+    }
 
     @Override
     public void validate() throws RequestParamValidateException {
