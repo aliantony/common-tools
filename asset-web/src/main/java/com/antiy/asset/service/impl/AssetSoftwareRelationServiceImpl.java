@@ -283,7 +283,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             // 远程调用安装指令
             BaseRequestOuter<CommandRequest> baseRequestOuter = new BaseRequestOuter<>();
             baseRequestOuter.setData(commandRequest);
-            ActionResponse actionResponse = commandClient.executeCommand(commandRequest);
+            ActionResponse actionResponse = commandClient.executeCommand(baseRequestOuter);
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 LogUtils.info(logger, "远程调用安装指令" + " {}", relationList);
