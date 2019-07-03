@@ -281,6 +281,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             // 获取软件安装路径
             commandRequest.setUuidList(uuidList);
             // 远程调用安装指令
+            BaseRequestOuter<CommandRequest> baseRequestOuter = new BaseRequestOuter<>();
+            baseRequestOuter.setData(commandRequest);
             ActionResponse actionResponse = commandClient.executeCommand(commandRequest);
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
