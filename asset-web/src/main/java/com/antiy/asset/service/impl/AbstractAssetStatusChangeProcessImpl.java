@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.exception.RequestParamValidateException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.web.util.HtmlUtils;
@@ -33,6 +34,8 @@ import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
+import java.util.Objects;
+
 /**
  * @auther: zhangbing
  * @date: 2019/1/22 15:06
@@ -59,15 +62,29 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     @Resource
     private AesEncoder                           aesEncoder;
     @Resource
-    private AssetStatusTaskDao                           statusTaskDao;
+    private AssetStatusTaskDao                   statusTaskDao;
     @Resource
-    private AssetLinkRelationDao                         assetLinkRelationDao;
+    private AssetLinkRelationDao                 assetLinkRelationDao;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
         Long gmtCreateTime = System.currentTimeMillis();
         Scheme scheme = null;
         if (assetStatusReqeust.getSchemeRequest() != null) {
+            // 判断
+            if ((Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_CHECK)
+                 || Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_RETIRE))
+                && Objects.equals(assetStatusReqeust.getAgree(), false)) {
+                isBlank(assetStatusReqeust.getSchemeRequest().getContent(), "备注信息不能为空");
+            }
+            if (Objects.equals(assetStatusReqeust.getAgree(), false)
+                && Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_NET)) {
+                isBlank(assetStatusReqeust.getSchemeRequest().getMemo(), "备注信息不能为空");
+            }
+            if (Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.NET_IN)) {
+                isBlank(assetStatusReqeust.getSchemeRequest().getMemo(), "退役方案信息不能为空");
+            }
+
             // 1.保存方案信息
             scheme = convertScheme(assetStatusReqeust, gmtCreateTime);
             schemeDao.insert(scheme);
@@ -176,6 +193,12 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             }
         }
         return ActionResponse.success();
+    }
+
+    private void isBlank(String txt, String msg) {
+        if (txt == null || txt.trim().equals("")) {
+            throw new RequestParamValidateException(msg);
+        }
     }
 
     /**

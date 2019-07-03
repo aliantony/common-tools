@@ -178,10 +178,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             ParamterExceptionUtils.isBlank(request.getAsset().getLocation().trim(), "物理位置不能为空");
         }
         // 品类型号判断，如果为计算设备，提示错误信息,配合资产上报
-
-        String category = request.getAsset().getCategoryModel();
-        if (!Objects.isNull(category) && "4".equals(category)) {
-            throw new BusinessException("请重新选择资产所属品类型号");
+        if (null != request.getAsset()) {
+            String category = request.getAsset().getCategoryModel();
+            if (!Objects.isNull(category) && "4".equals(category)) {
+                throw new BusinessException("请重新选择资产所属品类型号");
+            }
         }
 
         AssetRequest requestAsset = request.getAsset();
@@ -3572,9 +3573,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (Objects.nonNull(assetEntities) && assetEntities.size() > 0) {
             excelDownloadUtil.excelDownload(request, response,
                 "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
-            LogUtils
-                .recordOperLog(new BusinessData("硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT),
-                    0, "", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(
+                new BusinessData("导出《硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0, "",
+                    assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         } else {
             throw new BusinessException("导出数据为空");
         }

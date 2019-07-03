@@ -74,7 +74,8 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             // 1.查询TOP5的区域信息
             topAreaIds = getTopFive(reportRequest);
             reportRequest.setAssetAreaIds(reportRequest.getAssetAreaIds().stream()
-                .filter(report -> topAreaIds.contains(DataTypeUtils.stringToInteger(report.getParentAreaId()))).collect(Collectors.toList()));
+                .filter(report -> topAreaIds.contains(DataTypeUtils.stringToInteger(report.getParentAreaId())))
+                .collect(Collectors.toList()));
         } else {
             topAreaIds = reportRequest.getAssetAreaIds().stream().map(AssetAreaReportRequest::getParentAreaIdInteger)
                 .collect(Collectors.toList());
@@ -334,13 +335,13 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             }
         }
         reportForm.setData(datas);
-        String fileName = titleStr + ".xlsx";
+        String fileName = title + ".xlsx";
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
             .getRequest();
         ExcelUtils.exportFormToClient(reportForm, encodeChineseDownloadFileName(request, fileName));
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(
-            new BusinessData(titleStr, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(new BusinessData("导出《" + fileName + "》", 0, "", reportQueryRequest,
+            BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
             reportQueryRequest.toString());
 

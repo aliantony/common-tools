@@ -485,8 +485,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
         String fileName = title + ".xlsx";
         ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, fileName));
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData(title, 0, "", assetReportCategoryCountQuery, BusinessModuleEnum.REPORT,
-            BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(new BusinessData("导出《" + title + "》", 0, "", assetReportCategoryCountQuery,
+            BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
             assetReportCategoryCountQuery.toString());
     }
@@ -895,8 +895,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
             .getRequest();
         ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, title + ".xlsx"));
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(
-            new BusinessData(title, 0, "", reportQueryRequest, BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(new BusinessData("导出《" + title + "》", 0, "", reportQueryRequest,
+            BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
             reportQueryRequest.toString());
 

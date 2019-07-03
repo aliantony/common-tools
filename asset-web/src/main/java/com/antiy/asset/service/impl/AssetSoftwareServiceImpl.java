@@ -261,17 +261,17 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // }
         // }
 
-        // TODO 软件数据待下发给智甲
-        if (num > 0) {
-            ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
-                {
-                    add(request);
-                }
-            });
-            if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
-                logger.info("下发软件数据完成：{}", request);
-            }
-        }
+        // TODO 软件数据待下发给智甲-子线程处理
+        // if (num > 0) {
+        // ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
+        // {
+        // add(request);
+        // }
+        // });
+        // if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
+        // logger.info("下发软件数据完成：{}", request);
+        // }
+        // }
         return ActionResponse.success(num);
 
     }
@@ -351,14 +351,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     assetSoftware.setOperationSystem(stringBuffer.substring(0, stringBuffer.length() - 1));
 
                     if (requestSoftwareStatusStatus != null) {
-                            // 记录操作日志和运行日志
-                            assetSoftware.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
-                            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(),
-                                assetSoftware.getId(), assetSoftware.getName(), assetSoftware,
-                                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.INSTALLABLE));
+                        // 记录操作日志和运行日志
+                        assetSoftware.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_INSERT.getName(),
+                            assetSoftware.getId(), assetSoftware.getName(), assetSoftware,
+                            BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.INSTALLABLE));
                     } else {// 记录操作日志和运行日志
                         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_UPDATE.getName(),
-                                assetSoftware.getId(), assetSoftware.getName(), assetSoftware,
+                            assetSoftware.getId(), assetSoftware.getName(), assetSoftware,
                             BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.INSTALLABLE));
                     }
 
@@ -1078,8 +1078,8 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         downloadVO.setDownloadList(softwareEntities);
         if (Objects.nonNull(softwareEntities) && softwareEntities.size() > 0) {
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData(s, 0, "", assetSoftwareQuery, BusinessModuleEnum.SOFTWARE_ASSET,
-                BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData("导出《" + s + "》", 0, "", assetSoftwareQuery,
+                BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.SOFT_EXPORT.getName() + " {}", downloadVO);
             excelDownloadUtil.excelDownload(request, response, s, downloadVO);
         } else {

@@ -90,15 +90,15 @@ public class AssetAdmittanceController {
         Asset log = assetService.getById(admittance.getStringId());
         // 记录操作日志和运行日志
         if (admittance.getAdmittanceStatus() == 2) {
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_ALLOW.getName(), asset.getId(),
-                    log.getName(), log, BusinessModuleEnum.ACCESS_MANAGEMENT,
-                    BusinessPhaseEnum.getByStatus(log.getAssetStatus())));
+            LogUtils.recordOperLog(
+                new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_ALLOW.getName(), asset.getId(), log.getName(), log,
+                    BusinessModuleEnum.ACCESS_MANAGEMENT, BusinessPhaseEnum.getByStatus(log.getAssetStatus())));
             LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
                 AssetEventEnum.ASSET_ADMITTANCE_ALLOW.getName() + " {}", asset.toString());
         } else if (admittance.getAdmittanceStatus() == 3) {
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_REFUSE.getName(), asset.getId(),
-                    log.getName(), log, BusinessModuleEnum.ACCESS_MANAGEMENT,
-                    BusinessPhaseEnum.getByStatus(log.getAssetStatus())));
+            LogUtils.recordOperLog(
+                new BusinessData(AssetEventEnum.ASSET_ADMITTANCE_REFUSE.getName(), asset.getId(), log.getName(), log,
+                    BusinessModuleEnum.ACCESS_MANAGEMENT, BusinessPhaseEnum.getByStatus(log.getAssetStatus())));
             LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
                 AssetEventEnum.ASSET_ADMITTANCE_REFUSE.getName() + " {}", asset.toString());
         }
@@ -140,8 +140,9 @@ public class AssetAdmittanceController {
         excelDownloadUtil.excelDownload(request, response,
             "准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
         // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData("准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT),
-            0, "", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(
+            new BusinessData("导出《准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0, "",
+                assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
             AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName() + " {}", assetQuery.toString());
         return ActionResponse.success();
