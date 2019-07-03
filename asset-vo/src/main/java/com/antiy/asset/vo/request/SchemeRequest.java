@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.antiy.common.base.BasicRequest;
@@ -59,6 +60,7 @@ public class SchemeRequest extends BasicRequest implements ObjectValidator {
      * 备注
      */
     @ApiModelProperty(value = "备注")
+    @NotBlank
     @Size(message = "备注不能超过300个字符",max = 300)
     private String  memo;
 

@@ -1,9 +1,6 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.dao.AssetOperationRecordDao;
-import com.antiy.asset.dao.AssetSoftwareDao;
-import com.antiy.asset.dao.SchemeDao;
+import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.AssetSoftware;
@@ -13,10 +10,7 @@ import com.antiy.asset.intergration.WorkOrderClient;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
-import com.antiy.asset.vo.request.ActivityHandleRequest;
-import com.antiy.asset.vo.request.AssetStatusReqeust;
-import com.antiy.asset.vo.request.SchemeRequest;
-import com.antiy.asset.vo.request.WorkOrderVO;
+import com.antiy.asset.vo.request.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.LoginUser;
@@ -38,38 +32,39 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Constructor;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AbstractAssetStatusChangeProcessImplTest {
 
     @InjectMocks
-    private AbstractAssetStatusChangeProcessImpl assetStatusChangeProcessService =
-            Mockito.mock(AbstractAssetStatusChangeProcessImpl.class, Mockito.CALLS_REAL_METHODS);
+    private AbstractAssetStatusChangeProcessImpl assetStatusChangeProcessService = Mockito
+        .mock(AbstractAssetStatusChangeProcessImpl.class, Mockito.CALLS_REAL_METHODS);
     @Mock
-    private AssetOperationRecordDao assetOperationRecordDao;
+    private AssetOperationRecordDao              assetOperationRecordDao;
     @Mock
-    private SchemeDao schemeDao;
+    private SchemeDao                            schemeDao;
     @Mock
-    private AssetDao assetDao;
+    private AssetDao                             assetDao;
     @Mock
-    private AssetSoftwareDao assetSoftwareDao;
+    private AssetSoftwareDao                     assetSoftwareDao;
     @Mock
     private BaseConverter<SchemeRequest, Scheme> schemeRequestToSchemeConverter;
     @Mock
-    private AesEncoder aesEncoder;
+    private AesEncoder                           aesEncoder;
     @Mock
-    private ActivityClient activityClient;
+    private ActivityClient                       activityClient;
     @Mock
-    private WorkOrderClient workOrderClient;
-
+    private WorkOrderClient                      workOrderClient;
+    @Mock
+    private AssetLinkRelationDao                 assetLinkRelationDao;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         LoginUtil.generateDefaultLoginUser();
         Mockito.when(activityClient.completeTask(Mockito.any())).thenReturn(ActionResponse.success());
         Mockito.when(workOrderClient.createWorkOrder(Mockito.any())).thenReturn(ActionResponse.success());
+        Mockito.when(activityClient.manualStartProcess(Mockito.any())).thenReturn(ActionResponse.success());
     }
 
     @Test
@@ -83,11 +78,11 @@ public class AbstractAssetStatusChangeProcessImplTest {
         assetStatusReqeust.setAssetStatus(AssetStatusEnum.WAIT_CHECK);
         assetStatusReqeust.setSoftwareStatusEnum(SoftwareStatusEnum.ALLOW_INSTALL);
         assetStatusReqeust.setAgree(true);
-        assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.SOFTWARE_REGISTER);
+        assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.HARDWARE_REGISTER);
         ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
         activityHandleRequest.setTaskId("1");
         assetStatusReqeust.setActivityHandleRequest(activityHandleRequest);
-
+        assetStatusReqeust.setManualStartActivityRequest(new ManualStartActivityRequest());
         Class<WorkOrderVO> workOrderVOClass = WorkOrderVO.class;
         Constructor<WorkOrderVO> declaredConstructor = workOrderVOClass.getDeclaredConstructor();
         declaredConstructor.setAccessible(true);
@@ -120,25 +115,49 @@ public class AbstractAssetStatusChangeProcessImplTest {
         Mockito.when(assetSoftwareDao.getById(Mockito.any())).thenReturn(software);
         Mockito.when(assetDao.getById(Mockito.any())).thenReturn(asset);
         Mockito.when(assetOperationRecordDao.insert(Mockito.any())).thenReturn(1);
-        Mockito.when(aesEncoder.decode(Mockito.any(),Mockito.any())).thenReturn("1");
+        Mockito.when(aesEncoder.decode(Mockito.any(), Mockito.any())).thenReturn("1");
 
-        //情景一：硬件资产登记
+        // 情景一：硬件资产登记
         ActionResponse actionResponse = assetStatusChangeProcessService.changeStatus(assetStatusReqeust);
         Assert.assertEquals("200", actionResponse.getHead().getCode());
 
-        //情景二：软件资产登记
+        // 情景二：硬件入网
+        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WAIT_NET);
+        actionResponse = assetStatusChangeProcessService.changeStatus(assetStatusReqeust);
+        Assert.assertEquals("200", actionResponse.getHead().getCode());
+
+        // 情景三：硬件入网
+        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WAIT_CHECK);
+        actionResponse = assetStatusChangeProcessService.changeStatus(assetStatusReqeust);
+        Assert.assertEquals("200", actionResponse.getHead().getCode());
+
+        // 情景四：硬件退役
+        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WAIT_RETIRE);
+        assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.HARDWARE_IMPL_RETIRE);
+        actionResponse = assetStatusChangeProcessService.changeStatus(assetStatusReqeust);
+        Assert.assertEquals("200", actionResponse.getHead().getCode());
+
+        // 情景五：硬件实施退役
+        assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.HARDWARE_RETIRE);
+        actionResponse = assetStatusChangeProcessService.changeStatus(assetStatusReqeust);
+        Assert.assertEquals("200", actionResponse.getHead().getCode());
+
+        // 情景二：软件资产登记
         assetStatusReqeust.setSoftware(true);
         assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.SOFTWARE_REGISTER);
         ActionResponse actionResponse2 = assetStatusChangeProcessService.changeStatus(assetStatusReqeust);
         Assert.assertEquals("200", actionResponse2.getHead().getCode());
 
-        //情景三：软件资产实施退役流程
+        // 情景三：软件资产实施退役流程
         assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE);
         assetStatusReqeust.setSoftwareStatusEnum(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE);
         ActionResponse actionResponse3 = assetStatusChangeProcessService.changeStatus(assetStatusReqeust);
-        //情景四：软件资产实施卸载流程
+        Assert.assertEquals("200", actionResponse2.getHead().getCode());
+
+        // 情景四：软件资产实施卸载流程
         assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.SOFTWARE_IMPL_UNINSTALL);
         ActionResponse actionResponse4 = assetStatusChangeProcessService.changeStatus(assetStatusReqeust);
+        Assert.assertEquals("200", actionResponse2.getHead().getCode());
     }
 
 }
