@@ -59,15 +59,16 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     @Resource
     private AesEncoder                           aesEncoder;
     @Resource
-    private AssetStatusTaskDao                           statusTaskDao;
+    private AssetStatusTaskDao                   statusTaskDao;
     @Resource
-    private AssetLinkRelationDao                         assetLinkRelationDao;
+    private AssetLinkRelationDao                 assetLinkRelationDao;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
         Long gmtCreateTime = System.currentTimeMillis();
         Scheme scheme = null;
         if (assetStatusReqeust.getSchemeRequest() != null) {
+            ParamterExceptionUtils.isBlank(assetStatusReqeust.getSchemeRequest().getMemo(), "备注信息不能为空");
             // 1.保存方案信息
             scheme = convertScheme(assetStatusReqeust, gmtCreateTime);
             schemeDao.insert(scheme);
