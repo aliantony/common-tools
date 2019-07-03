@@ -633,14 +633,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
-    private boolean CheckRepeatIp(String innerIp, Integer isNet, Integer isSafety) throws Exception {
-        AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setIp(innerIp);
-        assetQuery.setIsNet(isNet);
-        assetQuery.setIsSafety(isSafety);
-        Integer countIp = assetDao.findCountIp(assetQuery);
-        return countIp >= 1;
-    }
+    // private boolean CheckRepeatIp(String innerIp, Integer isNet, Integer isSafety) throws Exception {
+    // AssetQuery assetQuery = new AssetQuery();
+    // assetQuery.setIp(innerIp);
+    // assetQuery.setIsNet(isNet);
+    // assetQuery.setIsSafety(isSafety);
+    // Integer countIp = assetDao.findCountIp(assetQuery);
+    // return countIp >= 1;
+    // }
 
     private boolean CheckRepeatMAC(String mac) throws Exception {
         Integer countIp = assetDao.findCountMac(mac);
@@ -2552,7 +2552,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetMemory.setFrequency(entity.getMemoryFrequency());
                     assetMemory.setCapacity(entity.getMemoryCapacity());
                     assetMemory.setStitch(entity.getStitch());
-                    assetMemory.setHeatsink(entity.getHeatsink() == 0 ? 2 : 1);
+                    if (entity.getHeatsink() != null) {
+                        assetMemory.setHeatsink(entity.getHeatsink() == 0 ? 2 : 1);
+                    }
                     assetMemory.setTransferType(entity.getTransferType());
                     assetMemory.setSlotType(entity.getSlotType());
                     List<AssetMemory> assetMemoryList = new ArrayList<>();

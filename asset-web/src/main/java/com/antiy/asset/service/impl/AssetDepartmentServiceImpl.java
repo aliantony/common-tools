@@ -276,17 +276,3 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     }
 }
 
-@Component
-class DepartmentRequestConvert extends BaseConverter<AssetDepartmentRequest, AssetDepartment> {
-    private Logger logger = LogUtils.get(DepartmentRequestConvert.class);
-
-    @Override
-    protected void convert(AssetDepartmentRequest assetDepartmentRequest, AssetDepartment assetDepartment) {
-        try {
-            assetDepartment.setId(Integer.valueOf(assetDepartmentRequest.getId()));
-        } catch (Exception e) {
-            logger.error("String转Integer出错");
-        }
-        super.convert(assetDepartmentRequest, assetDepartment);
-    }
-}
