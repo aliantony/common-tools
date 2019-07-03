@@ -1,6 +1,6 @@
 package com.antiy.asset.intergration;
 
-import com.antiy.asset.vo.request.CommandRequest;
+import com.antiy.asset.vo.request.BaseRequestOuter;
 import com.antiy.common.base.ActionResponse;
 
 /**
@@ -12,8 +12,8 @@ public interface CommandClient {
 
     /**
      * 软件安装指令
-     * @param installRequest
+     * @param baseRequestOuter
      * @return
      */
-    ActionResponse executeCommand(CommandRequest installRequest);
+    ActionResponse executeCommand(BaseRequestOuter baseRequestOuter);
 }

@@ -88,7 +88,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 软件名称
      */
     @NotBlank(message = "软件名称不能为空")
-    @Size(message = "软件名称字段长度不能超过30位", max = 80, min = 1)
+    @Size(message = "软件名称字段长度不能超过80位", max = 80, min = 1)
     @ApiModelProperty(value = "软件名称")
     private String                      name;
     /**
@@ -115,7 +115,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 厂商
      */
     @ApiModelProperty(value = "厂商")
-    @Size(message = "资产厂商不能超过30位", max = 30)
+    @Size(message = "资产厂商不能超过30位", max = 80)
     private String                      manufacturer;
     /**
      * 软件描述
