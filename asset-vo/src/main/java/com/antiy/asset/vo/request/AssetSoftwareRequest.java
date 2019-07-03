@@ -115,7 +115,7 @@ public class AssetSoftwareRequest extends BasicRequest implements ObjectValidato
      * 厂商
      */
     @ApiModelProperty(value = "厂商")
-    @Size(message = "资产厂商不能超过30位", max = 30)
+    @Size(message = "资产厂商不能超过30位", max = 80)
     private String                      manufacturer;
     /**
      * 软件描述
