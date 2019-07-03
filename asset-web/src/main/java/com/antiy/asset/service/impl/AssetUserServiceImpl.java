@@ -1,7 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +44,7 @@ import com.antiy.common.utils.LoginUserUtil;
 @Transactional(rollbackFor = Exception.class)
 @Service
 public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements IAssetUserService {
+    private static final Logger                         logger = LogUtils.get(AssetUserServiceImpl.class);
 
     @Resource
     private AssetUserDao                                assetUserDao;
@@ -103,7 +103,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
                         a.setAddress(null);
                     }
                 } catch (Exception e) {
-                    logger.warn("获取用户详细地址失败", e);
+                    LogUtils.warn(logger, "获取用户详细地址失败:{}", e);
                 }
             });
         }

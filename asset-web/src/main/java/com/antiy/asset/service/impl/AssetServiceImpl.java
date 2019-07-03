@@ -1738,7 +1738,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // ip 变更，不重复 ，且删除关联关系
                         AssetNetworkEquipment byId = assetNetworkEquipmentDao
                             .getById(DataTypeUtils.stringToInteger(networkEquipment.getId()));
-                        if (byId != null && !byId.getMacAddress().equals(networkEquipment.getMacAddress())) {
+                        if (byId != null && byId.getMacAddress() != null
+                            && !byId.getMacAddress().equals(networkEquipment.getMacAddress())) {
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(networkEquipment.getId()));
                             BusinessExceptionUtils.isTrue(assetDao.findCountMac(networkEquipment.getMacAddress()) <= 0,
                                 "MAC不能重复");
@@ -1763,7 +1764,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // ip 变更，不重复
                         AssetSafetyEquipment byId = assetSafetyEquipmentDao
                             .getById(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
-                        if (byId != null && !byId.getMac().equals(safetyEquipment.getMac())) {
+                        if (byId != null && byId.getMac() != null && !byId.getMac().equals(safetyEquipment.getMac())) {
                             assetQuery.setExceptId(DataTypeUtils.stringToInteger(safetyEquipment.getId()));
                             BusinessExceptionUtils.isTrue(assetDao.findCountMac(safetyEquipment.getMac()) <= 0,
                                 "MAC不能重复");
