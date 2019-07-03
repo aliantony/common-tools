@@ -38,27 +38,28 @@ import java.util.List;
 @SpringBootTest
 public class AssetDepartmentServiceImplTest {
     @InjectMocks
-    private AssetDepartmentServiceImpl assetDepartmentService;
+    private AssetDepartmentServiceImpl                                       assetDepartmentService;
     @Mock
-    private AssetDepartmentDao assetDepartmentDao;
+    private AssetDepartmentDao                                               assetDepartmentDao;
     @Mock
-    private BaseConverter<AssetDepartmentRequest, AssetDepartment> requestConverter;
+    private BaseConverter<AssetDepartmentRequest, AssetDepartment>           requestConverter;
     @Mock
-    private BaseConverter<AssetDepartment, AssetDepartmentResponse> responseConverter;
+    private BaseConverter<AssetDepartment, AssetDepartmentResponse>          responseConverter;
     @Mock
-    private NodeUtilsConverter<AssetDepartment,AssetDepartmentNodeResponse> nodeConverter;
+    private NodeUtilsConverter<AssetDepartment, AssetDepartmentNodeResponse> nodeConverter;
     @Mock
-    private AesEncoder aesEncoder;
+    private AesEncoder                                                       aesEncoder;
     @Mock
-    private AssetUserDao assetUserDao;
+    private AssetUserDao                                                     assetUserDao;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         LoginUtil.generateDefaultLoginUser();
     }
+
     @Test
-    public void saveAssetDepartmentTest()throws Exception{
+    public void saveAssetDepartmentTest() throws Exception {
         AssetDepartmentRequest request = new AssetDepartmentRequest();
         request.setName("test");
         request.setParentId("0");
@@ -66,15 +67,15 @@ public class AssetDepartmentServiceImplTest {
         assetDepartment.setParentId("0");
         assetDepartment.setName("test");
 
-        Mockito.when( requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
         Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(1);
         Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(assetDepartment);
         ActionResponse response = assetDepartmentService.saveAssetDepartment(request);
-        Assert.assertEquals("200",response.getHead().getCode());
+        Assert.assertEquals("200", response.getHead().getCode());
     }
 
     @Test
-    public void updateAssetDepartmentTest()throws Exception{
+    public void updateAssetDepartmentTest() throws Exception {
         AssetDepartmentRequest request = new AssetDepartmentRequest();
         request.setName("test");
         request.setId("1");
@@ -87,12 +88,12 @@ public class AssetDepartmentServiceImplTest {
         Mockito.when(assetDepartmentDao.update(Mockito.any())).thenReturn(1);
 
         ActionResponse response = assetDepartmentService.updateAssetDepartment(request);
-        Assert.assertEquals("200",response.getHead().getCode());
+        Assert.assertEquals("200", response.getHead().getCode());
 
     }
 
     @Test
-    public void findListAssetDepartmentTest()throws Exception{
+    public void findListAssetDepartmentTest() throws Exception {
         AssetDepartmentQuery query = new AssetDepartmentQuery();
         query.setParentId("0");
         query.setStatus(1);
@@ -112,13 +113,14 @@ public class AssetDepartmentServiceImplTest {
         assetDepartmentResponseList.add(assetDepartmentResponse);
 
         Mockito.when(assetDepartmentDao.findListAssetDepartment(Mockito.any())).thenReturn(assetDepartmentList);
-        Mockito.when(responseConverter.convert(assetDepartmentList, AssetDepartmentResponse.class)).thenReturn(assetDepartmentResponseList);
+        Mockito.when(responseConverter.convert(assetDepartmentList, AssetDepartmentResponse.class))
+            .thenReturn(assetDepartmentResponseList);
         List<AssetDepartmentResponse> actual = assetDepartmentService.findListAssetDepartment(query);
-        Assert.assertTrue(assetDepartmentResponseList.size()==actual.size());
+        Assert.assertTrue(assetDepartmentResponseList.size() == actual.size());
     }
 
     @Test
-    public void findAssetDepartmentByIdTest()throws Exception{
+    public void findAssetDepartmentByIdTest() throws Exception {
         List<AssetDepartment> assetDepartmentList = new ArrayList<>();
         AssetDepartment assetDepartment = new AssetDepartment();
         assetDepartment.setParentId("0");
@@ -133,13 +135,14 @@ public class AssetDepartmentServiceImplTest {
         assetDepartmentResponse.setName("test");
         assetDepartmentResponseList.add(assetDepartmentResponse);
         Mockito.when(assetDepartmentDao.getAll()).thenReturn(assetDepartmentList);
-        Mockito.when(responseConverter.convert(assetDepartmentList, AssetDepartmentResponse.class)).thenReturn(assetDepartmentResponseList);
+        Mockito.when(responseConverter.convert(assetDepartmentList, AssetDepartmentResponse.class))
+            .thenReturn(assetDepartmentResponseList);
         List<AssetDepartmentResponse> actual = assetDepartmentService.findAssetDepartmentById(1);
-        Assert.assertTrue(assetDepartmentResponseList.size()==actual.size());
+        Assert.assertTrue(assetDepartmentResponseList.size() == actual.size());
     }
 
     @Test
-    public void findPageAssetDepartmentTest()throws Exception{
+    public void findPageAssetDepartmentTest() throws Exception {
         AssetDepartmentResponse assetDepartmentResponse = new AssetDepartmentResponse();
         assetDepartmentResponse.setParentId("0");
         assetDepartmentResponse.setStatus(1);
@@ -155,14 +158,15 @@ public class AssetDepartmentServiceImplTest {
         query.setName("test");
 
         Mockito.when(assetDepartmentDao.findCount(Mockito.any())).thenReturn(1);
-        Mockito.when(assetDepartmentService.findListAssetDepartment(Mockito.any())).thenReturn(assetDepartmentResponseList);
+        Mockito.when(assetDepartmentService.findListAssetDepartment(Mockito.any()))
+            .thenReturn(assetDepartmentResponseList);
 
         PageResult<AssetDepartmentResponse> actual = assetDepartmentService.findPageAssetDepartment(query);
-        Assert.assertTrue(pageResult.getItems().size()==actual.getItems().size());
+        Assert.assertTrue(pageResult.getItems().size() == actual.getItems().size());
     }
 
     @Test
-    public void findDepartmentNodeTest()throws Exception{
+    public void findDepartmentNodeTest() throws Exception {
         List<AssetDepartment> assetDepartment = new ArrayList<>();
         AssetDepartment department = new AssetDepartment();
         department.setParentId("0");
@@ -170,7 +174,7 @@ public class AssetDepartmentServiceImplTest {
         department.setId(1);
         assetDepartment.add(department);
 
-        List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = new ArrayList<>() ;
+        List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = new ArrayList<>();
         AssetDepartmentNodeResponse assetDepartmentNodeResponse = new AssetDepartmentNodeResponse();
         List<AssetDepartmentNodeResponse> childrenCode = new ArrayList<>();
         AssetDepartmentNodeResponse children = new AssetDepartmentNodeResponse();
@@ -182,11 +186,14 @@ public class AssetDepartmentServiceImplTest {
         assetDepartmentNodeResponses.add(assetDepartmentNodeResponse);
 
         Mockito.when(assetDepartmentDao.findListAssetDepartment(Mockito.any())).thenReturn(assetDepartment);
-        Mockito.when(nodeConverter.columnToNode(assetDepartment,AssetDepartmentNodeResponse.class)).thenReturn(assetDepartmentNodeResponses);
+        Mockito.when(nodeConverter.columnToNode(assetDepartment, AssetDepartmentNodeResponse.class))
+            .thenReturn(assetDepartmentNodeResponses);
 
         AssetDepartmentNodeResponse actual = assetDepartmentService.findDepartmentNode();
-        Assert.assertEquals(assetDepartmentNodeResponse.getStatus(),actual.getStatus());;
+        Assert.assertEquals(assetDepartmentNodeResponse.getStatus(), actual.getStatus());
+        ;
     }
+
     @Test
     public void deleteAllByIdTest()throws Exception{
         List<AssetDepartment> assetDepartmentList = new ArrayList<>();
@@ -201,18 +208,29 @@ public class AssetDepartmentServiceImplTest {
         Mockito.when(assetDepartmentDao.getAll()).thenReturn(assetDepartmentList);
         Mockito.when(assetDepartmentDao.delete(Mockito.any())).thenReturn(1);
         Mockito.when(assetUserDao.findListAssetUser(Mockito.any())).thenReturn(resultUser);
+        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(getDepartment());
         Assert.assertEquals("200",assetDepartmentService.deleteAllById
-                ((Serializable)1).getHead().getCode());
+                (1).getHead().getCode());
+    }
+
+    public AssetDepartment getDepartment() {
+        AssetDepartment assetDepartment = new AssetDepartment();
+        assetDepartment.setName("123");
+        assetDepartment.setId(1);
+        assetDepartment.setParentId("2");
+        return assetDepartment;
     }
 
     @Test
-    public void getIdByNameTest(){
+    public void getIdByNameTest() {
         Mockito.when(assetDepartmentDao.getIdByName(Mockito.any())).thenReturn("1");
-        Assert.assertEquals("1",assetDepartmentService.getIdByName("test"));
+        Assert.assertEquals("1", assetDepartmentService.getIdByName("test"));
     }
+
     @Test
-    public void deleteTest()throws Exception{
+    public void deleteTest() throws Exception {
         Mockito.when(assetDepartmentDao.delete(Mockito.any())).thenReturn(1);
-        Assert.assertEquals("200",assetDepartmentService.delete(1).getHead().getCode());
+        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(getDepartment());
+        Assert.assertEquals("200", assetDepartmentService.delete(1).getHead().getCode());
     }
 }

@@ -20,6 +20,7 @@ import com.antiy.common.base.BaseResponse;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LoginUserUtil;
 import com.google.common.collect.Lists;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
@@ -242,7 +243,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testSaveAsset() throws Exception {
-        when(assetDao.findCountIp(any())).thenReturn(0);
+        when(assetDao.findCountMac(any())).thenReturn(0);
         when(assetUserDao.getById(any())).thenReturn(new AssetUser());
         when(assetGroupRelationDao.insertBatch(any())).thenReturn(0);
         when(assetGroupDao.getById(any())).thenReturn(generateAssetGroup());
@@ -355,22 +356,46 @@ public class AssetServiceImplTest {
         Assert.assertEquals("200", result9.getHead().getCode());
 
         // ip重复
-        when(assetDao.findCountIp(any())).thenReturn(10);
+        when(assetDao.findCountMac(any())).thenReturn(10);
         try {
             assetServiceImpl.saveAsset(assetOuterRequest1);
         } catch (Exception e) {
-            Assert.assertEquals("IP不能重复！", e.getMessage());
+            Assert.assertEquals("MAC地址不能重复！", e.getMessage());
         }
 
         // 区域注销
-        when(assetDao.findCountIp(any())).thenReturn(0);
+        when(assetDao.findCountMac(any())).thenReturn(0);
         when(redisUtil.getObject(any(), any(Class.class))).thenReturn(null);
         try {
             assetServiceImpl.saveAsset(assetOuterRequest1);
         } catch (Exception e) {
             Assert.assertEquals("当前区域不存在，或已经注销", e.getMessage());
         }
+        // 异常情况
+        when(activityClient.manualStartProcess(any())).thenReturn(null);
+        Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
 
+        // 异常情况
+        when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
+        when(assetSoftwareService.configRegister(any(), any())).thenReturn(null);
+        Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
+
+        // 异常情况
+
+        // 没用户信息
+        when(assetSoftwareService.configRegister(any(), any())).thenReturn(ActionResponse.success());
+        OAuth2Authentication authentication = Mockito.mock(OAuth2Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(null);
+        Mockito.when(authentication.getUserAuthentication()).thenReturn(null);
+        Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
+
+    }
+
+    @Test
+    public void findAlarmAssetCountTest() {
+        when(assetDao.findAlarmAssetCount(any())).thenReturn(100);
+        Assert.assertEquals(100, assetServiceImpl.findAlarmAssetCount().get("currentAlarmAssetIdNum"));
     }
 
     public AssetStorageMediumRequest generateAssetStorageMediumRequest() {
@@ -434,6 +459,8 @@ public class AssetServiceImplTest {
         idCounts.add(idCount);
         when(assetDao.queryAssetVulCount(any(), any(), any())).thenReturn(idCounts);
         when(assetDao.queryAssetPatchCount(any(), any(), any())).thenReturn(idCounts);
+        when(assetDao.queryAlarmCountByAssetIds(any()))
+            .thenReturn(Arrays.asList(new IdCount("1", "1"), new IdCount("2", "1")));
         List<LinkedHashMap> linkedHashMaps = new ArrayList<>();
         LinkedHashMap linkedHashMap = new LinkedHashMap();
         linkedHashMap.put("stringId", "1");
@@ -449,6 +476,9 @@ public class AssetServiceImplTest {
         when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
         when(assetGroupRelationDao.findAssetIdByAssetGroupId(any())).thenReturn(Arrays.asList("1"));
         when(emergencyClient.queryEmergencyCount(any())).thenReturn(ActionResponse.success(pageResult));
+        when(assetDao.findCount(any())).thenReturn(100);
+        when(assetDao.findAlarmAssetCount(any())).thenReturn(100);
+
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setQueryPatchCount(true);
         assetQuery.setQueryVulCount(true);
@@ -460,11 +490,13 @@ public class AssetServiceImplTest {
         Assert.assertNotNull(result);
 
         // enterControl
+        when(assetDao.findCount(any())).thenReturn(0);
         assetQuery = new AssetQuery();
         assetQuery.setAssetGroup("1");
         assetQuery.setAssociateGroup(true);
         assetQuery.setEnterControl(true);
         assetQuery.setGroupId("1");
+        assetQuery.setAssetStatusList(Arrays.asList(1, 2, 3));
         result = assetServiceImpl.findPageAsset(assetQuery);
         Assert.assertNotNull(result);
 
@@ -701,6 +733,12 @@ public class AssetServiceImplTest {
         when(assetSoftwareRelationDao.getReleationByAssetId(anyInt()))
             .thenReturn(Arrays.asList(new AssetSoftwareRelation()));
         when(assetGroupRelationDao.queryByAssetId(anyInt())).thenReturn(Arrays.asList(new AssetGroup()));
+        when(assetNetworkEquipmentDao.getByWhere(any()))
+            .thenReturn(Arrays.asList(generateAssetNetworkEquipment(), generateAssetNetworkEquipment()));
+        when(assetSafetyEquipmentDao.getByWhere(any()))
+            .thenReturn(Arrays.asList(new AssetSafetyEquipment(), new AssetSafetyEquipment()));
+        when(assetStorageMediumDao.getByWhere(any()))
+            .thenReturn(Arrays.asList(new AssetStorageMedium(), new AssetStorageMedium()));
 
         AssetDetialCondition condition = new AssetDetialCondition();
         condition.setIsNeedCpu(false);
@@ -830,7 +868,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testChangeAsset() throws Exception {
-        when(assetDao.findCountIp(any())).thenReturn(0);
+        when(assetDao.findCountMac(any())).thenReturn(0);
 
         when(assetNetworkCardDao.getById(any())).thenReturn(generateAssetNetworkCard());
         when(assetMainboradDao.updateBatch(any())).thenReturn(0);
@@ -891,6 +929,29 @@ public class AssetServiceImplTest {
         assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
 
         int result = assetServiceImpl.changeAsset(assetOuterRequest);
+        Assert.assertEquals(10, result);
+
+        AssetCpuRequest assetCpu = generateAssetCpuRequest();
+        assetCpu.setId(null);
+        assetOuterRequest.setCpu(Arrays.asList(assetCpu));
+
+        AssetMainboradRequest assetMainboradRequest = generateAssetMainboradRequest();
+        assetMainboradRequest.setId(null);
+        assetOuterRequest.setMainboard(Arrays.asList(assetMainboradRequest));
+
+        AssetHardDiskRequest assetHardDiskRequest = generateHardDiskRequest();
+        assetHardDiskRequest.setId(null);
+        assetOuterRequest.setHardDisk(Arrays.asList(assetHardDiskRequest));
+
+        AssetNetworkCardRequest assetNetworkCard = generateAssetNetworkCardRequest();
+        assetNetworkCard.setId(null);
+        assetOuterRequest.setNetworkCard(Arrays.asList(assetNetworkCard));
+
+        AssetMemoryRequest assetMemoryRequest = generateAssetMemoryRequest();
+        assetMemoryRequest.setId(null);
+        assetOuterRequest.setMemory(Arrays.asList(assetMemoryRequest));
+
+        result = assetServiceImpl.changeAsset(assetOuterRequest);
         Assert.assertEquals(10, result);
 
         // 安全设备变更
@@ -1017,6 +1078,31 @@ public class AssetServiceImplTest {
             Assert.assertEquals("资产变更失败", e.getMessage());
         }
 
+        when(assetNetworkCardDao.findListAssetNetworkCard(any())).thenReturn(new ArrayList<>());
+        when(activityClient.manualStartProcess(any())).thenReturn(null);
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("流程服务异常", e.getMessage());
+        }
+
+        when(activityClient.manualStartProcess(any()))
+            .thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "123"));
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("123", e.getMessage());
+        }
+
+        OAuth2Authentication authentication = Mockito.mock(OAuth2Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(null);
+        Mockito.when(authentication.getUserAuthentication()).thenReturn(null);
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("获取登录用户： 用户服务异常", e.getMessage());
+        }
     }
 
     private AssetHardDiskRequest generateHardDiskRequest() {
@@ -1143,7 +1229,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testImportPc() throws Exception {
-        when(assetDao.findCountIp(any())).thenReturn(0);
+        when(assetDao.findCountMac(any())).thenReturn(0);
         when(assetMainboradDao.insertBatchWithId(any(), anyInt())).thenReturn(0);
         when(assetMemoryDao.insertBatchWithId(any(), anyInt())).thenReturn(0);
         when(assetHardDiskDao.insertBatchWithId(any(), anyInt())).thenReturn(0);
@@ -1198,7 +1284,7 @@ public class AssetServiceImplTest {
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
 
         result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产网卡IP地址重复！", result);
+        Assert.assertEquals("导入失败，第8行资产网卡MAC地址重复！", result);
 
         when(assetDao.findCount(any())).thenReturn(10);
         importResult.getDataList().remove(1);
@@ -1207,13 +1293,13 @@ public class AssetServiceImplTest {
         Assert.assertEquals("导入失败，第7行资产名称重复！", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
-        when(assetDao.findCountIp(any())).thenReturn(10);
+        when(assetDao.findCountMac(any())).thenReturn(10);
 
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
         result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行资产网卡IP地址重复！", result);
+        Assert.assertEquals("导入失败，第7行资产网卡MAC地址重复！", result);
 
-        when(assetDao.findCountIp(any())).thenReturn(0);
+        when(assetDao.findCountMac(any())).thenReturn(0);
 
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
         computeDeviceEntity.setBuyDate(System.currentTimeMillis() * 2);
@@ -1270,12 +1356,13 @@ public class AssetServiceImplTest {
         computeDeviceEntity.setUser("1");
         computeDeviceEntity.setImportanceDegree("1");
         computeDeviceEntity.setNetworkIpAddress("1.1.1.1");
+        computeDeviceEntity.setNetworkMacAddress("a");
         return computeDeviceEntity;
     }
 
     @Test
     public void testImportNet() throws Exception {
-        when(assetDao.findCountIp(any())).thenReturn(0);
+        when(assetDao.findCountMac(any())).thenReturn(0);
         when(assetMainboradDao.insertBatchWithId(any(), anyInt())).thenReturn(0);
         when(assetMemoryDao.insertBatchWithId(any(), anyInt())).thenReturn(0);
         when(assetHardDiskDao.insertBatchWithId(any(), anyInt())).thenReturn(0);
@@ -1316,7 +1403,7 @@ public class AssetServiceImplTest {
         networkDeviceEntity.setNumber("1");
         networkDeviceEntity1.setNumber("2");
         result = assetServiceImpl.importNet(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产内网IP地址重复！", result);
+        Assert.assertEquals("导入失败，第8行资产MAC地址重复！", result);
 
         importResult.getDataList().remove(1);
         when(assetDao.findCount(any())).thenReturn(10);
@@ -1341,12 +1428,12 @@ public class AssetServiceImplTest {
         result = assetServiceImpl.importNet(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行到期时间需大于等于今天！", result);
 
-        when(assetDao.findCountIp(any())).thenReturn(10);
+        when(assetDao.findCountMac(any())).thenReturn(10);
         networkDeviceEntity.setDueDate(System.currentTimeMillis() * 2);
         result = assetServiceImpl.importNet(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行资产内网IP地址重复！", result);
+        Assert.assertEquals("导入失败，第7行资产MAC地址重复！", result);
 
-        when(assetDao.findCountIp(any())).thenReturn(0);
+        when(assetDao.findCountMac(any())).thenReturn(0);
         when(assetUserDao.findListAssetUser(any())).thenReturn(null);
         result = assetServiceImpl.importNet(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行系统没有此使用者，或已被注销！", result);
@@ -1365,13 +1452,14 @@ public class AssetServiceImplTest {
         networkDeviceEntity.setUser("1");
         networkDeviceEntity.setButDate(System.currentTimeMillis() / 2);
         networkDeviceEntity.setPortSize(1);
+        networkDeviceEntity.setMac("mac");
         networkDeviceEntity.setImportanceDegree("1");
         return networkDeviceEntity;
     }
 
     @Test
     public void testImportSecurity() throws Exception {
-        when(assetDao.findCountIp(any())).thenReturn(0);
+        when(assetDao.findCountMac(any())).thenReturn(0);
         when(assetMainboradDao.insertBatchWithId(any(), anyInt())).thenReturn(0);
         when(assetMemoryDao.insertBatchWithId(any(), anyInt())).thenReturn(0);
         when(assetHardDiskDao.insertBatchWithId(any(), anyInt())).thenReturn(0);
@@ -1411,7 +1499,7 @@ public class AssetServiceImplTest {
         safetyEquipmentEntiy.setNumber("1");
         safetyEquipmentEntiy1.setNumber("2");
         result = assetServiceImpl.importSecurity(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产IP地址重复！", result);
+        Assert.assertEquals("导入失败，第8行资产MAC地址重复！", result);
 
         importResult.getDataList().remove(1);
         when(assetDao.findCount(any())).thenReturn(10);
@@ -1419,12 +1507,12 @@ public class AssetServiceImplTest {
         Assert.assertEquals("导入失败，第7行资产名称重复！", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
-        when(assetDao.findCountIp(any())).thenReturn(10);
+        when(assetDao.findCountMac(any())).thenReturn(10);
         safetyEquipmentEntiy.setDueDate(System.currentTimeMillis() * 2);
         result = assetServiceImpl.importSecurity(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行资产IP地址重复！", result);
+        Assert.assertEquals("导入失败，第7行资产MAC地址重复！", result);
 
-        when(assetDao.findCountIp(any())).thenReturn(0);
+        when(assetDao.findCountMac(any())).thenReturn(0);
         safetyEquipmentEntiy.setBuyDate(System.currentTimeMillis() * 2);
         result = assetServiceImpl.importSecurity(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", result);
@@ -1462,7 +1550,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testImportStory() throws Exception {
-        when(assetDao.findCountIp(any())).thenReturn(0);
+        when(assetDao.findCountMac(any())).thenReturn(0);
         when(assetMainboradDao.insertBatchWithId(any(), anyInt())).thenReturn(0);
         when(assetMemoryDao.insertBatchWithId(any(), anyInt())).thenReturn(0);
         when(assetHardDiskDao.insertBatchWithId(any(), anyInt())).thenReturn(0);
