@@ -31,7 +31,7 @@ public class CommandRequest implements ObjectValidator {
 
     @ApiModelProperty(value = "操作类型", required = true)
     @NotNull(message = "操作类型不能为空")
-    private ApiCommandType commandType;
+    private ApiCommandType type;
 
     public List<String> getUuidList() {
         return uuidList;
@@ -49,12 +49,12 @@ public class CommandRequest implements ObjectValidator {
         this.noList = noList;
     }
 
-    public ApiCommandType getCommandType() {
-        return commandType;
+    public ApiCommandType getType() {
+        return type;
     }
 
-    public void setCommandType(ApiCommandType commandType) {
-        this.commandType = commandType;
+    public void setType(ApiCommandType type) {
+        this.type = type;
     }
 
     @Override
@@ -63,6 +63,6 @@ public class CommandRequest implements ObjectValidator {
 
     @Override
     public String toString() {
-        return "CommandRequest{" + "uuidList=" + uuidList + ", noList=" + noList + ", commandType=" + commandType + '}';
+        return "CommandRequest{" + "uuidList=" + uuidList + ", noList=" + noList + ", type=" + type + '}';
     }
 }

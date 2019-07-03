@@ -276,7 +276,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             List<String> noList = new ArrayList<>();
             noList.add(assetSoftwareRelationList.getSoftwareId());
             CommandRequest commandRequest = new CommandRequest();
-            commandRequest.setCommandType(ApiCommandType.softwareInstall);
+            commandRequest.setType(ApiCommandType.softwareInstall);
             commandRequest.setNoList(noList);
             // 获取软件安装路径
             commandRequest.setUuidList(uuidList);
