@@ -195,7 +195,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         return ActionResponse.success();
     }
 
-    public void isBlank(String txt, String msg) {
+    private void isBlank(String txt, String msg) {
         if (txt == null || txt.trim().equals("")) {
             throw new RequestParamValidateException(msg);
         }
