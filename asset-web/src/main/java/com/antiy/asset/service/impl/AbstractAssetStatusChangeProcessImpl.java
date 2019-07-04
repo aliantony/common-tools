@@ -320,7 +320,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         if (Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_CHECK)
                 && Objects.equals(assetStatusReqeust.getAgree(), false)) {
             LogUtils
-                    .recordOperLog(new BusinessData("拒绝待检查", DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
+                    .recordOperLog(new BusinessData("拒绝资产检查", DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
                             assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
                             BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
         }
