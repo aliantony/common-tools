@@ -2,6 +2,10 @@ package com.antiy.asset.service.impl;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.enums.AssetOperateLogEnum;
+import com.antiy.common.base.BusinessData;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +63,6 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         ParamterExceptionUtils.isNull(assetStatusReqeust.getAssetStatus(), "硬件当前状态不能为空");
         if (!assetStatusReqeust.getAgree()
             && AssetStatusEnum.WAIT_NET.getCode().equals(assetStatusReqeust.getAssetStatus().getCode())) {
-
             ActionResponse actionResponseVerify = baseLineClient
                 .updateAssetVerify(aesEncoder.encode(asset.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
             if (null == actionResponseVerify
