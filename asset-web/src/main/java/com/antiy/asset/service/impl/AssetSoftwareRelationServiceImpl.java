@@ -276,12 +276,14 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             List<String> noList = new ArrayList<>();
             noList.add(assetSoftwareRelationList.getSoftwareId());
             CommandRequest commandRequest = new CommandRequest();
-            commandRequest.setCommandType(ApiCommandType.softwareInstall);
+            commandRequest.setType(ApiCommandType.softwareInstall);
             commandRequest.setNoList(noList);
             // 获取软件安装路径
             commandRequest.setUuidList(uuidList);
             // 远程调用安装指令
-            ActionResponse actionResponse = commandClient.executeCommand(commandRequest);
+            BaseRequestOuter<CommandRequest> baseRequestOuter = new BaseRequestOuter<>();
+            baseRequestOuter.setData(commandRequest);
+            ActionResponse actionResponse = commandClient.executeCommand(baseRequestOuter);
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 LogUtils.info(logger, "远程调用安装指令" + " {}", relationList);
