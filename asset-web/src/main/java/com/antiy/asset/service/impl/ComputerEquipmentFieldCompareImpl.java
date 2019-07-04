@@ -306,7 +306,7 @@ public class ComputerEquipmentFieldCompareImpl extends AbstractChangeRecordCompa
                 for (AssetNetworkCardRequest assetNetworkCardRequest : oldNetworkCardList) {
                     buildNetworkCardCompareData(oldNetworkCard, assetNetworkCardRequest);
                     newNetworkCardMap = this.getNetworkCardByIdMap(newNetworkCardList);
-                    if (newNetworkCardMap.containsKey(assetNetworkCardRequest.getId())) {
+                    if (newNetworkCardMap != null && newNetworkCardMap.containsKey(assetNetworkCardRequest.getId())) {
                         AssetNetworkCardRequest newNetworkCardRequest = newNetworkCardMap
                             .get(assetNetworkCardRequest.getId());
                         buildNetworkCardCompareData(newNetworkCard, newNetworkCardRequest);

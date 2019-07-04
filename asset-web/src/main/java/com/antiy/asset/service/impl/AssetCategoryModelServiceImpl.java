@@ -285,7 +285,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public List<AssetCategoryModelNodeResponse> queryCategoryNodeCount() throws Exception {
         List<AssetCategoryModel> categoryCount = assetCategoryModelDao.findAllCategoryCount();
         AssetCategoryModelNodeResponse categoryModelNodeResponses = getNextNodeResponse(categoryCount);
-        return categoryModelNodeResponses.getChildrenNode();
+        return categoryModelNodeResponses == null ? null : categoryModelNodeResponses.getChildrenNode();
     }
 
     private AssetCategoryModelNodeResponse getNextNodeResponse(List<AssetCategoryModel> softWareCategoryCount) throws Exception {
