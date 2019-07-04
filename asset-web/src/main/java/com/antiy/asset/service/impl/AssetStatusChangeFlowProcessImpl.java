@@ -63,11 +63,6 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         ParamterExceptionUtils.isNull(assetStatusReqeust.getAssetStatus(), "硬件当前状态不能为空");
         if (!assetStatusReqeust.getAgree()
             && AssetStatusEnum.WAIT_NET.getCode().equals(assetStatusReqeust.getAssetStatus().getCode())) {
-            LogUtils
-                .recordOperLog(new BusinessData("拒绝待入网", DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
-                    assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
-                    BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
-
             ActionResponse actionResponseVerify = baseLineClient
                 .updateAssetVerify(aesEncoder.encode(asset.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
             if (null == actionResponseVerify

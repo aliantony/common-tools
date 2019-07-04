@@ -309,6 +309,22 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     }
 
     protected AssetStatusEnum getNextAssetStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
+        if (Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_NET)
+            && Objects.equals(assetStatusReqeust.getAgree(), false)) {
+            LogUtils
+                    .recordOperLog(new BusinessData("拒绝待入网", DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
+                            assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
+                            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
+
+        }
+        if (Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_CHECK)
+                && Objects.equals(assetStatusReqeust.getAgree(), false)) {
+            LogUtils
+                    .recordOperLog(new BusinessData("拒绝待检查", DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
+                            assetDao.getNumberById(assetStatusReqeust.getAssetId()), assetStatusReqeust,
+                            BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
+        }
+
         AssetStatusEnum assetStatusEnum = AssetStatusJumpEnum.getNextStatus(assetStatusReqeust.getAssetStatus(),
             assetStatusReqeust.getAgree());
         // 资产状态判断
