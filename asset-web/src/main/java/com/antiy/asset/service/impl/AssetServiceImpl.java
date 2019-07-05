@@ -1535,7 +1535,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOuterRequest.getAsset().getAssetGroups().forEach(assetGroupRequest -> {
                         existedRelationList
                             .removeIf(relation -> assetGroupRequest.getId().equals(relation.getAssetGroupId()));
-
                     });
                     List<Integer> deleteRelationIdList = existedRelationList.stream()
                         .map(deleteRelation -> deleteRelation.getId()).collect(Collectors.toList());
