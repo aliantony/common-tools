@@ -1949,7 +1949,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetExternalRequest.setAsset(BeanConvert
                             .convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", e);
                     }
                     // 获取资产上安装的软件信息
                     List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao

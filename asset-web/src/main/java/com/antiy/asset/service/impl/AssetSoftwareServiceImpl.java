@@ -17,6 +17,7 @@ import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -261,17 +262,22 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // }
         // }
 
-        // TODO 软件数据待下发给智甲-子线程处理
-        // if (num > 0) {
-        // ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
-        // {
-        // add(request);
-        // }
-        // });
-        // if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
-        // logger.info("下发软件数据完成：{}", request);
-        // }
-        // }
+        // 软件数据待下发给智甲-子线程处理
+        if (num > 0) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
+                        {
+                            add(request);
+                        }
+                    });
+                    if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
+                        logger.info("下发软件数据完成：{}", request);
+                    }
+                }
+            }).start();
+        }
         return ActionResponse.success(num);
 
     }
@@ -383,15 +389,21 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         }
 
         // 下发软件数据
-        // ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
-        // {
-        // add(request);
-        // }
-        // });
-        // if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
-        // logger.info("下发软件数据完成：{}", request);
-        // }
-
+        if (count > 0) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
+                        {
+                            add(request);
+                        }
+                    });
+                    if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
+                        logger.info("下发软件数据完成：{}", request);
+                    }
+                }
+            }).start();
+        }
         // TODO 调用工作流，给配置管理员
         // activityClient.completeTask(request.getRequest());
         return count;
