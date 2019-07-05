@@ -1,7 +1,6 @@
 package com.antiy.asset.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
 import org.junit.Before;
