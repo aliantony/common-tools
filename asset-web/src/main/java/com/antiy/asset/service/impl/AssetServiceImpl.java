@@ -1862,7 +1862,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 记录操作日志和运行日志
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
                     assetObj.getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
-                    BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
+                    BusinessPhaseEnum.WAIT_SETTING));
                 LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.NOT_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
@@ -1870,7 +1870,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 anthNumValidate();
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
                     assetDao.getById(assetId).getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
-                    BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
+                        BusinessPhaseEnum.WAIT_SETTING));
                 LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
@@ -1878,7 +1878,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 anthNumValidate();
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
                     assetDao.getById(assetId).getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
-                    BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
+                        BusinessPhaseEnum.WAIT_SETTING));
                 LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.NET_IN.getCode().equals(currentAsset.getAssetStatus())) {
