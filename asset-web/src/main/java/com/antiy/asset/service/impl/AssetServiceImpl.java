@@ -1531,18 +1531,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                     }
 
-                    // 删除已经有的,剩下的就删除
+                    // 移除库中existedRelationList已经有的与本次请求相等的,剩下的existedRelationList是本次操作删除的
                     assetOuterRequest.getAsset().getAssetGroups().forEach(assetGroupRequest -> {
                         existedRelationList
                             .removeIf(relation -> assetGroupRequest.getId().equals(relation.getAssetGroupId()));
                     });
                     List<Integer> deleteRelationIdList = existedRelationList.stream()
                         .map(deleteRelation -> deleteRelation.getId()).collect(Collectors.toList());
-                    if (CollectionUtils.isNotEmpty(addAssetGroupRelations)) {
-                        assetGroupRelationDao.insertBatch(addAssetGroupRelations);
-                    }
                     if (CollectionUtils.isNotEmpty(deleteRelationIdList)) {
                         assetGroupRelationDao.deleteBatch(deleteRelationIdList);
+                    }
+                    if (CollectionUtils.isNotEmpty(addAssetGroupRelations)) {
+                        assetGroupRelationDao.insertBatch(addAssetGroupRelations);
                     }
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
