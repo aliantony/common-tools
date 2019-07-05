@@ -73,6 +73,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * MAC地址
      */
     @ApiModelProperty("MAC地址")
+    @NotBlank(message = "MAC地址不能为空")
     private String  macAddress;
     /**
      * 子网掩码
@@ -304,7 +305,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
             ParamterExceptionUtils.isTrue(outerIp.matches(reg), "ip地址错误");
         }
         if (StringUtils.isNotBlank(macAddress)) {
-            if( macAddress.length() != 17) {
+            if (macAddress.length() != 17) {
                 ParamterExceptionUtils.isTrue(false, "mac地址只能17位");
             }
             java.util.regex.Pattern pattern = java.util.regex.Pattern

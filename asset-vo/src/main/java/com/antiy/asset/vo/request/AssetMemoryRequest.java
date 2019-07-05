@@ -37,7 +37,7 @@ public class AssetMemoryRequest extends BasicRequest implements ObjectValidator,
      */
     @ApiModelProperty("内存品牌")
     // @NotBlank(message = "内存品牌不能为空")
-    @Size(message = "内存品牌长度不能超过30位", max = 30)
+    @Size(message = "内存品牌长度不能超过60位", max = 60)
     private String  brand;
     /**
      * 序列号
