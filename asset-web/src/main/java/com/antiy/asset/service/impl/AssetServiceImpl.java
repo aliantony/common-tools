@@ -1382,7 +1382,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         } else {
             Map<Object, Object> map = redisUtil.hmget("asset:unknown:os");
-            if (map != null) {
+            if (MapUtils.isNotEmpty(map)) {
                 assetResponse.setOperationSystemNotice(map.get(asset.getId()).toString());
             }
         }
