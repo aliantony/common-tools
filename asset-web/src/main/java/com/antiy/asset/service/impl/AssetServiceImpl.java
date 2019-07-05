@@ -1567,12 +1567,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     List<AssetNetworkCard> assetNetworkCards = assetNetworkCardDao
                         .findListAssetNetworkCard(assetNetworkCardQuery);
                     if (CollectionUtils.isNotEmpty(assetNetworkCards)) {
-                        Map<String, String> nowIp = assetNetworkCards.stream()
-                            .collect(Collectors.toMap(AssetNetworkCard::getStringId, AssetNetworkCard::getIpAddress));
+                        Map<String, String> nowIp = new HashMap<>(16);
+                        for (AssetNetworkCard assetNetworkCard : assetNetworkCards) {
+                            nowIp.put(assetNetworkCard.getStringId(), StringUtils.isBlank(assetNetworkCard.getIpAddress()) ? "" : assetNetworkCard.getIpAddress());
+                        }
                         // 页面传过来的网卡
-                        Map<String, String> existIp = assetNetworkCardRequestList.stream()
-                            .filter(a -> StringUtils.isNotBlank(a.getId())).collect(Collectors
-                                .toMap(AssetNetworkCardRequest::getId, AssetNetworkCardRequest::getIpAddress));
+                        Map<String, String> existIp = new HashMap<>(16);
+                        for (AssetNetworkCardRequest card:assetNetworkCardRequestList) {
+                            if (StringUtils.isNotBlank(card.getId())) {
+                                existIp.put(card.getId(), StringUtils.isBlank(card.getIpAddress()) ? "" : card.getIpAddress());
+                            }
+                        }
                         // 需要删除通联关系的网卡信息
                         Map<String, String> deleteRelation = nowIp.entrySet().stream()
                             .filter(e -> !existIp.containsKey(e.getKey()))

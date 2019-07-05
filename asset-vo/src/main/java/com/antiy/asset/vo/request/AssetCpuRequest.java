@@ -38,7 +38,7 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator, Se
      * 序列号
      */
     @ApiModelProperty("序列号")
-    @Size(message = "CPU序列号长度不能超过30位", max = 60)
+    @Size(message = "CPU序列号长度不能超过30位", max = 30)
     private String  serial;
     /**
      * 品牌
@@ -51,7 +51,7 @@ public class AssetCpuRequest extends BasicRequest implements ObjectValidator, Se
      * 型号
      */
     @ApiModelProperty("型号")
-    @Size(message = "CPU型号长度不能超过30位", max = 30)
+    @Size(message = "CPU型号长度不能超过60位", max = 60)
     private String  model;
     /**
      * CPU主频

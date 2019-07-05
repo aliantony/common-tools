@@ -1,5 +1,15 @@
 package com.antiy.asset.service.impl;
 
+import java.util.*;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
@@ -29,14 +39,6 @@ import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.*;
 
 /**
  * <p> 通联关系表 服务实现类 </p>
@@ -53,7 +55,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Resource
     private AssetLinkRelationDao                                        assetLinkRelationDao;
     @Resource
-    private AssetNetworkEquipmentDao                                            assetNetworkEquipmentDao;
+    private AssetNetworkEquipmentDao                                    assetNetworkEquipmentDao;
     @Resource
     private BaseConverter<AssetLinkRelationRequest, AssetLinkRelation>  requestConverter;
     @Resource
@@ -132,23 +134,47 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     private void checkAssetIp(AssetLinkRelationRequest request, AssetLinkRelation assetLinkRelation) {
         assetLinkRelation.setAssetId(request.getAssetId());
         assetLinkRelation.setParentAssetId(request.getParentAssetId());
+        String msg;
         // 1.校验子资产IP是否可用
         List<String> assetAddress = assetLinkRelationDao.queryIpAddressByAssetId(request.getAssetId(), true,
             request.getAssetPort());
         if (CollectionUtils.isNotEmpty(assetAddress)) {
-            ParamterExceptionUtils.isTrue(assetAddress.contains(request.getAssetIp()), "子资产IP已经存在绑定关系,无法再次绑定");
+            // 所选资产是网络设备
+            if (StringUtils.isNotBlank(request.getAssetPort())) {
+                ParamterExceptionUtils.isTrue(assetAddress.contains(request.getAssetIp()), "所选设备的网口已存在绑定关系，请勿重复设置");
+            } else {
+                // 所选资产是计算设备
+                ParamterExceptionUtils.isTrue(assetAddress.contains(request.getAssetIp()), "所选设备的IP已存在绑定关系，请勿重复设置");
+            }
         } else {
-            ParamterExceptionUtils.isTrue(false, "子资产IP已经存在绑定关系,无法再次绑定");
+            // 所选资产是网络设备
+            if (StringUtils.isNotBlank(request.getAssetPort())) {
+                ParamterExceptionUtils.isTrue(false, "所选设备的网口已存在绑定关系，请勿重复设置");
+            } else {
+                // 所选资产是计算设备
+                ParamterExceptionUtils.isTrue(false, "所选设备的IP已存在绑定关系，请勿重复设置");
+            }
         }
 
         // 2.校验父资产IP是否可用
         List<String> parentAssetAddress = assetLinkRelationDao.queryIpAddressByAssetId(request.getParentAssetId(), true,
             request.getParentAssetPort());
         if (CollectionUtils.isNotEmpty(parentAssetAddress)) {
-            ParamterExceptionUtils.isTrue(parentAssetAddress.contains(request.getParentAssetIp()),
-                "父资产IP已经存在绑定关系,无法再次绑定");
+            // 关联资产是网络设备
+            if (StringUtils.isNotBlank(request.getParentAssetPort())) {
+                ParamterExceptionUtils.isTrue(assetAddress.contains(request.getAssetIp()), "关联设备的网口已存在绑定关系，请勿重复设置");
+            } else {
+                // 关联资产是计算设备
+                ParamterExceptionUtils.isTrue(assetAddress.contains(request.getAssetIp()), "关联设备的IP已存在绑定关系，请勿重复设置");
+            }
         } else {
-            ParamterExceptionUtils.isTrue(false, "父资产IP已经存在绑定关系,无法再次绑定");
+            // 关联资产是网络设备
+            if (StringUtils.isNotBlank(request.getParentAssetPort())) {
+                ParamterExceptionUtils.isTrue(false, "关联设备的网口已存在绑定关系，请勿重复设置");
+            } else {
+                // 关联资产是计算设备
+                ParamterExceptionUtils.isTrue(false, "关联设备的IP已存在绑定关系，请勿重复设置");
+            }
         }
 
         // 3.组装通联关系
@@ -366,8 +392,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             return Lists.newArrayList();
         }
         assetResponseList.stream().forEach(assetLinkedCount -> {
-            String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(),
-                SysArea.class, DataTypeUtils.stringToInteger(assetLinkedCount.getAreaId()));
+            String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                DataTypeUtils.stringToInteger(assetLinkedCount.getAreaId()));
             try {
                 SysArea sysArea = redisUtil.getObject(newAreaKey, SysArea.class);
                 if (!Objects.isNull(sysArea)) {

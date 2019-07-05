@@ -1,18 +1,10 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.dao.AssetSafetyEquipmentDao;
-import com.antiy.asset.entity.AssetSafetyEquipment;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.vo.query.AssetSafetyEquipmentQuery;
-import com.antiy.asset.vo.request.AssetSafetyEquipmentRequest;
-import com.antiy.asset.vo.response.AssetSafetyEquipmentResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.utils.LoginUserUtil;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -23,11 +15,21 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.dao.AssetSafetyEquipmentDao;
+import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetSafetyEquipment;
+import com.antiy.asset.vo.query.AssetSafetyEquipmentQuery;
+import com.antiy.asset.vo.request.AssetSafetyEquipmentRequest;
+import com.antiy.asset.vo.response.AssetSafetyEquipmentResponse;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.LoginUser;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({LoginUserUtil.class, LogHandle.class, AssetSafetyEquipmentServiceImpl.class})
+@PrepareForTest({ LoginUserUtil.class, LogUtils.class })
 public class AssetSafetyEquipmentServiceImplTest {
 
     @Mock
@@ -38,6 +40,8 @@ public class AssetSafetyEquipmentServiceImplTest {
     private AesEncoder aesEncoder;
     @Mock
     private AssetSafetyEquipmentDao assetSafetyEquipmentDao;
+    @Mock
+    private AssetDao                                                          assetDao;
     @InjectMocks
     private AssetSafetyEquipmentServiceImpl assetSafetyEquipmentService;
 
@@ -49,26 +53,29 @@ public class AssetSafetyEquipmentServiceImplTest {
         loginUser.setId(1);
         loginUser.setUsername("小李");
         PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
-        PowerMockito.mockStatic(LogHandle.class);
-        PowerMockito.doNothing().when(LogHandle.class, "log", Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt());
+        PowerMockito.mockStatic(LogUtils.class);
+        PowerMockito.doNothing().when(LogUtils.class, "recordOperLog", Mockito.any());
+        PowerMockito.doNothing().when(LogUtils.class, "recordOperLog", Mockito.any());
     }
 
     @Test
-    @Ignore
     public void saveAssetSafetyEquipmentTest() throws Exception {
         AssetSafetyEquipmentRequest request = new AssetSafetyEquipmentRequest();
+        request.setAssetId("666");
         AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
         assetSafetyEquipment.setId(1);
         String expect = "测试";
         Mockito.when(requestConverter.convert(request, AssetSafetyEquipment.class)).thenReturn(assetSafetyEquipment);
         Mockito.when(assetSafetyEquipmentDao.insert(assetSafetyEquipment)).thenReturn(1);
+        Asset asset = new Asset();
+        asset.setNumber("66");
+        Mockito.when(assetDao.getById(request.getAssetId())).thenReturn(asset);
         Mockito.when(aesEncoder.decode(Mockito.anyString(), Mockito.anyString())).thenReturn(expect);
         Assert.assertEquals(expect, assetSafetyEquipmentService.saveAssetSafetyEquipment(request));
 
     }
 
     @Test
-    @Ignore
     public void updateAssetSafetyEquipmentTest() throws Exception {
         AssetSafetyEquipmentRequest request = new AssetSafetyEquipmentRequest();
         AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();

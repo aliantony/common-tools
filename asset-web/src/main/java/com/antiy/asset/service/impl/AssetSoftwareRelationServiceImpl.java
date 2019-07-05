@@ -153,12 +153,18 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     private void setOperationName(AssetSoftwareRelationResponse assetSoftwareRelationResponse) throws Exception {
         if (StringUtils.isNotEmpty(assetSoftwareRelationResponse.getOperationSystem())) {
+            String[] ops = assetSoftwareRelationResponse.getOperationSystem().split(",");
+            StringBuilder stringBuilder = new StringBuilder();
             List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
-            for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
-                if (assetSoftwareRelationResponse.getOperationSystem().equals(linkedHashMap.get("stringId"))) {
-                    assetSoftwareRelationResponse.setOperationSystemName((String) linkedHashMap.get("name"));
+            for (String os : ops) {
+                for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
+                    if (os.equals(linkedHashMap.get("stringId"))) {
+                        stringBuilder.append((String) linkedHashMap.get("name")).append(",");
+                    }
                 }
             }
+            assetSoftwareRelationResponse
+                .setOperationSystemName(stringBuilder.toString().substring(0, stringBuilder.toString().lastIndexOf(",")));
         }
     }
 
