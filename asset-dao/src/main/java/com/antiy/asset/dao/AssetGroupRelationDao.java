@@ -99,4 +99,18 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @return
      */
     Integer hasRealtionAsset(@Param("primaryKey") String primaryKey);
+
+    /**
+     * 通过资产id查询关系list
+     * @param assetId
+     * @return
+     */
+    List<AssetGroupRelation> listRelationByAssetId(Integer assetId);
+
+    /**
+     * 根据关系主键id批量删除
+     * @param idList 不能为空
+     * @return
+     */
+    Integer deleteBatch(List<Integer> idList);
 }

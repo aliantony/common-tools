@@ -1504,21 +1504,43 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             }
                         });
                     }
-                    StringBuffer stringBuffer = new StringBuffer();
+                    // 得到已存在的资产组关系,对新增的插入,移除的删除
+                    List<AssetGroupRelation> existedRelationList = assetGroupRelationDao
+                        .listRelationByAssetId(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getId()));
                     List<AssetGroupRequest> assetGroups = assetOuterRequest.getAsset().getAssetGroups();
-                    List<AssetGroupRelation> assetGroupRelations = Lists.newArrayList();
+                    List<AssetGroupRelation> addAssetGroupRelations = Lists.newArrayList();
                     for (AssetGroupRequest assetGroupRequest : assetGroups) {
-                        stringBuffer.append(assetGroupRequest.getName()).append(",");
-                        AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-                        assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
-                        assetGroupRelation.setAssetId(asset.getStringId());
-                        assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                        assetGroupRelation.setGmtCreate(System.currentTimeMillis());
-                        assetGroupRelations.add(assetGroupRelation);
+                        boolean isadd = true;
+                        for (AssetGroupRelation existedRelation : existedRelationList) {
+                            if (!existedRelation.getAssetGroupId().equals(assetGroupRequest.getId())) {
+                                isadd = false;
+                                continue;
+                            }
+                        }
+                        if (isadd) {
+                            AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
+                            assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
+                            assetGroupRelation.setAssetId(asset.getStringId());
+                            assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            assetGroupRelation.setGmtCreate(System.currentTimeMillis());
+                            addAssetGroupRelations.add(assetGroupRelation);
+                        }
                     }
-                    assetGroupRelationDao.deleteByAssetId(asset.getId());
-                    if (!assetGroupRelations.isEmpty()) {
-                        assetGroupRelationDao.insertBatch(assetGroupRelations);
+
+                    // 删除已经有的,剩下的就删除
+                    assetOuterRequest.getAsset().getAssetGroups().forEach(assetGroupRequest -> {
+                        existedRelationList
+                            .removeIf(relation -> assetGroupRequest.getId().equals(relation.getAssetGroupId()));
+
+                    });
+                    List<Integer> deleteRelationIdList = existedRelationList.stream()
+                        .map(deleteRelation -> deleteRelation.getId()).collect(Collectors.toList());
+                    assetGroupRelationDao.deleteBatch(deleteRelationIdList);
+                    if (CollectionUtils.isNotEmpty(addAssetGroupRelations)) {
+                        assetGroupRelationDao.insertBatch(addAssetGroupRelations);
+                    }
+                    if (CollectionUtils.isNotEmpty(deleteRelationIdList)) {
+                        assetGroupRelationDao.deleteBatch(deleteRelationIdList);
                     }
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
