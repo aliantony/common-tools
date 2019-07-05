@@ -1,6 +1,7 @@
 package com.antiy.asset.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AdmittanceRequest;
@@ -9,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,8 +56,15 @@ public class AssetAdmittanceControllerTest {
     @Test
     public void anagement() throws Exception {
         AdmittanceRequest admittance = new AdmittanceRequest();
-        admittance.setAdmittanceStatus(0);
+        admittance.setAdmittanceStatus(2);
         admittance.setStringId("1");
+
+        Asset log = new Asset();
+        log.setName("asset_name");
+        log.setAssetStatus(7);
+
+        Mockito.when(assetService.getById(Mockito.anyString())).thenReturn(log);
+
         this.mockMvc
             .perform(
                 post("/api/v1/asset/admittance/access/anagement")
@@ -64,6 +73,16 @@ public class AssetAdmittanceControllerTest {
             )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.body", is(0)));
+
+        admittance.setAdmittanceStatus(3);
+        this.mockMvc
+                .perform(
+                        post("/api/v1/asset/admittance/access/anagement")
+                                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                                .content(JSON.toJSONString(admittance))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.body", is(0)));
     }
 
     @Test
