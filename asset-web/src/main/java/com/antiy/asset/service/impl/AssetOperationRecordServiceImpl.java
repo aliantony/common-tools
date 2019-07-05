@@ -178,9 +178,10 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
                 // }
 
                 assetOperationRecordBarResponse.setTotal(total);
-
+                // 查询方案信息
                 List<Scheme> schemeList = schemeDao.findSchemeByAssetIdAndGmtCreateTime(map);
 
+                // 包含文件信息的AssetStatusBarResponse
                 List<AssetStatusBarResponse> fileInfoList = new ArrayList<>();
 
                 for (Scheme scheme : schemeList) {
