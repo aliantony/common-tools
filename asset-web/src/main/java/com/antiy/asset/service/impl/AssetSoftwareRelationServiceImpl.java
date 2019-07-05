@@ -164,7 +164,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 }
             }
             assetSoftwareRelationResponse
-                .setOperationSystemName(stringBuilder.toString().substring(0, stringBuilder.toString().indexOf(",")));
+                .setOperationSystemName(stringBuilder.toString().substring(0, stringBuilder.toString().lastIndexOf(",")));
         }
     }
 
