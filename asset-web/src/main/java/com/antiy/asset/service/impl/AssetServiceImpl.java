@@ -1539,7 +1539,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     });
                     List<Integer> deleteRelationIdList = existedRelationList.stream()
                         .map(deleteRelation -> deleteRelation.getId()).collect(Collectors.toList());
-                    assetGroupRelationDao.deleteBatch(deleteRelationIdList);
                     if (CollectionUtils.isNotEmpty(addAssetGroupRelations)) {
                         assetGroupRelationDao.insertBatch(addAssetGroupRelations);
                     }
