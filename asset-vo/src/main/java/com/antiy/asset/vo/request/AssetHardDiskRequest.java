@@ -39,13 +39,13 @@ public class AssetHardDiskRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty("硬盘品牌")
     // @NotBlank(message = "硬盘品牌不能为空")
-    @Size(message = "硬盘品牌长度不能超过30位", max = 60)
+    @Size(message = "硬盘品牌长度不能超过60位", max = 60)
     private String  brand;
     /**
      * 硬盘型号
      */
     @ApiModelProperty("硬盘型号")
-    @Size(message = "硬盘品牌长度不能超过30位", max = 30)
+    @Size(message = "硬盘品牌长度不能超过60位", max = 60)
     private String  model;
     /**
      * 序列号
