@@ -1378,8 +1378,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetResponse.setOperationSystemName((String) linkedHashMap.get("name"));
                 }
             }
+        } else {
+            Map<Integer,String> map = (Map<Integer,String>) redisUtil.get("asset:unknown:os");
+            assetResponse.setOperationSystemNotice(map.get(asset.getId()));
         }
-
         assetResponse.setAssetGroups(
             BeanConvert.convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class));
         assetResponse.setAssetGroups(

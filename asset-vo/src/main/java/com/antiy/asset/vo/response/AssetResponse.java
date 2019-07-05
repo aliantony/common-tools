@@ -89,7 +89,11 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("操作系统名")
     private String                   operationSystemName;
-
+    /**
+     * 操作系统提示
+     */
+    @ApiModelProperty("操作系统提示")
+    private String                   operationSystemNotice;
     /**
      * 系统位数
      */
@@ -237,6 +241,14 @@ public class AssetResponse extends BaseResponse {
     private String                   alarmCount;
     @ApiModelProperty(value = "二级品类名")
     private String                   secondCategoryModelName;
+
+    public String getOperationSystemNotice() {
+        return operationSystemNotice;
+    }
+
+    public void setOperationSystemNotice(String operationSystemNotice) {
+        this.operationSystemNotice = operationSystemNotice;
+    }
 
     public Long getFirstDiscoverTime() {
         return firstDiscoverTime;
