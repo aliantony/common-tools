@@ -1360,7 +1360,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         BusinessExceptionUtils.isEmpty(assetList, "资产不存在");
         Asset asset = assetList.get(0);
 
-        // 查询资产组
+        // 查询资产组AbstractOperations
         param.put("assetId", asset.getId());
         AssetResponse assetResponse = BeanConvert.convertBean(asset, AssetResponse.class);
 
@@ -1382,7 +1382,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         } else {
             Map<Object, Object> map = redisUtil.hmget("asset:unknown:os");
-            assetResponse.setOperationSystemNotice(map.get(asset.getId()).toString());
+            if (map != null) {
+                assetResponse.setOperationSystemNotice(map.get(asset.getId()).toString());
+            }
         }
         assetResponse.setAssetGroups(
             BeanConvert.convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class));
