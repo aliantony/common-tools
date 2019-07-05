@@ -294,7 +294,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 LogUtils.info(logger, "远程调用安装指令" + " {}", relationList);
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
-            } // 更新安装状态 AssetSoftwareRelation
+            }
+            // 更新安装状态 AssetSoftwareRelation
             AssetSoftwareRelation condition = new AssetSoftwareRelation();
             condition.setSoftwareId(assetSoftwareRelationList.getSoftwareId());
             for (AssetSoftwareRelation softwareRelation : autoInstallList) {

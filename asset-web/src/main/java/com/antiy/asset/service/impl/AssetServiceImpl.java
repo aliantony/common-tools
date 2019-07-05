@@ -1360,7 +1360,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         BusinessExceptionUtils.isEmpty(assetList, "资产不存在");
         Asset asset = assetList.get(0);
 
-        // 查询资产组
+        // 查询资产组AbstractOperations
         param.put("assetId", asset.getId());
         AssetResponse assetResponse = BeanConvert.convertBean(asset, AssetResponse.class);
 
@@ -1380,8 +1380,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetResponse.setOperationSystemName((String) linkedHashMap.get("name"));
                 }
             }
+        } else {
+            Map<Object, Object> map = redisUtil.hmget("asset:unknown:os");
+            if (MapUtils.isNotEmpty(map)) {
+                assetResponse.setOperationSystemNotice(map.get(asset.getId()).toString());
+            }
         }
-
         assetResponse.setAssetGroups(
             BeanConvert.convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class));
         assetResponse.setAssetGroups(
@@ -1884,7 +1888,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 记录操作日志和运行日志
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
                     assetObj.getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
-                    BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
+                    BusinessPhaseEnum.WAIT_SETTING));
                 LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.NOT_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
@@ -1892,7 +1896,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 anthNumValidate();
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
                     assetDao.getById(assetId).getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
-                    BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
+                        BusinessPhaseEnum.WAIT_SETTING));
                 LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
@@ -1900,7 +1904,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 anthNumValidate();
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
                     assetDao.getById(assetId).getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
-                    BusinessPhaseEnum.getByStatus(assetObj.getAssetStatus())));
+                        BusinessPhaseEnum.WAIT_SETTING));
                 LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.NET_IN.getCode().equals(currentAsset.getAssetStatus())) {
