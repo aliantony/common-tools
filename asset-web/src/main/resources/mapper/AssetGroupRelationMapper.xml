@@ -391,7 +391,7 @@
         select `id`,`asset_id`,`asset_group_id` from asset_group_relation where asset_id = #{assetId} and status =1
     </select>
 
-    <update id="deleteBatch" parameterType="java.lang.Integer">
+    <update id="deleteBatch" parameterType="java.util.List">
         update
         <include refid="Table_Name"></include>
         set status = 0

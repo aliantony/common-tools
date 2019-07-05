@@ -112,5 +112,5 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @param idList 不能为空
      * @return
      */
-    Integer deleteBatch(List<Integer> idList);
+    Integer deleteBatch(@Param("idList") List<Integer> idList);
 }
