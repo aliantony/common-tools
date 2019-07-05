@@ -1516,7 +1516,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     for (AssetGroupRequest assetGroupRequest : assetGroups) {
                         boolean isadd = true;
                         for (AssetGroupRelation existedRelation : existedRelationList) {
-                            if (!existedRelation.getAssetGroupId().equals(assetGroupRequest.getId())) {
+                            if (existedRelation.getAssetGroupId().equals(assetGroupRequest.getId())) {
                                 isadd = false;
                                 continue;
                             }
