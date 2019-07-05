@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AdmittanceRequest;
 import com.antiy.asset.vo.response.AssetResponse;
 import org.junit.Before;
@@ -41,8 +42,11 @@ public class AssetAdmittanceControllerTest {
 
     @Test
     public void queryList() throws Exception {
+        AssetQuery asset = new AssetQuery();
         this.mockMvc
-            .perform(get("/api/v1/asset/admittance/query/list"))
+            .perform(post("/api/v1/asset/admittance/query/list")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(JSON.toJSONString(asset)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.body", is(equalTo(null))));
     }
