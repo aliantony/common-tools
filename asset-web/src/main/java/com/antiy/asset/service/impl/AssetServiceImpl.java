@@ -1381,10 +1381,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         } else {
-            Map<Object, Object> map = redisUtil.hmget("asset:unknown:os");
-            if (MapUtils.isNotEmpty(map) && map.get(asset.getId()) != null) {
-                assetResponse.setOperationSystemNotice(map.get(asset.getId()).toString());
-            }
+            Object osName = redisUtil.get("asset:unknown:os:" + asset.getStringId());
+            assetResponse.setOperationSystemNotice(osName != null ? osName.toString() : null);
         }
         assetResponse.setAssetGroups(
             BeanConvert.convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class));
