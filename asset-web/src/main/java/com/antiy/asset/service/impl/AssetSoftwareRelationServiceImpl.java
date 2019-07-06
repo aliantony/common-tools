@@ -245,16 +245,12 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 relation.setInstallType(InstallType.MANUAL.getCode());
                 relation.setInstallStatus(assetSoftwareRelationList.getInstallStatus());
                 relation.setInstallTime(assetSoftwareRelationList.getInstallTime());
-                relation.setGmtCreate(System.currentTimeMillis());
-                relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
             } else {
                 // 自动安装
                 relation.setAssetId(assetInstallRequest.getAssetId());
                 relation.setSoftwareId(assetSoftwareRelationList.getSoftwareId());
                 relation.setInstallType(InstallType.AUTOMATIC.getCode());
                 relation.setInstallStatus(SoftInstallStatus.INSTALLING.getCode());
-                relation.setGmtCreate(System.currentTimeMillis());
-                relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 autoInstallList.add(relation);
             }
             relationList.add(relation);
