@@ -386,4 +386,18 @@
     <select id="hasRealtionAsset" resultType="java.lang.Integer">
         select count(1) from asset_group_relation where asset_group_id = #{primaryKey} and status =1
     </select>
+
+    <select id="listRelationByAssetId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select `id`,`asset_id`,`asset_group_id` from asset_group_relation where asset_id = #{assetId} and status =1
+    </select>
+
+    <update id="deleteBatch" parameterType="java.util.List">
+        delete from
+        <include refid="Table_Name"></include>
+        where
+        id in
+        <foreach collection="idList" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

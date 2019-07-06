@@ -301,7 +301,20 @@ public class AssetGroupServiceImplTest {
         } catch (Exception e) {
             Assert.assertEquals("您已关联对应资产，无法进行注销", e.getMessage());
         }
-        Assert.assertEquals(1 + "", assetGroupService.deleteById("1") + "");
+        // Assert.assertEquals(1 + "", assetGroupService.deleteById("1") + "");
+    }
+
+    /**
+     * 没有关联资产
+     * @throws Exception
+     */
+    @Test
+    @Ignore
+    public void deleteByIdTest02() throws Exception {
+        Mockito.when(assetGroupRelationDao.existRelateAssetInGroup(Mockito.any())).thenReturn(0);
+        Mockito.when(assetGroupDao.deleteById(Mockito.any())).thenReturn(1);
+        assetGroupService.deleteById(1);
+        Assert.assertEquals(new Integer(1), assetGroupService.deleteById(1));
     }
 
 }
