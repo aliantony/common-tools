@@ -245,12 +245,16 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 relation.setInstallType(InstallType.MANUAL.getCode());
                 relation.setInstallStatus(assetSoftwareRelationList.getInstallStatus());
                 relation.setInstallTime(assetSoftwareRelationList.getInstallTime());
+                relation.setGmtCreate(System.currentTimeMillis());
+                relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
             } else {
                 // 自动安装
                 relation.setAssetId(assetInstallRequest.getAssetId());
                 relation.setSoftwareId(assetSoftwareRelationList.getSoftwareId());
                 relation.setInstallType(InstallType.AUTOMATIC.getCode());
                 relation.setInstallStatus(SoftInstallStatus.INSTALLING.getCode());
+                relation.setGmtCreate(System.currentTimeMillis());
+                relation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 autoInstallList.add(relation);
             }
             relationList.add(relation);
@@ -273,8 +277,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             ActionResponse actionResponse = commandClient.executeCommand(baseRequestOuter);
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                LogUtils.info(logger, "远程调用安装指令" + " {}", relationList);
-                throw new BusinessException("API服务未开启，请联系管理员");
+                LogUtils.info(logger, "远程调用安装指令" + " {}", actionResponse);
+                throw new BusinessException("API接口服务不可用，请联系管理员");
             }
             // 更新安装状态 AssetSoftwareRelation
             // AssetSoftwareRelation condition = new AssetSoftwareRelation();
