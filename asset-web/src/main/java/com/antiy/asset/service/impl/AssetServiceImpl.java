@@ -1513,15 +1513,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         .listRelationByAssetId(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getId()));
                     List<AssetGroupRequest> assetGroups = assetOuterRequest.getAsset().getAssetGroups();
                     List<AssetGroupRelation> addAssetGroupRelations = Lists.newArrayList();
+                    // 参数中资产组id与已存在的的资产组id相等,不操作;不等就添加插入
                     for (AssetGroupRequest assetGroupRequest : assetGroups) {
-                        boolean isadd = true;
+                        boolean addRelation = true;
                         for (AssetGroupRelation existedRelation : existedRelationList) {
                             if (existedRelation.getAssetGroupId().equals(assetGroupRequest.getId())) {
-                                isadd = false;
-                                continue;
+                                addRelation = false;
+                                break;
                             }
                         }
-                        if (isadd) {
+                        if (addRelation) {
                             AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
                             assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
                             assetGroupRelation.setAssetId(asset.getStringId());
