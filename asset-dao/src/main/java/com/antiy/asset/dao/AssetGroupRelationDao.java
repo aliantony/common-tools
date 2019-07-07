@@ -113,4 +113,11 @@ public interface AssetGroupRelationDao extends IBaseDao<AssetGroupRelation> {
      * @return
      */
     Integer deleteBatch(@Param("idList") List<Integer> idList);
+
+    /**
+     * 通过资产组id查询关系list
+     * @param groupId
+     * @return
+     */
+    List<AssetGroupRelation> listRelationByGroupId(Integer groupId);
 }
