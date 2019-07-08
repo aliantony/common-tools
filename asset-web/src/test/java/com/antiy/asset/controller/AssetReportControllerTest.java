@@ -1,5 +1,6 @@
 package com.antiy.asset.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.templet.ReportForm;
@@ -46,17 +47,18 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 public class AssetReportControllerTest {
 
     /**
-     *模拟Service
+     * 模拟Service
      */
     @MockBean
-    private IAssetReportService iAssetReportService;
+    private IAssetReportService     iAssetReportService;
     @MockBean
     private IAssetAreaReportService iAssetAreaReportService;
     @Autowired
-    private WebApplicationContext webApplicationContext;
-    private MockMvc mockMvc;
-    private Gson gson = new Gson();
-    private LoginUser loginUser;
+    private WebApplicationContext   webApplicationContext;
+    private MockMvc                 mockMvc;
+    private Gson                    gson = new Gson();
+    private LoginUser               loginUser;
+
     @Before
     public void setUp() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
@@ -70,83 +72,77 @@ public class AssetReportControllerTest {
         loginUser.setUsername("routine_admin");
         loginUser.setPassword("123456");
         loginUser.setAreas(sysAreaList);
-        //mock 当前登陆用户信息
+        // mock 当前登陆用户信息
     }
 
     /**
-     * 根据时间条件查询分类统计资产数量接口测试
-     * 断言response
+     * 根据时间条件查询分类统计资产数量接口测试 断言response
      * @throws Exception e
      */
     @Test
     public void queryCategoryCountByTime() throws Exception {
-        String result = mockMvc.perform(get("/api/v1/asset/report/query/categoryCountByTime")
-        .param("showCycleType", "THIS_YEAR")
-        .param("beginTime", "1551422114000")
-        .param("endTime", "1551422114000"))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        Assert.assertThat(result,containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
+        AssetReportCategoryCountQuery assetReportCategoryCountQuery = new AssetReportCategoryCountQuery();
+        assetReportCategoryCountQuery.setShowCycleType(ShowCycleType.THIS_MONTH);
+        String result = mockMvc
+            .perform(post("/api/v1/asset/report/query/categoryCountByTime").contentType(MediaType.APPLICATION_JSON)
+                .content(JSON.toJSONString(assetReportCategoryCountQuery)))
+            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        Assert.assertThat(result, containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
     }
 
     /**
-     * 根据时间条件查询分类统计资产数量,返回表格数据
-     * 断言response
+     * 根据时间条件查询分类统计资产数量,返回表格数据 断言response
      * @throws Exception e
      */
     @Test
     public void queryCategoryCountByTimeToTable() throws Exception {
-        String result = mockMvc.perform(get("/api/v1/asset/report//query/categoryCountByTimeToTable")
-                .param("showCycleType", "THIS_YEAR")
-                .param("beginTime", "1551422114000")
-                .param("endTime", "1551422114000"))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        Assert.assertThat(result,containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
+        AssetReportCategoryCountQuery assetReportCategoryCountQuery = new AssetReportCategoryCountQuery();
+        assetReportCategoryCountQuery.setShowCycleType(ShowCycleType.THIS_MONTH);
+        String result = mockMvc
+            .perform(post("/api/v1/asset/report//query/categoryCountByTimeToTable")
+                .contentType(MediaType.APPLICATION_JSON).content(JSON.toJSONString(assetReportCategoryCountQuery)))
+            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        Assert.assertThat(result, containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
     }
 
     /**
-     * 根据时间条件、区域资产查询数量
-     * 断言response
+     * 根据时间条件、区域资产查询数量 断言response
      * @throws Exception e
      */
     @Test
     public void queryAreaCount() throws Exception {
         String json = gson.toJson(reportQueryRequestInit());
-        String result= postAction("/api/v1/asset/report/query/queryAreaCount",json)
-                .andReturn().getResponse().getContentAsString();
-        Assert.assertThat(result,containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
+        String result = postAction("/api/v1/asset/report/query/queryAreaCount", json).andReturn().getResponse()
+            .getContentAsString();
+        Assert.assertThat(result, containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
     }
 
     /**
-     * 根据时间条件、区域资产查询表格数据
-     * 断言response
+     * 根据时间条件、区域资产查询表格数据 断言response
      * @throws Exception e
      */
     @Test
     public void queryAreaTable() throws Exception {
         String json = gson.toJson(reportQueryRequestInit());
-        String result= postAction("/api/v1/asset/report/query/queryAreaTable",json)
-                .andReturn().getResponse().getContentAsString();
-        Assert.assertThat(result,containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
+        String result = postAction("/api/v1/asset/report/query/queryAreaTable", json).andReturn().getResponse()
+            .getContentAsString();
+        Assert.assertThat(result, containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
     }
 
     /**
-     * 根据时间条件、区域导出资产表格数据
-     * 断言方法是否调用
+     * 根据时间条件、区域导出资产表格数据 断言方法是否调用
      * @throws Exception e
      */
     @Test
     public void exportAreaTable() throws Exception {
         String json = gson.toJson(reportQueryRequestInit());
-//        Mockito.when(iAssetAreaReportService.exportAreaTable(Mockito.any())).thenReturn(reportFormInit());
-        postAction("/api/v1/asset/report/query/exportAreaTable",json);
+        // Mockito.when(iAssetAreaReportService.exportAreaTable(Mockito.any())).thenReturn(reportFormInit());
+        postAction("/api/v1/asset/report/query/exportAreaTable", json);
         Mockito.verify(iAssetAreaReportService).exportAreaTable(Mockito.any());
     }
 
     /**
-     * 根据时间条件查询分类统计资产新增数量
-     * 断言方法是否调用
+     * 根据时间条件查询分类统计资产新增数量 断言方法是否调用
      * @throws Exception e
      */
     @Test
@@ -157,14 +153,13 @@ public class AssetReportControllerTest {
         reportQueryRequest.setStartTime(1551422114000L);
         reportQueryRequest.setEndTime(1551423114000L);
         reportQueryRequest.setTimeType("1");
-        String result = getAction("/api/v1/asset/report/query/groupCountTop",reportQueryRequest)
-                .andReturn().getResponse().getContentAsString();
-        Assert.assertThat(result,containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
+        String result = postAction("/api/v1/asset/report/query/groupCountTop", JSON.toJSONString(reportQueryRequest))
+            .andReturn().getResponse().getContentAsString();
+        Assert.assertThat(result, containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
     }
 
     /**
-     * 根据资产组查询资产新增数量信息
-     * 断言方法是否调用
+     * 根据资产组查询资产新增数量信息 断言方法是否调用
      * @throws Exception e
      */
     @Test
@@ -172,8 +167,8 @@ public class AssetReportControllerTest {
         mockLoginUser(loginUser);
         AssetReportCategoryCountQuery assetReportCategoryCountQuery = new AssetReportCategoryCountQuery();
         assetReportCategoryCountQuery.setShowCycleType(ShowCycleType.THIS_WEEK);
-        getAction("/api/v1/asset/report/export/category/newAsset",assetReportCategoryCountQuery)
-                .andReturn().getResponse().getContentAsString();
+        postAction("/api/v1/asset/report/export/category/newAsset", JSON.toJSONString(assetReportCategoryCountQuery))
+            .andReturn().getResponse().getContentAsString();
     }
 
     /**
@@ -183,18 +178,14 @@ public class AssetReportControllerTest {
     @Test
     public void getNewAssetWithGroup1() throws Exception {
         mockLoginUser(loginUser);
-        mockMvc.perform(get("/api/v1/asset/report/export/category/newAsset")
-                .param("showCycleType", "THIS_YEAR")
-                .param("beginTime", "1551422114000")
-                .param("endTime", "1551422114000"))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andReturn().getResponse().getContentAsString();
+        mockMvc
+            .perform(post("/api/v1/asset/report/export/category/newAsset").param("showCycleType", "THIS_YEAR")
+                .param("beginTime", "1551422114000").param("endTime", "1551422114000"))
+            .andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
     }
 
     /**
-     * 根据时间查询资产组表格
-     * 断言response
+     * 根据时间查询资产组表格 断言response
      * @throws Exception e
      */
     @Test
@@ -204,14 +195,13 @@ public class AssetReportControllerTest {
         reportQueryRequest.setStartTime(1551422114000L);
         reportQueryRequest.setEndTime(1551423114000L);
         reportQueryRequest.setTimeType("1");
-        String result = getAction("/api/v1/asset/report/query/queryAssetGroupTable",reportQueryRequest)
-                .andReturn().getResponse().getContentAsString();
-        Assert.assertThat(result,containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
+        String result = postAction("/api/v1/asset/report/query/queryAssetGroupTable",
+            JSON.toJSONString(reportQueryRequest)).andReturn().getResponse().getContentAsString();
+        Assert.assertThat(result, containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
     }
 
     /**
-     * 导出资产组表格
-     * 断言方法是否调用
+     * 导出资产组表格 断言方法是否调用
      * @throws Exception e
      */
     @Test
@@ -222,10 +212,18 @@ public class AssetReportControllerTest {
         reportQueryRequest.setStartTime(1551422114000L);
         reportQueryRequest.setEndTime(1551423114000L);
         reportQueryRequest.setTimeType("1");
-//        Mockito.when(iAssetReportService.exportAssetGroupTable(Mockito.any())).thenReturn(reportFormInit());
-        getAction("/api/v1/asset/report/query/exportAssetGroupTable",reportQueryRequest)
-                .andReturn().getResponse().getContentAsString();
+        // Mockito.when(iAssetReportService.exportAssetGroupTable(Mockito.any())).thenReturn(reportFormInit());
+        getAction("/api/v1/asset/report/query/exportAssetGroupTable", reportQueryRequest).andReturn().getResponse()
+            .getContentAsString();
         Mockito.verify(iAssetReportService).exportAssetGroupTable(Mockito.any());
+    }
+
+    @Test
+    public void exportCategoryCount() throws Exception {
+        AssetReportCategoryCountQuery assetReportCategoryCountQuery = new AssetReportCategoryCountQuery();
+        assetReportCategoryCountQuery.setShowCycleType(ShowCycleType.THIS_MONTH);
+        getAction("/api/v1/asset/report/export/category/newAsset", assetReportCategoryCountQuery);
+        Mockito.verify(iAssetReportService).exportCategoryCount(Mockito.any(), Mockito.any());
     }
 
     /**
@@ -259,11 +257,8 @@ public class AssetReportControllerTest {
      * @throws Exception
      */
     private ResultActions postAction(String url, String content) throws Exception {
-        return mockMvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .content(content))
-                        .andExpect(status().isOk());
+        return mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8).content(content)).andExpect(status().isOk());
     }
 
     /**
@@ -273,29 +268,27 @@ public class AssetReportControllerTest {
      * @return getAction
      * @throws Exception e
      */
-    private ResultActions getAction(String url,Object obj) throws Exception {
-        MultiValueMap<String,String> paramMap = new LinkedMultiValueMap<>();
+    private ResultActions getAction(String url, Object obj) throws Exception {
+        MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
         try {
             paramMap.setAll(BeanUtils.describe(obj));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return mockMvc.perform(get(url)
-                        .params(paramMap))
-                            .andExpect(status().isOk());
+        return mockMvc.perform(get(url).params(paramMap)).andExpect(status().isOk());
     }
 
     /**
-     *模拟请求实体
+     * 模拟请求实体
      * @return 请求实体
      */
-    private ReportQueryRequest reportQueryRequestInit(){
+    private ReportQueryRequest reportQueryRequestInit() {
         List<Integer> childrenAreaIds = new ArrayList();
         childrenAreaIds.add(1);
         AssetAreaReportRequest assetAreaReportRequest = new AssetAreaReportRequest();
-//        assetAreaReportRequest.setParentAreaId(1);
+        // assetAreaReportRequest.setParentAreaId(1);
         assetAreaReportRequest.setParentAreaName("ss");
-//        assetAreaReportRequest.setChildrenAradIds(childrenAreaIds);
+        // assetAreaReportRequest.setChildrenAradIds(childrenAreaIds);
         List<AssetAreaReportRequest> assetAreaReportRequests = new ArrayList<>();
         assetAreaReportRequests.add(assetAreaReportRequest);
         ReportQueryRequest reportQueryRequest = new ReportQueryRequest();
@@ -311,13 +304,13 @@ public class AssetReportControllerTest {
      * 模拟Form实体
      * @return Form实体
      */
-    private ReportForm reportFormInit(){
+    private ReportForm reportFormInit() {
         ReportForm reportForm = new ReportForm();
         List<String> columnList = new ArrayList<>();
         columnList.add("列标题");
         List<String> headerList = new ArrayList<>();
         headerList.add("行标题");
-        String[][] strings = {{"1"}};
+        String[][] strings = { { "1" } };
         reportForm.setTitle("ss");
         reportForm.setColumnList(columnList);
         reportForm.setData(strings);

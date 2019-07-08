@@ -40,26 +40,25 @@ import static org.mockito.AdditionalMatchers.eq;
 public class AssetCategoryModelServiceImplTest {
 
     @Mock
-    private AssetCategoryModelDao                                         assetCategoryModelDao;
+    private AssetCategoryModelDao                                             assetCategoryModelDao;
     @Mock
-    private AssetDao                                                      assetDao;
+    private AssetDao                                                          assetDao;
     @Mock
-    private CategoryRequestConvert                                        requestConverter;
+    private CategoryRequestConvert                                            requestConverter;
     @Mock
-    private CategoryRequestConvert                                        categoryRequestConvert;
+    private CategoryRequestConvert                                            categoryRequestConvert;
     @Mock
-    private CategoryResponseConvert                                       responseConverter;
+    private CategoryResponseConvert                                           responseConverter;
     @Mock
-    private BaseConverter<AssetCategoryModel, AssetCategoryModelResponse> baseConverter;
+    private BaseConverter<AssetCategoryModel, AssetCategoryModelResponse>     baseConverter;
     @Mock
-    private AesEncoder                                                    aesEncoder;
+    private AesEncoder                                                        aesEncoder;
     @InjectMocks
-    private AssetCategoryModelServiceImpl                                 assetCategoryModelServiceImpl;
+    private AssetCategoryModelServiceImpl                                     assetCategoryModelServiceImpl;
     @Mock
-    private AssetSoftwareDao                                              assetSoftwareDao;
+    private AssetSoftwareDao                                                  assetSoftwareDao;
     @Mock
-    private BaseConverter<AssetSoftwareInstall, AssetSoftwareInstallResponse>   responseInstallConverter;
-
+    private BaseConverter<AssetSoftwareInstall, AssetSoftwareInstallResponse> responseInstallConverter;
 
     @Before
     public void setUp() throws Exception {
@@ -173,6 +172,15 @@ public class AssetCategoryModelServiceImplTest {
     }
 
     @Test
+    public void queryCategoryNodeCountTest() throws Exception {
+        AssetCategoryModel assetCategoryModel = getAssetCategoryModel();
+        Mockito.when(assetCategoryModelDao.findListAssetCategoryModel(Mockito.any()))
+            .thenReturn(Arrays.asList(assetCategoryModel));
+        Mockito.when(assetCategoryModelDao.findAllCategoryCount()).thenReturn(getAssetCategoryModelList());
+        Assert.assertEquals(1, assetCategoryModelServiceImpl.queryCategoryNodeCount().size());
+    }
+
+    @Test
     @Ignore
     public void querySecondCategoryNodeTest() throws Exception {
         List<AssetCategoryModel> list = getAssetCategoryModelList();
@@ -243,6 +251,13 @@ public class AssetCategoryModelServiceImplTest {
         Object result = Whitebox.invokeMethod(assetCategoryModelServiceImpl, "recursionSearchParentCategory", "3",
             getAssetCategoryModelList(), new TreeSet<String>());
         Assert.assertNull(result);
+
+        Assert.assertNull(assetCategoryModelServiceImpl.recursionSearchParentCategory("16",
+            getAllAssetCategoryModelList(), new HashSet<>()));
+        Set set = new HashSet<>();
+        set.add("5");
+        Assert.assertNotNull(
+            assetCategoryModelServiceImpl.recursionSearchParentCategory("16", getAllAssetCategoryModelList(), set));
     }
 
     @Test
@@ -330,6 +345,7 @@ public class AssetCategoryModelServiceImplTest {
         model2.setType(1);
         model2.setIsDefault(0);
         model2.setId(17);
+        model2.setCount(12L);
 
         AssetCategoryModel model3 = new AssetCategoryModel();
         model3.setName("计算设备");
@@ -337,6 +353,7 @@ public class AssetCategoryModelServiceImplTest {
         model3.setAssetType(2);
         model3.setType(1);
         model3.setIsDefault(0);
+        model3.setCount(0L);
 
         model3.setId(4);
         AssetCategoryModel model4 = new AssetCategoryModel();
@@ -346,6 +363,7 @@ public class AssetCategoryModelServiceImplTest {
         model4.setType(1);
         model4.setIsDefault(0);
         model4.setId(5);
+        model4.setCount(5L);
 
         AssetCategoryModel model5 = new AssetCategoryModel();
         model5.setName("硬件");
@@ -354,6 +372,7 @@ public class AssetCategoryModelServiceImplTest {
         model5.setType(1);
         model5.setId(2);
         model5.setIsDefault(0);
+        model5.setCount(1L);
 
         list.add(model1);
         list.add(model2);

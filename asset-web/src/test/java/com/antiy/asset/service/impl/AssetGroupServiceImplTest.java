@@ -13,6 +13,7 @@ import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
+import com.antiy.asset.vo.request.RemoveAssociateAssetRequest;
 import com.antiy.asset.vo.response.AssetGroupResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.biz.util.RedisKeyUtil;
@@ -20,6 +21,7 @@ import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.poi.ss.formula.functions.T;
 import org.hamcrest.Matchers;
@@ -121,6 +123,14 @@ public class AssetGroupServiceImplTest {
         actual = assetGroupService.saveAssetGroup(request);
         Assert.assertEquals("200", actual);
 
+        // 名称重复情况
+        Mockito.when(assetGroupDao.removeDuplicate(Mockito.anyString())).thenReturn(true);
+        try {
+            assetGroupService.saveAssetGroup(request);
+        } catch (Exception e) {
+            Assert.assertEquals("资产组名称重复", e.getMessage());
+        }
+
     }
 
     @Test
@@ -150,7 +160,23 @@ public class AssetGroupServiceImplTest {
         request.setDeleteAssetIds(new String[] { "1", "2", "3" });
         result = assetGroupService.updateAssetGroup(request);
         Assert.assertEquals(1, result);
+        // 名称重复情况
+        Mockito.when(assetGroupDao.removeDuplicate(Mockito.anyString())).thenReturn(true);
+        try {
+            assetGroupService.updateAssetGroup(request);
+        } catch (Exception e) {
+            Assert.assertEquals("资产组名称重复", e.getMessage());
+        }
 
+        Mockito.when(assetGroupDao.removeDuplicate(Mockito.anyString())).thenReturn(false);
+        Mockito.when(assetGroupRelationDao.findAssetGroupNameByAssetId(Mockito.any()))
+            .thenThrow(new BusinessException("123"));
+
+        try {
+            assetGroupService.updateAssetGroup(request);
+        } catch (Exception e) {
+            Assert.assertNull(e.getMessage());
+        }
     }
 
     private AssetGroup getAssetGroup(String zicha) {
@@ -197,6 +223,16 @@ public class AssetGroupServiceImplTest {
         Mockito.when(assetGroupRelationDao.findAssetNameByAssetGroupId(Mockito.any())).thenReturn(assetList);
         List<AssetGroupResponse> actual = assetGroupService.findListAssetGroup(query);
         Assert.assertTrue(assetResponseList.size() == actual.size());
+
+        Mockito.when(assetGroupRelationDao.findAssetNameByAssetGroupId(Mockito.any()))
+            .thenReturn(Arrays.asList("1", "2", "3"));
+        Assert.assertTrue(assetResponseList.size() == actual.size());
+    }
+
+    @Test
+    public void removeAssociateAssetTest() {
+        Mockito.when(assetGroupRelationDao.batchDeleteById(Mockito.any())).thenReturn(1);
+        Assert.assertEquals(1 + "", assetGroupService.removeAssociateAsset(new RemoveAssociateAssetRequest()) + "");
     }
 
     @Test
@@ -295,26 +331,16 @@ public class AssetGroupServiceImplTest {
     @Test
     public void deleteByIdTest() throws Exception {
         Mockito.when(assetGroupRelationDao.existRelateAssetInGroup(Mockito.any())).thenReturn(1);
-        Mockito.when(assetGroupDao.deleteById(Mockito.any())).thenReturn(0);
+        Mockito.when(assetGroupDao.deleteById(Mockito.any())).thenReturn(1);
         try {
-            assetGroupService.deleteById(1);
+            assetGroupService.deleteById("1");
         } catch (Exception e) {
             Assert.assertEquals("您已关联对应资产，无法进行注销", e.getMessage());
         }
-        // Assert.assertEquals(1 + "", assetGroupService.deleteById("1") + "");
-    }
 
-    /**
-     * 没有关联资产
-     * @throws Exception
-     */
-    @Test
-    @Ignore
-    public void deleteByIdTest02() throws Exception {
         Mockito.when(assetGroupRelationDao.existRelateAssetInGroup(Mockito.any())).thenReturn(0);
-        Mockito.when(assetGroupDao.deleteById(Mockito.any())).thenReturn(1);
-        assetGroupService.deleteById(1);
-        Assert.assertEquals(new Integer(1), assetGroupService.deleteById(1));
+        Assert.assertEquals(1 + "", assetGroupService.deleteById("1") + "");
+
     }
 
 }
