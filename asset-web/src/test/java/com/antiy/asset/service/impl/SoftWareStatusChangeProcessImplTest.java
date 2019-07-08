@@ -1,15 +1,21 @@
 package com.antiy.asset.service.impl;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.*;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.support.membermodification.MemberMatcher;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,38 +42,44 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.LoginUser;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LoginUserUtil;
 
+import static org.mockito.Mockito.*;
+
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
+@PrepareForTest({ LoginUserUtil.class })
 public class SoftWareStatusChangeProcessImplTest {
     @Mock
-    AssetSoftwareDao assetSoftwareDao;
+    AssetSoftwareDao                     assetSoftwareDao;
     @Mock
-    AssetOperationRecordDao assetOperationRecordDao;
+    AssetOperationRecordDao              assetOperationRecordDao;
     @Mock
-    SchemeDao schemeDao;
+    SchemeDao                            schemeDao;
     @Mock
-    AssetDao assetDao;
-    @Spy
+    AssetDao                             assetDao;
+    // @Spy
+    // BaseConverter<SchemeRequest, Scheme> schemeRequestToSchemeConverter;
+    @Mock
     BaseConverter<SchemeRequest, Scheme> schemeRequestToSchemeConverter;
     @Mock
-    ActivityClient activityClient;
+    ActivityClient                       activityClient;
     @Mock
-    WorkOrderClient workOrderClient;
+    WorkOrderClient                      workOrderClient;
     @Mock
-    AesEncoder aesEncoder;
+    AesEncoder                           aesEncoder;
     @InjectMocks
-    SoftWareStatusChangeProcessImpl softWareStatusChangeProcessImpl;
+    SoftWareStatusChangeProcessImpl      softWareStatusChangeProcessImpl;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-
+        PowerMockito.mockStatic(LoginUserUtil.class);
         // 模拟用户登录
-        LoginUser loginUser =
-                JSONObject.parseObject(
-                        "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
-                        LoginUser.class);
-        UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(loginUser, "123");
+        LoginUser loginUser = JSONObject.parseObject(
+            "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
+            LoginUser.class);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginUser, "123");
         Map<String, Object> map = new HashMap<>();
         map.put("principal", loginUser);
         token.setDetails(map);
@@ -79,10 +91,86 @@ public class SoftWareStatusChangeProcessImplTest {
         Mockito.when(authentication.getUserAuthentication()).thenReturn(token);
 
         SecurityContextHolder.setContext(securityContext);
+
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
     }
 
     @Test
     public void testChangeStatus() throws Exception {
+        AssetSoftware assetSoftware = buildAssetSoftware();
+        when(assetSoftwareDao.getById(any())).thenReturn(assetSoftware);
+
+        Asset asset = new Asset();
+        asset.setAreaId("1");
+        when(assetDao.getById(any())).thenReturn(asset);
+
+        AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
+        assetStatusReqeust.setManualStartActivityRequest(new ManualStartActivityRequest());
+        assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE);
+        assetStatusReqeust.setSoftwareStatusEnum(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE);
+        assetStatusReqeust.setAssetId("");
+        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WATI_REGSIST);
+        assetStatusReqeust.setSoftware(false);
+        assetStatusReqeust.setSchemeRequest(new SchemeRequest());
+        assetStatusReqeust.setWorkOrderVO(null);
+        assetStatusReqeust.setActivityHandleRequest(new ActivityHandleRequest());
+        assetStatusReqeust.setAgree(false);
+
+        Scheme scheme = new Scheme();
+        scheme.setMemo("memo");
+        scheme.setContent("content");
+        when(schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class))
+            .thenReturn(scheme);
+        PowerMockito.suppress(MemberMatcher.methodsDeclaredIn(SoftWareStatusChangeProcessImpl.class));
+        ActionResponse result = softWareStatusChangeProcessImpl.changeStatus(assetStatusReqeust);
+        Assert.assertNotNull(result);
+    }
+
+    @Test
+    public void testChangeStatus02() throws Exception {
+        AssetSoftware assetSoftware = buildAssetSoftware();
+
+        when(assetSoftwareDao.getById(any())).thenReturn(assetSoftware);
+
+        Asset asset = new Asset();
+        asset.setAreaId("1");
+        when(assetDao.getById(any())).thenReturn(asset);
+
+        AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
+        assetStatusReqeust.setManualStartActivityRequest(new ManualStartActivityRequest());
+        assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE);
+        assetStatusReqeust.setSoftwareStatusEnum(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE);
+        assetStatusReqeust.setAssetId("");
+        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WATI_REGSIST);
+        assetStatusReqeust.setSoftware(false);
+        assetStatusReqeust.setSchemeRequest(new SchemeRequest());
+        assetStatusReqeust.setWorkOrderVO(null);
+        assetStatusReqeust.setActivityHandleRequest(new ActivityHandleRequest());
+        assetStatusReqeust.setAgree(false);
+
+        Scheme scheme = new Scheme();
+        scheme.setMemo("memo");
+        scheme.setContent("content");
+        when(schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class))
+            .thenReturn(scheme);
+        // PowerMockito.suppress(MemberMatcher.methodsDeclaredIn(SoftWareStatusChangeProcessImpl.class));
+        //
+        // PowerMockito.method(AbstractAssetStatusChangeProcessImpl.class, "changeStatus",
+        // Mockito.any(AssetStatusReqeust.class));
+
+        PowerMockito.when(mock(AbstractAssetStatusChangeProcessImpl.class), "getNextSoftwareStatus", Mockito.any())
+            .thenReturn(SoftwareStatusEnum.ALLOW_INSTALL);
+
+        PowerMockito.suppress(MemberMatcher.methodsDeclaredIn(SoftWareStatusChangeProcessImpl.class));
+        ActionResponse actionResponse = ActionResponse.success();
+        PowerMockito.when(mock(AbstractAssetStatusChangeProcessImpl.class), "changeStatus", Mockito.any())
+            .thenReturn(actionResponse);
+
+        ActionResponse result = softWareStatusChangeProcessImpl.changeStatus(assetStatusReqeust);
+        Assert.assertNotNull(result);
+    }
+
+    private AssetSoftware buildAssetSoftware() {
         AssetSoftware assetSoftware = new AssetSoftware();
         assetSoftware.setLicenseSecretKey("");
         assetSoftware.setAssetCount(0);
@@ -117,26 +205,6 @@ public class SoftWareStatusChangeProcessImplTest {
         assetSoftware.setMd5Code("");
         assetSoftware.setPort("");
         assetSoftware.setId(0);
-
-        when(assetSoftwareDao.getById(any())).thenReturn(assetSoftware);
-
-        Asset asset = new Asset();
-        asset.setAreaId("1");
-        when(assetDao.getById(any())).thenReturn(asset);
-
-        AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
-        assetStatusReqeust.setManualStartActivityRequest(new ManualStartActivityRequest());
-        assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE);
-        assetStatusReqeust.setSoftwareStatusEnum(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE);
-        assetStatusReqeust.setAssetId("");
-        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WATI_REGSIST);
-        assetStatusReqeust.setSoftware(false);
-        assetStatusReqeust.setSchemeRequest(new SchemeRequest());
-        assetStatusReqeust.setWorkOrderVO(null);
-        assetStatusReqeust.setActivityHandleRequest(new ActivityHandleRequest());
-        assetStatusReqeust.setAgree(false);
-
-        ActionResponse result = softWareStatusChangeProcessImpl.changeStatus(assetStatusReqeust);
-        Assert.assertNotNull(result);
+        return assetSoftware;
     }
 }
