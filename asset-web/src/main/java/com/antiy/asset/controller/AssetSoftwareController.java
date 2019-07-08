@@ -110,7 +110,7 @@ public class AssetSoftwareController {
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:software:deleteById')")
     public ActionResponse deleteById(@RequestBody @ApiParam(value = "query") BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isNull(baseRequest.getStringId(), "ID不能为空");
@@ -152,21 +152,21 @@ public class AssetSoftwareController {
         iAssetSoftwareService.exportData(assetSoftwareQuery, response, request);
     }
 
-    /**
-     * 导入软件excel文件
-     *
-     * @param multipartFile 主键封装对象
-     * @return actionResponse
-     */
-    @ApiOperation(value = "导入软件excel文件", notes = "导入软件excel文件")
-    @RequestMapping(value = "/import/file", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:software:importExcel')")
-    public ActionResponse importExcel(@ApiParam(value = "multipartFile") MultipartFile multipartFile,
-                                      AssetImportRequest importRequest) throws Exception {
-
-        return ActionResponse.success(iAssetSoftwareService.importExcel(multipartFile, importRequest));
-
-    }
+    // /**
+    // * 导入软件excel文件
+    // *
+    // * @param multipartFile 主键封装对象
+    // * @return actionResponse
+    // */
+    // @ApiOperation(value = "导入软件excel文件", notes = "导入软件excel文件")
+    // @RequestMapping(value = "/import/file", method = RequestMethod.POST)
+    // @PreAuthorize(value = "hasAuthority('asset:software:importExcel')")
+    // public ActionResponse importExcel(@ApiParam(value = "multipartFile") MultipartFile multipartFile,
+    // AssetImportRequest importRequest) throws Exception {
+    //
+    // return ActionResponse.success(iAssetSoftwareService.importExcel(multipartFile, importRequest));
+    //
+    // }
 
     /**
      * 软件资产按二级品类型号统计

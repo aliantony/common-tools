@@ -167,11 +167,43 @@ public class AssetStatusChangeFlowProcessImplTest {
         assetStatusReqeust.setSoftware(false);
         Asset asesetStatus = new Asset();
         asesetStatus.setStatus(3);
-        asesetStatus.setAssetStatus(2);
+        asesetStatus.setFirstEnterNett(null);
+        asesetStatus.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         when(assetDao.getById(any())).thenReturn(asesetStatus);
         when(activityClient.completeTask(any())).thenReturn(ActionResponse.success());
         when(baseLineClient.updateAssetVerify(any())).thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION));
         ActionResponse result2 = assetStatusChangeFlowProcess.changeStatus(assetStatusReqeust);
         Assert.assertEquals("416", result2.getHead().getCode());
+    }
+
+
+    @Test
+    public void changeStatus4() throws Exception {
+        AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
+        ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
+        // activityHandleRequest.setFormData("{\"resultCheckUserId\":\"110\",\"result\":\"1\"}");
+        activityHandleRequest.setTaskId("222");
+        assetStatusReqeust.setActivityHandleRequest(activityHandleRequest);
+        assetStatusReqeust.setAssetId("13");
+        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WAIT_CHECK);
+        assetStatusReqeust.setAgree(true);
+        assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.HARDWARE_REGISTER);
+        SchemeRequest schemeRequest = new SchemeRequest();
+        schemeRequest.setSchemeSource(1);
+        schemeRequest.setType(1);
+        schemeRequest.setMemo("1");
+        schemeRequest.setContent("1");
+        schemeRequest.setExtension("{\"baseline\": false}");
+        assetStatusReqeust.setSchemeRequest(schemeRequest);
+        assetStatusReqeust.setSoftware(false);
+        Asset asesetStatus = new Asset();
+        asesetStatus.setStatus(3);
+        asesetStatus.setFirstEnterNett(null);
+        asesetStatus.setAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode());
+        when(assetDao.getById(any())).thenReturn(asesetStatus);
+        when(activityClient.completeTask(any())).thenReturn(ActionResponse.success());
+        when(baseLineClient.updateAssetVerify(any())).thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION));
+        ActionResponse result2 = assetStatusChangeFlowProcess.changeStatus(assetStatusReqeust);
+        Assert.assertEquals("200", result2.getHead().getCode());
     }
 }

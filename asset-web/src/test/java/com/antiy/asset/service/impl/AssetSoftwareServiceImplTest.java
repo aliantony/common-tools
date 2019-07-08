@@ -210,7 +210,7 @@ public class AssetSoftwareServiceImplTest {
         try {
             assetSoftwareService.saveAssetSoftware(request);
         } catch (Exception e) {
-            Assert.assertEquals("资产名称重复", e.getMessage());
+            Assert.assertEquals("资产名称和版本号重复", e.getMessage());
         }
 
         Mockito.when(assetSoftwareDao.findCountCheck(any())).thenReturn(0);
@@ -219,6 +219,14 @@ public class AssetSoftwareServiceImplTest {
             assetSoftwareService.saveAssetSoftware(request);
         } catch (Exception e) {
             Assert.assertEquals("品类型号不存在，或已经注销", e.getMessage());
+        }
+
+        Mockito.when(assetCategoryModelDao.getById(Mockito.anyInt())).thenReturn(new AssetCategoryModel());
+        Mockito.when(assetOperationRecordDao.insertBatch(any())).thenThrow(new NullPointerException("123"));
+        try {
+            assetSoftwareService.saveAssetSoftware(request);
+        } catch (Exception e) {
+            Assert.assertEquals("123", e.getMessage());
         }
 
     }
@@ -308,7 +316,6 @@ public class AssetSoftwareServiceImplTest {
     public void updateAssetSoftwareTest1() throws Exception {
         AssetSoftwareRequest request = getAssetSoftwareRequest();
         request.setId("1");
-
         AssetSoftware software = getAssetSoftware();
         software.setSoftwareStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
         ActionResponse response = ActionResponse.success();
@@ -318,7 +325,6 @@ public class AssetSoftwareServiceImplTest {
         Mockito.when(assetSoftwareDao.update(any())).thenReturn(expect);
         Mockito.when(assetSoftwareDao.insert(any())).thenReturn(expect);
         Mockito.when(assetOperationRecordDao.insert(any())).thenReturn(1);
-
         Mockito.when(requestConverter.convert(any(AssetSoftwareRequest.class), any(Class.class)))
             .thenReturn(getAssetSoftware());
         Assert.assertEquals(1 + "", assetSoftwareService.updateAssetSoftware(request) + "");
@@ -326,7 +332,28 @@ public class AssetSoftwareServiceImplTest {
         Assert.assertEquals(1 + "", assetSoftwareService.updateAssetSoftware(request) + "");
         software.setSoftwareStatus(SoftwareStatusEnum.WAIT_RETIRE.getCode());
         Assert.assertEquals(1 + "", assetSoftwareService.updateAssetSoftware(request) + "");
+        Mockito.when(assetSoftwareDao.getById(Mockito.anyString())).thenReturn(software);
+        request.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+        try {
+            assetSoftwareService.updateAssetSoftware(request);
+        } catch (Exception e) {
+            Assert.assertEquals("软件状态已改变", e.getMessage());
+        }
 
+
+        software.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+        Mockito.when(assetSoftwareDao.getById(Mockito.anyString())).thenReturn(software);
+        request.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+        try {
+            assetSoftwareService.updateAssetSoftware(request);
+        } catch (Exception e) {
+            Assert.assertEquals("软件状态已改变", e.getMessage());
+        }
+
+        software.setSoftwareStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
+        Mockito.when(assetSoftwareDao.getById(Mockito.anyString())).thenReturn(software);
+        request.setSoftwareStatus(SoftwareStatusEnum.WATI_REGSIST.getCode());
+        Assert.assertEquals(1 + "", assetSoftwareService.updateAssetSoftware(request) + "");
     }
 
     @Test
@@ -609,7 +636,7 @@ public class AssetSoftwareServiceImplTest {
 
         request.setSource(AssetTypeEnum.SOFTWARE.getCode().toString());
         assertThat(assetSoftwareService.configRegister(request, null).getHead().getCode())
-                .isEqualTo(ActionResponse.success().getHead().getCode());
+            .isEqualTo(ActionResponse.success().getHead().getCode());
 
     }
 
