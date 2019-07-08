@@ -114,12 +114,12 @@ public class ComputeDeviceEntity {
     /**
      * 网卡品牌
      */
-    @ExcelField(value = "networkBrand", align = 1, title = "网卡品牌")
+    @ExcelField(value = "networkBrand", align = 1, title = "网卡品牌", length = 60)
     private String  networkBrand;
     /**
      * 网卡型号
      */
-    @ExcelField(value = "networkModel", align = 1, title = "网卡型号")
+    @ExcelField(value = "networkModel", align = 1, title = "网卡型号", length = 60)
     private String  networkModel;
     /**
      * 网卡序列号
@@ -155,7 +155,7 @@ public class ComputeDeviceEntity {
     /**
      * 内存品牌
      */
-    @ExcelField(value = "memoryBrand", align = 1, title = "内存品牌")
+    @ExcelField(value = "memoryBrand", align = 1, title = "内存品牌", length = 60)
     private String  memoryBrand;
 
     /**
@@ -204,12 +204,12 @@ public class ComputeDeviceEntity {
     /**
      * 硬盘品牌
      */
-    @ExcelField(value = "hardDiskBrand", align = 1, title = "硬盘品牌")
+    @ExcelField(value = "hardDiskBrand", align = 1, title = "硬盘品牌", length = 60)
     private String  hardDiskBrand;
     /**
      * 硬盘型号
      */
-    @ExcelField(value = "hardDiskModel", align = 1, title = "硬盘型号")
+    @ExcelField(value = "hardDiskModel", align = 1, title = "硬盘型号", length = 60)
     private String  hardDiskModel;
 
     /**
@@ -246,12 +246,12 @@ public class ComputeDeviceEntity {
     /**
      * 主板品牌
      */
-    @ExcelField(value = "mainboradBrand", align = 1, title = "主板品牌")
+    @ExcelField(value = "mainboradBrand", align = 1, title = "主板品牌", length = 60)
     private String  mainboradBrand;
     /**
      * 主板型号
      */
-    @ExcelField(value = "mainboradModel", align = 1, title = "主板型号")
+    @ExcelField(value = "mainboradModel", align = 1, title = "主板型号", length = 60)
     private String  mainboradModel;
     /**
      * 主板序列号
@@ -276,12 +276,12 @@ public class ComputeDeviceEntity {
     /**
      * cpu品牌
      */
-    @ExcelField(value = "cpuBrand", align = 1, title = "cpu品牌")
+    @ExcelField(value = "cpuBrand", align = 1, title = "cpu品牌", length = 60)
     private String  cpuBrand;
     /**
      * cpu型号
      */
-    @ExcelField(value = "cpuModel", align = 1, title = "cpu型号")
+    @ExcelField(value = "cpuModel", align = 1, title = "cpu型号", length = 60)
     private String  cpuModel;
     /**
      * cpu序列号

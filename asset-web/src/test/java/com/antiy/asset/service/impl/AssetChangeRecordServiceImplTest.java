@@ -7,6 +7,7 @@ import com.antiy.asset.entity.AssetChangeRecord;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.vo.query.AssetChangeRecordQuery;
 import com.antiy.asset.vo.request.AssetChangeRecordRequest;
+import com.antiy.asset.vo.request.AssetOthersRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
 import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.AssetChangeRecordResponse;
@@ -72,6 +73,17 @@ public class AssetChangeRecordServiceImplTest {
         Mockito.when(assetChangeRecordDao.insert(assetChangeRecord)).thenReturn(1);
         Assert.assertEquals(assetChangeRecord.getId(),
             assetChangeRecordService.saveAssetChangeRecord(request).getBody());
+
+        Mockito.when(activityClient.manualStartProcess(Mockito.any()))
+            .thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "123"));
+        AssetOuterRequest assetOuterRequest = request.getAssetOuterRequest();
+        assetOuterRequest.setAssetOthersRequest(new AssetOthersRequest());
+        try {
+            assetChangeRecordService.saveAssetChangeRecord(request).getBody();
+        } catch (Exception e) {
+            Assert.assertEquals("123", e.getMessage());
+        }
+
     }
 
     @Test

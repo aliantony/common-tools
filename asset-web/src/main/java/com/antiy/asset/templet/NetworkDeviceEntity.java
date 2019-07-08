@@ -111,7 +111,7 @@ public class NetworkDeviceEntity {
     /**
      * mac地址
      */
-    @ExcelField(value = "mac", align = 1, title = "mac地址", dataType = DataTypeEnum.MAC, required = false)
+    @ExcelField(value = "mac", align = 1, title = "mac地址(必填)", dataType = DataTypeEnum.MAC, required = true)
     private String  mac;
     /**
      * 子网掩码

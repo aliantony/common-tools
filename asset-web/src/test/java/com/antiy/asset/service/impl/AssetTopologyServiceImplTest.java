@@ -144,6 +144,8 @@ public class AssetTopologyServiceImplTest {
         idCounts.add(new IdCount("3", "2"));
         when(assetDao.queryAlarmCountByAssetIds(any())).thenReturn(idCounts);
         Assert.assertEquals("3", assetTopologyService.countAssetTopology().getList().get(0).get("warning"));
+        when(assetLinkRelationDao.findLinkRelation(any())).thenReturn(new ArrayList<>());
+        Assert.assertEquals("success", assetTopologyService.countAssetTopology().getStatus());
     }
 
     @Test
@@ -172,7 +174,12 @@ public class AssetTopologyServiceImplTest {
         when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(100);
         when(assetTopologyDao.findTopologyListAsset(any())).thenReturn(Arrays.asList(generateAsset(), generateAsset()));
         when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), any())).thenReturn("区域");
-        Assert.assertEquals(2, assetTopologyService.getTopologyList(new AssetQuery()).getData().size());
+        AssetQuery query = new AssetQuery();
+        query.setAreaIds(new String[] { "1", "2" });
+        Assert.assertEquals(2, assetTopologyService.getTopologyList(query).getData().size());
+
+        when(assetLinkRelationDao.findLinkRelation(any())).thenReturn(new ArrayList<>());
+        Assert.assertEquals("success", assetTopologyService.getTopologyList(new AssetQuery()).getStatus());
 
     }
 
@@ -233,6 +240,10 @@ public class AssetTopologyServiceImplTest {
             .thenReturn(Arrays.asList(new IdCount("1", "1"), new IdCount("2", "2")));
         Assert.assertEquals("success", assetTopologyService.getAlarmTopology().getStatus());
 
+        when(assetLinkRelationDao.findLinkRelation(any())).thenReturn(new ArrayList<>());
+
+        Assert.assertEquals("success", assetTopologyService.getAlarmTopology().getStatus());
+
     }
 
     @Test
@@ -245,7 +256,12 @@ public class AssetTopologyServiceImplTest {
         Asset asset2 = generateAsset();
         asset2.setId(2);
         when(assetTopologyDao.findTopologyListAsset(any())).thenReturn(Arrays.asList(asset1, asset2));
-        Assert.assertEquals("success", assetTopologyService.queryListByIp(new AssetQuery()).getStatus());
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setAreaIds(new String[] { "1", "2" });
+        Assert.assertEquals("success", assetTopologyService.queryListByIp(assetQuery).getStatus());
+
+        when(assetLinkRelationDao.findLinkRelation(Mockito.any())).thenReturn(new ArrayList<>());
+        Assert.assertEquals("success", assetTopologyService.queryListByIp(assetQuery).getStatus());
     }
 
     @Test
@@ -259,6 +275,10 @@ public class AssetTopologyServiceImplTest {
         AssetLink assetLink2 = generateAssetLink("8", "9");
         assetLink2.setCategoryModal(4);
         assetLink2.setParentCategoryModal(16);
+        AssetLink assetLink3 = generateAssetLink("2", "10");
+        assetLink3.setCategoryModal(6);
+        assetLink3.setParentCategoryModal(6);
+
         when(assetLinkRelationDao.findLinkRelation(any()))
             .thenReturn(Arrays.asList(generateAssetLink("1", "2"), assetLink, assetLink1, assetLink2));
         when(baseDao.getAll()).thenReturn(getAssetCategoryModelList());
